@@ -74,8 +74,8 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
 
         BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
         BuildComponentCommand command = generator.generate(component, true);
         assertNotNull(command.getDefinition());
@@ -89,8 +89,8 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
 
         BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.PROVISIONED);
 
         assertNull(generator.generate(component, true));
@@ -107,8 +107,8 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
 
         BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
         BuildComponentCommand command = generator.generate(component, false);
         assertNotNull(command.getDefinition());

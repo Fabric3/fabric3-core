@@ -62,7 +62,7 @@ public abstract class PhysicalTargetDefinition implements Serializable {
     private boolean callback;
     private URI callbackUri;
     private URI classLoaderId;
-    protected List<DataType<?>> physicalDataTypes = new ArrayList<DataType<?>>();
+    protected List<DataType<?>> physicalDataTypes = new ArrayList<>();
 
     public PhysicalTargetDefinition() {
         // default to Java

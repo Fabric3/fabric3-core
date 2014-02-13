@@ -50,13 +50,13 @@ import org.fabric3.api.host.failure.ValidationFailure;
  * Default implementation of an IntrospectionContext.
  */
 public class DefaultIntrospectionContext implements IntrospectionContext {
-    private List<ValidationFailure> errors = new ArrayList<ValidationFailure>();
-    private List<ValidationFailure> warnings = new ArrayList<ValidationFailure>();
+    private List<ValidationFailure> errors = new ArrayList<>();
+    private List<ValidationFailure> warnings = new ArrayList<>();
     private ClassLoader classLoader;
     private URL sourceBase;
     private String targetNamespace;
     private URI contributionUri;
-    private Map<Class<?>, TypeMapping> typeMappings = new HashMap<Class<?>, TypeMapping>();
+    private Map<Class<?>, TypeMapping> typeMappings = new HashMap<>();
 
     /**
      * Constructor.

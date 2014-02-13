@@ -47,7 +47,7 @@ import java.util.Map;
  * Retains settings in memory.
  */
 public class TransientSettings implements Settings {
-    private Map<String, DomainConfiguration> domains = new HashMap<String, DomainConfiguration>();
+    private Map<String, DomainConfiguration> domains = new HashMap<>();
 
     public void addConfiguration(DomainConfiguration configuration) {
         domains.put(configuration.getName(), configuration);
@@ -58,7 +58,7 @@ public class TransientSettings implements Settings {
     }
 
     public List<DomainConfiguration> getDomainConfigurations() {
-        return new ArrayList<DomainConfiguration>(domains.values());
+        return new ArrayList<>(domains.values());
     }
 
     public void load() throws IOException {

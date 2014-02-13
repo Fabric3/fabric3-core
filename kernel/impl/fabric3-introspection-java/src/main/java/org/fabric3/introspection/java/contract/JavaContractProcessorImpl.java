@@ -82,8 +82,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
 
     public JavaContractProcessorImpl(@Reference IntrospectionHelper helper) {
         this.helper = helper;
-        interfaceIntrospectors = new ArrayList<InterfaceIntrospector>();
-        operationIntrospectors = new ArrayList<OperationIntrospector>();
+        interfaceIntrospectors = new ArrayList<>();
+        operationIntrospectors = new ArrayList<>();
     }
 
     @Reference(required = false)
@@ -157,7 +157,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
                                                  IntrospectionContext context,
                                                  ModelObject... modelObjects) {
         Method[] methods = interfaze.getMethods();
-        List<Operation> operations = new ArrayList<Operation>(methods.length);
+        List<Operation> operations = new ArrayList<>(methods.length);
 
         for (Method method : methods) {
             String name = method.getName();
@@ -200,7 +200,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     private List<DataType<?>> introspectParameterTypes(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalParameterTypes = method.getParameterTypes();
         Type[] gParamTypes = method.getGenericParameterTypes();
-        List<DataType<?>> parameterDataTypes = new ArrayList<DataType<?>>(gParamTypes.length);
+        List<DataType<?>> parameterDataTypes = new ArrayList<>(gParamTypes.length);
         for (int i = 0; i < gParamTypes.length; i++) {
             Type gParamType = gParamTypes[i];
             Type logicalParamType = typeMapping.getActualType(gParamType);
@@ -213,7 +213,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     private List<DataType<?>> introspectFaultTypes(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalFaultTypes = method.getExceptionTypes();
         Type[] gFaultTypes = method.getGenericExceptionTypes();  // possible even though it is not possible to catch a generic exception type
-        List<DataType<?>> faultDataTypes = new ArrayList<DataType<?>>(gFaultTypes.length);
+        List<DataType<?>> faultDataTypes = new ArrayList<>(gFaultTypes.length);
         for (int i = 0; i < gFaultTypes.length; i++) {
             Type gFaultType = gFaultTypes[i];
             Type logicalType = typeMapping.getActualType(gFaultType);

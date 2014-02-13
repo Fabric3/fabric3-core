@@ -53,7 +53,7 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
  */
 public class MockObjectFactory<T> implements ObjectFactory<T> {
 
-    private final Map<Class<?>, Object> mocks = new HashMap<Class<?>, Object>();
+    private final Map<Class<?>, Object> mocks = new HashMap<>();
     private final T proxy;
     private final IMocksControl control;
 

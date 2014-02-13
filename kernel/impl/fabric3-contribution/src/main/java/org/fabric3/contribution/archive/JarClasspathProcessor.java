@@ -111,7 +111,7 @@ public class JarClasspathProcessor implements ClasspathProcessor {
     }
 
     public List<URL> process(URL jar, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<URL>();
+        List<URL> classpath = new ArrayList<>();
         // add the the jar itself to the classpath
         classpath.add(jar);
 
@@ -265,7 +265,7 @@ public class JarClasspathProcessor implements ClasspathProcessor {
     }
 
     private Set<String> resolveNativeLibraries(List<Library> libraries) {
-        Set<String> paths = new HashSet<String>();
+        Set<String> paths = new HashSet<>();
         for (Library library : libraries) {
             for (OperatingSystemSpec os : library.getOperatingSystems()) {
                 if (os.matches(hostInfo.getOperatingSystem())) {

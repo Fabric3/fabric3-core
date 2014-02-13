@@ -106,7 +106,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
     public void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws InstallException, XMLStreamException {
 
         validateAttributes(reader, context);
-        List<AbstractPolicyDefinition> definitions = new ArrayList<AbstractPolicyDefinition>();
+        List<AbstractPolicyDefinition> definitions = new ArrayList<>();
         String oldNamespace = context.getTargetNamespace();
         String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
         context.setTargetNamespace(targetNamespace);
@@ -145,7 +145,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                         if (candidate instanceof ExternalAttachment) {
                             // External attachments must be added here and not during indexing since they have synthetic names
                             QNameSymbol symbol = new QNameSymbol(candidate.getName());
-                            ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
+                            ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<>(symbol);
                             element.setValue(candidate);
                             resource.addResourceElement(element);
 
@@ -190,7 +190,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
             Set<QName> requires = intent.getRequires();
             IntentType intentType = intent.getIntentType();
             boolean isDefault = qualifier.isDefault();
-            Set<QName> excludes = new HashSet<QName>(intent.getExcludes());
+            Set<QName> excludes = new HashSet<>(intent.getExcludes());
             if (intent.isMutuallyExclusive()) {
                 // for each qualified intent, add the others as excludes
                 for (Qualifier entry : intent.getQualifiers()) {
@@ -202,7 +202,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
             }
             Intent qualified = new Intent(qualifierName, constrains, requires, Collections.<Qualifier>emptySet(), false, excludes, intentType, isDefault);
             QNameSymbol symbol = new QNameSymbol(qualifierName);
-            ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
+            ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<>(symbol);
             element.setValue(qualified);
             resource.addResourceElement(element);
         }

@@ -84,7 +84,7 @@ public class SyntheticDirectoryClasspathProcessor implements ClasspathProcessor 
     }
 
     public List<URL> process(URL url, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<URL>();
+        List<URL> classpath = new ArrayList<>();
         File root = FileHelper.toFile(url);
         for (File file : root.listFiles()) {
             if (file.getName().endsWith(".jar")) {

@@ -51,7 +51,7 @@ import org.fabric3.datasource.spi.DataSourceRegistry;
  */
 @Management(name = "DataSourceRegistry", path = "/runtime/datasources")
 public class DataSourceRegistryImpl implements DataSourceRegistry {
-    private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
+    private Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
 
     @ManagementOperation(path = "/")
     public Set<String> getDataSourceNames() {

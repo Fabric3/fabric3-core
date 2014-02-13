@@ -65,7 +65,7 @@ public class FabricServletHost extends HttpServlet implements ServletHost {
 
     private transient ServletConfig config;
 
-    private transient Map<String, Servlet> servlets = new ConcurrentHashMap<String, Servlet>();
+    private transient Map<String, Servlet> servlets = new ConcurrentHashMap<>();
     private AtomicBoolean initialized = new AtomicBoolean();
 
     public FabricServletHost(int http, int https, URL baseUrl, URL baseHttpsUrl) {

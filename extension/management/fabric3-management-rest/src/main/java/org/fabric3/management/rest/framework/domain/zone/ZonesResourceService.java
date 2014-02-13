@@ -90,8 +90,8 @@ public class ZonesResourceService {
     }
 
     private Set<Link> createDistributedZonesLink() {
-        Set<Link> list = new HashSet<Link>();
-        Set<String> zones = new HashSet<String>();
+        Set<Link> list = new HashSet<>();
+        Set<String> zones = new HashSet<>();
         // calculate the list of zones by taking the first socket encountered in the zone
         for (SocketAddress address : addressCache.getActiveAddresses(HTTP_SERVER)) {
             String zone = address.getZone();

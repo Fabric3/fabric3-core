@@ -105,8 +105,8 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
     private boolean synchronize = true;
     private String zoneName;
 
-    private List<ChannelOpenRequest> channelRequests = new ArrayList<ChannelOpenRequest>();
-    private Set<String> openChannels = new HashSet<String>();
+    private List<ChannelOpenRequest> channelRequests = new ArrayList<>();
+    private Set<String> openChannels = new HashSet<>();
 
     public WebLogicParticipantTopologyService(@Reference EventService eventService,
                                               @Reference SerializationService serializationService,
@@ -355,7 +355,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
 
     private Context getRootContext() throws NamingException {
         Context rootContext;// lookup the controller context on the admin server
-        Hashtable<String, String> env = new Hashtable<String, String>();
+        Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
         env.put(Context.PROVIDER_URL, adminServerUrl);
         rootContext = new InitialContext(env);

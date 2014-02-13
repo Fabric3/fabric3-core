@@ -62,7 +62,7 @@ public class ValidationUtilsTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        failures = new ArrayList<ValidationFailure>();
+        failures = new ArrayList<>();
         failures.add(new Failure());
     }
 

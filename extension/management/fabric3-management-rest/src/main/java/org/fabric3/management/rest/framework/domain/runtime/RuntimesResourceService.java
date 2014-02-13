@@ -89,7 +89,7 @@ public class RuntimesResourceService {
     }
 
     private Set<Link> createDistributedRuntimesLink() {
-        Set<Link> list = new HashSet<Link>();
+        Set<Link> list = new HashSet<>();
         List<SocketAddress> addresses = addressCache.getActiveAddresses(HTTP_SERVER);
         for (SocketAddress address : addresses) {
             int httpPort = address.getPort().getNumber();

@@ -55,7 +55,7 @@ import org.fabric3.jndi.spi.JndiContextManager;
  *
  */
 public class JndiContextManagerImpl implements JndiContextManager {
-    private Map<String, Context> contexts = new ConcurrentHashMap<String, Context>();
+    private Map<String, Context> contexts = new ConcurrentHashMap<>();
     private ContextManagerMonitor monitor;
 
     public JndiContextManagerImpl(@Monitor ContextManagerMonitor monitor) {

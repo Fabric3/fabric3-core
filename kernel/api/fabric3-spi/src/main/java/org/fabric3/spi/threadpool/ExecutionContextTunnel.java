@@ -41,7 +41,7 @@ package org.fabric3.spi.threadpool;
  * Associates the active execution context with the current thread.
  */
 public class ExecutionContextTunnel {
-    private static final ThreadLocal<ExecutionContext> CONTEXT = new ThreadLocal<ExecutionContext>();
+    private static final ThreadLocal<ExecutionContext> CONTEXT = new ThreadLocal<>();
 
     /**
      * Associates the active execution context with the current thread.

@@ -165,7 +165,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(parentUri.toString());
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(parentUri.toString());
         definition.setImplementation(impl);
         return new LogicalCompositeComponent(parentUri, definition, parent);
     }
@@ -178,12 +178,12 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         type.add(referenceDefinition);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
-        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<MockAtomicImpl>(SOURCE_URI.toString());
+        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<>(SOURCE_URI.toString());
         definition.setImplementation(impl);
         ComponentReference target = new ComponentReference(REFERENCE_URI.getFragment(), Multiplicity.ONE_ONE);
         target.setAutowire(Autowire.ON);
         definition.add(target);
-        LogicalComponent<?> component = new LogicalComponent<MockAtomicImpl>(SOURCE_URI, definition, parent);
+        LogicalComponent<?> component = new LogicalComponent<>(SOURCE_URI, definition, parent);
         LogicalReference logicalReference = new LogicalReference(REFERENCE_URI, referenceDefinition, component);
         component.addReference(logicalReference);
         return component;
@@ -197,9 +197,9 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         type.add(service);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
-        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<MockAtomicImpl>(uri.toString());
+        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<>(uri.toString());
         definition.setImplementation(impl);
-        LogicalComponent component = new LogicalComponent<MockAtomicImpl>(uri, definition, parent);
+        LogicalComponent component = new LogicalComponent<>(uri, definition, parent);
         LogicalService logicalService = new LogicalService(TARGET_URI, service, parent);
         component.addService(logicalService);
         return component;

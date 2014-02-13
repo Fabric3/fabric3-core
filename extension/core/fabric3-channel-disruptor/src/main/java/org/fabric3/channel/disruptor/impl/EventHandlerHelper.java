@@ -58,13 +58,13 @@ public class EventHandlerHelper {
      * @return the sorted Map
      */
     public static NavigableMap<Integer, List<EventHandler<RingBufferEvent>>> createAndSort(Collection<ChannelConnection> connections) {
-        NavigableMap<Integer, List<EventHandler<RingBufferEvent>>> sorted = new TreeMap<Integer, List<EventHandler<RingBufferEvent>>>();
+        NavigableMap<Integer, List<EventHandler<RingBufferEvent>>> sorted = new TreeMap<>();
 
         for (ChannelConnection connection : connections) {
             Integer sequence = connection.getSequence();
             List<EventHandler<RingBufferEvent>> handlers = sorted.get(sequence);
             if (handlers == null) {
-                handlers = new ArrayList<EventHandler<RingBufferEvent>>();
+                handlers = new ArrayList<>();
                 sorted.put(sequence, handlers);
             }
             handlers.add(new ChannelEventHandler(connection));

@@ -23,7 +23,7 @@ public class SourceWsdlLocator implements WSDLLocator {
     public SourceWsdlLocator(Source aSource, IntrospectionContext aContext) {
         mSource = aSource;
         mContext = aContext;
-        mStreams = new ArrayList<InputStream>();
+        mStreams = new ArrayList<>();
     }
 
     public InputSource getBaseInputSource() {

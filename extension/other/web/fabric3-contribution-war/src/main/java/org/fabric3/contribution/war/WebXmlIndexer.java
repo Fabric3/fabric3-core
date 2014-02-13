@@ -87,7 +87,7 @@ public class WebXmlIndexer implements XmlIndexer {
     public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) {
         QNameSymbol symbol = new QNameSymbol(qname);
         WebXml webXml = new WebXml();
-        ResourceElement<QNameSymbol, WebXml> element = new ResourceElement<QNameSymbol, WebXml>(symbol, webXml);
+        ResourceElement<QNameSymbol, WebXml> element = new ResourceElement<>(symbol, webXml);
         resource.addResourceElement(element);
     }
 

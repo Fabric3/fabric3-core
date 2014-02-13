@@ -110,7 +110,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
     }
 
     public List<Address> getRuntimeAddressesInZone(String zoneName, View view) {
-        List<Address> runtimes = new ArrayList<Address>();
+        List<Address> runtimes = new ArrayList<>();
         for (Address address : view.getMembers()) {
             String name = UUID.get(address);
             if (name == null) {
@@ -188,7 +188,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         if (members == null) {
             return Collections.emptySet();
         }
-        Set<Address> newRuntimes = new HashSet<Address>(members);
+        Set<Address> newRuntimes = new HashSet<>(members);
         if (oldView != null) {
             newRuntimes.removeAll(oldView.getMembers());
         }
@@ -203,7 +203,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         if (members == null) {
             return Collections.emptySet();
         }
-        Set<Address> removedRuntimes = new HashSet<Address>(members);
+        Set<Address> removedRuntimes = new HashSet<>(members);
         if (oldView != null) {
             removedRuntimes.removeAll(newView.getMembers());
         }
@@ -211,9 +211,9 @@ public class JGroupsHelperImpl implements JGroupsHelper {
     }
 
     public Set<Zone> getZones(Map<String, Map<String, RuntimeInstance>> runtimes) {
-        Set<Zone> zones = new HashSet<Zone>();
+        Set<Zone> zones = new HashSet<>();
         for (Map.Entry<String, Map<String, RuntimeInstance>> entry : runtimes.entrySet()) {
-            List<RuntimeInstance> instances = new ArrayList<RuntimeInstance>(entry.getValue().values());
+            List<RuntimeInstance> instances = new ArrayList<>(entry.getValue().values());
             Zone zone = new Zone(entry.getKey(), instances);
             zones.add(zone);
         }
@@ -221,7 +221,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
     }
 
     public Set<Address> getNewZoneLeaders(View oldView, View newView) {
-        Set<Address> newZoneLeaders = new HashSet<Address>();
+        Set<Address> newZoneLeaders = new HashSet<>();
         for (Address address : newView.getMembers()) {
             if (oldView == null) {
                 String zone = getZoneName(address);

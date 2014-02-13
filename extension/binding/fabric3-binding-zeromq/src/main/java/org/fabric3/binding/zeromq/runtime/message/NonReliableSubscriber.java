@@ -124,7 +124,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener {
 
     @ManagementOperation
     public List<String> getAddresses() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (SocketAddress address : addresses) {
             list.add(address.toString());
         }

@@ -69,7 +69,7 @@ public class QNameImport implements Import {
     public QNameImport(String namespace, URI location) {
         this.namespace = namespace;
         this.location = location;
-        resolved = new HashMap<URI, Export>();
+        resolved = new HashMap<>();
     }
 
     public QName getType() {

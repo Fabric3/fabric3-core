@@ -65,7 +65,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 public class StartContextCommandGeneratorImpl implements StartContextCommandGenerator {
 
     public Map<String, List<CompensatableCommand>> generate(List<LogicalComponent<?>> components, boolean incremental) throws GenerationException {
-        Map<String, List<CompensatableCommand>> commands = new HashMap<String, List<CompensatableCommand>>();
+        Map<String, List<CompensatableCommand>> commands = new HashMap<>();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW || !incremental) {
                 QName deployable = component.getDeployable();
@@ -92,7 +92,7 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
     private List<CompensatableCommand> getCommands(String zone, Map<String, List<CompensatableCommand>> startCommands) {
         List<CompensatableCommand> list = startCommands.get(zone);
         if (list == null) {
-            list = new ArrayList<CompensatableCommand>();
+            list = new ArrayList<>();
             startCommands.put(zone, list);
         }
         return list;

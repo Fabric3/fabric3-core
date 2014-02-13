@@ -70,7 +70,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 public class JndiContextLoader implements TypeLoader<JndiContextDefinition> {
 
     public JndiContextDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        Map<String, Properties> contexts = new HashMap<String, Properties>();
+        Map<String, Properties> contexts = new HashMap<>();
         Properties properties = null;
         while (true) {
             switch (reader.next()) {

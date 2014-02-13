@@ -123,7 +123,7 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
 
         setupStore();
 
-        generators = new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
+        generators = new HashMap<>();
 
         processorRegistry = EasyMock.createMock(ClasspathProcessorRegistry.class);
 

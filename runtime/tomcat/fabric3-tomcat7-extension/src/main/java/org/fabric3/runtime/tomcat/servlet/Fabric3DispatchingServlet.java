@@ -58,7 +58,7 @@ import org.apache.catalina.comet.CometProcessor;
 public class Fabric3DispatchingServlet extends HttpServlet implements CometProcessor {
     private static final long serialVersionUID = -8765328474350267313L;
 
-    private Map<String, Servlet> servlets = new ConcurrentHashMap<String, Servlet>();
+    private Map<String, Servlet> servlets = new ConcurrentHashMap<>();
     private ServletConfig config;
 
     public void init(ServletConfig config) throws ServletException {

@@ -367,13 +367,13 @@ public class ContributionServiceImplTestCase extends TestCase {
         URI otherContributionUri = URI.create("otherContribution");
         Contribution otherContribution = new Contribution(otherContributionUri);
         otherContribution.getManifest().addRequiredCapability(new Capability("capability", true));
-        List<ContributionSource> sources = new ArrayList<ContributionSource>();
+        List<ContributionSource> sources = new ArrayList<>();
         URL location = new URL("file://location");
         URL otherLocation = new URL("file://otherLocation");
 
         sources.add(new FileContributionSource(contributionUri, location, -1, "application/xml", false));
         sources.add(new FileContributionSource(otherContributionUri, otherLocation, -1, "application/xml", false));
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution);
         contributions.add(otherContribution);
 
@@ -438,7 +438,7 @@ public class ContributionServiceImplTestCase extends TestCase {
         Resource resource = new Resource(contribution, null, "application/xml");
         QNameSymbol symbol = new QNameSymbol(deployableName);
         Composite composite = new Composite(deployableName);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         resource.addResourceElement(element);
         contribution.addResource(resource);
     }

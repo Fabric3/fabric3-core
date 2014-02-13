@@ -59,12 +59,12 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
 
     private String name;
 
-    private List<String> parameterTypes = new ArrayList<String>();
-    private List<String> faultTypes = new ArrayList<String>();
+    private List<String> parameterTypes = new ArrayList<>();
+    private List<String> faultTypes = new ArrayList<>();
     private String returnType;
 
-    private List<String> targetParameterTypes = new ArrayList<String>();
-    private List<String> targetFaultTypes = new ArrayList<String>();
+    private List<String> targetParameterTypes = new ArrayList<>();
+    private List<String> targetFaultTypes = new ArrayList<>();
     private String targetReturnType;
 
     private boolean callback;
@@ -74,7 +74,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
     private String compareString;
 
     // Interceptors defined against the operation
-    private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
+    private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<>();
 
     /**
      * Gets the name of the operation.

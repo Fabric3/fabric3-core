@@ -88,7 +88,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
 
     @SuppressWarnings({"unchecked"})
     private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws GenerationException {
-        List<PhysicalResourceDefinition> definitions = new ArrayList<PhysicalResourceDefinition>();
+        List<PhysicalResourceDefinition> definitions = new ArrayList<>();
         ResourceDefinition resourceDefinition = resource.getDefinition();
         ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());
         PhysicalResourceDefinition definition = generator.generateResource(resource);

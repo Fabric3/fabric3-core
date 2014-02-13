@@ -73,7 +73,7 @@ public class LogicalReference extends Bindable {
     public LogicalReference(URI uri, AbstractReference<?> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
-        promotedUris = new ArrayList<URI>();
+        promotedUris = new ArrayList<>();
         leafReference = this;
         if (definition != null) {
             // null check for testing so full model does not need to be instantiated

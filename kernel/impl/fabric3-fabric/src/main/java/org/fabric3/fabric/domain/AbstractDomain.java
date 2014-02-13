@@ -196,7 +196,7 @@ public abstract class AbstractDomain implements Domain {
         Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
         if (RuntimeMode.CONTROLLER == info.getRuntimeMode() && !isLocal()) {
-            Map<URI, DeploymentPlan> plans = new HashMap<URI, DeploymentPlan>();
+            Map<URI, DeploymentPlan> plans = new HashMap<>();
             for (Contribution contribution : contributions) {
                 URI uri = contribution.getUri();
                 DeploymentPlan defaultPlan = contributionHelper.findDefaultPlan(contribution);
@@ -270,7 +270,7 @@ public abstract class AbstractDomain implements Domain {
             return;
         }
         // reverse the deployables
-        List<QName> names = new ArrayList<QName>();
+        List<QName> names = new ArrayList<>();
         ListIterator<Deployable> iter = deployables.listIterator(deployables.size());
         while (iter.hasPrevious()) {
             names.add(iter.previous().getName());
@@ -395,8 +395,8 @@ public abstract class AbstractDomain implements Domain {
         }
 
         Map<QName, String> deployables = journal.getDeployables();
-        Set<Contribution> contributions = new LinkedHashSet<Contribution>();
-        List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
+        Set<Contribution> contributions = new LinkedHashSet<>();
+        List<DeploymentPlan> plans = new ArrayList<>();
         for (Map.Entry<QName, String> entry : deployables.entrySet()) {
             QName deployable = entry.getKey();
             String planName = entry.getValue();

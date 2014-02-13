@@ -59,9 +59,9 @@ public class BootConfiguration {
     private Fabric3Runtime runtime;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
-    private Map<String, String> exportedPackages = new HashMap<String, String>();
-    private List<String> hostCapabilities = new ArrayList<String>();
-    private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+    private Map<String, String> exportedPackages = new HashMap<>();
+    private List<String> hostCapabilities = new ArrayList<>();
+    private List<ComponentRegistration> registrations = new ArrayList<>();
     private List<ContributionSource> extensionContributions = Collections.emptyList();
     private List<ContributionSource> userContributions = Collections.emptyList();
     private ClassLoader hostClassLoader;

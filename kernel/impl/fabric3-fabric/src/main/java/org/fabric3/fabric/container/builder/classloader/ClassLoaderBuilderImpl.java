@@ -209,7 +209,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
             // resolve the remote contributions and cache them locally
             URL resolvedUrl = resolver.resolve(uri);
             // introspect and expand if necessary
-            List<URL> classpath = new ArrayList<URL>();
+            List<URL> classpath = new ArrayList<>();
             List<Library> libraries = definition.getLibraries();
             List<URL> archiveClasspath = classpathProcessorRegistry.process(resolvedUrl, libraries);
             classpath.addAll(archiveClasspath);

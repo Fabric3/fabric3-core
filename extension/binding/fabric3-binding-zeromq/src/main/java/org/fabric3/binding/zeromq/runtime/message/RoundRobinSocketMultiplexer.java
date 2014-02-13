@@ -64,7 +64,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
         this.manager = manager;
         this.socketType = socketType;
         this.metadata = metadata;
-        sockets = new HashMap<SocketAddress, ZMQ.Socket>();
+        sockets = new HashMap<>();
     }
 
     public void update(List<SocketAddress> addresses) {
@@ -90,13 +90,13 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 }
             }
         } else {
-            Set<SocketAddress> intersection = new HashSet<SocketAddress>(addresses);
+            Set<SocketAddress> intersection = new HashSet<>(addresses);
             intersection.retainAll(sockets.keySet());
 
-            Set<SocketAddress> toClose = new HashSet<SocketAddress>(sockets.keySet());
+            Set<SocketAddress> toClose = new HashSet<>(sockets.keySet());
             toClose.removeAll(addresses);
 
-            Set<SocketAddress> toAdd = new HashSet<SocketAddress>(addresses);
+            Set<SocketAddress> toAdd = new HashSet<>(addresses);
             toAdd.removeAll(sockets.keySet());
 
             try {

@@ -52,8 +52,8 @@ public class TopologicalSorterImpl<T> implements TopologicalSorter<T> {
 
     public List<Vertex<T>> sort(DirectedGraph<T> dag) throws CycleException {
         // perform the sort over the entire graph, calculating roots and references for all children
-        Map<Vertex<T>, AtomicInteger> vertexMap = new HashMap<Vertex<T>, AtomicInteger>();
-        List<Vertex<T>> roots = new ArrayList<Vertex<T>>();
+        Map<Vertex<T>, AtomicInteger> vertexMap = new HashMap<>();
+        List<Vertex<T>> roots = new ArrayList<>();
         // first pass over the graph to collect vertex references and root vertices
         Set<Vertex<T>> vertices = dag.getVertices();
         for (Vertex<T> v : vertices) {
@@ -74,8 +74,8 @@ public class TopologicalSorterImpl<T> implements TopologicalSorter<T> {
     public List<Vertex<T>> sort(DirectedGraph<T> dag, Vertex<T> start) throws CycleException {
         // perform the sort over the subgraph graph formed from the given vertex, calculating roots and references
         // for its children
-        DepthFirstTraverser<T> dfs = new DepthFirstTraverserImpl<T>();
-        Map<Vertex<T>, AtomicInteger> vertexMap = new HashMap<Vertex<T>, AtomicInteger>();
+        DepthFirstTraverser<T> dfs = new DepthFirstTraverserImpl<>();
+        Map<Vertex<T>, AtomicInteger> vertexMap = new HashMap<>();
         List<Vertex<T>> vertices = dfs.traverse(dag, start);
         for (Vertex<T> v : vertices) {
             List<Vertex<T>> outgoing = dag.getOutgoingAdjacentVertices(v);
@@ -89,7 +89,7 @@ public class TopologicalSorterImpl<T> implements TopologicalSorter<T> {
             }
         }
 
-        List<Vertex<T>> roots = new ArrayList<Vertex<T>>();
+        List<Vertex<T>> roots = new ArrayList<>();
         roots.add(start);
         // perform the sort
         return sort(dag, vertexMap, roots);
@@ -117,7 +117,7 @@ public class TopologicalSorterImpl<T> implements TopologicalSorter<T> {
      * @throws CycleException if a cycle is detected
      */
     private List<Vertex<T>> sort(DirectedGraph<T> dag, Map<Vertex<T>, AtomicInteger> vertices, List<Vertex<T>> roots) throws CycleException {
-        List<Vertex<T>> visited = new ArrayList<Vertex<T>>();
+        List<Vertex<T>> visited = new ArrayList<>();
         int num = vertices.size() + roots.size();
         while (!roots.isEmpty()) {
             Vertex<T> v = roots.remove(roots.size() - 1);

@@ -117,7 +117,7 @@ public class DomainTestCaseHelper {
         composite.setContributionUri(contribution.getUri());
 
         QNameSymbol symbol = new QNameSymbol(DEPLOYABLE);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         Resource resource = new Resource(contribution, null, "jar");
         element.setResource(resource);
 

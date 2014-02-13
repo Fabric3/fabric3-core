@@ -65,7 +65,7 @@ public class DefinitionsIndexerTestCase extends TestCase {
 
     private DefinitionsIndexer loader;
     private XMLStreamReader reader;
-    private Set<QName> qNames = new HashSet<QName>();
+    private Set<QName> qNames = new HashSet<>();
 
     @SuppressWarnings({"SuspiciousMethodCalls"})
     public void testIndex() throws Exception {

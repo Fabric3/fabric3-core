@@ -105,11 +105,11 @@ public class DefaultFabric implements Fabric {
 
     private Domain domain;
 
-    private Set<String> extensions = new HashSet<String>();
-    private Set<URL> profileLocations = new HashSet<URL>();
-    private Set<String> profiles = new HashSet<String>();
-    private Set<URL> extensionLocations = new HashSet<URL>();
-    private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+    private Set<String> extensions = new HashSet<>();
+    private Set<URL> profileLocations = new HashSet<>();
+    private Set<String> profiles = new HashSet<>();
+    private Set<URL> extensionLocations = new HashSet<>();
+    private List<ComponentRegistration> registrations = new ArrayList<>();
 
     private FabricServletHost host;
 
@@ -388,8 +388,8 @@ public class DefaultFabric implements Fabric {
                 throw new ScanException("Core extension archive not found");
             }
 
-            List<ContributionSource> sources = new ArrayList<ContributionSource>();
-            List<File> extensionsFiles = new ArrayList<File>();
+            List<ContributionSource> sources = new ArrayList<>();
+            List<File> extensionsFiles = new ArrayList<>();
 
             for (File extension : archives) {
                 // if profiles and/or extensions are explicitly configured, only load the core Fabric extensions and ignore all other extensions/profiles on
@@ -446,7 +446,7 @@ public class DefaultFabric implements Fabric {
      */
     private List<File> scanClasspathForProfileArchives() throws IOException {
         Enumeration<URL> manifests = getClass().getClassLoader().getResources("extensions/F3-MANIFEST.MF");
-        List<File> extensionFiles = new ArrayList<File>();
+        List<File> extensionFiles = new ArrayList<>();
         while (manifests.hasMoreElements()) {
             // determine the containing archive name by removing the jar:file: protocol prefix and the manifest suffix
             URL manifest = manifests.nextElement();

@@ -61,10 +61,10 @@ public class ConfigurationBuilder {
     private Map<String, ConnectionFactoryConfigurationParser> parsers = Collections.emptyMap();
     private Map<String, DefaultConnectionFactoryBuilder> defaultBuilders = Collections.emptyMap();
 
-    private List<ConnectionFactoryConfiguration> factoryConfigurations = new ArrayList<ConnectionFactoryConfiguration>();
-    private List<ConnectionFactoryConfiguration> templateConfigurations = new ArrayList<ConnectionFactoryConfiguration>();
+    private List<ConnectionFactoryConfiguration> factoryConfigurations = new ArrayList<>();
+    private List<ConnectionFactoryConfiguration> templateConfigurations = new ArrayList<>();
 
-    private List<ConnectionFactory> factories = new ArrayList<ConnectionFactory>();
+    private List<ConnectionFactory> factories = new ArrayList<>();
 
     public ConfigurationBuilder(@Reference ConnectionFactoryTemplateRegistry templateRegistry,
                                 @Reference ConnectionFactoryCreatorRegistry creatorRegistry,

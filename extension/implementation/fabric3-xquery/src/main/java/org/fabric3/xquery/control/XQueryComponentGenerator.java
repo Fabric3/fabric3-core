@@ -109,12 +109,12 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     private void refineServiceContracts(LogicalComponent<XQueryImplementation> component, XQueryComponentDefinition physical) {
-        Map<String, List<QName>> serviceFunctions = new HashMap<String, List<QName>>();
-        Map<String, List<QName>> referenceFunctions = new HashMap<String, List<QName>>();
-        Map<String, List<QName>> callbackFunctions = new HashMap<String, List<QName>>();
+        Map<String, List<QName>> serviceFunctions = new HashMap<>();
+        Map<String, List<QName>> referenceFunctions = new HashMap<>();
+        Map<String, List<QName>> callbackFunctions = new HashMap<>();
         //Map<String, List<QName>> referenceCallbackFunctions = new HashMap<String, List<QName>>();
-        Map<String, ServiceContract> references = new HashMap<String, ServiceContract>();
-        Map<String, ServiceContract> services = new HashMap<String, ServiceContract>();
+        Map<String, ServiceContract> references = new HashMap<>();
+        Map<String, ServiceContract> services = new HashMap<>();
 
         //TODO need to find a more optimal way to dynamically override service contracts
         //This builds up a map of service and reference service contracts to be used in case
@@ -198,7 +198,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
             }
         }
 
-        Map<String, QName> properties = new HashMap<String, QName>();
+        Map<String, QName> properties = new HashMap<>();
         ComponentDefinition<XQueryImplementation> definition = component.getDefinition();
         for (Map.Entry<String, Property> entry : definition.getImplementation().getComponentType().getProperties().entrySet()) {
             if (entry.getValue() instanceof XQueryProperty) {
@@ -210,7 +210,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     private void addFunctions(String name, XQueryServiceContract contract, Map<String, List<QName>> mappings) {
-        List<QName> functions = new ArrayList<QName>();
+        List<QName> functions = new ArrayList<>();
         mappings.put(name, functions);
         for (Operation o : contract.getOperations()) {
             QName functionName = new QName(contract.getQname().getNamespaceURI(), o.getName(), contract.getQname().getPrefix());

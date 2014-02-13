@@ -101,7 +101,7 @@ public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorR
         DefaultMonitorDestinationDefinition destinationDefinition = new DefaultMonitorDestinationDefinition();
         definition.setDestinationDefinition(destinationDefinition);
 
-        Set<String> definedTypes = new HashSet<String>();
+        Set<String> definedTypes = new HashSet<>();
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:

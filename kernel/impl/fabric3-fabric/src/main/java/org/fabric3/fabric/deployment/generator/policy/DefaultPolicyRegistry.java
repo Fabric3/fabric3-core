@@ -71,7 +71,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
 
     private MetaDataStore metaDataStore;
     private Map<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>> cache
-            = new ConcurrentHashMap<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>>();
+            = new ConcurrentHashMap<>();
 
     /**
      * Initializes the cache.
@@ -92,7 +92,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
 
     public Set<PolicySet> getExternalAttachmentPolicies() {
         Map<QName, PolicySet> subCache = getSubCache(PolicySet.class);
-        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        Set<PolicySet> policySets = new HashSet<>();
         for (PolicySet policySet : subCache.values()) {
             if (policySet.getAttachTo() != null) {
                 policySets.add(policySet);
@@ -110,7 +110,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         if (subCache == null) {
             return Collections.emptySet();
         }
-        Set<D> set = new HashSet<D>();
+        Set<D> set = new HashSet<>();
         for (D value : subCache.values()) {
             if (names.contains(value.getName())) {
                 set.add(value);
@@ -121,9 +121,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
 
     public Set<PolicySet> activateDefinitions(URI uri) throws PolicyActivationException {
         Contribution contribution = metaDataStore.find(uri);
-        Set<Intent> intents = new HashSet<Intent>();
-        Set<PolicySet> policySets = new HashSet<PolicySet>();
-        Set<PolicySet> attachedPolicySets = new HashSet<PolicySet>();
+        Set<Intent> intents = new HashSet<>();
+        Set<PolicySet> policySets = new HashSet<>();
+        Set<PolicySet> attachedPolicySets = new HashSet<>();
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
                 Object value = resourceElement.getValue();
@@ -156,7 +156,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
     }
 
     public Set<PolicySet> deactivateDefinitions(URI uri) throws PolicyActivationException {
-        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        Set<PolicySet> policySets = new HashSet<>();
         Contribution contribution = metaDataStore.find(uri);
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
@@ -306,7 +306,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
     private <D extends AbstractPolicyDefinition> Map<QName, D> getSubCache(Class<D> definitionClass) {
         Map<QName, D> map = (Map<QName, D>) cache.get(definitionClass);
         if (map == null) {
-            map = new HashMap<QName, D>();
+            map = new HashMap<>();
             cache.put(definitionClass, map);
         }
         return map;

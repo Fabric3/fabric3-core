@@ -72,7 +72,7 @@ import org.w3c.dom.Node;
  * parameter types, avoiding JAXB deserialization.
  */
 public class DocumentInvoker extends Invoker {
-    private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();
+    private Map<String, InvocationChain> chains = new HashMap<>();
     private MessageFactory factory;
 
     /**

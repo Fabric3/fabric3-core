@@ -123,7 +123,7 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
                 }
                 String externalForm = resource.toExternalForm();
 
-                List<Source> sources = new ArrayList<Source>();
+                List<Source> sources = new ArrayList<>();
                 for (int i = 1; i < contextLocations.size(); i++) {
                     sources.add(new UrlSource(new URL("jar:" + externalForm + contextLocations.get(i))));
                 }
@@ -149,8 +149,8 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
                 return implementation;
             }
             try {
-                contextLocations = new ArrayList<String>();
-                List<Source> sources = new ArrayList<Source>();
+                contextLocations = new ArrayList<>();
+                List<Source> sources = new ArrayList<>();
                 for (File file : files) {
                     contextLocations.add(file.getName());
                 }

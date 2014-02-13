@@ -50,7 +50,7 @@ public final class BootExports {
 
     static {
 
-        BOOT_EXPORTS = new HashMap<String, String>();
+        BOOT_EXPORTS = new HashMap<>();
 
         // Fabric3 packages
         BOOT_EXPORTS.put("org.fabric3.api", Names.VERSION);

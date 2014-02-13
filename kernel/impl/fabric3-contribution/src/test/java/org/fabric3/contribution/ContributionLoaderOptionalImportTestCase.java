@@ -138,7 +138,7 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
     private void setupGenerators() {
         ClassLoaderWireGenerator javaGenerator = new JavaContributionWireGenerator();
         ClassLoaderWireGenerator locationGenerator = new LocationContributionWireGenerator();
-        generators = new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
+        generators = new HashMap<>();
         generators.put(JavaContributionWire.class, javaGenerator);
         generators.put(LocationContributionWire.class, locationGenerator);
     }

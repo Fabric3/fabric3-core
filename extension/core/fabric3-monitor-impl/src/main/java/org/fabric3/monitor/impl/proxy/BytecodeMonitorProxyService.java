@@ -152,7 +152,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         int destinationIndex = router.getDestinationIndex(destination);
         ClassLoader loader = type.getClassLoader();
 
-        Map<Method, DispatchInfo> levels = new LinkedHashMap<Method, DispatchInfo>();
+        Map<Method, DispatchInfo> levels = new LinkedHashMap<>();
         Method[] methods = type.getMethods();
         for (Method method : methods) {
             DispatchInfo info = createDispatchInfo(type, loader, method);

@@ -49,7 +49,7 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 public class ListMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<List<ObjectFactory<?>>> {
 
     public List<Object> getInstance() throws ObjectCreationException {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         for (ObjectFactory<?> factory : factories) {
             list.add(factory.getInstance());
         }

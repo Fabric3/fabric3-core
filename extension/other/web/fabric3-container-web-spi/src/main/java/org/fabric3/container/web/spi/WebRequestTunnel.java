@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * container .
  */
 public final class WebRequestTunnel {
-    private static final ThreadLocal<HttpServletRequest> REQUEST = new ThreadLocal<HttpServletRequest>();
+    private static final ThreadLocal<HttpServletRequest> REQUEST = new ThreadLocal<>();
 
     private WebRequestTunnel() {
     }

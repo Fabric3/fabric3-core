@@ -66,7 +66,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class JUnitServiceHeuristic implements HeuristicProcessor {
     private static final String TEST_SERVICE_NAME = "testService";
     private static final List<DataType<?>> INPUT_TYPE = Collections.emptyList();
-    private static final JavaClass<Void> OUTPUT_TYPE = new JavaClass<Void>(void.class);
+    private static final JavaClass<Void> OUTPUT_TYPE = new JavaClass<>(void.class);
     private static final List<DataType<?>> FAULT_TYPE = Collections.emptyList();
 
     private IntrospectionHelper helper;
@@ -115,7 +115,7 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
     }
 
     private JavaServiceContract generateTestContract(Class<?> implClass) {
-        List<Operation> operations = new ArrayList<Operation>();
+        List<Operation> operations = new ArrayList<>();
         for (Method method : implClass.getMethods()) {
             // see if this is a test method
             if (Modifier.isStatic(method.getModifiers())) {

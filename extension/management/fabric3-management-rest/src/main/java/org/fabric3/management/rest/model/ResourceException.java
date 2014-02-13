@@ -114,7 +114,7 @@ public class ResourceException extends Fabric3Exception {
      */
     public void addHeader(String name, String value) {
         if (headers == null) {
-            headers = new HashMap<String, String>();
+            headers = new HashMap<>();
         }
         headers.put(name, value);
     }

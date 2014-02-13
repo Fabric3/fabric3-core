@@ -146,7 +146,7 @@ public class SnapshotHelperTestCase extends TestCase {
         ComponentType componentType = new ComponentType();
         componentType.add(serviceDefinition);
         componentImpl.setComponentType(componentType);
-        ComponentDefinition<RemoteImplementation> componentDefinition = new ComponentDefinition<RemoteImplementation>("domain", componentImpl);
+        ComponentDefinition<RemoteImplementation> componentDefinition = new ComponentDefinition<>("domain", componentImpl);
         component = new LogicalComponent(URI.create("component"), componentDefinition, null);
         componentDefinition.setContributionUri(URI.create("contribution"));
         LogicalService componentService = new LogicalService(URI.create("componentService"), serviceDefinition, component);
@@ -156,7 +156,7 @@ public class SnapshotHelperTestCase extends TestCase {
         // composite.add(serviceDefinition);
         CompositeImplementation domainImpl = new CompositeImplementation();
         domainImpl.setComponentType(composite);
-        ComponentDefinition<CompositeImplementation> domainDefinition = new ComponentDefinition<CompositeImplementation>("domain", domainImpl);
+        ComponentDefinition<CompositeImplementation> domainDefinition = new ComponentDefinition<>("domain", domainImpl);
         domain = new LogicalCompositeComponent(URI.create("domain"), domainDefinition, null);
         domain.addComponent(component);
 

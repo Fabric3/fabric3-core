@@ -138,7 +138,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
         instantiator = new AbstractComponentInstantiator() {
         };
 
-        domain = new LogicalComponent<CompositeImplementation>(URI.create("fabric3://domain"), null, null);
+        domain = new LogicalComponent<>(URI.create("fabric3://domain"), null, null);
         property = FACTORY.newDocumentBuilder().newDocument();
         Element root = property.createElement("values");
         property.appendChild(root);

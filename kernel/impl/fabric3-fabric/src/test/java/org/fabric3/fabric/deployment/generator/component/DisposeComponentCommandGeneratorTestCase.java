@@ -74,8 +74,8 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
         DisposeComponentCommandGenerator generator = new DisposeComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.MARKED);
 
         DisposeComponentCommand command = generator.generate(component, true);
@@ -90,8 +90,8 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
         DisposeComponentCommandGenerator generator = new DisposeComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
         assertNull(generator.generate(component, true));
         EasyMock.verify(registry);
@@ -107,8 +107,8 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
         DisposeComponentCommandGenerator generator = new DisposeComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.MARKED);
  
         DisposeComponentCommand command = generator.generate(component, false);

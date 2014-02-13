@@ -84,7 +84,7 @@ public class MBeanServerWrapper implements MBeanServer {
     private static final String DOMAIN = "fabric3";
     private String brokerName;
     private MBeanServer delegate;
-    Map<ObjectName, ObjectName> mappings = new ConcurrentHashMap<ObjectName, ObjectName>();
+    Map<ObjectName, ObjectName> mappings = new ConcurrentHashMap<>();
 
     public MBeanServerWrapper(String brokerName, MBeanServer delegate) {
         this.brokerName = brokerName.replace(":", ".");

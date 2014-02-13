@@ -51,7 +51,7 @@ import org.fabric3.spi.transform.TransformationException;
  *
  */
 public class Property2ClassTransformer implements SingleTypeTransformer<Node, Class<?>> {
-    private static final JavaClass<Class> TARGET = new JavaClass<Class>(Class.class);
+    private static final JavaClass<Class> TARGET = new JavaClass<>(Class.class);
 
     private final ClassLoaderRegistry classLoaderRegistry;
 

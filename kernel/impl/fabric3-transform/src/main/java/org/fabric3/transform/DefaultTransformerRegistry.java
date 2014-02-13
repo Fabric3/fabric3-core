@@ -64,10 +64,10 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
     };
 
     // cache of single type transformers
-    private Map<Key, SingleTypeTransformer<?, ?>> transformers = new HashMap<Key, SingleTypeTransformer<?, ?>>();
+    private Map<Key, SingleTypeTransformer<?, ?>> transformers = new HashMap<>();
 
     // cache of transformer factories
-    private List<TransformerFactory> factories = new ArrayList<TransformerFactory>();
+    private List<TransformerFactory> factories = new ArrayList<>();
 
     @Reference(required = false)
     public void setTransformers(List<SingleTypeTransformer<?, ?>> transformers) {
@@ -79,7 +79,7 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
 
     @Reference(required = false)
     public void setFactories(List<TransformerFactory> factories) {
-        List<TransformerFactory> sorted = new ArrayList<TransformerFactory>(factories);
+        List<TransformerFactory> sorted = new ArrayList<>(factories);
         Collections.sort(sorted, COMPARATOR);
         this.factories = sorted;
     }

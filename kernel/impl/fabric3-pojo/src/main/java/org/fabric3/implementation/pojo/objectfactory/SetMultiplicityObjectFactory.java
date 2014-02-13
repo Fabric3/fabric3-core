@@ -49,7 +49,7 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 public class SetMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<Set<ObjectFactory<?>>> {
 
     public Set<Object> getInstance() throws ObjectCreationException {
-        Set<Object> set = new LinkedHashSet<Object>();
+        Set<Object> set = new LinkedHashSet<>();
         for (ObjectFactory<?> factory : factories) {
             set.add(factory.getInstance());
         }

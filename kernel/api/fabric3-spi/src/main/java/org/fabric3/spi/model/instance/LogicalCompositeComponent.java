@@ -54,10 +54,10 @@ import org.fabric3.api.model.type.component.CompositeImplementation;
 public class LogicalCompositeComponent extends LogicalComponent<CompositeImplementation> {
     private static final long serialVersionUID = 6661201121307925462L;
 
-    private Map<LogicalReference, List<LogicalWire>> wires = new HashMap<LogicalReference, List<LogicalWire>>();
-    private Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
-    private Map<URI, LogicalChannel> channels = new HashMap<URI, LogicalChannel>();
-    private List<LogicalResource<?>> resources = new ArrayList<LogicalResource<?>>();
+    private Map<LogicalReference, List<LogicalWire>> wires = new HashMap<>();
+    private Map<URI, LogicalComponent<?>> components = new HashMap<>();
+    private Map<URI, LogicalChannel> channels = new HashMap<>();
+    private List<LogicalResource<?>> resources = new ArrayList<>();
 
     /**
      * Instantiates a composite component.
@@ -79,7 +79,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     public void addWire(LogicalReference logicalReference, LogicalWire logicalWire) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
-            logicalWires = new ArrayList<LogicalWire>();
+            logicalWires = new ArrayList<>();
             wires.put(logicalReference, logicalWires);
         }
         logicalWires.add(logicalWire);
@@ -94,7 +94,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     public void addWires(LogicalReference logicalReference, List<LogicalWire> newWires) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
-            logicalWires = new ArrayList<LogicalWire>();
+            logicalWires = new ArrayList<>();
             wires.put(logicalReference, logicalWires);
         }
         logicalWires.addAll(newWires);

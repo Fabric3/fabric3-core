@@ -92,8 +92,8 @@ import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
  */
 @Service(ZeroMQWireBroker.class)
 public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySender, Fabric3EventListener<RuntimeStop> {
-    private static final DataType BYTE_TYPE = new JavaClass<byte[]>(byte[].class);
-    private static final DataType EMPTY_TYPE = new JavaClass<Void>(Void.class);
+    private static final DataType BYTE_TYPE = new JavaClass<>(byte[].class);
+    private static final DataType EMPTY_TYPE = new JavaClass<>(Void.class);
     List<DataType<?>> TRANSPORT_TYPES;   // the transport type is a byte array
 
     private static final String ZMQ = "zmq";
@@ -111,8 +111,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private String host;
     private String hostAddress;
 
-    private Map<String, SenderHolder> senders = new HashMap<String, SenderHolder>();
-    private Map<String, Receiver> receivers = new HashMap<String, Receiver>();
+    private Map<String, SenderHolder> senders = new HashMap<>();
+    private Map<String, Receiver> receivers = new HashMap<>();
 
     public ZeroMQWireBrokerImpl(@Reference ContextManager manager,
                                 @Reference AddressCache addressCache,
@@ -133,7 +133,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         this.info = info;
         this.monitor = monitor;
         this.host = InetAddress.getLocalHost().getHostAddress();
-        TRANSPORT_TYPES = new ArrayList<DataType<?>>();
+        TRANSPORT_TYPES = new ArrayList<>();
         TRANSPORT_TYPES.add(BYTE_TYPE);
         this.hostAddress = InetAddress.getLocalHost().getHostAddress();
     }
@@ -341,7 +341,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     private SenderHolder createSender(String endpointId, boolean oneWay, ZeroMQMetadata metadata) {
-        List<SocketAddress> addresses = new ArrayList<SocketAddress>();
+        List<SocketAddress> addresses = new ArrayList<>();
         boolean refresh;
         if (metadata.getSocketAddresses() != null) {
             // service addresses to connect to are explicitly configured in the binding definition
@@ -413,7 +413,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     @SuppressWarnings({"unchecked"})
     private List<DataType<?>> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws BrokerException {
         try {
-            List<DataType<?>> dataTypes = new ArrayList<DataType<?>>();
+            List<DataType<?>> dataTypes = new ArrayList<>();
             if (physicalOperation.getSourceParameterTypes().isEmpty()) {
                 // no params
                 dataTypes.add(EMPTY_TYPE);
@@ -454,7 +454,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
 
         private SenderHolder(Sender sender) {
             this.sender = sender;
-            ids = new ArrayList<String>();
+            ids = new ArrayList<>();
         }
 
         public Sender getSender() {

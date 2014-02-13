@@ -83,7 +83,7 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
             }
             Class<?> type = typeInfos.get(0).getRawType();
 
-            List<Class<?>> types = new ArrayList<Class<?>>();
+            List<Class<?>> types = new ArrayList<>();
             types.add(type);
 
             Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(type), types);
@@ -95,7 +95,7 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
                 T val = (T) transformer.transform(node, classLoader);
                 collection.add(val);
             }
-            return new SingletonObjectFactory<Collection<T>>(collection);
+            return new SingletonObjectFactory<>(collection);
         } catch (TransformationException e) {
             throw new PropertyTransformException("Unable to transform property value: " + name, e);
         }

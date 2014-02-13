@@ -227,7 +227,7 @@ public class DistributedDomainVMTestCase extends TestCase {
         EasyMock.expectLastCall().times(2);
 
         PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
-        Set<PolicySet> set = new HashSet<PolicySet>();
+        Set<PolicySet> set = new HashSet<>();
         set.add(new PolicySet(new QName("foo", "bar"), null, null, null, null, null, null, null));
         EasyMock.expect(policyRegistry.activateDefinitions(CONTRIBUTION_URI)).andReturn(set);
         EasyMock.expect(policyRegistry.deactivateDefinitions(CONTRIBUTION_URI)).andReturn(set);
@@ -256,7 +256,7 @@ public class DistributedDomainVMTestCase extends TestCase {
         EasyMock.expectLastCall().andThrow(new DeploymentException());
 
         PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
-        Set<PolicySet> set = new HashSet<PolicySet>();
+        Set<PolicySet> set = new HashSet<>();
         set.add(new PolicySet(new QName("foo", "bar"), null, null, null, null, null, null, null));
         EasyMock.expect(policyRegistry.activateDefinitions(CONTRIBUTION_URI)).andReturn(set);
         domain.setPolicyRegistry(policyRegistry);

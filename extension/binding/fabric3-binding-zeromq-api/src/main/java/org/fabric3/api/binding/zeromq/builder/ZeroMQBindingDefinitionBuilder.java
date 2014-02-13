@@ -78,7 +78,7 @@ public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
 
     public ZeroMQBindingDefinition address(List<String> addresses) {
         checkState();
-        List<SocketAddressDefinition> list = new ArrayList<SocketAddressDefinition>();
+        List<SocketAddressDefinition> list = new ArrayList<>();
         for (String address : addresses) {
             list.add(new SocketAddressDefinition(address));
         }

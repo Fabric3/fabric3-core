@@ -86,7 +86,7 @@ public class FileSystemReceiver implements Runnable {
     private ServiceAdapter adapter;
     private ReceiverMonitor monitor;
 
-    private Map<String, FileEntry> cache = new ConcurrentHashMap<String, FileEntry>();
+    private Map<String, FileEntry> cache = new ConcurrentHashMap<>();
     private ScheduledFuture<?> future;
 
     public FileSystemReceiver(ReceiverConfiguration configuration) {
@@ -118,7 +118,7 @@ public class FileSystemReceiver implements Runnable {
     }
 
     public synchronized void run() {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         if (!location.isDirectory()) {
             // there is no drop directory, return without processing
             return;

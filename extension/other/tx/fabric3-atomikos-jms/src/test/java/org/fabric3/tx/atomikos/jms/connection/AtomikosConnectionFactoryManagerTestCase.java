@@ -67,7 +67,7 @@ public class AtomikosConnectionFactoryManagerTestCase extends TestCase {
 
         AtomikosConnectionFactoryManager manager = new AtomikosConnectionFactoryManager(managementService);
 
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put("borrow.timeout", "10000");
         properties.put("maintenance.interval", "10000");
         properties.put("max.idle", "10000");

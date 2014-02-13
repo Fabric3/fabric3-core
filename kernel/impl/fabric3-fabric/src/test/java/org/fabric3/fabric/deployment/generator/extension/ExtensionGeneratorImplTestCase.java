@@ -171,16 +171,16 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         type.addRequiredCapability("componentCapability");
         MockImplementation implementation = new MockImplementation();
         implementation.setComponentType(type);
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("test", implementation);
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("test", implementation);
         URI uri = URI.create("test");
-        LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(uri, definition, null);
+        LogicalComponent<MockImplementation> component = new LogicalComponent<>(uri, definition, null);
         component.setZone("zone1");
 
         ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         LogicalReference reference = new LogicalReference(URI.create("test#reference"), referenceDefinition, component);
         MockBinding bindingDefinition = new MockBinding();
         bindingDefinition.addRequiredCapability("bindingCapability");
-        LogicalBinding binding = new LogicalBinding<MockBinding>(bindingDefinition, reference);
+        LogicalBinding binding = new LogicalBinding<>(bindingDefinition, reference);
         reference.addBinding(binding);
         component.addReference(reference);
 
@@ -189,13 +189,13 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         service.addBinding(binding);
         component.addService(service);
 
-        components = new ArrayList<LogicalComponent<?>>();
+        components = new ArrayList<>();
         components.add(component);
     }
 
     private Map<String, List<CompensatableCommand>> createDeploymentCommands(URI interceptorExtensionUri, boolean attach) {
-        Map<String, List<CompensatableCommand>> deploymentCommands = new HashMap<String, List<CompensatableCommand>>();
-        List<CompensatableCommand> zone1Commands = new ArrayList<CompensatableCommand>();
+        Map<String, List<CompensatableCommand>> deploymentCommands = new HashMap<>();
+        List<CompensatableCommand> zone1Commands = new ArrayList<>();
         deploymentCommands.put("zone1", zone1Commands);
         ConnectionCommand connectionCommand = new ConnectionCommand(URI.create("component"));
 

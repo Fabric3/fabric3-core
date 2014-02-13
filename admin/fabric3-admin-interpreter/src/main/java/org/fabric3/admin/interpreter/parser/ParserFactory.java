@@ -54,7 +54,7 @@ public class ParserFactory {
     }
 
     public static Map<String, CommandParser> createParsers(DomainConnection domainConnection, Interpreter interpreter, Settings settings) {
-        Map<String, CommandParser> parsers = new HashMap<String, CommandParser>();
+        Map<String, CommandParser> parsers = new HashMap<>();
         AuthCommandParser authenticateParser = new AuthCommandParser(domainConnection);
         parsers.put("au", authenticateParser);
         parsers.put("authenticate", authenticateParser);

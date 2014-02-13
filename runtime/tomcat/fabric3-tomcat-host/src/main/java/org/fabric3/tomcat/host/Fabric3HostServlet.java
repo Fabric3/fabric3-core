@@ -209,7 +209,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
-            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            List<ComponentRegistration> registrations = new ArrayList<>();
             ComponentRegistration registration = new ComponentRegistration("CatalinaService", Service.class, service, false);
             registrations.add(registration);
 

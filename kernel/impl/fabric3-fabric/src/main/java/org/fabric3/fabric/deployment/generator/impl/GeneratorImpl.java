@@ -276,7 +276,7 @@ public class GeneratorImpl implements Generator {
      * @return a sorted collection
      */
     private List<LogicalComponent<?>> topologicalSort(LogicalCompositeComponent domain) {
-        List<LogicalComponent<?>> sorted = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> sorted = new ArrayList<>();
         for (LogicalComponent<?> component : domain.getComponents()) {
             sorted.add(component);
             if (component instanceof LogicalCompositeComponent) {
@@ -309,7 +309,7 @@ public class GeneratorImpl implements Generator {
                 return first.getOrder() - second.getOrder();
             }
         };
-        List<CommandGenerator> sorted = new ArrayList<CommandGenerator>(commandGenerators);
+        List<CommandGenerator> sorted = new ArrayList<>(commandGenerators);
         Collections.sort(sorted, generatorComparator);
         return sorted;
     }

@@ -93,7 +93,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
     private static final Set<Class<?>> WRAPPERS;
 
     static {
-        WRAPPERS = new HashSet<Class<?>>();
+        WRAPPERS = new HashSet<>();
         WRAPPERS.add(Collection.class);
         WRAPPERS.add(List.class);
         WRAPPERS.add(Queue.class);
@@ -267,7 +267,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
     }
 
     public Set<Class<?>> getImplementedInterfaces(Class<?> type) {
-        Set<Class<?>> interfaces = new HashSet<Class<?>>();
+        Set<Class<?>> interfaces = new HashSet<>();
         while (type != null) {
             nextInterface:
             for (Class<?> current : type.getInterfaces()) {
@@ -285,7 +285,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
     public Set<Method> getInjectionMethods(Class<?> type, Collection<AbstractService> services) {
         Set<Signature> exclude = getOperations(services);
-        Set<Method> methods = new HashSet<Method>();
+        Set<Method> methods = new HashSet<>();
         while (type != null) {
             for (Method method : type.getDeclaredMethods()) {
                 // check method accessibility
@@ -333,13 +333,13 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
     }
 
     private Set<Signature> getOperations(Collection<AbstractService> services) {
-        Set<Signature> operations = new HashSet<Signature>();
+        Set<Signature> operations = new HashSet<>();
         for (AbstractService definition : services) {
             List<? extends Operation> ops = definition.getServiceContract().getOperations();
             for (Operation operation : ops) {
                 String name = operation.getName();
                 List<? extends DataType<?>> inputTypes = operation.getInputTypes();
-                List<String> paramTypes = new ArrayList<String>(inputTypes.size());
+                List<String> paramTypes = new ArrayList<>(inputTypes.size());
                 for (DataType<?> inputType : inputTypes) {
                     paramTypes.add(inputType.getPhysical().getName());
                 }
@@ -350,8 +350,8 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
     }
 
     public Set<Field> getInjectionFields(Class<?> type) {
-        Set<Field> fields = new HashSet<Field>();
-        Set<String> exclude = new HashSet<String>();
+        Set<Field> fields = new HashSet<>();
+        Set<String> exclude = new HashSet<>();
         while (type != null) {
             for (Field field : type.getDeclaredFields()) {
                 // check field accessibility
@@ -400,7 +400,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
             return createTypeInfo(actual, typeMapping);
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
-            List<JavaTypeInfo> infos = new ArrayList<JavaTypeInfo>();
+            List<JavaTypeInfo> infos = new ArrayList<>();
             for (Type arg : parameterizedType.getActualTypeArguments()) {
                 Type argActual = typeMapping.getActualType(arg);
                 JavaTypeInfo argInfo = createTypeInfo(argActual, typeMapping);
@@ -459,7 +459,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
         } else if (actualType instanceof Map) {
             // the map is not parameterized
-            return new JavaClass<Object>(Object.class);
+            return new JavaClass<>(Object.class);
         } else {
             throw new IllegalArgumentException("Type not a Map: " + type);
         }

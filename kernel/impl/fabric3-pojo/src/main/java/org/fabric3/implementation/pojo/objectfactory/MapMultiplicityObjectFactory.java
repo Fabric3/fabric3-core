@@ -48,13 +48,13 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
  * Returns a <code>Map</code> containing object instances.
  */
 public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<Map<?, ?>> {
-    private volatile Map<Object, ObjectFactory<?>> factories = new HashMap<Object, ObjectFactory<?>>();
+    private volatile Map<Object, ObjectFactory<?>> factories = new HashMap<>();
     private Map<Object, ObjectFactory<?>> temporaryFactories;
 
     private FactoryState state = FactoryState.UPDATED;
 
     public Map<Object, Object> getInstance() throws ObjectCreationException {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         for (Map.Entry<Object, ObjectFactory<?>> entry : factories.entrySet()) {
             map.put(entry.getKey(), entry.getValue().getInstance());
         }
@@ -81,7 +81,7 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
 
     public void startUpdate() {
         state = FactoryState.UPDATING;
-        temporaryFactories = new HashMap<Object, ObjectFactory<?>>();
+        temporaryFactories = new HashMap<>();
     }
 
     public void endUpdate() {

@@ -64,14 +64,14 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         SocketAddress address2 = createAddress(2);
         SocketAddress address3 = createAddress(3);
 
-        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        List<SocketAddress> list = new ArrayList<>();
         list.add(address1);
         list.add(address2);
         list.add(address3);
 
         multiplexer.update(list);
 
-        List<ZMQ.Socket> order = new ArrayList<ZMQ.Socket>();
+        List<ZMQ.Socket> order = new ArrayList<>();
         ZMQ.Socket next = multiplexer.get();
         order.add(next);
         next = multiplexer.get();
@@ -105,7 +105,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.replay(manager);
 
         SocketAddress address = createAddress(1);
-        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        List<SocketAddress> list = new ArrayList<>();
         list.add(address);
 
         multiplexer.update(list);
@@ -133,7 +133,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         SocketAddress address1 = createAddress(1);
         SocketAddress address2 = createAddress(2);
         SocketAddress address3 = createAddress(3);
-        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        List<SocketAddress> list = new ArrayList<>();
         list.add(address1);
         list.add(address2);
         list.add(address3);
@@ -145,7 +145,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         list.add(address4);
         multiplexer.update(list);
 
-        List<ZMQ.Socket> order = new ArrayList<ZMQ.Socket>();
+        List<ZMQ.Socket> order = new ArrayList<>();
         ZMQ.Socket next = multiplexer.get();
         order.add(next);
         next = multiplexer.get();
@@ -188,7 +188,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         SocketAddress address1 = createAddress(1);
         SocketAddress address2 = createAddress(2);
         SocketAddress address3 = createAddress(3);
-        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        List<SocketAddress> list = new ArrayList<>();
         list.add(address1);
         list.add(address2);
         list.add(address3);

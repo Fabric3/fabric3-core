@@ -88,7 +88,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         this.reinjectable = reinjectable;
         this.cl = cl;
         if (reinjectable) {
-            this.updatedInjectors = new HashSet<Injector<Object>>();
+            this.updatedInjectors = new HashSet<>();
         } else {
             this.updatedInjectors = null;
         }

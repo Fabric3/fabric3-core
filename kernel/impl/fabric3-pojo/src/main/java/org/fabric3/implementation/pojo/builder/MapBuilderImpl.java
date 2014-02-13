@@ -88,16 +88,16 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
                 throw new PropertyTransformException("Map properties must have a key and value type");
             }
             Class<?> keyType = typeInfos.get(0).getRawType();
-            List<Class<?>> keyTypes = new ArrayList<Class<?>>();
+            List<Class<?>> keyTypes = new ArrayList<>();
             keyTypes.add(keyType);
             Class<?> valueType = type.getLogical().getParameterTypesInfos().get(1).getRawType();
-            List<Class<?>> valueTypes = new ArrayList<Class<?>>();
+            List<Class<?>> valueTypes = new ArrayList<>();
             valueTypes.add(valueType);
 
             Transformer<Node, ?> keyTransformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(keyType), keyTypes);
             Transformer<Node, ?> valueTransformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(valueType), valueTypes);
 
-            Map<Object, Object> map = new HashMap<Object, Object>();
+            Map<Object, Object> map = new HashMap<>();
             Element root = value.getDocumentElement();
 
             Element topValue = normalizeValues(root);
@@ -147,7 +147,7 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
             }
         } else {
             // combine the multiple value elements
-            List<Element> entries = new ArrayList<Element>();
+            List<Element> entries = new ArrayList<>();
             for (int i = 0; i < nodes.getLength(); i++) {
                 if (nodes.item(i).getNodeName().equals("value")) {
                     entries.add((Element) nodes.item(i).getFirstChild());

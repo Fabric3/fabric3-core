@@ -54,7 +54,7 @@ import org.oasisopen.sca.annotation.Init;
 public class IMocksControlProxy implements IMocksControl {
 
     private IMocksControl delegate;
-    private Map<Class<?>, Object> mocks = new HashMap<Class<?>, Object>();
+    private Map<Class<?>, Object> mocks = new HashMap<>();
 
     @Init
     public void init() {

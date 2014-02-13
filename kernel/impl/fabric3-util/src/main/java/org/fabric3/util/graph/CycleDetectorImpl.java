@@ -49,7 +49,7 @@ public class CycleDetectorImpl<T> implements CycleDetector<T> {
     private DepthFirstTraverser<T> traverser;
 
     public CycleDetectorImpl() {
-        traverser = new DepthFirstTraverserImpl<T>();
+        traverser = new DepthFirstTraverserImpl<>();
     }
 
     public boolean hasCycles(DirectedGraph<T> graph) {
@@ -62,7 +62,7 @@ public class CycleDetectorImpl<T> implements CycleDetector<T> {
     }
 
     public DirectedGraph<T> findCycleSubgraph(DirectedGraph<T> graph) {
-        DirectedGraph<T> subGraph = new DirectedGraphImpl<T>();
+        DirectedGraph<T> subGraph = new DirectedGraphImpl<>();
         for (Edge<T> edge : graph.getEdges()) {
             if (isPath(graph, edge.getSink(), edge.getSource())) {
                 subGraph.add(edge);
@@ -72,13 +72,13 @@ public class CycleDetectorImpl<T> implements CycleDetector<T> {
     }
 
     public List<Cycle<T>> findCycles(DirectedGraph<T> graph) {
-        List<Cycle<T>> cycles = new ArrayList<Cycle<T>>();
+        List<Cycle<T>> cycles = new ArrayList<>();
         for (Edge<T> edge : graph.getEdges()) {
             List<Vertex<T>> path = getPath(graph, edge.getSink(), edge.getSource());
             if (!path.isEmpty()) {
                 Cycle<T> cycle = searchCycle(cycles, edge);
                 if (cycle == null) {
-                    cycle = new Cycle<T>();
+                    cycle = new Cycle<>();
                     cycle.setOriginPath(path);
                     cycles.add(cycle);
                 } else {

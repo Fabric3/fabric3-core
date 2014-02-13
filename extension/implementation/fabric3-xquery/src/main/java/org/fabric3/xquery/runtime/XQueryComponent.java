@@ -61,7 +61,7 @@ public abstract class XQueryComponent implements AtomicComponent {
     public XQueryComponent(URI uri, QName deployable) {
         this.uri = uri;
         this.deployable = deployable;
-        referenceFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
+        referenceFactories = new ConcurrentHashMap<>();
     }
 
     public URI getUri() {

@@ -57,7 +57,7 @@ public abstract class Implementation<T extends ComponentType> extends AbstractPo
     private static final long serialVersionUID = -6060603636927660850L;
 
     private T componentType;
-    private final Set<String> requiredCapabilities = new HashSet<String>();
+    private final Set<String> requiredCapabilities = new HashSet<>();
 
     protected Implementation() {
     }

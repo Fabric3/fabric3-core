@@ -116,7 +116,7 @@ public class ClassLoaderCommandGeneratorImplTestCase extends TestCase {
     }
 
     private Map<String, List<Contribution>> createContributions() {
-        Map<String, List<Contribution>> contributions = new HashMap<String, List<Contribution>>();
+        Map<String, List<Contribution>> contributions = new HashMap<>();
         Contribution contribution2 = new Contribution(CONTRIBUTION2);
         Contribution contribution1 = new Contribution(CONTRIBUTION1);
         contribution1.addWire(new MockContributionWire());
@@ -124,7 +124,7 @@ public class ClassLoaderCommandGeneratorImplTestCase extends TestCase {
         contribution1.addResolvedExtensionProvider(URI.create("extension"));
         contribution2.addResolvedExtensionProvider(URI.create("extension"));
 
-        List<Contribution> zone1 = new ArrayList<Contribution>();
+        List<Contribution> zone1 = new ArrayList<>();
         zone1.add(contribution2);
         zone1.add(contribution1);
         contributions.put("zone1", zone1);

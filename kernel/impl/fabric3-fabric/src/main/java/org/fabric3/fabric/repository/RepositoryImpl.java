@@ -69,7 +69,7 @@ public class RepositoryImpl implements Repository {
      * @param info the host info for the runtime
      */
     public RepositoryImpl(HostInfo info) {
-        archiveUriToUrl = new ConcurrentHashMap<URI, URL>();
+        archiveUriToUrl = new ConcurrentHashMap<>();
         runtimeDirectory = info.getRuntimeRepositoryDirectory();
         sharedDirectory = info.getExtensionsRepositoryDirectory();
         userDirectory = info.getUserRepositoryDirectory();
@@ -141,7 +141,7 @@ public class RepositoryImpl implements Repository {
     }
 
     public List<URI> list() {
-        return new ArrayList<URI>(archiveUriToUrl.keySet());
+        return new ArrayList<>(archiveUriToUrl.keySet());
     }
 
     /**

@@ -46,7 +46,7 @@ import org.fabric3.api.host.failure.AssemblyFailure;
  * A context used during logical component instantiation to record errors.
  */
 public class InstantiationContext {
-    private List<AssemblyFailure> errors = new ArrayList<AssemblyFailure>();
+    private List<AssemblyFailure> errors = new ArrayList<>();
 
     /**
      * Returns true if the instantiation operation detected any fatal errors.

@@ -87,7 +87,7 @@ public class ModuleClasspathProcessor implements ClasspathProcessor {
 
     public List<URL> process(URL url, List<Library> libraries) throws IOException {
         String file = url.getFile();
-        final List<URL> urls = new ArrayList<URL>(2);
+        final List<URL> urls = new ArrayList<>(2);
         File classesDir = new File(file, "classes");
         urls.add(classesDir.toURI().toURL());
         File testClassesDir = new File(file, "test-classes");

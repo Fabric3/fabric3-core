@@ -92,7 +92,7 @@ public class LogicalModelXPath extends BaseXPath {
         if (result instanceof LogicalComponent) {
             return result;
         } else if (result instanceof Collection) {
-            List<Object> newList = new ArrayList<Object>();
+            List<Object> newList = new ArrayList<>();
             for (Object member : ((Collection) result)) {
                 newList.add(member);
             }
@@ -110,7 +110,7 @@ public class LogicalModelXPath extends BaseXPath {
         }
 
         if (node instanceof List) {
-            List<Object> newList = new ArrayList<Object>();
+            List<Object> newList = new ArrayList<>();
 
             for (Object o : ((List) node)) {
                 newList.add(o);

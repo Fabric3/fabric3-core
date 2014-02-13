@@ -163,7 +163,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         continue;
                     }
                     String[] excludes = excludeAttr.split(",");
-                    List<Pattern> patterns = new ArrayList<Pattern>();
+                    List<Pattern> patterns = new ArrayList<>();
                     for (String exclude : excludes) {
                         patterns.add(Pattern.compile(exclude));
                     }
@@ -232,7 +232,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             runtimeModes = Deployable.DEFAULT_MODES;
         } else {
             String[] modes = modeAttr.trim().split(" ");
-            runtimeModes = new ArrayList<RuntimeMode>();
+            runtimeModes = new ArrayList<>();
             for (String mode : modes) {
                 if ("controller".equals(mode)) {
                     runtimeModes.add(RuntimeMode.CONTROLLER);

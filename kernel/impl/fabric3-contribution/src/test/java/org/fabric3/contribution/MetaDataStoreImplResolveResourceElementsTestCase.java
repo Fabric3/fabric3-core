@@ -83,7 +83,7 @@ public class MetaDataStoreImplResolveResourceElementsTestCase extends TestCase {
         super.setUp();
         store = new MetaDataStoreImpl(null);
         Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-                new HashMap<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>>();
+                new HashMap<>();
         instantiators.put(QNameImport.class, new QNameWireInstantiator());
         ContributionWireInstantiatorRegistryImpl instantiatorRegistry = new ContributionWireInstantiatorRegistryImpl();
         instantiatorRegistry.setInstantiators(instantiators);
@@ -120,7 +120,7 @@ public class MetaDataStoreImplResolveResourceElementsTestCase extends TestCase {
         Composite composite = new Composite(qName);
         Resource resource = new Resource(contribution, null, null);
         QNameSymbol symbol = new QNameSymbol(qName);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         element.setResource(resource);
         resource.addResourceElement(element);
         contribution.addResource(resource);

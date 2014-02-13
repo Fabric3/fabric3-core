@@ -63,7 +63,7 @@ public class ChannelInstantiatorImpl implements ChannelInstantiator {
             }
             LogicalChannel channel = new LogicalChannel(uri, definition, parent);
             for (BindingDefinition binding : definition.getBindings()) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, channel);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, channel);
                 channel.addBinding(logicalBinding);
             }
             channel.setDeployable(composite.getName());

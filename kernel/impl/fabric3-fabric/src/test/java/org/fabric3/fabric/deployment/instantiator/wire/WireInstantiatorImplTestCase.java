@@ -192,7 +192,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private LogicalComponent<?> createLogicalComponentWithBoundReference(Target serviceTarget) {
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("component", null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("component", null);
         LogicalCompositeComponent logicalComposite = new LogicalCompositeComponent(URI.create("composite"), definition, null);
         LogicalComponent<?> logicalComponent = new LogicalComponent(URI.create("composite/component"), definition, logicalComposite);
         logicalComposite.addComponent(logicalComponent);
@@ -200,7 +200,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
         createLogicalReference(logicalComponent, serviceTarget);
 
         LogicalService logicalService = createLogicalService("service", logicalComponent);
-        LogicalBinding<MockBinding> logicalBinding = new LogicalBinding<MockBinding>(new MockBinding(), logicalService);
+        LogicalBinding<MockBinding> logicalBinding = new LogicalBinding<>(new MockBinding(), logicalService);
         logicalService.addBinding(logicalBinding);
         logicalComponent.addService(logicalService);
 
@@ -209,7 +209,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private LogicalComponent<?> createLogicalComponent() {
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("component", null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("component", null);
         LogicalCompositeComponent logicalComposite = new LogicalCompositeComponent(URI.create("composite"), definition, null);
         LogicalComponent<?> logicalComponent = new LogicalComponent(URI.create("composite/component"), definition, logicalComposite);
         logicalComposite.addComponent(logicalComponent);
@@ -249,7 +249,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
     private LogicalCompositeComponent createLogicalComposite(Composite composite) {
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(composite);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("composite", implementation);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("composite", implementation);
         LogicalCompositeComponent logicalComposite = new LogicalCompositeComponent(URI.create("composite"), definition, null);
         for (ComponentDefinition component : composite.getComponents().values()) {
             String nameStr = composite.getName().getLocalPart() + "/" + component.getName();

@@ -116,7 +116,7 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
 
         domain.activateDefinitions(contributionUri);
 
-        List<AssemblyFailure> errors = new ArrayList<AssemblyFailure>();
+        List<AssemblyFailure> errors = new ArrayList<>();
         errors.add(new MockFailure());
         domain.include(COMPOSITE_NAME);
         EasyMock.expectLastCall().andThrow(new AssemblyException(errors));

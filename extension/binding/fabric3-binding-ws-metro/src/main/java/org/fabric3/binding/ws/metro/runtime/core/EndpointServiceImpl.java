@@ -70,7 +70,7 @@ public class EndpointServiceImpl implements EndpointService {
         this.executorService = executorService;
         this.monitor = monitor;
         this.servletHost = servletHost;
-        endpointUrls = new HashMap<URI, URL>();
+        endpointUrls = new HashMap<>();
     }
 
     @Init

@@ -61,7 +61,7 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
         if (msg == null) {
             return null;
         }
-        BroadcasterFuture<T> future = new BroadcasterFuture<T>(msg, this);
+        BroadcasterFuture<T> future = new BroadcasterFuture<>(msg, this);
         future.done();
         push(new Entry(msg, null, future, true));
         return cast(future);

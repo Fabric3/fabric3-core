@@ -85,7 +85,7 @@ public class DelegatingResourceClassLoader extends URLClassLoader {
         Enumeration[] resources = new Enumeration[2];
         resources[0] = getParent().getResources(name);
         resources[1] = findResources(name);
-        return new CompositeEnumeration<URL>(resources);
+        return new CompositeEnumeration<>(resources);
     }
 
     private void checkParent(ClassLoader parent) {

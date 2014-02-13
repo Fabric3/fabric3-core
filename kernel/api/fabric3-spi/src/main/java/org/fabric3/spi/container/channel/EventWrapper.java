@@ -76,7 +76,7 @@ public class EventWrapper implements Serializable {
     public <T> void cache(DataType<T> type, T representation) {
         synchronized (defaultEvent) {
             if (cache == null) {
-                cache = new ConcurrentHashMap<DataType<?>, Object>();
+                cache = new ConcurrentHashMap<>();
                 cache.put(type, defaultEvent);
             }
         }

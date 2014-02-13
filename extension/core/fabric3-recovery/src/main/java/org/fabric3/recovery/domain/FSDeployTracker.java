@@ -78,8 +78,8 @@ public class FSDeployTracker implements DeployListener {
     public FSDeployTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor DeployTrackerMonitor monitor) {
         this.monitor = monitor;
         this.outputFactory = factory.newOutputFactoryInstance();
-        this.contributions = new ArrayList<URI>();
-        this.deployables = new HashMap<QName, String>();
+        this.contributions = new ArrayList<>();
+        this.deployables = new HashMap<>();
         domainLog = new File(info.getDataDir(), "domain.xml");
     }
 

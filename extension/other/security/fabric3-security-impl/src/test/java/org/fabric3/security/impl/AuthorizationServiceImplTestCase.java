@@ -55,7 +55,7 @@ import org.fabric3.spi.security.NotAuthorizedException;
 public class AuthorizationServiceImplTestCase extends TestCase {
 
     public void testHasRole() throws Exception {
-        Set<Role> roles = new HashSet<Role>();
+        Set<Role> roles = new HashSet<>();
         roles.add(new Role("role1"));
         roles.add(new Role("role2"));
 
@@ -73,13 +73,13 @@ public class AuthorizationServiceImplTestCase extends TestCase {
     }
 
     public void testHasRoles() throws Exception {
-        Set<Role> roles = new HashSet<Role>();
+        Set<Role> roles = new HashSet<>();
         roles.add(new Role("role1"));
         roles.add(new Role("role2"));
 
         BasicSecuritySubject subject = new BasicSecuritySubject("foo", "bar", roles);
 
-        List<String> subjectRoles = new ArrayList<String>();
+        List<String> subjectRoles = new ArrayList<>();
         subjectRoles.add("role1");
         subjectRoles.add("role2");
         AuthorizationService service = new AuthorizationServiceImpl();

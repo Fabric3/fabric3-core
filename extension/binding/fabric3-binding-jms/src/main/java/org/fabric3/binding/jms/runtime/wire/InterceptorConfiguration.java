@@ -54,7 +54,7 @@ public class InterceptorConfiguration {
     private String jmsType;
     private long timeToLive = -1;
     private int priority = -1;
-    private Map<String, String> properties = new HashMap<String, String>();
+    private Map<String, String> properties = new HashMap<>();
 
     public InterceptorConfiguration(WireConfiguration wireConfiguration) {
         this.wireConfiguration = wireConfiguration;

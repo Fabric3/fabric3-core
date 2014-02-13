@@ -59,7 +59,7 @@ public class JndiContextDefinitionBuilder extends AbstractBuilder {
     }
 
     private JndiContextDefinitionBuilder() {
-        map = new HashMap<String, Properties>();
+        map = new HashMap<>();
     }
 
     public JndiContextDefinitionBuilder add(String name, Properties properties) {

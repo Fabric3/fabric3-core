@@ -91,7 +91,7 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
         QName qName = new QName(context.getTargetNamespace(), name);
         policySet.setName(qName);
 
-        Set<QName> provides = new HashSet<QName>();
+        Set<QName> provides = new HashSet<>();
         StringTokenizer tok = new StringTokenizer(policyElement.getAttribute("provides"));
         while (tok.hasMoreElements()) {
             try {
@@ -110,8 +110,8 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
         policySet.setAttachTo(attachTo);
 
         Element expression = null;
-        Set<IntentMap> intentMaps = new HashSet<IntentMap>();
-        Set<QName> policySetReferences = new HashSet<QName>();
+        Set<IntentMap> intentMaps = new HashSet<>();
+        Set<QName> policySetReferences = new HashSet<>();
         NodeList children = policyElement.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);

@@ -46,7 +46,7 @@ import org.fabric3.api.host.stream.Source;
  * Represents a resource in a contribution such as a WSDL document or composite.
  */
 public class Resource {
-    private List<ResourceElement<?, ?>> elements = new ArrayList<ResourceElement<?, ?>>();
+    private List<ResourceElement<?, ?>> elements = new ArrayList<>();
     private Source source;
     private String contentType;
     private Contribution contribution;

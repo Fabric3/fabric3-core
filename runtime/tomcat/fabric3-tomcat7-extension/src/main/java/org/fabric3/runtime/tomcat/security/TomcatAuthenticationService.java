@@ -93,7 +93,7 @@ public class TomcatAuthenticationService implements AuthenticationService {
                 Principal principal = realm.authenticate(username, password);
                 if (principal instanceof GenericPrincipal) {
                     GenericPrincipal generic = (GenericPrincipal) principal;
-                    Set<Role> roles = new HashSet<Role>();
+                    Set<Role> roles = new HashSet<>();
                     for (String name : generic.getRoles()) {
                         roles.add(new Role(name));
                     }

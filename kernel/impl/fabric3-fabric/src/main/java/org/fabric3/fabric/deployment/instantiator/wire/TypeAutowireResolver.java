@@ -63,7 +63,7 @@ public class TypeAutowireResolver implements AutowireResolver {
     }
 
     public List<LogicalService> resolve(LogicalReference logicalReference, ServiceContract contract, LogicalCompositeComponent composite) {
-        List<LogicalService> candidates = new ArrayList<LogicalService>();
+        List<LogicalService> candidates = new ArrayList<>();
         Multiplicity refMultiplicity = logicalReference.getDefinition().getMultiplicity();
         boolean multiplicity = Multiplicity.ZERO_N.equals(refMultiplicity) || Multiplicity.ONE_N.equals(refMultiplicity);
         for (LogicalComponent<?> child : composite.getComponents()) {

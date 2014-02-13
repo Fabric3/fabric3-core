@@ -133,7 +133,7 @@ public class TimerComponentDefinitionBuilder extends ComponentDefinitionBuilder<
         data.setType(type);
         implementation.setTimerData(data);
         implementation.setComponentType(componentType);
-        definition = new ComponentDefinition<TimerImplementation>(name);
+        definition = new ComponentDefinition<>(name);
         definition.setImplementation(implementation);
     }
 

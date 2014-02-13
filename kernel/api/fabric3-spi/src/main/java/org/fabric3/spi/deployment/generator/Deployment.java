@@ -59,7 +59,7 @@ import org.fabric3.spi.command.CompensatableCommand;
 public class Deployment {
     private String id;
 
-    private Map<String, DeploymentUnit> units = new HashMap<String, DeploymentUnit>();
+    private Map<String, DeploymentUnit> units = new HashMap<>();
 
     public Deployment(String id) {
         this.id = id;
@@ -122,7 +122,7 @@ public class Deployment {
     }
 
     public Map<String, List<CompensatableCommand>> getCommands() {
-        Map<String, List<CompensatableCommand>> ret = new HashMap<String, List<CompensatableCommand>>();
+        Map<String, List<CompensatableCommand>> ret = new HashMap<>();
         for (Map.Entry<String, DeploymentUnit> entry : units.entrySet()) {
             ret.put(entry.getKey(), entry.getValue().getCommands());
         }

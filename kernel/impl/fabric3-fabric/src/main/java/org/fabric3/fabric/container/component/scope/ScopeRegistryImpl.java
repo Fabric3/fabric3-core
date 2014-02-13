@@ -54,7 +54,7 @@ import org.fabric3.spi.container.component.ScopeRegistry;
  * The default implementation of a scope registry.
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
-    private final Map<String, ScopeContainer> scopes = new ConcurrentHashMap<String, ScopeContainer>();
+    private final Map<String, ScopeContainer> scopes = new ConcurrentHashMap<>();
 
     public void register(ScopeContainer container) {
         Scope scope = container.getScope();

@@ -67,7 +67,7 @@ public class OperationResolverImplTestCase extends TestCase {
         LogicalOperation operation1b = createOperation("op", String.class);
         LogicalOperation operation2 = createOperation("op", Integer.class);
 
-        List<LogicalOperation> targets = new ArrayList<LogicalOperation>();
+        List<LogicalOperation> targets = new ArrayList<>();
         targets.add(operation1b);
         targets.add(operation2);
 
@@ -80,7 +80,7 @@ public class OperationResolverImplTestCase extends TestCase {
         LogicalOperation operation1 = createOperation("op", String.class);
         LogicalOperation operation2 = createOperation("op", Integer.class);
 
-        List<LogicalOperation> targets = new ArrayList<LogicalOperation>();
+        List<LogicalOperation> targets = new ArrayList<>();
         targets.add(operation2);
 
         try {
@@ -98,26 +98,26 @@ public class OperationResolverImplTestCase extends TestCase {
         ((JavaType) operation1.getDefinition().getInputTypes().get(0)).setXsdType(STRING_QNAME);
         LogicalOperation operation1b = createXsdOperation("op");
 
-        List<LogicalOperation> targets = new ArrayList<LogicalOperation>();
+        List<LogicalOperation> targets = new ArrayList<>();
         targets.add(operation1b);
 
         assertSame(operation1b, resolver.resolve(operation1, targets));
     }
 
     private <T> LogicalOperation createOperation(String name, Class<T> inputType) {
-        List<DataType<?>> input = new ArrayList<DataType<?>>();
-        JavaClass<T> type = new JavaClass<T>(inputType);
+        List<DataType<?>> input = new ArrayList<>();
+        JavaClass<T> type = new JavaClass<>(inputType);
         input.add(type);
-        DataType<?> output = new JavaClass<String>(String.class);
-        List<DataType<?>> faults = new ArrayList<DataType<?>>();
-        faults.add(new JavaClass<Exception>(Exception.class));
+        DataType<?> output = new JavaClass<>(String.class);
+        List<DataType<?>> faults = new ArrayList<>();
+        faults.add(new JavaClass<>(Exception.class));
         Operation definition = new Operation(name, input, output, faults);
         return new LogicalOperation(definition, null);
     }
 
     private <T> LogicalOperation createXsdOperation(String name) {
         DataType<?> stringType = new XSDSimpleType(String.class, STRING_QNAME);
-        List<DataType<?>> input = new ArrayList<DataType<?>>();
+        List<DataType<?>> input = new ArrayList<>();
         input.add(stringType);
         Operation definition = new Operation(name, input, stringType, Collections.<DataType<?>>emptyList());
         return new LogicalOperation(definition, null);

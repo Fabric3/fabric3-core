@@ -55,14 +55,14 @@ public class ContributionManifest implements Serializable {
     private static final long serialVersionUID = -4968254313720890686L;
     private String description;
     private boolean extension;
-    private List<Export> exports = new ArrayList<Export>();
-    private List<Import> imports = new ArrayList<Import>();
-    private List<Library> libraries = new ArrayList<Library>();
-    private Set<Capability> requiredCapabilities = new HashSet<Capability>();
-    private Set<Capability> providedCapabilities = new HashSet<Capability>();
-    private List<Deployable> deployables = new ArrayList<Deployable>();
-    private List<String> extensionPoints = new ArrayList<String>();
-    private List<String> extend = new ArrayList<String>();
+    private List<Export> exports = new ArrayList<>();
+    private List<Import> imports = new ArrayList<>();
+    private List<Library> libraries = new ArrayList<>();
+    private Set<Capability> requiredCapabilities = new HashSet<>();
+    private Set<Capability> providedCapabilities = new HashSet<>();
+    private List<Deployable> deployables = new ArrayList<>();
+    private List<String> extensionPoints = new ArrayList<>();
+    private List<String> extend = new ArrayList<>();
     private List<Pattern> scanExcludes = Collections.emptyList();
 
     /**

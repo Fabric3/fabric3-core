@@ -124,7 +124,7 @@ public class CertificateValidatorImpl implements CertificateValidator {
         PKIXBuilderParameters parameters;
         CertPathValidator certValidator;
         CertPath certPath;
-        List<Certificate> certChainList = new ArrayList<Certificate>();
+        List<Certificate> certChainList = new ArrayList<>();
         boolean caFound = false;
         Principal certChainIssuer = null;
         int noOfEntriesInTrustStore = 0;

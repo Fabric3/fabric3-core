@@ -100,7 +100,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
         LogicalComponent<?> component = consumer.getParent();
         QName deployable = consumer.getParent().getDeployable();
         if (LogicalState.MARKED == component.getState()) {
-            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
                 DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, deployable, CONSUMER);
@@ -113,7 +113,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
                 command.add(connectionCommand);
             }
         } else if (LogicalState.NEW == component.getState() || !incremental) {
-            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
                 BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, deployable, CONSUMER);

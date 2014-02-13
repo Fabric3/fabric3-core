@@ -56,7 +56,7 @@ import org.fabric3.wsdl.factory.Wsdl4JFactory;
 public class Wsdl4JFactoryImpl implements Wsdl4JFactory {
     private static final String VERBOSE = "javax.wsdl.verbose";
     private WSDLFactory factory;
-    private List<Holder> holders = new ArrayList<Holder>();
+    private List<Holder> holders = new ArrayList<>();
 
     public Wsdl4JFactoryImpl() throws WSDLException {
         factory = WSDLFactory.newInstance();

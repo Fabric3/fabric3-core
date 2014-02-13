@@ -86,7 +86,7 @@ public class DeploymentPlanIndexer implements XmlIndexer {
         }
         QName planQName = new QName(PLAN_NAMESPACE, name);
         QNameSymbol symbol = new QNameSymbol(planQName);
-        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<QNameSymbol, DeploymentPlan>(symbol);
+        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<>(symbol);
         resource.addResourceElement(element);
     }
 

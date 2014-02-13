@@ -49,7 +49,7 @@ import org.fabric3.spi.transform.TransformationException;
  *
  */
 public class Property2StringTransformer implements SingleTypeTransformer<Node, String> {
-    private static final JavaClass<String> TARGET = new JavaClass<String>(String.class);
+    private static final JavaClass<String> TARGET = new JavaClass<>(String.class);
 
     public DataType<?> getSourceType() {
         return XSDConstants.PROPERTY_TYPE;

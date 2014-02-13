@@ -306,7 +306,7 @@ public class BootstrapAssemblyFactory {
                                                                               ClassLoaderRegistry classLoaderRegistry,
                                                                               ManagementService managementService,
                                                                               HostInfo info) {
-        Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
+        Map<Class<?>, ComponentBuilder> builders = new HashMap<>();
 
         ArrayBuilder arrayBuilder = new ArrayBuilderImpl(transformerRegistry);
         CollectionBuilder collectionBuilder = new CollectionBuilderImpl(transformerRegistry);
@@ -345,7 +345,7 @@ public class BootstrapAssemblyFactory {
 
     private static DefaultTransformerRegistry createTransformerRegistry(ClassLoaderRegistry classLoaderRegistry) {
         DefaultTransformerRegistry transformerRegistry = new DefaultTransformerRegistry();
-        List<SingleTypeTransformer<?, ?>> transformers = new ArrayList<SingleTypeTransformer<?, ?>>();
+        List<SingleTypeTransformer<?, ?>> transformers = new ArrayList<>();
         transformers.add(new Property2StringTransformer());
         transformers.add(new Property2IntegerTransformer());
         transformers.add(new Property2BooleanTransformer());
@@ -364,13 +364,13 @@ public class BootstrapAssemblyFactory {
                                              ClassLoaderRegistry classLoaderRegistry,
                                              MonitorProxyService monitorService) {
         Map<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>> sourceAttachers
-                = new ConcurrentHashMap<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>>();
+                = new ConcurrentHashMap<>();
         SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry, classLoaderRegistry);
         sourceAttachers.put(SystemSourceDefinition.class, wireAttacher);
         sourceAttachers.put(SingletonSourceDefinition.class, new SingletonSourceWireAttacher(componentManager));
 
         Map<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>> targetAttachers
-                = new ConcurrentHashMap<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>>();
+                = new ConcurrentHashMap<>();
         targetAttachers.put(SingletonTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
         targetAttachers.put(SystemTargetDefinition.class, new SystemTargetWireAttacher(componentManager, classLoaderRegistry));
         targetAttachers.put(MonitorTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager, classLoaderRegistry));
@@ -410,7 +410,7 @@ public class BootstrapAssemblyFactory {
         ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGenerator();
         ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGenerator();
         Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators
-                = new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
+                = new HashMap<>();
         generators.put(JavaContributionWire.class, javaGenerator);
         generators.put(LocationContributionWire.class, locationGenerator);
 
@@ -419,7 +419,7 @@ public class BootstrapAssemblyFactory {
 
     private static List<CommandGenerator> createCommandGenerators(PolicyResolver resolver, ContractMatcher matcher, GeneratorRegistry generatorRegistry) {
 
-        List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
+        List<CommandGenerator> commandGenerators = new ArrayList<>();
 
         commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry));
 

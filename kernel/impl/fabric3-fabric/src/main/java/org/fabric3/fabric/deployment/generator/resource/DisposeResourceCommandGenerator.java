@@ -84,7 +84,7 @@ public class DisposeResourceCommandGenerator implements CommandGenerator {
         if (composite.getResources().isEmpty()) {
             return null;
         }
-        List<PhysicalResourceDefinition> definitions = new ArrayList<PhysicalResourceDefinition>();
+        List<PhysicalResourceDefinition> definitions = new ArrayList<>();
         for (LogicalResource<?> resource : composite.getResources()) {
             ResourceDefinition resourceDefinition = resource.getDefinition();
             ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());

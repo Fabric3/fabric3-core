@@ -62,7 +62,7 @@ public class BindingHelperTestCase extends TestCase {
     public void testBinding() throws Exception {
         BindingDefinition existingBinding = new BindingDefinition("someBinding", URI.create("target"), QNAME) {
         };
-        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+        List<BindingDefinition> bindings = new ArrayList<>();
         bindings.add(existingBinding);
 
         BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), QNAME) {
@@ -88,7 +88,7 @@ public class BindingHelperTestCase extends TestCase {
         BindingDefinition existingBinding2 = new BindingDefinition(QNAME.getLocalPart(), URI.create("target"), QNAME) {
         };
 
-        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+        List<BindingDefinition> bindings = new ArrayList<>();
         bindings.add(existingBinding1);
         bindings.add(existingBinding2);
 
@@ -106,7 +106,7 @@ public class BindingHelperTestCase extends TestCase {
     public void testSyntheticBindingName() throws Exception {
         BindingDefinition existingBinding = new BindingDefinition("service", URI.create("target"), QNAME) {
         };
-        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+        List<BindingDefinition> bindings = new ArrayList<>();
         bindings.add(existingBinding);
 
         BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), QNAME) {

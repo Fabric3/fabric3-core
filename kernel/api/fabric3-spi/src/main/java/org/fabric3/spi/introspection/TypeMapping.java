@@ -56,7 +56,7 @@ import java.util.Map;
  * A mapping from generic formal types to actual types for a class hierarchy.
  */
 public class TypeMapping {
-    private final Map<? super Type, Type> mappings = new HashMap<Type, Type>();
+    private final Map<? super Type, Type> mappings = new HashMap<>();
 
     /**
      * Add a mapping from a TypeVariable to an actual type.

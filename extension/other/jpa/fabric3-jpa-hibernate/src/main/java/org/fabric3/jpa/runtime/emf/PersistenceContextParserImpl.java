@@ -86,7 +86,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
         if (urls == null) {
             throw new PersistenceUnitException("Persistence context (persistence.xml) not found in /META-INF");
         }
-        List<PersistenceUnitInfo> infos = new ArrayList<PersistenceUnitInfo>();
+        List<PersistenceUnitInfo> infos = new ArrayList<>();
         while(urls.hasMoreElements()) {
             URL url = urls.nextElement();
             URL rootUrl = getRootJarUrl(url);

@@ -113,7 +113,7 @@ public class MetaDataStoreUpdaterTestCase extends TestCase {
         createContributions();
 
         Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-                new HashMap<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>>();
+                new HashMap<>();
         instantiators.put(QNameImport.class, new QNameWireInstantiator());
         ContributionWireInstantiatorRegistryImpl instantiatorRegistry = new ContributionWireInstantiatorRegistryImpl();
         instantiatorRegistry.setInstantiators(instantiators);

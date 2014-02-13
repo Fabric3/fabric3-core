@@ -55,7 +55,7 @@ public class JmsUri {
 
     public JmsUri(String destination) {
         this.destination = destination;
-        properties = new HashMap<String, String>();
+        properties = new HashMap<>();
     }
 
     public String getDestination() {

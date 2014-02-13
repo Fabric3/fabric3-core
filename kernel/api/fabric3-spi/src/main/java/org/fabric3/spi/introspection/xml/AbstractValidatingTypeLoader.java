@@ -50,7 +50,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * Contains functionality for validating element attributes.
  */
 public abstract class AbstractValidatingTypeLoader<OUTPUT> implements TypeLoader<OUTPUT> {
-    protected Set<String> attributes = new HashSet<String>();
+    protected Set<String> attributes = new HashSet<>();
 
     protected void addAttributes(String... attributes) {
         if (attributes == null) {

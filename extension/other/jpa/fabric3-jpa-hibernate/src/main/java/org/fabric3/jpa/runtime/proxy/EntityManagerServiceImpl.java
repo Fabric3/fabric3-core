@@ -58,7 +58,7 @@ import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
  */
 public class EntityManagerServiceImpl implements EntityManagerService {
     // a cache of entity managers keyed by Transaction and persistence unit name
-    private Map<Key, EntityManager> cache = new ConcurrentHashMap<Key, EntityManager>();
+    private Map<Key, EntityManager> cache = new ConcurrentHashMap<>();
     // tracks which entity managers have joined transactions
     private EntityManagerFactoryCache emfCache;
 

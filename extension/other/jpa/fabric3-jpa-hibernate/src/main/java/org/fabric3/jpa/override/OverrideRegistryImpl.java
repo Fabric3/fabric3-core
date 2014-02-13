@@ -54,8 +54,8 @@ import org.fabric3.spi.contribution.ContributionServiceListener;
  */
 @Service(OverrideRegistry.class)
 public class OverrideRegistryImpl implements OverrideRegistry, ContributionServiceListener {
-    private Map<URI, List<PersistenceOverrides>> index = new ConcurrentHashMap<URI, List<PersistenceOverrides>>();
-    private Map<String, PersistenceOverrides> cache = new ConcurrentHashMap<String, PersistenceOverrides>();
+    private Map<URI, List<PersistenceOverrides>> index = new ConcurrentHashMap<>();
+    private Map<String, PersistenceOverrides> cache = new ConcurrentHashMap<>();
 
     public void register(URI contributionURI, PersistenceOverrides overrides) throws DuplicateOverridesException {
         String unitName = overrides.getUnitName();
@@ -64,7 +64,7 @@ public class OverrideRegistryImpl implements OverrideRegistry, ContributionServi
         }
         List<PersistenceOverrides> list = index.get(contributionURI);
         if (list == null) {
-            list = new ArrayList<PersistenceOverrides>();
+            list = new ArrayList<>();
             index.put(contributionURI, list);
         }
         list.add(overrides);

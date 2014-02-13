@@ -52,7 +52,7 @@ public class DefaultMonitorDestinationDefinition extends MonitorDestinationDefin
     private List<AppenderDefinition> appenderDefinitions;
 
     public DefaultMonitorDestinationDefinition() {
-        this.appenderDefinitions = new ArrayList<AppenderDefinition>();
+        this.appenderDefinitions = new ArrayList<>();
     }
 
     public List<AppenderDefinition> getAppenderDefinitions() {

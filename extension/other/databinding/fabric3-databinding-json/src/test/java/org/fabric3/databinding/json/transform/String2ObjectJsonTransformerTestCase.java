@@ -67,7 +67,7 @@ public class String2ObjectJsonTransformerTestCase extends TestCase {
 
     public void testTransform() throws Exception {
         String2ObjectJsonTransformerFactory factory = new String2ObjectJsonTransformerFactory();
-        JavaClass<Foo> javaClass = new JavaClass<Foo>(Foo.class);
+        JavaClass<Foo> javaClass = new JavaClass<>(Foo.class);
         String2ObjectJsonTransformer transformer = factory.create(null, javaClass, null, null);
         Foo result = (Foo) transformer.transform("{\"bar\":\"bar\"}", getClass().getClassLoader());
         assertEquals("bar", result.getBar());

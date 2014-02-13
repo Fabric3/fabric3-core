@@ -74,7 +74,7 @@ public class ContributionHelperImpl implements ContributionHelper {
     }
 
     public List<Composite> getDeployables(Set<Contribution> contributions) {
-        List<Composite> deployables = new ArrayList<Composite>();
+        List<Composite> deployables = new ArrayList<>();
         for (Contribution contribution : contributions) {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> entry : resource.getResourceElements()) {
@@ -124,7 +124,7 @@ public class ContributionHelperImpl implements ContributionHelper {
 
     public DeploymentPlan findDefaultPlan(Contribution contribution) {
         DeploymentPlan plan;
-        List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
+        List<DeploymentPlan> plans = new ArrayList<>();
         getDeploymentPlans(contribution, plans);
         if (!plans.isEmpty()) {
             plan = plans.get(0);
@@ -145,7 +145,7 @@ public class ContributionHelperImpl implements ContributionHelper {
     }
 
     public Set<Contribution> findContributions(List<URI> uris) {
-        Set<Contribution> contributions = new LinkedHashSet<Contribution>(uris.size());
+        Set<Contribution> contributions = new LinkedHashSet<>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = metadataStore.find(uri);
             if (contribution == null) {

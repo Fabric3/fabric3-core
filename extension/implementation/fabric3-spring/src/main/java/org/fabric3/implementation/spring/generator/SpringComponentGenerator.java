@@ -163,7 +163,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     private Map<String, String> handleDefaultReferenceMappings(ComponentDefinition<SpringImplementation> componentDefinition, ComponentType type) {
-        Map<String, String> mappings = new HashMap<String, String>();
+        Map<String, String> mappings = new HashMap<>();
         for (ReferenceDefinition reference : type.getReferences().values()) {
             SpringReferenceDefinition springReference = (SpringReferenceDefinition) reference;
             String defaultStr = springReference.getDefaultValue();

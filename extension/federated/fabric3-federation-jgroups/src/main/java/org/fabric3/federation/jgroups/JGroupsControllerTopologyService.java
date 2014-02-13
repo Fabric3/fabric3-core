@@ -99,9 +99,9 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
     private View previousView;
-    private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
-    private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
-    private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
+    private List<TopologyListener> topologyListeners = new ArrayList<>();
+    private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<>();
     private Element channelConfig;
 
     public JGroupsControllerTopologyService(@Reference HostInfo info,
@@ -152,7 +152,7 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
 
     @ManagementOperation(description = "The runtimes in the domain")
     public List<String> getRuntimeNames() {
-        List<String> runtimes = new ArrayList<String>();
+        List<String> runtimes = new ArrayList<>();
         for (Address member : domainChannel.getView().getMembers()) {
             String name = org.jgroups.util.UUID.get(member);
             runtimes.add(name);
@@ -166,7 +166,7 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
     }
 
     public List<RuntimeInstance> getRuntimes() {
-        List<RuntimeInstance> list = new ArrayList<RuntimeInstance>();
+        List<RuntimeInstance> list = new ArrayList<>();
         for (Map<String, RuntimeInstance> map : runtimes.values()) {
             for (RuntimeInstance runtime : map.values()) {
                 list.add(runtime);
@@ -201,7 +201,7 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
     public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException {
         byte[] payload = helper.serialize(command);
         List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
-        List<Response> responses = new ArrayList<Response>(addresses.size());
+        List<Response> responses = new ArrayList<>(addresses.size());
         for (Address address : addresses) {
             Message message = new Message(address, domainChannel.getAddress(), payload);
             try {
@@ -395,7 +395,7 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
                 }
                 Map<String, RuntimeInstance> zones = runtimes.get(zoneName);
                 if (zones == null) {
-                    zones = new HashMap<String, RuntimeInstance>();
+                    zones = new HashMap<>();
                     runtimes.put(zoneName, zones);
                 }
                 RuntimeInstance instance = new RuntimeInstance(name);

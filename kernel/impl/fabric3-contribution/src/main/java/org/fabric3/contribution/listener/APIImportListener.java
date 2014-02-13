@@ -57,7 +57,7 @@ public class APIImportListener implements ContributionServiceListener {
     public static final String BINDING_PACKAGE = "org.fabric3.api.binding.";
     public static final String IMPLEMENTATION_PACKAGE = "org.fabric3.api.implementation.";
 
-    private List<JavaImport> imports = new ArrayList<JavaImport>();
+    private List<JavaImport> imports = new ArrayList<>();
 
     public void onStore(Contribution contribution) {
     }

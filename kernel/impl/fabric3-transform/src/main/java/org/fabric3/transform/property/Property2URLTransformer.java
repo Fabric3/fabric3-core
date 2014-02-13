@@ -52,7 +52,7 @@ import org.fabric3.spi.transform.TransformationException;
  * Transforms from a Node to a URL.
  */
 public class Property2URLTransformer implements SingleTypeTransformer<Node, URL> {
-    private static final JavaClass<URL> TARGET = new JavaClass<URL>(URL.class);
+    private static final JavaClass<URL> TARGET = new JavaClass<>(URL.class);
 
     public DataType<?> getSourceType() {
         return XSDConstants.PROPERTY_TYPE;

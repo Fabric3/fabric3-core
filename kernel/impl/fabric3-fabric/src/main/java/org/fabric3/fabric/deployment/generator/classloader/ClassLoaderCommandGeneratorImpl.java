@@ -115,7 +115,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
 
     public Map<String, List<CompensatableCommand>> release(Map<String, List<Contribution>> contributions) throws GenerationException {
         // commands mapped to the zone
-        Map<String, List<CompensatableCommand>> commandsPerZone = new HashMap<String, List<CompensatableCommand>>();
+        Map<String, List<CompensatableCommand>> commandsPerZone = new HashMap<>();
 
         // generate commands to unprovision contribution classloaders
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
@@ -128,7 +128,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
             }
             List<CompensatableCommand> commands = commandsPerZone.get(entry.getKey());
             if (commands == null) {
-                commands = new ArrayList<CompensatableCommand>();
+                commands = new ArrayList<>();
                 commandsPerZone.put(entry.getKey(), commands);
             }
             List<Contribution> ordered;
@@ -137,7 +137,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 // Order the contributions by dependencies and reverse it to determine the sequence the classloaders must be removed in
                 // Ordering is important for classloaders to be properly disposed. Runtimes will only dispose classloaders when they are no longer
                 // referenced by other registered classloaders. This requires dependent classloaders to be released first.
-                ordered = dependencyResolver.resolve(new ArrayList<Contribution>(entry.getValue()));
+                ordered = dependencyResolver.resolve(new ArrayList<>(entry.getValue()));
                 Collections.reverse(ordered);
             } catch (DependencyException e) {
                 throw new GenerationException(e);
@@ -159,7 +159,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
      * @return the PhysicalClassLoaderDefinitions grouped by zone
      */
     private Map<String, List<PhysicalClassLoaderDefinition>> createContributionDefinitions(Map<String, List<Contribution>> contributionsPerZone) {
-        Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone = new HashMap<String, List<PhysicalClassLoaderDefinition>>();
+        Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone = new HashMap<>();
         for (Map.Entry<String, List<Contribution>> entry : contributionsPerZone.entrySet()) {
             String zone = entry.getKey();
             for (Contribution contribution : entry.getValue()) {
@@ -169,7 +169,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 }
                 List<PhysicalClassLoaderDefinition> definitions = definitionsPerZone.get(zone);
                 if (definitions == null) {
-                    definitions = new ArrayList<PhysicalClassLoaderDefinition>();
+                    definitions = new ArrayList<>();
                     definitionsPerZone.put(zone, definitions);
                 }
                 definitions.add(definition);
@@ -207,10 +207,10 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
      * @return the set of commands keyed by zone
      */
     private Map<String, List<CompensatableCommand>> createProvisionCommands(Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone) {
-        Map<String, List<CompensatableCommand>> commandsPerZone = new HashMap<String, List<CompensatableCommand>>();
+        Map<String, List<CompensatableCommand>> commandsPerZone = new HashMap<>();
         for (Map.Entry<String, List<PhysicalClassLoaderDefinition>> entry : definitionsPerZone.entrySet()) {
             List<PhysicalClassLoaderDefinition> definitions = entry.getValue();
-            List<CompensatableCommand> commands = new ArrayList<CompensatableCommand>();
+            List<CompensatableCommand> commands = new ArrayList<>();
             commandsPerZone.put(entry.getKey(), commands);
             for (PhysicalClassLoaderDefinition definition : definitions) {
                 commands.add(new ProvisionClassloaderCommand(definition));

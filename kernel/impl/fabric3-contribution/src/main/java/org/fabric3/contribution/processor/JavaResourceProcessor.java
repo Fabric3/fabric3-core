@@ -118,7 +118,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
             componentProcessor.process(definition, clazz, context);
 
             ParsedComponentSymbol symbol = new ParsedComponentSymbol(definition);
-            ResourceElement<ParsedComponentSymbol, QName> parsedElement = new ResourceElement<ParsedComponentSymbol, QName>(symbol, compositeName);
+            ResourceElement<ParsedComponentSymbol, QName> parsedElement = new ResourceElement<>(symbol, compositeName);
             resource.addResourceElement(parsedElement);
         } catch (IllegalArgumentException e) {
             InvalidComponentAnnotation error = new InvalidComponentAnnotation("Invalid composite name: " + name + " on class: " + clazz.getName(), e);
@@ -156,7 +156,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
             NullSource source = new NullSource(compositeName.toString());
             Resource compositeResource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
             compositeResource.setState(ResourceState.PROCESSED);
-            compositeResource.addResourceElement(new ResourceElement<QNameSymbol, Composite>(compositeSymbol, composite));
+            compositeResource.addResourceElement(new ResourceElement<>(compositeSymbol, composite));
             resource.setContribution(contribution);
             contribution.addResource(compositeResource);
 

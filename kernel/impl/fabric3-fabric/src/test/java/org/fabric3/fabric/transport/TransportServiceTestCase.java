@@ -60,7 +60,7 @@ public class TransportServiceTestCase extends TestCase {
         EasyMock.replay(monitor, transport1, transport2);
 
         TransportService service = new TransportService(monitor);
-        Map<String, Transport> transports = new HashMap<String, Transport>();
+        Map<String, Transport> transports = new HashMap<>();
         transports.put("transport1", transport1);
         transports.put("transport2", transport2);
         service.setTransports(transports);
@@ -82,7 +82,7 @@ public class TransportServiceTestCase extends TestCase {
         EasyMock.replay(monitor, transport1, transport2);
 
         TransportService service = new TransportService(monitor);
-        Map<String, Transport> transports = new HashMap<String, Transport>();
+        Map<String, Transport> transports = new HashMap<>();
         transports.put("transport1", transport1);
         transports.put("transport2", transport2);
         service.setTransports(transports);
@@ -100,7 +100,7 @@ public class TransportServiceTestCase extends TestCase {
         EasyMock.replay(monitor, transport1, transport2);
 
         TransportService service = new TransportService(monitor);
-        Map<String, Transport> transports = new HashMap<String, Transport>();
+        Map<String, Transport> transports = new HashMap<>();
         transports.put("transport1", transport1);
         transports.put("transport2", transport2);
         service.setTransports(transports);

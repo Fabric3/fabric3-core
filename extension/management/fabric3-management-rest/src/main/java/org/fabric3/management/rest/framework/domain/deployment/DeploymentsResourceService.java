@@ -103,7 +103,7 @@ public class DeploymentsResourceService {
         Resource resource = new Resource(selfLink);
 
         Set<Contribution> contributions = store.getContributions();
-        List<URI> list = new ArrayList<URI>();
+        List<URI> list = new ArrayList<>();
         for (Contribution contribution : contributions) {
             if (contribution.getLockOwners().isEmpty() || contribution.getManifest().isExtension()) {
                 // not deployed or not deployed to the application domain
@@ -139,7 +139,7 @@ public class DeploymentsResourceService {
                 try {
                     domain.include(deployableName);
                 } catch (AssemblyException e) {
-                    List<String> errors = new ArrayList<String>();
+                    List<String> errors = new ArrayList<>();
                     for (AssemblyFailure error : e.getErrors()) {
                         errors.add(error.getMessage() + " (" + error.getContributionUri() + ")");
                     }

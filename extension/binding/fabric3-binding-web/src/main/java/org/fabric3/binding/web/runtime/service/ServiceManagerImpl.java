@@ -46,7 +46,7 @@ import org.fabric3.spi.container.wire.InvocationChain;
  *
  */
 public class ServiceManagerImpl implements ServiceManager {
-    private Map<String, ChainPair> cache = new ConcurrentHashMap<String, ChainPair>();
+    private Map<String, ChainPair> cache = new ConcurrentHashMap<>();
 
     public void register(String path, InvocationChain chain, String callbackUri) {
         ChainPair pair = new ChainPair(chain, callbackUri);

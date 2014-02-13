@@ -88,7 +88,7 @@ public class SnapshotHelper {
         Composite typeCopy = new Composite(null);
         CompositeImplementation implementationCopy = new CompositeImplementation();
         implementationCopy.setComponentType(typeCopy);
-        ComponentDefinition<CompositeImplementation> compositeCopy = new ComponentDefinition<CompositeImplementation>(domainName, implementationCopy);
+        ComponentDefinition<CompositeImplementation> compositeCopy = new ComponentDefinition<>(domainName, implementationCopy);
         LogicalCompositeComponent domainCopy = new LogicalCompositeComponent(domain.getUri(), compositeCopy, null);
         for (LogicalComponent<?> component : domain.getComponents()) {
             if (uri == null || uri.equals(component.getDefinition().getContributionUri())) {
@@ -141,7 +141,7 @@ public class SnapshotHelper {
         }
         remoteImplementation.setComponentType(typeCopy);
 
-        ComponentDefinition<RemoteImplementation> definitionCopy = new ComponentDefinition<RemoteImplementation>(name, remoteImplementation);
+        ComponentDefinition<RemoteImplementation> definitionCopy = new ComponentDefinition<>(name, remoteImplementation);
         Composite composite = (Composite) parent.getDefinition().getComponentType();
         definitionCopy.setParent(composite);
         definitionCopy.setContributionUri(definition.getContributionUri());
@@ -149,7 +149,7 @@ public class SnapshotHelper {
         definitionCopy.setPolicySets(definition.getPolicySets());
 
         URI uri = component.getUri();
-        LogicalComponent<RemoteImplementation> componentCopy = new LogicalComponent<RemoteImplementation>(uri, definitionCopy, parent);
+        LogicalComponent<RemoteImplementation> componentCopy = new LogicalComponent<>(uri, definitionCopy, parent);
         componentCopy.setDeployable(component.getDeployable());
         componentCopy.setZone(component.getZone());
         componentCopy.setState(state);
@@ -180,7 +180,7 @@ public class SnapshotHelper {
 
     static RemoteServiceContract snapshot(ServiceContract contract) {
         String interfaceName = contract.getQualifiedInterfaceName();
-        List<String> superTypes = new ArrayList<String>();
+        List<String> superTypes = new ArrayList<>();
         if (contract instanceof JavaServiceContract) {
             JavaServiceContract javaContract = (JavaServiceContract) contract;
             superTypes.addAll(javaContract.getInterfaces());

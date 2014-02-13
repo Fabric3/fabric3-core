@@ -87,7 +87,7 @@ public class SystemComponentDefinitionBuilder extends ComponentDefinitionBuilder
         InjectingComponentType componentType = new InjectingComponentType(className);
         SystemImplementation implementation = new SystemImplementation(className);
         implementation.setComponentType(componentType);
-        definition = new ComponentDefinition<SystemImplementation>(name);
+        definition = new ComponentDefinition<>(name);
         definition.setImplementation(implementation);
     }
 

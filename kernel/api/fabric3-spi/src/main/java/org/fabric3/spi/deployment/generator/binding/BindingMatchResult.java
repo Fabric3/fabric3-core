@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 public class BindingMatchResult {
     private boolean match;
     private QName type;
-    private List<String> reasons = new ArrayList<String>();
+    private List<String> reasons = new ArrayList<>();
 
     public BindingMatchResult(boolean match, QName type) {
         this.match = match;

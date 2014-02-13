@@ -76,7 +76,7 @@ import org.oasisopen.sca.annotation.Service;
 public class DomainScopeContainer extends SingletonScopeContainer implements TopologyListener {
     private HostInfo info;
     private ParticipantTopologyService topologyService;
-    private final List<QName> deferredContexts = new ArrayList<QName>();
+    private final List<QName> deferredContexts = new ArrayList<>();
     boolean activated;
 
     public DomainScopeContainer(@Reference HostInfo info, @Monitor ScopeContainerMonitor monitor) {

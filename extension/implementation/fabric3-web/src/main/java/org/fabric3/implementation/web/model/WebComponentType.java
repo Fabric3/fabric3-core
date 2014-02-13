@@ -49,7 +49,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
  */
 public class WebComponentType extends ComponentType {
     private static final long serialVersionUID = 9213093177241637932L;
-    private final Map<String, Map<InjectionSite, Injectable>> sites = new HashMap<String, Map<InjectionSite, Injectable>>();
+    private final Map<String, Map<InjectionSite, Injectable>> sites = new HashMap<>();
 
     /**
      * Returns a mapping from artifact id (e.g. servlet or filter class name, servlet context, session context) to injection site/injectable attribute
@@ -71,7 +71,7 @@ public class WebComponentType extends ComponentType {
     public void addMapping(String artifactId, InjectionSite site, Injectable attribute) {
         Map<InjectionSite, Injectable> mapping = sites.get(artifactId);
         if (mapping == null) {
-            mapping = new HashMap<InjectionSite, Injectable>();
+            mapping = new HashMap<>();
             sites.put(artifactId, mapping);
         }
         mapping.put(site, attribute);

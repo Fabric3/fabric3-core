@@ -72,8 +72,8 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
 
     private ManagementService managementService;
 
-    private Map<String, AtomikosConnectionFactoryBean> beans = new HashMap<String, AtomikosConnectionFactoryBean>();
-    private Map<String, ConnectionFactory> nonXA = new HashMap<String, ConnectionFactory>();
+    private Map<String, AtomikosConnectionFactoryBean> beans = new HashMap<>();
+    private Map<String, ConnectionFactory> nonXA = new HashMap<>();
 
     public AtomikosConnectionFactoryManager(@Reference ManagementService managementService) {
         this.managementService = managementService;

@@ -186,7 +186,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         URI uri = contribution.getUri();
         Set<Contribution> contributions = store.resolveDependentContributions(uri);
         if (!contributions.isEmpty()) {
-            Set<URI> dependents = new HashSet<URI>(contributions.size());
+            Set<URI> dependents = new HashSet<>(contributions.size());
             for (Contribution dependent : contributions) {
                 if (ContributionState.INSTALLED == dependent.getState()) {
                     dependents.add(dependent.getUri());
@@ -203,7 +203,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
     private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws UnresolvedImportException {
         // clear the wires as the contribution may have been loaded previously
         contribution.getWires().clear();
-        List<ContributionWire<?, ?>> resolved = new ArrayList<ContributionWire<?, ?>>();
+        List<ContributionWire<?, ?>> resolved = new ArrayList<>();
         ContributionManifest manifest = contribution.getManifest();
         for (Import imprt : manifest.getImports()) {
             URI uri = contribution.getUri();
@@ -226,7 +226,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
     }
 
     private List<URI> resolveExtensionProviders(Contribution contribution) {
-        List<URI> uris = new ArrayList<URI>();
+        List<URI> uris = new ArrayList<>();
         ContributionManifest manifest = contribution.getManifest();
         for (String extensionPoint : manifest.getExtensionPoints()) {
             List<Contribution> providers = store.resolveExtensionProviders(extensionPoint);
@@ -239,7 +239,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
     }
 
     private List<URI> resolveExtensionPoints(Contribution contribution) {
-        List<URI> uris = new ArrayList<URI>();
+        List<URI> uris = new ArrayList<>();
         ContributionManifest manifest = contribution.getManifest();
         for (String extend : manifest.getExtends()) {
             List<Contribution> extensionPoints = store.resolveExtensionPoints(extend);

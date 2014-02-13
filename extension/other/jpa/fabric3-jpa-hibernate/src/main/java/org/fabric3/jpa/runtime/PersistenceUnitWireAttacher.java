@@ -90,7 +90,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
             Thread.currentThread().setContextClassLoader(classLoader);
             PersistenceOverrides overrides = target.getOverrides();
             EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, overrides, classLoader);
-            return new SingletonObjectFactory<EntityManagerFactory>(entityManagerFactory);
+            return new SingletonObjectFactory<>(entityManagerFactory);
         } catch (JpaResolutionException e) {
             throw new WiringException(e);
         } finally {

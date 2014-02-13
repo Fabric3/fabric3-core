@@ -128,7 +128,7 @@ public class GenerationHelper {
      */
     public static List<PolicyExpressionMapping> createMappings(EffectivePolicy policy, Class<?> serviceClass) throws GenerationException {
         // temporarily store mappings keyed by policy expression id
-        Map<String, PolicyExpressionMapping> mappings = new HashMap<String, PolicyExpressionMapping>();
+        Map<String, PolicyExpressionMapping> mappings = new HashMap<>();
         for (Map.Entry<LogicalOperation, List<PolicySet>> entry : policy.getOperationPolicySets().entrySet()) {
             Operation definition = entry.getKey().getDefinition();
             for (PolicySet policySet : entry.getValue()) {
@@ -159,7 +159,7 @@ public class GenerationHelper {
                 mapping.addOperationName(operationName);
             }
         }
-        return new ArrayList<PolicyExpressionMapping>(mappings.values());
+        return new ArrayList<>(mappings.values());
     }
 
     /**
@@ -224,7 +224,7 @@ public class GenerationHelper {
     }
 
     public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, WsBindingDefinition definition) {
-        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<PhysicalBindingHandlerDefinition>();
+        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<>();
         for (BindingHandlerDefinition handlerDefinition : definition.getHandlers()) {
             // URIs specified in handler elements in a composite are relative and must be made absolute
             URI resolvedUri = URI.create(domainUri.toString() + "/" + handlerDefinition.getTarget());

@@ -57,7 +57,7 @@ public abstract class AbstractService<P extends ModelObject> extends BindableDef
 
     private String name;
     private ServiceContract serviceContract;
-    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
+    private List<BindingDefinition> callbackBindings = new ArrayList<>();
 
     public AbstractService(String name, ServiceContract serviceContract) {
         this.name = name;

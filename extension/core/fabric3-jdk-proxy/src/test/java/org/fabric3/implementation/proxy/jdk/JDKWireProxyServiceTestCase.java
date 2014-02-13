@@ -38,21 +38,21 @@ public class JDKWireProxyServiceTestCase extends TestCase {
 
     public void testCastProxyToServiceReference() throws Exception {
         Map<Method, InvocationChain> mapping = Collections.emptyMap();
-        JDKInvocationHandler<Foo> handler = new JDKInvocationHandler<Foo>(Foo.class, null, mapping);
+        JDKInvocationHandler<Foo> handler = new JDKInvocationHandler<>(Foo.class, null, mapping);
         Foo proxy = handler.getService();
         ServiceReference<Foo> ref = proxyService.cast(proxy);
         assertSame(handler, ref);
     }
 
     public void testEquals() throws Exception {
-        Map<Method, InvocationChain> mapping = new HashMap<Method, InvocationChain>();
+        Map<Method, InvocationChain> mapping = new HashMap<>();
         InvocationChain chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.replay(chain);
 
         mapping.put(Foo.class.getMethod("invoke"), chain);
 
-        JDKInvocationHandler<Foo> handler1 = new JDKInvocationHandler<Foo>(Foo.class, null, mapping);
-        JDKInvocationHandler<Foo> handler2 = new JDKInvocationHandler<Foo>(Foo.class, null, mapping);
+        JDKInvocationHandler<Foo> handler1 = new JDKInvocationHandler<>(Foo.class, null, mapping);
+        JDKInvocationHandler<Foo> handler2 = new JDKInvocationHandler<>(Foo.class, null, mapping);
 
         Object proxy1 = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler1);
         Object proxy2 = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler2);

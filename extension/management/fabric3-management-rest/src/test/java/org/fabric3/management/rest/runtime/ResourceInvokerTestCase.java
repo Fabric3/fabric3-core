@@ -224,7 +224,7 @@ public class ResourceInvokerTestCase extends TestCase {
     private List<ResourceMapping> createMappings(Object instance, Method method, Set<Role> roles) {
         ResourceMapping mapping1 = new ResourceMapping("foo", "management/foo/bar", "bar", Verb.GET, method, instance, null, roles);
         ResourceMapping mapping2 = new ResourceMapping("foo", "management/foo/baz", "baz", Verb.GET, method, instance, null, roles);
-        List<ResourceMapping> mappings = new ArrayList<ResourceMapping>();
+        List<ResourceMapping> mappings = new ArrayList<>();
         mappings.add(mapping1);
         mappings.add(mapping2);
         return mappings;

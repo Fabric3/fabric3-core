@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class CompositeResource extends ComponentResource {
     private static final long serialVersionUID = -2376688479953947981L;
-    private List<ComponentResource> components = new ArrayList<ComponentResource>();
+    private List<ComponentResource> components = new ArrayList<>();
 
     /**
      * Constructor.

@@ -60,7 +60,7 @@ public class ArtifactValidationFailure extends ValidationFailure {
     public ArtifactValidationFailure(URI contributionUri, String artifactName) {
         this.contributionUri = contributionUri;
         this.artifactName = artifactName;
-        this.failures = new ArrayList<ValidationFailure>();
+        this.failures = new ArrayList<>();
     }
 
     public URI getContributionUri() {

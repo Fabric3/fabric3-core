@@ -50,7 +50,7 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  */
 public class WsdlServiceContract extends ServiceContract {
     private static final long serialVersionUID = 8084985972954894699L;
-    private Map<QName, Object> extensionElements = new HashMap<QName, Object>();
+    private Map<QName, Object> extensionElements = new HashMap<>();
     private PortType portType;
     private Definition definition;
 

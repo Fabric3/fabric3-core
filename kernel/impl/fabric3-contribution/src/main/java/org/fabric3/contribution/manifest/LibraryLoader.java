@@ -83,7 +83,7 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
     }
 
     private List<OperatingSystemSpec> parseOperatingSystems(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        List<OperatingSystemSpec> systems = new ArrayList<OperatingSystemSpec>();
+        List<OperatingSystemSpec> systems = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:

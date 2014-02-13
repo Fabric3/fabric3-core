@@ -102,8 +102,8 @@ public class AppenderFactoryImpl implements AppenderFactory {
     }
 
     private List<AppenderDefinition> load(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
-        List<AppenderDefinition> appenderDefinitions = new ArrayList<AppenderDefinition>();
-        Set<String> definedTypes = new HashSet<String>();
+        List<AppenderDefinition> appenderDefinitions = new ArrayList<>();
+        Set<String> definedTypes = new HashSet<>();
 
         while (true) {
             switch (reader.next()) {
@@ -151,7 +151,7 @@ public class AppenderFactoryImpl implements AppenderFactory {
 
     @SuppressWarnings("unchecked")
     private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) throws AppenderCreationException {
-        List<PhysicalAppenderDefinition> physicalDefinitions = new ArrayList<PhysicalAppenderDefinition>(definitions.size());
+        List<PhysicalAppenderDefinition> physicalDefinitions = new ArrayList<>(definitions.size());
         for (AppenderDefinition definition : definitions) {
             AppenderGenerator generator = appenderGenerators.get(definition.getClass());
             if (generator == null) {
@@ -169,7 +169,7 @@ public class AppenderFactoryImpl implements AppenderFactory {
 
     @SuppressWarnings("unchecked")
     private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) throws AppenderCreationException {
-        List<Appender> appenders = new ArrayList<Appender>(definitions.size());
+        List<Appender> appenders = new ArrayList<>(definitions.size());
         for (PhysicalAppenderDefinition definition : physicalDefinitions) {
             AppenderBuilder builder = appenderBuilders.get(definition.getClass());
             if (builder == null) {

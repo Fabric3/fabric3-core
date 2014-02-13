@@ -88,7 +88,7 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
 
     public synchronized void execute(UnProvisionExtensionsCommand command) throws ExecutionException {
         // compile the list of extensions 
-        List<URI> uninstall = new ArrayList<URI>();
+        List<URI> uninstall = new ArrayList<>();
         for (URI uri : command.getExtensionUris()) {
             int count = tracker.decrement(uri);
             if (count == 0) {

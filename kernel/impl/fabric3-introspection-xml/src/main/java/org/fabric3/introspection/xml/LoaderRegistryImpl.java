@@ -70,8 +70,8 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class LoaderRegistryImpl implements LoaderRegistry {
     private final XMLInputFactory xmlFactory;
-    private Map<QName, TypeLoader<?>> mappedLoaders = new HashMap<QName, TypeLoader<?>>();
-    private final Map<QName, TypeLoader<?>> loaders = new HashMap<QName, TypeLoader<?>>();
+    private Map<QName, TypeLoader<?>> mappedLoaders = new HashMap<>();
+    private final Map<QName, TypeLoader<?>> loaders = new HashMap<>();
 
     public LoaderRegistryImpl(@Reference XMLFactory factory) {
         this.xmlFactory = factory.newInputFactoryInstance();

@@ -52,7 +52,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * Default implementation of an XmlIndexerRegistry.
  */
 public class XmlIndexerRegistryImpl implements XmlIndexerRegistry {
-    private Map<QName, XmlIndexer> cache = new HashMap<QName, XmlIndexer>();
+    private Map<QName, XmlIndexer> cache = new HashMap<>();
 
     public void register(XmlIndexer indexer) {
         cache.put(indexer.getType(), indexer);

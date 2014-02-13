@@ -122,7 +122,7 @@ public class MavenRuntimeBooter {
 
             MavenRuntime runtime = createRuntime(bootstrapService, systemConfig);
 
-            Map<String, String> exportedPackages = new HashMap<String, String>();
+            Map<String, String> exportedPackages = new HashMap<>();
             exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
             exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
             exportedPackages.put("org.junit", TestConstants.JUNIT_VERSION);

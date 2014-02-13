@@ -60,13 +60,13 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
     private String key;
     private int order = Integer.MIN_VALUE;
 
-    private Map<String, AbstractService> services = new HashMap<String, AbstractService>();
-    private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
-    private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
-    private Map<String, ProducerDefinition> producers = new HashMap<String, ProducerDefinition>();
-    private Map<String, Property> properties = new HashMap<String, Property>();
-    private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
-    private Set<String> requiredCapabilities = new HashSet<String>();
+    private Map<String, AbstractService> services = new HashMap<>();
+    private Map<String, ConsumerDefinition> consumers = new HashMap<>();
+    private Map<String, ReferenceDefinition> references = new HashMap<>();
+    private Map<String, ProducerDefinition> producers = new HashMap<>();
+    private Map<String, Property> properties = new HashMap<>();
+    private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<>();
+    private Set<String> requiredCapabilities = new HashSet<>();
 
     /**
      * Returns the key value for map-based wires or null.

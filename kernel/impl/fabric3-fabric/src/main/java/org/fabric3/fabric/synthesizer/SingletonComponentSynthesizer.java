@@ -158,7 +158,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             implementationIntrospector.introspect(componentType, context);
             implementation.setComponentType(componentType);
 
-            ComponentDefinition<Implementation<?>> def = new ComponentDefinition<Implementation<?>>(name);
+            ComponentDefinition<Implementation<?>> def = new ComponentDefinition<>(name);
             SingletonImplementation singletonImplementation = new SingletonImplementation(implementation.getComponentType(), implClassName);
             def.setImplementation(singletonImplementation);
             def.setContributionUri(BOOT_CONTRIBUTION);
@@ -177,7 +177,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
             SingletonImplementation implementation = new SingletonImplementation(componentType, implClassName);
             implementation.setComponentType(componentType);
-            ComponentDefinition<Implementation<?>> def = new ComponentDefinition<Implementation<?>>(name);
+            ComponentDefinition<Implementation<?>> def = new ComponentDefinition<>(name);
             def.setImplementation(implementation);
             def.setContributionUri(BOOT_CONTRIBUTION);
             return def;

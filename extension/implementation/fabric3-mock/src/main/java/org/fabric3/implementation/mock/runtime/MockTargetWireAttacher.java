@@ -93,7 +93,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockTargetDefi
     public ObjectFactory<?> createObjectFactory(MockTargetDefinition target) throws WiringException {
         Class<?> mockedInterface = loadInterface(target);
         Object mock = createMock(mockedInterface);
-        return new SingletonObjectFactory<Object>(mock);
+        return new SingletonObjectFactory<>(mock);
     }
 
     private Method getOperationMethod(Class<?> mockedInterface, PhysicalOperationDefinition op,
@@ -104,7 +104,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockTargetDefi
             if (method.getName().equals(op.getName())) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes.length == parameters.size()) {
-                    List<String> methodParameters = new ArrayList<String>();
+                    List<String> methodParameters = new ArrayList<>();
                     for (Class<?> parameter : parameterTypes) {
                         methodParameters.add(parameter.getName());
                     }

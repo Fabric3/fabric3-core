@@ -97,8 +97,8 @@ public class RestfulManagementExtension implements ManagementExtension {
     private ResourceHost resourceHost;
     private ManagementSecurity security = ManagementSecurity.DISABLED;
 
-    private List<ResourceListener> listeners = new ArrayList<ResourceListener>();
-    private Map<String, ResourceMapping> dynamicResources = new ConcurrentHashMap<String, ResourceMapping>();
+    private List<ResourceListener> listeners = new ArrayList<>();
+    private Map<String, ResourceMapping> dynamicResources = new ConcurrentHashMap<>();
 
     public RestfulManagementExtension(@Reference TransformerPairService pairService,
                                       @Reference Marshaller marshaller,
@@ -143,7 +143,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         }
         try {
             Class<?> clazz = classLoader.loadClass(info.getManagementClass());
-            List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
+            List<ResourceMapping> getMappings = new ArrayList<>();
 
             String identifier = componentUri.toString();
 
@@ -197,12 +197,12 @@ public class RestfulManagementExtension implements ManagementExtension {
         String root = "/runtime/" + name;
         try {
 
-            Set<Role> readRoles = new HashSet<Role>();
-            Set<Role> writeRoles = new HashSet<Role>();
+            Set<Role> readRoles = new HashSet<>();
+            Set<Role> writeRoles = new HashSet<>();
             parseRoles(instance, readRoles, writeRoles);
 
             boolean rootResourcePathOverride = false;
-            List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
+            List<ResourceMapping> getMappings = new ArrayList<>();
 
             List<Method> methods = Arrays.asList(instance.getClass().getMethods());
             for (Method method : methods) {
@@ -230,7 +230,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                             roles = writeRoles;
                         }
                     } else {
-                        roles = new HashSet<Role>();
+                        roles = new HashSet<>();
                         for (String roleName : rolesAllowed) {
                             roles.add(new Role(roleName));
                         }
@@ -357,7 +357,7 @@ public class RestfulManagementExtension implements ManagementExtension {
     private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws ManagementException {
         try {
             ResourceInvoker invoker = new ResourceInvoker(mappings, security);
-            List<Method> methods = new ArrayList<Method>();
+            List<Method> methods = new ArrayList<>();
             for (ResourceMapping mapping : mappings) {
                 methods.add(mapping.getMethod());
             }
@@ -447,7 +447,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      */
     private List<ResourceMapping> createDynamicResourceMappings(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) {
         String path = mapping.getPath();
-        List<ResourceMapping> mappings = new ArrayList<ResourceMapping>();
+        List<ResourceMapping> mappings = new ArrayList<>();
         while (path != null) {
             String current = PathHelper.getParentPath(path);
             if (path.equals(current)) {

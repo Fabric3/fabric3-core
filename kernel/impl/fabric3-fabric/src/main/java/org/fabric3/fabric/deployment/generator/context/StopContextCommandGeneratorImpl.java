@@ -56,7 +56,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 public class StopContextCommandGeneratorImpl implements StopContextCommandGenerator {
 
     public Map<String, List<CompensatableCommand>> generate(List<LogicalComponent<?>> components) throws GenerationException {
-        Map<String, List<CompensatableCommand>> commands = new HashMap<String, List<CompensatableCommand>>();
+        Map<String, List<CompensatableCommand>> commands = new HashMap<>();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.MARKED) {
                 List<CompensatableCommand> list = getCommands(component.getZone(), commands);
@@ -75,7 +75,7 @@ public class StopContextCommandGeneratorImpl implements StopContextCommandGenera
     private List<CompensatableCommand> getCommands(String zone, Map<String, List<CompensatableCommand>> commands) {
         List<CompensatableCommand> list = commands.get(zone);
         if (list == null) {
-            list = new ArrayList<CompensatableCommand>();
+            list = new ArrayList<>();
             commands.put(zone, list);
         }
         return list;

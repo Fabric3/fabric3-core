@@ -73,7 +73,7 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
     public WsdlServiceContract introspect(PortType portType, Definition definition, XmlSchemaCollection collection, IntrospectionContext context) {
-        List<Operation> operations = new LinkedList<Operation>();
+        List<Operation> operations = new LinkedList<>();
         for (Object object : portType.getOperations()) {
             javax.wsdl.Operation wsdlOperation = (javax.wsdl.Operation) object;
             Operation operation = createOperation(wsdlOperation, collection, portType, context);
@@ -112,7 +112,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
     @SuppressWarnings({"unchecked"})
     private List<DataType<?>> getInputTypes(Message message, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
-        List<DataType<?>> types = new ArrayList<DataType<?>>();
+        List<DataType<?>> types = new ArrayList<>();
         // Note Message.getParts() may not return the parts in proper order; Message.getOrderedParts(null) does
         List parts = message.getOrderedParts(null);
         if (parts.isEmpty()) {
@@ -131,7 +131,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
     @SuppressWarnings("unchecked")
     private List<DataType<?>> getFaultTypes(Map faults, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
-        List<DataType<?>> types = new LinkedList<DataType<?>>();
+        List<DataType<?>> types = new LinkedList<>();
         for (Fault fault : (Collection<Fault>) faults.values()) {
             Part part = (Part) fault.getMessage().getOrderedParts(null).get(0);
             XSDType dataType = getDataType(part, collection, portType, context);
@@ -215,7 +215,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     private XSDType introspectComplexType(XmlSchemaComplexType type, QName name) {
         if (type.getParticle() instanceof XmlSchemaSequence) {
             XmlSchemaSequence sequence = (XmlSchemaSequence) type.getParticle();
-            List<XSDType> sequenceTypes = new ArrayList<XSDType>();
+            List<XSDType> sequenceTypes = new ArrayList<>();
             Iterator<XmlSchemaObject> iter = sequence.getItems().getIterator();
             while (iter.hasNext()) {
                 XmlSchemaObject o = iter.next();

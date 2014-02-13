@@ -72,7 +72,7 @@ public class ConfigurationLoader implements TypeLoader<Map<String, String>> {
 
 
     public Map<String, String> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        Map<String, String> configuration = new LinkedHashMap<String, String>();
+        Map<String, String> configuration = new LinkedHashMap<>();
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:

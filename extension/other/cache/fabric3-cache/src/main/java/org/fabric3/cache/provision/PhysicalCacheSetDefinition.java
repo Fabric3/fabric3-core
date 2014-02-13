@@ -49,7 +49,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
  */
 public class PhysicalCacheSetDefinition extends PhysicalResourceDefinition {
     private static final long serialVersionUID = 5686304373595234795L;
-    private List<PhysicalCacheResourceDefinition> cacheDefinitions = new ArrayList<PhysicalCacheResourceDefinition>();
+    private List<PhysicalCacheResourceDefinition> cacheDefinitions = new ArrayList<>();
 
 
     public List<PhysicalCacheResourceDefinition> getDefinitions() {

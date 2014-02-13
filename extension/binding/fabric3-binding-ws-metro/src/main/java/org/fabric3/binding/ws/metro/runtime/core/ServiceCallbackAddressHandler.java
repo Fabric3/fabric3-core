@@ -168,7 +168,7 @@ public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageCon
         if (!values.hasNext()) {
             return;
         }
-        Map<QName, String> parameters = new HashMap<QName, String>();
+        Map<QName, String> parameters = new HashMap<>();
         while (values.hasNext()) {
             SOAPElement element = values.next();
             QName name = element.getElementQName();

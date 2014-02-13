@@ -101,7 +101,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getContributionUri()).andReturn(null);
         QNameSymbol symbol = new QNameSymbol(name);
         Composite include = new Composite(name);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol);
         element.setValue(include);
         expect(store.resolve((URI) EasyMock.isNull(),
                              eq(Composite.class),

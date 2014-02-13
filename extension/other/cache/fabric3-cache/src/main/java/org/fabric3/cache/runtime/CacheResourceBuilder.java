@@ -56,7 +56,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
  */
 @EagerInit
 public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDefinition> {
-    private Map<Class<?>, CacheBuilder<?>> builders = new HashMap<Class<?>, CacheBuilder<?>>();
+    private Map<Class<?>, CacheBuilder<?>> builders = new HashMap<>();
 
     @Reference(required = false)
     public void setBuilders(Map<Class<?>, CacheBuilder<?>> builders) {

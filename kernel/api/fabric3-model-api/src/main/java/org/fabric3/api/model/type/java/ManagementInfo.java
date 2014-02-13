@@ -64,7 +64,7 @@ public class ManagementInfo extends ModelObject<InjectingComponentType> {
     private Set<Role> readRoles;
     private Set<Role> writeRoles;
 
-    private List<ManagementOperationInfo> operations = new ArrayList<ManagementOperationInfo>();
+    private List<ManagementOperationInfo> operations = new ArrayList<>();
 
     /**
      * Constructor.

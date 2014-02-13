@@ -75,7 +75,7 @@ public class ContributionHelperImplTestCase extends TestCase {
         QName name = new QName("foo", "bar");
         Composite composite = new Composite(name);
         QNameSymbol symbol = new QNameSymbol(name);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         EasyMock.expect(store.find(Composite.class, symbol)).andReturn(element);
 
         EasyMock.replay(store);
@@ -106,7 +106,7 @@ public class ContributionHelperImplTestCase extends TestCase {
         QName name = new QName("foo", "plan");
         QNameSymbol symbol = new QNameSymbol(name);
         DeploymentPlan plan = new DeploymentPlan("plan");
-        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<QNameSymbol, DeploymentPlan>(symbol, plan);
+        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<>(symbol, plan);
 
         Resource resource = new Resource(contribution, null, "");
         resource.addResourceElement(element);
@@ -125,7 +125,7 @@ public class ContributionHelperImplTestCase extends TestCase {
         QName name = new QName("foo", "plan");
         QNameSymbol symbol = new QNameSymbol(name);
         DeploymentPlan plan = new DeploymentPlan("plan");
-        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<QNameSymbol, DeploymentPlan>(symbol, plan);
+        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<>(symbol, plan);
 
         Resource resource = new Resource(contribution, null, "");
         resource.addResourceElement(element);
@@ -218,7 +218,7 @@ public class ContributionHelperImplTestCase extends TestCase {
     private Composite addComposite(QName name, Contribution contribution) {
         Composite composite = new Composite(name);
         QNameSymbol symbol = new QNameSymbol(name);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         Resource resource = new Resource(contribution, null, "");
         resource.addResourceElement(element);
         contribution.addResource(resource);

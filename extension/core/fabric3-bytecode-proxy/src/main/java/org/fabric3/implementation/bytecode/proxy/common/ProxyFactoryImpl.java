@@ -77,7 +77,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
     private ClassLoaderRegistry classLoaderRegistry;
 
-    private Map<URI, BytecodeClassLoader> classLoaderCache = new HashMap<URI, BytecodeClassLoader>();
+    private Map<URI, BytecodeClassLoader> classLoaderCache = new HashMap<>();
 
     public ProxyFactoryImpl(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
@@ -157,7 +157,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
             mv = cw.visitMethod(ACC_PUBLIC, method.getName(), methodSignature, null, exceptions);
             mv.visitCode();
 
-            List<Label> exceptionLabels = new ArrayList<Label>();
+            List<Label> exceptionLabels = new ArrayList<>();
             Label label2 = new Label();
             Label label3 = new Label();
 
@@ -363,7 +363,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
             mv = cw.visitMethod(ACC_PUBLIC, method.getName(), methodSignature, null, exceptions);
             mv.visitCode();
 
-            List<Label> exceptionLabels = new ArrayList<Label>();
+            List<Label> exceptionLabels = new ArrayList<>();
             Label label2 = new Label();
             Label label3 = new Label();
 

@@ -83,8 +83,8 @@ public class DomainConnectionImpl implements DomainConnection {
     public DomainConnectionImpl() {
         JsonMapperConfigurator configurator = new JsonMapperConfigurator(null, DEFAULT_ANNOTATIONS);
         mapper = configurator.getDefaultMapper();
-        aliases = new LinkedList<String>();
-        addresses = new LinkedList<String>();
+        aliases = new LinkedList<>();
+        addresses = new LinkedList<>();
         aliases.add("default");
         addresses.add(ADDRESS);
     }

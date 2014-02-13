@@ -83,7 +83,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
     private Fabric3TransactionManagerLookup txLookup;
 
     private EmbeddedCacheManager cacheManager;
-    private Map<String, Cache<?, ?>> caches = new ConcurrentHashMap<String, Cache<?, ?>>();
+    private Map<String, Cache<?, ?>> caches = new ConcurrentHashMap<>();
     private String channelConfig;
 
     @Property(required = false)

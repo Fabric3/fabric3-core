@@ -13,7 +13,7 @@ import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateR
  */
 @EagerInit
 public class ConnectionFactoryTemplateRegistryImpl implements ConnectionFactoryTemplateRegistry {
-    private Map<String, ConnectionFactoryConfiguration> templates = new HashMap<String, ConnectionFactoryConfiguration>();
+    private Map<String, ConnectionFactoryConfiguration> templates = new HashMap<>();
 
     public void registerTemplate(ConnectionFactoryConfiguration configuration) {
         templates.put(configuration.getName(), configuration);

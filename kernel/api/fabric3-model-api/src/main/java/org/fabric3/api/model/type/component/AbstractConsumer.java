@@ -59,7 +59,7 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
     private String name;
     private List<DataType<?>> types;
 
-    protected List<URI> sources = new ArrayList<URI>();
+    protected List<URI> sources = new ArrayList<>();
 
     /**
      * Constructor.

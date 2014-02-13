@@ -63,16 +63,16 @@ public class Contribution implements Serializable {
     private String contentType;
     private boolean persistent;
     private ContributionManifest manifest = new ContributionManifest();
-    private List<Resource> resources = new ArrayList<Resource>();
-    private Map<Object, Object> metadata = new HashMap<Object, Object>();
-    private List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
-    private List<URI> resolvedExtensionProviders = new ArrayList<URI>();
+    private List<Resource> resources = new ArrayList<>();
+    private Map<Object, Object> metadata = new HashMap<>();
+    private List<ContributionWire<?, ?>> wires = new ArrayList<>();
+    private List<URI> resolvedExtensionProviders = new ArrayList<>();
 
-    private List<QName> lockOwners = new ArrayList<QName>();
+    private List<QName> lockOwners = new ArrayList<>();
 
     public Contribution(URI uri) {
         this.uri = uri;
-        profiles = new ArrayList<URI>();
+        profiles = new ArrayList<>();
     }
 
     /**
@@ -88,7 +88,7 @@ public class Contribution implements Serializable {
     public Contribution(URI uri, Source source, URL location, long timestamp, String contentType, boolean persistent) {
         this.uri = uri;
         this.source = source;
-        this.profiles = new ArrayList<URI>();
+        this.profiles = new ArrayList<>();
         this.location = location;
         this.timestamp = timestamp;
         this.contentType = contentType;

@@ -101,7 +101,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
     private JmxHelper jmxHelper;
     private String domainName;
 
-    private Set<String> openChannels = new HashSet<String>();
+    private Set<String> openChannels = new HashSet<>();
 
     public WebLogicControllerTopologyService(@Reference CommandExecutorRegistry executorRegistry,
                                              @Reference EventService eventService,
@@ -132,7 +132,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
     }
 
     public List<RuntimeInstance> getRuntimes() {
-        List<RuntimeInstance> instances = new ArrayList<RuntimeInstance>();
+        List<RuntimeInstance> instances = new ArrayList<>();
         try {
             NamingEnumeration<Binding> list = rootContext.listBindings(PARTICIPANT_CONTEXT);
             while (list.hasMore()) {
@@ -183,7 +183,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
         if (channels.isEmpty()) {
             throw new MessageException("No managed servers found to deploy to");
         }
-        List<Response> responses = new ArrayList<Response>();
+        List<Response> responses = new ArrayList<>();
         byte[] payload;
         try {
             payload = serializationService.serialize(command);
@@ -281,7 +281,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
 
     private List<RuntimeChannel> getChannels() throws MessageException {
         try {
-            List<RuntimeChannel> channels = new ArrayList<RuntimeChannel>();
+            List<RuntimeChannel> channels = new ArrayList<>();
             NamingEnumeration<Binding> list = rootContext.listBindings(PARTICIPANT_CONTEXT);
             while (list.hasMore()) {
                 Binding binding = list.next();

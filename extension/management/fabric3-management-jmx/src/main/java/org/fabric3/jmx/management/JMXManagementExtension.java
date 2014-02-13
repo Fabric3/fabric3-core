@@ -124,12 +124,12 @@ public class JMXManagementExtension implements ManagementExtension {
                 // use the instance if it is a Standard MBean
                 managementBean = instance;
             } else {
-                SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(instance);
+                SingletonObjectFactory<Object> factory = new SingletonObjectFactory<>(instance);
                 Class<?> clazz = instance.getClass();
                 ClassLoader loader = clazz.getClassLoader();
 
-                Set<Role> readRoles = new HashSet<Role>();
-                Set<Role> writeRoles = new HashSet<Role>();
+                Set<Role> readRoles = new HashSet<>();
+                Set<Role> writeRoles = new HashSet<>();
                 Management annotation = clazz.getAnnotation(Management.class);
                 if (annotation != null) {
                     String[] readRoleNames = annotation.readRoles();
@@ -223,7 +223,7 @@ public class JMXManagementExtension implements ManagementExtension {
             }
             Signature signature = new Signature(method);
             String[] roleNames = annotation.rolesAllowed();
-            Set<Role> roles = new HashSet<Role>();
+            Set<Role> roles = new HashSet<>();
             for (String name : roleNames) {
                 roles.add(new Role(name));
             }
@@ -264,10 +264,10 @@ public class JMXManagementExtension implements ManagementExtension {
             throws IntrospectionException, ClassNotFoundException, NoSuchMethodException {
         String className = info.getManagementClass();
         Class<?> clazz = loader.loadClass(className);
-        Set<AttributeDescription> attributes = new HashSet<AttributeDescription>();
-        Map<String, MethodHolder> getters = new HashMap<String, MethodHolder>();
-        Map<String, MethodHolder> setters = new HashMap<String, MethodHolder>();
-        Map<OperationKey, MethodHolder> operations = new HashMap<OperationKey, MethodHolder>();
+        Set<AttributeDescription> attributes = new HashSet<>();
+        Map<String, MethodHolder> getters = new HashMap<>();
+        Map<String, MethodHolder> setters = new HashMap<>();
+        Map<OperationKey, MethodHolder> operations = new HashMap<>();
         for (ManagementOperationInfo operationInfo : info.getOperations()) {
             Method method = operationInfo.getSignature().getMethod(clazz);
             String description = operationInfo.getDescription();
@@ -312,7 +312,7 @@ public class JMXManagementExtension implements ManagementExtension {
         MBeanOperationInfo[] mBeanOperations = createOperationInfo(operations);
         String description = info.getDescription();
         MBeanInfo mbeanInfo = new MBeanInfo(className, description, mBeanAttributes, null, mBeanOperations, null);
-        return new OptimizedMBean<T>(objectFactory, mbeanInfo, getters, setters, operations, authorization);
+        return new OptimizedMBean<>(objectFactory, mbeanInfo, getters, setters, operations, authorization);
     }
 
     private MBeanOperationInfo[] createOperationInfo(Map<OperationKey, MethodHolder> operations) {

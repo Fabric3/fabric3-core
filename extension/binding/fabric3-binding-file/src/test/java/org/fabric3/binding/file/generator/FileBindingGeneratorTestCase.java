@@ -68,7 +68,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
                 new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
+        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, service);
 
         FileBindingSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
         assertNotNull(physical.getLocation());
@@ -83,7 +83,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
                 new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
+        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, service);
 
         try {
             generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
@@ -96,7 +96,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
     public void testReferenceGeneration() throws Exception {
         ServiceContract contract = createReferenceContract();
         FileBindingDefinition definition = new FileBindingDefinition("binding", "location", "error");
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, null);
+        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, null);
 
         FileBindingTargetDefinition physical = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
         assertNotNull(physical.getLocation());
@@ -104,20 +104,20 @@ public class FileBindingGeneratorTestCase extends TestCase {
 
     private ServiceContract createServiceContract() {
         ServiceContract contract = new JavaServiceContract(FileTransport.class);
-        DataType inputType = new JavaClass<InputStream>(InputStream.class);
+        DataType inputType = new JavaClass<>(InputStream.class);
         List<DataType<?>> input = Collections.<DataType<?>>singletonList(inputType);
         List<DataType<?>> faultType = Collections.emptyList();
-        DataType<?> outputType = new JavaClass<Void>(Void.class);
+        DataType<?> outputType = new JavaClass<>(Void.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }
 
     private ServiceContract createReferenceContract() {
         ServiceContract contract = new JavaServiceContract(FileReferenceTransport.class);
-        DataType inputType = new JavaClass<String>(String.class);
+        DataType inputType = new JavaClass<>(String.class);
         List<DataType<?>> input = Collections.<DataType<?>>singletonList(inputType);
         List<DataType<?>> faultType = Collections.emptyList();
-        DataType<?> outputType = new JavaClass<OutputStream>(OutputStream.class);
+        DataType<?> outputType = new JavaClass<>(OutputStream.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }

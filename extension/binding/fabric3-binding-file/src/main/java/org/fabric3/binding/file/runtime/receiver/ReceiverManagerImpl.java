@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class ReceiverManagerImpl implements ReceiverManager {
-    private Map<String, FileSystemReceiver> receivers = new ConcurrentHashMap<String, FileSystemReceiver>();
+    private Map<String, FileSystemReceiver> receivers = new ConcurrentHashMap<>();
 
     public void create(ReceiverConfiguration configuration) {
         String id = configuration.getId();

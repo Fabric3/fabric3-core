@@ -96,7 +96,7 @@ public class ChannelInstantiatorImplTestCase extends TestCase {
         composite.add(channel);
 
         URI parentUri = URI.create("parent");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("parent");
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("parent");
         parent = new LogicalCompositeComponent(parentUri, definition, null);
         context = new InstantiationContext();
 

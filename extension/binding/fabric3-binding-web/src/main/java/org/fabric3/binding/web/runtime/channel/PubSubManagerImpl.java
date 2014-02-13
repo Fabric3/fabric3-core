@@ -44,8 +44,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class PubSubManagerImpl implements PubSubManager {
-    private Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<String, ChannelPublisher>();
-    private Map<String, ChannelSubscriber> subscribers = new ConcurrentHashMap<String, ChannelSubscriber>();
+    private Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<>();
+    private Map<String, ChannelSubscriber> subscribers = new ConcurrentHashMap<>();
 
 
     public void register(String path, ChannelPublisher publisher) {

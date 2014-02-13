@@ -73,7 +73,7 @@ public class RepositoryScanner {
     }
 
     private List<ContributionSource> scan(File directory, boolean extension) throws ScanException {
-        List<ContributionSource> sources = new ArrayList<ContributionSource>();
+        List<ContributionSource> sources = new ArrayList<>();
         if (directory == null) {
             return sources;
         }

@@ -81,8 +81,8 @@ public class ZoneResourceService implements ResourceListener {
     private HostInfo info;
     private ParticipantTopologyService topologyService;
 
-    private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
-    private List<ResourceMapping> registered = new ArrayList<ResourceMapping>();
+    private List<ResourceMapping> subresources = new ArrayList<>();
+    private List<ResourceMapping> registered = new ArrayList<>();
 
 
     public ZoneResourceService(@Reference ResourceHost resourceHost, @Reference HostInfo info, @Monitor ZoneResourceMonitor monitor) {

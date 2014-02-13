@@ -72,7 +72,7 @@ import org.oasisopen.sca.annotation.Service;
 public class WebLogicServletHost extends HttpServlet implements ServletHost, ServletRequestDispatcher {
     private static final long serialVersionUID = -3784698338450289318L;
     private MBeanServer mBeanServer;
-    private Map<String, Servlet> servlets = new ConcurrentHashMap<String, Servlet>();
+    private Map<String, Servlet> servlets = new ConcurrentHashMap<>();
     private int httpPort;
     private int httpsPort;
     private AtomicBoolean initialized = new AtomicBoolean();

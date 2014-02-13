@@ -108,7 +108,7 @@ public class MetaDataStoreImplFindReferencesTestCase extends TestCase {
         createContributions();
 
         Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-                new HashMap<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>>();
+                new HashMap<>();
         instantiators.put(QNameImport.class, new QNameWireInstantiator());
         ContributionWireInstantiatorRegistryImpl instantiatorRegistry = new ContributionWireInstantiatorRegistryImpl();
         instantiatorRegistry.setInstantiators(instantiators);
@@ -138,7 +138,7 @@ public class MetaDataStoreImplFindReferencesTestCase extends TestCase {
         Resource resource = new Resource(this.contribution, null, "application/xml");
         QNameSymbol symbol = new QNameSymbol(name);
         Composite composite = new Composite(name);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);
         contribution.addResource(resource);

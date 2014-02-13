@@ -68,12 +68,12 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
             throws PropertyTransformException {
         try {
             Class<?> physical = type.getPhysical();
-            List<Class<?>> types = new ArrayList<Class<?>>();
+            List<Class<?>> types = new ArrayList<>();
             types.add(physical);
             Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, type, types);
             Element element = (Element) value.getDocumentElement().getFirstChild();
             Object instance = transformer.transform(element, classLoader);
-            return new SingletonObjectFactory<Object>(instance);
+            return new SingletonObjectFactory<>(instance);
         } catch (TransformationException e) {
             throw new PropertyTransformException("Unable to transform property value: " + name, e);
         }

@@ -114,7 +114,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         this.destroyInvoker = destroyInvoker;
         this.reinjectable = reinjectable;
         this.cl = cl;
-        factories = new HashMap<Injectable, ObjectFactory<?>>();
+        factories = new HashMap<>();
 
     }
 
@@ -277,7 +277,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
      * @return a map of injectors keyed by InjectableAttribute.
      */
     protected Map<Injectable, Injector<?>> createInjectorMappings() {
-        Map<Injectable, Injector<?>> injectors = new LinkedHashMap<Injectable, Injector<?>>(postConstruction.size());
+        Map<Injectable, Injector<?>> injectors = new LinkedHashMap<>(postConstruction.size());
         for (Map.Entry<InjectionSite, Injectable> entry : postConstruction.entrySet()) {
             InjectionSite site = entry.getKey();
             Injectable attribute = entry.getValue();

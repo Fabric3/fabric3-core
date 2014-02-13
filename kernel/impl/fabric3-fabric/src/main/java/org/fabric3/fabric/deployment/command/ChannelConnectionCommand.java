@@ -57,10 +57,10 @@ public class ChannelConnectionCommand implements CompensatableCommand {
     private List<DetachChannelConnectionCommand> detachCommands;
 
     public ChannelConnectionCommand() {
-        attachCommands = new ArrayList<AttachChannelConnectionCommand>();
-        detachCommands = new ArrayList<DetachChannelConnectionCommand>();
-        buildCommands = new ArrayList<BuildChannelCommand>();
-        disposeCommands = new ArrayList<DisposeChannelCommand>();
+        attachCommands = new ArrayList<>();
+        detachCommands = new ArrayList<>();
+        buildCommands = new ArrayList<>();
+        disposeCommands = new ArrayList<>();
     }
 
     public ChannelConnectionCommand getCompensatingCommand() {

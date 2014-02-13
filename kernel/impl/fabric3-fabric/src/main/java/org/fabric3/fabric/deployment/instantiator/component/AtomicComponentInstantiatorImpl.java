@@ -112,12 +112,12 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             LogicalService logicalService = new LogicalService(serviceUri, service, component);
 
             for (BindingDefinition binding : service.getBindings()) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                 logicalService.addBinding(logicalBinding);
             }
 
             for (BindingDefinition binding : service.getCallbackBindings()) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                 logicalService.addCallbackBinding(logicalBinding);
             }
 
@@ -126,11 +126,11 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             if (componentService != null) {
                 logicalService.addIntents(componentService.getIntents());
                 for (BindingDefinition binding : componentService.getBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                     logicalService.addBinding(logicalBinding);
                 }
                 for (BindingDefinition binding : componentService.getCallbackBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                     logicalService.addCallbackBinding(logicalBinding);
                 }
             }
@@ -149,21 +149,21 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 // reference is configured in the component definition
                 logicalReference.addIntents(componentReference.getIntents());
                 for (BindingDefinition binding : componentReference.getBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addBinding(logicalBinding);
                 }
                 for (BindingDefinition binding : componentReference.getCallbackBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addCallbackBinding(logicalBinding);
                 }
             } else {
                 // check if reference is configured with bindings in the component type
                 for (BindingDefinition binding : reference.getBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addBinding(logicalBinding);
                 }
                 for (BindingDefinition binding : reference.getCallbackBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addCallbackBinding(logicalBinding);
                 }
             }
@@ -244,7 +244,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     private void createResourceReferences(LogicalComponent<?> component, ComponentType componentType) {
         for (ResourceReferenceDefinition resourceReference : componentType.getResourceReferences().values()) {
             URI resourceUri = component.getUri().resolve('#' + resourceReference.getName());
-            LogicalResourceReference<ResourceReferenceDefinition> logicalResourceReference = new LogicalResourceReference<ResourceReferenceDefinition>(
+            LogicalResourceReference<ResourceReferenceDefinition> logicalResourceReference = new LogicalResourceReference<>(
                     resourceUri,
                     resourceReference,
                     component);

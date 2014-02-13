@@ -70,13 +70,13 @@ public class NonBlockingInterceptor implements Interceptor {
         List<CallbackReference> stack = workContext.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
-            newStack = new ArrayList<CallbackReference>(stack);
+            newStack = new ArrayList<>(stack);
         }
         Map<String, Object> newHeaders = null;
         Map<String, Object> headers = workContext.getHeaders();
         if (headers != null && !headers.isEmpty()) {
             // clone the headers to avoid multiple threads seeing changes
-            newHeaders = new HashMap<String, Object>(headers);
+            newHeaders = new HashMap<>(headers);
         }
         SecuritySubject subject = workContext.getSubject();
         Object payload = msg.getBody();

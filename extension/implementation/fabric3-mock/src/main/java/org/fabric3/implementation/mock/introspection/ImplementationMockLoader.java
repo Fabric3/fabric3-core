@@ -84,7 +84,7 @@ public class ImplementationMockLoader implements TypeLoader<ImplementationMock> 
 
         String textualContent = reader.getElementText().trim();
 
-        List<String> mockedInterfaces = new ArrayList<String>();
+        List<String> mockedInterfaces = new ArrayList<>();
 
         StringTokenizer tok = new StringTokenizer(textualContent);
         while (tok.hasMoreElements()) {

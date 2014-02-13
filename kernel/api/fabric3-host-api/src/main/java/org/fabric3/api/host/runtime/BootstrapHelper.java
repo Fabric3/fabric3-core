@@ -216,7 +216,7 @@ public final class BootstrapHelper {
         File tempDir = getDirectory(runtimeDir, "tmp");
         File dataDir = getDirectory(runtimeDir, "data");
         File deployDir = new File(runtimeDir, "deploy");
-        List<File> deployDirs = new ArrayList<File>();
+        List<File> deployDirs = new ArrayList<>();
         for (File directory : deployDirectories) {
             if (!directory.isAbsolute()) {
                 directory = new File(runtimeDir, directory.getName());

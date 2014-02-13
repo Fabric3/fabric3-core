@@ -100,7 +100,7 @@ public class JavaComponentDefinitionBuilder extends ComponentDefinitionBuilder<J
         JavaImplementation implementation = new JavaImplementation(instance);
         implementation.setComponentType(componentType);
         implementation.setImplementationClass(className);
-        definition = new ComponentDefinition<JavaImplementation>(name);
+        definition = new ComponentDefinition<>(name);
         definition.setImplementation(implementation);
     }
 
@@ -110,7 +110,7 @@ public class JavaComponentDefinitionBuilder extends ComponentDefinitionBuilder<J
         JavaImplementation implementation = new JavaImplementation();
         implementation.setImplementationClass(className);
         implementation.setComponentType(componentType);
-        definition = new ComponentDefinition<JavaImplementation>(name);
+        definition = new ComponentDefinition<>(name);
         definition.setImplementation(implementation);
     }
 

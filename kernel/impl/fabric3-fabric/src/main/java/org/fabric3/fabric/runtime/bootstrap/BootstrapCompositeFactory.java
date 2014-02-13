@@ -181,7 +181,7 @@ public class BootstrapCompositeFactory {
         Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
         QName compositeName = composite.getName();
         QNameSymbol symbol = new QNameSymbol(compositeName);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);
         contribution.addResource(resource);

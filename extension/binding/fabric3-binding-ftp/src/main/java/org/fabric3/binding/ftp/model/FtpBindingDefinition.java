@@ -51,7 +51,7 @@ public class FtpBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -889044951554792780L;
 
     private final TransferMode transferMode;
-    private List<String> commands = new ArrayList<String>();
+    private List<String> commands = new ArrayList<>();
     private String tmpFileSuffix;
 
     /**

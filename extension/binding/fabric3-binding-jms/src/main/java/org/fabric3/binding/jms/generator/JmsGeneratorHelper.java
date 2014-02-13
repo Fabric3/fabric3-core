@@ -105,7 +105,7 @@ public class JmsGeneratorHelper {
     }
 
     public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, JmsBindingDefinition definition) {
-        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<PhysicalBindingHandlerDefinition>();
+        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<>();
         for (BindingHandlerDefinition handlerDefinition : definition.getHandlers()) {
             // URIs specified in handler elements in a composite are relative and must be made absolute
             URI resolvedUri = URI.create(domainUri.toString() + "/" + handlerDefinition.getTarget());

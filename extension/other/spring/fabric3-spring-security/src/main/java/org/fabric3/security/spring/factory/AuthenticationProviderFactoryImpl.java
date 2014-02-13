@@ -78,7 +78,7 @@ public class AuthenticationProviderFactoryImpl implements AuthenticationProvider
     }
 
     public List<AuthenticationProvider> create(AuthenticationManagerConfiguration configuration) {
-        List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
+        List<AuthenticationProvider> providers = new ArrayList<>();
         BaseLdapPathContextSource contextSource = null;
         LdapServerConfiguration ldapServerConfiguration = configuration.getLdapServerConfiguration();
         if (ldapServerConfiguration != null) {

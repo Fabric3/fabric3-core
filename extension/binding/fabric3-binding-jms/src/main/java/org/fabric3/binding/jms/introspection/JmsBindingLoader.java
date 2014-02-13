@@ -606,7 +606,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         }
 
         // validate operation properties
-        Set<String> seen = new HashSet<String>();
+        Set<String> seen = new HashSet<>();
         for (OperationPropertiesDefinition entry : metadata.getOperationProperties().values()) {
             String name = entry.getSelectedOperation();
             if (seen.contains(name)) {

@@ -214,7 +214,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         ComponentType type = new ComponentType();
         MockImplementation implementation = new MockImplementation();
         implementation.setComponentType(type);
-        component = new ComponentDefinition<MockImplementation>("component");
+        component = new ComponentDefinition<>("component");
         component.setImplementation(implementation);
 
         createService(component);
@@ -224,7 +224,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         createResource(component);
 
         URI parentUri = URI.create("parent");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("parent");
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("parent");
         parent = new LogicalCompositeComponent(parentUri, definition, null);
 
         context = new InstantiationContext();

@@ -120,7 +120,7 @@ public class AbstractPolicyResolverTestCase extends TestCase {
     }
 
     public void testFilterMutuallyExclusiveIntents() throws Exception {
-        Set<Intent> intents = new LinkedHashSet<Intent>();
+        Set<Intent> intents = new LinkedHashSet<>();
         QName intent1Name = new QName("foo", "bar");
         QName intent2Name = new QName("foo", "baz");
         Intent intent1 = new Intent(intent1Name, null, null, null, true, Collections.singleton(intent2Name), null, false);

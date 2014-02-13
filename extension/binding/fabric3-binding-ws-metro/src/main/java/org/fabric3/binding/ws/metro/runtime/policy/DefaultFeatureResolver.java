@@ -73,7 +73,7 @@ public class DefaultFeatureResolver implements FeatureResolver {
      * @return Resolved feature sets.
      */
     public WebServiceFeature[] getFeatures(List<QName> requestedIntents) {
-        List<WebServiceFeature> features = new LinkedList<WebServiceFeature>();
+        List<WebServiceFeature> features = new LinkedList<>();
         if (requestedIntents.contains(MayProvideIntents.MESSAGE_OPTIMIZATION)) {
             features.add(new MTOMFeature());
         }

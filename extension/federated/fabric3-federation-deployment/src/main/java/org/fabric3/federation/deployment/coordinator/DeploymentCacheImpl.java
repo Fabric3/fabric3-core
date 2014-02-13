@@ -47,7 +47,7 @@ import org.fabric3.federation.deployment.command.DeploymentCommand;
  *
  */
 public class DeploymentCacheImpl implements DeploymentCache {
-    private LinkedList<DeploymentCommand> history = new LinkedList<DeploymentCommand>();
+    private LinkedList<DeploymentCommand> history = new LinkedList<>();
     private int threshold = 3;
 
     public synchronized void cache(DeploymentCommand command) {

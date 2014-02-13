@@ -49,7 +49,7 @@ public class ParamTypes {
     public static final Map<Class<?>, Class<?>> PRIMITIVE_TO_OBJECT;
 
     static {
-        PRIMITIVES_TYPES = new HashMap<String, Class<?>>();
+        PRIMITIVES_TYPES = new HashMap<>();
         PRIMITIVES_TYPES.put("void", Void.class);
         PRIMITIVES_TYPES.put("boolean", Boolean.TYPE);
         PRIMITIVES_TYPES.put("byte", Byte.TYPE);
@@ -60,7 +60,7 @@ public class ParamTypes {
         PRIMITIVES_TYPES.put("double", Double.TYPE);
         PRIMITIVES_TYPES.put("char", Character.TYPE);
 
-        PRIMITIVE_TO_OBJECT = new HashMap<Class<?>, Class<?>>();
+        PRIMITIVE_TO_OBJECT = new HashMap<>();
         PRIMITIVE_TO_OBJECT.put(Void.TYPE, Void.class);
         PRIMITIVE_TO_OBJECT.put(Boolean.TYPE, Boolean.class);
         PRIMITIVE_TO_OBJECT.put(Byte.TYPE, Byte.class);

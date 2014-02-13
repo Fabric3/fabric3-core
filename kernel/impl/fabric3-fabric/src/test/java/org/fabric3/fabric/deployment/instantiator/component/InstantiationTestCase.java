@@ -137,7 +137,7 @@ public class InstantiationTestCase extends TestCase {
         MockImplementation childImp = new MockImplementation();
         childImp.setComponentType(childType);
         ComponentDefinition<MockImplementation> child =
-                new ComponentDefinition<MockImplementation>("child");
+                new ComponentDefinition<>("child");
         child.setImplementation(childImp);
 
         Composite type = new Composite(null);
@@ -145,7 +145,7 @@ public class InstantiationTestCase extends TestCase {
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(type);
         ComponentDefinition<CompositeImplementation> definition =
-                new ComponentDefinition<CompositeImplementation>("component");
+                new ComponentDefinition<>("component");
         definition.setImplementation(implementation);
         return definition;
 
@@ -161,7 +161,7 @@ public class InstantiationTestCase extends TestCase {
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(type);
         ComponentDefinition<CompositeImplementation> definition =
-                new ComponentDefinition<CompositeImplementation>("component");
+                new ComponentDefinition<>("component");
         definition.setImplementation(implementation);
         return definition;
 

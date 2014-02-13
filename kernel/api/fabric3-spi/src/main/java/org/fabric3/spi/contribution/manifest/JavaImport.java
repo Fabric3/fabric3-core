@@ -69,7 +69,7 @@ public class JavaImport implements Import {
         }
         this.packageInfo = packageInfo;
         this.location = location;
-        resolved = new HashMap<URI, Export>();
+        resolved = new HashMap<>();
     }
 
     public QName getType() {

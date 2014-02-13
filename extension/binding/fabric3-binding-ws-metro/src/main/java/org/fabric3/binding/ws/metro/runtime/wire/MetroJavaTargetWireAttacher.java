@@ -190,7 +190,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
     }
 
     private List<URL> cacheSchemas(URI servicePath, MetroJavaTargetDefinition target) throws CacheException {
-        List<URL> schemas = new ArrayList<URL>();
+        List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : target.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
             ByteArrayInputStream bas = new ByteArrayInputStream(entry.getValue().getBytes());

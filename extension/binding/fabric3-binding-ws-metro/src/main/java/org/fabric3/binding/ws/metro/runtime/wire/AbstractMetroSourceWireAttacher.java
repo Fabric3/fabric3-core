@@ -76,7 +76,7 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefin
         if (source.getHandlers().isEmpty() && !source.isBidirectional()) {
             return null;
         }
-        List<Handler> handlers = new ArrayList<Handler>();
+        List<Handler> handlers = new ArrayList<>();
 
         if (source.isBidirectional()) {
             ServiceCallbackAddressHandler callbackHandler = new ServiceCallbackAddressHandler();

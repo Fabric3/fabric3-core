@@ -63,7 +63,7 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
 
     private TransformerRegistry registry;
     private Transformer<Object, String> jsonTransformer;
-    private Map<String, Broadcaster> broadcasters = new ConcurrentHashMap<String, Broadcaster>();
+    private Map<String, Broadcaster> broadcasters = new ConcurrentHashMap<>();
 
     public BroadcasterManagerImpl(@Reference TransformerRegistry registry) {
         this.registry = registry;
@@ -105,7 +105,7 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
             return;
         }
         try {
-            JavaClass<Object> javaType = new JavaClass<Object>(Object.class);
+            JavaClass<Object> javaType = new JavaClass<>(Object.class);
             List<Class<?>> list = Collections.emptyList();
             jsonTransformer = (Transformer<Object, String>) registry.getTransformer(javaType, JSON_TYPE, list, list);
             if (jsonTransformer == null) {

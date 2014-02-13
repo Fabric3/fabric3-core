@@ -54,7 +54,7 @@ public class DepthFirstTraverserImpl<T> implements DepthFirstTraverser<T> {
     }
 
     public List<Vertex<T>> traversePath(DirectedGraph<T> graph, Vertex<T> start, Vertex<T> end) {
-        TerminatingVisitor<T> visitor = new TerminatingVisitor<T>(end);
+        TerminatingVisitor<T> visitor = new TerminatingVisitor<>(end);
         List<Vertex<T>> path = traverse(graph, start, visitor);
         if (visitor.wasFound()) {
             return path;
@@ -63,9 +63,9 @@ public class DepthFirstTraverserImpl<T> implements DepthFirstTraverser<T> {
     }
 
     private List<Vertex<T>> traverse(DirectedGraph<T> graph, Vertex<T> start, Visitor<T> visitor) {
-        List<Vertex<T>> visited = new ArrayList<Vertex<T>>();
-        List<Vertex<T>> stack = new ArrayList<Vertex<T>>();
-        Set<Vertex<T>> seen = new HashSet<Vertex<T>>(visited);
+        List<Vertex<T>> visited = new ArrayList<>();
+        List<Vertex<T>> stack = new ArrayList<>();
+        Set<Vertex<T>> seen = new HashSet<>(visited);
         stack.add(start);
         seen.add(start);
         do {

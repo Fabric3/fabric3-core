@@ -79,8 +79,8 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
 
     private final URI name;
 
-    private final List<ClassLoader> parents = new CopyOnWriteArrayList<ClassLoader>();
-    private final List<MultiParentClassLoader> extensions = new CopyOnWriteArrayList<MultiParentClassLoader>();
+    private final List<ClassLoader> parents = new CopyOnWriteArrayList<>();
+    private final List<MultiParentClassLoader> extensions = new CopyOnWriteArrayList<>();
 
     /**
      * Constructs a classloader with a name and a single parent.
@@ -156,7 +156,7 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
         if (sm != null) {
             sm.checkPermission(SecurityConstants.GET_CLASSLOADER_PERMISSION);
         }
-        List<ClassLoader> list = new ArrayList<ClassLoader>();
+        List<ClassLoader> list = new ArrayList<>();
         if (getParent() != null) {
             list.add(getParent());
         }
@@ -283,7 +283,7 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
 
     public Enumeration<URL> findResources(String name) throws IOException {
         // LinkedHashSet because we want all resources in the order found but no duplicates
-        Set<URL> resources = new LinkedHashSet<URL>();
+        Set<URL> resources = new LinkedHashSet<>();
         for (ClassLoader parent : parents) {
             Enumeration<URL> parentResources = parent.getResources(name);
             while (parentResources.hasMoreElements()) {

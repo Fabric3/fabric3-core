@@ -92,7 +92,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     @SuppressWarnings({"unchecked"})
     public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels)
             throws GenerationException {
-        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
+        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<>();
 
         LogicalComponent<?> component = producer.getParent();
         ComponentGenerator<?> componentGenerator = getGenerator(component);
@@ -125,7 +125,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
     public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels)
             throws GenerationException {
-        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
+        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<>();
         LogicalComponent<?> component = consumer.getParent();
 
         ComponentGenerator<?> generator = getGenerator(component);

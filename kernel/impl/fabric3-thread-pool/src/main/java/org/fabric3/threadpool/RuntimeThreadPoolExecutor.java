@@ -90,7 +90,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private boolean statisticsOff = true;
 
     // queue of in-flight work
-    private ConcurrentLinkedQueue<Runnable> inFlight = new ConcurrentLinkedQueue<Runnable>();
+    private ConcurrentLinkedQueue<Runnable> inFlight = new ConcurrentLinkedQueue<>();
 
     // statistics
     private AtomicLong totalExecutionTime = new AtomicLong();
@@ -301,10 +301,10 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         }
         if (queueSize > 0) {
             // create a bounded queue to accept work
-            queue = new LinkedBlockingQueue<Runnable>(queueSize);
+            queue = new LinkedBlockingQueue<>(queueSize);
         } else {
             // create an unbounded queue to accept work
-            queue = new LinkedBlockingQueue<Runnable>();
+            queue = new LinkedBlockingQueue<>();
         }
         RuntimeThreadFactory factory = new RuntimeThreadFactory(monitor);
         delegate = new ThreadPoolExecutor(coreSize, maximumSize, Long.MAX_VALUE, TimeUnit.SECONDS, queue, factory);

@@ -101,7 +101,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
         }
 
         String targetAttribute = reader.getAttributeValue(null, "source");
-        List<URI> sources = new ArrayList<URI>();
+        List<URI> sources = new ArrayList<>();
         ComponentConsumer consumer = new ComponentConsumer(name);
         try {
             if (targetAttribute != null) {

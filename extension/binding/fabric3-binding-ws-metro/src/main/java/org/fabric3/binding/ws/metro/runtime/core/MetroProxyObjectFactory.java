@@ -261,7 +261,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             // Locate the service name by looking up the port type.
             // Use a Set to filter duplicate service names in the case that multiple ports from the same service use the same portType.
             // In that case, the service can be computed
-            Set<QName> found = new HashSet<QName>();
+            Set<QName> found = new HashSet<>();
             stream = wsdlLocation.openStream();
             StreamSource source = new StreamSource(stream);
             WSDLModel model = RuntimeWSDLParser.parse(wsdlLocation, source, RESOLVER, false, null);

@@ -52,8 +52,8 @@ public class WebComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 2871569095506575868L;
     private String contextUrl;
     // map of resource id to injection site name/InjectionSite pair
-    private Map<String, Map<String, InjectionSite>> injectionSiteMappings = new HashMap<String, Map<String, InjectionSite>>();
-    private final Map<String, Document> propertyValues = new HashMap<String, Document>();
+    private Map<String, Map<String, InjectionSite>> injectionSiteMappings = new HashMap<>();
+    private final Map<String, Document> propertyValues = new HashMap<>();
 
     public Map<String, Map<String, InjectionSite>> getInjectionSiteMappings() {
         return injectionSiteMappings;

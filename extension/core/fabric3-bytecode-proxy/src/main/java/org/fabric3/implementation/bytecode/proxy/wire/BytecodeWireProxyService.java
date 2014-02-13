@@ -85,7 +85,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         Method[] methods = mappings.keySet().toArray(new Method[mappings.size()]);
         InvocationChain[] chains = mappings.values().toArray(new InvocationChain[mappings.size()]);
 
-        return new WireProxyObjectFactory<T>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
+        return new WireProxyObjectFactory<>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
@@ -98,7 +98,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         InvocationChain[] chains = mappings.values().toArray(new InvocationChain[mappings.size()]);
 
         String callbackString = callbackUri.toString();
-        return new CallbackWireObjectFactory<T>(uri, interfaze, methods, callbackString, chains, proxyFactory);
+        return new CallbackWireObjectFactory<>(uri, interfaze, methods, callbackString, chains, proxyFactory);
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
@@ -127,7 +127,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
     }
 
     private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws ProxyCreationException {
-        Map<Method, InvocationChain> chainMappings = new HashMap<Method, InvocationChain>(chains.size());
+        Map<Method, InvocationChain> chainMappings = new HashMap<>(chains.size());
         for (InvocationChain chain : chains) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             try {
@@ -140,13 +140,13 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
             }
         }
 
-        Map<String, Method> sorted = new TreeMap<String, Method>();
+        Map<String, Method> sorted = new TreeMap<>();
         for (Method method : chainMappings.keySet()) {
             String key = new Signature(method).toString();
             sorted.put(key, method);
         }
 
-        Map<Method, InvocationChain> result = new LinkedHashMap<Method, InvocationChain>();
+        Map<Method, InvocationChain> result = new LinkedHashMap<>();
         for (Method method : sorted.values()) {
             result.put(method, chainMappings.get(method));
         }

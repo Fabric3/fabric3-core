@@ -47,8 +47,8 @@ import java.util.Map;
  *
  */
 public class FilterRegistryImpl implements FilterRegistry {
-    private Map<URI, Object> globalFilters = new HashMap<URI, Object>();
-    private Map<Class<? extends Annotation>, Map<URI, Object>> namedFilters = new HashMap<Class<? extends Annotation>, Map<URI, Object>>();
+    private Map<URI, Object> globalFilters = new HashMap<>();
+    private Map<Class<? extends Annotation>, Map<URI, Object>> namedFilters = new HashMap<>();
 
     public void registerGlobalFilter(URI uri, Object filter) {
         globalFilters.put(uri, filter);
@@ -61,7 +61,7 @@ public class FilterRegistryImpl implements FilterRegistry {
     public void registerNameFilter(URI filterUri, Class<? extends Annotation> annotation, Object filter) {
         Map<URI, Object> map = namedFilters.get(annotation);
         if (map == null) {
-            map = new HashMap<URI, Object>();
+            map = new HashMap<>();
             namedFilters.put(annotation, map);
         }
         map.put(filterUri, filter);

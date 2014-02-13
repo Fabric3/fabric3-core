@@ -69,7 +69,7 @@ public class EventHandlerHelperTestCase extends TestCase {
 
         EasyMock.replay(conn1, conn2, conn3, stream);
 
-        List<ChannelConnection> connections = new ArrayList<ChannelConnection>();
+        List<ChannelConnection> connections = new ArrayList<>();
         connections.add(conn1);
         connections.add(conn2);
         connections.add(conn3);

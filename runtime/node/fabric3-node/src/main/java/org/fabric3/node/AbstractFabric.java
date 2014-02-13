@@ -98,10 +98,10 @@ public abstract class AbstractFabric implements Fabric {
 
     private Domain domain;
 
-    private Set<String> extensions = new HashSet<String>();
-    private Set<Source> profileLocations = new HashSet<Source>();
-    private Set<String> profiles = new HashSet<String>();
-    private Set<Source> extensionLocations = new HashSet<Source>();
+    private Set<String> extensions = new HashSet<>();
+    private Set<Source> profileLocations = new HashSet<>();
+    private Set<String> profiles = new HashSet<>();
+    private Set<Source> extensionLocations = new HashSet<>();
 
     /**
      * Constructor.
@@ -352,8 +352,8 @@ public abstract class AbstractFabric implements Fabric {
                 throw new ScanException("Core extension archive not found");
             }
 
-            List<ContributionSource> sources = new ArrayList<ContributionSource>();
-            List<File> extensionsFiles = new ArrayList<File>();
+            List<ContributionSource> sources = new ArrayList<>();
+            List<File> extensionsFiles = new ArrayList<>();
 
             for (File extension : archives) {
                 // if profiles and/or extensions are explicitly configured, only load the core Fabric extensions and ignore all other extensions/profiles on

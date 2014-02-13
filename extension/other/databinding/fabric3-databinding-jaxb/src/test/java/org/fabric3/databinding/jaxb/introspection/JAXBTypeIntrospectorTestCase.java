@@ -75,9 +75,9 @@ public class JAXBTypeIntrospectorTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     private Operation createOperation(String name, Class<?> paramType) {
         JavaClass<?> type = new JavaClass(paramType);
-        List<DataType<?>> in = new ArrayList<DataType<?>>();
+        List<DataType<?>> in = new ArrayList<>();
         in.add(type);
-        JavaClass<Void> outputType = new JavaClass<Void>(Void.class);
+        JavaClass<Void> outputType = new JavaClass<>(Void.class);
         return new Operation(name, in, outputType, null);
     }
 

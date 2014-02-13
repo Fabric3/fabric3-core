@@ -57,9 +57,9 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
  * requests so that management extensions which come online after an export request has been made will receive that request.
  */
 public class DelegatingManagementService implements ManagementService {
-    private Map<String, ManagementExtension> extensions = new HashMap<String, ManagementExtension>();
-    private List<ComponentHolder> componentHolders = new ArrayList<ComponentHolder>();
-    private List<InstanceHolder> instanceHolders = new ArrayList<InstanceHolder>();
+    private Map<String, ManagementExtension> extensions = new HashMap<>();
+    private List<ComponentHolder> componentHolders = new ArrayList<>();
+    private List<InstanceHolder> instanceHolders = new ArrayList<>();
 
     /**
      * Setter to allow for reinjection of new management extensions.
@@ -162,7 +162,7 @@ public class DelegatingManagementService implements ManagementService {
         private ManagementInfo info;
         private ObjectFactory objectFactory;
         private ClassLoader classLoader;
-        private List<String> registered = new ArrayList<String>();
+        private List<String> registered = new ArrayList<>();
 
         public ComponentHolder(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) {
             this.componentUri = componentUri;
@@ -177,7 +177,7 @@ public class DelegatingManagementService implements ManagementService {
         private String group;
         private String description;
         private Object instance;
-        private List<String> registered = new ArrayList<String>();
+        private List<String> registered = new ArrayList<>();
 
         private InstanceHolder(String name, String group, String description, Object instance) {
             this.name = name;

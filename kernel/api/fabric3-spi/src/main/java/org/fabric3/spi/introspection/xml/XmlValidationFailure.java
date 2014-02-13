@@ -65,7 +65,7 @@ public abstract class XmlValidationFailure extends ValidationFailure {
             offset = location.getCharacterOffset();
             resourceURI = location.getSystemId();
         }
-        this.sources = new ArrayList<Object>();
+        this.sources = new ArrayList<>();
         if (sources != null) {
             this.sources.addAll(Arrays.asList(sources));
         }

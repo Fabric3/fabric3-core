@@ -62,7 +62,7 @@ import org.fabric3.api.host.runtime.ParseException;
 @Service(DelegatingJmxAuthenticator.class)
 public class DelegatingJmxAuthenticator implements JMXAuthenticator {
     private JmxSecurity security = JmxSecurity.DISABLED;
-    private Set<Role> roles = new HashSet<Role>();
+    private Set<Role> roles = new HashSet<>();
     private JMXAuthenticator delegate;
 
     @Property(required = false)

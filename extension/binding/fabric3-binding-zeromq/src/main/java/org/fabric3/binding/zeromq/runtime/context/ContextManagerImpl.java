@@ -52,7 +52,7 @@ public class ContextManagerImpl implements ContextManager {
     private ZMQ.Socket controlSocket;
 
     // client leases
-    private Set<String> leases = new ConcurrentSkipListSet<String>();
+    private Set<String> leases = new ConcurrentSkipListSet<>();
 
     // object monitor used as a sync for closing the ZeroMQ context after all open sockets have been closed
     private final Object termMonitor = new Object();

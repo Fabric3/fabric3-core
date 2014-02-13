@@ -218,14 +218,14 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
     }
 
     public void testGetInjectionFields() throws NoSuchFieldException {
-        Set<Field> expected = new HashSet<Field>();
+        Set<Field> expected = new HashSet<>();
         expected.add(InjectionBase.class.getDeclaredField("publicBase"));
         expected.add(InjectionBase.class.getDeclaredField("protectedBase"));
         assertEquals(expected, helper.getInjectionFields(InjectionBase.class));
     }
 
     public void testGetInjectionFieldsOnSubclass() throws NoSuchFieldException {
-        Set<Field> expected = new HashSet<Field>();
+        Set<Field> expected = new HashSet<>();
         expected.add(InjectionBase.class.getDeclaredField("publicBase"));
         expected.add(InjectionSubClass.class.getDeclaredField("publicSub"));
         expected.add(InjectionSubClass.class.getDeclaredField("protectedBase"));
@@ -233,7 +233,7 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
     }
 
     public void testGetInjectionMethods() throws NoSuchMethodException {
-        Set<Method> expected = new HashSet<Method>();
+        Set<Method> expected = new HashSet<>();
         expected.add(InjectionBase.class.getDeclaredMethod("setPublicBase", int.class));
         expected.add(InjectionBase.class.getDeclaredMethod("setPublicOverride", int.class));
         expected.add(InjectionBase.class.getDeclaredMethod("setProtectedBase", int.class));
@@ -242,7 +242,7 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
     }
 
     public void testGetInjectionMethodsOnSubclass() throws NoSuchMethodException {
-        Set<Method> expected = new HashSet<Method>();
+        Set<Method> expected = new HashSet<>();
         expected.add(InjectionBase.class.getDeclaredMethod("setPublicBase", int.class));
         expected.add(InjectionBase.class.getDeclaredMethod("setProtectedBase", int.class));
         expected.add(InjectionSubClass.class.getDeclaredMethod("setPublicOverride", int.class));
@@ -253,7 +253,7 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
 
     public void testGetInjectionMethodsExcludesService() throws NoSuchMethodException {
         Set<Method> expected = Collections.emptySet();
-        Set<AbstractService> services = new HashSet<AbstractService>();
+        Set<AbstractService> services = new HashSet<>();
         IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(InterfaceWithSetter.class, mapping);

@@ -59,8 +59,8 @@ public class ConnectionCommand implements CompensatableCommand {
     }
 
     protected ConnectionCommand() {
-        attachCommands = new ArrayList<AttachWireCommand>();
-        detachCommands = new ArrayList<DetachWireCommand>();
+        attachCommands = new ArrayList<>();
+        detachCommands = new ArrayList<>();
     }
 
     public ConnectionCommand getCompensatingCommand() {

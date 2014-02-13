@@ -90,14 +90,14 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         this.waitStrategy = waitStrategy;
         this.channelSide = channelSide;
         this.executorService = executorService;
-        subscribers = new HashMap<URI, ChannelConnection>();
-        sequences = new HashMap<URI, Sequence>();
+        subscribers = new HashMap<>();
+        sequences = new HashMap<>();
     }
 
     @SuppressWarnings("unchecked")
     public void start() {
         ProducerType producerType = numberProducers > 1 ? ProducerType.MULTI : ProducerType.SINGLE;
-        disruptor = new Disruptor<RingBufferEvent>(EVENT_FACTORY, size, executorService, producerType, waitStrategy);
+        disruptor = new Disruptor<>(EVENT_FACTORY, size, executorService, producerType, waitStrategy);
 
         Map<Integer, List<EventHandler<RingBufferEvent>>> sorted = EventHandlerHelper.createAndSort(subscribers.values());
 
@@ -157,7 +157,7 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
             // ring buffer already started, add dynamically
             ChannelEventHandler handler = new ChannelEventHandler(connection);
             SequenceBarrier barrier = ringBuffer.newBarrier();
-            BatchEventProcessor<RingBufferEvent> processor = new BatchEventProcessor<RingBufferEvent>(ringBuffer, barrier, handler);
+            BatchEventProcessor<RingBufferEvent> processor = new BatchEventProcessor<>(ringBuffer, barrier, handler);
             Sequence sequence = processor.getSequence();
             sequenceGroup.addWhileRunning(ringBuffer, sequence);
             executorService.execute(processor);

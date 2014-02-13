@@ -156,7 +156,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      */
     private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader)
             throws InterceptorCreationException {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadSourceOutputType(definition, loader);
             types.add(outParam);
@@ -180,7 +180,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      */
     private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader)
             throws InterceptorCreationException {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
             types.add(outParam);

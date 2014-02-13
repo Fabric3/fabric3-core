@@ -60,7 +60,7 @@ public class DelegatingDestinationRouter implements DestinationRouter {
     private List<Entry> cache;
 
     public DelegatingDestinationRouter() {
-        cache = new ArrayList<Entry>();
+        cache = new ArrayList<>();
     }
 
     @Reference(required = false)

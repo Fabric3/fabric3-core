@@ -53,6 +53,6 @@ public class JDKInstantiatorFactory implements InstantiatorFactory {
     }
 
     public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return new ReflectiveObjectFactory<T>(constructor, parameterFactories);
+        return new ReflectiveObjectFactory<>(constructor, parameterFactories);
     }
 }

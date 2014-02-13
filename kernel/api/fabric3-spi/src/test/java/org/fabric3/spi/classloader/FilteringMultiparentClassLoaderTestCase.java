@@ -51,21 +51,21 @@ public class FilteringMultiparentClassLoaderTestCase extends TestCase {
     private static final URI NAME = URI.create("test");
 
     public void testAllowPackage() throws Exception {
-        Set<String> filters = new HashSet<String>();
+        Set<String> filters = new HashSet<>();
         filters.add(this.getClass().getPackage().getName() + ".*");
         FilteringMultiparentClassLoader cl = new FilteringMultiparentClassLoader(NAME, getClass().getClassLoader(), filters);
         assertNotNull(cl.loadClass(this.getClass().getName()));
     }
 
     public void testAllowWildcardPackage() throws Exception {
-        Set<String> filters = new HashSet<String>();
+        Set<String> filters = new HashSet<>();
         filters.add("org.fabric3.*");
         FilteringMultiparentClassLoader cl = new FilteringMultiparentClassLoader(NAME, getClass().getClassLoader(), filters);
         assertNotNull(cl.loadClass(this.getClass().getName()));
     }
 
     public void testDisAllowParentPackage() throws Exception {
-        Set<String> filters = new HashSet<String>();
+        Set<String> filters = new HashSet<>();
         filters.add("org.fabric3.jpa.someother.*");
         FilteringMultiparentClassLoader cl = new FilteringMultiparentClassLoader(NAME, getClass().getClassLoader(), filters);
         try {

@@ -86,7 +86,7 @@ public class ManagementOperationProcessor extends AbstractAnnotationProcessor<Ma
             description = null;
         }
         Signature signature = new Signature(method);
-        Set<Role> roles = new HashSet<Role>();
+        Set<Role> roles = new HashSet<>();
         for (String roleName : annotation.rolesAllowed()) {
             roles.add(new Role(roleName));
         }

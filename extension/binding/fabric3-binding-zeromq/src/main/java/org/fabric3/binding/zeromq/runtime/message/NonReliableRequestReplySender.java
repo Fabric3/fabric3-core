@@ -97,8 +97,8 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
         multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.XREQ, metadata);
-        queue = new LinkedBlockingQueue<Request>();
-        pollers = new ConcurrentHashMap<Socket, ZMQ.Poller>();
+        queue = new LinkedBlockingQueue<>();
+        pollers = new ConcurrentHashMap<>();
     }
 
     public void start() {
@@ -200,7 +200,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                     reconnect();
 
                     // handle pending requests
-                    List<Request> drained = new ArrayList<Request>();
+                    List<Request> drained = new ArrayList<>();
                     Request value = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
                     if (SHUTDOWN == value) {
                         multiplexer.close();

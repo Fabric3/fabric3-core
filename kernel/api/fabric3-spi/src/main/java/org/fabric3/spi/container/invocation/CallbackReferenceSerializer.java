@@ -89,7 +89,7 @@ public class CallbackReferenceSerializer {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         DataInputStream dis = new DataInputStream(bis);
         int number = dis.readInt();
-        List<CallbackReference> references = new ArrayList<CallbackReference>(number);
+        List<CallbackReference> references = new ArrayList<>(number);
         while (number > 0) {
             String correlationId = null;
             int correlationSize = dis.readInt();
@@ -112,7 +112,7 @@ public class CallbackReferenceSerializer {
     }
 
     public static List<CallbackReference> deserialize(String serialized) throws IOException {
-        List<CallbackReference> references = new ArrayList<CallbackReference>();
+        List<CallbackReference> references = new ArrayList<>();
         String[] tokens = serialized.split(",");
         for (int i = 0; i < tokens.length; i = i + 2) {
             String callbackUri = tokens[i + 1];

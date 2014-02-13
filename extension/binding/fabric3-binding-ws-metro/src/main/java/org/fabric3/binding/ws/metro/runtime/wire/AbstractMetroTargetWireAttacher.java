@@ -69,7 +69,7 @@ public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDe
         if (target.getHandlers().isEmpty() && !target.isBidirectional() && !target.isCallback()) {
             return null;
         }
-        List<Handler> handlers = new ArrayList<Handler>();
+        List<Handler> handlers = new ArrayList<>();
 
         if (target.isBidirectional()) {
             ReferenceCallbackAddressHandler callbackHandler = new ReferenceCallbackAddressHandler(target.getCallbackUri(), endpointService);

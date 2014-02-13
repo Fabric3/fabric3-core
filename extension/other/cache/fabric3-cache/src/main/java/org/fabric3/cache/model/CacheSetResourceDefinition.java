@@ -49,7 +49,7 @@ import org.fabric3.api.model.type.component.ResourceDefinition;
 public class CacheSetResourceDefinition extends ResourceDefinition {
     private static final long serialVersionUID = 319475664996240639L;
 
-    private List<CacheResourceDefinition> configurations = new ArrayList<CacheResourceDefinition>();
+    private List<CacheResourceDefinition> configurations = new ArrayList<>();
 
     public void addDefinition(CacheResourceDefinition configuration) {
         configurations.add(configuration);

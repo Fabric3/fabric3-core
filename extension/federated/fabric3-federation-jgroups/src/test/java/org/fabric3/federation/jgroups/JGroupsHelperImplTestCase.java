@@ -73,7 +73,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
     public void testZoneLeaderNodeNaming() throws Exception {
         helper.setRuntimeType("node");
         ViewId id = new ViewId(coord_addr, 123);
-        List<Address> members = new ArrayList<Address>();
+        List<Address> members = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:node:zone1:1");
         UUID address2 = UUID.randomUUID();
@@ -93,7 +93,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
 
     public void testZoneLeader() throws Exception {
         ViewId id = new ViewId(coord_addr, 123);
-        List<Address> members = new ArrayList<Address>();
+        List<Address> members = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone1:1");
         UUID address2 = UUID.randomUUID();
@@ -114,7 +114,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
     public void testRuntimeAddressesInZoneNodeNaming() throws Exception {
         helper.setRuntimeType("node");
         ViewId id = new ViewId(coord_addr, 123);
-        List<Address> members = new ArrayList<Address>();
+        List<Address> members = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:node:zone1:1");
         UUID address2 = UUID.randomUUID();
@@ -135,7 +135,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
 
     public void testRuntimeAddressesInZone() throws Exception {
         ViewId id = new ViewId(coord_addr, 123);
-        List<Address> members = new ArrayList<Address>();
+        List<Address> members = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone1:1");
         UUID address2 = UUID.randomUUID();
@@ -157,8 +157,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     public void testNewRuntimes() throws Exception {
         ViewId oldId = new ViewId(coord_addr, 123);
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
-        List<Address> oldMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
+        List<Address> oldMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID address2 = UUID.randomUUID();
         oldMembers.add(address1);
@@ -175,8 +175,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     public void testRemovedRuntimes() throws Exception {
         ViewId oldId = new ViewId(coord_addr, 123);
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
-        List<Address> oldMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
+        List<Address> oldMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID address2 = UUID.randomUUID();
         oldMembers.add(address1);
@@ -192,7 +192,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
 
     public void testRemovedRuntimesOnBootstrap() throws Exception {
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID address2 = UUID.randomUUID();
         newMembers.add(address1);
@@ -205,7 +205,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
 
     public void testNewRuntimesOnBootstrap() throws Exception {
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID address2 = UUID.randomUUID();
         newMembers.add(address1);
@@ -220,8 +220,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     public void testNoNewRuntimes() throws Exception {
         ViewId oldId = new ViewId(coord_addr, 123);
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
-        List<Address> oldMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
+        List<Address> oldMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID address2 = UUID.randomUUID();
         oldMembers.add(address1);
@@ -238,8 +238,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     public void testNewZoneLeaders() throws Exception {
         ViewId oldId = new ViewId(coord_addr, 123);
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
-        List<Address> oldMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
+        List<Address> oldMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone:1");
         UUID address2 = UUID.randomUUID();
@@ -264,7 +264,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
 
     public void testNewZoneLeadersOnBootstrap() throws Exception {
         ViewId newId = new ViewId(coord_addr, 456);
-        List<Address> newMembers = new ArrayList<Address>();
+        List<Address> newMembers = new ArrayList<>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone:1");
         UUID address2 = UUID.randomUUID();
@@ -287,7 +287,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
     }
 
     public void testGetZones() throws Exception {
-        Map<String, Map<String, RuntimeInstance>> runtimes = new HashMap<String, Map<String, RuntimeInstance>>();
+        Map<String, Map<String, RuntimeInstance>> runtimes = new HashMap<>();
         runtimes.put("zone1", Collections.singletonMap("runtime1", new RuntimeInstance("runtime1")));
         runtimes.put("zone2", Collections.singletonMap("runtime2", new RuntimeInstance("runtime2")));
 

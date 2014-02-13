@@ -151,7 +151,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         }
         WaitStrategy waitStrategy = createWaitStrategy();
         MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
-        disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
+        disruptor = new Disruptor<>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
         MonitorEventHandler handler = new MonitorEventHandler(registry);
         disruptor.handleEventsWith(handler);
         disruptor.start();

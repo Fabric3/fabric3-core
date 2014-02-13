@@ -76,7 +76,7 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
     private static final Map<Class, QName> JAXB_MAPPING;
 
     static {
-        JAXB_MAPPING = new IdentityHashMap<Class, QName>();
+        JAXB_MAPPING = new IdentityHashMap<>();
         JAXB_MAPPING.put(Boolean.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "boolean"));
         JAXB_MAPPING.put(Byte.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "byte"));
         JAXB_MAPPING.put(Short.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "short"));

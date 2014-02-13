@@ -152,7 +152,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
     }
 
     public Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException {
-        Set<QName> qNames = new HashSet<QName>();
+        Set<QName> qNames = new HashSet<>();
         String val = reader.getAttributeValue(null, attribute);
         if (val != null) {
             StringTokenizer tok = new StringTokenizer(val);
@@ -219,7 +219,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
             return null;
         } else {
             StringTokenizer tok = new StringTokenizer(value);
-            List<URI> result = new ArrayList<URI>(tok.countTokens());
+            List<URI> result = new ArrayList<>(tok.countTokens());
             while (tok.hasMoreTokens()) {
                 result.add(parseUri(tok.nextToken().trim()));
             }
@@ -394,7 +394,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
         if (!strictValidation || policyRegistry == null) {
             return;
         }
-        Set<QName> excluded = new HashSet<QName>();
+        Set<QName> excluded = new HashSet<>();
         // check for mutually exclusive intents
         for (QName name : intentNames) {
             Intent intent = policyRegistry.getDefinition(name, Intent.class);

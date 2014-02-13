@@ -52,7 +52,7 @@ public abstract class JavaValidationFailure extends ValidationFailure {
     private transient Object codeLocation;
 
     public JavaValidationFailure(Object codeLocation, ModelObject... sources) {
-        this.sources = new ArrayList<Object>();
+        this.sources = new ArrayList<>();
         if (sources != null) {
             this.sources.addAll(Arrays.asList(sources));
         }

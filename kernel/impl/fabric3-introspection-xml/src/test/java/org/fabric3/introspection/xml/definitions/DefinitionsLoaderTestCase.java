@@ -242,7 +242,7 @@ public class DefinitionsLoaderTestCase extends TestCase {
     @SuppressWarnings("deprecation")
     private static class MockLoaderRegistry implements LoaderRegistry {
 
-        private Map<QName, TypeLoader<?>> loaders = new HashMap<QName, TypeLoader<?>>();
+        private Map<QName, TypeLoader<?>> loaders = new HashMap<>();
 
         public void registerLoader(QName element, TypeLoader<?> loader) throws IllegalStateException {
             loaders.put(element, loader);

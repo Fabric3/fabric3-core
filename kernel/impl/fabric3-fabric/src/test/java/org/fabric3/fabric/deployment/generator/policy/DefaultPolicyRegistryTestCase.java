@@ -79,7 +79,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         QName name = new QName("test", "policyset");
         QNameSymbol symbol = new QNameSymbol(name);
         PolicySet policySet = new PolicySet(name, null, null, null, null, null, Collections.<IntentMap>emptySet(), null);
-        ResourceElement<QNameSymbol, PolicySet> element = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
+        ResourceElement<QNameSymbol, PolicySet> element = new ResourceElement<>(symbol, policySet);
         resource.addResourceElement(element);
         contribution.addResource(resource);
 
@@ -109,7 +109,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
                                    Collections.<QName>emptySet(),
                                    INTERACTION,
                                    false);
-        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<>(symbol, intent);
         resource.addResourceElement(element);
         contribution.addResource(resource);
 
@@ -141,7 +141,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Source source = new UrlSource(url);
         Resource resource = new Resource(contribution, source, "text/xml");
         QNameSymbol symbol = new QNameSymbol(name);
-        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<>(symbol, intent);
         resource.addResourceElement(element);
         contribution.addResource(resource);
 
@@ -175,7 +175,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Source source = new UrlSource(url);
         Resource resource = new Resource(contribution, source, "text/xml");
         QNameSymbol symbol = new QNameSymbol(name);
-        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<>(symbol, intent);
         resource.addResourceElement(element);
         contribution.addResource(resource);
 
@@ -210,14 +210,14 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Source source = new UrlSource(url);
         Resource resource = new Resource(contribution, source, "text/xml");
         QNameSymbol symbol = new QNameSymbol(intentName);
-        ResourceElement<QNameSymbol, Intent> intentElement = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        ResourceElement<QNameSymbol, Intent> intentElement = new ResourceElement<>(symbol, intent);
         resource.addResourceElement(intentElement);
         contribution.addResource(resource);
 
         IntentMap intentMap = new IntentMap(intentName);
         QName policySetName = new QName("test", "policySet");
         PolicySet policySet = new PolicySet(policySetName, null, null, null, null, null, Collections.singleton(intentMap), null);
-        ResourceElement<QNameSymbol, PolicySet> policyElement = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
+        ResourceElement<QNameSymbol, PolicySet> policyElement = new ResourceElement<>(symbol, policySet);
         Resource policyResource = new Resource(contribution, source, "text/xml");
         policyResource.addResourceElement(policyElement);
         contribution.addResource(policyResource);
@@ -245,7 +245,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         QName name = new QName("test", "bindingtype");
         QNameSymbol symbol = new QNameSymbol(name);
         BindingType bindingType = new BindingType(name, null, null);
-        ResourceElement<QNameSymbol, BindingType> element = new ResourceElement<QNameSymbol, BindingType>(symbol, bindingType);
+        ResourceElement<QNameSymbol, BindingType> element = new ResourceElement<>(symbol, bindingType);
         resource.addResourceElement(element);
         contribution.addResource(resource);
 
@@ -268,7 +268,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         QName name = new QName("test", "impltype");
         QNameSymbol symbol = new QNameSymbol(name);
         ImplementationType implementationType = new ImplementationType(name, null, null);
-        ResourceElement<QNameSymbol, ImplementationType> element = new ResourceElement<QNameSymbol, ImplementationType>(symbol, implementationType);
+        ResourceElement<QNameSymbol, ImplementationType> element = new ResourceElement<>(symbol, implementationType);
         resource.addResourceElement(element);
         contribution.addResource(resource);
 
@@ -302,14 +302,14 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         policySet.setPolicySetReferences(Collections.singleton(refPolicySetName));
 
         QNameSymbol symbol = new QNameSymbol(policySetName);
-        ResourceElement<QNameSymbol, PolicySet> policyElement = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
+        ResourceElement<QNameSymbol, PolicySet> policyElement = new ResourceElement<>(symbol, policySet);
         Resource policyResource = new Resource(contribution, source, "text/xml");
         policyResource.addResourceElement(policyElement);
         contribution.addResource(policyResource);
 
 
         QNameSymbol refSymbol = new QNameSymbol(refPolicySetName);
-        ResourceElement<QNameSymbol, PolicySet> refPolicyElement = new ResourceElement<QNameSymbol, PolicySet>(refSymbol, referencedPolicySet);
+        ResourceElement<QNameSymbol, PolicySet> refPolicyElement = new ResourceElement<>(refSymbol, referencedPolicySet);
         Resource refPolicyResource = new Resource(contribution, source, "text/xml");
         refPolicyResource.addResourceElement(refPolicyElement);
         contribution.addResource(refPolicyResource);

@@ -77,7 +77,7 @@ public class MockComponentTypeLoaderImplTestCase extends TestCase {
 
         MockComponentTypeLoader componentTypeLoader = new MockComponentTypeLoaderImpl(processor);
 
-        List<String> mockedInterfaces = new LinkedList<String>();
+        List<String> mockedInterfaces = new LinkedList<>();
         mockedInterfaces.add(Foo.class.getName());
 
         InjectingComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);

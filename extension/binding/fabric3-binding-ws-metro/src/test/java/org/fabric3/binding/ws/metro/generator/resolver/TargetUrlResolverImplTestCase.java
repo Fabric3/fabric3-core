@@ -106,7 +106,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
         LogicalComponent<?> component = new LogicalComponent(null, null, null);
         component.setZone("1");
         LogicalService service = new LogicalService(null, null, component);
-        binding = new LogicalBinding<WsBindingDefinition>(definition, service);
+        binding = new LogicalBinding<>(definition, service);
     }
 
     private EffectivePolicy createPolicy() {
@@ -117,7 +117,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
     }
 
     private EffectivePolicy createSecurityPolicy() {
-        Set<Intent> intents = new HashSet<Intent>();
+        Set<Intent> intents = new HashSet<>();
         QName qname = new QName(Constants.SCA_NS, "confidentiality");
         Intent intent = new Intent(qname, null, null, null, false, null, null, false);
         intents.add(intent);

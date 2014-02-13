@@ -67,7 +67,7 @@ public class CompositeReference extends ReferenceDefinition {
         if (promotedUris != null) {
             this.promotedUris = promotedUris;
         } else {
-            this.promotedUris = new ArrayList<URI>();
+            this.promotedUris = new ArrayList<>();
         }
     }
 
@@ -78,7 +78,7 @@ public class CompositeReference extends ReferenceDefinition {
      */
     public CompositeReference(String name) {
         super(name, null, Multiplicity.ONE_ONE);
-        this.promotedUris = new ArrayList<URI>();
+        this.promotedUris = new ArrayList<>();
     }
 
 

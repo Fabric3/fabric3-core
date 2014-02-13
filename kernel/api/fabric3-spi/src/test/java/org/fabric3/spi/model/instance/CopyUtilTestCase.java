@@ -179,7 +179,7 @@ public class CopyUtilTestCase extends TestCase {
 
     private LogicalBinding createBinding(Bindable parent) {
         MockBinding definition = new MockBinding();
-        LogicalBinding<MockBinding> binding = new LogicalBinding<MockBinding>(definition, parent);
+        LogicalBinding<MockBinding> binding = new LogicalBinding<>(definition, parent);
         parent.addBinding(binding);
         return binding;
     }

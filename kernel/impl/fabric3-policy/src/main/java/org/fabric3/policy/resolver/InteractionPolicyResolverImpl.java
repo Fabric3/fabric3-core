@@ -96,8 +96,8 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         QName type = binding.getDefinition().getType();
         BindingType bindingType = policyRegistry.getDefinition(type, BindingType.class);
 
-        Set<QName> alwaysProvidedIntents = new LinkedHashSet<QName>();
-        Set<QName> mayProvidedIntents = new LinkedHashSet<QName>();
+        Set<QName> alwaysProvidedIntents = new LinkedHashSet<>();
+        Set<QName> mayProvidedIntents = new LinkedHashSet<>();
 
         if (bindingType != null) {
             // tolerate a binding type not being registered
@@ -107,7 +107,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
         // resolve policies against the binding
         Set<Intent> requiredIntents = aggregateBindingIntents(binding);
-        Set<Intent> requiredIntentsCopy = new HashSet<Intent>(requiredIntents);
+        Set<Intent> requiredIntentsCopy = new HashSet<>(requiredIntents);
         // Remove intents that are provided
         for (Intent intent : requiredIntentsCopy) {
             QName intentName = intent.getName();
@@ -132,8 +132,8 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
     public Set<PolicySet> resolvePolicySets(LogicalOperation operation, LogicalScaArtifact<?> artifact, QName type) throws PolicyResolutionException {
         BindingType bindingType = policyRegistry.getDefinition(type, BindingType.class);
 
-        Set<QName> alwaysProvidedIntents = new LinkedHashSet<QName>();
-        Set<QName> mayProvidedIntents = new LinkedHashSet<QName>();
+        Set<QName> alwaysProvidedIntents = new LinkedHashSet<>();
+        Set<QName> mayProvidedIntents = new LinkedHashSet<>();
 
         // FIXME This should not happen, all binding types should be registered
         if (bindingType != null) {
@@ -142,7 +142,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         }
 
         Set<Intent> requiredIntents = aggregateOperationIntents(operation);
-        Set<Intent> requiredIntentsCopy = new HashSet<Intent>(requiredIntents);
+        Set<Intent> requiredIntentsCopy = new HashSet<>(requiredIntents);
 
         // Remove intents that are provided
         for (Intent intent : requiredIntentsCopy) {
@@ -173,7 +173,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
     }
 
     private Set<Intent> aggregateOperationIntents(LogicalOperation operation) throws PolicyResolutionException {
-        Set<QName> intentNames = new LinkedHashSet<QName>();
+        Set<QName> intentNames = new LinkedHashSet<>();
         intentNames.addAll(operation.getIntents());
         return expandAndFilterIntents(intentNames, operation);
     }
@@ -302,7 +302,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
     private Set<QName> getOperationPolicySets(LogicalOperation operation) {
         LogicalScaArtifact<?> temp = operation;
-        Set<QName> policySetNames = new LinkedHashSet<QName>();
+        Set<QName> policySetNames = new LinkedHashSet<>();
         while (temp != null) {
             policySetNames.addAll(temp.getPolicySets());
             temp = temp.getParent();
@@ -312,7 +312,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
     private Set<QName> aggregateBindingPolicySets(LogicalBinding<?> binding) {
         LogicalScaArtifact<?> temp = binding;
-        Set<QName> policySetNames = new LinkedHashSet<QName>();
+        Set<QName> policySetNames = new LinkedHashSet<>();
         while (temp != null) {
             policySetNames.addAll(temp.getPolicySets());
             temp = temp.getParent();
@@ -327,7 +327,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
             return Collections.emptySet();
         }
         Set<QName> mayProvidedIntents = bindingType.getMayProvide();
-        Set<Intent> intentsToBeProvided = new LinkedHashSet<Intent>();
+        Set<Intent> intentsToBeProvided = new LinkedHashSet<>();
         for (Intent intent : requiredIntents) {
             if (mayProvidedIntents.contains(intent.getName())) {
                 intentsToBeProvided.add(intent);

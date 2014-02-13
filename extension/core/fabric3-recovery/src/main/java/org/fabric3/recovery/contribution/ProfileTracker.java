@@ -100,7 +100,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
         this.outputFactory = factory.newOutputFactoryInstance();
         this.monitor = monitor;
         repositoryIndex = new File(hostInfo.getDataDir(), "profiles.xml");
-        mappings = new HashMap<URI, List<URI>>();
+        mappings = new HashMap<>();
     }
 
     @Init
@@ -114,7 +114,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
         }
         try {
             mappings = parse();
-            List<URI> deleted = new ArrayList<URI>();
+            List<URI> deleted = new ArrayList<>();
             for (Map.Entry<URI, List<URI>> entry : mappings.entrySet()) {
                 URI uri = entry.getKey();
                 Contribution contribution = store.find(uri);
@@ -226,7 +226,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
     }
 
     private Map<URI, List<URI>> parse() throws FileNotFoundException, XMLStreamException, InvalidRepositoryIndexException {
-        Map<URI, List<URI>> profileMappings = new HashMap<URI, List<URI>>();
+        Map<URI, List<URI>> profileMappings = new HashMap<>();
         FileInputStream fis = new FileInputStream(repositoryIndex);
         BufferedInputStream stream = new BufferedInputStream(fis);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(stream);
@@ -240,7 +240,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
                             throw createException("URI attribute missing ", reader, null);
                         }
                         URI uri = URI.create(uriStr);
-                        List<URI> profiles = new ArrayList<URI>();
+                        List<URI> profiles = new ArrayList<>();
                         String profilesStr = reader.getAttributeValue(null, "profiles");
                         if (profilesStr != null) {
                             String[] tokens = profilesStr.split(" ");

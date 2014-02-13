@@ -158,7 +158,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container)
             throws ClassNotFoundException, RsContainerException, WireAttachException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
-        Map<String, InvocationChain> invocationChains = new HashMap<String, InvocationChain>();
+        Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             invocationChains.put(operation.getName(), chain);

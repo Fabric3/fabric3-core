@@ -58,7 +58,7 @@ public class GeneratedWsdlResolver implements WSDLResolver {
      * Constructor.
      */
     public GeneratedWsdlResolver() {
-        generatedSchemas = new HashMap<String, StringWriter>();
+        generatedSchemas = new HashMap<>();
         generatedWsdl = new StringWriter();
     }
 
@@ -86,7 +86,7 @@ public class GeneratedWsdlResolver implements WSDLResolver {
     }
 
     public Map<String, String> getGeneratedSchemas() {
-        Map<String, String> ret = new HashMap<String, String>();
+        Map<String, String> ret = new HashMap<>();
         for (Map.Entry<String, StringWriter> entry : generatedSchemas.entrySet()) {
             ret.put(entry.getKey(), entry.getValue().toString());
         }

@@ -49,7 +49,7 @@ import org.fabric3.spi.transform.TransformationException;
  *
  */
 public class Property2FloatTransformer implements SingleTypeTransformer<Node, Float> {
-    private static final JavaClass<Float> TARGET = new JavaClass<Float>(Float.class);
+    private static final JavaClass<Float> TARGET = new JavaClass<>(Float.class);
 
     public DataType<?> getSourceType() {
         return XSDConstants.PROPERTY_TYPE;

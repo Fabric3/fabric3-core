@@ -75,8 +75,8 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     private Map<URI, MonitorLevel> applicationComponentLevels = Collections.emptyMap();
     private Map<URI, MonitorLevel> runtimeComponentLevels = Collections.emptyMap();
     private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
-    private Map<String, MonitorLevel> providerLevels = new ConcurrentHashMap<String, MonitorLevel>();
-    private Map<URI, MonitorLevel> contributionLevels = new ConcurrentHashMap<URI, MonitorLevel>();
+    private Map<String, MonitorLevel> providerLevels = new ConcurrentHashMap<>();
+    private Map<URI, MonitorLevel> contributionLevels = new ConcurrentHashMap<>();
 
     private MonitorLevel defaultLevel = MonitorLevel.INFO;
 
@@ -99,7 +99,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     @Property(required = false)
     @Source("$systemConfig//f3:runtime/f3:monitor/f3:deployable.levels")
     public void setDeployableLevels(Element levels) {
-        this.deployableLevels = new HashMap<QName, MonitorLevel>();
+        this.deployableLevels = new HashMap<>();
         NodeList list = levels.getElementsByTagName("level");
         for (int i = 0; i < list.getLength(); i++) {
             Element element = (Element) list.item(i);

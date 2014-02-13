@@ -62,9 +62,9 @@ public class Fabric3PersistenceUnitInfo implements PersistenceUnitInfo {
     private boolean exclude;
     private DataSource jtaDataSource;
     private DataSource nonJtaDataSource;
-    private List<URL> jarUrls = new ArrayList<URL>();
-    private List<String> managedClasses = new ArrayList<String>();
-    private List<String> mappingFiles = new ArrayList<String>();
+    private List<URL> jarUrls = new ArrayList<>();
+    private List<String> managedClasses = new ArrayList<>();
+    private List<String> mappingFiles = new ArrayList<>();
     private Properties properties = new Properties();
     private PersistenceUnitTransactionType trxType;
     private String version = "2.0";

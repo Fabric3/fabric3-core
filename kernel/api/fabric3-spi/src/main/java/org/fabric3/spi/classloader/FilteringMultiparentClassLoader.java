@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * <code>org.fabric3.test.*</code> loads all classes in the <code>org.fabric3.test</code> package and its subpackages.
  */
 public class FilteringMultiparentClassLoader extends MultiParentClassLoader {
-    private Set<Pattern> patterns = new HashSet<Pattern>();
+    private Set<Pattern> patterns = new HashSet<>();
 
     public FilteringMultiparentClassLoader(URI name, ClassLoader parent, Set<String> filters) {
         super(name, parent);

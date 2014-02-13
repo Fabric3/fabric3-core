@@ -71,8 +71,8 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
 
     private ManagementService managementService;
 
-    private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
-    private Map<URI, Set<String>> contributionCache = new HashMap<URI, Set<String>>();
+    private Map<String, EntityManagerFactory> cache = new HashMap<>();
+    private Map<URI, Set<String>> contributionCache = new HashMap<>();
 
     @Reference(required = false)
     public void setManagementService(ManagementService managementService) {
@@ -121,7 +121,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         cache.put(unitName, factory);
         Set<String> names = contributionCache.get(uri);
         if (names == null) {
-            names = new HashSet<String>();
+            names = new HashSet<>();
             contributionCache.put(uri, names);
         }
         names.add(unitName);

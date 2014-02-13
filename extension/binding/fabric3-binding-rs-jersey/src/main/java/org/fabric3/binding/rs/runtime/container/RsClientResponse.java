@@ -32,8 +32,8 @@ import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultival
  */
 public class RsClientResponse {
 
-    private HashMap<Integer, String> queryParamNames = new HashMap<Integer, String>();
-    private HashMap<Integer, String> pathParamNames = new HashMap<Integer, String>();
+    private HashMap<Integer, String> queryParamNames = new HashMap<>();
+    private HashMap<Integer, String> pathParamNames = new HashMap<>();
     private String path = "/";
     private Annotation action;
     private String[] producesTypes = new String[]{MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML};
@@ -111,8 +111,8 @@ public class RsClientResponse {
 
     private WebTarget initResource(Object[] paramValues) {
         UriBuilder builder = UriBuilder.fromUri(uri);
-        HashMap<String, Object> pathElements = new HashMap<String, Object>();
-        MultivaluedMap<String, String> query = new StringKeyIgnoreCaseMultivaluedMap<String>();
+        HashMap<String, Object> pathElements = new HashMap<>();
+        MultivaluedMap<String, String> query = new StringKeyIgnoreCaseMultivaluedMap<>();
 
         // Configuring parameters for path and query
         if (paramValues != null) {

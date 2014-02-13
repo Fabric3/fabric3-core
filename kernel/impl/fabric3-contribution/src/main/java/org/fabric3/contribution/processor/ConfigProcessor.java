@@ -93,7 +93,7 @@ public class ConfigProcessor implements XmlProcessor {
 
             Resource resource = new Resource(contribution, null, "application/xml");
             QNameSymbol symbol = new QNameSymbol(name);
-            ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
+            ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol);
             element.setValue(composite);
             resource.addResourceElement(element);
             resource.setState(ResourceState.PROCESSED);

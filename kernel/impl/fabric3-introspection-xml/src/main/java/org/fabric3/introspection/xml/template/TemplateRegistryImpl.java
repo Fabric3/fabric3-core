@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.xml.TemplateRegistry;
  */
 @Service(TemplateRegistry.class)
 public class TemplateRegistryImpl implements TemplateRegistry, ContributionServiceListener {
-    private Map<String, Pair> cache = new ConcurrentHashMap<String, Pair>();
+    private Map<String, Pair> cache = new ConcurrentHashMap<>();
 
     public <T extends ModelObject> void register(String name, URI uri, T value) throws DuplicateTemplateException {
         if (cache.containsKey(name)) {

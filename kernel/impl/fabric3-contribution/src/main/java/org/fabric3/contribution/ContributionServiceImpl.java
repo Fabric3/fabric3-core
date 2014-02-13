@@ -123,7 +123,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.contentTypeResolver = contentTypeResolver;
         this.dependencyResolver = dependencyResolver;
         this.monitor = monitor;
-        listeners = new ArrayList<ContributionServiceListener>();
+        listeners = new ArrayList<>();
     }
 
     @Reference(required = false)
@@ -143,7 +143,7 @@ public class ContributionServiceImpl implements ContributionService {
 
     public Set<URI> getContributions() {
         Set<Contribution> contributions = metaDataStore.getContributions();
-        Set<URI> uris = new HashSet<URI>(contributions.size());
+        Set<URI> uris = new HashSet<>(contributions.size());
         for (Contribution contribution : contributions) {
             uris.add(contribution.getUri());
         }
@@ -164,7 +164,7 @@ public class ContributionServiceImpl implements ContributionService {
 
     public List<Deployable> getDeployables(URI uri) throws ContributionNotFoundException {
         Contribution contribution = find(uri);
-        List<Deployable> list = new ArrayList<Deployable>();
+        List<Deployable> list = new ArrayList<>();
         if (contribution.getManifest() != null) {
             for (Deployable deployable : contribution.getManifest().getDeployables()) {
                 list.add(deployable);
@@ -176,7 +176,7 @@ public class ContributionServiceImpl implements ContributionService {
     public List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException {
         Contribution contribution = find(uri);
         List<QName> owners = contribution.getLockOwners();
-        return new ArrayList<QName>(owners);
+        return new ArrayList<>(owners);
     }
 
     public URI store(ContributionSource contributionSource) throws StoreException {
@@ -189,7 +189,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public List<URI> store(List<ContributionSource> contributionSources) throws StoreException {
-        List<URI> uris = new ArrayList<URI>();
+        List<URI> uris = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             URI uri = store(contributionSource);
             uris.add(uri);
@@ -202,7 +202,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public List<URI> install(List<URI> uris) throws InstallException, ContributionNotFoundException {
-        List<Contribution> contributions = new ArrayList<Contribution>(uris.size());
+        List<Contribution> contributions = new ArrayList<>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = find(uri);
             contributions.add(contribution);
@@ -216,7 +216,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public void uninstall(List<URI> uris) throws UninstallException, ContributionNotFoundException {
-        List<Contribution> contributions = new ArrayList<Contribution>(uris.size());
+        List<Contribution> contributions = new ArrayList<>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = find(uri);
             contributions.add(contribution);
@@ -261,7 +261,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public List<URI> getContributionsInProfile(URI uri) {
-        List<URI> profileContributions = new ArrayList<URI>();
+        List<URI> profileContributions = new ArrayList<>();
         Set<Contribution> contributions = metaDataStore.getContributions();
         for (Contribution contribution : contributions) {
             if (contribution.getProfiles().contains(uri)) {
@@ -272,14 +272,14 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public List<URI> getSortedContributionsInProfile(URI uri) {
-        List<Contribution> sortedContributions = new ArrayList<Contribution>();
+        List<Contribution> sortedContributions = new ArrayList<>();
         Set<Contribution> contributions = metaDataStore.getContributions();
         for (Contribution contribution : contributions) {
             if (contribution.getProfiles().contains(uri)) {
                 sortedContributions.add(contribution);
             }
         }
-        List<URI> profileContributions = new ArrayList<URI>();
+        List<URI> profileContributions = new ArrayList<>();
         sortedContributions = dependencyResolver.orderForUninstall(sortedContributions);
         for (Contribution contribution : sortedContributions) {
             profileContributions.add(contribution.getUri());
@@ -307,7 +307,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public void installProfile(URI uri) throws InstallException, ContributionNotFoundException {
-        List<Contribution> toInstall = new ArrayList<Contribution>();
+        List<Contribution> toInstall = new ArrayList<>();
         for (Contribution contribution : metaDataStore.getContributions()) {
             if (contribution.getProfiles().contains(uri) && ContributionState.STORED == contribution.getState()) {
                 toInstall.add(contribution);
@@ -320,7 +320,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public void uninstallProfile(URI uri) throws UninstallException, ContributionNotFoundException {
-        List<Contribution> toUninstall = new ArrayList<Contribution>();
+        List<Contribution> toUninstall = new ArrayList<>();
         for (Contribution contribution : metaDataStore.getContributions()) {
             List<URI> profiles = contribution.getProfiles();
             if (profiles.contains(uri)) {
@@ -340,7 +340,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public void removeProfile(URI uri) throws RemoveException, ContributionNotFoundException {
-        List<Contribution> toRemove = new ArrayList<Contribution>();
+        List<Contribution> toRemove = new ArrayList<>();
         for (Contribution contribution : metaDataStore.getContributions()) {
             List<URI> profiles = contribution.getProfiles();
             if (profiles.contains(uri)) {
@@ -361,7 +361,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public ContributionOrder processManifests(List<ContributionSource> contributionSources) throws InstallException, StoreException {
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             // store the contributions
             Contribution contribution = persist(contributionSource);
@@ -489,7 +489,7 @@ public class ContributionServiceImpl implements ContributionService {
             }
             throw e;
         }
-        List<URI> uris = new ArrayList<URI>(contributions.size());
+        List<URI> uris = new ArrayList<>(contributions.size());
         for (Contribution contribution : contributions) {
             URI uri = contribution.getUri();
             uris.add(uri);
@@ -555,11 +555,11 @@ public class ContributionServiceImpl implements ContributionService {
             URI uri = contribution.getUri();
             ArtifactValidationFailure failure = new ArtifactValidationFailure(uri, "the contribution manifest (sca-contribution.xml)");
             failure.addFailures(context.getErrors());
-            List<ValidationFailure> failures = new ArrayList<ValidationFailure>();
+            List<ValidationFailure> failures = new ArrayList<>();
             failures.add(failure);
             ArtifactValidationFailure warning = new ArtifactValidationFailure(uri, "the contribution manifest (sca-contribution.xml)");
             warning.addFailures(context.getWarnings());
-            List<ValidationFailure> warnings = new ArrayList<ValidationFailure>();
+            List<ValidationFailure> warnings = new ArrayList<>();
             warnings.add(warning);
             throw new InvalidContributionException(failures, warnings);
         }

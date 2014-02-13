@@ -56,11 +56,11 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
     private DefaultTransformerRegistry registry;
 
     public void testTransformerFactoryRegistration() throws Exception {
-        List<TransformerFactory> factories = new ArrayList<TransformerFactory>();
+        List<TransformerFactory> factories = new ArrayList<>();
         factories.add(new MockFactory());
         registry.setFactories(factories);
-        JavaClass<Integer> target = new JavaClass<Integer>(Integer.class);
-        List<Class<?>> targets = new ArrayList<Class<?>>();
+        JavaClass<Integer> target = new JavaClass<>(Integer.class);
+        List<Class<?>> targets = new ArrayList<>();
         targets.add(Integer.class);
         assertNotNull(registry.getTransformer(XSDConstants.PROPERTY_TYPE, target, targets, targets));
     }

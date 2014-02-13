@@ -80,8 +80,8 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
 
     private String qualifiedChannelName;
 
-    protected Map<String, List<SocketAddress>> addresses = new ConcurrentHashMap<String, List<SocketAddress>>();
-    protected Map<String, List<AddressListener>> listeners = new ConcurrentHashMap<String, List<AddressListener>>();
+    protected Map<String, List<SocketAddress>> addresses = new ConcurrentHashMap<>();
+    protected Map<String, List<AddressListener>> listeners = new ConcurrentHashMap<>();
 
     public AddressCacheImpl(@Reference Executor executor, @Reference EventService eventService, @Reference HostInfo info, @Monitor AddressMonitor monitor) {
         this.executor = executor;
@@ -134,7 +134,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     public void subscribe(String endpointId, AddressListener listener) {
         List<AddressListener> list = listeners.get(endpointId);
         if (list == null) {
-            list = new CopyOnWriteArrayList<AddressListener>();
+            list = new CopyOnWriteArrayList<>();
             this.listeners.put(endpointId, list);
         }
         list.add(listener);
@@ -145,7 +145,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
         if (list == null) {
             return;
         }
-        List<AddressListener> deleted = new ArrayList<AddressListener>();
+        List<AddressListener> deleted = new ArrayList<>();
         for (AddressListener listener : list) {
             if (listenerId.equals(listener.getId())) {
                 deleted.add(listener);
@@ -190,7 +190,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
 
     public void onLeave(String name) {
         for (Map.Entry<String, List<SocketAddress>> entry : addresses.entrySet()) {
-            List<SocketAddress> toDelete = new ArrayList<SocketAddress>();
+            List<SocketAddress> toDelete = new ArrayList<>();
             List<SocketAddress> list = entry.getValue();
             for (SocketAddress address : list) {
                 if (name.equals(address.getRuntimeName())) {
@@ -246,7 +246,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
             if (AddressAnnouncement.Type.ACTIVATED == announcement.getType()) {
                 // add the new address
                 if (addresses == null) {
-                    addresses = new CopyOnWriteArrayList<SocketAddress>();
+                    addresses = new CopyOnWriteArrayList<>();
                     this.addresses.put(endpointId, addresses);
                 }
                 monitor.added(endpointId, address.toString());

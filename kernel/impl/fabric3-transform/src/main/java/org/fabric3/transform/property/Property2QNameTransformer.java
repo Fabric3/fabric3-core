@@ -51,7 +51,7 @@ import org.fabric3.spi.transform.TransformationException;
  *
  */
 public class Property2QNameTransformer implements SingleTypeTransformer<Node, QName> {
-    private static final JavaClass<QName> TARGET = new JavaClass<QName>(QName.class);
+    private static final JavaClass<QName> TARGET = new JavaClass<>(QName.class);
 
     public DataType<?> getSourceType() {
         return XSDConstants.PROPERTY_TYPE;

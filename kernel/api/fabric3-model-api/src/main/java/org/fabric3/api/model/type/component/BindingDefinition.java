@@ -63,8 +63,8 @@ public abstract class BindingDefinition extends AbstractPolicyAware<BindableDefi
     protected QName type;
     protected String name;
 
-    private Set<String> requiredCapabilities = new HashSet<String>();
-    private List<BindingHandlerDefinition> handlers = new ArrayList<BindingHandlerDefinition>();
+    private Set<String> requiredCapabilities = new HashSet<>();
+    private List<BindingHandlerDefinition> handlers = new ArrayList<>();
 
     /**
      * Constructor for a binding using the default binding name.

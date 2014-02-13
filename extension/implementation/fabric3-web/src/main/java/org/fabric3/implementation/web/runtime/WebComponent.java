@@ -104,7 +104,7 @@ public class WebComponent implements Component {
         this.groupId = deployable;
         this.propertyFactories = propertyFactories;
         this.info = info;
-        referenceFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
+        referenceFactories = new ConcurrentHashMap<>();
     }
 
     public URI getUri() {
@@ -133,11 +133,11 @@ public class WebComponent implements Component {
 
     public void start() throws ComponentException {
         try {
-            Map<String, List<Injector<?>>> injectors = new HashMap<String, List<Injector<?>>>();
+            Map<String, List<Injector<?>>> injectors = new HashMap<>();
             injectorFactory.createInjectorMappings(injectors, siteMappings, referenceFactories, classLoader);
             injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
             OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
-            Map<String, ObjectFactory<?>> contextFactories = new HashMap<String, ObjectFactory<?>>();
+            Map<String, ObjectFactory<?>> contextFactories = new HashMap<>();
 
             SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory
                     = new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);

@@ -58,7 +58,7 @@ import org.fabric3.spi.model.instance.LogicalResource;
  */
 @EagerInit
 public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetResourceDefinition> {
-    private Map<Class<?>, CacheResourceGenerator> generators = new HashMap<Class<?>, CacheResourceGenerator>();
+    private Map<Class<?>, CacheResourceGenerator> generators = new HashMap<>();
 
     @Reference(required = false)
     public void setGenerators(Map<Class<?>, CacheResourceGenerator> generators) {

@@ -52,7 +52,7 @@ import org.fabric3.spi.contract.MatchResult;
  * The default ContractMatcher implementation.
  */
 public class DefaultContractMatcher implements ContractMatcher {
-    private Map<Key, ContractMatcherExtension<?, ?>> cache = new HashMap<Key, ContractMatcherExtension<?, ?>>();
+    private Map<Key, ContractMatcherExtension<?, ?>> cache = new HashMap<>();
 
     @Reference
     public void setMatcherExtensions(List<ContractMatcherExtension<?, ?>> matchers) {

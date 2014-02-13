@@ -14,7 +14,7 @@ public class CompositeEnumerationTestCase extends TestCase {
         Enumeration<String> enumeration1 = Collections.enumeration(Collections.singleton("foo"));
         Enumeration<String> enumeration2 = Collections.enumeration(Collections.singleton("bar"));
 
-        CompositeEnumeration<String> compositeEnumeration = new CompositeEnumeration<String>(new Enumeration[]{enumeration1, enumeration2});
+        CompositeEnumeration<String> compositeEnumeration = new CompositeEnumeration<>(new Enumeration[]{enumeration1, enumeration2});
         int times = 0;
         while (compositeEnumeration.hasMoreElements()) {
             times++;
@@ -26,7 +26,7 @@ public class CompositeEnumerationTestCase extends TestCase {
     public void testSingleEnumeration() throws Exception {
         Enumeration<String> enumeration1 = Collections.enumeration(Collections.singleton("foo"));
 
-        CompositeEnumeration<String> compositeEnumeration = new CompositeEnumeration<String>(new Enumeration[]{enumeration1});
+        CompositeEnumeration<String> compositeEnumeration = new CompositeEnumeration<>(new Enumeration[]{enumeration1});
         int times = 0;
         while (compositeEnumeration.hasMoreElements()) {
             times++;
@@ -36,7 +36,7 @@ public class CompositeEnumerationTestCase extends TestCase {
     }
 
     public void testEmptyEnumeration() throws Exception {
-        CompositeEnumeration<String> compositeEnumeration = new CompositeEnumeration<String>(new Enumeration[0]);
+        CompositeEnumeration<String> compositeEnumeration = new CompositeEnumeration<>(new Enumeration[0]);
         int times = 0;
         while (compositeEnumeration.hasMoreElements()) {
             times++;

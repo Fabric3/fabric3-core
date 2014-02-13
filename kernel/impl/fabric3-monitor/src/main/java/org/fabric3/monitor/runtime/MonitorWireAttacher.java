@@ -83,7 +83,7 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefi
             Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
             Component monitorable = componentManager.getComponent(target.getMonitorable());
             Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
-            return new SingletonObjectFactory<Object>(monitor);
+            return new SingletonObjectFactory<>(monitor);
         } catch (ClassNotFoundException e) {
             throw new WireAttachException("Unable to load monitor class: " + target.getMonitorType(), e);
         } catch (MonitorCreationException e) {

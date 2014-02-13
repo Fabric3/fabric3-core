@@ -47,7 +47,7 @@ import java.util.Map;
  * roles specified by the intent annotation on a component). Metadata is keyed by intent or policy set qualified name.
  */
 public class PolicyMetadata {
-    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
+    private Map<QName, Serializable> metadata = new HashMap<>();
 
     public void add(QName name, Serializable data) {
         metadata.put(name, data);

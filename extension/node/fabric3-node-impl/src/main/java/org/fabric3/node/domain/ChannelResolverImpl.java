@@ -147,10 +147,10 @@ public class ChannelResolverImpl implements ChannelResolver {
         InjectingComponentType componentType = new InjectingComponentType();
         NonManagedImplementation implementation = new NonManagedImplementation();
         implementation.setComponentType(componentType);
-        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<NonManagedImplementation>("F3Synthetic");
+        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<>("F3Synthetic");
         componentDefinition.setContributionUri(Names.HOST_CONTRIBUTION);
         componentDefinition.setImplementation(implementation);
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<NonManagedImplementation>(componentUri,
+        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri,
                                                                                                                      componentDefinition,
                                                                                                                      domainComponent);
 

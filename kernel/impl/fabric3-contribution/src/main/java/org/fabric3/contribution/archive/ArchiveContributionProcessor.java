@@ -97,7 +97,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            List<Resource> copy = new ArrayList<Resource>(contribution.getResources());   // copy the list since processors may add resources
+            List<Resource> copy = new ArrayList<>(contribution.getResources());   // copy the list since processors may add resources
             for (Resource resource : copy) {
                 if (ResourceState.UNPROCESSED == resource.getState()) {
                     registry.processResource(resource, context);

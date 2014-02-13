@@ -52,8 +52,8 @@ public class DirectedGraphImpl<T> implements DirectedGraph<T> {
     private Set<Edge<T>> graphEdges;
 
     public DirectedGraphImpl() {
-        graphVertices = new HashMap<Vertex<T>, VertexHolder>();
-        graphEdges = new HashSet<Edge<T>>();
+        graphVertices = new HashMap<>();
+        graphEdges = new HashSet<>();
     }
 
     public Set<Vertex<T>> getVertices() {
@@ -68,7 +68,7 @@ public class DirectedGraphImpl<T> implements DirectedGraph<T> {
     }
 
     public void remove(Vertex<T> vertex) {
-        List<Edge<T>> edges = new ArrayList<Edge<T>>(getOutgoingEdges(vertex));
+        List<Edge<T>> edges = new ArrayList<>(getOutgoingEdges(vertex));
         for (Edge<T> edge : edges) {
             removeEdge(edge);
         }
@@ -76,7 +76,7 @@ public class DirectedGraphImpl<T> implements DirectedGraph<T> {
     }
 
     public Set<Vertex<T>> getAdjacentVertices(Vertex<T> vertex) {
-        Set<Vertex<T>> adjacentVertices = new HashSet<Vertex<T>>();
+        Set<Vertex<T>> adjacentVertices = new HashSet<>();
         Set<Edge<T>> incidentEdges = getOutgoingEdges(vertex);
         if (incidentEdges != null) {
             for (Edge<T> edge : incidentEdges) {
@@ -179,7 +179,7 @@ public class DirectedGraphImpl<T> implements DirectedGraph<T> {
      * @return the adjacent vertices
      */
     private List<Vertex<T>> getAdjacentVertices(Vertex<T> vertex, boolean outGoing) {
-        List<Vertex<T>> adjacentVertices = new ArrayList<Vertex<T>>();
+        List<Vertex<T>> adjacentVertices = new ArrayList<>();
         Set<Edge<T>> edges;
         if (outGoing) {
             edges = getOutgoingEdges(vertex);
@@ -194,8 +194,8 @@ public class DirectedGraphImpl<T> implements DirectedGraph<T> {
     }
 
     private class VertexHolder {
-        private Set<Edge<T>> incoming = new HashSet<Edge<T>>();
-        private Set<Edge<T>> outgoingEdges = new HashSet<Edge<T>>();
+        private Set<Edge<T>> incoming = new HashSet<>();
+        private Set<Edge<T>> outgoingEdges = new HashSet<>();
 
         public Set<Edge<T>> getIncomingEdges() {
             return incoming;

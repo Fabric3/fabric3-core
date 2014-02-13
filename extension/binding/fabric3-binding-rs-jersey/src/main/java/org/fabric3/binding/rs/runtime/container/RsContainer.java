@@ -91,7 +91,7 @@ public final class RsContainer extends HttpServlet {
         this.path = path;
         this.filterRegistry = filterRegistry;
         this.provider = provider;
-        this.resources = new ArrayList<Resource>();
+        this.resources = new ArrayList<>();
     }
 
     public void addResource(Resource resource) throws RsContainerException {

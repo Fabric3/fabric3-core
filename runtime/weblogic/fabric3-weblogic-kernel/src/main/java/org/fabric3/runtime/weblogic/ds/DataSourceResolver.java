@@ -87,7 +87,7 @@ public class DataSourceResolver {
     private DataSourceRegistry registry;
     private MBeanServer mbServer;
     private DataSourceResolverMonitor monitor;
-    private Set<String> previousDataSources = new HashSet<String>();
+    private Set<String> previousDataSources = new HashSet<>();
 
     public DataSourceResolver(@Reference DataSourceRegistry registry, @Reference MBeanServer mbServer, @Monitor DataSourceResolverMonitor monitor) {
         this.registry = registry;
@@ -117,7 +117,7 @@ public class DataSourceResolver {
                 // add a listener to be notified of changes
                 mbServer.addNotificationListener(domainConfig, new DataSourceChangeListener(), null, null);
             }
-            Set<String> newDataSources = new HashSet<String>();
+            Set<String> newDataSources = new HashSet<>();
             for (ObjectName systemResource : systemResources) {
                 ObjectName resource = (ObjectName) mbServer.getAttribute(systemResource, "JDBCResource");
                 ObjectName params = (ObjectName) mbServer.getAttribute(resource, "JDBCDataSourceParams");

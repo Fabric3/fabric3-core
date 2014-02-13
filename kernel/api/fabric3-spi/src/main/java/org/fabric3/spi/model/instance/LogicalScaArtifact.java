@@ -57,8 +57,8 @@ import java.util.Set;
 public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implements Serializable {
     private static final long serialVersionUID = 3937960041374196627L;
     private P parent;
-    private Set<QName> intents = new LinkedHashSet<QName>();
-    private Set<QName> policySets = new LinkedHashSet<QName>();
+    private Set<QName> intents = new LinkedHashSet<>();
+    private Set<QName> policySets = new LinkedHashSet<>();
     private Map<String, Object> metadata;
 
     /**
@@ -107,7 +107,7 @@ public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implem
 
     public void addMetadata(String key, Object data) {
         if (metadata == null) {
-            metadata = new HashMap<String, Object>();
+            metadata = new HashMap<>();
         }
         metadata.put(key, data);
     }

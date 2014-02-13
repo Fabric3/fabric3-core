@@ -91,7 +91,7 @@ public class OSGiManifestHandler implements JarManifestHandler {
 
     private List<JavaImport> parseImportHeader(String header, IntrospectionContext context) {
         OSGiManifestEntryParser parser = new OSGiManifestEntryParser(header);
-        List<JavaImport> imports = new ArrayList<JavaImport>();
+        List<JavaImport> imports = new ArrayList<>();
         PackageInfo info = null;
         while (true) {
             OSGiManifestEntryParser.EventType type = parser.next();
@@ -127,7 +127,7 @@ public class OSGiManifestHandler implements JarManifestHandler {
 
     private List<JavaExport> parseExportHeader(String header, IntrospectionContext context) {
         OSGiManifestEntryParser parser = new OSGiManifestEntryParser(header);
-        List<JavaExport> exports = new ArrayList<JavaExport>();
+        List<JavaExport> exports = new ArrayList<>();
         PackageInfo info = null;
         while (true) {
             OSGiManifestEntryParser.EventType type = parser.next();

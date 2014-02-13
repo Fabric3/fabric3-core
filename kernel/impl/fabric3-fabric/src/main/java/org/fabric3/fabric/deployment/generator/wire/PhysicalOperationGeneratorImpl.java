@@ -93,7 +93,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
     public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations, boolean remote, PolicyResult policyResult)
             throws GenerationException {
 
-        Set<PhysicalOperationDefinition> physicalOperations = new HashSet<PhysicalOperationDefinition>(operations.size());
+        Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(operations.size());
         Set<PolicySet> endpointPolicySets;
         if (policyResult != null) {
             endpointPolicySets = policyResult.getInterceptedEndpointPolicySets();
@@ -105,7 +105,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
             PhysicalOperationDefinition physicalOperation = generate(operation, remote);
             if (policyResult != null) {
                 List<PolicySet> policies = policyResult.getInterceptedPolicySets(operation);
-                List<PolicySet> allPolicies = new ArrayList<PolicySet>(endpointPolicySets);
+                List<PolicySet> allPolicies = new ArrayList<>(endpointPolicySets);
                 for (PolicySet policy : policies) {
                     // strip duplicates from endpoint and operation policies 
                     if (!allPolicies.contains(policy)) {
@@ -125,7 +125,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
                                                                List<LogicalOperation> targets,
                                                                boolean remote,
                                                                PolicyResult result) throws GenerationException {
-        Set<PhysicalOperationDefinition> physicalOperations = new HashSet<PhysicalOperationDefinition>(sources.size());
+        Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(sources.size());
         Set<PolicySet> endpointPolicySets;
         if (result != null) {
             endpointPolicySets = result.getInterceptedEndpointPolicySets();
@@ -143,7 +143,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
             PhysicalOperationDefinition physicalOperation = generate(source, target, remote);
             if (result != null) {
                 List<PolicySet> policies = result.getInterceptedPolicySets(source);
-                List<PolicySet> allPolicies = new ArrayList<PolicySet>(endpointPolicySets);
+                List<PolicySet> allPolicies = new ArrayList<>(endpointPolicySets);
                 allPolicies.addAll(policies);
                 PolicyMetadata metadata = result.getMetadata(source);
                 Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(source, allPolicies, metadata);
@@ -168,7 +168,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         if (policies == null) {
             return Collections.emptySet();
         }
-        Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<PhysicalInterceptorDefinition>();
+        Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<>();
         for (PolicySet policy : policies) {
             if (policy.getExpression() == null) {
                 // empty policy

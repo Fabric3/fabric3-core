@@ -94,7 +94,7 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
     public void testIncrementalNoStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
         LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
         component1.setZone("zone1");
         component1.setDeployable(DEPLOYABLE1);
@@ -110,7 +110,7 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
     public void testTwoZoneIncrementalStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
 
         LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
         component1.setZone("zone1");
@@ -129,7 +129,7 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private List<LogicalComponent<?>> createComponents() {
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
 
         LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
         component1.setZone("zone1");

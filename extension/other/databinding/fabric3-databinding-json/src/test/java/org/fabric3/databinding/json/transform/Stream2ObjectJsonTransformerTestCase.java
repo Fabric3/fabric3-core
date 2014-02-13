@@ -70,7 +70,7 @@ public class Stream2ObjectJsonTransformerTestCase extends TestCase {
 
     public void testTransform() throws Exception {
         Stream2ObjectJsonTransformerFactory factory = new Stream2ObjectJsonTransformerFactory();
-        JavaClass<Foo> javaClass = new JavaClass<Foo>(Foo.class);
+        JavaClass<Foo> javaClass = new JavaClass<>(Foo.class);
         Stream2ObjectJsonTransformer transformer = factory.create(null, javaClass, null, null);
         String text = "{\"bar\":\"bar\"}";
         InputStream stream = new ByteArrayInputStream(text.getBytes());

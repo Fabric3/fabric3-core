@@ -54,7 +54,7 @@ public class PhysicalClassLoaderDefinition implements Serializable {
 
     private URI uri;
     private boolean provisionArtifact;
-    private Set<PhysicalClassLoaderWireDefinition> wireDefinitions = new LinkedHashSet<PhysicalClassLoaderWireDefinition>();
+    private Set<PhysicalClassLoaderWireDefinition> wireDefinitions = new LinkedHashSet<>();
     private List<Library> libraries = Collections.emptyList();
 
     /**

@@ -227,7 +227,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             BootConfiguration configuration = new BootConfiguration();
 
-            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            List<ComponentRegistration> registrations = new ArrayList<>();
 
             WebLogicExecutorService executorService = new WebLogicExecutorService();
             ComponentRegistration executorRegistration = new ComponentRegistration("WebLogicExecutorService", ExecutorService.class, executorService, true);
@@ -338,7 +338,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     private Map<String, String> getExportedPackages() {
-        Map<String, String> exportedPackages = new HashMap<String, String>();
+        Map<String, String> exportedPackages = new HashMap<>();
         exportedPackages.put("org.fabric3.spi.*", Names.VERSION);
         exportedPackages.put("com.bea.core.workmanager", "1.7.0.0");
         exportedPackages.put("com.bea.core.workmanager.internal", "1.7.0.0");
@@ -354,7 +354,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     private List<String> getHostCapabilities() {
-        List<String> capabilities = new ArrayList<String>();
+        List<String> capabilities = new ArrayList<>();
         capabilities.add("transaction");
         return capabilities;
     }

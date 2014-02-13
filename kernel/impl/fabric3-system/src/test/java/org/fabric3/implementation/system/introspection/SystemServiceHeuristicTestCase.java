@@ -92,7 +92,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
     }
 
     public void testWithInterface() throws IntrospectionException {
-        Set<Class<?>> interfaces = new HashSet<Class<?>>();
+        Set<Class<?>> interfaces = new HashSet<>();
         interfaces.add(ServiceInterface.class);
 
         IntrospectionContext context = new DefaultIntrospectionContext();

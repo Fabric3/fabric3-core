@@ -81,7 +81,7 @@ public class MetroServlet extends WSServlet {
     private ExecutorService executorService;
     private SecurityEnvironment securityEnvironment;
 
-    private List<EndpointConfiguration> configurations = new ArrayList<EndpointConfiguration>();
+    private List<EndpointConfiguration> configurations = new ArrayList<>();
     private ServletAdapterFactory servletAdapterFactory = new ServletAdapterFactory();
     private volatile F3ServletDelegate delegate;
     private F3Container container;
@@ -150,7 +150,7 @@ public class MetroServlet extends WSServlet {
                 endpointContainer = new WsitConfigurationContainer(container, generatedWsdl);
                 // Compile the list of imported schemas so they can be resolved using ?xsd GET requests. Metro will re-write the WSDL import
                 // so clients can dereference the imports when they obtain the WSDL.
-                metadata = new ArrayList<SDDocumentSource>();
+                metadata = new ArrayList<>();
                 List<URL> schemas = configuration.getGeneratedSchemas();
                 if (schemas != null) {
                     for (URL schema : schemas) {

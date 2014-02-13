@@ -71,7 +71,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
     private ConnectionFactoryCreatorRegistry creatorRegistry;
     private ConnectionFactoryTemplateRegistry registry;
     private ConnectionFactoryManager manager;
-    private Set<String> created = new HashSet<String>();
+    private Set<String> created = new HashSet<>();
 
     public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryTemplateRegistry registry,
                                            @Reference ConnectionFactoryCreatorRegistry creatorRegistry,

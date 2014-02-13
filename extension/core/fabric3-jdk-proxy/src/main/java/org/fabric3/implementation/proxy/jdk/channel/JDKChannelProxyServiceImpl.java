@@ -60,7 +60,7 @@ public class JDKChannelProxyServiceImpl implements JDKChannelProxyService {
     }
 
     public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        return new ChannelConnectionObjectFactory<T>(interfaze, this, connection.getEventStream());
+        return new ChannelConnectionObjectFactory<>(interfaze, this, connection.getEventStream());
     }
 
     public <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException {

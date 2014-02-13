@@ -101,7 +101,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         this.info = info;
         this.monitor = monitor;
         eventService.subscribe(RuntimeStart.class, this);
-        scheduleQueue = new ArrayList<TimerComponent>();
+        scheduleQueue = new ArrayList<>();
     }
 
     @Reference(required = false)

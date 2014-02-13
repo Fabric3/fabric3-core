@@ -43,7 +43,7 @@ package org.fabric3.spi.container.invocation;
  * On runtimes with managed thread pools, the cache uses {@link Fabric3Thread} to store the message; on other runtimes a thread local is used.
  */
 public class MessageCache {
-    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>();
+    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<>();
 
     private MessageCache() {
     }

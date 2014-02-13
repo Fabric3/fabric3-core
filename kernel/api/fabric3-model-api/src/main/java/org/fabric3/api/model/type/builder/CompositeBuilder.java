@@ -175,7 +175,7 @@ public class CompositeBuilder extends AbstractBuilder {
      */
     public CompositeBuilder promoteReferences(String name, Multiplicity multiplicity, List<String> promoted) {
         checkState();
-        List<URI> uris = new ArrayList<URI>();
+        List<URI> uris = new ArrayList<>();
         for (String value : promoted) {
             uris.add(URI.create(value));
         }

@@ -435,7 +435,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
-        JavaClass<T> dataType = new JavaClass<T>(consumerType);
+        JavaClass<T> dataType = new JavaClass<>(consumerType);
         String target = reader.getAttributeValue(null, "target");
         if (target == null) {
             MissingAttribute failure = new MissingAttribute("A consumer target must be specified", startLocation);

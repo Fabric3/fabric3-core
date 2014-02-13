@@ -60,7 +60,7 @@ public class F3Container extends Container {
 
     // Collection of active web service endpoints. Note this is updated by Metro (ServletAdaptor) using Module.getBoundResources() and hence there is
     // only a method for removing resources, which is not done by Metro and must be performed by the Fabric3 runtime.
-    private List<BoundEndpoint> endpoints = new ArrayList<BoundEndpoint>();
+    private List<BoundEndpoint> endpoints = new ArrayList<>();
 
     private final ServletModule module = new ServletModule() {
 

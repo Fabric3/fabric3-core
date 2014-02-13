@@ -58,10 +58,10 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
     private static final String SENDERS_PATH = "transports/zeromq/senders/";
     private static final String RECEIVERS_PATH = "transports/zeromq/receivers/";
 
-    private Set<String> subscribers = new HashSet<String>();
-    private Set<String> publishers = new HashSet<String>();
-    private Set<String> senders = new HashSet<String>();
-    private Set<String> receivers = new HashSet<String>();
+    private Set<String> subscribers = new HashSet<>();
+    private Set<String> publishers = new HashSet<>();
+    private Set<String> senders = new HashSet<>();
+    private Set<String> receivers = new HashSet<>();
 
     private ManagementService managementService;
     private ManagementMonitor monitor;

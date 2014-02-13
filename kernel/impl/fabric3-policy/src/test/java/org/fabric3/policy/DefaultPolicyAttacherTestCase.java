@@ -166,7 +166,7 @@ public class DefaultPolicyAttacherTestCase extends TestCase {
         JavaServiceContract serviceContract = new JavaServiceContract();
         serviceContract.setInterfaceName("ChildService");
         Operation operation = new Operation("operation", null, null, null);
-        List<Operation> operations = new ArrayList<Operation>();
+        List<Operation> operations = new ArrayList<>();
         operations.add(operation);
         serviceContract.setOperations(operations);
         ServiceDefinition serviceDefinition = new ServiceDefinition("child1Service", serviceContract);

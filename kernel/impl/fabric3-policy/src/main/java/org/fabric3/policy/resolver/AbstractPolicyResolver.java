@@ -87,7 +87,7 @@ public class AbstractPolicyResolver {
      */
     protected Set<PolicySet> resolvePolicies(Set<Intent> intents, LogicalScaArtifact<?> target) throws PolicyResolutionException {
 
-        Set<PolicySet> policies = new LinkedHashSet<PolicySet>();
+        Set<PolicySet> policies = new LinkedHashSet<>();
 
         Collection<PolicySet> definitions = policyRegistry.getAllDefinitions(PolicySet.class);
         // Calculate appliesTo by first determining if the policy set provides the intent and then matching its appliesTo expression
@@ -144,7 +144,7 @@ public class AbstractPolicyResolver {
         if (intents.isEmpty()) {
             return;
         }
-        Set<Intent> removed = new HashSet<Intent>();
+        Set<Intent> removed = new HashSet<>();
 
         for (Intent current : intents) {
             if (removed.contains(current)) {
@@ -170,7 +170,7 @@ public class AbstractPolicyResolver {
      */
     protected Set<QName> aggregateIntents(LogicalBinding<?> binding) throws PolicyResolutionException {
         Bindable parent = binding.getParent();
-        Set<QName> aggregatedIntents = new LinkedHashSet<QName>();
+        Set<QName> aggregatedIntents = new LinkedHashSet<>();
 
         // add binding intents
         aggregatedIntents.addAll(binding.getIntents());
@@ -318,7 +318,7 @@ public class AbstractPolicyResolver {
      */
     protected Set<QName> aggregateIntents(LogicalComponent<?> component) {
         LogicalComponent<?> current = component;
-        Set<QName> aggregatedIntents = new LinkedHashSet<QName>();
+        Set<QName> aggregatedIntents = new LinkedHashSet<>();
 
         while (current != null) {
             Set<QName> currentIntents = current.getIntents();
@@ -379,7 +379,7 @@ public class AbstractPolicyResolver {
      * @throws PolicyResolutionException if an exception is encountered resolving the intents
      */
     protected Set<Intent> resolveIntents(Set<QName> intentNames) throws PolicyResolutionException {
-        Set<Intent> requiredIntents = new LinkedHashSet<Intent>();
+        Set<Intent> requiredIntents = new LinkedHashSet<>();
         for (QName intentName : intentNames) {
             Intent intent = policyRegistry.getDefinition(intentName, Intent.class);
             if (intent == null) {

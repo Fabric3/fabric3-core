@@ -316,7 +316,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         if (target.getHandlers().isEmpty()) {
             return null;
         }
-        List<BindingHandler<Message>> handlers = new ArrayList<BindingHandler<Message>>();
+        List<BindingHandler<Message>> handlers = new ArrayList<>();
         for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
             BindingHandler<Message> handler = handlerRegistry.createHandler(Message.class, handlerDefinition);
             handlers.add(handler);

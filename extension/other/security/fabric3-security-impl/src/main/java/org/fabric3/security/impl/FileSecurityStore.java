@@ -76,7 +76,7 @@ public class FileSecurityStore implements SecurityStore {
 
     @Property(required = false)
     public void setSecurityConfiguration(XMLStreamReader reader) throws XMLStreamException, StoreException {
-        cache = new ConcurrentHashMap<String, BasicSecuritySubject>();
+        cache = new ConcurrentHashMap<>();
         parse(reader);
     }
 
@@ -86,7 +86,7 @@ public class FileSecurityStore implements SecurityStore {
             // initialized from a system property
             return;
         }
-        cache = new ConcurrentHashMap<String, BasicSecuritySubject>();
+        cache = new ConcurrentHashMap<>();
         File dir = info.getBaseDir();
         if (dir == null) {
             // runtime does not have a filesystem image
@@ -110,7 +110,7 @@ public class FileSecurityStore implements SecurityStore {
         reader.nextTag();
         String username = null;
         String password = null;
-        Set<Role> roles = new HashSet<Role>();
+        Set<Role> roles = new HashSet<>();
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
@@ -137,7 +137,7 @@ public class FileSecurityStore implements SecurityStore {
                     cache.put(subject.getUsername(), subject);
                     username = null;
                     password = null;
-                    roles = new HashSet<Role>();
+                    roles = new HashSet<>();
                 }
             }
         }

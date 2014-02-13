@@ -110,7 +110,7 @@ public class ServiceListener implements MessageListener {
         this.xmlFactory = xmlFactory;
         this.handlers = handlers;
         this.monitor = monitor;
-        invocationChainMap = new HashMap<String, InvocationChainHolder>();
+        invocationChainMap = new HashMap<>();
         for (InvocationChainHolder chainHolder : wireHolder.getInvocationChains()) {
             String name = chainHolder.getChain().getPhysicalOperation().getName();
             if ("onMessage".equals(name)) {

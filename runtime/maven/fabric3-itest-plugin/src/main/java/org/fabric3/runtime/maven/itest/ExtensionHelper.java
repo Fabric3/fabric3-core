@@ -67,7 +67,7 @@ public class ExtensionHelper {
     }
 
     private Set<URL> resolveDependencies(Set<Dependency> dependencies, Set<ArtifactRepository> repositories) throws MojoExecutionException {
-        Set<URL> urls = new HashSet<URL>();
+        Set<URL> urls = new HashSet<>();
         if (dependencies != null) {
             for (Dependency dependency : dependencies) {
                 Artifact artifact = artifactHelper.resolve(dependency, repositories);
@@ -82,7 +82,7 @@ public class ExtensionHelper {
     }
 
     private List<ContributionSource> createContributionSources(Set<URL> urls) {
-        List<ContributionSource> sources = new ArrayList<ContributionSource>();
+        List<ContributionSource> sources = new ArrayList<>();
         for (URL extensionUrl : urls) {
             // it's ok to assume archives are uniquely named since most server environments have a single deploy directory
             URI uri = URI.create(new File(extensionUrl.getFile()).getName());

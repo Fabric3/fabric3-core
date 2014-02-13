@@ -75,7 +75,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         this.addresses = addresses;
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
-        queue = new LinkedBlockingQueue<Request>();
+        queue = new LinkedBlockingQueue<>();
         multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PUSH, metadata);
     }
 
@@ -173,7 +173,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                     reconnect();
 
                     // handle pending requests
-                    List<Request> drained = new ArrayList<Request>();
+                    List<Request> drained = new ArrayList<>();
                     Request value = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
                     if (SHUTDOWN == value) {
                         multiplexer.close();

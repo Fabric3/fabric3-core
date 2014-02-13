@@ -91,7 +91,7 @@ public class CompositeResourceProcessorTestCase extends TestCase {
 
         CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader, factory);
 
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(new QNameSymbol(compositeName));
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(new QNameSymbol(compositeName));
         resource.addResourceElement(element);
 
         processor.process(resource, context);
@@ -102,7 +102,7 @@ public class CompositeResourceProcessorTestCase extends TestCase {
         contribution.addResource(resource);
         EasyMock.replay(loader, registry);
 
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(new QNameSymbol(compositeName));
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(new QNameSymbol(compositeName));
         Resource otherResource = new Resource(contribution, null, "application/xml");
         otherResource.addResourceElement(element);
         contribution.addResource(otherResource);

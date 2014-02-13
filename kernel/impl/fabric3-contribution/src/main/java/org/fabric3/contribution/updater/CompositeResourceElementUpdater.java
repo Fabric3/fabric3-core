@@ -67,7 +67,7 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 public class CompositeResourceElementUpdater implements ResourceElementUpdater<Composite> {
 
     public Set<ModelObject> update(Composite newComposite, Contribution contribution, Set<Contribution> dependentContributions) {
-        Set<ModelObject> set = new HashSet<ModelObject>();
+        Set<ModelObject> set = new HashSet<>();
         updateComposite(newComposite, contribution, set);
         QName name = newComposite.getName();
         QNameSymbol symbol = new QNameSymbol(name);
@@ -83,7 +83,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
     }
 
     public Set<ModelObject> remove(Composite composite, Contribution contribution, Set<Contribution> dependentContributions) {
-        Set<ModelObject> set = new HashSet<ModelObject>();
+        Set<ModelObject> set = new HashSet<>();
         QName name = composite.getName();
         URI uri = composite.getContributionUri();
         Composite pointer = new Composite(name, true, uri);

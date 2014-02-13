@@ -87,7 +87,7 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
     @SuppressWarnings("unchecked")
     public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws BuilderException {
         // create the appenders for the destination
-        List<Appender> appenders = new ArrayList<Appender>();
+        List<Appender> appenders = new ArrayList<>();
         for (PhysicalAppenderDefinition appenderDefinition : definition.getDefinitions()) {
             AppenderBuilder builder = appenderBuilders.get(appenderDefinition.getClass());
             if (builder == null) {

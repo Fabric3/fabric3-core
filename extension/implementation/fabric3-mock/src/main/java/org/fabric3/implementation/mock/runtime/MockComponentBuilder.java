@@ -67,7 +67,7 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
         List<String> interfaces = componentDefinition.getInterfaces();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(componentDefinition.getClassLoaderId());
 
-        List<Class<?>> mockedInterfaces = new LinkedList<Class<?>>();
+        List<Class<?>> mockedInterfaces = new LinkedList<>();
         for (String interfaze : interfaces) {
             try {
                 mockedInterfaces.add(classLoader.loadClass(interfaze));
@@ -76,7 +76,7 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
             }
         }
 
-        ObjectFactory<Object> objectFactory = new MockObjectFactory<Object>(mockedInterfaces, classLoader, control);
+        ObjectFactory<Object> objectFactory = new MockObjectFactory<>(mockedInterfaces, classLoader, control);
         return new MockComponent(componentDefinition.getComponentUri(), objectFactory);
     }
 

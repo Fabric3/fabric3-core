@@ -131,7 +131,7 @@ public class RmiAgent {
     }
 
     private Map<String, Object> initEnvironment() {
-        Map<String, Object> environment = new HashMap<String, Object>();
+        Map<String, Object> environment = new HashMap<>();
         if (JmxSecurity.DISABLED != security) {
             environment.put(JMXConnectorServer.AUTHENTICATOR, authenticator);
         }

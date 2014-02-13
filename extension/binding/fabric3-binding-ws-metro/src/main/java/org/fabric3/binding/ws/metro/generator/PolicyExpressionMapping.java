@@ -55,7 +55,7 @@ public class PolicyExpressionMapping implements Serializable {
 
     private String id;
     private Element policyExpression;
-    private List<String> operations = new ArrayList<String>();
+    private List<String> operations = new ArrayList<>();
 
     /**
      * Constructor.

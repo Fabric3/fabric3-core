@@ -63,9 +63,9 @@ public class ImplementationManagerDefinition implements Serializable {
     private Signature initMethod;
     private Signature destroyMethod;
     private boolean reinjectable;
-    private Map<InjectionSite, Injectable> construction = new HashMap<InjectionSite, Injectable>();
-    private Map<InjectionSite, Injectable> postConstruction = new HashMap<InjectionSite, Injectable>();
-    private Map<InjectionSite, Injectable> reinjection = new HashMap<InjectionSite, Injectable>();
+    private Map<InjectionSite, Injectable> construction = new HashMap<>();
+    private Map<InjectionSite, Injectable> postConstruction = new HashMap<>();
+    private Map<InjectionSite, Injectable> reinjection = new HashMap<>();
     private URI componentUri;
 
     /**

@@ -97,7 +97,7 @@ public class Resource implements Serializable {
     @JsonAnySetter
     public void setProperty(String key, Object value) {
         if (properties == null) {
-            properties = new HashMap<String, Object>();
+            properties = new HashMap<>();
         }
         properties.put(key, value);
     }

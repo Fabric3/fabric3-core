@@ -82,7 +82,7 @@ public class SymLinkClasspathProcessor implements ClasspathProcessor {
     }
 
     public List<URL> process(URL url, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<URL>();
+        List<URL> classpath = new ArrayList<>();
         File root = deReferenceFile(url);
         classpath.add(root.toURI().toURL());
         File metaInfLib = new File(root, "META-INF" + File.separator + "lib");

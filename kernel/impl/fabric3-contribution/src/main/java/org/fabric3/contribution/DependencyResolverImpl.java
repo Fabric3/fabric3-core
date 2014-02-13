@@ -81,15 +81,15 @@ public class DependencyResolverImpl implements DependencyResolver {
 
     public DependencyResolverImpl(@Reference MetaDataStore store) {
         this.store = store;
-        detector = new CycleDetectorImpl<Contribution>();
-        sorter = new TopologicalSorterImpl<Contribution>();
+        detector = new CycleDetectorImpl<>();
+        sorter = new TopologicalSorterImpl<>();
     }
 
     public List<Contribution> resolve(List<Contribution> contributions) throws DependencyException {
-        DirectedGraph<Contribution> dag = new DirectedGraphImpl<Contribution>();
+        DirectedGraph<Contribution> dag = new DirectedGraphImpl<>();
         // add the contributions as vertices
         for (Contribution contribution : contributions) {
-            dag.add(new VertexImpl<Contribution>(contribution));
+            dag.add(new VertexImpl<>(contribution));
         }
 
         // add edges based on imports and capabilities
@@ -104,10 +104,10 @@ public class DependencyResolverImpl implements DependencyResolver {
 
     public List<Contribution> orderForUninstall(List<Contribution> contributions) {
         // create a DAG
-        DirectedGraph<Contribution> dag = new DirectedGraphImpl<Contribution>();
+        DirectedGraph<Contribution> dag = new DirectedGraphImpl<>();
         // add the contributions as vertices
         for (Contribution contribution : contributions) {
-            dag.add(new VertexImpl<Contribution>(contribution));
+            dag.add(new VertexImpl<>(contribution));
         }
         // add edges based on imports
         for (Vertex<Contribution> source : dag.getVertices()) {
@@ -123,7 +123,7 @@ public class DependencyResolverImpl implements DependencyResolver {
                             throw new AssertionError("Unable to resolve import " + imprt + " in " + uri);
                         }
                         for (Vertex<Contribution> sink : sinks) {
-                            Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                            Edge<Contribution> edge = new EdgeImpl<>(source, sink);
                             dag.add(edge);
                         }
                         break;
@@ -139,7 +139,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
         try {
             List<Vertex<Contribution>> vertices = sorter.sort(dag);
-            List<Contribution> ordered = new ArrayList<Contribution>(vertices.size());
+            List<Contribution> ordered = new ArrayList<>(vertices.size());
             for (Vertex<Contribution> vertex : vertices) {
                 ordered.add(vertex.getEntity());
             }
@@ -197,7 +197,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             }
         } else {
             for (Vertex<Contribution> sink : sinks) {
-                Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                Edge<Contribution> edge = new EdgeImpl<>(source, sink);
                 dag.add(edge);
             }
         }
@@ -246,7 +246,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             }
         } else {
             for (Vertex<Contribution> sink : sinks) {
-                Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                Edge<Contribution> edge = new EdgeImpl<>(source, sink);
                 dag.add(edge);
             }
             //  externally resolved, drop the export
@@ -274,7 +274,7 @@ public class DependencyResolverImpl implements DependencyResolver {
 
             } else {
                 for (Vertex<Contribution> sink : sinks) {
-                    Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                    Edge<Contribution> edge = new EdgeImpl<>(source, sink);
                     dag.add(edge);
                 }
             }
@@ -291,9 +291,9 @@ public class DependencyResolverImpl implements DependencyResolver {
      * @return the matching Vertex or null
      */
     private List<Vertex<Contribution>> resolveImport(Import imprt, URI contributionUri, DirectedGraph<Contribution> dag) {
-        List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
+        List<Vertex<Contribution>> vertices = new ArrayList<>();
 
-        Map<Vertex<Contribution>, Export> candidates = new LinkedHashMap<Vertex<Contribution>, Export>();
+        Map<Vertex<Contribution>, Export> candidates = new LinkedHashMap<>();
 
         if (!imprt.getResolved().isEmpty()) {
             // already resolved
@@ -406,7 +406,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
         try {
             List<Vertex<Contribution>> vertices = sorter.reverseSort(dag);
-            List<Contribution> ordered = new ArrayList<Contribution>(vertices.size());
+            List<Contribution> ordered = new ArrayList<>(vertices.size());
             for (Vertex<Contribution> vertex : vertices) {
                 ordered.add(vertex.getEntity());
             }
@@ -425,7 +425,7 @@ public class DependencyResolverImpl implements DependencyResolver {
      * @return the vertices
      */
     private List<Vertex<Contribution>> findCapabilityVertices(Capability capability, URI contributionUri, DirectedGraph<Contribution> dag) {
-        List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
+        List<Vertex<Contribution>> vertices = new ArrayList<>();
         for (Vertex<Contribution> vertex : dag.getVertices()) {
             Contribution contribution = vertex.getEntity();
             if (contribution.getManifest().getProvidedCapabilities().contains(capability) && !contributionUri.equals(contribution.getUri())) {

@@ -53,8 +53,8 @@ import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
  *
  */
 public class AdministeredObjectResolverImpl implements AdministeredObjectResolver {
-    private Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies = new HashMap<CreateOption, ConnectionFactoryStrategy>();
-    private Map<CreateOption, DestinationStrategy> destinationStrategies = new HashMap<CreateOption, DestinationStrategy>();
+    private Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies = new HashMap<>();
+    private Map<CreateOption, DestinationStrategy> destinationStrategies = new HashMap<>();
 
 
     public AdministeredObjectResolverImpl(@Reference Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies,

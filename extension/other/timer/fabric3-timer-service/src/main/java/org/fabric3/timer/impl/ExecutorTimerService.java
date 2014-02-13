@@ -74,8 +74,8 @@ import org.fabric3.timer.spi.TimerService;
 public class ExecutorTimerService implements TimerService, ScheduledExecutorService {
     private ManagementService managementService;
     private TimerServiceMonitor monitor;
-    private Map<String, ScheduledExecutorService> executors = new ConcurrentHashMap<String, ScheduledExecutorService>();
-    private Map<String, TimerPoolStatistics> statisticsCache = new ConcurrentHashMap<String, TimerPoolStatistics>();
+    private Map<String, ScheduledExecutorService> executors = new ConcurrentHashMap<>();
+    private Map<String, TimerPoolStatistics> statisticsCache = new ConcurrentHashMap<>();
     private int defaultPoolSize = 2;
 
     public ExecutorTimerService(@Reference ManagementService managementService, @Monitor TimerServiceMonitor monitor) {

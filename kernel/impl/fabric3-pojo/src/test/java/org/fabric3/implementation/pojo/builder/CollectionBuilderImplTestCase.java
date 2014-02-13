@@ -64,7 +64,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  *
  */
 public class CollectionBuilderImplTestCase extends TestCase {
-    private static final DataType<?> JAVA_CLASS = new JavaClass<String>(String.class);
+    private static final DataType<?> JAVA_CLASS = new JavaClass<>(String.class);
     private DocumentBuilder documentBuilder;
     private TransformerRegistry registry;
     private CollectionBuilderImpl builder;
@@ -91,7 +91,7 @@ public class CollectionBuilderImplTestCase extends TestCase {
         value.setTextContent("test2");
         values.appendChild(value);
 
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
         ObjectFactory<?> factory = builder.createFactory(arrayList, "test", type, document, getClass().getClassLoader());
 
         List result = (List) factory.getInstance();

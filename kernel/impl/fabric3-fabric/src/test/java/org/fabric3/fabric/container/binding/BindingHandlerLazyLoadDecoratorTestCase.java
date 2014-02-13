@@ -35,7 +35,7 @@ public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
         super.setUp();
         component = EasyMock.createMock(ScopedComponent.class);
         componentManager = EasyMock.createMock(ComponentManager.class);
-        decorator = new BindingHandlerLazyLoadDecorator<Object>(HANDLER_URI, componentManager);
+        decorator = new BindingHandlerLazyLoadDecorator<>(HANDLER_URI, componentManager);
         handler = EasyMock.createNiceMock(BindingHandler.class);
 
     }

@@ -65,7 +65,7 @@ import org.oasisopen.sca.annotation.Requires;
  *
  */
 public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor {
-    private Map<String, QName> intentsToQualifiers = new HashMap<String, QName>();
+    private Map<String, QName> intentsToQualifiers = new HashMap<>();
 
     @Property(required = false)
     public void setIntentsToQualifiers(Map<String, QName> intentsToQualifiers) {

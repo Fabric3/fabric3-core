@@ -110,12 +110,12 @@ public final class ValidationUtils {
 
     private static void write(PrintWriter writer, List<ValidationFailure> failures, TYPE type) {
         int count = 0;
-        List<ValidationFailure> sorted = new ArrayList<ValidationFailure>(failures);
+        List<ValidationFailure> sorted = new ArrayList<>(failures);
         // sort the errors so that ArtifactValidationFailures are evaluated last. This is done so that nested failures are printed after all
         // failures in the parent artifact.
         Collections.sort(sorted, COMPARATOR);
         // if a composite is used multiple times, only report errors contained in it once
-        HashSet<String> reported = new HashSet<String>();
+        HashSet<String> reported = new HashSet<>();
         for (ValidationFailure failure : sorted) {
             count = writerError(failure, writer, count, type, reported);
         }

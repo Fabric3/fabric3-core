@@ -59,7 +59,7 @@ public class NonManagedImplementationManagerFactory implements ImplementationMan
 
     public NonManagedImplementationManagerFactory(Object instance) {
         this.instance = instance;
-        factory = new SingletonObjectFactory<Object>(instance);
+        factory = new SingletonObjectFactory<>(instance);
     }
 
     public ImplementationManager createManager() {

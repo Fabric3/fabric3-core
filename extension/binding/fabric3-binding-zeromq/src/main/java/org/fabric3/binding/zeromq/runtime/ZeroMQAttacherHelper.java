@@ -53,11 +53,11 @@ public final class ZeroMQAttacherHelper {
      * @return the invocation chains
      */
     public static List<InvocationChain> sortChains(Wire wire) {
-        TreeMap<PhysicalOperationDefinition, InvocationChain> map = new TreeMap<PhysicalOperationDefinition, InvocationChain>();
+        TreeMap<PhysicalOperationDefinition, InvocationChain> map = new TreeMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             map.put(chain.getPhysicalOperation(), chain);
         }
-        List<InvocationChain> sorted = new ArrayList<InvocationChain>();
+        List<InvocationChain> sorted = new ArrayList<>();
         sorted.addAll(map.values());
         return sorted;
     }

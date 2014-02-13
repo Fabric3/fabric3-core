@@ -74,6 +74,6 @@ public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceTarg
         if (!target.isOptional() && source == null) {
             throw new DataSourceNotFoundException("DataSource not found: " + dataSourceName);
         }
-        return new SingletonObjectFactory<DataSource>(source);
+        return new SingletonObjectFactory<>(source);
     }
 }

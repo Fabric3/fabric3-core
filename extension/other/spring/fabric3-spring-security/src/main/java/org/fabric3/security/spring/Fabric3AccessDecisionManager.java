@@ -92,7 +92,7 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
     @Init
     public void init() throws SecurityInitException {
         if (getDecisionVoters() == null || getDecisionVoters().isEmpty()) {
-            List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();
+            List<AccessDecisionVoter> voters = new ArrayList<>();
             RoleVoter roleVoter = new RoleVoter();
             voters.add(roleVoter);
             AuthenticatedVoter authenticatedVoter = new AuthenticatedVoter();
@@ -125,14 +125,14 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
     public void checkRole(SecuritySubject subject, String role) throws AuthorizationException {
         Authentication authentication = subject.getDelegate(Authentication.class);
         SecurityConfig config = new SecurityConfig(role);
-        List<ConfigAttribute> configs = new ArrayList<ConfigAttribute>();
+        List<ConfigAttribute> configs = new ArrayList<>();
         configs.add(config);
         delegate.decide(authentication, null, configs);
     }
 
     public void checkRoles(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
         Authentication authentication = subject.getDelegate(Authentication.class);
-        List<ConfigAttribute> configs = new ArrayList<ConfigAttribute>(roles.size());
+        List<ConfigAttribute> configs = new ArrayList<>(roles.size());
         for (String role : roles) {
             SecurityConfig config = new SecurityConfig(role);
             configs.add(config);

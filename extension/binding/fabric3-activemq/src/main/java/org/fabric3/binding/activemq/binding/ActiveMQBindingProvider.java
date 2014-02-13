@@ -165,7 +165,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         // derive the forward queue name from the service name
         String forwardQueue = target.getUri().toString();
         JmsBindingDefinition referenceDefinition = createBindingDefinition(forwardQueue, response, false);  // XA not enabled on references
-        LogicalBinding<JmsBindingDefinition> referenceBinding = new LogicalBinding<JmsBindingDefinition>(referenceDefinition, source, deployable);
+        LogicalBinding<JmsBindingDefinition> referenceBinding = new LogicalBinding<>(referenceDefinition, source, deployable);
         referenceBinding.setAssigned(true);
         source.addBinding(referenceBinding);
 
@@ -174,7 +174,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         if (bindTarget) {
             boolean xa = isXA(target, false);
             JmsBindingDefinition serviceDefinition = createBindingDefinition(forwardQueue, response, xa);
-            LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<JmsBindingDefinition>(serviceDefinition, target, deployable);
+            LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, target, deployable);
             serviceBinding.setAssigned(true);
             target.addBinding(serviceBinding);
         }
@@ -187,7 +187,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
             boolean callbackXa = isXA(target, true);
 
             JmsBindingDefinition callbackReferenceDefinition = createBindingDefinition(callbackQueue, false, callbackXa);
-            LogicalBinding<JmsBindingDefinition> callbackReferenceBinding = new LogicalBinding<JmsBindingDefinition>(callbackReferenceDefinition,
+            LogicalBinding<JmsBindingDefinition> callbackReferenceBinding = new LogicalBinding<>(callbackReferenceDefinition,
                                                                                                                      source,
                                                                                                                      deployable);
             callbackReferenceBinding.setAssigned(true);
@@ -198,7 +198,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
                 JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue,
                                                                                          false,
                                                                                          false); // XA not enabled on service side callback
-                LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<JmsBindingDefinition>(callbackServiceDefinition,
+                LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition,
                                                                                                                        target,
                                                                                                                        deployable);
                 callbackServiceBinding.setAssigned(true);
@@ -216,7 +216,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
         boolean xa = isXA(service, false);
         JmsBindingDefinition serviceDefinition = createBindingDefinition(forwardQueue, response, xa);
-        LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<JmsBindingDefinition>(serviceDefinition, service, deployable);
+        LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, service, deployable);
         serviceBinding.setAssigned(true);
         service.addBinding(serviceBinding);
 
@@ -224,7 +224,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         if (targetContract.getCallbackContract() != null) {
             String callbackQueue = service.getUri().toString() + "Callback";
             JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue, false, false); // XA not enabled on service side callback
-            LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<JmsBindingDefinition>(callbackServiceDefinition,
+            LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition,
                                                                                                                    service,
                                                                                                                    deployable);
             callbackServiceBinding.setAssigned(true);
@@ -237,7 +237,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         QName deployable = channel.getParent().getDeployable();
         String topic = channel.getUri().toString();
         JmsBindingDefinition channelDefinition = createTopicBindingDefinition(topic);
-        LogicalBinding<JmsBindingDefinition> channelBinding = new LogicalBinding<JmsBindingDefinition>(channelDefinition, channel, deployable);
+        LogicalBinding<JmsBindingDefinition> channelBinding = new LogicalBinding<>(channelDefinition, channel, deployable);
         channelBinding.setAssigned(true);
         channel.addBinding(channelBinding);
     }

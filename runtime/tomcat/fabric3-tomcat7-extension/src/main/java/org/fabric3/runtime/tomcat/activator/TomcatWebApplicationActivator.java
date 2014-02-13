@@ -78,7 +78,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     private ContributionResolver resolver;
     private Connector connector;
     // mappings from component URI to Tomcat context path
-    private Map<URI, String> mappings = new ConcurrentHashMap<URI, String>();
+    private Map<URI, String> mappings = new ConcurrentHashMap<>();
     private ActivatorMonitor monitor;
 
     public TomcatWebApplicationActivator(

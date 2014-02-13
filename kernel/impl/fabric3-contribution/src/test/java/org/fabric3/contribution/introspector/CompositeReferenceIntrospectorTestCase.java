@@ -24,7 +24,7 @@ public class CompositeReferenceIntrospectorTestCase extends TestCase {
         QName name = new QName("foo", "referrer");
         QNameSymbol symbol = new QNameSymbol(name);
         Composite composite = new Composite(name);
-        ResourceElement<QNameSymbol, Composite> refers = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> refers = new ResourceElement<>(symbol, composite);
 
         Include include = new Include();
         include.setName(new QName("included"));
@@ -38,9 +38,9 @@ public class CompositeReferenceIntrospectorTestCase extends TestCase {
         QName name = new QName("foo", "referrer");
         QNameSymbol symbol = new QNameSymbol(name);
         Composite composite = new Composite(name);
-        ResourceElement<QNameSymbol, Composite> refers = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> refers = new ResourceElement<>(symbol, composite);
 
-        ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<CompositeImplementation>("referrer");
+        ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<>("referrer");
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(referred.getValue());
         child.setImplementation(implementation);
@@ -58,6 +58,6 @@ public class CompositeReferenceIntrospectorTestCase extends TestCase {
         QName name = new QName("foo", "referred");
         QNameSymbol symbol = new QNameSymbol(name);
         Composite composite = new Composite(name);
-        referred = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        referred = new ResourceElement<>(symbol, composite);
     }
 }

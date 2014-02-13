@@ -59,7 +59,7 @@ public abstract class AbstractProducer<P extends ModelObject> extends BindableDe
     private String name;
     private ServiceContract serviceContract;
 
-    protected List<URI> targets = new ArrayList<URI>();
+    protected List<URI> targets = new ArrayList<>();
 
     /**
      * Constructor.

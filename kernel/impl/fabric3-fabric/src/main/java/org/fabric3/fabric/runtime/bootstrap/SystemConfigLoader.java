@@ -279,7 +279,7 @@ public class SystemConfigLoader {
      * @return the deployment directories
      */
     public List<File> parseDeployDirectories(Document systemConfig) {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         Element root = systemConfig.getDocumentElement();
         NodeList nodes = root.getElementsByTagName("deploy.directory");
         for (int i = 0; i < nodes.getLength(); i++) {

@@ -48,7 +48,7 @@ public final class Java6HostExports {
     private static final Map<String, String> HOST_EXPORTS;
 
     static {
-        Map<String, String> hostMap = new HashMap<String, String>();
+        Map<String, String> hostMap = new HashMap<>();
 
         hostMap.put("javax.accessibility", "0.0");
         hostMap.put("javax.activation", "0.0");

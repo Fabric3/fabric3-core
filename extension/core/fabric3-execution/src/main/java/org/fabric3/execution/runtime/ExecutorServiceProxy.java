@@ -85,7 +85,7 @@ public class ExecutorServiceProxy implements ExecutorService {
     }
 
     private <T> List<PropagatingCallable<T>> createCollection(Collection<? extends Callable<T>> tasks) {
-        List<PropagatingCallable<T>> callables = new ArrayList<PropagatingCallable<T>>(tasks.size());
+        List<PropagatingCallable<T>> callables = new ArrayList<>(tasks.size());
         for (Callable<T> task : tasks) {
             callables.add(createCallable(task));
         }
@@ -102,12 +102,12 @@ public class ExecutorServiceProxy implements ExecutorService {
         List<CallbackReference> stack = context.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
-            stack = new ArrayList<CallbackReference>(stack);
+            stack = new ArrayList<>(stack);
         }
         Map<String, Object> headers = context.getHeaders();
         if (headers != null && !headers.isEmpty()) {
             // clone the headers to avoid multiple threads seeing changes
-           headers = new HashMap<String, Object>(headers);
+           headers = new HashMap<>(headers);
         }
         SecuritySubject subject = context.getSubject();
         return new PropagatingRunnable(runnable, stack, headers, subject);
@@ -118,15 +118,15 @@ public class ExecutorServiceProxy implements ExecutorService {
         List<CallbackReference> stack = context.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
-            stack = new ArrayList<CallbackReference>(stack);
+            stack = new ArrayList<>(stack);
         }
         Map<String, Object> headers = context.getHeaders();
         if (headers != null && !headers.isEmpty()) {
             // clone the headers to avoid multiple threads seeing changes
-           headers = new HashMap<String, Object>(headers);
+           headers = new HashMap<>(headers);
         }
         SecuritySubject subject = context.getSubject();
-        return new PropagatingCallable<T>(callable, stack, headers, subject);
+        return new PropagatingCallable<>(callable, stack, headers, subject);
     }
 
 

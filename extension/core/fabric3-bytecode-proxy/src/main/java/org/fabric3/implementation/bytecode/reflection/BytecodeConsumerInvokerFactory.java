@@ -72,7 +72,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
 
     private ClassLoaderRegistry classLoaderRegistry;
 
-    private Map<URI, BytecodeClassLoader> classLoaderCache = new HashMap<URI, BytecodeClassLoader>();
+    private Map<URI, BytecodeClassLoader> classLoaderCache = new HashMap<>();
 
     public BytecodeConsumerInvokerFactory(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;

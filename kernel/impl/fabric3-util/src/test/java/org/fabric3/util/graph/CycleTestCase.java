@@ -47,14 +47,14 @@ import junit.framework.TestCase;
 public class CycleTestCase extends TestCase {
 
     public void testCycle() throws Exception {
-        DirectedGraph<String> graph = new DirectedGraphImpl<String>();
-        Vertex<String> a = new VertexImpl<String>("A");
-        Vertex<String> b = new VertexImpl<String>("B");
-        Edge<String> edgeAB = new EdgeImpl<String>(a, b);
+        DirectedGraph<String> graph = new DirectedGraphImpl<>();
+        Vertex<String> a = new VertexImpl<>("A");
+        Vertex<String> b = new VertexImpl<>("B");
+        Edge<String> edgeAB = new EdgeImpl<>(a, b);
         graph.add(edgeAB);
-        Edge<String> edgeBA = new EdgeImpl<String>(b, a);
+        Edge<String> edgeBA = new EdgeImpl<>(b, a);
         graph.add(edgeBA);
-        CycleDetector<String> detector = new CycleDetectorImpl<String>();
+        CycleDetector<String> detector = new CycleDetectorImpl<>();
         assertTrue(detector.hasCycles(graph));
         DirectedGraph<String> dg = detector.findCycleSubgraph(graph);
         Set<Edge<String>> edges = dg.getEdges();

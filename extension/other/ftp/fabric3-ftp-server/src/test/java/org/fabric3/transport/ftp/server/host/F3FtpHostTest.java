@@ -69,9 +69,9 @@ public class F3FtpHostTest extends TestCase {
 
         FtpMonitor ftpMonitor = new TestFtpMonitor();
 
-        Map<String, RequestHandler> requestHandlers = new HashMap<String, RequestHandler>();
+        Map<String, RequestHandler> requestHandlers = new HashMap<>();
 
-        Map<String, String> users = new HashMap<String, String>();
+        Map<String, String> users = new HashMap<>();
         users.put("user", "password");
         FileSystemUserManager userManager = new FileSystemUserManager();
         userManager.setUsers(users);

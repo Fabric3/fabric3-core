@@ -54,7 +54,7 @@ import org.fabric3.spi.transform.TransformationException;
  */
 public class String2ClassTransformer implements SingleTypeTransformer<String, Class<?>> {
     private static final XSDSimpleType SOURCE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));
-    private static final JavaClass<Class> TARGET = new JavaClass<Class>(Class.class);
+    private static final JavaClass<Class> TARGET = new JavaClass<>(Class.class);
     private ClassLoaderRegistry classLoaderRegistry;
 
     public String2ClassTransformer(@Reference ClassLoaderRegistry classLoaderRegistry) {

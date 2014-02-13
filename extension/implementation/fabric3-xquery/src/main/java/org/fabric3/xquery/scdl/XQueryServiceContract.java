@@ -50,7 +50,7 @@ public class XQueryServiceContract extends ServiceContract {
     private static final long serialVersionUID = 630477464259103851L;
 
     public XQueryServiceContract() {
-        operations = new ArrayList<Operation>();
+        operations = new ArrayList<>();
     }
 
     private QName qname;

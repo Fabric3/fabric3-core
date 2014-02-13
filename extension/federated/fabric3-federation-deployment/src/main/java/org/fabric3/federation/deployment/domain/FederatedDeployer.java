@@ -99,7 +99,7 @@ public class FederatedDeployer implements Deployer {
         Deployment fullDeployment = deploymentPackage.getFullDeployment();
 
         // tracks deployment responses by zone
-        List<DeploymentCommand> completed = new ArrayList<DeploymentCommand>();
+        List<DeploymentCommand> completed = new ArrayList<>();
         for (String zoneName : currentDeployment.getZones()) {
             monitor.deploy(zoneName);
             DeploymentCommand command;

@@ -238,7 +238,7 @@ public class CollectorImplTestCase extends TestCase {
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI child1Uri = URI.create("child1");
 
-        LogicalComponent<I> component = new LogicalComponent<I>(child1Uri, null, domain);
+        LogicalComponent<I> component = new LogicalComponent<>(child1Uri, null, domain);
         component.setState(LogicalState.PROVISIONED);
         component.setDeployable(DEPLOYABLE1);
 
@@ -412,7 +412,7 @@ public class CollectorImplTestCase extends TestCase {
     }
 
     private <I extends Implementation<?>> void createComponent(URI uri, QName deployable, LogicalState state, LogicalCompositeComponent parent) {
-        LogicalComponent<I> component = new LogicalComponent<I>(uri, null, parent);
+        LogicalComponent<I> component = new LogicalComponent<>(uri, null, parent);
         component.setState(state);
         component.setDeployable(deployable);
 

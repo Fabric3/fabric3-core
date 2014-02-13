@@ -58,7 +58,7 @@ import org.fabric3.spi.command.ExecutionException;
  */
 @EagerInit
 public class CommandExecutorRegistryImpl implements CommandExecutorRegistry {
-    private Map<Class<? extends Command>, CommandExecutor<?>> executors = new HashMap<Class<? extends Command>, CommandExecutor<?>>();
+    private Map<Class<? extends Command>, CommandExecutor<?>> executors = new HashMap<>();
 
     public <T extends Command> void register(Class<T> type, CommandExecutor<T> executor) {
         executors.put(type, executor);

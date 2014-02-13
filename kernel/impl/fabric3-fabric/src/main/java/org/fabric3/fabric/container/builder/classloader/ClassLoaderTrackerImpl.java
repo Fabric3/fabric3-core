@@ -57,7 +57,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
  */
 @EagerInit
 public class ClassLoaderTrackerImpl implements ClassLoaderTracker {
-    private Map<URI, AtomicInteger> counters = new ConcurrentHashMap<URI, AtomicInteger>();
+    private Map<URI, AtomicInteger> counters = new ConcurrentHashMap<>();
 
     public boolean isReferenced(URI uri) {
         return counters.get(uri) != null;

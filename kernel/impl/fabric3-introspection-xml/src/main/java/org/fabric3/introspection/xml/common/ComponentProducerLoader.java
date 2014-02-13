@@ -106,7 +106,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
         String targetAttribute = reader.getAttributeValue(null, "target");
         ComponentProducer producer = new ComponentProducer(name);
 
-        List<URI> targets = new ArrayList<URI>();
+        List<URI> targets = new ArrayList<>();
         if (targetAttribute != null) {
             StringTokenizer tokenizer = new StringTokenizer(targetAttribute);
             while (tokenizer.hasMoreTokens()) {

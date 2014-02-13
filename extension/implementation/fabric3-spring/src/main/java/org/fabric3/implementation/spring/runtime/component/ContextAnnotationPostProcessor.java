@@ -65,7 +65,7 @@ import org.springframework.util.ReflectionUtils;
  * Processes and handles injection for Spring bean properties annotated with {@link Context}.
  */
 public class ContextAnnotationPostProcessor extends InstantiationAwareBeanPostProcessorAdapter implements MergedBeanDefinitionPostProcessor {
-    private final Map<Class<?>, InjectionMetadata> cache = new HashMap<Class<?>, InjectionMetadata>();
+    private final Map<Class<?>, InjectionMetadata> cache = new HashMap<>();
 
     public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
         if (beanType != null) {
@@ -95,11 +95,11 @@ public class ContextAnnotationPostProcessor extends InstantiationAwareBeanPostPr
     }
 
     private InjectionMetadata buildContextMetadata(Class<?> clazz) {
-        LinkedList<InjectionMetadata.InjectedElement> elements = new LinkedList<InjectionMetadata.InjectedElement>();
+        LinkedList<InjectionMetadata.InjectedElement> elements = new LinkedList<>();
         Class<?> targetClass = clazz;
 
         do {
-            LinkedList<InjectionMetadata.InjectedElement> currElements = new LinkedList<InjectionMetadata.InjectedElement>();
+            LinkedList<InjectionMetadata.InjectedElement> currElements = new LinkedList<>();
             for (Field field : targetClass.getDeclaredFields()) {
                 Annotation annotation = field.getAnnotation(Context.class);
                 if (annotation != null) {

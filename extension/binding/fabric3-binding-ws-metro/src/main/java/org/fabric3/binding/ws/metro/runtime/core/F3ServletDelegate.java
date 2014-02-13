@@ -61,8 +61,8 @@ import com.sun.xml.ws.transport.http.servlet.WSServletDelegate;
 public class F3ServletDelegate extends WSServletDelegate {
     private static final String WS_TRANSFER_GET_ACTION = "\"http://schemas.xmlsoap.org/ws/2004/09/transfer/Get\"";
 
-    private Map<String, ServletAdapter> adapters = new ConcurrentHashMap<String, ServletAdapter>();
-    private Map<String, ClassLoader> classLoaders = new ConcurrentHashMap<String, ClassLoader>();
+    private Map<String, ServletAdapter> adapters = new ConcurrentHashMap<>();
+    private Map<String, ClassLoader> classLoaders = new ConcurrentHashMap<>();
 
     /**
      * Constructor.

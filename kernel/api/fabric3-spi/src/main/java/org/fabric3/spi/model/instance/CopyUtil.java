@@ -76,9 +76,9 @@ public class CopyUtil {
     private static LogicalCompositeComponent copy(LogicalCompositeComponent composite, LogicalCompositeComponent parent) {
         // Create maps to de-reference pointers to components, reference and services. Since the copy is performed depth-first, the maps
         // will always be populated before a component, reference, or service needs to be de-referenced.
-        Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
-        Map<URI, LogicalReference> references = new HashMap<URI, LogicalReference>();
-        Map<URI, LogicalService> services = new HashMap<URI, LogicalService>();
+        Map<URI, LogicalComponent<?>> components = new HashMap<>();
+        Map<URI, LogicalReference> references = new HashMap<>();
+        Map<URI, LogicalService> services = new HashMap<>();
         LogicalCompositeComponent replica = copy(composite, parent, components, services, references);
 
         // Wires must be copied last since they may contain forward references to services provided by components not yet copied. This
@@ -290,7 +290,7 @@ public class CopyUtil {
 
     @SuppressWarnings({"unchecked"})
     private static void copyInvocable(LogicalInvocable from, LogicalInvocable to) {
-        List<LogicalOperation> operations = new ArrayList<LogicalOperation>();
+        List<LogicalOperation> operations = new ArrayList<>();
         for (LogicalOperation operation : from.getOperations()) {
             LogicalOperation copy = new LogicalOperation(operation.getDefinition(), to);
             copy.addIntents(operation.getIntents());

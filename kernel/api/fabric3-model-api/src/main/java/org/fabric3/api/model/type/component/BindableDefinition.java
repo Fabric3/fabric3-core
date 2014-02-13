@@ -13,7 +13,7 @@ import org.fabric3.api.model.type.ModelObject;
 public abstract class BindableDefinition<P extends ModelObject> extends AbstractPolicyAware<P> {
     private static final long serialVersionUID = -7495919678050678596L;
 
-    protected List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+    protected List<BindingDefinition> bindings = new ArrayList<>();
 
     /**
      * Returns the bindings configured on this bindable.

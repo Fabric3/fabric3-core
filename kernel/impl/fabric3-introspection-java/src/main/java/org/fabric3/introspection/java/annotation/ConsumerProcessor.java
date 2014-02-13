@@ -106,7 +106,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
     private List<DataType<?>> introspectParameterTypes(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalParameterTypes = method.getParameterTypes();
         Type[] gParamTypes = method.getGenericParameterTypes();
-        List<DataType<?>> parameterDataTypes = new ArrayList<DataType<?>>(gParamTypes.length);
+        List<DataType<?>> parameterDataTypes = new ArrayList<>(gParamTypes.length);
         for (int i = 0; i < gParamTypes.length; i++) {
             Type gParamType = gParamTypes[i];
             Type logicalParamType = typeMapping.getActualType(gParamType);

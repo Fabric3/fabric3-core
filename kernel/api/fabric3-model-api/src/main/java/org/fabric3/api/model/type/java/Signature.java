@@ -61,7 +61,7 @@ public class Signature implements Serializable {
     private static final Map<String, Class<?>> PRIMITIVES_TYPES;
 
     static {
-        PRIMITIVES_TYPES = new HashMap<String, Class<?>>();
+        PRIMITIVES_TYPES = new HashMap<>();
         PRIMITIVES_TYPES.put("boolean", Boolean.TYPE);
         PRIMITIVES_TYPES.put("char", Character.class);
         PRIMITIVES_TYPES.put("byte", Byte.TYPE);
@@ -158,7 +158,7 @@ public class Signature implements Serializable {
     }
 
     private void setParameterTypes(Class<?>[] classes) {
-        parameterTypes = new ArrayList<String>(classes.length);
+        parameterTypes = new ArrayList<>(classes.length);
         for (Class<?> paramType : classes) {
             parameterTypes.add(paramType.getName());
         }

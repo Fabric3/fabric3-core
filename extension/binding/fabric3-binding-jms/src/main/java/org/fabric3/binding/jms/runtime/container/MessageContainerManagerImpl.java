@@ -74,7 +74,7 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_C
 @Service({MessageContainerManager.class, Transport.class})
 public class MessageContainerManagerImpl implements MessageContainerManager, Transport {
     private static final int DEFAULT_TRX_TIMEOUT = 30;
-    private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
+    private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<>();
     private boolean started;
     private boolean pausedOnStart;
     private EventService eventService;

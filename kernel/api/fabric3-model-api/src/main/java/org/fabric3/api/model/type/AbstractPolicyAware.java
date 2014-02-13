@@ -56,9 +56,9 @@ import java.util.Set;
 public abstract class AbstractPolicyAware<P extends ModelObject> extends ModelObject<P> implements PolicyAware {
     private static final long serialVersionUID = -3494285576822641528L;
 
-    private Set<QName> intents = new LinkedHashSet<QName>();
-    private Set<QName> policySets = new LinkedHashSet<QName>();
-    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
+    private Set<QName> intents = new LinkedHashSet<>();
+    private Set<QName> policySets = new LinkedHashSet<>();
+    private Map<QName, Serializable> metadata = new HashMap<>();
 
     public Set<QName> getIntents() {
         return intents;

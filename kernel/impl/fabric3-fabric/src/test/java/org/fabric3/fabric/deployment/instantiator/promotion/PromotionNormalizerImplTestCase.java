@@ -98,7 +98,7 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         QName intent2Name = new QName("test", "intent2");
         Intent intent1 = new Intent(intent1Name, null, null, null, true, Collections.singleton(intent2Name), null, false);
         Intent intent2 = new Intent(intent1Name, null, null, null, true, Collections.singleton(intent1Name), null, false);
-        Set<Intent> intents = new HashSet<Intent>();
+        Set<Intent> intents = new HashSet<>();
         intents.add(intent1);
         intents.add(intent2);
         EasyMock.expect(registry.getDefinitions(EasyMock.isA(Set.class), EasyMock.eq(Intent.class))).andReturn(intents);
@@ -362,7 +362,7 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
 
-        ComponentDefinition<CompositeImplementation> compositeDefinition = new ComponentDefinition<CompositeImplementation>("composite");
+        ComponentDefinition<CompositeImplementation> compositeDefinition = new ComponentDefinition<>("composite");
         compositeDefinition.setImplementation(implementation);
         return new LogicalCompositeComponent(URI.create("parent"), compositeDefinition, domain);
     }

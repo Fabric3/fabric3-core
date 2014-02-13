@@ -54,8 +54,8 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  *
  */
 public class MockPolicyResult implements PolicyResult, EffectivePolicy {
-    private Map<LogicalOperation, PolicyMetadata> metadata = new HashMap<LogicalOperation, PolicyMetadata>();
-    private Map<LogicalOperation, List<PolicySet>> intercepted = new HashMap<LogicalOperation, List<PolicySet>>();
+    private Map<LogicalOperation, PolicyMetadata> metadata = new HashMap<>();
+    private Map<LogicalOperation, List<PolicySet>> intercepted = new HashMap<>();
 
     public List<PolicySet> getInterceptedPolicySets(LogicalOperation operation) {
         return Collections.emptyList();

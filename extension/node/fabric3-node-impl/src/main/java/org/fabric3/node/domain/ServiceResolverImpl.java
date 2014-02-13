@@ -148,14 +148,14 @@ public class ServiceResolverImpl implements ServiceResolver {
         QName qName = new QName(HostNamespaces.SYNTHESIZED, "SyntheticComposite" + id);
         Composite composite = new Composite(qName);
 
-        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<NonManagedImplementation>(name);
+        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<>(name);
         componentDefinition.setParent(composite);
         NonManagedImplementation implementation = new NonManagedImplementation();
         componentDefinition.setImplementation(implementation);
         ComponentReference reference = new ComponentReference("reference", Multiplicity.ONE_ONE);
         componentDefinition.add(reference);
 
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<NonManagedImplementation>(componentUri,
+        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri,
                                                                                                                      componentDefinition,
                                                                                                                      domainComponent);
         logicalComponent.setZone(info.getZoneName());

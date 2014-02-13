@@ -58,15 +58,15 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
     private ComponentManager componentManager;
 
-    private Map<QName, BindingHandlerRegistryCallback<?>> callbacks = new HashMap<QName, BindingHandlerRegistryCallback<?>>();
-    private Map<QName, List<BindingHandler<?>>> handlers = new HashMap<QName, List<BindingHandler<?>>>();
+    private Map<QName, BindingHandlerRegistryCallback<?>> callbacks = new HashMap<>();
+    private Map<QName, List<BindingHandler<?>>> handlers = new HashMap<>();
 
     public BindingHandlerRegistryImpl(@Reference ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
     public <T> BindingHandler<T> createHandler(Class<T> type, PhysicalBindingHandlerDefinition definition) {
-        return new BindingHandlerLazyLoadDecorator<T>(definition.getHandlerUri(), componentManager);
+        return new BindingHandlerLazyLoadDecorator<>(definition.getHandlerUri(), componentManager);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -95,7 +95,7 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
         QName binding = handler.getType();
         List<BindingHandler<?>> list = handlers.get(binding);
         if (list == null) {
-            list = new ArrayList<BindingHandler<?>>();
+            list = new ArrayList<>();
             handlers.put(binding, list);
         }
         list.add(handler);

@@ -76,8 +76,8 @@ public class PortAllocatorImpl implements PortAllocator {
     private int min = NOT_ALLOCATED;
     private int max = NOT_ALLOCATED;
     private String configuredHost;
-    private Map<String, List<Port>> allocated = new HashMap<String, List<Port>>();
-    private LinkedList<Integer> unallocated = new LinkedList<Integer>();
+    private Map<String, List<Port>> allocated = new HashMap<>();
+    private LinkedList<Integer> unallocated = new LinkedList<>();
 
     @Property(required = false)
     @Source("$systemConfig/f3:runtime/@port.range")
@@ -156,7 +156,7 @@ public class PortAllocatorImpl implements PortAllocator {
             if (pair != null) {
                 Port port = new PortImpl(name, portNumber, pair.getServerSocket(), pair.getDatagramSocket());
                 if (ports == null) {
-                    ports = new ArrayList<Port>();
+                    ports = new ArrayList<>();
                     allocated.put(type, ports);
                 }
                 ports.add(port);
@@ -178,7 +178,7 @@ public class PortAllocatorImpl implements PortAllocator {
 
         Port port = new PortImpl(name, portNumber, pair.getServerSocket(), pair.getDatagramSocket());
         if (ports == null) {
-            ports = new ArrayList<Port>();
+            ports = new ArrayList<>();
             allocated.put(type, ports);
         }
         ports.add(port);

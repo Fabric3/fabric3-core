@@ -186,7 +186,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
 
 
     private List<URL> cacheSchemas(URI servicePath, MetroJavaSourceDefinition source) throws CacheException {
-        List<URL> schemas = new ArrayList<URL>();
+        List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
             ByteArrayInputStream bas = new ByteArrayInputStream(entry.getValue().getBytes());

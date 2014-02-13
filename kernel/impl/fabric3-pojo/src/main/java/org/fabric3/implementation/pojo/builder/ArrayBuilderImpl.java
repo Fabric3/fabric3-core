@@ -78,7 +78,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
                 type = ParamTypes.PRIMITIVE_TO_OBJECT.get(type);
             }
 
-            List<Class<?>> types = new ArrayList<Class<?>>();
+            List<Class<?>> types = new ArrayList<>();
             types.add(type);
 
             Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(type), types);
@@ -91,7 +91,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
                 Object val = transformer.transform(node, classLoader);
                 Array.set(array, i, val);
             }
-            return new SingletonObjectFactory<Object>(array);
+            return new SingletonObjectFactory<>(array);
         } catch (TransformationException e) {
             throw new PropertyTransformException("Unable to transform property value: " + name, e);
         }

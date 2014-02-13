@@ -109,8 +109,8 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         componentType.add(serviceDefinition);
         JavaImplementation implementation = new JavaImplementation();
         implementation.setComponentType(componentType);
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("component", implementation);
-        LogicalComponent<?> component = new LogicalComponent<JavaImplementation>(URI.create("component"), definition, null);
+        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<>("component", implementation);
+        LogicalComponent<?> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
         LogicalService service = new LogicalService(URI.create("component#service"), null, component);
         component.addService(service);

@@ -97,7 +97,7 @@ public class BootstrapIntrospectionFactory {
         JavaContractProcessor contractProcessor = new JavaContractProcessorImpl(helper);
 
         Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> processors
-                = new HashMap<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>>();
+                = new HashMap<>();
 
         ReferenceProcessorImpl referenceProcessor = new ReferenceProcessorImpl(contractProcessor, helper);
 

@@ -178,7 +178,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public Composite load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         // track locations so they can be used to report validation errors after the parser has been advanced
-        Map<ModelObject, Location> locations = new HashMap<ModelObject, Location>();
+        Map<ModelObject, Location> locations = new HashMap<>();
 
         String name = reader.getAttributeValue(null, "name");
         String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
@@ -790,7 +790,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     private void parseModes(String modes, Composite type, XMLStreamReader reader, IntrospectionContext context) {
         if (modes != null) {
             String[] tokens = modes.split(" ");
-            List<RuntimeMode> runtimeModes = new ArrayList<RuntimeMode>();
+            List<RuntimeMode> runtimeModes = new ArrayList<>();
             for (String token : tokens) {
                 try {
                     runtimeModes.add(RuntimeMode.valueOf(token.toUpperCase()));

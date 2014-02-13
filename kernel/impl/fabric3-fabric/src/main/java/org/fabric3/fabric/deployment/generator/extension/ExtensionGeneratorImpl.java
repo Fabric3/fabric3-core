@@ -94,7 +94,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
             return null;
         }
 
-        Map<String, CompensatableCommand> commands = new HashMap<String, CompensatableCommand>();
+        Map<String, CompensatableCommand> commands = new HashMap<>();
 
         // evaluate contributions being provisioned for required capabilities
         evaluateContributions(contributions, commands, type);
@@ -133,7 +133,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
             }
 
             List<Contribution> zoneContributions = entry.getValue();
-            Set<Contribution> extensions = new HashSet<Contribution>();
+            Set<Contribution> extensions = new HashSet<>();
             for (Contribution contribution : zoneContributions) {
                 Set<Contribution> required = store.resolveCapabilities(contribution);
                 extensions.addAll(required);
@@ -182,7 +182,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
     private void evaluateComponent(LogicalComponent<?> component, AbstractExtensionsCommand command, GenerationType type) {
         Implementation<?> impl = component.getDefinition().getImplementation();
         ComponentType componentType = impl.getComponentType();
-        Set<Contribution> extensions = new HashSet<Contribution>();
+        Set<Contribution> extensions = new HashSet<>();
         if (isGenerate(component.getState(), type)) {
             for (String capability : componentType.getRequiredCapabilities()) {
                 extensions.addAll(store.resolveCapability(capability));

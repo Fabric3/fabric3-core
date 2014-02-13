@@ -337,7 +337,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
         try {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);
             Domain domain = runtime.getComponent(Domain.class, Names.APPLICATION_DOMAIN_URI);
-            List<ContributionSource> sources = new ArrayList<ContributionSource>();
+            List<ContributionSource> sources = new ArrayList<>();
             for (Dependency contribution : contributions) {
                 Artifact artifact = artifactHelper.resolve(contribution, Collections.<ArtifactRepository>emptySet());
                 URL url = artifact.getFile().toURI().toURL();
@@ -378,7 +378,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
         Set<Artifact> dependencies = artifactHelper.calculateDependencies();
         Set<URL> moduleDependencies = artifactHelper.calculateModuleDependencies(dependencies, hostArtifacts);
 
-        Set<Dependency> expandedExtensions = new HashSet<Dependency>();
+        Set<Dependency> expandedExtensions = new HashSet<>();
         expandedExtensions.addAll(getCoreExtensions());
         expandedExtensions.addAll(Arrays.asList(extensions));
         ExpandedProfiles expandedProfiles = artifactHelper.expandProfileExtensions(profiles);
@@ -453,7 +453,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @return the host classloader
      */
     private ClassLoader createHostClassLoader(ClassLoader parent, Set<Artifact> hostArtifacts) {
-        List<URL> urls = new ArrayList<URL>(hostArtifacts.size());
+        List<URL> urls = new ArrayList<>(hostArtifacts.size());
         for (Artifact artifact : hostArtifacts) {
             try {
                 File pathElement = artifact.getFile();
@@ -475,7 +475,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @return the extensions
      */
     private Set<Dependency> getCoreExtensions() {
-        Set<Dependency> extensions = new HashSet<Dependency>();
+        Set<Dependency> extensions = new HashSet<>();
 
         Dependency dependency = new Dependency();
         dependency.setGroupId("org.codehaus.fabric3");

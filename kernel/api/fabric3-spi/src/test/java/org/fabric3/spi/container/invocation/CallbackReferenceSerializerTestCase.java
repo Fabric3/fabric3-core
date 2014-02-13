@@ -48,7 +48,7 @@ import junit.framework.TestCase;
 public class CallbackReferenceSerializerTestCase extends TestCase {
 
     public void testSerializeToString() throws Exception {
-        List<CallbackReference> references = new ArrayList<CallbackReference>();
+        List<CallbackReference> references = new ArrayList<>();
         CallbackReference reference1 = new CallbackReference("uri1", "correlation1");
         CallbackReference reference2 = new CallbackReference("uri2", "correlation2");
         references.add(reference1);
@@ -67,7 +67,7 @@ public class CallbackReferenceSerializerTestCase extends TestCase {
     }
 
     public void testSerializeToStringNoCorrelationId() throws Exception {
-        List<CallbackReference> references = new ArrayList<CallbackReference>();
+        List<CallbackReference> references = new ArrayList<>();
         CallbackReference reference1 = new CallbackReference("uri1", null);
         CallbackReference reference2 = new CallbackReference("uri2", null);
         references.add(reference1);
@@ -86,7 +86,7 @@ public class CallbackReferenceSerializerTestCase extends TestCase {
     }
 
     public void testSerializeToBytes() throws Exception {
-        List<CallbackReference> references = new ArrayList<CallbackReference>();
+        List<CallbackReference> references = new ArrayList<>();
         CallbackReference reference1 = new CallbackReference("uri1", "correlation1");
         CallbackReference reference2 = new CallbackReference("uri2", "correlation2");
         references.add(reference1);
@@ -106,7 +106,7 @@ public class CallbackReferenceSerializerTestCase extends TestCase {
     }
 
     public void testSerializeToBytesNoCorrelationId() throws Exception {
-        List<CallbackReference> references = new ArrayList<CallbackReference>();
+        List<CallbackReference> references = new ArrayList<>();
         CallbackReference reference1 = new CallbackReference("uri1", null);
         CallbackReference reference2 = new CallbackReference("uri2",null);
         references.add(reference1);

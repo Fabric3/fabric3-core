@@ -49,7 +49,7 @@ import org.fabric3.spi.command.CompensatableCommand;
 public abstract class AbstractExtensionsCommand implements CompensatableCommand {
     private static final long serialVersionUID = -4757212674286772185L;
 
-    protected List<URI> extensionUris = new ArrayList<URI>();
+    protected List<URI> extensionUris = new ArrayList<>();
 
     public List<URI> getExtensionUris() {
         return extensionUris;

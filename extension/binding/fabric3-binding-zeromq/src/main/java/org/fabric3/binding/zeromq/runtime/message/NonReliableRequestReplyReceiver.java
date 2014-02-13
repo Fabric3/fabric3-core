@@ -84,7 +84,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
                                            MessagingMonitor monitor) {
         super(manager, address, chains, ZMQ.XREP, metadata, executorService, monitor);
         this.pollTimeout = pollTimeout;
-        queue = new LinkedBlockingQueue<Response>();
+        queue = new LinkedBlockingQueue<>();
     }
 
     protected boolean invoke(Socket socket) {
@@ -150,7 +150,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
                 // don't close socket in case of shutdown as it is handled in the superclass
                 return;
             }
-            List<Response> drained = new ArrayList<Response>();
+            List<Response> drained = new ArrayList<>();
             drained.add(first);
             queue.drainTo(drained);
 

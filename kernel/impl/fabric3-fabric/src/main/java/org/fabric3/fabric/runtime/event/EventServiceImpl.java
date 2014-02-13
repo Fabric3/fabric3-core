@@ -56,7 +56,7 @@ public class EventServiceImpl implements EventService {
     private Map<Class<Fabric3Event>, List<Fabric3EventListener<Fabric3Event>>> cache;
 
     public EventServiceImpl() {
-        cache = new ConcurrentHashMap<Class<Fabric3Event>, List<Fabric3EventListener<Fabric3Event>>>();
+        cache = new ConcurrentHashMap<>();
     }
 
     @SuppressWarnings({"SuspiciousMethodCalls"})
@@ -74,7 +74,7 @@ public class EventServiceImpl implements EventService {
     public <T extends Fabric3Event> void subscribe(Class<T> type, Fabric3EventListener<T> listener) {
         List<Fabric3EventListener<Fabric3Event>> listeners = cache.get(type);
         if (listeners == null) {
-            listeners = new ArrayList<Fabric3EventListener<Fabric3Event>>();
+            listeners = new ArrayList<>();
             cache.put((Class<Fabric3Event>) type, listeners);
         }
         listeners.add((Fabric3EventListener<Fabric3Event>) listener);

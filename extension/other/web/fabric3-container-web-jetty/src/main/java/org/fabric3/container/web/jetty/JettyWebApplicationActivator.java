@@ -90,7 +90,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         this.resolver = resolver;
         this.managementService = managementService;
         this.monitor = monitor;
-        mappings = new ConcurrentHashMap<URI, Holder>();
+        mappings = new ConcurrentHashMap<>();
     }
 
     @Destroy

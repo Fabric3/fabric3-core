@@ -72,7 +72,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testIncrementalAttach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         URI targetUri = URI.create("target");
@@ -111,7 +111,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testRegeneration() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         URI targetUri = URI.create("target");
@@ -153,7 +153,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testTargetCollectDetach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         URI targetUri = URI.create("target");
@@ -196,7 +196,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testTargetCollectDetachMultiplicity1ToNReference() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();

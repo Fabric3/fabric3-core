@@ -50,7 +50,7 @@ public class HornetQConnectionFactoryConfiguration extends ConnectionFactoryConf
 
     public HornetQConnectionFactoryConfiguration(String name) {
         super(name);
-        parameters = new HashMap<String, Object>();
+        parameters = new HashMap<>();
     }
 
     public void addParameter(String key, String value) {

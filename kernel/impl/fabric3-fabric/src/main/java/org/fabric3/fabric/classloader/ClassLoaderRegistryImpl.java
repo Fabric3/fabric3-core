@@ -54,11 +54,11 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  * Implementation of a registry for classloaders.
  */
 public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
-    private final Map<URI, ClassLoader> registry = new ConcurrentHashMap<URI, ClassLoader>();
+    private final Map<URI, ClassLoader> registry = new ConcurrentHashMap<>();
     private static final Map<String, Class<?>> PRIMITIVES;
 
     static {
-        PRIMITIVES = new HashMap<String, Class<?>>();
+        PRIMITIVES = new HashMap<>();
         PRIMITIVES.put("boolean", Boolean.TYPE);
         PRIMITIVES.put("byte", Byte.TYPE);
         PRIMITIVES.put("short", Short.TYPE);

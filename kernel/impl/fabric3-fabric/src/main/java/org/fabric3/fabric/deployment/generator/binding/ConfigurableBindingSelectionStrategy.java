@@ -60,7 +60,7 @@ public class ConfigurableBindingSelectionStrategy implements BindingSelectionStr
     @Property(required = false)
     @Source("$systemConfig//f3:bindings/f3:binding.sca/f3:provider.order")
     public void setScaBindingOrder(List<QName> order) {
-        this.bindingOrder = new HashMap<QName, Integer>(order.size());
+        this.bindingOrder = new HashMap<>(order.size());
         for (int i = 0; i < order.size(); i++) {
             QName name = order.get(i);
             bindingOrder.put(name, i);

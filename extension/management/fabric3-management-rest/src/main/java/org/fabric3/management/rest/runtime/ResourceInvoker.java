@@ -107,7 +107,7 @@ public class ResourceInvoker {
             URL url = new URL(request.getRequestURL().toString());
             SelfLink selfLink = new SelfLink(url);
             Resource resource = new Resource(selfLink);
-            List<Link> links = new ArrayList<Link>();
+            List<Link> links = new ArrayList<>();
             // invoke the sub-resources and merge the responses into the root resource representation
             for (ResourceMapping mapping : mappings) {
                 Object object = invoke(mapping);

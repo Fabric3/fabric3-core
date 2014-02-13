@@ -68,13 +68,13 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class GeneratorRegistryImpl implements GeneratorRegistry {
-    private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<Class<?>, ComponentGenerator<?>>();
-    private Map<Class<?>, BindingGenerator<?>> bindingGenerators = new HashMap<Class<?>, BindingGenerator<?>>();
-    private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new ConcurrentHashMap<Class<?>, ConnectionBindingGenerator<?>>();
-    private Map<QName, InterceptorGenerator> interceptorGenerators = new HashMap<QName, InterceptorGenerator>();
-    private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new HashMap<QName, EventStreamHandlerGenerator>();
-    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<Class<?>, ResourceReferenceGenerator<?>>();
-    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<Class<?>, ResourceGenerator<?>>();
+    private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<>();
+    private Map<Class<?>, BindingGenerator<?>> bindingGenerators = new HashMap<>();
+    private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new ConcurrentHashMap<>();
+    private Map<QName, InterceptorGenerator> interceptorGenerators = new HashMap<>();
+    private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new HashMap<>();
+    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<>();
+    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<>();
 
     @Reference(required = false)
     public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {

@@ -216,7 +216,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
 
     private String parseTargets(ComponentReference reference, XMLStreamReader reader, Location location, IntrospectionContext context) {
         String targetAttribute = reader.getAttributeValue(null, "target");
-        List<Target> targets = new ArrayList<Target>();
+        List<Target> targets = new ArrayList<>();
         try {
             if (targetAttribute != null) {
                 StringTokenizer tokenizer = new StringTokenizer(targetAttribute);

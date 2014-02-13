@@ -66,7 +66,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 public class GatewayServletContext implements ServletContext {
     private final static String WEB_INF = "/WEB-INF/classes/";
     private String contextPath;
-    private Map<String, String> initParams = new HashMap<String, String>();
+    private Map<String, String> initParams = new HashMap<>();
 	private String serverInfo = "Fabric3";
 
     public GatewayServletContext(String contextPath, ClassLoaderRegistry classLoaderRegistry) {

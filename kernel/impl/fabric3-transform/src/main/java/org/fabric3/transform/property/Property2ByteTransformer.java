@@ -49,7 +49,7 @@ import org.fabric3.spi.transform.TransformationException;
  *
  */
 public class Property2ByteTransformer implements SingleTypeTransformer<Node, Byte> {
-    private static final JavaClass<Byte> TARGET = new JavaClass<Byte>(Byte.class);
+    private static final JavaClass<Byte> TARGET = new JavaClass<>(Byte.class);
 
     public DataType<?> getSourceType() {
         return XSDConstants.PROPERTY_TYPE;

@@ -54,7 +54,7 @@ import org.fabric3.spi.contribution.ContentTypeResolver;
 public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
 
     // file extension to content type map
-    private Map<String, String> extensionMap = new HashMap<String, String>();
+    private Map<String, String> extensionMap = new HashMap<>();
 
 
     @Init

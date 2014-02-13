@@ -167,14 +167,14 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
             for (Include include : composite.getIncludes().values()) {
                 Composite included = include.getIncluded();
                 for (ResourceDefinition definition : included.getResources()) {
-                    LogicalResource<?> resource = new LogicalResource<ResourceDefinition>(definition, domain);
+                    LogicalResource<?> resource = new LogicalResource<>(definition, domain);
                     resource.setDeployable(included.getName());
                     domain.addResource(resource);
                 }
             }
         } else {
             for (ResourceDefinition definition : composite.getResources()) {
-                LogicalResource<?> resource = new LogicalResource<ResourceDefinition>(definition, domain);
+                LogicalResource<?> resource = new LogicalResource<>(definition, domain);
                 resource.setDeployable(composite.getName());
                 domain.addResource(resource);
             }
@@ -193,7 +193,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private List<LogicalComponent<?>> instantiate(Composite composite, LogicalCompositeComponent domain, boolean synthetic, InstantiationContext context) {
         // instantiate the declared components
         Collection<ComponentDefinition<? extends Implementation<?>>> definitions = composite.getDeclaredComponents().values();
-        List<LogicalComponent<?>> newComponents = new ArrayList<LogicalComponent<?>>(definitions.size());
+        List<LogicalComponent<?>> newComponents = new ArrayList<>(definitions.size());
         for (ComponentDefinition<? extends Implementation<?>> definition : definitions) {
             LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
             setDeployable(logicalComponent, composite.getName());

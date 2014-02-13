@@ -79,7 +79,7 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
     public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
             throws TransformationException {
         try {
-            Set<Class<?>> types = new HashSet<Class<?>>(sourceTypes);
+            Set<Class<?>> types = new HashSet<>(sourceTypes);
             types.addAll(targetTypes);
             JAXBContext jaxbContext = contextFactory.createJAXBContext(types.toArray(new Class<?>[types.size()]));
             if (sourceTypes.size() == 1) {

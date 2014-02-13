@@ -49,7 +49,7 @@ package org.fabric3.spi.container.invocation;
  * On runtimes with managed thread pools, the cache uses {@link Fabric3Thread} to store the context; on other runtimes a thread local is used.
  */
 public final class WorkContextCache {
-    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
+    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<>();
 
     private WorkContextCache() {
     }

@@ -77,7 +77,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalService logicalService = new LogicalService(URI.create("service"), definition, domain);
         logicalService.setPromotedUri(URI.create("component"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
         logicalComponent.addService(new LogicalService(URI.create("component#service1"), definition, domain));
@@ -94,7 +94,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalService logicalService = new LogicalService(URI.create("service"), null, domain);
         logicalService.setPromotedUri(URI.create("component"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
 
@@ -109,7 +109,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalService logicalService = new LogicalService(URI.create("service"), null, domain);
         logicalService.setPromotedUri(URI.create("component#service"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
 
@@ -125,7 +125,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalService logicalService = new LogicalService(URI.create("service"), null, domain);
         logicalService.setPromotedUri(URI.create("component"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
         logicalComponent.addService(new LogicalService(URI.create("component#service1"), null, domain));
@@ -142,7 +142,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalService logicalService = new LogicalService(URI.create("service"), null, domain);
         logicalService.setPromotedUri(URI.create("component#service1"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
         logicalComponent.addService(new LogicalService(URI.create("component#service1"), null, domain));
@@ -167,7 +167,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalReference logicalReference = new LogicalReference(URI.create("reference"), null, domain);
         logicalReference.addPromotedUri(URI.create("component"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
         logicalComponent.addReference(new LogicalReference(URI.create("component#reference1"), null, domain));
@@ -186,7 +186,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalReference logicalReference = new LogicalReference(URI.create("reference"), null, domain);
         logicalReference.addPromotedUri(URI.create("component"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
 
@@ -203,7 +203,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalReference logicalReference = new LogicalReference(URI.create("reference"), null, domain);
         logicalReference.addPromotedUri(URI.create("component#reference"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
 
@@ -220,7 +220,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalReference logicalReference = new LogicalReference(URI.create("reference"), null, domain);
         logicalReference.addPromotedUri(URI.create("component"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
         logicalComponent.addReference(new LogicalReference(URI.create("component#reference1"), null, domain));
@@ -237,7 +237,7 @@ public class PromotionServiceImplTestCase extends TestCase {
         LogicalReference logicalReference = new LogicalReference(URI.create("reference"), null, domain);
         logicalReference.addPromotedUri(URI.create("component#reference1"));
 
-        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<SystemImplementation>(URI.create("component"),
+        LogicalComponent<SystemImplementation> logicalComponent = new LogicalComponent<>(URI.create("component"),
                                                                                                              null,
                                                                                                              domain);
         logicalComponent.addReference(new LogicalReference(URI.create("component#reference1"), null, domain));
@@ -251,7 +251,7 @@ public class PromotionServiceImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         promotionResolutionService = new PromotionResolutionServiceImpl();
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("domain");
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("domain");
         URI uri = URI.create("fabric3://runtime");
         domain = new LogicalCompositeComponent(uri, definition, null);
     }

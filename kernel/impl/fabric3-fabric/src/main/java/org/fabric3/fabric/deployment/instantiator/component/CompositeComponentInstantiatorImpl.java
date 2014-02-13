@@ -133,7 +133,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
     private void instantiateChildComponents(LogicalCompositeComponent component, Composite composite, InstantiationContext context) {
 
         // create the child components
-        List<LogicalComponent<?>> children = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> children = new ArrayList<>();
         for (ComponentDefinition<? extends Implementation<?>> child : composite.getComponents().values()) {
 
             LogicalComponent<?> childComponent;
@@ -164,13 +164,13 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
 
             List<BindingDefinition> serviceBindings = service.getBindings();
             for (BindingDefinition binding : serviceBindings) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                 logicalService.addBinding(logicalBinding);
             }
 
             List<BindingDefinition> serviceCallbackBindings = service.getCallbackBindings();
             for (BindingDefinition binding : serviceCallbackBindings) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                 logicalService.addCallbackBinding(logicalBinding);
             }
 
@@ -181,16 +181,16 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                 // service configuration. This information must be merged with or used to override any
                 // configuration that was created by service promotions within the composite
                 if (!componentService.getBindings().isEmpty()) {
-                    List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+                    List<LogicalBinding<?>> bindings = new ArrayList<>();
                     for (BindingDefinition binding : componentService.getBindings()) {
-                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                         bindings.add(logicalBinding);
                     }
                     logicalService.overrideBindings(bindings);
 
-                    List<LogicalBinding<?>> callbackBindings = new ArrayList<LogicalBinding<?>>();
+                    List<LogicalBinding<?>> callbackBindings = new ArrayList<>();
                     for (BindingDefinition callbackBinding : componentService.getCallbackBindings()) {
-                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(callbackBinding, logicalService);
+                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(callbackBinding, logicalService);
                         callbackBindings.add(logicalBinding);
                     }
                     logicalService.overrideCallbackBindings(callbackBindings);
@@ -214,13 +214,13 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
 
             List<BindingDefinition> referenceBindings = reference.getBindings();
             for (BindingDefinition binding : referenceBindings) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                 logicalReference.addBinding(logicalBinding);
             }
 
             List<BindingDefinition> callbackBindings = reference.getCallbackBindings();
             for (BindingDefinition binding : callbackBindings) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                 logicalReference.addCallbackBinding(logicalBinding);
             }
 
@@ -236,10 +236,10 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                 // reference configuration. This information must be merged with or used to override any
                 // configuration that was created by reference promotions within the composite
                 if (!componentReference.getBindings().isEmpty()) {
-                    List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+                    List<LogicalBinding<?>> bindings = new ArrayList<>();
                     List<BindingDefinition> overrideBindings = componentReference.getBindings();
                     for (BindingDefinition binding : overrideBindings) {
-                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                         bindings.add(logicalBinding);
                     }
                     logicalReference.overrideBindings(bindings);

@@ -12,7 +12,7 @@ import org.fabric3.cache.spi.CacheResourceDefinition;
  *
  */
 public class CacheRegistryImpl implements CacheRegistry {
-    private Map<Class<CacheResourceDefinition>, CacheManager<?>> managers = new ConcurrentHashMap<Class<CacheResourceDefinition>, CacheManager<?>>();
+    private Map<Class<CacheResourceDefinition>, CacheManager<?>> managers = new ConcurrentHashMap<>();
 
     @Reference(required = false)
     public void setManagers(Map<Class<CacheResourceDefinition>, CacheManager<?>> managers) {

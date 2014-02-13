@@ -96,7 +96,7 @@ public class PersistenceUnitOverridesElementLoader implements TypeLoader<ModelOb
             LoaderUtil.skipToEndElement(reader);
             return null;
         }
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         while (true) {
             int val = reader.nextTag();
             switch (val) {

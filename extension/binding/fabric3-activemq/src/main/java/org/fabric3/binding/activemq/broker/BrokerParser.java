@@ -144,7 +144,7 @@ public class BrokerParser {
 
     private void parseTransportConnectors(XMLStreamReader reader, BrokerConfiguration configuration)
             throws XMLStreamException, InvalidBrokerConfigurationException {
-        List<TransportConnectorConfig> transportConfigs = new ArrayList<TransportConnectorConfig>();
+        List<TransportConnectorConfig> transportConfigs = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
@@ -188,7 +188,7 @@ public class BrokerParser {
 
     private void parseNetworkConnectors(XMLStreamReader reader, BrokerConfiguration configuration)
             throws XMLStreamException, InvalidBrokerConfigurationException {
-        List<URI> uris = new ArrayList<URI>();
+        List<URI> uris = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:

@@ -71,7 +71,7 @@ public class OperationRefFunction implements Function {
         String interfaceName = tokens[0];
         String operationName = tokens[1];
         List<LogicalComponent<?>> nodeSet = context.getNodeSet();
-        List<LogicalOperation> operations = new ArrayList<LogicalOperation>();
+        List<LogicalOperation> operations = new ArrayList<>();
         for (LogicalComponent<?> component : nodeSet) {
             find(interfaceName, operationName, component, operations);
         }

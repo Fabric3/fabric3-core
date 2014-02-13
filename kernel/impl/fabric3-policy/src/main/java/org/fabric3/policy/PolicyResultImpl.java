@@ -59,9 +59,9 @@ public class PolicyResultImpl implements PolicyResult {
 
     private EffectivePolicyImpl sourcePolicy = new EffectivePolicyImpl();
     private EffectivePolicyImpl targetPolicy = new EffectivePolicyImpl();
-    private Set<PolicySet> interceptedEndpointPolicySets = new HashSet<PolicySet>();
-    private Map<LogicalOperation, PolicyMetadata> metadataMap = new HashMap<LogicalOperation, PolicyMetadata>();
-    private Map<LogicalOperation, List<PolicySet>> interceptedPolicySets = new HashMap<LogicalOperation, List<PolicySet>>();
+    private Set<PolicySet> interceptedEndpointPolicySets = new HashSet<>();
+    private Map<LogicalOperation, PolicyMetadata> metadataMap = new HashMap<>();
+    private Map<LogicalOperation, List<PolicySet>> interceptedPolicySets = new HashMap<>();
 
     public EffectivePolicy getSourcePolicy() {
         return sourcePolicy;

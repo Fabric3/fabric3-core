@@ -48,7 +48,7 @@ import org.fabric3.transport.ftp.spi.FtpLetContainer;
  */
 public class DefaultFtpLetContainer implements FtpLetContainer {
 
-    private Map<String, FtpLet> ftpLets = new ConcurrentHashMap<String, FtpLet>();
+    private Map<String, FtpLet> ftpLets = new ConcurrentHashMap<>();
 
     public FtpLet getFtpLet(String fileName) {
         for (Map.Entry<String, FtpLet> entry : ftpLets.entrySet()) {

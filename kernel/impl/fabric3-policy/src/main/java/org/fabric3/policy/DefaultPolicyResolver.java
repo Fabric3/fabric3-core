@@ -116,7 +116,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
 
     public PolicyResult resolvePolicies(LogicalBinding<?> binding) throws PolicyResolutionException {
         Bindable parent = binding.getParent();
-        LogicalBinding<RemoteBindingDefinition> remoteBinding = new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, parent);
+        LogicalBinding<RemoteBindingDefinition> remoteBinding = new LogicalBinding<>(RemoteBindingDefinition.INSTANCE, parent);
 
         Bindable bindable = binding.getParent();
         if (bindable instanceof LogicalReference) {
@@ -129,7 +129,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
     }
 
     public PolicyResult resolveCallbackPolicies(LogicalBinding<?> binding) throws PolicyResolutionException {
-        LogicalBinding<RemoteBindingDefinition> remoteBinding = new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE,
+        LogicalBinding<RemoteBindingDefinition> remoteBinding = new LogicalBinding<>(RemoteBindingDefinition.INSTANCE,
                                                                                                             binding.getParent());
 
         Bindable bindable = binding.getParent();
@@ -150,8 +150,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
         LogicalComponent source = reference.getParent();
         LogicalComponent target = service.getLeafComponent();
 
-        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
-        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, service);
+        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<>(LocalBindingDefinition.INSTANCE, reference);
+        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<>(LocalBindingDefinition.INSTANCE, service);
 
         return resolvePolicies(reference.getOperations(), sourceBinding, targetBinding, source, target);
     }
@@ -163,8 +163,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
         ServiceContract referenceCallbackContract = reference.getServiceContract().getCallbackContract();
         LogicalService callbackService = targetComponent.getService(referenceCallbackContract.getInterfaceName());
 
-        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
-        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
+        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<>(LocalBindingDefinition.INSTANCE, callbackService);
+        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<>(LocalBindingDefinition.INSTANCE, reference);
         LogicalComponent sourceComponent = service.getLeafComponent();
         return resolvePolicies(service.getCallbackOperations(), sourceBinding, targetBinding, sourceComponent, targetComponent);
     }
@@ -188,7 +188,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
         LogicalService callbackService = target.getService(referenceCallbackContract.getInterfaceName());
         List<LogicalOperation> operations = reference.getCallbackOperations();
 
-        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
+        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<>(LocalBindingDefinition.INSTANCE, callbackService);
         return resolvePolicies(operations, sourceBinding, referenceBinding, null, target);
     }
 

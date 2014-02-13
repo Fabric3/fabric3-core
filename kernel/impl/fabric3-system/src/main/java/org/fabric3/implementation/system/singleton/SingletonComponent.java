@@ -92,7 +92,7 @@ public class SingletonComponent implements ScopedComponent {
     public SingletonComponent(URI componentId, Object instance, Map<InjectionSite, Injectable> mappings) {
         this.uri = componentId;
         this.instance = instance;
-        this.reinjectionMappings = new HashMap<ObjectFactory, Injectable>();
+        this.reinjectionMappings = new HashMap<>();
         initializeInjectionSites(instance, mappings);
     }
 
@@ -153,7 +153,7 @@ public class SingletonComponent implements ScopedComponent {
     }
 
     public ObjectFactory<Object> createObjectFactory() {
-        return new SingletonObjectFactory<Object>(instance);
+        return new SingletonObjectFactory<>(instance);
     }
 
     public Object getInstance() {
@@ -229,7 +229,7 @@ public class SingletonComponent implements ScopedComponent {
      * @param mappings the mappings of injection sites
      */
     private void initializeInjectionSites(Object instance, Map<InjectionSite, Injectable> mappings) {
-        this.sites = new HashMap<Member, Injectable>();
+        this.sites = new HashMap<>();
         for (Map.Entry<InjectionSite, Injectable> entry : mappings.entrySet()) {
             InjectionSite site = entry.getKey();
             if (site instanceof FieldInjectionSite) {

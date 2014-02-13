@@ -65,7 +65,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  *
  */
 public class MapBuilderImplTestCase extends TestCase {
-    private static final DataType<?> JAVA_CLASS = new JavaClass<String>(String.class);
+    private static final DataType<?> JAVA_CLASS = new JavaClass<>(String.class);
     private DocumentBuilder documentBuilder;
     private TransformerRegistry registry;
     private MapBuilderImpl builder;
@@ -73,7 +73,7 @@ public class MapBuilderImplTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testMultiValueElementMapBuild() throws Exception {
         JavaTypeInfo paramInfo = new JavaTypeInfo(String.class);
-        List<JavaTypeInfo> paramInfos = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> paramInfos = new ArrayList<>();
         paramInfos.add(paramInfo);
         paramInfos.add(paramInfo);
 
@@ -105,7 +105,7 @@ public class MapBuilderImplTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testSingleValueElementMapBuild() throws Exception {
         JavaTypeInfo paramInfo = new JavaTypeInfo(String.class);
-        List<JavaTypeInfo> paramInfos = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> paramInfos = new ArrayList<>();
         paramInfos.add(paramInfo);
         paramInfos.add(paramInfo);
 

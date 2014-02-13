@@ -179,7 +179,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
             // handle keywords: binding, implementation, reference, and service
             if (localName.startsWith("binding.")) {
                 LogicalComponent<?> component = (LogicalComponent<?>) contextNode;
-                List<LogicalBinding> bindings = new ArrayList<LogicalBinding>();
+                List<LogicalBinding> bindings = new ArrayList<>();
                 for (LogicalService service : component.getServices()) {
                     for (LogicalBinding<?> binding : service.getBindings()) {
                         if (localName.equals(binding.getDefinition().getType().getLocalPart())) {
@@ -210,7 +210,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
         } else if (contextNode instanceof Bindable) {
             Bindable bindable = (Bindable) contextNode;
             if (localName.startsWith("binding.")) {
-                List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+                List<LogicalBinding<?>> bindings = new ArrayList<>();
                 for (LogicalBinding<?> binding : bindable.getBindings()) {
                     // TODO use strict namespaces?
                     if (localName.equals(binding.getDefinition().getType().getLocalPart())) {
@@ -225,7 +225,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
         } else if (contextNode instanceof LogicalBinding) {
             LogicalBinding<?> binding = (LogicalBinding<?>) contextNode;
             if (localName.equals(binding.getDefinition().getType().getLocalPart())) {
-                List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+                List<LogicalBinding<?>> bindings = new ArrayList<>();
                 bindings.add(binding);
                 return bindings.iterator();
             }
@@ -285,7 +285,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
             return new SingleObjectIterator(attr);
         } else if (contextNode instanceof Bindable) {
             Bindable bindable = (Bindable) contextNode;
-            List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+            List<LogicalBinding<?>> bindings = new ArrayList<>();
             for (LogicalBinding<?> binding : bindable.getBindings()) {
                 // TODO use strict namespaces?
                 if (localName.equals(binding.getDefinition().getType().getLocalPart())) {

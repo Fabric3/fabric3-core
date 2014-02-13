@@ -87,7 +87,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
 
     @Init
     public void init() throws DataSourceFactoryException {
-        beans = new HashMap<String, AbstractDataSourceBean>();
+        beans = new HashMap<>();
         for (DataSourceConfiguration configuration : configurations) {
             create(configuration);
         }

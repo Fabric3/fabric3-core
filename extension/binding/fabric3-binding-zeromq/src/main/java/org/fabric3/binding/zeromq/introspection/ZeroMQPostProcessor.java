@@ -140,7 +140,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         if (addresses.length() == 0) {
             return;
         }
-        List<SocketAddressDefinition> addressDefinitions = new ArrayList<SocketAddressDefinition>();
+        List<SocketAddressDefinition> addressDefinitions = new ArrayList<>();
         String[] addressStrings = addresses.split("\\s+");
         for (String entry : addressStrings) {
             String[] tokens = entry.split(":");

@@ -65,7 +65,7 @@ public class ContributionCollatorImpl implements ContributionCollator {
 
     public Map<String, List<Contribution>> collateContributions(List<LogicalComponent<?>> components, GenerationType type) {
         // collate all contributions that must be provisioned as part of the change set
-        Map<String, List<Contribution>> contributionsPerZone = new HashMap<String, List<Contribution>>();
+        Map<String, List<Contribution>> contributionsPerZone = new HashMap<>();
         for (LogicalComponent<?> component : components) {
             if (type != GenerationType.FULL) {
                 if (GenerationType.INCREMENTAL == type && LogicalState.NEW != component.getState()) {
@@ -78,7 +78,7 @@ public class ContributionCollatorImpl implements ContributionCollator {
             String zone = component.getZone();
             List<Contribution> contributions = contributionsPerZone.get(zone);
             if (contributions == null) {
-                contributions = new ArrayList<Contribution>();
+                contributions = new ArrayList<>();
                 contributionsPerZone.put(zone, contributions);
             }
             Contribution contribution = store.find(contributionUri);

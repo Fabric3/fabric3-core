@@ -103,7 +103,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
     private final Object viewLock;
     private TopologyListenerMultiplexer multiplexer;
 
-    private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<>();
 
     private int state = NOT_UPDATED;
 

@@ -54,7 +54,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class BindingChannelImpl implements BindingChannel {
-    private Map<URI, Holder> wires = new ConcurrentHashMap<URI, Holder>();
+    private Map<URI, Holder> wires = new ConcurrentHashMap<>();
 
     public void registerDestinationWire(URI uri, Wire wire, URI callbackUri) {
         wires.put(uri, new Holder(wire, callbackUri));

@@ -306,7 +306,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
      * @throws JmsGenerationException if an error occurs
      */
     private List<OperationPayloadTypes> processPayloadTypes(ServiceContract serviceContract) throws JmsGenerationException {
-        List<OperationPayloadTypes> types = new ArrayList<OperationPayloadTypes>();
+        List<OperationPayloadTypes> types = new ArrayList<>();
         for (Operation operation : serviceContract.getOperations()) {
             OperationPayloadTypes payloadType = introspector.introspect(operation);
             types.add(payloadType);

@@ -55,7 +55,7 @@ import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 public class DataSourceConfigParser {
 
     public List<DataSourceConfiguration> parse(XMLStreamReader reader) throws DataSourceParseException {
-        List<DataSourceConfiguration> configurations = new ArrayList<DataSourceConfiguration>();
+        List<DataSourceConfiguration> configurations = new ArrayList<>();
         try {
             reader.nextTag();
             DataSourceConfiguration configuration = null;

@@ -52,8 +52,8 @@ import java.util.Map;
 public class StatefulNamespaceContext implements NamespaceContext, Serializable {
     private static final long serialVersionUID = -296391955811011867L;
 
-    private Map<String, String> prefixToUri = new HashMap<String, String>();
-    private Map<String, List<String>> uriToPrefixes = new HashMap<String, List<String>>();
+    private Map<String, String> prefixToUri = new HashMap<>();
+    private Map<String, List<String>> uriToPrefixes = new HashMap<>();
 
 
     public String getNamespaceURI(String prefix) {
@@ -80,7 +80,7 @@ public class StatefulNamespaceContext implements NamespaceContext, Serializable 
         prefixToUri.put(prefix, namespaceURI);
         List<String> list = uriToPrefixes.get(namespaceURI);
         if (list == null) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             uriToPrefixes.put(namespaceURI, list);
         }
         list.add(prefix);

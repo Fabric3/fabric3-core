@@ -71,7 +71,7 @@ public class ResourceFilter {
             return enumeration;
         }
         List<URL> resources = Collections.list(enumeration);
-        List<URL> maskedResources = new ArrayList<URL>(resources.size());
+        List<URL> maskedResources = new ArrayList<>(resources.size());
         for (URL resource : resources) {
             String str = resource.toString();
             boolean toInclude = true;

@@ -51,7 +51,7 @@ public class PassiveConnectionServiceImpl implements PassiveConnectionService {
 
     private int minPort = 6000;
     private int maxPort = 7000;
-    private Stack<Integer> ports = new Stack<Integer>();
+    private Stack<Integer> ports = new Stack<>();
 
     /**
      * Sets the minimum passive port.

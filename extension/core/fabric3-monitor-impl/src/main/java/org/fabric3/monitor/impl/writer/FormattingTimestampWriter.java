@@ -142,7 +142,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
     public FormattingTimestampWriter(String pattern, TimeZone timeZone) {
         this.tz = timeZone;
 
-        List<LongFormatter> chunks = new ArrayList<LongFormatter>();
+        List<LongFormatter> chunks = new ArrayList<>();
 
         int length = pattern.length();
         int state = 0;

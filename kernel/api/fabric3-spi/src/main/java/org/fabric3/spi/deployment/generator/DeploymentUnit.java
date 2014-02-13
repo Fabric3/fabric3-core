@@ -50,9 +50,9 @@ import org.fabric3.spi.command.CompensatableCommand;
 public class DeploymentUnit implements Serializable {
     private static final long serialVersionUID = -5868891769973094096L;
 
-    private List<CompensatableCommand> provisionCommands = new ArrayList<CompensatableCommand>();
-    private List<CompensatableCommand> extensionCommands = new ArrayList<CompensatableCommand>();
-    private List<CompensatableCommand> commands = new ArrayList<CompensatableCommand>();
+    private List<CompensatableCommand> provisionCommands = new ArrayList<>();
+    private List<CompensatableCommand> extensionCommands = new ArrayList<>();
+    private List<CompensatableCommand> commands = new ArrayList<>();
 
     public void addProvisionCommand(CompensatableCommand command) {
         provisionCommands.add(command);

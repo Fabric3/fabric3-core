@@ -80,7 +80,7 @@ public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
     }
 
     public List<Class<?>> introspectArtifactClasses(IntrospectionContext context) {
-        List<Class<?>> artifacts = new ArrayList<Class<?>>();
+        List<Class<?>> artifacts = new ArrayList<>();
         ClassLoader cl = context.getClassLoader();
         URI uri = context.getContributionUri();
         ResourceElement<QNameSymbol, ?> resourceElement;

@@ -237,7 +237,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
-        List<InvocationChainHolder> chainHolders = new ArrayList<InvocationChainHolder>();
+        List<InvocationChainHolder> chainHolders = new ArrayList<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition definition = chain.getPhysicalOperation();
             OperationPayloadTypes payloadType = resolveOperation(definition.getName(), types);
@@ -296,7 +296,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         if (source.getHandlers().isEmpty()) {
             return null;
         }
-        List<BindingHandler<Message>> handlers = new ArrayList<BindingHandler<Message>>();
+        List<BindingHandler<Message>> handlers = new ArrayList<>();
         for (PhysicalBindingHandlerDefinition handlerDefinition : source.getHandlers()) {
             BindingHandler<Message> handler = handlerRegistry.createHandler(Message.class, handlerDefinition);
             handlers.add(handler);

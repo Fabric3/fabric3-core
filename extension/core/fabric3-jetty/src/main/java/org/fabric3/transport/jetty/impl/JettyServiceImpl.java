@@ -514,8 +514,8 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     public synchronized Servlet unregisterMapping(String path) {
-        List<ServletMapping> mappings = new ArrayList<ServletMapping>();
-        List<String> names = new ArrayList<String>();
+        List<ServletMapping> mappings = new ArrayList<>();
+        List<String> names = new ArrayList<>();
         for (ServletMapping mapping : servletHandler.getServletMappings()) {
             for (String spec : mapping.getPathSpecs()) {
                 if (spec.equals(path)) {
@@ -527,7 +527,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             }
         }
         Servlet servlet = null;
-        List<ServletHolder> holders = new ArrayList<ServletHolder>();
+        List<ServletHolder> holders = new ArrayList<>();
         for (ServletHolder holder : servletHandler.getServlets()) {
             if (!names.contains(holder.getName())) {
                 holders.add(holder);

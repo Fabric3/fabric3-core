@@ -102,7 +102,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         this.executorService = executorService;
         this.monitor = monitor;
         this.scopeRegistry = scopeRegistry;
-        this.deploymentQueue = new LinkedBlockingDeque<DeploymentCommand>();
+        this.deploymentQueue = new LinkedBlockingDeque<>();
     }
 
     @Init

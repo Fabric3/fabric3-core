@@ -60,7 +60,7 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     public ChannelDefinition(String name, URI contributionUri) {
         this.name = name;
         this.contributionUri = contributionUri;
-        bindings = new ArrayList<BindingDefinition>();
+        bindings = new ArrayList<>();
     }
 
     public ChannelDefinition(String name, URI contributionUri, String type, boolean local) {
@@ -68,7 +68,7 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
         this.contributionUri = contributionUri;
         this.type = type;
         this.local = local;
-        bindings = new ArrayList<BindingDefinition>();
+        bindings = new ArrayList<>();
     }
 
     /**

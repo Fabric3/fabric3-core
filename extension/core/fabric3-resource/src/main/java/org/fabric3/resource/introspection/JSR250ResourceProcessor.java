@@ -65,7 +65,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
     private IntrospectionHelper helper;
     private JavaContractProcessor contractProcessor;
-    private Map<Class<?>, JSR250ResourceTypeHandler> handlers = new HashMap<Class<?>, JSR250ResourceTypeHandler>();
+    private Map<Class<?>, JSR250ResourceTypeHandler> handlers = new HashMap<>();
 
     @Reference(required = false)
     public void setHandlers(Map<Class<?>, JSR250ResourceTypeHandler> handlers) {

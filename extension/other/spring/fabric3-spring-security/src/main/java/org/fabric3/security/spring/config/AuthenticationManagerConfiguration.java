@@ -48,7 +48,7 @@ public class AuthenticationManagerConfiguration {
     private boolean eraseCredentials;
     private LdapServerConfiguration ldapServerConfiguration;
 
-    private List<AuthenticationProviderConfiguration> configurations = new ArrayList<AuthenticationProviderConfiguration>();
+    private List<AuthenticationProviderConfiguration> configurations = new ArrayList<>();
 
     public String getAlias() {
         return alias;

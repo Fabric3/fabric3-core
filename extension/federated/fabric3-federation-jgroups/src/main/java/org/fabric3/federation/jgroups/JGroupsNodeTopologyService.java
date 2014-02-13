@@ -101,9 +101,9 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
     private View previousView;
-    private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
-    private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
-    private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
+    private List<TopologyListener> topologyListeners = new ArrayList<>();
+    private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<>();
 
     private Element channelConfig;
 
@@ -169,7 +169,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
 
     @ManagementOperation(description = "The runtimes in the domain")
     public List<String> getRuntimeNames() {
-        List<String> runtimes = new ArrayList<String>();
+        List<String> runtimes = new ArrayList<>();
         for (Address member : domainChannel.getView().getMembers()) {
             String name = UUID.get(member);
             runtimes.add(name);
@@ -178,7 +178,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
     }
 
     public List<RuntimeInstance> getRuntimes() {
-        List<RuntimeInstance> list = new ArrayList<RuntimeInstance>();
+        List<RuntimeInstance> list = new ArrayList<>();
         for (Map<String, RuntimeInstance> map : runtimes.values()) {
             for (RuntimeInstance runtime : map.values()) {
                 list.add(runtime);
@@ -422,7 +422,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                 }
                 Map<String, RuntimeInstance> zones = runtimes.get(zoneName);
                 if (zones == null) {
-                    zones = new HashMap<String, RuntimeInstance>();
+                    zones = new HashMap<>();
                     runtimes.put(zoneName, zones);
                 }
                 if (!newRuntime.equals(runtimeName)) {

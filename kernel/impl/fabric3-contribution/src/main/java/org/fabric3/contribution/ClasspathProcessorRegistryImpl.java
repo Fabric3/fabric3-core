@@ -53,7 +53,7 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
  */
 @EagerInit
 public class ClasspathProcessorRegistryImpl implements ClasspathProcessorRegistry {
-    private List<ClasspathProcessor> processors = new ArrayList<ClasspathProcessor>();
+    private List<ClasspathProcessor> processors = new ArrayList<>();
 
     public void register(ClasspathProcessor processor) {
         processors.add(processor);
@@ -70,7 +70,7 @@ public class ClasspathProcessorRegistryImpl implements ClasspathProcessorRegistr
             }
         }
         // artifact does not need to be expanded, just return its base url
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         urls.add(url);
         return urls;
     }

@@ -60,9 +60,9 @@ public class TransformerInterceptorFactoryImplTestCase extends TestCase {
     public void testCreateInterceptor() throws Exception {
         ClassLoader loader = getClass().getClassLoader();
 
-        List<DataType<?>> sourceTypes = new ArrayList<DataType<?>>();
+        List<DataType<?>> sourceTypes = new ArrayList<>();
         sourceTypes.add(PhysicalDataTypes.JAVA_TYPE);
-        List<DataType<?>> targetTypes = new ArrayList<DataType<?>>();
+        List<DataType<?>> targetTypes = new ArrayList<>();
         targetTypes.add(PhysicalDataTypes.DOM);
 
         Transformer in = EasyMock.createMock(Transformer.class);

@@ -76,7 +76,7 @@ public class TransformerHandler implements EventStreamHandler {
     public void handle(Object event, boolean endOfBatch) {
         if (event instanceof EventWrapper) {
             if (cache == null) {
-                cache = new ConcurrentHashMap<DataType<?>, Transformer<Object, Object>>();
+                cache = new ConcurrentHashMap<>();
             }
             EventWrapper wrapper = (EventWrapper) event;
 

@@ -107,7 +107,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
             String name = propertyDefinition.getName();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
             if (propertyDefinition.getInstanceValue() != null) {
-                ObjectFactory<Object> objectFactory = new SingletonObjectFactory<Object>(propertyDefinition.getInstanceValue());
+                ObjectFactory<Object> objectFactory = new SingletonObjectFactory<>(propertyDefinition.getInstanceValue());
                 factory.setObjectFactory(source, objectFactory);
             } else {
                 Document value = propertyDefinition.getValue();
@@ -150,10 +150,10 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
 
     protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
         PojoRequestContext requestContext = new PojoRequestContext();
-        SingletonObjectFactory<PojoRequestContext> requestFactory = new SingletonObjectFactory<PojoRequestContext>(requestContext);
+        SingletonObjectFactory<PojoRequestContext> requestFactory = new SingletonObjectFactory<>(requestContext);
         factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, requestFactory);
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext, info);
-        SingletonObjectFactory<PojoComponentContext> componentFactory = new SingletonObjectFactory<PojoComponentContext>(componentContext);
+        SingletonObjectFactory<PojoComponentContext> componentFactory = new SingletonObjectFactory<>(componentContext);
         factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, componentFactory);
     }
 

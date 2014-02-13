@@ -83,7 +83,7 @@ public class WorkContext implements Serializable {
      */
     public void addCallbackReference(CallbackReference callbackReference) {
         if (callStack == null) {
-            callStack = new ArrayList<CallbackReference>();
+            callStack = new ArrayList<>();
         }
         callStack.add(callbackReference);
     }
@@ -156,7 +156,7 @@ public class WorkContext implements Serializable {
      */
     public void setHeader(String name, Object value) {
         if (headers == null) {
-            headers = new HashMap<String, Object>();
+            headers = new HashMap<>();
         }
         headers.put(name, value);
     }

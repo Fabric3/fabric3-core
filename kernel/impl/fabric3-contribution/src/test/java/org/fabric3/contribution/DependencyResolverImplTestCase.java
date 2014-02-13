@@ -73,7 +73,7 @@ public class DependencyResolverImplTestCase extends TestCase {
     public void testOrder() throws Exception {
         EasyMock.replay(store);
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution2);
         contributions.add(contribution1);
         contributions.add(contribution3);
@@ -91,7 +91,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.expect(store.resolve(CONTRIBUTION1_URI, imprt)).andReturn(Collections.singletonList(contribution2));
         EasyMock.replay(store);
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution3);
 
@@ -109,7 +109,7 @@ public class DependencyResolverImplTestCase extends TestCase {
 
         contribution2.setState(ContributionState.STORED);
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution3);
 
@@ -128,7 +128,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.expect(store.resolve(CONTRIBUTION1_URI, imprt)).andReturn(Collections.<Contribution>emptyList());
         EasyMock.replay(store);
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution3);
 
@@ -146,7 +146,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.expect(store.resolveCapability("capability")).andReturn(Collections.singleton(contribution3));
         EasyMock.replay(store);
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution2);
 
@@ -163,7 +163,7 @@ public class DependencyResolverImplTestCase extends TestCase {
 
         contribution3.setState(ContributionState.STORED);
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution2);
 
@@ -182,7 +182,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.replay(store);
 
 
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution2);
 
@@ -197,7 +197,7 @@ public class DependencyResolverImplTestCase extends TestCase {
     }
 
     public void testOrderForUninstall() throws Exception {
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution2);
         contributions.add(contribution1);
 

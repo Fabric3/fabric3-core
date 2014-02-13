@@ -70,10 +70,10 @@ public class InjectingComponentType extends ComponentType {
     private Signature constructor;
     private Signature initMethod;
     private Signature destroyMethod;
-    private Map<InjectionSite, Injectable> injectionSites = new HashMap<InjectionSite, Injectable>();
-    private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<ModelObject, InjectionSite>();
-    private Map<String, CallbackDefinition> callbacks = new HashMap<String, CallbackDefinition>();
-    private Map<String, Signature> consumerSignatures = new HashMap<String, Signature>();
+    private Map<InjectionSite, Injectable> injectionSites = new HashMap<>();
+    private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<>();
+    private Map<String, CallbackDefinition> callbacks = new HashMap<>();
+    private Map<String, Signature> consumerSignatures = new HashMap<>();
 
     /**
      * Constructor.

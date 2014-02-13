@@ -60,7 +60,7 @@ public class ContributionImport implements Import {
 
     public ContributionImport(URI symbolicUri) {
         this.symbolicUri = symbolicUri;
-        resolved = new HashMap<URI, Export>();
+        resolved = new HashMap<>();
     }
 
     public QName getType() {

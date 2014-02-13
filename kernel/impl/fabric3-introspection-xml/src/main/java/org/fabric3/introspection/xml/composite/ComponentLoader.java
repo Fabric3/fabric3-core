@@ -145,7 +145,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         Autowire autowire = Autowire.fromString(autowireStr);
         String key = loaderHelper.loadKey(reader);
 
-        ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<Implementation<?>>(name);
+        ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<>(name);
 
         int order = parserOrder(reader, definition, startLocation, context);
 
@@ -239,7 +239,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             throws XMLStreamException {
         ComponentType componentType = definition.getImplementation().getComponentType();
 
-        Map<Property, Location> propertyLocations = new HashMap<Property, Location>();
+        Map<Property, Location> propertyLocations = new HashMap<>();
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:

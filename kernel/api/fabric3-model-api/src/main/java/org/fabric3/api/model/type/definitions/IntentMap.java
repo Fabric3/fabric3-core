@@ -55,7 +55,7 @@ import org.fabric3.api.model.type.ModelObject;
 public final class IntentMap extends ModelObject<PolicySet> {
     private static final long serialVersionUID = -1786000484366117318L;
     private QName provides;
-    private Set<IntentQualifier> qualifiers = new HashSet<IntentQualifier>();
+    private Set<IntentQualifier> qualifiers = new HashSet<>();
 
     public IntentMap(QName provides) {
         this.provides = provides;

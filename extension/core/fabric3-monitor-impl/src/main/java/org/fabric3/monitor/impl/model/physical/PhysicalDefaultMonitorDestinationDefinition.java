@@ -49,7 +49,7 @@ import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefiniti
 public class PhysicalDefaultMonitorDestinationDefinition extends PhysicalMonitorDestinationDefinition {
     private static final long serialVersionUID = -7786050402412624284L;
 
-    private List<PhysicalAppenderDefinition> definitions = new ArrayList<PhysicalAppenderDefinition>();
+    private List<PhysicalAppenderDefinition> definitions = new ArrayList<>();
 
     public PhysicalDefaultMonitorDestinationDefinition(String name) {
         super(name);

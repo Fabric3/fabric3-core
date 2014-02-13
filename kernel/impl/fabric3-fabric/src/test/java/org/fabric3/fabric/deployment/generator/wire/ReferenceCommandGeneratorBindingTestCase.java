@@ -66,7 +66,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testIncrementalAttach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
@@ -96,7 +96,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testDetach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
@@ -127,7 +127,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testReinject() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
@@ -164,7 +164,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testNoGeneration() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
@@ -191,7 +191,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testRegeneration() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
@@ -220,7 +220,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testCallbackGeneration() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();

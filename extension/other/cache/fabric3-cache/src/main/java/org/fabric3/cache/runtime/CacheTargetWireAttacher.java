@@ -72,6 +72,6 @@ public class CacheTargetWireAttacher implements TargetWireAttacher<CacheTargetDe
         if (cache == null) {
             throw new WiringException("Cache not found: " + name);
         }
-        return new SingletonObjectFactory<Object>(cache);
+        return new SingletonObjectFactory<>(cache);
     }
 }

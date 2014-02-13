@@ -53,11 +53,11 @@ public class JavaTypesEqualityTestCase extends TestCase {
     @SuppressWarnings({"EqualsBetweenInconvertibleTypes"})
     public void testBoundJavaGenericTypeToJavaClass() {
         JavaTypeInfo param = new JavaTypeInfo(String.class);
-        List<JavaTypeInfo> params = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> params = new ArrayList<>();
         params.add(param);
         JavaTypeInfo info = new JavaTypeInfo(Class.class, params);
         JavaGenericType type = new JavaGenericType(info);
-        JavaClass<Class> clazz = new JavaClass<Class>(Class.class);
+        JavaClass<Class> clazz = new JavaClass<>(Class.class);
         assertFalse(type.equals(clazz));
         assertFalse(clazz.equals(type));
     }
@@ -68,11 +68,11 @@ public class JavaTypesEqualityTestCase extends TestCase {
     @SuppressWarnings({"AssertEqualsBetweenInconvertibleTypes"})
     public void testBoundObjectJavaGenericTypeToJavaClass() {
         JavaTypeInfo param = new JavaTypeInfo(Object.class);
-        List<JavaTypeInfo> params = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> params = new ArrayList<>();
         params.add(param);
         JavaTypeInfo info = new JavaTypeInfo(Class.class, params);
         JavaGenericType type = new JavaGenericType(info);
-        JavaClass<Class> clazz = new JavaClass<Class>(Class.class);
+        JavaClass<Class> clazz = new JavaClass<>(Class.class);
         assertEquals(type, clazz);
         assertEquals(clazz, type);
     }
@@ -84,7 +84,7 @@ public class JavaTypesEqualityTestCase extends TestCase {
     public void testUnboundJavaGenericTypeToJavaClass() {
         JavaTypeInfo unBound = new JavaTypeInfo(Class.class);
         JavaGenericType type = new JavaGenericType(unBound);
-        JavaClass<Class> clazz = new JavaClass<Class>(Class.class);
+        JavaClass<Class> clazz = new JavaClass<>(Class.class);
         assertEquals(type, clazz);
         assertEquals(clazz, type);
     }

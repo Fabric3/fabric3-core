@@ -84,7 +84,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
 
         Set<Intent> requiredIntents = getRequestedIntents(component, operation);
 
-        Set<Intent> intentsToBeProvided = new LinkedHashSet<Intent>();
+        Set<Intent> intentsToBeProvided = new LinkedHashSet<>();
         for (Intent intent : requiredIntents) {
             if (mayProvidedIntents.contains(intent.getName())) {
                 intentsToBeProvided.add(intent);
@@ -100,8 +100,8 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         QName type = implementation.getType();
         ImplementationType implementationType = policyRegistry.getDefinition(type, ImplementationType.class);
 
-        Set<QName> alwaysProvidedIntents = new LinkedHashSet<QName>();
-        Set<QName> mayProvidedIntents = new LinkedHashSet<QName>();
+        Set<QName> alwaysProvidedIntents = new LinkedHashSet<>();
+        Set<QName> mayProvidedIntents = new LinkedHashSet<>();
 
         if (implementationType != null) {
             // tolerate not having a registered implementation type definition
@@ -110,7 +110,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         }
 
         Set<Intent> requiredIntents = getRequestedIntents(component, operation);
-        Set<Intent> requiredIntentsCopy = new HashSet<Intent>(requiredIntents);
+        Set<Intent> requiredIntentsCopy = new HashSet<>(requiredIntents);
 
         // Remove intents that are provided
         for (Intent intent : requiredIntentsCopy) {
@@ -127,7 +127,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         Set<PolicySet> policies;
         if (!policySets.isEmpty()) {
             // resolve intents against specified policy sets
-            policies = new LinkedHashSet<PolicySet>();
+            policies = new LinkedHashSet<>();
             for (QName name : policySets) {
                 PolicySet policySet = policyRegistry.getDefinition(name, PolicySet.class);
                 policies.add(policySet);
@@ -163,7 +163,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
     private Set<Intent> getRequestedIntents(LogicalComponent<?> logicalComponent, LogicalOperation operation) throws PolicyResolutionException {
 
         // Aggregate all the intents from the ancestors
-        Set<QName> intentNames = new LinkedHashSet<QName>();
+        Set<QName> intentNames = new LinkedHashSet<>();
         intentNames.addAll(operation.getIntents());
         ComponentDefinition<? extends Implementation<?>> definition = logicalComponent.getDefinition();
         Implementation<?> implementation = definition.getImplementation();
@@ -192,7 +192,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
      */
     protected Set<QName> aggregatePolicySets(LogicalOperation operation, LogicalComponent<?> logicalComponent) {
         LogicalScaArtifact<?> temp = operation;
-        Set<QName> policySetNames = new LinkedHashSet<QName>();
+        Set<QName> policySetNames = new LinkedHashSet<>();
         while (temp != null) {
             policySetNames.addAll(temp.getPolicySets());
             temp = temp.getParent();

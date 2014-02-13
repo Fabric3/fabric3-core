@@ -67,7 +67,7 @@ public class JmsBindingMetadata extends ModelObject {
     private MessageSelection uriMessageSelection;
     private MessageSelection messageSelection;
     private CorrelationScheme correlationScheme = CorrelationScheme.MESSAGE_ID;
-    private Map<String, OperationPropertiesDefinition> operationProperties = new HashMap<String, OperationPropertiesDefinition>();
+    private Map<String, OperationPropertiesDefinition> operationProperties = new HashMap<>();
 
     // Fabric3-specific configuration settings
     private CacheLevel cacheLevel = CacheLevel.ADMINISTERED_OBJECTS;
@@ -293,7 +293,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.uriHeaders.setJmsType(this.uriHeaders.getJmsType());
 
         if (this.operationProperties != null) {
-            copy.operationProperties = new HashMap<String, OperationPropertiesDefinition>();
+            copy.operationProperties = new HashMap<>();
             copy.operationProperties.putAll(this.operationProperties);
         }
 

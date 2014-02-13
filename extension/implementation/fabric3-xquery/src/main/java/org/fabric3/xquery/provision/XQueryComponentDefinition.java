@@ -54,7 +54,7 @@ public class XQueryComponentDefinition extends PhysicalComponentDefinition {
 
     private String location;
     private String context;
-    private Map<String, Document> propertyValues = new HashMap<String, Document>();
+    private Map<String, Document> propertyValues = new HashMap<>();
     private Map<String, List<QName>> serviceFunctions;
     private Map<String, List<QName>> referenceFunctions;
     private Map<String, List<QName>> callbackFunctions;

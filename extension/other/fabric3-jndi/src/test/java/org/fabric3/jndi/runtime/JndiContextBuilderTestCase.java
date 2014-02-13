@@ -79,7 +79,7 @@ public class JndiContextBuilderTestCase extends TestCase {
         manager = EasyMock.createMock(JndiContextManager.class);
         builder = new JndiContextBuilder(manager);
 
-        Map<String, Properties> contexts = new HashMap<String, Properties>();
+        Map<String, Properties> contexts = new HashMap<>();
         contexts.put("context1", new Properties());
         definition = new PhysicalJndiContextDefinition(contexts);
     }

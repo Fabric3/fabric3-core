@@ -133,7 +133,7 @@ public class JavaIntrospectionProvider {
         compositeBuilder.component(newBuilder(ConsumerProcessor.class).key(Consumer.class.getName()).build());
 
         SystemComponentDefinitionBuilder componentBuilder = newBuilder(PolicyAnnotationProcessorImpl.class);
-        Map<String, QName> intents = new HashMap<String, QName>();
+        Map<String, QName> intents = new HashMap<>();
         intents.put(AllowsPassByReference.class.getName(), QName.valueOf(Namespaces.F3_PREFIX + "allowsPassByReference"));
         componentBuilder.property("intentsToQualifiers", intents);
 

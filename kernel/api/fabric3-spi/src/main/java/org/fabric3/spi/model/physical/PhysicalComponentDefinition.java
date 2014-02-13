@@ -58,7 +58,7 @@ public abstract class PhysicalComponentDefinition implements Serializable {
     private URI uri;
     private QName deployable;
     private URI classLoaderId;
-    private List<PhysicalPropertyDefinition> propertyDefinitions = new ArrayList<PhysicalPropertyDefinition>();
+    private List<PhysicalPropertyDefinition> propertyDefinitions = new ArrayList<>();
 
     /**
      * Gets the component URI.

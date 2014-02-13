@@ -114,7 +114,7 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
         QName referringName = new QName("test", "referring");
         referringComposite = new Composite(referringName);
 
-        ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<CompositeImplementation>("child");
+        ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<>("child");
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(oldComposite);
         child.setImplementation(implementation);
@@ -129,13 +129,13 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
 
         Resource referredResource = new Resource(contribution, null, "");
         QNameSymbol referredSymbol = new QNameSymbol(referredName);
-        ResourceElement<QNameSymbol, Composite> referredElement = new ResourceElement<QNameSymbol, Composite>(referredSymbol, oldComposite);
+        ResourceElement<QNameSymbol, Composite> referredElement = new ResourceElement<>(referredSymbol, oldComposite);
         referredResource.addResourceElement(referredElement);
         contribution.addResource(referredResource);
 
         Resource referringResource = new Resource(contribution, null, "");
         QNameSymbol referringSymbol = new QNameSymbol(referringName);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(referringSymbol, referringComposite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(referringSymbol, referringComposite);
         referringResource.addResourceElement(element);
 
         contribution.addResource(referringResource);

@@ -108,7 +108,7 @@ public class ProfilesResourceService {
         Resource resource = new Resource(selfLink);
 
         Set<Contribution> contributions = store.getContributions();
-        Set<URI> profiles = new HashSet<URI>();
+        Set<URI> profiles = new HashSet<>();
         for (Contribution contribution : contributions) {
             profiles.addAll(contribution.getProfiles());
         }
@@ -163,7 +163,7 @@ public class ProfilesResourceService {
         try {
             jarStream = new JarInputStream(stream);
             JarEntry entry;
-            List<URI> contributionUris = new ArrayList<URI>();
+            List<URI> contributionUris = new ArrayList<>();
             while ((entry = jarStream.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;

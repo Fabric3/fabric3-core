@@ -45,7 +45,7 @@ import java.util.Map;
  *
  */
 public class ProvisionedExtensionTrackerImpl implements ProvisionedExtensionTracker {
-    private Map<URI, Integer> cache = new HashMap<URI, Integer>();
+    private Map<URI, Integer> cache = new HashMap<>();
 
     public synchronized void increment(URI uri) {
         Integer count = cache.get(uri);

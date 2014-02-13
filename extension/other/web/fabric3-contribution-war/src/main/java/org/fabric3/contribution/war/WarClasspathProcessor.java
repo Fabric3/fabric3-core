@@ -92,7 +92,7 @@ public class WarClasspathProcessor implements ClasspathProcessor {
     }
 
     public List<URL> process(URL url, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<URL>();
+        List<URL> classpath = new ArrayList<>();
         // add the the jar itself to the classpath
         classpath.add(url);
 

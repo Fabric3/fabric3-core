@@ -111,8 +111,8 @@ public class AdaptiveMessageContainer {
     private final Object recoverySyncMonitor = new Object();
     private Object recoveryMarker = new Object();
 
-    private Set<MessageReceiver> receivers = new HashSet<MessageReceiver>();
-    private List<Runnable> pausedWork = new LinkedList<Runnable>();
+    private Set<MessageReceiver> receivers = new HashSet<>();
+    private List<Runnable> pausedWork = new LinkedList<>();
     private boolean javaEEXAEnabled;
 
     /**

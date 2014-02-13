@@ -119,7 +119,7 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
         if (configurations.length == 0) {
             return;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (BindingConfiguration configuration : configurations) {
             map.put(configuration.key(), configuration.value());
         }

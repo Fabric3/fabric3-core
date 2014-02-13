@@ -58,7 +58,7 @@ public class ParameterTypeHelper {
      * @throws ClassNotFoundException if an error occurs loading the types
      */
     public static List<Class<?>> loadSourceInParameterTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         for (String param : operation.getSourceParameterTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);
@@ -75,7 +75,7 @@ public class ParameterTypeHelper {
      * @throws ClassNotFoundException if an error occurs loading the types
      */
     public static List<Class<?>> loadTargetInParameterTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         for (String param : operation.getTargetParameterTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);
@@ -92,7 +92,7 @@ public class ParameterTypeHelper {
      * @throws ClassNotFoundException if an error occurs loading the types
      */
     public static List<Class<?>> loadSourceFaultTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         for (String param : operation.getSourceFaultTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);
@@ -109,7 +109,7 @@ public class ParameterTypeHelper {
      * @throws ClassNotFoundException if an error occurs loading the types
      */
     public static List<Class<?>> loadTargetFaultTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         for (String param : operation.getTargetFaultTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);

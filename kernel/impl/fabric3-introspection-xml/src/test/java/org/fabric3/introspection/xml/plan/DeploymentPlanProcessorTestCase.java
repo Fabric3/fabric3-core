@@ -76,7 +76,7 @@ public class DeploymentPlanProcessorTestCase extends TestCase {
         Resource resource = new Resource(null, null, "test");
         QName qName = new QName(DeploymentPlanConstants.PLAN_NAMESPACE, "testPlan");
         QNameSymbol symbol = new QNameSymbol(qName);
-        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<QNameSymbol, DeploymentPlan>(symbol);
+        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<>(symbol);
         resource.addResourceElement(element);
         IntrospectionContext context = new DefaultIntrospectionContext();
         processor.load(reader, resource, context);

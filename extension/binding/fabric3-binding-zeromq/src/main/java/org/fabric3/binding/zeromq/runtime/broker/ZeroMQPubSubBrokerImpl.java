@@ -82,8 +82,8 @@ import org.oasisopen.sca.annotation.Service;
  */
 @Service(ZeroMQPubSubBroker.class)
 public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {
-    private static final DataType<?> BYTES = new JavaClass<byte[]>(byte[].class);
-    private static final DataType<?> TWO_DIMENSIONAL_BYTES = new JavaClass<byte[][]>(byte[][].class);
+    private static final DataType<?> BYTES = new JavaClass<>(byte[].class);
+    private static final DataType<?> TWO_DIMENSIONAL_BYTES = new JavaClass<>(byte[][].class);
 
     private static final String ZMQ = "zmq";
 
@@ -100,8 +100,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     private long pollTimeout = 10000;  // default to 10 seconds
 
-    private Map<String, Subscriber> subscribers = new HashMap<String, Subscriber>();
-    private Map<String, PublisherHolder> publishers = new HashMap<String, PublisherHolder>();
+    private Map<String, Subscriber> subscribers = new HashMap<>();
+    private Map<String, PublisherHolder> publishers = new HashMap<>();
 
     public ZeroMQPubSubBrokerImpl(@Reference ContextManager manager,
                                   @Reference AddressCache addressCache,
@@ -166,7 +166,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             if (metadata.getSocketAddresses() != null) {
                 // socket addresses to connect to are explicitly configured in the binding definition
                 refresh = false;
-                addresses = new ArrayList<SocketAddress>();
+                addresses = new ArrayList<>();
                 for (SocketAddressDefinition addressDefinition : metadata.getSocketAddresses()) {
                     Port port = new SpecifiedPort(addressDefinition.getPort());
                     String specifiedHost = addressDefinition.getHost();
@@ -376,12 +376,12 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 throw new BrokerException(e);
             }
         } else {
-            return new JavaClass<Object>(Object.class);
+            return new JavaClass<>(Object.class);
         }
     }
 
     private class PublisherHolder {
-        private List<String> connectionIds = new ArrayList<String>();
+        private List<String> connectionIds = new ArrayList<>();
         private Publisher publisher;
         private SocketAddress address;
 

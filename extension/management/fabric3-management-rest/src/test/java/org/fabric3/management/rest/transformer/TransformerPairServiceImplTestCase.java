@@ -52,7 +52,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  *
  */
 public class TransformerPairServiceImplTestCase extends TestCase {
-    private static final JavaClass<?> JAVA_TYPE = new JavaClass<Object>(Object.class);
+    private static final JavaClass<?> JAVA_TYPE = new JavaClass<>(Object.class);
 
     private List<Method> methods;
 
@@ -92,7 +92,7 @@ public class TransformerPairServiceImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        methods = new ArrayList<Method>();
+        methods = new ArrayList<>();
         methods.add(getClass().getDeclaredMethod("method1", String.class));
         methods.add(getClass().getDeclaredMethod("method2", Integer.TYPE));
         methods.add(getClass().getDeclaredMethod("method3"));

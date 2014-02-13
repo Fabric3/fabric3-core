@@ -62,7 +62,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class RsPostProcessor implements PostProcessor {
-    private Set<Class<?>> annotations = new HashSet<Class<?>>();
+    private Set<Class<?>> annotations = new HashSet<>();
 
     public RsPostProcessor() {
         annotations.add(Path.class);

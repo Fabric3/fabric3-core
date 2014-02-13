@@ -67,7 +67,7 @@ public class LogicalProducer extends LogicalInvocable {
     public LogicalProducer(URI uri, ProducerDefinition definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
-        targets = new ArrayList<URI>();
+        targets = new ArrayList<>();
         if (definition != null) {
             // null check for testing so full model does not need to be instantiated
             addIntents(definition.getIntents());

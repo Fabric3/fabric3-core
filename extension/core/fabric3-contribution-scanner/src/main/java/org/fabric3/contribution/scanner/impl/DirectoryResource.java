@@ -56,7 +56,7 @@ public class DirectoryResource extends AbstractResource {
 
     public DirectoryResource(File root) {
         this.root = root;
-        resources = new ArrayList<FileSystemResource>();
+        resources = new ArrayList<>();
     }
 
     public String getName() {

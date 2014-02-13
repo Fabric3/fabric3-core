@@ -77,7 +77,7 @@ public class BindingSelectorImpl implements BindingSelector {
     private boolean disable;
     private HostInfo info;
     private BindingSelectionStrategy strategy;
-    private List<BindingProvider> providers = new ArrayList<BindingProvider>();
+    private List<BindingProvider> providers = new ArrayList<>();
 
     public BindingSelectorImpl(@Reference HostInfo info) {
         this.info = info;
@@ -129,7 +129,7 @@ public class BindingSelectorImpl implements BindingSelector {
     }
 
     public void selectBinding(LogicalWire wire) throws BindingSelectionException {
-        List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();
+        List<BindingMatchResult> results = new ArrayList<>();
         LogicalReference source = wire.getSource();
         LogicalService target = wire.getTarget();
         for (BindingProvider provider : providers) {
@@ -215,7 +215,7 @@ public class BindingSelectorImpl implements BindingSelector {
         if (channel.isConcreteBound() || channel.getDefinition().isLocal()) {
             return;
         }
-        List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();
+        List<BindingMatchResult> results = new ArrayList<>();
         for (BindingProvider provider : providers) {
             BindingMatchResult result = provider.canBind(channel);
             if (result.isMatch()) {

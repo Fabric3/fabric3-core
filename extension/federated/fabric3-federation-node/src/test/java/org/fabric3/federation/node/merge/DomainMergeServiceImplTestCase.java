@@ -144,7 +144,7 @@ public class DomainMergeServiceImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("domain");
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("domain");
         definition.setImplementation(impl);
         domain = new LogicalCompositeComponent(URI.create("domain"), definition, null);
         domain.setState(LogicalState.PROVISIONED);
@@ -154,12 +154,12 @@ public class DomainMergeServiceImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("domain");
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("domain");
         definition.setImplementation(impl);
         snapshot = new LogicalCompositeComponent(URI.create("domain"), definition, null);
         snapshot.setState(LogicalState.NEW);
 
-        LogicalComponent<RemoteImplementation> child = new LogicalComponent<RemoteImplementation>(URI.create("remote"), null, snapshot);
+        LogicalComponent<RemoteImplementation> child = new LogicalComponent<>(URI.create("remote"), null, snapshot);
         child.setState(LogicalState.NEW);
         snapshot.addComponent(child);
 

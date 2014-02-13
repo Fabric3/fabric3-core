@@ -47,8 +47,8 @@ import java.util.List;
  * deployed after the base extensions.
  */
 public class ContributionOrder {
-    private List<URI> base = new ArrayList<URI>();
-    private List<URI> isolated = new ArrayList<URI>();
+    private List<URI> base = new ArrayList<>();
+    private List<URI> isolated = new ArrayList<>();
 
     public List<URI> getBaseContributions() {
         return base;

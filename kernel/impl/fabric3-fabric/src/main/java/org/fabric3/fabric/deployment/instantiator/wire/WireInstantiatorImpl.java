@@ -125,7 +125,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         if (serviceTargets.isEmpty()) {
             serviceTargets = definition.getTargets();
         }
-        List<SCABinding> scaBindings = new ArrayList<SCABinding>();
+        List<SCABinding> scaBindings = new ArrayList<>();
         List<BindingDefinition> bindings = componentReference != null ? componentReference.getBindings() : definition.getBindings();
         for (BindingDefinition binding : bindings) {
             if (binding instanceof SCABinding) {
@@ -158,7 +158,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
             }
         }
 
-        List<LogicalWire> wires = new ArrayList<LogicalWire>();
+        List<LogicalWire> wires = new ArrayList<>();
         if (!scaBindings.isEmpty()) {
             // resolve the reference targets and create logical wires
             for (SCABinding binding : scaBindings) {

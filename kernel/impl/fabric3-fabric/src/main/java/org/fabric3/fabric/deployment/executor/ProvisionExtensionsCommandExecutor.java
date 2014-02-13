@@ -89,7 +89,7 @@ public class ProvisionExtensionsCommandExecutor implements CommandExecutor<Provi
 
     public void execute(ProvisionExtensionsCommand command) throws ExecutionException {
         try {
-            List<URI> stored = new ArrayList<URI>();
+            List<URI> stored = new ArrayList<>();
             for (URI uri : command.getExtensionUris()) {
                 if (contributionService.exists(uri)) {
                     // extension already provisioned

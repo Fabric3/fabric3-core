@@ -67,8 +67,8 @@ public abstract class Bindable extends LogicalInvocable {
      */
     protected Bindable(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
         super(uri, contract, parent);
-        bindings = new ArrayList<LogicalBinding<?>>();
-        callbackBindings = new ArrayList<LogicalBinding<?>>();
+        bindings = new ArrayList<>();
+        callbackBindings = new ArrayList<>();
     }
 
     /**

@@ -64,7 +64,7 @@ import org.fabric3.spi.container.wire.InvocationChain;
  * accepts JAXB parameter types.
  */
 public class JaxbInvoker extends Invoker {
-    private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();
+    private Map<String, InvocationChain> chains = new HashMap<>();
 
     /**
      * Constructor.

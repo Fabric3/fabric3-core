@@ -138,7 +138,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                 QName compositeName = composite.getName();
 
                 QNameSymbol compositeSymbol = new QNameSymbol(compositeName);
-                ResourceElement<QNameSymbol, Composite> compositeElement = new ResourceElement<QNameSymbol, Composite>(compositeSymbol, composite);
+                ResourceElement<QNameSymbol, Composite> compositeElement = new ResourceElement<>(compositeSymbol, composite);
                 Contribution contribution = resource.getContribution();
 
                 Resource compositeResource = new Resource(contribution, resource.getSource(), Constants.COMPOSITE_CONTENT_TYPE);

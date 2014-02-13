@@ -54,7 +54,7 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  */
 public class MockPolicyResult implements PolicyResult {
     private PolicyMetadata metadata = new PolicyMetadata();
-    private Map<LogicalOperation, List<PolicySet>> policies = new HashMap<LogicalOperation, List<PolicySet>>();
+    private Map<LogicalOperation, List<PolicySet>> policies = new HashMap<>();
 
     public void addPolicy(LogicalOperation operation, List<PolicySet> list) {
         policies.put(operation, list);

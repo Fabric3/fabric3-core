@@ -91,7 +91,7 @@ public class RestfulManagementExtensionTestCase extends TestCase {
         ManagementOperationInfo operation = new ManagementOperationInfo(signature, "operation", OperationType.POST, "description", writeRoles);
         info.addOperation(operation);
 
-        ObjectFactory<?> factory = new SingletonObjectFactory<TestComponent>(new TestComponent());
+        ObjectFactory<?> factory = new SingletonObjectFactory<>(new TestComponent());
         extension.export(URI.create("fabric3://domain/Component"), info, factory, loader);
 
         EasyMock.verify(pairService, marshaller, host);

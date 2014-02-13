@@ -55,7 +55,7 @@ import org.fabric3.spi.introspection.xml.Writer;
  */
 @EagerInit
 public class WriterImpl implements Writer {
-    private Map<Class<?>, TypeWriter<?>> typeWriters = new HashMap<Class<?>, TypeWriter<?>>();
+    private Map<Class<?>, TypeWriter<?>> typeWriters = new HashMap<>();
 
     public <TYPE extends ModelObject> void register(Class<TYPE> type, TypeWriter<TYPE> writer) {
         typeWriters.put(type, writer);

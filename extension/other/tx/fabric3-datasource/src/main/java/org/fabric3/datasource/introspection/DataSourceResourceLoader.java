@@ -70,7 +70,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> {
 
     public DataSourceResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        List<DataSourceConfiguration> configurations = new ArrayList<DataSourceConfiguration>();
+        List<DataSourceConfiguration> configurations = new ArrayList<>();
         DataSourceConfiguration configuration = null;
         while (true) {
             switch (reader.next()) {

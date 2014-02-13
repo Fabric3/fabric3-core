@@ -203,7 +203,7 @@ public class CollectorImpl implements Collector {
                 }
             }
         }
-        List<LogicalReference> toRemove = new ArrayList<LogicalReference>();
+        List<LogicalReference> toRemove = new ArrayList<>();
         for (Map.Entry<LogicalReference, List<LogicalWire>> wires : composite.getWires().entrySet()) {
             for (Iterator<LogicalWire> it = wires.getValue().iterator(); it.hasNext();) {
                 LogicalWire wire = it.next();

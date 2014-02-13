@@ -61,7 +61,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  *
  */
 public class ObjectBuilderImplTestCase extends TestCase {
-    private static final DataType<?> JAVA_CLASS = new JavaClass<String>(String.class);
+    private static final DataType<?> JAVA_CLASS = new JavaClass<>(String.class);
     private DocumentBuilder documentBuilder;
     private TransformerRegistry registry;
     private ObjectBuilderImpl builder;
@@ -69,7 +69,7 @@ public class ObjectBuilderImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testArrayBuild() throws Exception {
-        DataType<?> type = new JavaClass<String>(String.class);
+        DataType<?> type = new JavaClass<>(String.class);
 
         List list = Collections.singletonList(String.class);
 

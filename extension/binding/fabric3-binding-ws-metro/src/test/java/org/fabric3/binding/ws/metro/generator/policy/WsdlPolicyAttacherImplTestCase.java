@@ -66,7 +66,7 @@ public class WsdlPolicyAttacherImplTestCase extends TestCase {
 
         PolicyExpressionMapping mapping = new PolicyExpressionMapping("id", policyDocument.getDocumentElement());
         mapping.addOperationName("sayHello");
-        List<PolicyExpressionMapping> mappings = new ArrayList<PolicyExpressionMapping>();
+        List<PolicyExpressionMapping> mappings = new ArrayList<>();
         mappings.add(mapping);
 
         ByteArrayInputStream wsdlStream = new ByteArrayInputStream(TestWsdl.WSDL.getBytes());

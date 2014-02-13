@@ -10,7 +10,7 @@ import org.fabric3.spi.transform.TransformationException;
  * binary transport.
  */
 public class ByteArrayToByteArrayTransformer implements SingleTypeTransformer<byte[], byte[]> {
-    private static final JavaClass<byte[]> TYPE = new JavaClass<byte[]>(byte[].class);
+    private static final JavaClass<byte[]> TYPE = new JavaClass<>(byte[].class);
 
     public DataType<?> getSourceType() {
         return TYPE;

@@ -49,7 +49,7 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
  * Default implementation of the FileSystemResourceFactoryRegistry.
  */
 public class FileSystemResourceFactoryRegistryImpl implements FileSystemResourceFactoryRegistry {
-    private List<FileSystemResourceFactory> factories = new ArrayList<FileSystemResourceFactory>();
+    private List<FileSystemResourceFactory> factories = new ArrayList<>();
 
     public void register(FileSystemResourceFactory factory) {
         factories.add(factory);

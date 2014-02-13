@@ -65,7 +65,7 @@ public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Coll
     private FactoryState state;
 
     public AbstractCollectionMultiplicityObjectFactory() {
-        this.factories = new ArrayList<ObjectFactory<?>>();
+        this.factories = new ArrayList<>();
         state = FactoryState.UPDATED;
     }
 
@@ -82,7 +82,7 @@ public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Coll
 
     public void startUpdate() {
         state = FactoryState.UPDATING;
-        temporaryFactories = new LinkedHashMap<ObjectFactory<?>, InjectionAttributes>();
+        temporaryFactories = new LinkedHashMap<>();
     }
 
     public void endUpdate() {
@@ -103,9 +103,9 @@ public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Coll
      */
     private List<ObjectFactory<?>> sortTemporaryFactories(LinkedHashMap<ObjectFactory<?>, InjectionAttributes> factories) {
         List<Map.Entry<ObjectFactory<?>, InjectionAttributes>> entries =
-                new ArrayList<Map.Entry<ObjectFactory<?>, InjectionAttributes>>(factories.entrySet());
+                new ArrayList<>(factories.entrySet());
         Collections.sort(entries, COMPARATOR);
-        List<ObjectFactory<?>> sorted = new ArrayList<ObjectFactory<?>>();
+        List<ObjectFactory<?>> sorted = new ArrayList<>();
         for (Map.Entry<ObjectFactory<?>, InjectionAttributes> entry : entries) {
             sorted.add(entry.getKey());
         }

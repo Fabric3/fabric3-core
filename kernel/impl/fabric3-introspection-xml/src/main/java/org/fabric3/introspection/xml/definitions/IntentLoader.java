@@ -141,7 +141,7 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
             return null;
         }
 
-        Set<Qualifier> qualifiers = new HashSet<Qualifier>();
+        Set<Qualifier> qualifiers = new HashSet<>();
         // create the intent before the qualifiers are populated so attributes can be validated
         Intent intent = new Intent(qName, constrains, requires, qualifiers, mutuallyExclusive, excludes, intentType, false);
 

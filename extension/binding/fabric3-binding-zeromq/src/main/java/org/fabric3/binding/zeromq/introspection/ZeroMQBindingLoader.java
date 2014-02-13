@@ -118,7 +118,7 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         String wireFormat = reader.getAttributeValue(null, "wireFormat");
 
         if (addresses != null) {
-            List<SocketAddressDefinition> addressDefinitions = new ArrayList<SocketAddressDefinition>();
+            List<SocketAddressDefinition> addressDefinitions = new ArrayList<>();
             String[] addressStrings = addresses.split("\\s+");
             for (String entry : addressStrings) {
                 String[] tokens = entry.split(":");

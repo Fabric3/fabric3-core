@@ -39,7 +39,7 @@ import java.util.List;
 public class AddressUpdate extends AddressEvent {
     private static final long serialVersionUID = -7699148587872349130L;
 
-    private List<AddressAnnouncement> announcements = new ArrayList<AddressAnnouncement>();
+    private List<AddressAnnouncement> announcements = new ArrayList<>();
 
     public void addAnnouncement(AddressAnnouncement announcement) {
         announcements.add(announcement);

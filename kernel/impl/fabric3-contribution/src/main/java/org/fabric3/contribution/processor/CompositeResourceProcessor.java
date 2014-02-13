@@ -107,7 +107,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
             QName compositeName = new QName(targetNamespace, name);
             QNameSymbol symbol = new QNameSymbol(compositeName);
-            ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
+            ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol);
             resource.addResourceElement(element);
             validateUnique(resource, element, reader, context);
         } catch (XMLStreamException | IOException e) {

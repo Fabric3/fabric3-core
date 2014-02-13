@@ -120,7 +120,7 @@ public class ContributionsResourceService {
         Resource resource = new Resource(selfLink);
 
         Set<Contribution> contributions = store.getContributions();
-        List<ContributionStatus> list = new ArrayList<ContributionStatus>();
+        List<ContributionStatus> list = new ArrayList<>();
         for (Contribution contribution : contributions) {
             URI uri = contribution.getUri();
             Link link = createContributionLink(uri, request);
@@ -196,7 +196,7 @@ public class ContributionsResourceService {
         }
         String state = contribution.getState().toString();
         List<Deployable> deployables = contribution.getManifest().getDeployables();
-        List<QName> names = new ArrayList<QName>();
+        List<QName> names = new ArrayList<>();
         for (Deployable deployable : deployables) {
             QName name = deployable.getName();
             names.add(name);
@@ -232,11 +232,11 @@ public class ContributionsResourceService {
     }
 
     private void propagate(InvalidContributionException e, ResourceException resourceException) {
-        Map<String, List<String>> errors = new HashMap<String, List<String>>();
+        Map<String, List<String>> errors = new HashMap<>();
         for (ValidationFailure failure : e.getErrors()) {
             if (failure instanceof ArtifactValidationFailure) {
                 ArtifactValidationFailure avf = (ArtifactValidationFailure) failure;
-                List<String> artifactErrors = new ArrayList<String>();
+                List<String> artifactErrors = new ArrayList<>();
                 errors.put(avf.getArtifactName(), artifactErrors);
                 for (ValidationFailure entry : avf.getFailures()) {
                     artifactErrors.add(entry.getMessage());
@@ -244,7 +244,7 @@ public class ContributionsResourceService {
             } else {
                 List<String> generalErrors = errors.get("General");
                 if (generalErrors == null) {
-                    generalErrors = new ArrayList<String>();
+                    generalErrors = new ArrayList<>();
                     errors.put("General", generalErrors);
                 }
                 generalErrors.add(failure.getMessage());

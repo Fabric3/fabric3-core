@@ -54,7 +54,7 @@ import org.fabric3.spi.contribution.Import;
 @EagerInit
 public class ContributionWireInstantiatorRegistryImpl implements ContributionWireInstantiatorRegistry {
     private Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-            new HashMap<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>>();
+            new HashMap<>();
 
     @Reference
     public void setInstantiators(Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators) {

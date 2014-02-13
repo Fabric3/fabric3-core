@@ -51,9 +51,9 @@ import org.fabric3.spi.model.physical.ChannelSide;
  * Default ChannelManager implementation.
  */
 public class ChannelManagerImpl implements ChannelManager {
-    private Map<URI, Holder> collocatedChannels = new ConcurrentHashMap<URI, Holder>();
-    private Map<URI, Holder> producerChannels = new ConcurrentHashMap<URI, Holder>();
-    private Map<URI, Holder> consumerChannels = new ConcurrentHashMap<URI, Holder>();
+    private Map<URI, Holder> collocatedChannels = new ConcurrentHashMap<>();
+    private Map<URI, Holder> producerChannels = new ConcurrentHashMap<>();
+    private Map<URI, Holder> consumerChannels = new ConcurrentHashMap<>();
 
     public Channel getChannel(URI uri, ChannelSide channelSide) {
         checkUri(uri);

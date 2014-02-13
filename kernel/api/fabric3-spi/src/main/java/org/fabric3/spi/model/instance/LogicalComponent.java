@@ -62,12 +62,12 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
 
     private URI uri;
     private ComponentDefinition<I> definition;
-    private Map<String, LogicalProperty> properties = new HashMap<String, LogicalProperty>();
-    private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
-    private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
-    private Map<String, LogicalProducer> producers = new HashMap<String, LogicalProducer>();
-    private Map<String, LogicalConsumer> consumers = new HashMap<String, LogicalConsumer>();
-    private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<String, LogicalResourceReference<?>>();
+    private Map<String, LogicalProperty> properties = new HashMap<>();
+    private Map<String, LogicalService> services = new HashMap<>();
+    private Map<String, LogicalReference> references = new HashMap<>();
+    private Map<String, LogicalProducer> producers = new HashMap<>();
+    private Map<String, LogicalConsumer> consumers = new HashMap<>();
+    private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<>();
     private String zone = Names.LOCAL_ZONE;
     private QName deployable;
     private Autowire autowire;

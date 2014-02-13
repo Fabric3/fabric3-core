@@ -58,7 +58,7 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
 
     @Init
     public void init() throws IOException, AppenderCreationException {
-        destinations = new AtomicReference<MonitorDestination[]>();
+        destinations = new AtomicReference<>();
         destinations.set(new MonitorDestination[0]);
     }
 

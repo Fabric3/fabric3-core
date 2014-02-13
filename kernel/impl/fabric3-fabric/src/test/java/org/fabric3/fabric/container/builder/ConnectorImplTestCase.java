@@ -131,7 +131,7 @@ public class ConnectorImplTestCase extends TestCase {
                                            EasyMock.isA(ObjectFactory.class),
                                            EasyMock.isA(PhysicalTargetDefinition.class));
         targetAttacher.createObjectFactory(EasyMock.isA(PhysicalTargetDefinition.class));
-        EasyMock.expectLastCall().andReturn(new SingletonObjectFactory<Object>(new Object()));
+        EasyMock.expectLastCall().andReturn(new SingletonObjectFactory<>(new Object()));
         EasyMock.replay(sourceAttacher, targetAttacher);
         connector.setSourceAttachers(sourceAttachers);
         connector.setTargetAttachers(targetAttachers);
@@ -198,7 +198,7 @@ public class ConnectorImplTestCase extends TestCase {
         transformerFactory = EasyMock.createMock(TransformerInterceptorFactory.class);
 
         connector = new ConnectorImpl(classLoaderRegistry, transformerFactory);
-        builders = new HashMap<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>>();
+        builders = new HashMap<>();
         connector.setInterceptorBuilders(builders);
 
         createDefinition();
@@ -209,7 +209,7 @@ public class ConnectorImplTestCase extends TestCase {
         sourceDefinition.setUri(URI.create("source"));
         PhysicalTargetDefinition targetDefinition = new MockTargetDefinition();
         targetDefinition.setUri(URI.create("target"));
-        Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
+        Set<PhysicalOperationDefinition> operations = new HashSet<>();
         definition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
         URI classLoaderUri = URI.create("classloader");
         sourceDefinition.setClassLoaderId(classLoaderUri);

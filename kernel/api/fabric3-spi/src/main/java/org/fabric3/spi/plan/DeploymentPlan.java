@@ -50,7 +50,7 @@ public class DeploymentPlan implements Serializable {
     private static final long serialVersionUID = 4925927937202340746L;
 
     private String name;
-    private Map<QName, String> deployableMappings = new HashMap<QName, String>();
+    private Map<QName, String> deployableMappings = new HashMap<>();
 
     /**
      * Constructor.

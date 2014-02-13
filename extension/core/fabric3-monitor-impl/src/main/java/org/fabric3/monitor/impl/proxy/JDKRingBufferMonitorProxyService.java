@@ -64,7 +64,7 @@ public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyServic
         }
         int destinationIndex = router.getDestinationIndex(destination);
         ClassLoader loader = type.getClassLoader();
-        Map<Method, DispatchInfo> levels = new HashMap<Method, DispatchInfo>();
+        Map<Method, DispatchInfo> levels = new HashMap<>();
         for (Method method : type.getMethods()) {
             DispatchInfo info = createDispatchInfo(type, loader, method);
             levels.put(method, info);

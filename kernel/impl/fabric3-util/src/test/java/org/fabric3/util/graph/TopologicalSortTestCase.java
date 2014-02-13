@@ -47,15 +47,15 @@ import junit.framework.TestCase;
 public class TopologicalSortTestCase extends TestCase {
 
     public void testMultiLevelSort() throws Exception {
-        DirectedGraph<String> graph = new DirectedGraphImpl<String>();
-        Vertex<String> a = new VertexImpl<String>("A");
-        Vertex<String> b = new VertexImpl<String>("B");
-        Edge<String> edgeAB = new EdgeImpl<String>(a, b);
+        DirectedGraph<String> graph = new DirectedGraphImpl<>();
+        Vertex<String> a = new VertexImpl<>("A");
+        Vertex<String> b = new VertexImpl<>("B");
+        Edge<String> edgeAB = new EdgeImpl<>(a, b);
         graph.add(edgeAB);
-        Vertex<String> c = new VertexImpl<String>("C");
-        Edge<String> edgeAC = new EdgeImpl<String>(a, c);
+        Vertex<String> c = new VertexImpl<>("C");
+        Edge<String> edgeAC = new EdgeImpl<>(a, c);
         graph.add(edgeAC);
-        Edge<String> edgeBC = new EdgeImpl<String>(b, c);
+        Edge<String> edgeBC = new EdgeImpl<>(b, c);
         graph.add(edgeBC);
         List<Vertex<String>> list = new TopologicalSorterImpl<String>().sort(graph);
         assertEquals(a, list.get(0));
@@ -64,15 +64,15 @@ public class TopologicalSortTestCase extends TestCase {
     }
 
     public void testMultiLevelReverseSort() throws Exception {
-        DirectedGraph<String> graph = new DirectedGraphImpl<String>();
-        Vertex<String> a = new VertexImpl<String>("A");
-        Vertex<String> b = new VertexImpl<String>("B");
-        Edge<String> edgeAB = new EdgeImpl<String>(a, b);
+        DirectedGraph<String> graph = new DirectedGraphImpl<>();
+        Vertex<String> a = new VertexImpl<>("A");
+        Vertex<String> b = new VertexImpl<>("B");
+        Edge<String> edgeAB = new EdgeImpl<>(a, b);
         graph.add(edgeAB);
-        Vertex<String> c = new VertexImpl<String>("C");
-        Edge<String> edgeAC = new EdgeImpl<String>(a, c);
+        Vertex<String> c = new VertexImpl<>("C");
+        Edge<String> edgeAC = new EdgeImpl<>(a, c);
         graph.add(edgeAC);
-        Edge<String> edgeBC = new EdgeImpl<String>(b, c);
+        Edge<String> edgeBC = new EdgeImpl<>(b, c);
         graph.add(edgeBC);
         List<Vertex<String>> list = new TopologicalSorterImpl<String>().reverseSort(graph);
         assertEquals(c, list.get(0));
@@ -81,13 +81,13 @@ public class TopologicalSortTestCase extends TestCase {
     }
 
     public void testReverseSort() throws Exception {
-        DirectedGraph<String> graph = new DirectedGraphImpl<String>();
-        Vertex<String> a = new VertexImpl<String>("A");
-        Vertex<String> b = new VertexImpl<String>("B");
-        Edge<String> edgeAB = new EdgeImpl<String>(a, b);
+        DirectedGraph<String> graph = new DirectedGraphImpl<>();
+        Vertex<String> a = new VertexImpl<>("A");
+        Vertex<String> b = new VertexImpl<>("B");
+        Edge<String> edgeAB = new EdgeImpl<>(a, b);
         graph.add(edgeAB);
-        Vertex<String> c = new VertexImpl<String>("C");
-        Edge<String> edgeAC = new EdgeImpl<String>(a, c);
+        Vertex<String> c = new VertexImpl<>("C");
+        Edge<String> edgeAC = new EdgeImpl<>(a, c);
         graph.add(edgeAC);
         List<Vertex<String>> list = new TopologicalSorterImpl<String>().reverseSort(graph);
         assertEquals(a, list.get(2));
@@ -96,13 +96,13 @@ public class TopologicalSortTestCase extends TestCase {
     }
 
     public void testSort() throws Exception {
-        DirectedGraph<String> graph = new DirectedGraphImpl<String>();
-        Vertex<String> a = new VertexImpl<String>("A");
-        Vertex<String> b = new VertexImpl<String>("B");
-        Edge<String> edgeAB = new EdgeImpl<String>(a, b);
+        DirectedGraph<String> graph = new DirectedGraphImpl<>();
+        Vertex<String> a = new VertexImpl<>("A");
+        Vertex<String> b = new VertexImpl<>("B");
+        Edge<String> edgeAB = new EdgeImpl<>(a, b);
         graph.add(edgeAB);
-        Vertex<String> c = new VertexImpl<String>("C");
-        Edge<String> edgeAC = new EdgeImpl<String>(a, c);
+        Vertex<String> c = new VertexImpl<>("C");
+        Edge<String> edgeAC = new EdgeImpl<>(a, c);
         graph.add(edgeAC);
         List<Vertex<String>> list = new TopologicalSorterImpl<String>().sort(graph);
         assertEquals(a, list.get(0));

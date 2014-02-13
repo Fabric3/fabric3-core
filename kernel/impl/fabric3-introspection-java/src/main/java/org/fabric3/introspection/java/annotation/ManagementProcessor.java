@@ -76,11 +76,11 @@ public class ManagementProcessor extends AbstractAnnotationProcessor<Management>
         if (description.trim().length() == 0) {
             description = null;
         }
-        Set<Role> readRoles = new HashSet<Role>();
+        Set<Role> readRoles = new HashSet<>();
         for (String roleName : annotation.readRoles()) {
             readRoles.add(new Role(roleName));
         }
-        Set<Role> writeRoles = new HashSet<Role>();
+        Set<Role> writeRoles = new HashSet<>();
         for (String roleName : annotation.writeRoles()) {
             writeRoles.add(new Role(roleName));
         }

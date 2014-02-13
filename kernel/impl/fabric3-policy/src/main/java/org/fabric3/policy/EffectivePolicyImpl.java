@@ -53,13 +53,13 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  *
  */
 public class EffectivePolicyImpl implements EffectivePolicy {
-    private Set<Intent> providedEndpointIntents = new HashSet<Intent>();
-    private Set<Intent> aggregatedEndpointIntents = new HashSet<Intent>();
+    private Set<Intent> providedEndpointIntents = new HashSet<>();
+    private Set<Intent> aggregatedEndpointIntents = new HashSet<>();
 
-    private Set<PolicySet> endpointPolicySets = new HashSet<PolicySet>();
+    private Set<PolicySet> endpointPolicySets = new HashSet<>();
 
-    private Map<LogicalOperation, List<Intent>> providedIntentMap = new HashMap<LogicalOperation, List<Intent>>();
-    private Map<LogicalOperation, List<PolicySet>> policySetMap = new HashMap<LogicalOperation, List<PolicySet>>();
+    private Map<LogicalOperation, List<Intent>> providedIntentMap = new HashMap<>();
+    private Map<LogicalOperation, List<PolicySet>> policySetMap = new HashMap<>();
 
     public Set<Intent> getProvidedEndpointIntents() {
         return providedEndpointIntents;
@@ -74,7 +74,7 @@ public class EffectivePolicyImpl implements EffectivePolicy {
     }
 
     public List<Intent> getOperationIntents() {
-        List<Intent> ret = new ArrayList<Intent>();
+        List<Intent> ret = new ArrayList<>();
         for (LogicalOperation operation : providedIntentMap.keySet()) {
             ret.addAll(getIntents(operation));
         }

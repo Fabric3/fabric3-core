@@ -17,7 +17,7 @@ import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
  */
 public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCreatorRegistry {
     private Map<Class<?>, ConnectionFactoryCreator> creators = Collections.emptyMap();
-    private Map<ConnectionFactory, ConnectionFactoryCreator> factories = new HashMap<ConnectionFactory, ConnectionFactoryCreator>();
+    private Map<ConnectionFactory, ConnectionFactoryCreator> factories = new HashMap<>();
 
     @Reference(required = false)
     public void setCreators(Map<Class<?>, ConnectionFactoryCreator> creators) {

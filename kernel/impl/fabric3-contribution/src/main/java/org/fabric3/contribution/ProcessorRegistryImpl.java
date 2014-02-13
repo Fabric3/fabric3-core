@@ -58,8 +58,8 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class ProcessorRegistryImpl implements ProcessorRegistry {
-    private List<ContributionProcessor> contributionProcessorCache = new ArrayList<ContributionProcessor>();
-    private Map<String, ResourceProcessor> resourceProcessorCache = new ConcurrentHashMap<String, ResourceProcessor>();
+    private List<ContributionProcessor> contributionProcessorCache = new ArrayList<>();
+    private Map<String, ResourceProcessor> resourceProcessorCache = new ConcurrentHashMap<>();
 
     public ProcessorRegistryImpl() {
     }

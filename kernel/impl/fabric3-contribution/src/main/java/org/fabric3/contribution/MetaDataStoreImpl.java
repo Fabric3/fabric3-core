@@ -77,10 +77,10 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public class MetaDataStoreImpl implements MetaDataStore {
     private ProcessorRegistry processorRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
-    private Map<String, ReferenceIntrospector> referenceIntrospectors = new HashMap<String, ReferenceIntrospector>();
-    private Map<String, ResourceElementUpdater<?>> updaters = new HashMap<String, ResourceElementUpdater<?>>();
+    private Map<String, ReferenceIntrospector> referenceIntrospectors = new HashMap<>();
+    private Map<String, ResourceElementUpdater<?>> updaters = new HashMap<>();
 
-    private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
+    private Map<URI, Contribution> cache = new ConcurrentHashMap<>();
 
     public MetaDataStoreImpl(ProcessorRegistry processorRegistry) {
         this.processorRegistry = processorRegistry;
@@ -130,7 +130,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public Set<Contribution> getContributions() {
-        return new HashSet<Contribution>(cache.values());
+        return new HashSet<>(cache.values());
     }
 
     public void remove(URI contributionUri) {
@@ -175,7 +175,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             return Collections.emptySet();
         }
 
-        Set<ResourceElement<S, ?>> elements = new HashSet<ResourceElement<S, ?>>();
+        Set<ResourceElement<S, ?>> elements = new HashSet<>();
 
         // check the contribution for referring artifacts
         findReferences(contribution, referred, elements, introspector);
@@ -238,7 +238,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             String identifier = uri.toString();
             throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
         }
-        List<ResourceElement<?, V>> artifacts = new ArrayList<ResourceElement<?, V>>();
+        List<ResourceElement<?, V>> artifacts = new ArrayList<>();
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 Object value = element.getValue();
@@ -274,7 +274,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public List<Contribution> resolve(URI uri, Import imprt) {
-        List<Contribution> resolved = new ArrayList<Contribution>();
+        List<Contribution> resolved = new ArrayList<>();
         if (!imprt.getResolved().isEmpty()) {
             // already resolved
             for (URI exportUri : imprt.getResolved().keySet()) {
@@ -315,7 +315,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws UnresolvedImportException {
-        List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
+        List<ContributionWire<?, ?>> wires = new ArrayList<>();
         for (Map.Entry<URI, Export> entry : imprt.getResolved().entrySet()) {
             ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, entry.getValue(), uri, entry.getKey());
             wires.add(wire);
@@ -327,7 +327,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public Set<Contribution> resolveDependentContributions(URI uri) {
-        Set<Contribution> dependents = new HashSet<Contribution>();
+        Set<Contribution> dependents = new HashSet<>();
         for (Contribution entry : cache.values()) {
             List<ContributionWire<?, ?>> contributionWires = entry.getWires();
             for (ContributionWire<?, ?> wire : contributionWires) {
@@ -341,7 +341,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public List<Contribution> resolveExtensionProviders(String name) {
-        List<Contribution> providers = new ArrayList<Contribution>();
+        List<Contribution> providers = new ArrayList<>();
         for (Contribution contribution : cache.values()) {
             for (String extend : contribution.getManifest().getExtends()) {
                 if (extend.equals(name)) {
@@ -354,7 +354,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public List<Contribution> resolveExtensionPoints(String name) {
-        List<Contribution> extensionPoints = new ArrayList<Contribution>();
+        List<Contribution> extensionPoints = new ArrayList<>();
         for (Contribution contribution : cache.values()) {
             for (String extensionPoint : contribution.getManifest().getExtensionPoints()) {
                 if (extensionPoint.equals(name)) {
@@ -367,12 +367,12 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public Set<Contribution> resolveCapabilities(Contribution contribution) {
-        Set<Contribution> extensions = new HashSet<Contribution>();
+        Set<Contribution> extensions = new HashSet<>();
         return resolveCapabilities(contribution, extensions);
     }
 
     public Set<Contribution> resolveCapability(String capability) {
-        Set<Contribution> extensions = new HashSet<Contribution>();
+        Set<Contribution> extensions = new HashSet<>();
         for (Contribution entry : cache.values()) {
             Capability key = new Capability(capability);
             if (entry.getManifest().getProvidedCapabilities().contains(key) && !extensions.contains(entry)) {

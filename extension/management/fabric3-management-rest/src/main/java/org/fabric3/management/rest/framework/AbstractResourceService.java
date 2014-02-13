@@ -55,7 +55,7 @@ import org.fabric3.management.rest.spi.ResourceMapping;
  */
 @Management
 public abstract class AbstractResourceService implements ResourceListener {
-    private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
+    private List<ResourceMapping> subresources = new ArrayList<>();
 
 
     public void onRootResourceExport(ResourceMapping mapping) {

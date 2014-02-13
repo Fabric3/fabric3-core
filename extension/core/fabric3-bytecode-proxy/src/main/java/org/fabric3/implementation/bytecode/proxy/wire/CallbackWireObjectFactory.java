@@ -70,7 +70,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         this.interfaze = interfaze;
 
         this.methods = methods;
-        this.chains = new HashMap<String, InvocationChain[]>();
+        this.chains = new HashMap<>();
         this.chains.put(callbackUri, invocationChains);
         this.proxyFactory = proxyFactory;
     }

@@ -73,7 +73,7 @@ public class AssemblyException extends DeploymentException {
         PrintWriter writer = new PrintWriter(bas);
 
         if (!errors.isEmpty()) {
-            List<AssemblyFailure> sorted = new ArrayList<AssemblyFailure>(errors);
+            List<AssemblyFailure> sorted = new ArrayList<>(errors);
             // sort the errors by component
             Collections.sort(sorted, COMPARATOR);
             for (AssemblyFailure error : sorted) {

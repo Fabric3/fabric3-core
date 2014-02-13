@@ -50,9 +50,9 @@ public class SpringComponentType extends InjectingComponentType {
     private static final long serialVersionUID = -8894733979791676532L;
 
     // bean id to definition
-    private Map<String, BeanDefinition> beansById = new HashMap<String, BeanDefinition>();
+    private Map<String, BeanDefinition> beansById = new HashMap<>();
     // bean name to definition
-    private Map<String, BeanDefinition> beansByName = new HashMap<String, BeanDefinition>();
+    private Map<String, BeanDefinition> beansByName = new HashMap<>();
 
     public void add(BeanDefinition definition) {
         String id = definition.getId();

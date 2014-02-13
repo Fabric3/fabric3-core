@@ -51,10 +51,10 @@ public class JavaTypeInfoTestCase extends TestCase {
     public void testToString() {
         JavaTypeInfo key = new JavaTypeInfo(String.class);
         JavaTypeInfo param = new JavaTypeInfo(String.class);
-        List<JavaTypeInfo> params = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> params = new ArrayList<>();
         params.add(param);
         JavaTypeInfo value = new JavaTypeInfo(Class.class, params);
-        List<JavaTypeInfo> mapParams = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> mapParams = new ArrayList<>();
         mapParams.add(key);
         mapParams.add(value);
         JavaTypeInfo info = new JavaTypeInfo(Map.class, mapParams);
@@ -66,7 +66,7 @@ public class JavaTypeInfoTestCase extends TestCase {
      */
     public void testUnboundGenericToBoundObjectEquality() {
         JavaTypeInfo param = new JavaTypeInfo(Object.class);
-        List<JavaTypeInfo> params = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> params = new ArrayList<>();
         params.add(param);
         JavaTypeInfo bound = new JavaTypeInfo(Class.class, params);
         JavaTypeInfo unBound = new JavaTypeInfo(Class.class);
@@ -89,12 +89,12 @@ public class JavaTypeInfoTestCase extends TestCase {
      */
     public void testNotEqualTypeParameters() {
         JavaTypeInfo param = new JavaTypeInfo(String.class);
-        List<JavaTypeInfo> params = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> params = new ArrayList<>();
         params.add(param);
         JavaTypeInfo info = new JavaTypeInfo(Class.class, params);
 
         JavaTypeInfo param2 = new JavaTypeInfo(Object.class);
-        List<JavaTypeInfo> params2 = new ArrayList<JavaTypeInfo>();
+        List<JavaTypeInfo> params2 = new ArrayList<>();
         params2.add(param2);
         JavaTypeInfo info2 = new JavaTypeInfo(Class.class, params2);
         assertFalse(info.equals(info2));

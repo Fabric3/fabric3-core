@@ -202,7 +202,7 @@ public class ProvisionerImpl implements Provisioner {
         Contribution contribution = metaDataStore.find(Names.HOST_CONTRIBUTION);
         Resource resource = new Resource(contribution, null, Constants.COMPOSITE_CONTENT_TYPE);
         QNameSymbol symbol = new QNameSymbol(compositeName);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, wrapper);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, wrapper);
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);
         contribution.addResource(resource);

@@ -64,7 +64,7 @@ public class FSArtifactCache implements ArtifactCache {
 
     public FSArtifactCache(@Reference HostInfo info) {
         tempDir = new File(info.getTempDir(), "cache");
-        entries = new HashMap<URI, Entry>();
+        entries = new HashMap<>();
     }
 
     @Init

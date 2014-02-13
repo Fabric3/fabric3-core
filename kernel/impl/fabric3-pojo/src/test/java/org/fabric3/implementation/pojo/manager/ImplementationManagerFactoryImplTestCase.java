@@ -169,8 +169,8 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         stringField = Foo.class.getField("stringField");
         intSetter = Foo.class.getMethod("setIntField", int.class);
         stringSetter = Foo.class.getMethod("setStringField", String.class);
-        ctrNames = new ArrayList<Injectable>();
-        sites = new HashMap<InjectionSite, Injectable>();
+        ctrNames = new ArrayList<>();
+        sites = new HashMap<>();
         ClassLoader classLoader = Foo.class.getClassLoader();
         intFactory = EasyMock.createMock(ObjectFactory.class);
         stringFactory = EasyMock.createMock(ObjectFactory.class);

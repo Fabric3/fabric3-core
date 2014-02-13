@@ -120,7 +120,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         generator.setExtensions(map);
 
         LogicalChannel channel = createChannel();
-        LogicalBinding<MockBinding> binding = new LogicalBinding<MockBinding>(new MockBinding(), channel);
+        LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
         channel.addBinding(binding);
 
         PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
@@ -170,7 +170,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
-        LogicalBinding<MockBinding> binding = new LogicalBinding<MockBinding>(new MockBinding(), channel);
+        LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
         channel.addBinding(binding);
 
         PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);

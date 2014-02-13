@@ -51,7 +51,7 @@ public class CollectionUtils {
     }
 
     public static <OBJECT> List<OBJECT> filter(List<OBJECT> source, Closure<OBJECT, Boolean> filter) {
-        List<OBJECT> result = new ArrayList<OBJECT>();
+        List<OBJECT> result = new ArrayList<>();
         for (OBJECT object : source) {
             if (filter.execute(object)) {
                 result.add(object);
@@ -61,7 +61,7 @@ public class CollectionUtils {
     }
 
     public static <OBJECT> Set<OBJECT> filter(Set<OBJECT> source, Closure<OBJECT, Boolean> filter) {
-        LinkedHashSet<OBJECT> result = new LinkedHashSet<OBJECT>();
+        LinkedHashSet<OBJECT> result = new LinkedHashSet<>();
         for (OBJECT object : source) {
             if (filter.execute(object)) {
                 result.add(object);
@@ -72,7 +72,7 @@ public class CollectionUtils {
     }
 
     public static <SOURCE, RESULT> Set<RESULT> transform(Set<SOURCE> source, Closure<SOURCE, RESULT> transformer) {
-        LinkedHashSet<RESULT> result = new LinkedHashSet<RESULT>();
+        LinkedHashSet<RESULT> result = new LinkedHashSet<>();
         for (SOURCE object : source) {
             result.add(transformer.execute(object));
         }

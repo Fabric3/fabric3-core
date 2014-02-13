@@ -63,7 +63,7 @@ public class NameBindingFilterProviderImpl implements NameBindingFilterProvider 
 
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
 
-        Set<Class<? extends Annotation>> namedBindings = new HashSet<Class<? extends Annotation>>();
+        Set<Class<? extends Annotation>> namedBindings = new HashSet<>();
 
         Method method = resourceInfo.getResourceMethod();
 
@@ -72,7 +72,7 @@ public class NameBindingFilterProviderImpl implements NameBindingFilterProvider 
 
         addNamedBindings(method, namedBindings);
 
-        Set<Object> filters = new HashSet<Object>();
+        Set<Object> filters = new HashSet<>();
         for (Class<? extends Annotation> binding : namedBindings) {
             Collection<Object> filtersForBinding = filterRegistry.getNameFilters(binding);
             filters.addAll(filtersForBinding);

@@ -73,26 +73,26 @@ public class Composite extends ComponentType implements PolicyAware {
     private List<RuntimeMode> modes = Collections.emptyList();
     private List<String> environments = Collections.emptyList();
 
-    private Set<QName> intents = new LinkedHashSet<QName>();
-    private Set<QName> policySets = new LinkedHashSet<QName>();
+    private Set<QName> intents = new LinkedHashSet<>();
+    private Set<QName> policySets = new LinkedHashSet<>();
 
-    private Map<String, ComponentDefinition<? extends Implementation<?>>> components = new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
-    private Map<QName, Include> includes = new HashMap<QName, Include>();
-    private List<WireDefinition> wires = new ArrayList<WireDefinition>();
-    private Map<String, ChannelDefinition> channels = new HashMap<String, ChannelDefinition>();
-    private List<ResourceDefinition> resources = new ArrayList<ResourceDefinition>();
+    private Map<String, ComponentDefinition<? extends Implementation<?>>> components = new HashMap<>();
+    private Map<QName, Include> includes = new HashMap<>();
+    private List<WireDefinition> wires = new ArrayList<>();
+    private Map<String, ChannelDefinition> channels = new HashMap<>();
+    private List<ResourceDefinition> resources = new ArrayList<>();
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
-    private Map<String, Property> propertiesView = new HashMap<String, Property>();
-    private Map<String, ReferenceDefinition> referencesView = new HashMap<String, ReferenceDefinition>();
-    private Map<String, AbstractService> servicesView = new HashMap<String, AbstractService>();
+    private Map<String, Property> propertiesView = new HashMap<>();
+    private Map<String, ReferenceDefinition> referencesView = new HashMap<>();
+    private Map<String, AbstractService> servicesView = new HashMap<>();
     private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView
-            = new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
-    private Map<String, ChannelDefinition> channelsView = new HashMap<String, ChannelDefinition>();
-    private List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
-    private List<ResourceDefinition> resourcesView = new ArrayList<ResourceDefinition>();
+            = new HashMap<>();
+    private Map<String, ChannelDefinition> channelsView = new HashMap<>();
+    private List<WireDefinition> wiresView = new ArrayList<>();
+    private List<ResourceDefinition> resourcesView = new ArrayList<>();
 
-    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
+    private Map<QName, Serializable> metadata = new HashMap<>();
     private List<Namespace> namespaces;
 
     // determines if this composite is a pointer. Pointers are references to composites that do not yet exist or have been deleted such
@@ -517,7 +517,7 @@ public class Composite extends ComponentType implements PolicyAware {
 
     public void addNamespace(String prefix, String uri) {
         if (namespaces == null) {
-            namespaces = new ArrayList<Namespace>();
+            namespaces = new ArrayList<>();
         }
         namespaces.add(new Namespace(prefix, uri));
     }

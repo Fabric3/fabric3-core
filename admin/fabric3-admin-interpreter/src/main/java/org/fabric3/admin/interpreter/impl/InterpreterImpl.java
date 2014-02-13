@@ -182,7 +182,7 @@ public class InterpreterImpl implements Interpreter {
 
     private ConsoleReader createReader(InputStream in, PrintStream out) throws IOException {
         ConsoleReader reader = new ConsoleReader(in, new OutputStreamWriter(out));
-        List<Completer> completors = new ArrayList<Completer>();
+        List<Completer> completors = new ArrayList<>();
         String[] commands =
                 {"authenticate", "back", "deploy", "follow", "get", "install", "list", "post", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
         StringsCompleter simpleCompletor = new StringsCompleter(commands);

@@ -309,12 +309,12 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         LogicalService service = new LogicalService(URI.create("component#service"), null, component);
         component.addService(service);
 
-        List<DataType<?>> input = new ArrayList<DataType<?>>();
-        JavaClass<String> type = new JavaClass<String>(String.class);
+        List<DataType<?>> input = new ArrayList<>();
+        JavaClass<String> type = new JavaClass<>(String.class);
         input.add(type);
-        DataType<?> output = new JavaClass<String>(String.class);
-        List<DataType<?>> faults = new ArrayList<DataType<?>>();
-        faults.add(new JavaClass<Exception>(Exception.class));
+        DataType<?> output = new JavaClass<>(String.class);
+        List<DataType<?>> faults = new ArrayList<>();
+        faults.add(new JavaClass<>(Exception.class));
         Operation definition = new Operation("op", input, output, faults);
         return new LogicalOperation(definition, service);
     }
@@ -328,12 +328,12 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         LogicalService service = new LogicalService(URI.create("component#service"), null, component);
         component.addService(service);
 
-        List<DataType<?>> input = new ArrayList<DataType<?>>();
-        JavaClass<Object> type = new JavaClass<Object>(Object.class);
+        List<DataType<?>> input = new ArrayList<>();
+        JavaClass<Object> type = new JavaClass<>(Object.class);
         input.add(type);
-        DataType<?> output = new JavaClass<Object>(Object.class);
-        List<DataType<?>> faults = new ArrayList<DataType<?>>();
-        faults.add(new JavaClass<RuntimeException>(RuntimeException.class));
+        DataType<?> output = new JavaClass<>(Object.class);
+        List<DataType<?>> faults = new ArrayList<>();
+        faults.add(new JavaClass<>(RuntimeException.class));
         Operation definition = new Operation("op", input, output, faults);
         return new LogicalOperation(definition, service);
     }

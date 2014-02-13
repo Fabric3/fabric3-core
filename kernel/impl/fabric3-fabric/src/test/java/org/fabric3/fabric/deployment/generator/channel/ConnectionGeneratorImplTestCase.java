@@ -111,7 +111,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
         channels.put(channel, ChannelDeliveryType.DEFAULT);
 
         LogicalConsumer consumer = createConsumer(parent, "testChannel");
@@ -160,7 +160,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
         channels.put(channel, ChannelDeliveryType.DEFAULT);
 
         LogicalConsumer consumer = createConsumer(parent, "testChannel");
@@ -192,7 +192,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
         channels.put(channel, ChannelDeliveryType.DEFAULT);
 
         LogicalProducer producer = createProducer(parent, "testChannel");
@@ -232,7 +232,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
         channels.put(channel, ChannelDeliveryType.DEFAULT);
 
         LogicalProducer producer = createProducer(parent, "testChannel");
@@ -251,7 +251,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         LogicalComponent<?> component = createComponent(parent);
 
         ConsumerDefinition consumerDefinition = new ConsumerDefinition("consumer");
-        DataType<?> javaClass = new JavaClass<Object>(Object.class);
+        DataType<?> javaClass = new JavaClass<>(Object.class);
         List list = Collections.singletonList(javaClass);
         consumerDefinition.setTypes(list);
         LogicalConsumer consumer = new LogicalConsumer(URI.create("composite/component#consumer"), consumerDefinition, component);
@@ -266,7 +266,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ProducerDefinition producerDefinition = new ProducerDefinition("producer");
         LogicalProducer producer = new LogicalProducer(URI.create("composite/component#producer"), producerDefinition, component);
-        DataType<?> javaClass = new JavaClass<Object>(Object.class);
+        DataType<?> javaClass = new JavaClass<>(Object.class);
         List list = Collections.singletonList(javaClass);
         Operation operationDefinition = new Operation("operation", list, null, null);
         LogicalOperation operation = new LogicalOperation(operationDefinition, producer);
@@ -282,16 +282,16 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         parent.addChannel(channel);
         if (addBinding) {
             MockBinding binding = new MockBinding();
-            channel.addBinding(new LogicalBinding<MockBinding>(binding, channel));
+            channel.addBinding(new LogicalBinding<>(binding, channel));
         }
         return channel;
     }
 
     private LogicalComponent<?> createComponent(LogicalCompositeComponent parent) {
         MockImplementation impl = new MockImplementation();
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("component");
+        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component");
         definition.setImplementation(impl);
-        LogicalComponent<?> component = new LogicalComponent<MockImplementation>(URI.create("composite/component"), definition, parent);
+        LogicalComponent<?> component = new LogicalComponent<>(URI.create("composite/component"), definition, parent);
         parent.addComponent(component);
         return component;
     }

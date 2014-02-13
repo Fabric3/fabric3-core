@@ -52,8 +52,8 @@ import org.fabric3.spi.container.channel.EventStreamHandler;
  * provisioned multiple times if there is more than one producer connected to the same channel provisioned in a zone.
  */
 public abstract class AbstractFanOutHandler implements FanOutHandler {
-    protected Map<URI, ChannelConnection> connectionMap = new HashMap<URI, ChannelConnection>();
-    protected Map<URI, AtomicInteger> counterMap = new HashMap<URI, AtomicInteger>();
+    protected Map<URI, ChannelConnection> connectionMap = new HashMap<>();
+    protected Map<URI, AtomicInteger> counterMap = new HashMap<>();
 
     protected ChannelConnection[] connections = new ChannelConnection[0];
 

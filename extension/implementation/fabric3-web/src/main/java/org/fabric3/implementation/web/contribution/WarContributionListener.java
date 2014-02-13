@@ -126,7 +126,7 @@ public class WarContributionListener implements ContributionServiceListener {
         WebImplementation impl = new WebImplementation();
         impl.setComponentType(componentType);
 
-        ComponentDefinition<WebImplementation> component = new ComponentDefinition<WebImplementation>(localPart, impl);
+        ComponentDefinition<WebImplementation> component = new ComponentDefinition<>(localPart, impl);
         component.setContributionUri(contributionUri);
         composite.add(component);
         return composite;
@@ -144,7 +144,7 @@ public class WarContributionListener implements ContributionServiceListener {
 
     private Resource createResource(Contribution contribution, Composite composite, Source source) {
         QNameSymbol symbol = new QNameSymbol(composite.getName());
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
         Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);

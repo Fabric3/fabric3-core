@@ -94,15 +94,15 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private ParticipantTopologyService topologyService;
 
     private ManagementSecurity security = ManagementSecurity.DISABLED;
-    private Set<Role> roles = new HashSet<Role>();
+    private Set<Role> roles = new HashSet<>();
     private boolean disableHttp;
 
-    private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<String, ResourceMapping>();
-    private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<String, ResourceMapping>();
-    private Map<String, ResourceMapping> putMappings = new ConcurrentHashMap<String, ResourceMapping>();
-    private Map<String, ResourceMapping> deleteMappings = new ConcurrentHashMap<String, ResourceMapping>();
+    private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<>();
+    private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<>();
+    private Map<String, ResourceMapping> putMappings = new ConcurrentHashMap<>();
+    private Map<String, ResourceMapping> deleteMappings = new ConcurrentHashMap<>();
 
-    private Map<String, List<ResourceMapping>> registered = new ConcurrentHashMap<String, List<ResourceMapping>>();
+    private Map<String, List<ResourceMapping>> registered = new ConcurrentHashMap<>();
 
     public ResourceHostImpl(@Reference Marshaller marshaller,
                             @Reference ServletHost servletHost,
@@ -288,7 +288,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private List<ResourceMapping> getRegistered(String name) {
         List<ResourceMapping> list = registered.get(name);
         if (list == null) {
-            list = new ArrayList<ResourceMapping>();
+            list = new ArrayList<>();
             registered.put(name, list);
         }
         return list;

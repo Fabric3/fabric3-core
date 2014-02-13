@@ -113,12 +113,12 @@ public class JavaServiceContract extends ServiceContract {
 
     private void introspectInterface(Class<?> interfaceClass) {
         this.interfaceClass = interfaceClass.getName();
-        methodSignatures = new ArrayList<Signature>();
+        methodSignatures = new ArrayList<>();
         Class<?> superClass = interfaceClass.getSuperclass();
         if (superClass != null) {
             superType = superClass.getName();
         }
-        interfaces = new ArrayList<String>();
+        interfaces = new ArrayList<>();
         for (Method method : interfaceClass.getDeclaredMethods()) {
             Signature signature = new Signature(method);
             if (!methodSignatures.contains(signature)) {

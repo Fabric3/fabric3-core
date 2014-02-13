@@ -68,7 +68,7 @@ public class MonitorGeneratorTestCase extends TestCase {
         MockDefinition destinationDefinition = new MockDefinition();
         MonitorResourceDefinition resourceDefinition = new MonitorResourceDefinition("test");
         resourceDefinition.setDestinationDefinition(destinationDefinition);
-        LogicalResource<MonitorResourceDefinition> resource = new LogicalResource<MonitorResourceDefinition>(resourceDefinition, null);
+        LogicalResource<MonitorResourceDefinition> resource = new LogicalResource<>(resourceDefinition, null);
 
         generator.generateResource(resource);
 

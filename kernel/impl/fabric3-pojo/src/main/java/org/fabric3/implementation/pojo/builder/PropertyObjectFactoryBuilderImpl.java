@@ -80,11 +80,11 @@ public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBu
         } else if (Map.class.equals(physical)) {
             return mapBuilder.createFactory(name, (JavaGenericType) dataType, value, classLoader);
         } else if (List.class.equals(physical)) {
-            return collectionBuilder.createFactory(new ArrayList<Object>(), name, (JavaGenericType) dataType, value, classLoader);
+            return collectionBuilder.createFactory(new ArrayList<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else if (Set.class.equals(physical)) {
-            return collectionBuilder.createFactory(new HashSet<Object>(), name, (JavaGenericType) dataType, value, classLoader);
+            return collectionBuilder.createFactory(new HashSet<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else if (LinkedList.class.equals(physical)) {
-            return collectionBuilder.createFactory(new LinkedList<Object>(), name, (JavaGenericType) dataType, value, classLoader);
+            return collectionBuilder.createFactory(new LinkedList<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else {
             return objectBuilder.createFactory(name, dataType, value, classLoader);
         }

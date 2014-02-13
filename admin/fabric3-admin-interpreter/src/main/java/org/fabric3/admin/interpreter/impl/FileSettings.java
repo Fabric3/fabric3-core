@@ -58,7 +58,7 @@ import org.fabric3.admin.interpreter.Settings;
  */
 public class FileSettings implements Settings {
     private File file;
-    private Map<String, DomainConfiguration> domains = new HashMap<String, DomainConfiguration>();
+    private Map<String, DomainConfiguration> domains = new HashMap<>();
 
     public FileSettings(File file) {
         this.file = file;
@@ -73,7 +73,7 @@ public class FileSettings implements Settings {
     }
 
     public List<DomainConfiguration> getDomainConfigurations() {
-        return new ArrayList<DomainConfiguration>(domains.values());
+        return new ArrayList<>(domains.values());
     }
 
     public void save() throws IOException {

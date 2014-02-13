@@ -182,14 +182,14 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         String interfaze = contract.getQualifiedInterfaceName();
 
         // handle endpoint-level intents provided by Metro
-        List<QName> intentNames = new ArrayList<QName>();
+        List<QName> intentNames = new ArrayList<>();
         Set<Intent> endpointIntents = policy.getProvidedEndpointIntents();
         for (Intent intent : endpointIntents) {
             intentNames.add(intent.getName());
         }
 
         // handle endpoint-level policies
-        List<Element> policyExpressions = new ArrayList<Element>();
+        List<Element> policyExpressions = new ArrayList<>();
         for (PolicySet policySet : policy.getEndpointPolicySets()) {
             Element expression = policySet.getExpression();
             if (expression == null) {
@@ -322,13 +322,13 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         String interfaze = contract.getQualifiedInterfaceName();
 
         Set<Intent> endpointIntents = policy.getProvidedEndpointIntents();
-        List<QName> intentNames = new ArrayList<QName>();
+        List<QName> intentNames = new ArrayList<>();
         for (Intent intent : endpointIntents) {
             intentNames.add(intent.getName());
         }
 
         // handle endpoint-level policies
-        List<Element> policyExpressions = new ArrayList<Element>();
+        List<Element> policyExpressions = new ArrayList<>();
         for (PolicySet policySet : policy.getEndpointPolicySets()) {
             Element expression = policySet.getExpression();
             if (expression == null) {

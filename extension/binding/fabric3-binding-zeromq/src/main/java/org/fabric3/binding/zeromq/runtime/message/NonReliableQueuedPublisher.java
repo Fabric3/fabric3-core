@@ -74,7 +74,7 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
         this.pollTimeout = pollTimeout;
         this.metadata = metadata;
         this.monitor = monitor;
-        this.queue = new LinkedBlockingQueue<Object>();
+        this.queue = new LinkedBlockingQueue<>();
     }
 
     @ManagementOperation(type = OperationType.POST)
@@ -156,7 +156,7 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
                     if (value == null) {
                         continue;
                     }
-                    List<Object> drained = new ArrayList<Object>();
+                    List<Object> drained = new ArrayList<>();
                     drained.add(value);
                     queue.drainTo(drained);
                     for (Object object : drained) {

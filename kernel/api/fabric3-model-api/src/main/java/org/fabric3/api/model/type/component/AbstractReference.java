@@ -65,9 +65,9 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
     private boolean keyed;
     private DataType<?> keyDataType;
 
-    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
+    private List<BindingDefinition> callbackBindings = new ArrayList<>();
 
-    protected List<Target> targets = new ArrayList<Target>();
+    protected List<Target> targets = new ArrayList<>();
 
     /**
      * Constructor.

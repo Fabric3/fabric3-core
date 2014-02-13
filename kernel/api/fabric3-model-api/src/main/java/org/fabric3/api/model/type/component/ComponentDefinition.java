@@ -62,11 +62,11 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     private URI contributionUri;
     private Autowire autowire = Autowire.INHERITED;
 
-    private Map<String, ComponentService> services = new HashMap<String, ComponentService>();
-    private Map<String, ComponentReference> references = new HashMap<String, ComponentReference>();
-    private Map<String, ComponentProducer> producers = new HashMap<String, ComponentProducer>();
-    private Map<String, ComponentConsumer> consumers = new HashMap<String, ComponentConsumer>();
-    private Map<String, PropertyValue> propertyValues = new HashMap<String, PropertyValue>();
+    private Map<String, ComponentService> services = new HashMap<>();
+    private Map<String, ComponentReference> references = new HashMap<>();
+    private Map<String, ComponentProducer> producers = new HashMap<>();
+    private Map<String, ComponentConsumer> consumers = new HashMap<>();
+    private Map<String, PropertyValue> propertyValues = new HashMap<>();
 
     /**
      * Constructor.

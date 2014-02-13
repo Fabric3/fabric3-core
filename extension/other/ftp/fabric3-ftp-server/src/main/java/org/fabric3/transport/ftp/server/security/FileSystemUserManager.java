@@ -48,7 +48,7 @@ import org.oasisopen.sca.annotation.Property;
  */
 public class FileSystemUserManager implements UserManager {
 
-    private Map<String, String> users = new HashMap<String, String>();
+    private Map<String, String> users = new HashMap<>();
 
     /**
      * Logins a user using user name and password.

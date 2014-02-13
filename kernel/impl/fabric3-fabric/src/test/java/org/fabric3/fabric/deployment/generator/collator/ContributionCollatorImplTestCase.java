@@ -165,7 +165,7 @@ public class ContributionCollatorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private List<LogicalComponent<?>> createComponents() {
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
         ComponentDefinition definition1 = new ComponentDefinition("component1", null);
         definition1.setContributionUri(CONTRIBUTION1);
         LogicalComponent<?>component1 = new LogicalComponent(URI.create("component1"), definition1, null);

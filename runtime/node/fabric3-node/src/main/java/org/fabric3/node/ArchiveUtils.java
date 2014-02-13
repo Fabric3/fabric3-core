@@ -166,7 +166,7 @@ public class ArchiveUtils {
      * @throws IOException if there is an error expanding the archive
      */
     public static List<File> unpack(File archive, File destination) throws IOException {
-        List<File> expandedFiles = new ArrayList<File>();
+        List<File> expandedFiles = new ArrayList<>();
         JarInputStream jarStream = null;
         try {
 

@@ -62,7 +62,7 @@ public class ComponentConsumer extends AbstractConsumer<ComponentDefinition> {
     public ComponentConsumer(String name, List<URI> sources) {
         super(name);
         this.sources = sources;
-        bindings = new ArrayList<BindingDefinition>();
+        bindings = new ArrayList<>();
     }
 
     /**
@@ -72,7 +72,7 @@ public class ComponentConsumer extends AbstractConsumer<ComponentDefinition> {
      */
     public ComponentConsumer(String name) {
         super(name);
-        bindings = new ArrayList<BindingDefinition>();
+        bindings = new ArrayList<>();
     }
 
 }

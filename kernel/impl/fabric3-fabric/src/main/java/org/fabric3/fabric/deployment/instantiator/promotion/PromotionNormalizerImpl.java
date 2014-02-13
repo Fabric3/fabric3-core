@@ -108,7 +108,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
 
     private void normalizeServicePromotions(LogicalComponent<?> component, InstantiationContext context) {
         for (LogicalService service : component.getServices()) {
-            LinkedList<LogicalService> services = new LinkedList<LogicalService>();
+            LinkedList<LogicalService> services = new LinkedList<>();
             // add the leaf service as the last element
             services.add(service);
             getPromotionHierarchy(service, services);
@@ -121,7 +121,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
 
     private void normalizeReferenceAndWirePromotions(LogicalComponent<?> component, InstantiationContext context) {
         for (LogicalReference reference : component.getReferences()) {
-            LinkedList<LogicalReference> references = new LinkedList<LogicalReference>();
+            LinkedList<LogicalReference> references = new LinkedList<>();
             // add the leaf (promoted) reference as the last element
             references.add(reference);
             getPromotionHierarchy(reference, references);
@@ -146,10 +146,10 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
         LogicalService leafService = services.getLast();
         LogicalComponent<?> leafComponent = leafService.getParent();
-        List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
-        List<LogicalBinding<?>> callbackBindings = new ArrayList<LogicalBinding<?>>();
-        Set<QName> intents = new HashSet<QName>();
-        Set<QName> policySets = new HashSet<QName>();
+        List<LogicalBinding<?>> bindings = new ArrayList<>();
+        List<LogicalBinding<?>> callbackBindings = new ArrayList<>();
+        Set<QName> intents = new HashSet<>();
+        Set<QName> policySets = new HashSet<>();
 
         for (LogicalService service : services) {
             // TODO determine if bindings should be overriden - for now, override
@@ -157,21 +157,21 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 service.overrideBindings(bindings);
                 service.overrideCallbackBindings(callbackBindings);
             } else {
-                bindings = new ArrayList<LogicalBinding<?>>();
+                bindings = new ArrayList<>();
                 bindings.addAll(service.getBindings());
-                callbackBindings = new ArrayList<LogicalBinding<?>>();
+                callbackBindings = new ArrayList<>();
                 callbackBindings.addAll(service.getCallbackBindings());
             }
             if (service.getIntents().isEmpty()) {
                 service.addIntents(intents);
             } else {
-                intents = new HashSet<QName>();
+                intents = new HashSet<>();
                 intents.addAll(service.getIntents());
             }
             if (service.getPolicySets().isEmpty()) {
                 service.addPolicySets(policySets);
             } else {
-                policySets = new HashSet<QName>();
+                policySets = new HashSet<>();
                 policySets.addAll(service.getPolicySets());
             }
             validateIntents(service, context);
@@ -194,9 +194,9 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             return;
         }
         LogicalReference leafReference = references.getLast();
-        List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
-        Set<QName> intents = new HashSet<QName>();
-        Set<QName> policySets = new HashSet<QName>();
+        List<LogicalBinding<?>> bindings = new ArrayList<>();
+        Set<QName> intents = new HashSet<>();
+        Set<QName> policySets = new HashSet<>();
         Autowire autowire = Autowire.INHERITED;
 
         for (LogicalReference reference : references) {
@@ -208,7 +208,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             }
             // TODO determine if bindings should be overriden - for now, override
             if (reference.getBindings().isEmpty()) {
-                List<LogicalBinding<?>> newBindings = new ArrayList<LogicalBinding<?>>();
+                List<LogicalBinding<?>> newBindings = new ArrayList<>();
 
                 for (LogicalBinding<?> binding : bindings) {
                     // create a new logical binding based on the promoted one
@@ -219,19 +219,19 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 }
                 reference.overrideBindings(newBindings);
             } else {
-                bindings = new ArrayList<LogicalBinding<?>>();
+                bindings = new ArrayList<>();
                 bindings.addAll(reference.getBindings());
             }
             if (reference.getIntents().isEmpty()) {
                 reference.addIntents(intents);
             } else {
-                intents = new HashSet<QName>();
+                intents = new HashSet<>();
                 intents.addAll(reference.getIntents());
             }
             if (reference.getPolicySets().isEmpty()) {
                 reference.addPolicySets(policySets);
             } else {
-                policySets = new HashSet<QName>();
+                policySets = new HashSet<>();
                 policySets.addAll(reference.getPolicySets());
             }
             reference.setLeafReference(leafReference);
@@ -276,7 +276,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             // no promotion evaluation needed
             return;
         }
-        List<LogicalService> newTargets = new ArrayList<LogicalService>();
+        List<LogicalService> newTargets = new ArrayList<>();
 
         for (LogicalReference reference : references) {
             LogicalCompositeComponent composite = reference.getParent().getParent();
@@ -286,7 +286,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 newTargets.add(target);
             }
             if (!newTargets.isEmpty()) {
-                List<LogicalWire> newWires = new ArrayList<LogicalWire>();
+                List<LogicalWire> newWires = new ArrayList<>();
                 for (LogicalService target : newTargets) {
                     QName deployable = composite.getDeployable();
                     LogicalWire newWire = new LogicalWire(reference.getParent(), reference, target, deployable);

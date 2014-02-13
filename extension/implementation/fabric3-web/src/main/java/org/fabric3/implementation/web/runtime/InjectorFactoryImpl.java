@@ -79,7 +79,7 @@ public class InjectorFactoryImpl implements InjectorFactory {
                 InjectionSite site = siteEntry.getValue();
                 List<Injector<?>> injectorList = injectors.get(artifactName);
                 if (injectorList == null) {
-                    injectorList = new ArrayList<Injector<?>>();
+                    injectorList = new ArrayList<>();
                     injectors.put(artifactName, injectorList);
                 }
                 Injector<?> injector;

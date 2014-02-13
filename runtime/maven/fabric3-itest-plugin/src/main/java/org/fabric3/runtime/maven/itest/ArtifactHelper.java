@@ -119,7 +119,7 @@ public class ArtifactHelper {
      * @return the set of URLs pointing to module dependencies.
      */
     public Set<URL> calculateModuleDependencies(Set<Artifact> projectArtifacts, Set<Artifact> hostArtifacts) {
-        Set<URL> urls = new LinkedHashSet<URL>();
+        Set<URL> urls = new LinkedHashSet<>();
         for (Artifact artifact : projectArtifacts) {
             try {
                 String scope = artifact.getScope();
@@ -141,7 +141,7 @@ public class ArtifactHelper {
     @SuppressWarnings({"unchecked"})
     public Set<Artifact> calculateDependencies() throws MojoExecutionException {
         // add all declared project dependencies
-        Set<Artifact> artifacts = new HashSet<Artifact>();
+        Set<Artifact> artifacts = new HashSet<>();
         for (Dependency dependency : project.getDependencies()) {
             if (!dependency.getScope().equals("f3-extension")) {
                 artifacts.addAll(resolveArtifacts(dependency, Collections.<ArtifactRepository>emptySet(), true));
@@ -167,7 +167,7 @@ public class ArtifactHelper {
      */
     public Set<Artifact> calculateHostArtifacts(Set<Artifact> runtimeArtifacts, Dependency[] shared) throws MojoExecutionException {
 
-        Set<Artifact> hostArtifacts = new HashSet<Artifact>();
+        Set<Artifact> hostArtifacts = new HashSet<>();
         List<Exclusion> exclusions = Collections.emptyList();
         // find the version of fabric3-api being used by the runtime
         String version = null;
@@ -234,8 +234,8 @@ public class ArtifactHelper {
      */
     @SuppressWarnings({"unchecked"})
     public ExpandedProfiles expandProfileExtensions(Dependency[] profiles) throws MojoExecutionException {
-        Set<Dependency> dependencies = new HashSet<Dependency>();
-        Set<ArtifactRepository> repositories = new HashSet<ArtifactRepository>();
+        Set<Dependency> dependencies = new HashSet<>();
+        Set<ArtifactRepository> repositories = new HashSet<>();
         try {
             for (Dependency profile : profiles) {
                 Artifact artifact = artifactFactory.createArtifact(profile.getGroupId(), profile.getArtifactId(), profile.getVersion(), "compile", "jar");
@@ -282,14 +282,14 @@ public class ArtifactHelper {
      */
     @SuppressWarnings({"unchecked"})
     private Set<Artifact> resolveArtifacts(Dependency dependency, Set<ArtifactRepository> repositories, boolean transitive) throws MojoExecutionException {
-        Set<Artifact> artifacts = new HashSet<Artifact>();
+        Set<Artifact> artifacts = new HashSet<>();
         if (dependency.getVersion() == null) {
             resolveVersion(dependency);
         }
         List<Exclusion> exclusions = dependency.getExclusions();
         Artifact rootArtifact = createArtifact(dependency);
         try {
-            List<ArtifactRepository> dependencyRepositories = new ArrayList<ArtifactRepository>(remoteRepositories);
+            List<ArtifactRepository> dependencyRepositories = new ArrayList<>(remoteRepositories);
             dependencyRepositories.addAll(repositories);
             resolver.resolve(rootArtifact, dependencyRepositories, localRepository);
             artifacts.add(rootArtifact);

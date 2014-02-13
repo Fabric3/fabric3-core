@@ -93,7 +93,7 @@ public abstract class PropertyAwareObject extends ModelObject {
 
     private void ensurePropertiesNotNull() {
         if (properties == null) {
-            properties = new HashMap<String, String>();
+            properties = new HashMap<>();
         }
     }
 

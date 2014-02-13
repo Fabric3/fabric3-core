@@ -53,7 +53,7 @@ import org.fabric3.spi.container.wire.Wire;
  * Default implementation of a Wire
  */
 public class WireImpl implements Wire {
-    private final List<InvocationChain> chains = new ArrayList<InvocationChain>();
+    private final List<InvocationChain> chains = new ArrayList<>();
 
     public void addInvocationChain(InvocationChain chain) {
         chains.add(chain);

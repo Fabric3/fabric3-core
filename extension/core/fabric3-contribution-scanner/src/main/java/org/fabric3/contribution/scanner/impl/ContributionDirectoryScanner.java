@@ -105,9 +105,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private boolean production = false;
 
     private ScheduledExecutorService executor;
-    private Set<File> ignored = new HashSet<File>();
-    private Map<String, FileSystemResource> cache = new HashMap<String, FileSystemResource>();
-    List<URI> notSeen = new ArrayList<URI>(); // contributions added when the runtime was offline and hence not previously seen by the scanner
+    private Set<File> ignored = new HashSet<>();
+    private Map<String, FileSystemResource> cache = new HashMap<>();
+    List<URI> notSeen = new ArrayList<>(); // contributions added when the runtime was offline and hence not previously seen by the scanner
 
     public ContributionDirectoryScanner(@Reference ContributionService contributionService,
                                         @Reference(name = "assembly") Domain domain,
@@ -158,7 +158,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 return;
             }
             // process existing files in recovery mode
-            List<File> files = new ArrayList<File>();
+            List<File> files = new ArrayList<>();
             for (File path : paths) {
                 File[] pathFiles = path.listFiles();
                 if (pathFiles != null) {
@@ -184,7 +184,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         if (paths == null) {
             return;
         }
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         for (File path : paths) {
             if (!path.isDirectory()) {
                 // there is no extension directory, return without processing
@@ -278,9 +278,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
      * Processes updated resources in the deployment directories.
      */
     private synchronized void processUpdates() {
-        List<ContributionSource> sources = new ArrayList<ContributionSource>();
-        List<FileSystemResource> updatedResources = new ArrayList<FileSystemResource>();
-        List<URI> uris = new ArrayList<URI>();
+        List<ContributionSource> sources = new ArrayList<>();
+        List<FileSystemResource> updatedResources = new ArrayList<>();
+        List<URI> uris = new ArrayList<>();
         for (FileSystemResource resource : cache.values()) {
             if (resource.getState() != FileSystemResourceState.UPDATED) {
                 continue;
@@ -356,8 +356,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
      * @param recover true if files are being added in recovery mode
      */
     private synchronized void processAdditions(boolean recover) {
-        List<ContributionSource> sources = new ArrayList<ContributionSource>();
-        List<FileSystemResource> addedResources = new ArrayList<FileSystemResource>();
+        List<ContributionSource> sources = new ArrayList<>();
+        List<FileSystemResource> addedResources = new ArrayList<>();
 
         for (FileSystemResource resource : cache.values()) {
             if (resource.getState() != FileSystemResourceState.ADDED || resource.isChanged()) {
@@ -431,7 +431,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
      * @param files the current contents of the deployment directories
      */
     private synchronized void processRemovals(List<File> files) {
-        Map<String, File> index = new HashMap<String, File>(files.size());
+        Map<String, File> index = new HashMap<>(files.size());
         for (File file : files) {
             index.put(file.getName(), file);
         }

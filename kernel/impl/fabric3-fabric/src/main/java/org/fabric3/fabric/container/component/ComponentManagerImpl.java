@@ -61,7 +61,7 @@ public class ComponentManagerImpl implements ComponentManager {
     private Map<URI, Component> components;
 
     public ComponentManagerImpl() {
-        components = new ConcurrentHashMap<URI, Component>();
+        components = new ConcurrentHashMap<>();
     }
 
     public synchronized void register(Component component) throws RegistrationException {
@@ -81,12 +81,12 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public List<Component> getComponents() {
-        return new ArrayList<Component>(components.values());
+        return new ArrayList<>(components.values());
     }
 
     public List<Component> getComponentsInHierarchy(URI uri) {
         String stringified = uri.toString();
-        List<Component> hierarchy = new ArrayList<Component>();
+        List<Component> hierarchy = new ArrayList<>();
         for (Component component : components.values()) {
             URI componentUri = component.getUri();
             if (componentUri.toString().startsWith(stringified)) {
@@ -97,7 +97,7 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public List<Component> getDeployedComponents(QName deployable) {
-        List<Component> deployed = new ArrayList<Component>();
+        List<Component> deployed = new ArrayList<>();
         for (Component component : components.values()) {
             if (deployable.equals(component.getDeployable())) {
                 deployed.add(component);

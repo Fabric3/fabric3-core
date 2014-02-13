@@ -65,14 +65,14 @@ public class IntentRefsFunction implements Function {
         }
         List<String> intentArgs = normalizeIntents(args);
 
-        Set<LogicalScaArtifact> artifacts = new HashSet<LogicalScaArtifact>();
+        Set<LogicalScaArtifact> artifacts = new HashSet<>();
 
         List<LogicalComponent<?>> nodeSet = context.getNodeSet();
         for (LogicalComponent<?> component : nodeSet) {
             containsIntents(intentArgs, component, artifacts);
         }
         // Jaxen requires a List, not Set
-        return new ArrayList<LogicalScaArtifact>(artifacts);
+        return new ArrayList<>(artifacts);
     }
 
     private void containsIntents(List<String> intentArgs, LogicalComponent<?> component, Set<LogicalScaArtifact> artifacts) {
@@ -132,7 +132,7 @@ public class IntentRefsFunction implements Function {
         if (!(args.get(0) instanceof String)) {
             throw new FunctionCallException("Invalid argument type specified in IntentRefs(): " + args.get(0).getClass());
         }
-        List<String> intentArgs = new ArrayList<String>();
+        List<String> intentArgs = new ArrayList<>();
         for (Object arg : args) {
             String stringArg = (String) arg;
             int pos = stringArg.indexOf(":");

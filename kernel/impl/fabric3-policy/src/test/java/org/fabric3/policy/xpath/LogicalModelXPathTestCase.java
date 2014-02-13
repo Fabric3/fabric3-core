@@ -210,7 +210,7 @@ public class LogicalModelXPathTestCase extends TestCase {
         JavaServiceContract serviceContract = new JavaServiceContract();
         serviceContract.setInterfaceName("ChildService");
         Operation operation = new Operation("operation", null, null, null);
-        List<Operation> operations = new ArrayList<Operation>();
+        List<Operation> operations = new ArrayList<>();
         operations.add(operation);
         serviceContract.setOperations(operations);
         ServiceDefinition serviceDefinition = new ServiceDefinition("child1Service", serviceContract);
@@ -223,7 +223,7 @@ public class LogicalModelXPathTestCase extends TestCase {
         LogicalComponent child2 = new LogicalComponent(child2Uri, definition2, domain);
 
         URI childCompositeUri = URI.create("childComposite");
-        ComponentDefinition<CompositeImplementation> composite = new ComponentDefinition<CompositeImplementation>("childComposite");
+        ComponentDefinition<CompositeImplementation> composite = new ComponentDefinition<>("childComposite");
         LogicalCompositeComponent childComposite = new LogicalCompositeComponent(childCompositeUri, composite, domain);
         URI child3Uri = URI.create("child3");
         ComponentDefinition definition3 = new ComponentDefinition("child3");

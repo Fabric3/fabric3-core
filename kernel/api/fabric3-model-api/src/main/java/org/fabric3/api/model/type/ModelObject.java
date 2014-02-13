@@ -118,7 +118,7 @@ public abstract class ModelObject<P extends ModelObject> implements Serializable
             return;
         }
         if (attributes == null) {
-            attributes = new HashSet<String>();
+            attributes = new HashSet<>();
         }
         attributes.add(attribute);
     }
@@ -145,7 +145,7 @@ public abstract class ModelObject<P extends ModelObject> implements Serializable
             return;
         }
         if (elementStack == null) {
-            elementStack = new ArrayList<ModelObject>();
+            elementStack = new ArrayList<>();
         }
         elementStack.add(element);
     }

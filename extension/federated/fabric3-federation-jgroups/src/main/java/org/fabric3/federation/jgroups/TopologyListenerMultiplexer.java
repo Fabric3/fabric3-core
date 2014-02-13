@@ -56,7 +56,7 @@ public class TopologyListenerMultiplexer implements MembershipListener {
 
     private View previousView;
 
-    private List<TopologyListener> topologyListeners = new CopyOnWriteArrayList<TopologyListener>();
+    private List<TopologyListener> topologyListeners = new CopyOnWriteArrayList<>();
 
     public TopologyListenerMultiplexer(JGroupsHelper helper, Object viewLock) {
         this.helper = helper;

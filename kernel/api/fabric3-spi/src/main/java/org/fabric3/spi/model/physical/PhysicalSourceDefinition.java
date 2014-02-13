@@ -62,7 +62,7 @@ public abstract class PhysicalSourceDefinition implements Serializable {
     private boolean optimizable;
     private String key;
     private int order = Integer.MIN_VALUE;
-    protected List<DataType<?>> physicalDataTypes = new ArrayList<DataType<?>>();
+    protected List<DataType<?>> physicalDataTypes = new ArrayList<>();
 
     public PhysicalSourceDefinition() {
         // default to Java

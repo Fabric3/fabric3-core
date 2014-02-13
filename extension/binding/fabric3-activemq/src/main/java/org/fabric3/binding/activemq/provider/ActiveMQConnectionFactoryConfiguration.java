@@ -50,7 +50,7 @@ import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfigura
 public class ActiveMQConnectionFactoryConfiguration extends ConnectionFactoryConfiguration {
     private URI brokerUri;
     private Properties factoryProperties = new Properties();
-    private Map<String, String> poolProperties = new HashMap<String, String>();
+    private Map<String, String> poolProperties = new HashMap<>();
 
     public ActiveMQConnectionFactoryConfiguration(String name) {
         super(name);

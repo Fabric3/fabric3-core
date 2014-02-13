@@ -108,8 +108,8 @@ public class LogicalInvocable extends LogicalAttachPoint {
      * @param contract the contract
      */
     protected final void createOperations(ServiceContract contract) {
-        operations = new ArrayList<LogicalOperation>();
-        callbackOperations = new ArrayList<LogicalOperation>();
+        operations = new ArrayList<>();
+        callbackOperations = new ArrayList<>();
         if (contract != null) {
             // null is a convenience allowed for testing so the logical model does not need to be fully created
             for (Operation operation : contract.getOperations()) {

@@ -84,16 +84,16 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     private final Map<QName, List<Pair>> destroyQueues;
 
     // the queue of components to eagerly initialize in each group
-    private final Map<QName, List<ScopedComponent>> initQueues = new HashMap<QName, List<ScopedComponent>>();
+    private final Map<QName, List<ScopedComponent>> initQueues = new HashMap<>();
 
     // components that are in the process of being created
     private final Map<ScopedComponent, CountDownLatch> pending;
 
     protected SingletonScopeContainer(Scope scope, @Monitor ScopeContainerMonitor monitor) {
         super(scope, monitor);
-        instances = new ConcurrentHashMap<ScopedComponent, Object>();
-        pending = new ConcurrentHashMap<ScopedComponent, CountDownLatch>();
-        destroyQueues = new LinkedHashMap<QName, List<Pair>>();
+        instances = new ConcurrentHashMap<>();
+        pending = new ConcurrentHashMap<>();
+        destroyQueues = new LinkedHashMap<>();
     }
 
     public void register(ScopedComponent component) {
@@ -103,7 +103,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             synchronized (initQueues) {
                 List<ScopedComponent> initQueue = initQueues.get(deployable);
                 if (initQueue == null) {
-                    initQueue = new ArrayList<ScopedComponent>();
+                    initQueue = new ArrayList<>();
                     initQueues.put(deployable, initQueue);
                 }
                 initQueue.add(component);
@@ -202,7 +202,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     // The context has not been initialized. This can happen if two deployable composites are deployed simultaneously and a
                     // component in the first composite to be deployed references a component in the second composite. In this case,
                     // create the destroy queue prior to the context being started.
-                    queue = new ArrayList<Pair>();
+                    queue = new ArrayList<>();
                     destroyQueues.put(deployable, queue);
                 }
             }
@@ -242,7 +242,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         synchronized (destroyQueues) {
             // Shutdown all instances by traversing the deployable composites in reverse order they were deployed and interating instances within
             // each composite in the reverse order they were instantiated. This guarantees dependencies are disposed after the dependent instance.
-            List<List<Pair>> queues = new ArrayList<List<Pair>>(destroyQueues.values());
+            List<List<Pair>> queues = new ArrayList<>(destroyQueues.values());
             ListIterator<List<Pair>> iter = queues.listIterator(queues.size());
             while (iter.hasPrevious()) {
                 List<Pair> queue = iter.previous();
@@ -257,7 +257,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         synchronized (initQueues) {
             initQueue = initQueues.get(contextId);
             if (initQueue != null) {
-                initQueue = new ArrayList<ScopedComponent>(initQueue);
+                initQueue = new ArrayList<>(initQueue);
             }
         }
         if (initQueue != null) {
@@ -279,7 +279,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                 getInstance(component);
             } catch (Exception e) {
                 if (causes == null) {
-                    causes = new LinkedHashSet<URI>();
+                    causes = new LinkedHashSet<>();
                 }
                 URI uri = component.getUri();
                 monitor.initializationError(uri, component.getDeployable(), e);

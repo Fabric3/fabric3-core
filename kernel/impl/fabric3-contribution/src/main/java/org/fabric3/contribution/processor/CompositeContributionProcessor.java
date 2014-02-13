@@ -71,7 +71,7 @@ public class CompositeContributionProcessor implements ContributionProcessor {
 
             Resource resource = new Resource(contribution, source, "application/xml");
             QNameSymbol symbol = new QNameSymbol(name);
-            ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
+            ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol);
             element.setValue(composite);
             resource.addResourceElement(element);
             resource.setState(ResourceState.PROCESSED);

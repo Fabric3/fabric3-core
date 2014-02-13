@@ -80,7 +80,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
     public void testNoStop() throws Exception {
         StopContextCommandGeneratorImpl generator = new StopContextCommandGeneratorImpl();
 
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
         LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
         component1.setZone("zone1");
         component1.setDeployable(DEPLOYABLE1);
@@ -96,7 +96,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
     public void testTwoZoneStop() throws Exception {
         StopContextCommandGeneratorImpl generator = new StopContextCommandGeneratorImpl();
 
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
 
         LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
         component1.setZone("zone1");
@@ -117,7 +117,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private List<LogicalComponent<?>> createComponents() {
-        List<LogicalComponent<?>> components = new ArrayList<LogicalComponent<?>>();
+        List<LogicalComponent<?>> components = new ArrayList<>();
 
         LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
         component1.setZone("zone1");

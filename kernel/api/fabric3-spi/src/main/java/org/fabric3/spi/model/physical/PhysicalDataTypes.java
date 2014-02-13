@@ -55,7 +55,7 @@ public interface PhysicalDataTypes {
     /**
      * Denotes a Java type, i.e. an object or primitive
      */
-    DataType<?> JAVA_TYPE = new JavaClass<Object>(Object.class);
+    DataType<?> JAVA_TYPE = new JavaClass<>(Object.class);
 
     /**
      * Denotes an XML DOM

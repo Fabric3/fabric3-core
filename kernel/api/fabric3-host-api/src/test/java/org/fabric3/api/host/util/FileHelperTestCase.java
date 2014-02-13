@@ -160,7 +160,7 @@ public class FileHelperTestCase extends TestCase {
         assertFalse(destDir.exists());
 
         long lastModified = System.currentTimeMillis() - 1000000;
-        Map<String, Long> tstampMap = new HashMap<String, Long>(sourceDir.list().length);
+        Map<String, Long> tstampMap = new HashMap<>(sourceDir.list().length);
 
         for (File file : sourceDir.listFiles()) {
             if(file.isFile()){

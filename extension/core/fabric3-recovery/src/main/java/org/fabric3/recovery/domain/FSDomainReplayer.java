@@ -125,8 +125,8 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
         FileInputStream fis = new FileInputStream(domainLog);
         BufferedInputStream stream = new BufferedInputStream(fis);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(stream);
-        List<URI> contributions = new ArrayList<URI>();
-        Map<QName, String> deployables = new LinkedHashMap<QName, String>();
+        List<URI> contributions = new ArrayList<>();
+        Map<QName, String> deployables = new LinkedHashMap<>();
         try {
             while (true) {
                 switch (reader.next()) {

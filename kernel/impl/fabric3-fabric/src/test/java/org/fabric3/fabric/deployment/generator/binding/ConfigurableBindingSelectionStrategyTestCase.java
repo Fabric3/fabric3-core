@@ -53,7 +53,7 @@ public class ConfigurableBindingSelectionStrategyTestCase extends TestCase {
 
     public void testSelectionOrder() throws Exception {
         ConfigurableBindingSelectionStrategy strategy = new ConfigurableBindingSelectionStrategy();
-        List<QName> order = new ArrayList<QName>();
+        List<QName> order = new ArrayList<>();
         QName bar = new QName("foo", "bar");
         order.add(bar);
         QName baz = new QName("foo", "baz");
@@ -67,7 +67,7 @@ public class ConfigurableBindingSelectionStrategyTestCase extends TestCase {
         EasyMock.expect(barProvider.getType()).andReturn(bar);
         EasyMock.replay(barProvider);
 
-        List<BindingProvider> providers = new ArrayList<BindingProvider>();
+        List<BindingProvider> providers = new ArrayList<>();
         providers.add(bazProvider);
         providers.add(barProvider);
         strategy.order(providers);
@@ -88,7 +88,7 @@ public class ConfigurableBindingSelectionStrategyTestCase extends TestCase {
         EasyMock.expect(barProvider.getType()).andReturn(bar);
         EasyMock.replay(barProvider);
 
-        List<BindingProvider> providers = new ArrayList<BindingProvider>();
+        List<BindingProvider> providers = new ArrayList<>();
         providers.add(bazProvider);
         providers.add(barProvider);
         strategy.order(providers);
@@ -98,7 +98,7 @@ public class ConfigurableBindingSelectionStrategyTestCase extends TestCase {
 
     public void testBadConfigurationSelectionOrder() throws Exception {
         ConfigurableBindingSelectionStrategy strategy = new ConfigurableBindingSelectionStrategy();
-        List<QName> order = new ArrayList<QName>();
+        List<QName> order = new ArrayList<>();
         QName nonExistent = new QName("foo", "nonExistent");
         order.add(nonExistent);
         QName bar = new QName("foo", "bar");
@@ -107,7 +107,7 @@ public class ConfigurableBindingSelectionStrategyTestCase extends TestCase {
 
         QName baz = new QName("foo", "baz");
 
-        List<BindingProvider> providers = new ArrayList<BindingProvider>();
+        List<BindingProvider> providers = new ArrayList<>();
         BindingProvider bazProvider = EasyMock.createMock(BindingProvider.class);
         EasyMock.expect(bazProvider.getType()).andReturn(baz);
         EasyMock.replay(bazProvider);

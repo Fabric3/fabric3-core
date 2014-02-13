@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class RsContainerManagerImpl implements RsContainerManager {
-    private Map<URI, RsContainer> containers = new ConcurrentHashMap<URI, RsContainer>();
+    private Map<URI, RsContainer> containers = new ConcurrentHashMap<>();
 
     public void register(URI name, RsContainer container) {
         containers.put(name, container);

@@ -74,7 +74,7 @@ public class ContributionTrackerImpl implements ContributionTracker {
     private File journal;
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
-    private Set<String> tracked = new HashSet<String>();
+    private Set<String> tracked = new HashSet<>();
 
     public ContributionTrackerImpl(@Reference XMLFactory xmlFactory, @Reference HostInfo info, @Monitor ContributionTrackerMonitor monitor) {
         this.xmlFactory = xmlFactory;

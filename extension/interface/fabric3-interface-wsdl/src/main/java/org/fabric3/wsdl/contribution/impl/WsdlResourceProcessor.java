@@ -109,7 +109,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private MetaDataStore store;
     private Wsdl4JFactory factory;
     private DocumentBuilderFactory documentBuilderFactory;
-    private List<WsdlResourceProcessorExtension> extensions = new ArrayList<WsdlResourceProcessorExtension>();
+    private List<WsdlResourceProcessorExtension> extensions = new ArrayList<>();
 
     public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
                                  @Reference WsdlContractProcessor processor,
@@ -193,19 +193,19 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         Definition definition = parseWsdl(source, context);
         QName wsdlQName = definition.getQName();
         WsdlSymbol wsdlSymbol = new WsdlSymbol(wsdlQName);
-        ResourceElement<WsdlSymbol, Definition> wsdlElement = new ResourceElement<WsdlSymbol, Definition>(wsdlSymbol, definition);
+        ResourceElement<WsdlSymbol, Definition> wsdlElement = new ResourceElement<>(wsdlSymbol, definition);
         resource.addResourceElement(wsdlElement);
 
         Map<String, Service> services = definition.getServices();
         for (Service service : services.values()) {
             ServiceSymbol serviceSymbol = new ServiceSymbol(service.getQName());
-            ResourceElement<ServiceSymbol, Service> serviceElement = new ResourceElement<ServiceSymbol, Service>(serviceSymbol, service);
+            ResourceElement<ServiceSymbol, Service> serviceElement = new ResourceElement<>(serviceSymbol, service);
             resource.addResourceElement(serviceElement);
             Map<String, Port> ports = service.getPorts();
             for (Port port : ports.values()) {
                 QName portName = new QName(definition.getTargetNamespace(), port.getName());
                 PortSymbol portSymbol = new PortSymbol(portName);
-                ResourceElement<PortSymbol, Port> portElement = new ResourceElement<PortSymbol, Port>(portSymbol, port);
+                ResourceElement<PortSymbol, Port> portElement = new ResourceElement<>(portSymbol, port);
                 resource.addResourceElement(portElement);
             }
         }
@@ -213,7 +213,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             PortType portType = (PortType) object;
             QName name = portType.getQName();
             PortTypeSymbol symbol = new PortTypeSymbol(name);
-            ResourceElement<PortTypeSymbol, PortType> element = new ResourceElement<PortTypeSymbol, PortType>(symbol, portType);
+            ResourceElement<PortTypeSymbol, PortType> element = new ResourceElement<>(symbol, portType);
             resource.addResourceElement(element);
         }
         // parse WSDL schemas
@@ -227,7 +227,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             QName name = portType.getQName();
             WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(name);
             ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element
-                    = new ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract>(symbol, contract);
+                    = new ResourceElement<>(symbol, contract);
             resource.addResourceElement(element);
         }
 
@@ -235,7 +235,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         Collection<Binding> bindings = definition.getBindings().values();
         for (Binding binding : bindings) {
             BindingSymbol bindingSymbol = new BindingSymbol(binding.getQName());
-            ResourceElement<BindingSymbol, Binding> serviceElement = new ResourceElement<BindingSymbol, Binding>(bindingSymbol, binding);
+            ResourceElement<BindingSymbol, Binding> serviceElement = new ResourceElement<>(bindingSymbol, binding);
             resource.addResourceElement(serviceElement);
         }
 

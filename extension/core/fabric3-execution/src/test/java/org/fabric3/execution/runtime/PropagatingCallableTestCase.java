@@ -13,7 +13,7 @@ public class PropagatingCallableTestCase extends TestCase {
 
     public void testPropagation() throws Exception {
         MockCallable delegate = new MockCallable();
-        PropagatingCallable<Object> callable = new PropagatingCallable<Object>(delegate, null, null, null);
+        PropagatingCallable<Object> callable = new PropagatingCallable<>(delegate, null, null, null);
         callable.call();
     }
 

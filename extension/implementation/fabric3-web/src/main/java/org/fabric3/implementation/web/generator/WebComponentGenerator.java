@@ -133,7 +133,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     }
 
     private Map<String, Map<String, InjectionSite>> generateInjectionMapping(WebComponentType type) {
-        Map<String, Map<String, InjectionSite>> mappings = new HashMap<String, Map<String, InjectionSite>>();
+        Map<String, Map<String, InjectionSite>> mappings = new HashMap<>();
         for (AbstractReference definition : type.getReferences().values()) {
             generateReferenceInjectionMapping(definition, type, mappings);
         }
@@ -147,7 +147,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     private void generateReferenceInjectionMapping(AbstractReference definition, WebComponentType type, Map<String, Map<String, InjectionSite>> mappings) {
         Map<String, InjectionSite> mapping = mappings.get(definition.getName());
         if (mapping == null) {
-            mapping = new HashMap<String, InjectionSite>();
+            mapping = new HashMap<>();
             mappings.put(definition.getName(), mapping);
         }
         for (Map.Entry<String, Map<InjectionSite, Injectable>> entry : type.getInjectionSites().entrySet()) {
@@ -170,7 +170,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     private void generatePropertyInjectionMapping(Property property, Map<String, Map<String, InjectionSite>> mappings) {
         Map<String, InjectionSite> mapping = mappings.get(property.getName());
         if (mapping == null) {
-            mapping = new HashMap<String, InjectionSite>();
+            mapping = new HashMap<>();
             mappings.put(property.getName(), mapping);
         }
         // inject the property into the session context
@@ -183,7 +183,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         // OASIS API
         Map<String, InjectionSite> oasisMapping = mappings.get(OASIS_CONTEXT_ATTRIBUTE);
         if (oasisMapping == null) {
-            oasisMapping = new HashMap<String, InjectionSite>();
+            oasisMapping = new HashMap<>();
             WebContextInjectionSite site = new WebContextInjectionSite(ComponentContext.class.getName(), SESSION_CONTEXT);
             oasisMapping.put(SESSION_CONTEXT_SITE, site);
             mappings.put(OASIS_CONTEXT_ATTRIBUTE, oasisMapping);
