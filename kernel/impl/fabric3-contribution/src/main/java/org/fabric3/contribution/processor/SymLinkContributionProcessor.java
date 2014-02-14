@@ -37,27 +37,30 @@
 */
 package org.fabric3.contribution.processor;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
 
 /**
  * Processes a symbolic link contribution (*.contribution file). This is done by de-referencing the target directory specified in the .contribution file and
@@ -91,8 +94,11 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         try {
             Contribution syntheticContribution = createSyntheticContribution(contribution);
             processorRegistry.processManifest(syntheticContribution, context);
-            // override the location
+
+            // override the locations
             contribution.setLocation(syntheticContribution.getLocation());
+            contribution.getAdditionalLocations().addAll(syntheticContribution.getAdditionalLocations());
+
             contribution.setManifest(syntheticContribution.getManifest());
             contribution.addMetaData(F3_SYMLINK, Boolean.TRUE);
             contribution.addMetaData(contribution.getUri(), syntheticContribution);
@@ -117,16 +123,39 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         contribution.removeMetaData(contribution.getUri());
     }
 
-    private Contribution createSyntheticContribution(Contribution contribution) throws IOException {
-        InputStreamReader streamReader = new InputStreamReader(contribution.getLocation().openStream());
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
-        String line = bufferedReader.readLine().trim();
-        File file = new File(line);
-        URL url = file.toURI().toURL();
-        URI contributionUri = URI.create(file.getName());
-        Source source = new UrlSource(url);
-        long timestamp = System.currentTimeMillis();
-        return new Contribution(contributionUri, source, url, timestamp, Constants.EXPLODED_CONTENT_TYPE, false);
+    private Contribution createSyntheticContribution(Contribution contribution) throws IOException, InstallException {
+        try {
+
+            URL location = contribution.getLocation();
+            Path symFile = Paths.get(location.toURI().getSchemeSpecificPart());
+            List<String> paths = Files.readAllLines(symFile, Charset.defaultCharset());
+
+            if (paths.isEmpty()) {
+                throw new InstallException("Invalid contribution file: " + location);
+            }
+
+            // take the first entry in the file as the main contribution location
+            File file = new File(paths.get(0));
+            URL dereferencedLocation = file.toURI().toURL();
+            URI contributionUri = URI.create(file.getName());
+
+            Source source = new UrlSource(dereferencedLocation);
+            long timestamp = System.currentTimeMillis();
+
+            Contribution syntheticContribution = new Contribution(contributionUri, source, dereferencedLocation, timestamp, EXPLODED_CONTENT_TYPE, false);
+
+            if (paths.size() > 1) {
+                for (int i = 1; i < paths.size(); i++) {
+                    String path = paths.get(i);
+                    syntheticContribution.addAdditionalLocation(new File(path).toURI().toURL());
+                }
+            }
+
+            return syntheticContribution;
+
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
     }
 
 }
