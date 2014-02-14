@@ -51,6 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -119,9 +120,9 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
         try {
             // resolve the url to a local artifact
-            URL resolved = resolver.resolve(uri);
+            List<URL> locations = resolver.resolveAllLocations(uri);
             ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
-            final WebAppContext context = createWebAppContext("/" + contextPath, injectors, resolved, parentClassLoader);
+            final WebAppContext context = createWebAppContext("/" + contextPath, injectors, locations, parentClassLoader);
 
             // Use a ServletContextListener to setup session injectors and perform context injection.
             // Note context injection must be done here since servlet filters may rely on SCA reference proxies, c.f. FABRICTHREE-570
@@ -191,9 +192,20 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         return parentClassLoader;
     }
 
-    private WebAppContext createWebAppContext(String contextPath, Map<String, List<Injector<?>>> injectors, URL resolved, ClassLoader parentClassLoader)
+    private WebAppContext createWebAppContext(String contextPath, Map<String, List<Injector<?>>> injectors, List<URL> locations, ClassLoader parentClassLoader)
             throws IOException {
-        WebAppContext context = new ManagedWebAppContext(resolved.toExternalForm(), contextPath);
+
+        WebAppContext context = new ManagedWebAppContext(null, contextPath);
+
+        // add the resource paths
+        String[] paths = new String[locations.size()];
+        for (int i = 0; i < locations.size(); i++) {
+            URL location = locations.get(i);
+            paths[i] = (location.toExternalForm());
+        }
+        ResourceCollection resources = new ResourceCollection(paths);
+        context.setBaseResource(resources);
+
         context.setParentLoaderPriority(true);
         InjectingDecorator decorator = new InjectingDecorator(injectors);
         context.addDecorator(decorator);

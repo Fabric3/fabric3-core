@@ -39,7 +39,7 @@ package org.fabric3.spi.contribution;
 
 import java.net.URI;
 import java.net.URL;
-
+import java.util.List;
 
 /**
  * Implementations resolve contribution artifacts in a domain.
@@ -54,6 +54,16 @@ public interface ContributionResolver {
      * @throws ResolutionException if an error occurs resolving the artifact
      */
     URL resolve(URI contributionUri) throws ResolutionException;
+
+    /**
+     * Resolves the contribution artifact associated with the URI, returning a set of local URLs by which it may be dereferenced. Multiple URLs are returned for
+     * exploded contributions, e.g. a contribution mapped to multiple directories in a development environment.
+     *
+     * @param contributionUri the contribution URI
+     * @return the local dereferenceable URL for the artifact
+     * @throws ResolutionException if an error occurs resolving the artifact
+     */
+    List<URL> resolveAllLocations(URI contributionUri) throws ResolutionException;
 
     /**
      * Releases a previously resolved contribution.

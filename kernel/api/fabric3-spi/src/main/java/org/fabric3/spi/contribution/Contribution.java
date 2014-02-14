@@ -70,6 +70,8 @@ public class Contribution implements Serializable {
 
     private List<QName> lockOwners = new ArrayList<>();
 
+    private List<URL> additionalLocations = new ArrayList<>();
+
     public Contribution(URI uri) {
         this.uri = uri;
         profiles = new ArrayList<>();
@@ -132,8 +134,7 @@ public class Contribution implements Serializable {
     }
 
     /**
-     * Returns the local URL for the contribution artifact or null if the contribution is not a physical artifact (e.g. it is synthesized from some
-     * source).
+     * Returns the local URL for the contribution artifact or null if the contribution is not a physical artifact (e.g. it is synthesized from some source).
      *
      * @return the dereferenceable URL for the contribution artifact or null
      */
@@ -148,6 +149,25 @@ public class Contribution implements Serializable {
      */
     public void setLocation(URL location) {
         this.location = location;
+    }
+
+    /**
+     * Returns additional content locations for the contribution. For example, exploded web applications may be composed of multiple directories mapped from a
+     * development environment.
+     *
+     * @return the locations.
+     */
+    public List<URL> getAdditionalLocations() {
+        return additionalLocations;
+    }
+
+    /**
+     * Adds an additional content location.
+     *
+     * @param location the location
+     */
+    public void addAdditionalLocation(URL location) {
+        additionalLocations.add(location);
     }
 
     /**
@@ -315,10 +335,9 @@ public class Contribution implements Serializable {
         return type.cast(metadata.get(key));
     }
 
-
     /**
-     * Acquires a lock for the contribution. If a contribution is locked, it cannot be uninstalled. Locks may be acquired by multiple owners, for
-     * example, deployable composites that are contained in a contribution when they are deployed.
+     * Acquires a lock for the contribution. If a contribution is locked, it cannot be uninstalled. Locks may be acquired by multiple owners, for example,
+     * deployable composites that are contained in a contribution when they are deployed.
      *
      * @param owner the lock owner
      */
@@ -372,6 +391,5 @@ public class Contribution implements Serializable {
         Contribution that = (Contribution) o;
         return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
     }
-
 
 }

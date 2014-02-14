@@ -40,6 +40,7 @@ package org.fabric3.contribution;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,8 +57,8 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResolutionException;
 
 /**
- * Default implementation of the <code>ContributionResolver</code> which attempts to resolves a contribution URI against the metadata store, artifact
- * cache, or by delegating to <code>ContributionResolverExtension</code>s respectively.
+ * Default implementation of the <code>ContributionResolver</code> which attempts to resolve a contribution URI against the metadata store, artifact cache, or
+ * by delegating to <code>ContributionResolverExtension</code>s respectively.
  */
 @EagerInit
 public class DefaultContributionResolver implements ContributionResolver {
@@ -94,6 +95,34 @@ public class DefaultContributionResolver implements ContributionResolver {
             if (stream != null) {
                 try {
                     return cache.cache(contributionUri, stream);
+                } catch (CacheException e) {
+                    throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
+                }
+            }
+        }
+        throw new ResolutionException("Contribution not found: " + contributionUri);
+    }
+
+    public List<URL> resolveAllLocations(URI contributionUri) throws ResolutionException {
+        Contribution contribution = store.find(contributionUri);
+        if (contribution != null) {
+            List<URL> locations = new ArrayList<>();
+            locations.add(contribution.getLocation());
+            locations.addAll(contribution.getAdditionalLocations());
+            return locations;
+        }
+
+        URL url = cache.get(contributionUri);
+        if (url != null) {
+            return Collections.singletonList(url);
+        }
+
+        for (ContributionResolverExtension extension : extensions) {
+            // provision and cache the contribution
+            InputStream stream = extension.resolve(contributionUri);
+            if (stream != null) {
+                try {
+                    return Collections.singletonList(cache.cache(contributionUri, stream));
                 } catch (CacheException e) {
                     throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
                 }
