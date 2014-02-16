@@ -19,4 +19,6 @@ Public License. See the accompanying license file for details.
     
     <f3:extends name="spring-core" />
     
+    <deployable composite="f3:EhCacheExtension" />
+    
 </contribution>
