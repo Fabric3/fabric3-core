@@ -83,7 +83,7 @@ public class EhCacheContributionListener implements ContributionServiceListener 
                 }
             }
         }
-        // This way EhCache is imported always???
+        // Make sure ehcache package is always imported
         if (!ehCacheImported) {
             manifest.addImport(ehCacheImport);
         }
