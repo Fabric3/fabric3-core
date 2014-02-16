@@ -46,7 +46,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Denotes a trace monitoring event.
  */
-@MonitorEventType(MonitorLevel.DEBUG)
+@MonitorEventType(MonitorLevel.TRACE)
 @Target({METHOD})
 @Retention(RUNTIME)
 public @interface Trace {
