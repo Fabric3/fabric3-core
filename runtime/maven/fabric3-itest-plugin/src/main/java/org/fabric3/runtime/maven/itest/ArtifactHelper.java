@@ -216,6 +216,13 @@ public class ArtifactHelper {
         nodeAPI.setVersion(version);
         hostArtifacts.addAll(resolveArtifacts(nodeAPI, Collections.<ArtifactRepository>emptySet(), true));
 
+        // add JUnit API
+        Dependency junitAPI = new Dependency();
+        junitAPI.setGroupId("org.codehaus.fabric3");
+        junitAPI.setArtifactId("fabric3-junit-api");
+        junitAPI.setVersion(version);
+        hostArtifacts.addAll(resolveArtifacts(junitAPI, Collections.<ArtifactRepository>emptySet(), true));
+
         // add shared artifacts to the host classpath
         if (shared != null) {
             for (Dependency sharedDependency : shared) {

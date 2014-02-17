@@ -39,13 +39,16 @@ package org.fabric3.fabric.introspection;
 
 import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.model.Implementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.ComponentAnnotationMapper;
 import org.fabric3.spi.introspection.java.ComponentProcessor;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.oasisopen.sca.annotation.Reference;
@@ -55,10 +58,16 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ComponentProcessorImpl implements ComponentProcessor {
     private Map<QName, ImplementationProcessor<?>> implementationProcessors = Collections.emptyMap();
+    private List<ComponentAnnotationMapper> mappers = new ArrayList<>();
 
     @Reference(required = false)
     public void setImplementationProcessors(Map<QName, ImplementationProcessor<?>> implementationProcessors) {
         this.implementationProcessors = implementationProcessors;
+    }
+
+    @Reference(required = false)
+    public void setMappers(List<ComponentAnnotationMapper> mappers) {
+        this.mappers = mappers;
     }
 
     @SuppressWarnings("unchecked")
@@ -80,6 +89,14 @@ public class ComponentProcessorImpl implements ComponentProcessor {
             if (implementation != null) {
                 implementationType = QName.valueOf(implementation.value());
                 break;
+            } else {
+                for (ComponentAnnotationMapper mapper : mappers) {
+                    QName alias = mapper.getImplementationType(annotation);
+                    if (alias != null) {
+                        implementationType = alias;
+                        break;
+                    }
+                }
             }
         }
 

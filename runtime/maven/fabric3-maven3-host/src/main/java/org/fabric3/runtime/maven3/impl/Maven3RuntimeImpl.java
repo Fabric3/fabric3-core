@@ -46,24 +46,31 @@ package org.fabric3.runtime.maven3.impl;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
-import org.fabric3.fabric.runtime.AbstractRuntime;
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.repository.RepositoryException;
 import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
-import org.fabric3.runtime.maven.ContextStartException;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.fabric.runtime.AbstractRuntime;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven3.repository.Maven3Repository;
 import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import static org.fabric3.api.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.api.host.Names.CONTRIBUTION_SERVICE_URI;
 
@@ -84,16 +91,37 @@ public class Maven3RuntimeImpl extends AbstractRuntime implements MavenRuntime {
         Domain domain = getComponent(Domain.class, APPLICATION_DOMAIN_URI);
         URI uri = contributionService.store(source);
         contributionService.install(uri);
-        // activate the deployable composite in the domain
-        domain.include(qName);
+
+        MetaDataStore metaDataStore = getMetaDataStore();
+        Contribution contribution = metaDataStore.find(uri);
+        List<Deployable> deployables = contribution.getManifest().getDeployables();
+        if (deployables.isEmpty()) {
+            // No deployables specified, activate the test composite in the domain. If a test composite does not exist, an exception will be raised
+            domain.include(qName);
+            startContext(qName);
+        } else {
+            // include deployables
+            domain.include(Collections.singletonList(uri));
+
+            Deployable qNameDeployable = new Deployable(qName);
+            if (!deployables.contains(qNameDeployable)) {
+                // deploy the test composite if one exists and it is not defined as a deployable
+                QNameSymbol symbol = new QNameSymbol(qName);
+                ResourceElement<QNameSymbol, Composite> resourceElement = metaDataStore.find(uri, Composite.class, symbol);
+                if (resourceElement != null) {
+                    domain.include(resourceElement.getValue(), false);
+                    startContext(qName);
+                }
+            }
+        }
     }
 
-    public void startContext(QName deployable) throws ContextStartException {
+    public void startContext(QName deployable) throws DeploymentException {
         WorkContextCache.getAndResetThreadWorkContext();
         try {
             getScopeContainer().startContext(deployable);
         } catch (ComponentException e) {
-            throw new ContextStartException(e);
+            throw new DeploymentException(e);
         }
     }
 

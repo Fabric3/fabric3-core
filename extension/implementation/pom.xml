@@ -31,6 +31,7 @@
 
     <modules>
         <module>fabric3-java</module>
+        <module>fabric3-junit-api</module>
         <module>fabric3-junit</module>
         <module>fabric3-mock</module>
         <module>fabric3-web</module>

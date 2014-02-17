@@ -34,24 +34,33 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.runtime.maven;
+*/
+package org.fabric3.implementation.junit.introspection;
 
-import org.fabric3.api.host.Fabric3Exception;
+import javax.xml.namespace.QName;
+import java.lang.annotation.Annotation;
+
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.implementation.junit.Fabric3Runner;
+import org.fabric3.spi.introspection.java.ComponentAnnotationMapper;
+import org.junit.runner.RunWith;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- *
+ * Maps the {@link RunWith} annotation configured with the {@link Fabric3Runner} class to the JUnit component implementation type.
  */
-public class ContextStartException extends Fabric3Exception {
-    private static final long serialVersionUID = 5507052175927252111L;
+@EagerInit
+public class JUnitComponentAnnotationMapper implements ComponentAnnotationMapper {
+    private static final QName JUNIT = new QName(Namespaces.F3, "junit");
 
-    public ContextStartException(Throwable cause) {
-        super(cause);
+    public QName getImplementationType(Annotation annotation) {
+        if (!(annotation instanceof RunWith)) {
+            return null;
+        }
+        RunWith runWith = (RunWith) annotation;
+        if (!Fabric3Runner.class.equals(runWith.value())) {
+            return null;
+        }
+        return JUNIT;
     }
 }

@@ -43,11 +43,10 @@
  */
 package org.fabric3.runtime.maven;
 
-import java.net.URL;
 import javax.xml.namespace.QName;
+import java.net.URL;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
-
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
@@ -70,14 +69,6 @@ public interface MavenRuntime extends Fabric3Runtime {
      * @throws DeploymentException   if there is an error activating the test composite
      */
     void deploy(URL base, QName composite) throws ContributionException, DeploymentException;
-
-    /**
-     * Starts a component context.
-     *
-     * @param compositeId the context id
-     * @throws ContextStartException if an error starting the context is encountered
-     */
-    void startContext(QName compositeId) throws ContextStartException;
 
     /**
      * Creates a test suite for testing components in the deployed composite.

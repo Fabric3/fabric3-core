@@ -21,6 +21,18 @@ Public License. See the accompanying license file for details.
         <reference name="heuristic" target="JUnitHeuristic"/>
     </component>
 
+    <component name="JUnitComponentAnnotationMapper">
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitComponentAnnotationMapper"/>
+    </component>
+
+    <component name="JUnitComponentArtifactIntrospector">
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitComponentArtifactIntrospector"/>
+    </component>
+
+    <component name="JUnitImplementationProcessor" f3:key="f3:junit">
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationProcessor"/>
+    </component>
+
     <component name="JUnitHeuristic">
         <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitHeuristic"/>
         <reference name="service" target="JUnitServiceHeuristic"/>

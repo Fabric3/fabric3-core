@@ -37,14 +37,13 @@
 */
 package org.fabric3.runtime.maven.itest;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.namespace.QName;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.runtime.maven.MavenRuntime;
@@ -70,7 +69,6 @@ public class TestDeployer {
             QName qName = new QName(compositeNamespace, compositeName);
             URL buildDirUrl = getBuildDirectoryUrl();
             runtime.deploy(buildDirUrl, qName);
-            runtime.startContext(qName);
             return true;
         } catch (ValidationException e) {
             if (errorText != null && e.getMessage() != null && e.getMessage().contains(errorText)) {
