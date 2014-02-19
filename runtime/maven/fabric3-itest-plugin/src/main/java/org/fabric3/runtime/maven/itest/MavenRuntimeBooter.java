@@ -54,7 +54,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.fabric3.api.host.Names;
@@ -82,35 +81,27 @@ import static org.fabric3.runtime.maven.itest.TestConstants.DOMAIN;
 public class MavenRuntimeBooter {
     private static final String SYSTEM_CONFIG_XML_FILE = "systemConfig.xml";
     private static final String DEFAULT_SYSTEM_CONFIG_DIR = "test-classes" + File.separator + "META-INF" + File.separator;
-    private static final String MAVEN2_RUNTIME_IMPL = "org.fabric3.runtime.maven.impl.MavenRuntimeImpl";
     private static final String MAVEN3_RUNTIME_IMPL = "org.fabric3.runtime.maven3.impl.Maven3RuntimeImpl";
 
-    // configuration elements
-    private int mavenVersion;
     private File outputDirectory;
     private String systemConfigDir;
     private String systemConfig;
     private ClassLoader bootClassLoader;
     private ClassLoader hostClassLoader;
     private Set<URL> moduleDependencies;
-    private Set<org.apache.maven.model.Dependency> extensions;
-    private ExtensionHelper extensionHelper;
-    private Set<ArtifactRepository> repositories;
     private Log log;
 
     private RuntimeCoordinator coordinator;
+    private List<ContributionSource> contributions;
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
-        mavenVersion = configuration.getMavenVersion();
         outputDirectory = configuration.getOutputDirectory();
         systemConfigDir = configuration.getSystemConfigDir();
         systemConfig = configuration.getSystemConfig();
         bootClassLoader = configuration.getBootClassLoader();
         hostClassLoader = configuration.getHostClassLoader();
         moduleDependencies = configuration.getModuleDependencies();
-        extensions = configuration.getExtensions();
-        extensionHelper = configuration.getExtensionHelper();
-        repositories = configuration.getRepositories();
+        contributions = configuration.getExtensions();
         log = configuration.getLog();
     }
 
@@ -127,8 +118,6 @@ public class MavenRuntimeBooter {
             exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
             exportedPackages.put("org.junit", TestConstants.JUNIT_VERSION);
 
-            // process extensions
-            List<ContributionSource> contributions = extensionHelper.processExtensions(extensions, repositories);
 
             BootConfiguration configuration = new BootConfiguration();
 
@@ -208,12 +197,7 @@ public class MavenRuntimeBooter {
 
     private MavenRuntime instantiateRuntime(RuntimeConfiguration configuration, ClassLoader cl) {
         try {
-            Class<?> implClass;
-            if (mavenVersion == 2) {
-                implClass = cl.loadClass(MAVEN2_RUNTIME_IMPL);
-            } else {
-                implClass = cl.loadClass(MAVEN3_RUNTIME_IMPL);
-            }
+            Class<?> implClass = cl.loadClass(MAVEN3_RUNTIME_IMPL);
             return MavenRuntime.class.cast(implClass.getConstructor(RuntimeConfiguration.class).newInstance(configuration));
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             // programming error

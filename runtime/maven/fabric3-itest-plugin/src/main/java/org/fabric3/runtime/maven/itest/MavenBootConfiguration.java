@@ -39,33 +39,24 @@ package org.fabric3.runtime.maven.itest;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
+import org.fabric3.api.host.contribution.ContributionSource;
 
+/**
+ * Configuration for booting the Maven runtime.
+ */
 public class MavenBootConfiguration {
-    private int mavenVersion;
     private File outputDirectory;
     private String systemConfigDir;
     private String systemConfig;
     private ClassLoader bootClassLoader;
     private ClassLoader hostClassLoader;
     private Set<URL> moduleDependencies;
-    private Set<Dependency> extensions;
+    private List<ContributionSource> extensions;
     private Log log;
-    private ExtensionHelper extensionHelper;
-    private Set<ArtifactRepository> repositories = Collections.emptySet();
-
-    public void setMavenVersion(int mavenVersion) {
-        this.mavenVersion = mavenVersion;
-    }
-
-    public int getMavenVersion() {
-        return mavenVersion;
-    }
 
     public File getOutputDirectory() {
         return outputDirectory;
@@ -115,11 +106,11 @@ public class MavenBootConfiguration {
         this.moduleDependencies = moduleDependencies;
     }
 
-    public Set<Dependency> getExtensions() {
+    public List<ContributionSource> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(Set<Dependency> extensions) {
+    public void setExtensions(List<ContributionSource> extensions) {
         this.extensions = extensions;
     }
 
@@ -129,22 +120,6 @@ public class MavenBootConfiguration {
 
     public void setLog(Log log) {
         this.log = log;
-    }
-
-    public ExtensionHelper getExtensionHelper() {
-        return extensionHelper;
-    }
-
-    public void setExtensionHelper(ExtensionHelper extensionHelper) {
-        this.extensionHelper = extensionHelper;
-    }
-
-    public Set<ArtifactRepository> getRepositories() {
-        return repositories;
-    }
-
-    public void setRemoteRepositories(Set<ArtifactRepository> repositories) {
-        this.repositories = repositories;
     }
 
 }

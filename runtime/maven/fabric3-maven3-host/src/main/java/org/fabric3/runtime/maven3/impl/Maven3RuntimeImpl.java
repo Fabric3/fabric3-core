@@ -44,6 +44,7 @@
 package org.fabric3.runtime.maven3.impl;
 
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
@@ -137,7 +138,7 @@ public class Maven3RuntimeImpl extends AbstractRuntime implements MavenRuntime {
             Maven3Repository repository = new Maven3Repository();
             repository.init();
             return repository;
-        } catch (RepositoryException e) {
+        } catch (RepositoryException | IOException e) {
             throw new InitializationException(e);
         }
     }

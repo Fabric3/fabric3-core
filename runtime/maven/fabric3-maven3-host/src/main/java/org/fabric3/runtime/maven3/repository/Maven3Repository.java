@@ -38,34 +38,27 @@
 package org.fabric3.runtime.maven3.repository;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.repository.internal.DefaultServiceLocator;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.apache.maven.settings.building.DefaultSettingsBuilder;
-import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
-import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
-import org.apache.maven.settings.building.SettingsBuildingException;
-import org.apache.maven.settings.building.SettingsBuildingRequest;
-import org.apache.maven.settings.building.SettingsBuildingResult;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.connector.wagon.WagonProvider;
-import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
-import org.sonatype.aether.repository.LocalRepository;
-import org.sonatype.aether.repository.LocalRepositoryManager;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactRequest;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.resolution.ArtifactResult;
-import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.connector.wagon.WagonProvider;
+import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
+import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.repository.RepositoryException;
 
@@ -75,42 +68,13 @@ import org.fabric3.api.host.repository.RepositoryException;
 public class Maven3Repository implements Repository {
     private static final String USER_HOME = System.getProperty("user.home");
     private static final File DEFAULT_MAVEN_REPO = new File(USER_HOME, ".m2");
-    private static final File DEFAULT_USER_SETTINGS = new File(DEFAULT_MAVEN_REPO, "settings.xml");
-    private static final File DEFAULT_GLOBAL_SETTINGS =
-            new File(System.getProperty("maven.home", System.getProperty("user.dir", "")), "conf/settings.xml");
-    private static final File DEFAULT_M2_GLOBAL_SETTINGS = new File(System.getProperty("M2_HOME"), "conf/settings.xml");
 
     private RepositorySystem repositorySystem;
-    private MavenRepositorySystemSession session;
+    private RepositorySystemSession session;
 
-    public void init() throws RepositoryException {
-        DefaultServiceLocator locator = new DefaultServiceLocator();
-        locator.setServices(WagonProvider.class, new ManualWagonProvider());
-        locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
-        repositorySystem = locator.getService(RepositorySystem.class);
-        session = new MavenRepositorySystemSession();
-
-        DefaultSettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-        SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-        if (DEFAULT_GLOBAL_SETTINGS.exists()) {
-            request.setGlobalSettingsFile(DEFAULT_GLOBAL_SETTINGS);
-        } else {
-            request.setGlobalSettingsFile(DEFAULT_M2_GLOBAL_SETTINGS);
-        }
-        request.setUserSettingsFile(DEFAULT_USER_SETTINGS);
-
-        try {
-            SettingsBuildingResult result = builder.build(request);
-            String location = result.getEffectiveSettings().getLocalRepository();
-            if (location == null) {
-                location = DEFAULT_MAVEN_REPO.getName();
-            }
-            LocalRepository localRepository = new LocalRepository(location);
-            LocalRepositoryManager manager = repositorySystem.newLocalRepositoryManager(localRepository);
-            session.setLocalRepositoryManager(manager);
-        } catch (SettingsBuildingException e) {
-            throw new RepositoryException(e);
-        }
+    public void init() throws RepositoryException, IOException {
+        repositorySystem = initRepositorySystem();
+        session = initSession(repositorySystem);
     }
 
     public void shutdown() throws RepositoryException {
@@ -126,12 +90,10 @@ public class Maven3Repository implements Repository {
     }
 
     public URL find(URI uri) throws RepositoryException {
-        RemoteRepository central = new RemoteRepository("central", "default", "http://repo1.maven.org/maven2/");
         try {
             Artifact artifact = new DefaultArtifact(uri.toString());
             ArtifactRequest request = new ArtifactRequest();
             request.setArtifact(artifact);
-            request.setRepositories(Collections.singletonList(central));
             ArtifactResult result = repositorySystem.resolveArtifact(session, request);
             return result.getArtifact().getFile().toURI().toURL();
         } catch (ArtifactResolutionException | MalformedURLException e) {
@@ -144,6 +106,20 @@ public class Maven3Repository implements Repository {
 
     public List<URI> list() {
         throw new UnsupportedOperationException();
+    }
+
+    private RepositorySystemSession initSession(RepositorySystem system) throws IOException {
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        LocalRepository localRepository = new LocalRepository(DEFAULT_MAVEN_REPO.getAbsolutePath());
+        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepository));
+        return session;
+    }
+
+    private RepositorySystem initRepositorySystem() {
+        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+        locator.setServices(WagonProvider.class, new ManualWagonProvider());
+        locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
+        return locator.getService(RepositorySystem.class);
     }
 
 

@@ -23,8 +23,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <aetherVersion>1.8</aetherVersion>
-        <mavenVersion>3.0.1</mavenVersion>
+        <aetherVersion>0.9.0.M2</aetherVersion>
+        <mavenVersion>3.1.1</mavenVersion>
         <wagonVersion>1.0-beta-7</wagonVersion>
     </properties>
 
@@ -49,26 +49,15 @@
             <artifactId>stax-api</artifactId>
             <version>${stax.api.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-api</artifactId>
             <version>${aetherVersion}</version>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-util</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
+            <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-connector-wagon</artifactId>
-            <version>${aetherVersion}</version>
+            <version>0.9.0.M2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -98,12 +87,6 @@
                     <artifactId>xercesMinimal</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-settings-builder</artifactId>
-            <version>3.0.1</version>
         </dependency>
 
         <dependency>
