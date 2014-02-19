@@ -40,6 +40,5 @@
         <module>profile-spring</module>
         <module>profile-ftp</module>
         <module>profile-file</module>
-        <!--<module>profile-infinispan</module>-->
     </modules>
 </project>
