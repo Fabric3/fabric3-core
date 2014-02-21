@@ -62,6 +62,7 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
 import org.eclipse.aether.resolution.ArtifactDescriptorResult;
@@ -83,12 +84,18 @@ public class Resolver {
 
     private RepositorySystem repositorySystem;
     private RepositorySystemSession session;
+    private List<RemoteRepository> projectRepositories;
 
-    public Resolver(MavenProject project, String runtimeVersion, RepositorySystem repositorySystem, RepositorySystemSession session) {
+    public Resolver(MavenProject project,
+                    String runtimeVersion,
+                    RepositorySystem repositorySystem,
+                    RepositorySystemSession session,
+                    List<RemoteRepository> projectRepositories) {
         this.project = project;
         this.runtimeVersion = runtimeVersion;
         this.repositorySystem = repositorySystem;
         this.session = session;
+        this.projectRepositories = projectRepositories;
     }
 
     /**
@@ -220,6 +227,7 @@ public class Resolver {
             try {
                 ArtifactDescriptorRequest request = new ArtifactDescriptorRequest();
                 request.setArtifact(convertToArtifact(profile));
+                request.setRepositories(projectRepositories);
                 ArtifactDescriptorResult result = repositorySystem.readArtifactDescriptor(session, request);
                 List<Exception> exceptions = result.getExceptions();
                 if (!exceptions.isEmpty()) {
@@ -276,7 +284,7 @@ public class Resolver {
     }
 
     private Artifact resolve(Artifact artifact) throws ArtifactResolutionException {
-        ArtifactResult result = repositorySystem.resolveArtifact(session, new ArtifactRequest(artifact, null, null));
+        ArtifactResult result = repositorySystem.resolveArtifact(session, new ArtifactRequest(artifact, projectRepositories, null));
         return result.getArtifact();
     }
 
@@ -287,6 +295,7 @@ public class Resolver {
             Artifact converted = convertToArtifact(dependency);
             Dependency root = new Dependency(converted, dependency.getScope());
             collectRequest.setRoot(root);
+            collectRequest.setRepositories(projectRepositories);
             DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, null);
 
             DependencyResult result = repositorySystem.resolveDependencies(session, dependencyRequest);

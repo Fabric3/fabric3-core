@@ -62,6 +62,7 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
@@ -232,6 +233,14 @@ public class Fabric3ITestMojo extends AbstractMojo {
      */
     public RepositorySystemSession session;
 
+    /**
+     * The project's remote repositories to use for the resolution of project dependencies.
+     *
+     * @parameter default-value="${project.remoteProjectRepositories}"
+     * @readonly
+     */
+    private List<RemoteRepository> projectRepositories;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if (skip || Boolean.parseBoolean(System.getProperty("maven.test.skip"))) {
@@ -239,7 +248,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
             return;
         }
 
-        Resolver artifactHelper = new Resolver(project, runtimeVersion, repositorySystem, session);
+        Resolver artifactHelper = new Resolver(project, runtimeVersion, repositorySystem, session, projectRepositories);
 
         MavenBootConfiguration configuration = createBootConfiguration(artifactHelper);
 
