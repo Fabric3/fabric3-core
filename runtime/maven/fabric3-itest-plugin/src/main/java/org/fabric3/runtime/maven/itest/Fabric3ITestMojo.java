@@ -267,13 +267,13 @@ public class Fabric3ITestMojo extends AbstractMojo {
             }
             TestRunner runner = new TestRunner(reportsDirectory, trimStackTrace, getLog());
             runner.executeTests(runtime);
+            tryLatch(runtime);
         } catch (RuntimeException e) {
             // log unexpected errors since Maven sometimes swallows them
             getLog().error(e);
             throw e;
         } finally {
             try {
-                tryLatch(runtime);
                 booter.shutdown();
             } catch (Exception e) {
                 // ignore
@@ -295,11 +295,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
                 getLog().info("Waiting on Fabric3 runtime latch");
                 method.invoke(latchComponent);
                 getLog().info("Fabric3 runtime latch released");
-            } catch (NoSuchMethodException e) {
-                getLog().error("Found latch service " + type + " but it does not declare an await() method");
-            } catch (SecurityException e) {
-                getLog().error("Security exception introspecting latch service", e);
-            } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+            } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | SecurityException | NoSuchMethodException e) {
                 getLog().error("Exception attempting to wait on latch service", e);
             }
         }
