@@ -41,12 +41,17 @@ import javax.xml.namespace.QName;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import org.fabric3.api.annotation.model.Environment;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -57,6 +62,7 @@ import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -66,10 +72,16 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ProviderResourceProcessor implements ResourceProcessor {
     private HostInfo info;
+    private Map<QName, ImplementationIntrospector> introspectors = Collections.emptyMap();
 
     public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference HostInfo info) {
         this.info = info;
         processorRegistry.register(this);
+    }
+
+    @Reference(required = false)
+    public void setIntrospectors(Map<QName, ImplementationIntrospector> processors) {
+        this.introspectors = processors;
     }
 
     public String getContentType() {
@@ -135,6 +147,20 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                     context.addError(error);
                     continue;
                 }
+
+                URI contributionUri = context.getContributionUri();
+                composite.setContributionUri(contributionUri);
+
+                // introspect definitions
+                for (ComponentDefinition<?> definition : composite.getComponents().values()) {
+                    ImplementationIntrospector introspector = introspectors.get(definition.getImplementation().getType());
+                    if (introspector == null) {
+                        continue;
+                    }
+                    definition.setContributionUri(contributionUri);
+                    introspector.introspect((InjectingComponentType) definition.getComponentType(), context);
+                }
+
                 QName compositeName = composite.getName();
 
                 QNameSymbol compositeSymbol = new QNameSymbol(compositeName);
