@@ -90,8 +90,7 @@ public class SCATestSuite implements SurefireTestSuite {
         return testSetCount;
     }
 
-    protected void execute(SCATestSet testSet, ReporterManager reporterManager, ClassLoader classLoader)
-            throws ReporterException, TestSetFailedException {
+    protected void execute(SCATestSet testSet, ReporterManager reporterManager, ClassLoader classLoader) throws ReporterException, TestSetFailedException {
         reporterManager.testSetStarting(new ReportEntry(this, testSet.getName(), "Starting"));
         testSet.execute(reporterManager, classLoader);
         reporterManager.testSetCompleted(new ReportEntry(this, testSet.getName(), "Completed"));

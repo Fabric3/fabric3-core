@@ -47,7 +47,7 @@ import org.fabric3.test.spi.TestWireHolder;
  * TestWireHolder implementation for the Maven runtime.
  */
 public class WireHolderImpl implements TestWireHolder {
-    Map<String, Wire> wires = new LinkedHashMap<>();
+    private Map<String, Wire> wires = new LinkedHashMap<>();
 
     public Map<String, Wire> getWires() {
         return wires;
