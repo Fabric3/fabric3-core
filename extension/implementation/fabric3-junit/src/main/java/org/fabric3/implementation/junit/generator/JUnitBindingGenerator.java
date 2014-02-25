@@ -64,7 +64,7 @@ public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefin
                                                 List<LogicalOperation> operations,
                                                 EffectivePolicy policy) throws GenerationException {
         ComponentDefinition<?> definition = bindingDefinition.getParent().getParent().getDefinition();
-        String testName = definition.getName();
+        String testName = definition.getImplementation().getArtifactName();
         ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
         return new JUnitSourceDefinition(testName, configuration);
     }
