@@ -112,7 +112,8 @@ public class JavaResourceProcessor implements ResourceProcessor {
         }
 
         try {
-            QName compositeName = (annotation != null) ? QName.valueOf(annotation.composite()) : QName.valueOf(Component.DEFAULT_COMPOSITE);
+            QName compositeName = getCompositeName(resourceElement, annotation);
+
             ComponentDefinition definition = new ComponentDefinition(name);
             definition.setContributionUri(context.getContributionUri());
             componentProcessor.process(definition, clazz, context);
@@ -124,6 +125,19 @@ public class JavaResourceProcessor implements ResourceProcessor {
             InvalidComponentAnnotation error = new InvalidComponentAnnotation("Invalid composite name: " + name + " on class: " + clazz.getName(), e);
             context.addError(error);
         }
+    }
+
+    private QName getCompositeName(ResourceElement<?, ?> resourceElement, Component annotation) {
+        QName compositeName;
+        if (annotation != null) {
+            compositeName = QName.valueOf(annotation.composite());
+        }else {
+            compositeName = resourceElement.getMetadata(QName.class);
+            if (compositeName == null) {
+                compositeName = QName.valueOf(Component.DEFAULT_COMPOSITE);
+            }
+        }
+        return compositeName;
     }
 
     @SuppressWarnings("unchecked")

@@ -37,9 +37,11 @@
 */
 package org.fabric3.implementation.junit.introspection;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.net.URL;
 
+import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Constants;
@@ -54,6 +56,7 @@ import org.junit.runner.RunWith;
  * Introspects a class to determine if it is a JUnit component.
  */
 public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospector {
+    private static final QName TEST_COMPOSITE = new QName(Namespaces.F3, "TestComposite");
 
     public Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader) {
         try {
@@ -74,6 +77,7 @@ public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospec
             Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
             JavaSymbol symbol = new JavaSymbol(className);
             ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
+            resourceElement.setMetadata(TEST_COMPOSITE);
             resource.addResourceElement(resourceElement);
             contribution.addResource(resource);
             return resource;

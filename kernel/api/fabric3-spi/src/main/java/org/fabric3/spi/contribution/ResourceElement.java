@@ -44,6 +44,7 @@ public class ResourceElement<SYMBOL extends Symbol, VALUE> {
     private SYMBOL symbol;
     private VALUE value;
     private Resource resource;
+    private Object metadata;
 
     public ResourceElement(SYMBOL symbol) {
         this.symbol = symbol;
@@ -97,5 +98,24 @@ public class ResourceElement<SYMBOL extends Symbol, VALUE> {
      */
     public void setValue(VALUE value) {
         this.value = value;
+    }
+
+    /**
+     * Returns metadata associated with the resource element or null.
+     *
+     * @param type the metadata type
+     * @return the metadata or null
+     */
+    public <T> T getMetadata(Class<T> type) {
+        return type.cast(metadata);
+    }
+
+    /**
+     * Sets metadata for the resource element.
+     *
+     * @param metadata the metadata
+     */
+    public void setMetadata(Object metadata) {
+        this.metadata = metadata;
     }
 }
