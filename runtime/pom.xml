@@ -30,7 +30,6 @@
 
 	<modules>
         <module>plugin</module>
-		<module>maven</module>
 		<module>standalone</module>
 		<module>tomcat</module>
 		<module>weblogic</module>
