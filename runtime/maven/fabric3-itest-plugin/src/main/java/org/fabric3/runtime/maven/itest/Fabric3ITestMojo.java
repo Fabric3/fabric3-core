@@ -51,6 +51,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,7 +65,10 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
@@ -74,11 +80,17 @@ import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HiddenPackages;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.runtime.maven.MavenRuntime;
+import org.fabric3.plugin.Fabric3PluginException;
+import org.fabric3.plugin.api.runtime.PluginRuntime;
+import org.fabric3.plugin.resolver.Resolver;
+import org.fabric3.plugin.runtime.PluginBootConfiguration;
+import org.fabric3.plugin.runtime.PluginConstants;
+import org.fabric3.plugin.util.ClassLoaderHelper;
 
 /**
- * Instantiates an embedded Fabric3 runtime and deploys Maven modules as contributions for integration testing.
+ * Instantiates a Fabric3 plugin runtime and deploys Maven modules as contributions for integration testing.
  *
  * @goal test
  * @phase integration-test
@@ -95,6 +107,8 @@ public class Fabric3ITestMojo extends AbstractMojo {
             clearTempFiles();
         }
     }
+
+    public static final String FABRIC3_GROUP_ID = "org.codehaus.fabric3";
 
     /**
      * POM
@@ -183,15 +197,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
     public Dependency[] shared;
 
     /**
-     * The sub-directory of the project's output directory which contains the systemConfig.xml file. Users are limited to specifying the (relative) directory
-     * name in this param - the file name is fixed. The fixed name is not required by the itest environment but using it retains the relationship between the
-     * test config file and WEB-INF/systemConfig.xml which contains the same information for the deployed composite
-     *
-     * @parameter
-     */
-    public String systemConfigDir;
-
-    /**
      * Allows the optional in-line specification of system configuration in the plugin configuration.
      *
      * @parameter
@@ -248,19 +253,19 @@ public class Fabric3ITestMojo extends AbstractMojo {
             return;
         }
 
-        Resolver artifactHelper = new Resolver(project, runtimeVersion, repositorySystem, session, projectRepositories);
+        Resolver resolver = new Resolver(repositorySystem, session, projectRepositories, runtimeVersion);
 
-        MavenBootConfiguration configuration = createBootConfiguration(artifactHelper);
+        PluginBootConfiguration configuration = createBootConfiguration(resolver);
 
         Thread.currentThread().setContextClassLoader(configuration.getBootClassLoader());
 
         MavenRuntimeBooter booter = new MavenRuntimeBooter(configuration);
 
-        MavenRuntime runtime = booter.boot();
         try {
+            PluginRuntime runtime = booter.boot();
             // load the contributions
-            deployContributions(runtime, artifactHelper);
-            TestDeployer deployer = new TestDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
+            deployContributions(runtime, resolver);
+            MavenDeployer deployer = new MavenDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
             boolean continueDeployment = deployer.deploy(runtime, errorText);
             if (!continueDeployment) {
                 return;
@@ -272,6 +277,8 @@ public class Fabric3ITestMojo extends AbstractMojo {
             // log unexpected errors since Maven sometimes swallows them
             getLog().error(e);
             throw e;
+        } catch (Fabric3PluginException | InitializationException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         } finally {
             try {
                 booter.shutdown();
@@ -286,8 +293,8 @@ public class Fabric3ITestMojo extends AbstractMojo {
      *
      * @param runtime the runtime
      */
-    private void tryLatch(MavenRuntime runtime) {
-        Object latchComponent = runtime.getComponent(Object.class, TestConstants.TEST_LATCH_SERVICE);
+    private void tryLatch(PluginRuntime runtime) {
+        Object latchComponent = runtime.getComponent(Object.class, PluginConstants.TEST_LATCH_SERVICE);
         if (latchComponent != null) {
             Class<?> type = latchComponent.getClass();
             try {
@@ -307,7 +314,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @param runtime the runtime
      * @throws MojoExecutionException if a deployment error occurs
      */
-    private void deployContributions(MavenRuntime runtime, Resolver artifactHelper) throws MojoExecutionException {
+    private void deployContributions(PluginRuntime runtime, Resolver resolver) throws MojoExecutionException {
         if (contributions.length <= 0) {
             return;
         }
@@ -315,9 +322,9 @@ public class Fabric3ITestMojo extends AbstractMojo {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);
             Domain domain = runtime.getComponent(Domain.class, Names.APPLICATION_DOMAIN_URI);
             List<ContributionSource> sources = new ArrayList<>();
-            for (Dependency contribution : contributions) {
-                Artifact artifact = artifactHelper.resolve(contribution);
-                URL url = artifact.getFile().toURI().toURL();
+            Set<Artifact> artifacts = convert(contributions);
+            Set<URL> resolvedArtifacts = resolver.resolve(artifacts);
+            for (URL url : resolvedArtifacts) {
                 URI uri = URI.create(new File(url.getFile()).getName());
                 ContributionSource source = new FileContributionSource(uri, url, -1, true);
                 sources.add(source);
@@ -325,7 +332,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
             List<URI> uris = contributionService.store(sources);
             contributionService.install(uris);
             domain.include(uris);
-        } catch (MalformedURLException | InstallException | ContributionNotFoundException | DeploymentException | StoreException e) {
+        } catch (ArtifactResolutionException | InstallException | ContributionNotFoundException | DeploymentException | StoreException e) {
             throw new MojoExecutionException("Error installing contributions", e);
         }
     }
@@ -348,30 +355,42 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @return the boot configuration
      * @throws MojoExecutionException if there is an error creating the configuration
      */
-    private MavenBootConfiguration createBootConfiguration(Resolver resolver) throws MojoExecutionException {
-        Set<Artifact> runtimeArtifacts = resolver.resolveRuntimeArtifacts();
-        Set<Artifact> hostArtifacts = resolver.resolveHostArtifacts(shared);
-        List<ContributionSource> runtimeExtensions = resolver.resolveRuntimeExtensions(extensions, profiles);
+    private PluginBootConfiguration createBootConfiguration(Resolver resolver) throws MojoExecutionException {
+        try {
+            Set<Artifact> runtimeArtifacts = resolver.resolveRuntimeArtifacts();
 
-        Set<URL> moduleDependencies = resolver.resolveModuleDependencies(hostArtifacts);
+            Set<Artifact> sharedArtifacts = convert(shared);
+            Set<Artifact> hostArtifacts = resolver.resolveHostArtifacts(sharedArtifacts);
 
-        ClassLoader parentClassLoader = createParentClassLoader();
+            Set<Artifact> extensionArtifacts = convert(extensions);
+            extensionArtifacts.add(new DefaultArtifact(FABRIC3_GROUP_ID, "fabric3-maven-extension", "jar", runtimeVersion));
 
-        ClassLoader hostClassLoader = ClassLoaderHelper.createHostClassLoader(parentClassLoader, hostArtifacts);
-        ClassLoader bootClassLoader = ClassLoaderHelper.createBootClassLoader(hostClassLoader, runtimeArtifacts);
+            Set<Artifact> profileArtifacts = convert(profiles);
+            List<ContributionSource> runtimeExtensions = resolver.resolveRuntimeExtensions(extensionArtifacts, profileArtifacts);
 
-        MavenBootConfiguration configuration = new MavenBootConfiguration();
-        configuration.setBootClassLoader(bootClassLoader);
-        configuration.setHostClassLoader(hostClassLoader);
-        configuration.setLog(getLog());
+            Set<URL> moduleDependencies = resolveModuleDependencies(hostArtifacts, resolver);
 
-        configuration.setExtensions(runtimeExtensions);
-        configuration.setModuleDependencies(moduleDependencies);
+            ClassLoader parentClassLoader = createParentClassLoader();
 
-        configuration.setOutputDirectory(outputDirectory);
-        configuration.setSystemConfig(systemConfig);
-        configuration.setSystemConfigDir(systemConfigDir);
-        return configuration;
+            ClassLoader hostClassLoader = ClassLoaderHelper.createHostClassLoader(parentClassLoader, hostArtifacts);
+            ClassLoader bootClassLoader = ClassLoaderHelper.createBootClassLoader(hostClassLoader, runtimeArtifacts);
+
+            PluginBootConfiguration configuration = new PluginBootConfiguration();
+            configuration.setBootClassLoader(bootClassLoader);
+            configuration.setHostClassLoader(hostClassLoader);
+
+            MavenDestinationRouter router = new MavenDestinationRouter(getLog());
+            configuration.setRouter(router);
+
+            configuration.setExtensions(runtimeExtensions);
+            configuration.setModuleDependencies(moduleDependencies);
+
+            configuration.setOutputDirectory(outputDirectory);
+            configuration.setSystemConfig(systemConfig);
+            return configuration;
+        } catch (DependencyResolutionException | ArtifactResolutionException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
     }
 
     private ClassLoader createParentClassLoader() {
@@ -381,6 +400,87 @@ public class Fabric3ITestMojo extends AbstractMojo {
             parentClassLoader = new MaskingClassLoader(parentClassLoader, hiddenPackages);
         }
         return parentClassLoader;
+    }
+
+    private Set<Artifact> convert(Dependency[] dependencies) {
+        if (dependencies == null) {
+            return Collections.emptySet();
+        }
+        Set<Artifact> artifacts = new HashSet<>(dependencies.length);
+        for (Dependency dependency : dependencies) {
+            Artifact artifact = convert(dependency);
+            artifacts.add(artifact);
+        }
+        return artifacts;
+    }
+
+    private Artifact convert(Dependency dependency) {
+        String groupId = dependency.getGroupId();
+        String artifactId = dependency.getArtifactId();
+        String classifier = dependency.getClassifier();
+        String type = dependency.getType();
+        String version = dependency.getVersion();
+        return new DefaultArtifact(groupId, artifactId, classifier, type, version);
+    }
+
+    /**
+     * Calculates module dependencies based on the set of project artifacts. Module dependencies must be visible to implementation code in a composite and
+     * encompass project artifacts minus artifacts provided by the host classloader and those that are "provided scope".
+     *
+     * @param hostArtifacts the set of host artifacts
+     * @return the set of URLs pointing to module dependencies.
+     */
+    public Set<URL> resolveModuleDependencies(Set<Artifact> hostArtifacts, Resolver resolver) throws MojoExecutionException {
+        try {
+            Set<org.eclipse.aether.graph.Dependency> projectDependencies = calculateProjectDependencies(resolver);
+            Set<URL> urls = new LinkedHashSet<>();
+            for (org.eclipse.aether.graph.Dependency dependency : projectDependencies) {
+                String scope = dependency.getScope();
+                Artifact artifact = dependency.getArtifact();
+                if (hostArtifacts.contains(artifact) || "provided".equals(scope)) {
+                    continue;
+                }
+
+                File pathElement = artifact.getFile();
+                URL url = pathElement.toURI().toURL();
+                urls.add(url);
+            }
+            return urls;
+        } catch (MalformedURLException | DependencyResolutionException e) {
+            // toURI should have encoded the URL
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
+
+    }
+
+    private Set<org.eclipse.aether.graph.Dependency> calculateProjectDependencies(Resolver resolver) throws DependencyResolutionException {
+        // add all declared project dependencies
+        Set<org.eclipse.aether.graph.Dependency> artifacts = new HashSet<>();
+        for (Dependency dependency : project.getDependencies()) {
+            Set<Artifact> resolved = resolver.resolveTransitively(convert(dependency));
+            for (Artifact artifact : resolved) {
+                artifacts.add(new org.eclipse.aether.graph.Dependency(artifact, dependency.getScope()));
+            }
+        }
+        // include any artifacts that have been added by other plugins (e.g. Clover see FABRICTHREE-220)
+        for (org.apache.maven.artifact.Artifact dependency : project.getDependencyArtifacts()) {
+            Set<Artifact> resolved = resolver.resolveTransitively(convertArtifact(dependency));
+            for (Artifact artifact : resolved) {
+                artifacts.add(new org.eclipse.aether.graph.Dependency(artifact, dependency.getScope()));
+            }
+        }
+        return artifacts;
+    }
+
+    private DefaultArtifact convertArtifact(org.apache.maven.artifact.Artifact artifact) {
+        String groupId = artifact.getGroupId();
+        String artifactId = artifact.getArtifactId();
+        String classifier = artifact.getClassifier();
+        String type = artifact.getType();
+        String version = artifact.getVersion();
+        DefaultArtifact converted = new DefaultArtifact(groupId, artifactId, classifier, type, version);
+        converted = (DefaultArtifact) converted.setFile(artifact.getFile());    // Aether creates a new instance so reassign it :-(
+        return converted;
     }
 
 }

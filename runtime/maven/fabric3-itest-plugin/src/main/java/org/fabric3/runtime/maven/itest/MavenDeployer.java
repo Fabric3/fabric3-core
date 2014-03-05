@@ -35,20 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.maven;
+package org.fabric3.runtime.maven.itest;
 
-import org.apache.maven.surefire.suite.SurefireTestSuite;
+import java.io.File;
+
+import org.apache.maven.plugin.logging.Log;
+import org.fabric3.plugin.deployer.AbstractDeployer;
 
 /**
- * Creates a Surefire test suite to run as a set of integration tests.
+ * Deploys to the Maven runtime
  */
-public interface TestSuiteFactory {
+public class MavenDeployer extends AbstractDeployer {
+    private Log log;
 
-    /**
-     * Creates a test suite for testing components in the deployed composite.
-     *
-     * @return the test suite
-     */
-    SurefireTestSuite createTestSuite();
+    public MavenDeployer(String compositeNamespace, String compositeName, File buildDirectory, Log log) {
+        super(compositeNamespace, compositeName, buildDirectory);
+        this.log = log;
+    }
 
+    protected void logError(String message) {
+        log.error(message);
+    }
 }

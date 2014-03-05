@@ -18,20 +18,8 @@ Copyright (c) 2009-2013 Metaform Systems
            name="MavenExtensionComposite"
            autowire="true">
 
-    <component name="ModuleContributionProcessor">
-        <f3:implementation.system class="org.fabric3.runtime.maven.contribution.ModuleContributionProcessor"/>
-    </component>
-
-    <component name="ModuleClasspathProcessor">
-        <f3:implementation.system class="org.fabric3.runtime.maven.contribution.ModuleClasspathProcessor"/>
-    </component>
-
     <component name="TestSuiteFactory">
         <f3:implementation.system class="org.fabric3.runtime.maven.test.TestSuiteFactoryImpl"/>
-    </component>
-
-    <component name="TestWireHolder">
-        <f3:implementation.system class="org.fabric3.runtime.maven.test.WireHolderImpl"/>
     </component>
 
 

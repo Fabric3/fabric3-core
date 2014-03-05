@@ -29,6 +29,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+        <module>plugin</module>
 		<module>maven</module>
 		<module>standalone</module>
 		<module>tomcat</module>
