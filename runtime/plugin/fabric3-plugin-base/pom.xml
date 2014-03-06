@@ -10,17 +10,17 @@
  licensed under the Apache 2.0 license.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-runtime-maven-parent-pom</artifactId>
+        <artifactId>fabric3-runtime-plugin-parent-pom</artifactId>
         <version>2.0.2-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-maven-api</artifactId>
-    <name>Fabric3 Maven Runtime API</name>
-    <description>Fabric3 APIs for embedding a runtime in Maven</description>
+    <artifactId>fabric3-plugin-base</artifactId>
+    <name>Fabric3 Plugin Base</name>
+    <description>Fabric3 base plugin module</description>
 
     <dependencies>
         <dependency>
@@ -38,14 +38,13 @@
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-plugin-api</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-api</artifactId>
-            <version>2.6</version>
-            <scope>compile</scope>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>${aetherVersion}</version>
         </dependency>
+
     </dependencies>
 
 </project>

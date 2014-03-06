@@ -35,20 +35,24 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.maven;
+package org.fabric3.spi.contribution;
 
-import org.apache.maven.surefire.suite.SurefireTestSuite;
+import java.net.URL;
 
 /**
- * Creates a Surefire test suite to run as a set of integration tests.
+ * Introspects a Java class and determines if it is a contribution resource, e.g. an annotated component or model provider class.
  */
-public interface TestSuiteFactory {
+public interface JavaArtifactIntrospector {
 
     /**
-     * Creates a test suite for testing components in the deployed composite.
+     * Introspects the class and determines if it is a contribution resource.
      *
-     * @return the test suite
+     * @param name the class name
+     * @param url the URL for the class bytecode
+     * @param contribution the containing contribution
+     * @param loader the classloader
+     * @return a resource or null if the class is not a resource
      */
-    SurefireTestSuite createTestSuite();
+    Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader);
 
 }

@@ -35,20 +35,20 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.maven;
+package org.fabric3.spi.contribution.archive;
 
-import org.apache.maven.surefire.suite.SurefireTestSuite;
+import org.fabric3.host.contribution.InstallException;
+import org.fabric3.spi.contribution.Resource;
 
 /**
- * Creates a Surefire test suite to run as a set of integration tests.
+ * Used to perform a callback operation when iterating contained artifacts in a contribution.
  */
-public interface TestSuiteFactory {
-
+public interface ArtifactResourceCallback {
     /**
-     * Creates a test suite for testing components in the deployed composite.
+     * Called when an artifact is reached during iteration.
      *
-     * @return the test suite
+     * @param resource the resource
+     * @throws InstallException if an error occurs processing the artifact
      */
-    SurefireTestSuite createTestSuite();
-
+    void onResource(Resource resource) throws InstallException;
 }

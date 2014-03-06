@@ -34,41 +34,57 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.plugin.api.contribution;
 
 import java.net.URI;
+import java.net.URL;
+import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * A plugin contribution source such as a build output directory.
  */
-public interface Names {
+public class PluginContributionSource implements ContributionSource {
+    public static final String CONTENT_TYPE = "application/vnd.fabric3.plugin-project";
+    private URI uri;
+    private URL url;
+    private long timestamp;
+    private Source source;
 
-    String VERSION = "2.0.2";
+    public PluginContributionSource(URI uri, URL url) {
+        this.uri = uri;
+        this.url = url;
+        this.timestamp = System.currentTimeMillis();
+        this.source = new UrlSource(url);
+    }
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    public URI getUri() {
+        return uri;
+    }
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
+    public boolean persist() {
+        return false;
+    }
 
-    String RUNTIME_NAME = "fabric3://runtime";
+    public boolean isExtension() {
+        return false;
+    }
 
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
+    public Source getSource() {
+        return source;
+    }
 
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
+    public URL getLocation() {
+        return url;
+    }
 
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String LOCAL_ZONE = "LocalZone";
-
-    String DEFAULT_ZONE = "default.zone";
+    public String getContentType() {
+        return CONTENT_TYPE;
+    }
 }

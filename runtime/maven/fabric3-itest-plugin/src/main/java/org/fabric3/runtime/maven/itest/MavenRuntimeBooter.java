@@ -37,224 +37,51 @@
 */
 package org.fabric3.runtime.maven.itest;
 
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.fabric3.host.Names;
-import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.os.OperatingSystem;
-import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.BootstrapService;
-import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.RuntimeConfiguration;
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.stream.InputStreamSource;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
-import org.fabric3.host.util.FileHelper;
-import org.fabric3.runtime.maven.MavenRuntime;
-import org.w3c.dom.Document;
-import static org.fabric3.runtime.maven.itest.TestConstants.DOMAIN;
+import org.fabric3.plugin.api.runtime.PluginHostInfo;
+import org.fabric3.plugin.runtime.AbstractPluginRuntimeBooter;
+import org.fabric3.plugin.runtime.PluginBootConfiguration;
+import org.fabric3.plugin.runtime.PluginConstants;
+import org.fabric3.plugin.runtime.PluginHostInfoImpl;
 
 /**
- *
+ * Boots the plugin runtime in a Maven process.
  */
-public class MavenRuntimeBooter {
-    private static final String SYSTEM_CONFIG_XML_FILE = "systemConfig.xml";
-    private static final String DEFAULT_SYSTEM_CONFIG_DIR = "test-classes" + File.separator + "META-INF" + File.separator;
-    private static final String MAVEN2_RUNTIME_IMPL = "org.fabric3.runtime.maven.impl.MavenRuntimeImpl";
-    private static final String MAVEN3_RUNTIME_IMPL = "org.fabric3.runtime.maven3.impl.Maven3RuntimeImpl";
+public class MavenRuntimeBooter extends AbstractPluginRuntimeBooter {
+    private static final String PLUGIN_RUNTIME_IMPL = "org.fabric3.plugin.runtime.impl.PluginRuntimeImpl";
 
-    // configuration elements
-    private int mavenVersion;
-    private File outputDirectory;
-    private String systemConfigDir;
-    private String systemConfig;
-    private ClassLoader bootClassLoader;
-    private ClassLoader hostClassLoader;
-    private Set<URL> moduleDependencies;
-    private Set<org.apache.maven.model.Dependency> extensions;
-    private ExtensionHelper extensionHelper;
-    private Set<ArtifactRepository> repositories;
-    private Log log;
-
-    private RuntimeCoordinator coordinator;
-
-    public MavenRuntimeBooter(MavenBootConfiguration configuration) {
-        mavenVersion = configuration.getMavenVersion();
-        outputDirectory = configuration.getOutputDirectory();
-        systemConfigDir = configuration.getSystemConfigDir();
-        systemConfig = configuration.getSystemConfig();
-        bootClassLoader = configuration.getBootClassLoader();
-        hostClassLoader = configuration.getHostClassLoader();
-        moduleDependencies = configuration.getModuleDependencies();
-        extensions = configuration.getExtensions();
-        extensionHelper = configuration.getExtensionHelper();
-        repositories = configuration.getRepositories();
-        log = configuration.getLog();
+    public MavenRuntimeBooter(PluginBootConfiguration configuration) {
+        super(configuration);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public MavenRuntime boot() throws MojoExecutionException {
-        try {
-            BootstrapService bootstrapService = BootstrapFactory.getService(bootClassLoader);
-            Document systemConfig = getSystemConfig(bootstrapService);
-
-            MavenRuntime runtime = createRuntime(bootstrapService, systemConfig);
-
-            Map<String, String> exportedPackages = new HashMap<String, String>();
-            exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
-            exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
-            exportedPackages.put("org.junit", TestConstants.JUNIT_VERSION);
-
-            // process extensions
-            List<ContributionSource> contributions = extensionHelper.processExtensions(extensions, repositories);
-
-            BootConfiguration configuration = new BootConfiguration();
-
-            configuration.setRuntime(runtime);
-            configuration.setHostClassLoader(hostClassLoader);
-            configuration.setBootClassLoader(bootClassLoader);
-
-            URL systemComposite = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
-            configuration.setSystemCompositeUrl(systemComposite);
-
-            configuration.setSystemConfig(systemConfig);
-            configuration.setExtensionContributions(contributions);
-            configuration.setExportedPackages(exportedPackages);
-
-            coordinator = bootstrapService.createCoordinator(configuration);
-            coordinator.start();
-            String environment = runtime.getHostInfo().getEnvironment();
-            log.info("Fabric3 started [Environment: " + environment + "]");
-            return runtime;
-        } catch (InitializationException e) {
-            throw new MojoExecutionException("Error booting Fabric3 runtime", e);
-        }
+    protected String getPluginClass() {
+        return PLUGIN_RUNTIME_IMPL;
     }
 
-    private MavenRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig) throws MojoExecutionException, InitializationException {
-        String environment = bootstrapService.parseEnvironment(systemConfig);
+    protected Map<String, String> getExportedPackages() {
+        Map<String, String> exportedPackages = new HashMap<String, String>();
+        exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
+        return exportedPackages;
+    }
 
+    protected PluginHostInfo createHostInfo(String environment, Set<URL> moduleDependencies, File outputDirectory, File buildDir) {
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
-        if (tempDir.exists()) {
-            try {
-                FileHelper.cleanDirectory(tempDir);
-            } catch (IOException e) {
-                log.warn("Error cleaning temporary directory: " + e.getMessage());
-            }
-        }
-        tempDir.mkdir();
 
-        URI domain = URI.create(DOMAIN);
+        URI domain = URI.create(PluginConstants.DOMAIN);
         File baseDir = new File(outputDirectory, "test-classes");
+        File classDir = new File(outputDirectory, "classes");
         OperatingSystem os = BootstrapHelper.getOperatingSystem();
+        // Maven modules place resources and test resources in the respective compiled classes directories
+        return new PluginHostInfoImpl(domain, environment, moduleDependencies, baseDir, tempDir, outputDirectory, classDir, classDir, baseDir, baseDir, os);
 
-        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, environment, moduleDependencies, baseDir, tempDir, os);
-
-        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
-
-        MavenDestinationRouter router = new MavenDestinationRouter(log);
-        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, router);
-
-        return instantiateRuntime(configuration, bootClassLoader);
-    }
-
-    private Document getSystemConfig(BootstrapService bootstrapService) throws MojoExecutionException, InitializationException {
-        Source source = null;
-        if (systemConfig != null) {
-            try {
-                InputStream stream = new ByteArrayInputStream(systemConfig.getBytes("UTF-8"));
-                source = new InputStreamSource("systemConfig", stream);
-            } catch (UnsupportedEncodingException e) {
-                throw new MojoExecutionException("Error loading system configuration", e);
-            }
-        } else {
-            URL systemConfig = getSystemConfig();
-            if (systemConfig != null) {
-                source = new UrlSource(systemConfig);
-            }
-        }
-        Document systemConfig;
-        if (source == null) {
-            systemConfig = bootstrapService.createDefaultSystemConfig();
-        } else {
-            systemConfig = bootstrapService.loadSystemConfig(source);
-        }
-        return systemConfig;
-    }
-
-    public void shutdown() throws ShutdownException, InterruptedException, ExecutionException {
-        coordinator.shutdown();
-        log.info("Fabric3 stopped");
-    }
-
-    private MavenRuntime instantiateRuntime(RuntimeConfiguration configuration, ClassLoader cl) {
-        try {
-            Class<?> implClass;
-            if (mavenVersion == 2) {
-                implClass = cl.loadClass(MAVEN2_RUNTIME_IMPL);
-            } else {
-                implClass = cl.loadClass(MAVEN3_RUNTIME_IMPL);
-            }
-            return MavenRuntime.class.cast(implClass.getConstructor(RuntimeConfiguration.class).newInstance(configuration));
-        } catch (ClassNotFoundException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (InstantiationException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (NoSuchMethodException e) {
-            // programming error
-            throw new AssertionError(e);
-        }
-    }
-
-    private URL getSystemConfig() throws MojoExecutionException {
-        File systemConfig = new File(outputDirectory, DEFAULT_SYSTEM_CONFIG_DIR + SYSTEM_CONFIG_XML_FILE);
-        if (systemConfigDir != null) {
-            systemConfig = new File(outputDirectory, systemConfigDir + File.separator + SYSTEM_CONFIG_XML_FILE);
-            if (!systemConfig.exists()) {
-                //The user has explicitly attempted to configure the system config location but the information is incorrect
-                throw new MojoExecutionException("Failed to find the system config information in: " + systemConfig.getAbsolutePath());
-            }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Using system config information from: " + systemConfig.getAbsolutePath());
-        }
-
-        try {
-            return systemConfig.exists() ? systemConfig.toURI().toURL() : null;
-        } catch (MalformedURLException e) {
-            throw new MojoExecutionException("Invalid system configuration: " + systemConfig, e);
-        }
     }
 
 }

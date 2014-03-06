@@ -34,41 +34,59 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.plugin.api.runtime;
 
-import java.net.URI;
+import java.io.File;
+import java.net.URL;
+import java.util.Set;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * The host info type for the Gradle plugin runtime.
  */
-public interface Names {
+public interface PluginHostInfo extends HostInfo {
 
-    String VERSION = "2.0.2";
+    /**
+     * Returns the URLs to project dependencies.
+     *
+     * @return the URLs to project dependencies.
+     */
+    Set<URL> getDependencyUrls();
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    /**
+     * Returns the build directory that contains contribution classes.
+     *
+     * @return the build directory
+     */
+    File getBuildDir();
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
+    /**
+     * Returns the directory containing compiled classes.
+     *
+     * @return the directory containing compiled classes
+     */
+    File getClassesDir();
 
-    String RUNTIME_NAME = "fabric3://runtime";
+    /**
+     * Returns the directory containing compiled resources.
+     *
+     * @return the directory containing compiled resources
+     */
+    File getResourcesDir();
 
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
+    /**
+     * Returns the directory containing compiled test classes.
+     *
+     * @return the directory containing compiled test classes
+     */
+    File getTestClassesDir();
 
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
+    /**
+     * Returns the directory containing compiled test resources.
+     *
+     * @return the directory containing compiled test resources
+     */
+    File getTestResourcesDir();
 
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String LOCAL_ZONE = "LocalZone";
-
-    String DEFAULT_ZONE = "default.zone";
 }

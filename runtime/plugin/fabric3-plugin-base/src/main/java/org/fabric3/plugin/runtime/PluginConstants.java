@@ -34,41 +34,30 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.plugin.runtime;
 
 import java.net.URI;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * Constants used by plugin runtimes.
  */
-public interface Names {
+public interface PluginConstants {
 
-    String VERSION = "2.0.2";
+    /**
+     * The default domain name for tests.
+     */
+    String DOMAIN = "fabric3://domain";
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    /**
+     * The name for the user-provided latch service that services a runtime synchronization mechanism when performing integration tests that require
+     * asynchronous communication.
+     */
+    URI TEST_LATCH_SERVICE = URI.create(DOMAIN + "/F3LatchService");
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
+    /**
+     * The JUnit version.
+     */
+    String JUNIT_VERSION = "4.11";
 
-    String RUNTIME_NAME = "fabric3://runtime";
-
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
-
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
-
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String LOCAL_ZONE = "LocalZone";
-
-    String DEFAULT_ZONE = "default.zone";
 }

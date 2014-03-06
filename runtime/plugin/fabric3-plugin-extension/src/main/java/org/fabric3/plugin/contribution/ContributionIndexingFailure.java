@@ -34,41 +34,42 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.plugin.contribution;
 
-import java.net.URI;
+import java.io.File;
+
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * Validation warning indicating that the possible contribution file with the given File could not be loaded.
  */
-public interface Names {
+public class ContributionIndexingFailure extends ValidationFailure {
+    private File file;
+    private Exception ex;
 
-    String VERSION = "2.0.2";
+    public ContributionIndexingFailure(File file, Exception ex) {
+        this.file = file;
+        this.ex = ex;
+    }
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    /**
+     * Retrieves the message for the failure that includes both the standard ValidationFailure message along with details of the exception.
+     *
+     * @return the message.
+     */
+    public String getMessage() {
+        if (ex == null) {
+            return "Error indexing file " + file;
+        }
+        return "Error indexing file " + file + "\n " + ex;
+    }
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
+    public String getShortMessage() {
+        if (ex == null) {
+            return "Error indexing file " + file;
+        }
+        return "Error indexing file " + file + ":  " + ex.getMessage();
+    }
 
-    String RUNTIME_NAME = "fabric3://runtime";
-
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
-
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
-
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String LOCAL_ZONE = "LocalZone";
-
-    String DEFAULT_ZONE = "default.zone";
 }

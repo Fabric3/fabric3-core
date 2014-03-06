@@ -34,41 +34,24 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
-
-import java.net.URI;
+*/
+package org.fabric3.plugin;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * Base plugin runtime exception.
  */
-public interface Names {
+public class Fabric3PluginException extends Exception {
+    private static final long serialVersionUID = -7485267983316644088L;
 
-    String VERSION = "2.0.2";
+    public Fabric3PluginException(String message) {
+        super(message);
+    }
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    public Fabric3PluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
-
-    String RUNTIME_NAME = "fabric3://runtime";
-
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
-
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
-
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String LOCAL_ZONE = "LocalZone";
-
-    String DEFAULT_ZONE = "default.zone";
+    public Fabric3PluginException(Throwable cause) {
+        super(cause);
+    }
 }
