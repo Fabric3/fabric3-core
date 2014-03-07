@@ -49,15 +49,15 @@ import org.fabric3.plugin.test.WireHolderImpl;
  *
  */
 public class FabricProvider {
-    private static final QName QNAME = new QName(Namespaces.F3, "PluginExtensionComposite");
-
+//    private static final QName QNAME = new QName(Namespaces.F3, "PluginExtensionComposite");
+//
 //    @Provides
-    public static Composite getComposite() {
+//    public static Composite getComposite() {
 //        CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
 //        compositeBuilder.component(SystemComponentDefinitionBuilder.newBuilder(WireHolderImpl.class).build());
 //        compositeBuilder.component(SystemComponentDefinitionBuilder.newBuilder(ProjectClasspathProcessor.class).build());
 //        compositeBuilder.component(SystemComponentDefinitionBuilder.newBuilder(PluginContributionProcessor.class).build());
 //        return compositeBuilder.build();
-            return null;
-    }
+//            return null;
+//    }
 }
