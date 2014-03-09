@@ -43,6 +43,7 @@
  */
 package org.fabric3.fabric.runtime;
 
+import java.io.IOException;
 import javax.management.MBeanServer;
 import java.io.File;
 import java.net.URI;
@@ -172,7 +173,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         scopeContainer.stopAllContexts();
         try {
             repository.shutdown();
-        } catch (RepositoryException e) {
+            classLoaderRegistry.close();
+        } catch (RepositoryException | IOException e) {
             throw new ShutdownException(e);
         }
     }

@@ -231,7 +231,13 @@ public class DefaultFabric implements Fabric {
             coordinator.shutdown();
             state = State.UNINITIALIZED;
             if (tempDirectory.exists()) {
-                FileHelper.cleanDirectory(tempDirectory);
+                try {
+                    FileHelper.cleanDirectory(tempDirectory);
+                } catch (IOException e) {
+                    if (tempDirectory.exists()) {
+                        FileHelper.forceDeleteOnExit(tempDirectory);
+                    }
+                }
             }
             return this;
         } catch (ShutdownException | IOException e) {

@@ -162,6 +162,11 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
 
     private class MockClassLoaderRegistry implements ClassLoaderRegistry {
 
+        @Override
+        public void close() {
+
+        }
+
         public void register(URI id, ClassLoader classLoader) {
 
         }
