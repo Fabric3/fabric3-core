@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.context;
 
+import java.net.URL;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -86,7 +87,7 @@ public class ContextManagerImpl implements ContextManager {
     public void init() {
         // Windows requires the ZMQ library to be loaded as the JZMQ library is linked to it and Windows is unable to resolve it relative to the JZMQ library
         // System.loadLibrary("zmq");
-        ZMQLibraryInitializer.loadLibrary(hostInfo);
+        loadLibrary(hostInfo);
 
         context = ZMQ.context(1);
 
@@ -123,6 +124,33 @@ public class ContextManagerImpl implements ContextManager {
     }
 
     /**
+     * Uses the OperatingSystem information of the HostInfo to decide what library to load. On Windows the library name is "libzmq". On Linux the library
+     * name is "zmq".
+     *
+     * @param hostInfo Based on the OperatingSystem member the needed Library will be loaded.
+     */
+    protected void loadLibrary(HostInfo hostInfo) {
+        if (hostInfo == null) {
+            return;
+        }
+        // don't load native lib for jeromq profile
+        if (getClass().getClassLoader().getResource("org/codehaus/fabric3/jeromq") != null) {
+            return;
+        }
+        String osName = hostInfo.getOperatingSystem().getName().toLowerCase();
+        if (osName == null) {
+            return;
+        }
+
+        for (ZMQLibraryInitializer lib : ZMQLibraryInitializer.values()) {
+            if (osName.toLowerCase().contains(lib.name().toLowerCase())) {
+                lib.loadLibrary();
+                return;
+            }
+        }
+    }
+
+    /**
      * Initializes the ZeroMQ library on Windows and Linux. If the ZeroMQ Library is not initialized before the Context is created the loading of the library is
      * delegated to the Operating System. This causes problems since F3 can't control where to load the libraries from. To work around this problem we
      * initialize ZeroMQ base library prior to JZMQ (which happens when a Context is created).
@@ -134,29 +162,6 @@ public class ContextManagerImpl implements ContextManager {
 
         private ZMQLibraryInitializer(String libName) {
             this.libName = libName;
-        }
-
-        /**
-         * Uses the OperatingSystem information of the HostInfo to decide what library to load. On Windows the library name is "libzmq". On Linux the library
-         * name is "zmq".
-         *
-         * @param hostInfo Based on the OperatingSystem member the needed Library will be loaded.
-         */
-        public static void loadLibrary(HostInfo hostInfo) {
-            if (hostInfo == null) {
-                return;
-            }
-            String osName = hostInfo.getOperatingSystem().getName().toLowerCase();
-            if (osName == null) {
-                return;
-            }
-
-            for (ZMQLibraryInitializer lib : values()) {
-                if (osName.toLowerCase().contains(lib.name().toLowerCase())) {
-                    lib.loadLibrary();
-                    return;
-                }
-            }
         }
 
         private void loadLibrary() {
