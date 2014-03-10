@@ -43,7 +43,10 @@
  */
 package org.fabric3.fabric.classloader;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URLClassLoader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -101,4 +104,16 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
         return clazz;
     }
 
+    @Override
+    public void close() throws IOException {
+        if (registry == null || registry.isEmpty()) {
+            return;
+        }
+        Collection<ClassLoader> classLoaders = registry.values();
+        for (ClassLoader classLoader : classLoaders) {
+            if (classLoader instanceof URLClassLoader) {
+                ((URLClassLoader) classLoader).close();
+            }
+        }
+    }
 }

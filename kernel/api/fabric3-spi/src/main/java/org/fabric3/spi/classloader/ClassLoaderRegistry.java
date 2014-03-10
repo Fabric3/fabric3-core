@@ -43,6 +43,7 @@
  */
 package org.fabric3.spi.classloader;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
@@ -101,4 +102,8 @@ public interface ClassLoaderRegistry {
      */
     Class<?> loadClass(ClassLoader cl, String className) throws ClassNotFoundException;
 
+    /**
+     * Method calls close() on all URLClassLoader-s in registry.
+     */
+    void close() throws IOException;
 }
