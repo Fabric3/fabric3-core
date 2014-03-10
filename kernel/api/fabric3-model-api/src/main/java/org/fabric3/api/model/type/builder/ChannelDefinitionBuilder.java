@@ -37,6 +37,7 @@
 */
 package org.fabric3.api.model.type.builder;
 
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 
 /**
@@ -62,9 +63,27 @@ public class ChannelDefinitionBuilder extends AbstractBuilder {
         return this;
     }
 
+    /**
+     * Sets the channel locality.
+     *
+     * @param local tru of the channel is local
+     * @return the builder
+     */
     public ChannelDefinitionBuilder local(boolean local) {
         checkState();
         definition.setLocal(local);
+        return this;
+    }
+
+    /**
+     * Adds a binding to the channel.
+     *
+     * @param binding the binding
+     * @return the builder
+     */
+    public ChannelDefinitionBuilder binding(BindingDefinition binding) {
+        checkState();
+        definition.addBinding(binding);
         return this;
     }
 
