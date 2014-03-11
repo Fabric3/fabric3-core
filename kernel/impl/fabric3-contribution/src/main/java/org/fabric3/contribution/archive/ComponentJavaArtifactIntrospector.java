@@ -62,7 +62,7 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
             if (extensionIndex < 1) {
                 throw new AssertionError("Not a class: " + name);
             }
-            String className = name.substring(0, extensionIndex).replace(File.separator, ".");
+            String className = name.substring(0, extensionIndex).replace(File.separator, ".").replace("/", ".");
             if (isProvider(className)) {
                 // the class is a model provider
                 UrlSource source = new UrlSource(url);
