@@ -38,6 +38,7 @@
 package org.fabric3.binding.activemq.broker;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,8 +46,8 @@ import java.util.List;
  */
 public class BrokerConfiguration {
     private String name;
-    private List<URI> networkConnectorUris;
-    private List<TransportConnectorConfig> transportConnectorConfigs;
+    private List<URI> networkConnectorUris = Collections.emptyList();
+    private List<TransportConnectorConfig> transportConnectorConfigs = Collections.emptyList();
     private PersistenceAdapterConfig persistenceAdapter;
 
     public String getName() {
