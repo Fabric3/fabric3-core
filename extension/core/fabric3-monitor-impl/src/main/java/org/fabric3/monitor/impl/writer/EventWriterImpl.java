@@ -179,7 +179,7 @@ public class EventWriterImpl implements EventWriter {
         int counter = 0;
         for (int i = 0; i < template.length(); i++) {
             char current = template.charAt(i);
-            if ('{' == current) {
+            if ('{' == current && args.length > 0) {
                 if (args == null || counter >= args.length) {
                     throw new ServiceRuntimeException("Monitor message contains more parameters than are supplied by the method interface: " + template);
                 }
