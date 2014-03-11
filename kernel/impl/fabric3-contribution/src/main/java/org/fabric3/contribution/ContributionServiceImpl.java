@@ -597,7 +597,7 @@ public class ContributionServiceImpl implements ContributionService {
                 // there were just warnings, report them
                 monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
             }
-            calculateDeployables(contribution);
+            addDeployableEntries(contribution);
         } catch (StoreException e) {
             throw new InstallException(e);
         }
@@ -631,14 +631,12 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     /**
-     * Calculates deployables in a contribution. If no deployables are configured, all composites are considered deployables; otherwise only composites
-     * configured as part of the contribution manifest or in the composite itself are deployables.
+     * Adds deployable entries for composites that are defined as deployables but do not have an explicit entry in the manifest.
      *
      * @param contribution the contribution
      */
-    private void calculateDeployables(Contribution contribution) {
+    private void addDeployableEntries(Contribution contribution) {
         ContributionManifest manifest = contribution.getManifest();
-        boolean empty = manifest.getDeployables().isEmpty();
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getValue() instanceof Composite) {
@@ -648,17 +646,6 @@ public class ContributionServiceImpl implements ContributionService {
                         if (!manifest.getDeployables().contains(deployable)) {
                             manifest.getDeployables().add(deployable);
                         }
-                    }
-                }
-            }
-        }
-        if (empty) {
-            for (Resource resource : contribution.getResources()) {
-                for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                    if (element.getValue() instanceof Composite) {
-                        Composite composite = (Composite) element.getValue();
-                        Deployable deployable = new Deployable(composite.getName(), composite.getModes(), composite.getEnvironments());
-                        manifest.addDeployable(deployable);
                     }
                 }
             }

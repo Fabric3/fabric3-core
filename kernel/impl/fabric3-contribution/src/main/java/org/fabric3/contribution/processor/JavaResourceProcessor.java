@@ -131,7 +131,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         QName compositeName;
         if (annotation != null) {
             compositeName = QName.valueOf(annotation.composite());
-        }else {
+        } else {
             compositeName = resourceElement.getMetadata(QName.class);
             if (compositeName == null) {
                 compositeName = QName.valueOf(Component.DEFAULT_COMPOSITE);
@@ -167,7 +167,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
             composite = new Composite(compositeName);
             composite.setAutowire(Autowire.INHERITED);
             composite.setContributionUri(contribution.getUri());
-            composite.setDeployable(true);
+            composite.setDeployable(true); // make the composite deployable if it has not been defined in either a composite file or via the DSL
             NullSource source = new NullSource(compositeName.toString());
             Resource compositeResource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
             compositeResource.setState(ResourceState.PROCESSED);
