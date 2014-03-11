@@ -37,11 +37,13 @@
 */
 package org.fabric3.binding.rs.runtime.bytecode;
 
+import java.io.IOException;
 import javax.annotation.Priority;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.spi.classloader.BytecodeClassLoader;
+import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -66,6 +68,13 @@ public class ProviderGeneratorImpl implements ProviderGenerator {
     @Init
     public void init() {
         bytecodeClassLoader = new BytecodeClassLoader(URI.create("BytecodeClassLoader"), getClass().getClassLoader());
+    }
+
+    @Destroy
+    public void destroy() throws Exception {
+        if (bytecodeClassLoader != null) {
+            bytecodeClassLoader.close();
+        }
     }
 
     @SuppressWarnings("unchecked")
