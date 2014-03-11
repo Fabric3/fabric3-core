@@ -51,8 +51,8 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Adds classes annotated with {link @Provider} as components to the contribution. If a class is also annotated with {@link @Component} it will be skipped as
- * the default introspector will be triggered.
+ * Creates a component resource for classes annotated with {link @Provider}. If a class is also annotated with {@link Component} it will be skipped as the
+ * default introspector will be triggered.
  */
 @EagerInit
 public class RsProviderIntrospector implements JavaArtifactIntrospector {
@@ -75,7 +75,6 @@ public class RsProviderIntrospector implements JavaArtifactIntrospector {
             JavaSymbol symbol = new JavaSymbol(className);
             ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
             resource.addResourceElement(resourceElement);
-            contribution.addResource(resource);
             return resource;
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             // ignore since the class may reference another class not present in the contribution

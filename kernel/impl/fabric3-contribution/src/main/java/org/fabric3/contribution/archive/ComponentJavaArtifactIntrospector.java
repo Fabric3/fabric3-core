@@ -70,7 +70,6 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
                 ProviderSymbol symbol = new ProviderSymbol(className);
                 ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
                 resource.addResourceElement(element);
-                contribution.addResource(resource);
                 return resource;
             } else if (!contribution.getManifest().isExtension()) {
                 Class<?> clazz = loader.loadClass(className);
@@ -81,7 +80,6 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
                     JavaSymbol symbol = new JavaSymbol(className);
                     ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
                     resource.addResourceElement(resourceElement);
-                    contribution.addResource(resource);
                     return resource;
                 }
             }

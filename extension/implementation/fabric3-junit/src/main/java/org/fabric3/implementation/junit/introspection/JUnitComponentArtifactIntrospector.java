@@ -53,7 +53,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.junit.runner.RunWith;
 
 /**
- * Introspects a class to determine if it is a JUnit component.
+ * Creates a resource for classes that are JUnit components.
  */
 public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospector {
     private static final QName TEST_COMPOSITE = new QName(Namespaces.F3, "TestComposite");
@@ -79,7 +79,6 @@ public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospec
             ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
             resourceElement.setMetadata(TEST_COMPOSITE);
             resource.addResourceElement(resourceElement);
-            contribution.addResource(resource);
             return resource;
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             // ignore since the class may reference another class not present in the contribution

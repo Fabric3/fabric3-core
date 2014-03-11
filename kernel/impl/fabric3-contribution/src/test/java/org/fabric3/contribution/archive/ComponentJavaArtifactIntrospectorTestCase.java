@@ -62,7 +62,6 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
         Resource resource = introspector.inspect(name, url, contribution, classLoader);
 
         assertEquals(Constants.DSL_CONTENT_TYPE, resource.getContentType());
-        assertEquals(1, contribution.getResources().size());
     }
 
     public void testComponent() throws Exception {
@@ -71,7 +70,6 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
         Resource resource = introspector.inspect(name, url, contribution, classLoader);
 
         assertEquals(Constants.JAVA_COMPONENT_CONTENT_TYPE, resource.getContentType());
-        assertEquals(1, contribution.getResources().size());
     }
 
     public void testNoComponent() throws Exception {
