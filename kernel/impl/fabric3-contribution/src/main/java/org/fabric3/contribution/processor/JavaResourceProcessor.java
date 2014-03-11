@@ -167,6 +167,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
             composite = new Composite(compositeName);
             composite.setAutowire(Autowire.INHERITED);
             composite.setContributionUri(contribution.getUri());
+            composite.setDeployable(true);
             NullSource source = new NullSource(compositeName.toString());
             Resource compositeResource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
             compositeResource.setState(ResourceState.PROCESSED);
