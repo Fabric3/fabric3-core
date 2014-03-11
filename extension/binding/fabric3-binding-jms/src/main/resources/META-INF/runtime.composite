@@ -89,4 +89,9 @@ licensed under the Apache 2.0 license.
         <property name="connectionFactoryTemplates" source="$systemConfig//f3:jms/f3:connection.factory.templates"/>
     </component>
 
+    <component name="JmsChannelBindingBuilder" f3:key="org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.builder.JmsChannelBindingBuilder"/>
+    </component>
+
+
 </composite>

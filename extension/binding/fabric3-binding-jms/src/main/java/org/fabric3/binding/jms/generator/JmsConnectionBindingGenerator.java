@@ -45,29 +45,28 @@ package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
 
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
+import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
-import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.model.physical.ChannelConstants.DURABLE_INTENT;
 import static org.fabric3.spi.model.physical.ChannelConstants.NON_PERSISTENT_INTENT;
 
@@ -128,8 +127,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBindingDefinition> binding, ChannelDeliveryType deliveryType)
             throws GenerationException {
-        // do nothing
-        return null;
+        // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
+        return new JmsChannelBindingDefinition();
     }
 
     /**
