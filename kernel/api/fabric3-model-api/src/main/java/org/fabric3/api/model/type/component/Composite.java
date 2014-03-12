@@ -47,6 +47,7 @@ import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -70,7 +71,7 @@ public class Composite extends ComponentType implements PolicyAware {
     private Autowire autowire;
 
     private boolean deployable;
-    private List<RuntimeMode> modes = Collections.emptyList();
+    private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.CONTROLLER, RuntimeMode.NODE, RuntimeMode.PARTICIPANT);
     private List<String> environments = Collections.emptyList();
 
     private Set<QName> intents = new LinkedHashSet<>();
@@ -86,8 +87,7 @@ public class Composite extends ComponentType implements PolicyAware {
     private Map<String, Property> propertiesView = new HashMap<>();
     private Map<String, ReferenceDefinition> referencesView = new HashMap<>();
     private Map<String, AbstractService> servicesView = new HashMap<>();
-    private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView
-            = new HashMap<>();
+    private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView = new HashMap<>();
     private Map<String, ChannelDefinition> channelsView = new HashMap<>();
     private List<WireDefinition> wiresView = new ArrayList<>();
     private List<ResourceDefinition> resourcesView = new ArrayList<>();
