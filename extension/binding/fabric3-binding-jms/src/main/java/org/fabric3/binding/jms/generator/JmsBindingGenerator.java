@@ -49,32 +49,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.ActivationSpec;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
 import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.type.xsd.XSDType;
+import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -89,8 +88,6 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
     private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
     private static final QName NON_PERSISTENT = new QName(org.fabric3.api.Namespaces.F3, "nonPersistent");
-
-    private static final DataType<?> ANY = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
 
     private PayloadTypeIntrospector introspector;
     private HostInfo info;
@@ -132,7 +129,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         for (OperationPayloadTypes types : payloadTypes) {
             if (PayloadType.XML == types.getInputType()) {
                 // set the source type to string XML
-                definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, ANY);
+                definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
                 break;
             }
         }
@@ -166,7 +163,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         JmsTargetDefinition definition = null;
         for (OperationPayloadTypes types : payloadTypes) {
             if (PayloadType.XML == types.getInputType()) {
-                definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, ANY);
+                definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
                 break;
             }
         }
