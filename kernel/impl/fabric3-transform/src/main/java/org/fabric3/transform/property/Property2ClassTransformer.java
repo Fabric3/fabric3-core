@@ -37,21 +37,20 @@
 */
 package org.fabric3.transform.property;
 
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Node;
-
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Node;
 
 /**
  *
  */
 public class Property2ClassTransformer implements SingleTypeTransformer<Node, Class<?>> {
-    private static final JavaClass<Class> TARGET = new JavaClass<>(Class.class);
+    private static final JavaType TARGET = new JavaType(Class.class);
 
     private final ClassLoaderRegistry classLoaderRegistry;
 

@@ -47,9 +47,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -61,9 +58,12 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.IntentMap;
 import org.fabric3.api.model.type.definitions.PolicyPhase;
 import org.fabric3.api.model.type.definitions.PolicySet;
-import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
+import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
+import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
+import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.deployment.generator.channel.EventStreamHandlerGenerator;
+import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
 import org.fabric3.spi.deployment.generator.policy.PolicyResolver;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -78,7 +78,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.w3c.dom.Element;
 
 /**
@@ -251,7 +251,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         LogicalComponent<?> component = createComponent(parent);
 
         ConsumerDefinition consumerDefinition = new ConsumerDefinition("consumer");
-        DataType javaClass = new JavaClass<>(Object.class);
+        DataType javaClass = new JavaType(Object.class);
         List list = Collections.singletonList(javaClass);
         consumerDefinition.setTypes(list);
         LogicalConsumer consumer = new LogicalConsumer(URI.create("composite/component#consumer"), consumerDefinition, component);
@@ -266,7 +266,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ProducerDefinition producerDefinition = new ProducerDefinition("producer");
         LogicalProducer producer = new LogicalProducer(URI.create("composite/component#producer"), producerDefinition, component);
-        DataType javaClass = new JavaClass<>(Object.class);
+        DataType javaClass = new JavaType(Object.class);
         List list = Collections.singletonList(javaClass);
         Operation operationDefinition = new Operation("operation", list, null, null);
         LogicalOperation operation = new LogicalOperation(operationDefinition, producer);

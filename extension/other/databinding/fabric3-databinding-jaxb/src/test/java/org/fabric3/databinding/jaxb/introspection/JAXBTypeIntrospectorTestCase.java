@@ -37,20 +37,19 @@
 */
 package org.fabric3.databinding.jaxb.introspection;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
-
-import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
-import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapperImpl;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
+import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapperImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  *
@@ -74,10 +73,10 @@ public class JAXBTypeIntrospectorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private Operation createOperation(String name, Class<?> paramType) {
-        JavaClass<?> type = new JavaClass(paramType);
+        JavaType type = new JavaType(paramType);
         List<DataType> in = new ArrayList<>();
         in.add(type);
-        JavaClass<Void> outputType = new JavaClass<>(Void.class);
+        JavaType outputType = new JavaType(Void.class);
         return new Operation(name, in, outputType, null);
     }
 

@@ -43,16 +43,16 @@
  */
 package org.fabric3.implementation.pojo.builder;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
-import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.transform.TransformationException;
@@ -107,7 +107,7 @@ public abstract class PojoSourceWireAttacher {
             Class<Enum> enumClass = (Class<Enum>) keyType;
             return Enum.valueOf(enumClass, key);
         }
-        DataType targetType = new JavaClass(keyType);
+        JavaType targetType = new JavaType(keyType);
         return createKey(targetType, key, targetClassLoader);
 
     }

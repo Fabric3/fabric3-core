@@ -44,11 +44,11 @@ import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Represents resolved type information for a Java generic type. Type parameters are resolved and recursively represented as
- * <code>JavaTypeInfo</code>s. Non-generic types have a raw type and empty paramter type information. For example:
+ * <code>JavaTypeInfo</code>s. Non-generic types have a raw type and empty parameter type information. For example:
  * <pre>
  *  <ul>
- *      <li><code>List&lt;String&gt;</code> is represented as TypeInfo(raw: List, [TypeInfo(raw: String)])
- *      <li><code>List&lt;List&lt;String&gt;&gt</code> is represented as TypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
+ *      <li><code>List&lt;String&gt;</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: String)])
+ *      <li><code>List&lt;List&lt;String&gt;&gt</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
  *  </ul>
  * Note that unbound TypeVariables and WildCardTypes will be evaluated using their raw type.
  */
@@ -140,14 +140,12 @@ public class JavaTypeInfo extends ModelObject {
 
     }
 
-    @Override
     public int hashCode() {
         // Hash code must return that of the raw type so JavaGenericType and JavaClass (which uses the logical Class) can return the same hash code.
         // This is necessary for ConcurrentHashMap gets where the equivalence of non-generic and generic unbound types are required.
         return rawType.hashCode();
     }
 
-    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         write(this, builder);

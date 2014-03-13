@@ -39,22 +39,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import org.fabric3.spi.container.invocation.CallbackReference;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.ZeroMQWireBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.federation.addressing.AddressAnnouncement;
-import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.binding.zeromq.runtime.interceptor.OneWayInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.RequestReplyInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.UnwrappingInterceptor;
@@ -70,30 +63,36 @@ import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.RuntimeStop;
-import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocationException;
-import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
-import org.fabric3.spi.model.physical.ParameterTypeHelper;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InterceptorCreationException;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
+import org.fabric3.spi.federation.addressing.AddressAnnouncement;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.host.Port;
+import org.fabric3.spi.host.PortAllocationException;
+import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.model.physical.ParameterTypeHelper;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.RuntimeStop;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  *
  */
 @Service(ZeroMQWireBroker.class)
 public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySender, Fabric3EventListener<RuntimeStop> {
-    private static final DataType BYTE_TYPE = new JavaClass<>(byte[].class);
-    private static final DataType EMPTY_TYPE = new JavaClass<>(Void.class);
+    private static final JavaType BYTE_TYPE = new JavaType(byte[].class);
+    private static final JavaType EMPTY_TYPE = new JavaType(Void.class);
     List<DataType> TRANSPORT_TYPES;   // the transport type is a byte array
 
     private static final String ZMQ = "zmq";
@@ -420,7 +419,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             } else {
                 List<Class<?>> types = ParameterTypeHelper.loadSourceInParameterTypes(physicalOperation, loader);
                 for (Class<?> type : types) {
-                    dataTypes.add(new JavaClass((type)));
+                    dataTypes.add(new JavaType((type)));
                 }
             }
             return dataTypes;

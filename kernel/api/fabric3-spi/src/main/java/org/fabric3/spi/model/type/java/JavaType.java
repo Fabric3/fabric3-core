@@ -40,13 +40,39 @@ package org.fabric3.spi.model.type.java;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
- * An abstract Java type.
+ * A Java type.
  */
-public abstract class JavaType extends DataType {
+public class JavaType extends DataType {
     private static final long serialVersionUID = 9025728312058285754L;
 
-    public JavaType(Class<?> physical) {
-        super(physical);
+    public JavaType(Class<?> type) {
+        super(type);
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DataType)) {
+            return false;
+        }
+        DataType other = (DataType) o;
+        if (!getType().equals(other.getType())) {
+            return false;
+        }
+
+        if (other instanceof JavaGenericType) {
+            boolean bound = false;  // unbound parameters are equivalent to non-generic
+            JavaGenericType otherType = (JavaGenericType) other;
+            for (JavaTypeInfo info : otherType.getTypeInfo().getParameterTypesInfos()) {
+                if (!Object.class.equals(info.getRawType())) {
+                    bound = true;
+                    break;
+                }
+            }
+            return !bound && otherType.getTypeInfo().getRawType().equals(getType());
+        }
+        return getType().equals(other.getType());
     }
 
 }

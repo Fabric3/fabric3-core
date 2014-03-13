@@ -41,10 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-
-import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  *
@@ -53,7 +52,7 @@ public class TypeEventFilterBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
         TypeEventFilterBuilder builder = new TypeEventFilterBuilder();
-        DataType type = new JavaClass<>(String.class);
+        DataType type = new JavaType(String.class);
         List<DataType> types = new ArrayList<>();
         types.add(type);
         TypeEventFilterDefinition definition = new TypeEventFilterDefinition(types);

@@ -40,15 +40,14 @@ package org.fabric3.fabric.container.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.ChannelConnector;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.fabric.container.channel.FilterHandler;
 import org.fabric3.fabric.container.channel.TransformerHandler;
-import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.container.builder.channel.EventStreamHandlerBuilder;
@@ -57,15 +56,15 @@ import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default ChannelConnector implementation.
@@ -188,7 +187,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         List<String> eventTypes = streamDefinition.getEventTypes();
         String stringifiedType = eventTypes.get(0);
         try {
-            DataType type = new JavaClass(loader.loadClass(stringifiedType));
+            DataType type = new JavaType(loader.loadClass(stringifiedType));
             TransformerHandler handler = new TransformerHandler(type, transformerRegistry);
             stream.addHandler(handler);
         } catch (ClassNotFoundException e) {

@@ -52,7 +52,7 @@ import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.security.AuthenticationException;
@@ -93,7 +93,7 @@ public class CachingAuthenticationService extends HttpServlet {
 
     private final static DataType JSON_TYPE = new JsonType(InputStream.class);
     private static final DataType XML_TYPE = new XSDType(String.class, new QName(XSDType.XSD_NS, "string"));
-    private final static JavaClass<UsernamePasswordToken> JAVA_TYPE = new JavaClass<>(UsernamePasswordToken.class);
+    private final static JavaType JAVA_TYPE = new JavaType(UsernamePasswordToken.class);
 
     private AuthenticationService authService;
     private ServletHost host;

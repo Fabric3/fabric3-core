@@ -42,21 +42,20 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Node;
-
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Node;
 
 /**
  *
  */
 public class Property2StreamTransformer implements SingleTypeTransformer<Node, XMLStreamReader> {
-    private static final JavaClass<XMLStreamReader> TARGET = new JavaClass<>(XMLStreamReader.class);
+    private static final JavaType TARGET = new JavaType(XMLStreamReader.class);
 
     private final XMLInputFactory xmlFactory;
 

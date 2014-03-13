@@ -43,18 +43,12 @@
  */
 package org.fabric3.introspection.java.contract;
 
+import javax.jws.WebMethod;
+import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import javax.jws.WebMethod;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Callback;
-import org.oasisopen.sca.annotation.OneWay;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Remotable;
 
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.DataType;
@@ -65,10 +59,15 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.InterfaceIntrospector;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.contract.OperationIntrospector;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Default implementation of a ContractProcessor for Java interfaces.
@@ -245,7 +244,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     private DataType createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
         if (type instanceof Class) {
             // not a generic
-            return new JavaClass(physicalType);
+            return new JavaType(physicalType);
         } else {
             JavaTypeInfo info = helper.createTypeInfo(type, mapping);
             return new JavaGenericType(info);

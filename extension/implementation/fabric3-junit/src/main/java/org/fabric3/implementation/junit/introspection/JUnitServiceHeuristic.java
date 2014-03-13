@@ -49,14 +49,14 @@ import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.junit.Test;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -66,7 +66,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class JUnitServiceHeuristic implements HeuristicProcessor {
     private static final String TEST_SERVICE_NAME = "testService";
     private static final List<DataType> INPUT_TYPE = Collections.emptyList();
-    private static final JavaClass<Void> OUTPUT_TYPE = new JavaClass<>(void.class);
+    private static final JavaType OUTPUT_TYPE = new JavaType(void.class);
     private static final List<DataType> FAULT_TYPE = Collections.emptyList();
 
     private IntrospectionHelper helper;

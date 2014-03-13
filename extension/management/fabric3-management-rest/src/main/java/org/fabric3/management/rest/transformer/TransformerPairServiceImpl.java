@@ -43,20 +43,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class TransformerPairServiceImpl implements TransformerPairService {
-    private static final JavaClass<?> JAVA_TYPE = new JavaClass<>(Object.class);
+    private static final JavaType JAVA_TYPE = new JavaType(Object.class);
 
     private TransformerRegistry registry;
 
@@ -71,7 +69,7 @@ public class TransformerPairServiceImpl implements TransformerPairService {
         if (methods.size() == 1) {
             Method method = methods.get(0);
             if (Void.TYPE.equals(method.getReturnType()) && method.getParameterTypes().length == 1) {
-                type = new JavaClass(method.getParameterTypes()[0]);
+                type = new JavaType(method.getParameterTypes()[0]);
             } else {
                 type = JAVA_TYPE;
             }

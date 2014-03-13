@@ -38,30 +38,29 @@
 
 package org.fabric3.implementation.pojo.builder;
 
-import java.util.Collections;
-import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
  */
 public class ObjectBuilderImplTestCase extends TestCase {
-    private static final DataType JAVA_CLASS = new JavaClass<>(String.class);
+    private static final JavaType JAVA_CLASS = new JavaType(String.class);
     private DocumentBuilder documentBuilder;
     private TransformerRegistry registry;
     private ObjectBuilderImpl builder;
@@ -69,7 +68,7 @@ public class ObjectBuilderImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testArrayBuild() throws Exception {
-        DataType type = new JavaClass<>(String.class);
+        DataType type = new JavaType(String.class);
 
         List list = Collections.singletonList(String.class);
 

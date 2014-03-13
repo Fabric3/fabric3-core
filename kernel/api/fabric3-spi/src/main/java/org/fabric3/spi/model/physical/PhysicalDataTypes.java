@@ -40,7 +40,7 @@ package org.fabric3.spi.model.physical;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.w3c.dom.Document;
 
@@ -53,7 +53,7 @@ public interface PhysicalDataTypes {
     /**
      * Denotes a Java type, i.e. an object or primitive
      */
-    DataType JAVA_TYPE = new JavaClass<>(Object.class);
+    DataType JAVA_TYPE = new JavaType(Object.class);
 
     /**
      * Denotes an XML DOM

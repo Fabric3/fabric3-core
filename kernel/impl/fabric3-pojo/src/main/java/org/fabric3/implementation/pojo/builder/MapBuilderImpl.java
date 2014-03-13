@@ -48,8 +48,8 @@ import java.util.Map;
 
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
@@ -92,8 +92,8 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
             List<Class<?>> valueTypes = new ArrayList<>();
             valueTypes.add(valueType);
 
-            Transformer<Node, ?> keyTransformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(keyType), keyTypes);
-            Transformer<Node, ?> valueTransformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(valueType), valueTypes);
+            Transformer<Node, ?> keyTransformer = getTransformer(name, PROPERTY_TYPE, new JavaType(keyType), keyTypes);
+            Transformer<Node, ?> valueTransformer = getTransformer(name, PROPERTY_TYPE, new JavaType(valueType), valueTypes);
 
             Map<Object, Object> map = new HashMap<>();
             Element root = value.getDocumentElement();

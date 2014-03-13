@@ -44,15 +44,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.Broadcaster;
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the BroadcasterManager.
@@ -105,7 +104,7 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
             return;
         }
         try {
-            JavaClass<Object> javaType = new JavaClass<>(Object.class);
+            JavaType javaType = new JavaType(Object.class);
             List<Class<?>> list = Collections.emptyList();
             jsonTransformer = (Transformer<Object, String>) registry.getTransformer(javaType, JSON_TYPE, list, list);
             if (jsonTransformer == null) {

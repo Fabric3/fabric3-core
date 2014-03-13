@@ -44,7 +44,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
@@ -52,7 +52,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  *
  */
 public class TransformerPairServiceImplTestCase extends TestCase {
-    private static final JavaClass<?> JAVA_TYPE = new JavaClass<>(Object.class);
+    private static final JavaType JAVA_TYPE = new JavaType(Object.class);
 
     private List<Method> methods;
 
@@ -60,7 +60,7 @@ public class TransformerPairServiceImplTestCase extends TestCase {
     public void testGetTransformerPairMultipleMethods() throws Exception {
         Transformer transformer = EasyMock.createMock(Transformer.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
-        registry.getTransformer(EasyMock.isA(JavaClass.class), EasyMock.isA(JavaClass.class), EasyMock.isA(List.class), EasyMock.isA(List.class));
+        registry.getTransformer(EasyMock.isA(JavaType.class), EasyMock.isA(JavaType.class), EasyMock.isA(List.class), EasyMock.isA(List.class));
         EasyMock.expectLastCall().andReturn(transformer).times(2);
 
         EasyMock.replay(transformer, registry);
@@ -76,7 +76,7 @@ public class TransformerPairServiceImplTestCase extends TestCase {
     public void testGetTransformerPairSingleMethods() throws Exception {
         Transformer transformer = EasyMock.createMock(Transformer.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
-        registry.getTransformer(EasyMock.isA(JavaClass.class), EasyMock.isA(JavaClass.class), EasyMock.isA(List.class), EasyMock.isA(List.class));
+        registry.getTransformer(EasyMock.isA(JavaType.class), EasyMock.isA(JavaType.class), EasyMock.isA(List.class), EasyMock.isA(List.class));
         EasyMock.expectLastCall().andReturn(transformer).times(2);
 
         EasyMock.replay(transformer, registry);

@@ -63,27 +63,26 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.spi.introspection.ImplementationNotFoundException;
+import org.fabric3.spi.introspection.TypeMapping;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.introspection.java.MultiplicityType;
+import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
 import org.oasisopen.sca.annotation.Service;
-
-import org.fabric3.api.model.type.component.AbstractService;
-import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.spi.introspection.ImplementationNotFoundException;
-import org.fabric3.spi.introspection.TypeMapping;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.java.MultiplicityType;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.model.type.java.JavaGenericType;
-import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.api.model.type.java.Signature;
 
 /**
  *
@@ -452,14 +451,14 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
             ParameterizedType parameterizedType = (ParameterizedType) actualType;
             Type actualKeyType = typeMapping.getActualType(parameterizedType.getActualTypeArguments()[0]);
             if (actualKeyType instanceof Class) {
-                return new JavaClass((Class) actualKeyType);
+                return new JavaType((Class) actualKeyType);
             } else {
                 return new JavaGenericType(createTypeInfo(actualKeyType, typeMapping));
             }
 
         } else if (actualType instanceof Map) {
             // the map is not parameterized
-            return new JavaClass<>(Object.class);
+            return new JavaType(Object.class);
         } else {
             throw new IllegalArgumentException("Type not a Map: " + type);
         }

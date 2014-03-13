@@ -37,24 +37,23 @@
 */
 package org.fabric3.transform.property;
 
-import java.util.Calendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.w3c.dom.Node;
+import java.util.Calendar;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.w3c.dom.Node;
 
 /**
  * Transforms from a DOM representation to a Calendar, expecting the format of the date to correspond to XML Schema (2007-10-31T01:02:03Z)
  */
 public class Property2CalendarTransformer implements SingleTypeTransformer<Node, Calendar> {
-    private static final JavaClass<Calendar> TARGET = new JavaClass<>(Calendar.class);
+    private static final JavaType TARGET = new JavaType(Calendar.class);
 
     private final DatatypeFactory factory;
 

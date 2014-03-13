@@ -48,30 +48,30 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
-import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.util.ParamTypes;
 import org.w3c.dom.Document;
 
@@ -166,7 +166,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
                 // convert primitive representation to its object equivalent
                 nonGenericType = ParamTypes.PRIMITIVE_TO_OBJECT.get(nonGenericType);
             }
-            return new JavaClass(nonGenericType);
+            return new JavaType(nonGenericType);
         } else {
             // a generic
             JavaTypeInfo info = helper.createTypeInfo(type, typeMapping);

@@ -61,8 +61,8 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -120,7 +120,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
     private DataType createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
         if (type instanceof Class) {
             // not a generic
-            return new JavaClass(physicalType);
+            return new JavaType(physicalType);
         } else {
             JavaTypeInfo info = helper.createTypeInfo(type, mapping);
             return new JavaGenericType(info);

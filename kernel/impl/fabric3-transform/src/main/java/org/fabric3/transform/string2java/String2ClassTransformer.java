@@ -39,22 +39,21 @@ package org.fabric3.transform.string2java;
 
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class String2ClassTransformer implements SingleTypeTransformer<String, Class<?>> {
     private static final XSDSimpleType SOURCE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));
-    private static final JavaClass<Class> TARGET = new JavaClass<>(Class.class);
+    private static final JavaType TARGET = new JavaType(Class.class);
     private ClassLoaderRegistry classLoaderRegistry;
 
     public String2ClassTransformer(@Reference ClassLoaderRegistry classLoaderRegistry) {

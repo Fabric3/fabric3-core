@@ -60,8 +60,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  *
@@ -70,8 +69,8 @@ public class Stream2ObjectJsonTransformerTestCase extends TestCase {
 
     public void testTransform() throws Exception {
         Stream2ObjectJsonTransformerFactory factory = new Stream2ObjectJsonTransformerFactory();
-        JavaClass<Foo> javaClass = new JavaClass<>(Foo.class);
-        Stream2ObjectJsonTransformer transformer = factory.create(null, javaClass, null, null);
+        JavaType javaType = new JavaType(Foo.class);
+        Stream2ObjectJsonTransformer transformer = factory.create(null, javaType, null, null);
         String text = "{\"bar\":\"bar\"}";
         InputStream stream = new ByteArrayInputStream(text.getBytes());
         Foo result = (Foo) transformer.transform(stream, getClass().getClassLoader());

@@ -42,11 +42,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.EventWrapper;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
@@ -60,7 +59,7 @@ public class TransformerHandlerTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testTransform() throws Exception {
         DataType sourceType = new JsonType(String.class);
-        DataType targetType = new JavaClass<>(String.class);
+        JavaType targetType = new JavaType(String.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
         Transformer transformer = EasyMock.createMock(Transformer.class);
 
@@ -76,7 +75,7 @@ public class TransformerHandlerTestCase extends TestCase {
 
         EasyMock.replay(registry, next, transformer);
 
-        TransformerHandler handler = new TransformerHandler((DataType) targetType, registry);
+        TransformerHandler handler = new TransformerHandler(targetType, registry);
         handler.setNext(next);
 
         Object event = new MockEvent();
@@ -91,13 +90,13 @@ public class TransformerHandlerTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testNoTransform() throws Exception {
-        DataType dataType = new JavaClass<>(String.class);
+        DataType dataType = new JavaType(String.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
         next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
 
         EasyMock.replay(registry, next);
 
-        TransformerHandler handler = new TransformerHandler((DataType) dataType, registry);
+        TransformerHandler handler = new TransformerHandler(dataType, registry);
         handler.setNext(next);
 
         handler.handle(new Object(), true);

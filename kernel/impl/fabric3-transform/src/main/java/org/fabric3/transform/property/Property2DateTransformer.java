@@ -42,19 +42,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.w3c.dom.Node;
-
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.w3c.dom.Node;
 
 /**
  * Transformer that converts from a DOM Node to a Java Date, expecting the format of the date to be yyy-MM-d'T'HH:mm:ss'Z'.
  */
 public class Property2DateTransformer implements SingleTypeTransformer<Node, Date> {
-    private static final JavaClass<Date> TARGET = new JavaClass<>(Date.class);
+    private static final JavaType TARGET = new JavaType(Date.class);
 
     private final DateFormat dateFormatter;
 

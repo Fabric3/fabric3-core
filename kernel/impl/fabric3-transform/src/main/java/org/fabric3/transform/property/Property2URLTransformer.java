@@ -40,19 +40,18 @@ package org.fabric3.transform.property;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.w3c.dom.Node;
-
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.w3c.dom.Node;
 
 /**
  * Transforms from a Node to a URL.
  */
 public class Property2URLTransformer implements SingleTypeTransformer<Node, URL> {
-    private static final JavaClass<URL> TARGET = new JavaClass<>(URL.class);
+    private static final JavaType TARGET = new JavaType(URL.class);
 
     public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;

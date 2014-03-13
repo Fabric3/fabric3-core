@@ -37,36 +37,35 @@
 */
 package org.fabric3.fabric.deployment.generator.wire;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.Constants;
-import org.w3c.dom.Element;
-
-import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
+import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.oasisopen.sca.Constants;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -310,11 +309,11 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         component.addService(service);
 
         List<DataType> input = new ArrayList<>();
-        JavaClass<String> type = new JavaClass<>(String.class);
+        JavaType type = new JavaType(String.class);
         input.add(type);
-        DataType output = new JavaClass<>(String.class);
+        DataType output = new JavaType(String.class);
         List<DataType> faults = new ArrayList<>();
-        faults.add(new JavaClass<>(Exception.class));
+        faults.add(new JavaType(Exception.class));
         Operation definition = new Operation("op", input, output, faults);
         return new LogicalOperation(definition, service);
     }
@@ -329,11 +328,11 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         component.addService(service);
 
         List<DataType> input = new ArrayList<>();
-        JavaClass<Object> type = new JavaClass<>(Object.class);
+        JavaType type = new JavaType(Object.class);
         input.add(type);
-        DataType output = new JavaClass<>(Object.class);
+        DataType output = new JavaType(Object.class);
         List<DataType> faults = new ArrayList<>();
-        faults.add(new JavaClass<>(RuntimeException.class));
+        faults.add(new JavaType(RuntimeException.class));
         Operation definition = new Operation("op", input, output, faults);
         return new LogicalOperation(definition, service);
     }

@@ -40,7 +40,7 @@ package org.fabric3.transform.string2java;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
@@ -51,7 +51,7 @@ import org.fabric3.spi.transform.TransformationException;
  */
 public class String2IntegerTransformer implements SingleTypeTransformer<String, Integer> {
     private static final XSDSimpleType SOURCE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));
-    private static final JavaClass<Integer> TARGET = new JavaClass<>(Integer.class);
+    private static final JavaType TARGET = new JavaType(Integer.class);
 
     public DataType getSourceType() {
         return SOURCE;

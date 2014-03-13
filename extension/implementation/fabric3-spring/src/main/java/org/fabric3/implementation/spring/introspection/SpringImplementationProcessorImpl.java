@@ -49,22 +49,22 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.fabric3.api.host.stream.Source;
-import org.fabric3.implementation.spring.model.BeanDefinition;
-import org.fabric3.implementation.spring.model.SpringComponentType;
-import org.fabric3.implementation.spring.model.SpringConsumer;
-import org.fabric3.implementation.spring.model.SpringReferenceDefinition;
-import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.implementation.spring.model.BeanDefinition;
+import org.fabric3.implementation.spring.model.SpringComponentType;
+import org.fabric3.implementation.spring.model.SpringConsumer;
+import org.fabric3.implementation.spring.model.SpringReferenceDefinition;
+import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Reference;
@@ -435,7 +435,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
-        JavaClass<T> dataType = new JavaClass<>(consumerType);
+        JavaType dataType = new JavaType(consumerType);
         String target = reader.getAttributeValue(null, "target");
         if (target == null) {
             MissingAttribute failure = new MissingAttribute("A consumer target must be specified", startLocation);

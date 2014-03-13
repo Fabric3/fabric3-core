@@ -42,13 +42,12 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.federation.addressing.AddressAnnouncement;
-import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableQueuedPublisher;
@@ -56,22 +55,23 @@ import org.fabric3.binding.zeromq.runtime.message.NonReliableSingleThreadPublish
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.HandlerCreationException;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.RuntimeStop;
+import org.fabric3.spi.federation.addressing.AddressAnnouncement;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.RuntimeStop;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -82,8 +82,8 @@ import org.oasisopen.sca.annotation.Service;
  */
 @Service(ZeroMQPubSubBroker.class)
 public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {
-    private static final DataType BYTES = new JavaClass<>(byte[].class);
-    private static final DataType TWO_DIMENSIONAL_BYTES = new JavaClass<>(byte[][].class);
+    private static final JavaType BYTES = new JavaType(byte[].class);
+    private static final JavaType TWO_DIMENSIONAL_BYTES = new JavaType(byte[][].class);
 
     private static final String ZMQ = "zmq";
 
@@ -361,7 +361,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         } else {
             type = ParameterTypeHelper.loadClass(eventTypes.get(0), loader);
         }
-        return new JavaClass(type);
+        return new JavaType(type);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -371,12 +371,12 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             try {
                 String eventType = eventStreamDefinition.getEventTypes().get(0);
                 Class<?> type = ParameterTypeHelper.loadClass(eventType, loader);
-                return new JavaClass(type);
+                return new JavaType(type);
             } catch (ClassNotFoundException e) {
                 throw new BrokerException(e);
             }
         } else {
-            return new JavaClass<>(Object.class);
+            return new JavaType(Object.class);
         }
     }
 

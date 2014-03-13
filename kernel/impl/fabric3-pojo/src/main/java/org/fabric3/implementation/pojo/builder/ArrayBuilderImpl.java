@@ -42,21 +42,19 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
+import org.fabric3.spi.transform.TransformerRegistry;
+import org.fabric3.spi.util.ParamTypes;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.transform.TransformationException;
-import org.fabric3.spi.transform.Transformer;
-import org.fabric3.spi.transform.TransformerRegistry;
-import org.fabric3.spi.util.ParamTypes;
-
 import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
 
 /**
@@ -81,7 +79,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
             List<Class<?>> types = new ArrayList<>();
             types.add(type);
 
-            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaClass(type), types);
+            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaType(type), types);
 
             Element root = value.getDocumentElement();
             NodeList nodes = root.getChildNodes();

@@ -37,18 +37,16 @@
 */
 package org.fabric3.fabric.deployment.generator.wire;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.spi.model.type.xsd.XSDType;
@@ -106,11 +104,11 @@ public class OperationResolverImplTestCase extends TestCase {
 
     private <T> LogicalOperation createOperation(String name, Class<T> inputType) {
         List<DataType> input = new ArrayList<>();
-        JavaClass<T> type = new JavaClass<>(inputType);
+        JavaType type = new JavaType(inputType);
         input.add(type);
-        DataType output = new JavaClass<>(String.class);
+        DataType output = new JavaType(String.class);
         List<DataType> faults = new ArrayList<>();
-        faults.add(new JavaClass<>(Exception.class));
+        faults.add(new JavaType(Exception.class));
         Operation definition = new Operation(name, input, output, faults);
         return new LogicalOperation(definition, null);
     }

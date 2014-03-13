@@ -38,21 +38,20 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBindingDefinition;
-import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
-import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
+import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  *
@@ -104,20 +103,20 @@ public class FileBindingGeneratorTestCase extends TestCase {
 
     private ServiceContract createServiceContract() {
         ServiceContract contract = new JavaServiceContract(FileTransport.class);
-        DataType inputType = new JavaClass<>(InputStream.class);
+        DataType inputType = new JavaType(InputStream.class);
         List<DataType> input = Collections.<DataType>singletonList(inputType);
         List<DataType> faultType = Collections.emptyList();
-        DataType outputType = new JavaClass<>(Void.class);
+        DataType outputType = new JavaType(Void.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }
 
     private ServiceContract createReferenceContract() {
         ServiceContract contract = new JavaServiceContract(FileReferenceTransport.class);
-        DataType inputType = new JavaClass<>(String.class);
+        DataType inputType = new JavaType(String.class);
         List<DataType> input = Collections.<DataType>singletonList(inputType);
         List<DataType> faultType = Collections.emptyList();
-        DataType outputType = new JavaClass<>(OutputStream.class);
+        DataType outputType = new JavaType(OutputStream.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }
