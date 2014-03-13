@@ -53,14 +53,26 @@ import java.io.Serializable;
 public abstract class DataType implements Serializable {
     private static final long serialVersionUID = 1848442023940979720L;
     private Class<?> type;
+    private QName xsdType;
 
     /**
-     * Construct a data type specifying the physical and logical types.
+     * Constructor.
      *
-     * @param type the physical class used by the runtime
+     * @param type the class used by the runtime for this type
      */
     public DataType(Class<?> type) {
         this.type = type;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param type    the class used by the runtime for this type
+     * @param xsdType the XML Schema type for this type
+     */
+    public DataType(Class<?> type, QName xsdType) {
+        this.type = type;
+        this.xsdType = xsdType;
     }
 
     /**
@@ -78,7 +90,16 @@ public abstract class DataType implements Serializable {
      * @return the XML Schema type as a qualified name or null
      */
     public QName getXsdType() {
-        return null;
+        return xsdType;
+    }
+
+    /**
+     * Sets the XML Schema type for this type
+     *
+     * @param xsdType the Schema type
+     */
+    public void setXsdType(QName xsdType) {
+        this.xsdType = xsdType;
     }
 
     public boolean equals(Object o) {

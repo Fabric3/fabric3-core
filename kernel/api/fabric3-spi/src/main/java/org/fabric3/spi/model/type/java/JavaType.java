@@ -37,8 +37,6 @@
 */
 package org.fabric3.spi.model.type.java;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -49,17 +47,10 @@ import org.fabric3.api.model.type.contract.DataType;
  */
 public abstract class JavaType<T> extends DataType {
     private static final long serialVersionUID = 9025728312058285754L;
-    private QName xsdType;
 
     public JavaType(Class<?> physical) {
         super(physical);
     }
 
-    public QName getXsdType() {
-        return xsdType;
-    }
 
-    public void setXsdType(QName xsdType) {
-        this.xsdType = xsdType;
-    }
 }

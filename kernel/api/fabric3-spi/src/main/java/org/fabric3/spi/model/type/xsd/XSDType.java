@@ -48,14 +48,9 @@ import org.fabric3.api.model.type.contract.DataType;
 public class XSDType extends DataType {
     private static final long serialVersionUID = 4837060732513291971L;
     public static final String XSD_NS = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-    private QName xsdType;
 
-    public XSDType(Class<?> physical, QName xsdType) {
-        super(physical);
-        this.xsdType = xsdType;
+    public XSDType(Class<?> type, QName xsdType) {
+        super(type, xsdType);
     }
 
-    public QName getXsdType() {
-        return xsdType;
-    }
 }
