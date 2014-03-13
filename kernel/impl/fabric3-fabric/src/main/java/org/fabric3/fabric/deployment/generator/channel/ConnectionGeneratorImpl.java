@@ -266,7 +266,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         for (DataType<?> dataType : types) {
             if (dataType instanceof JavaType) {
                 // for now only support Java contracts
-                if (!Object.class.equals(dataType.getLogical())) {
+                if (!Object.class.equals(dataType.getPhysical())) {
                     typed = true;
                     if (ChannelEvent.class.isAssignableFrom(dataType.getPhysical())) {
                         takesChannelEvent = true;
