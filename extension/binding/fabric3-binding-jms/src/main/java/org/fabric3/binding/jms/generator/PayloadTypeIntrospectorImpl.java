@@ -87,7 +87,7 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
 
     private PayloadType introspectType(DataType param) throws JmsGenerationException {
 
-        Class<?> physical = param.getPhysical();
+        Class<?> physical = param.getType();
         if (physical.isPrimitive() && !Void.TYPE.equals(physical)) {
             return calculatePrimitivePayloadType(physical);
         } else if (InputStream.class.isAssignableFrom(physical)) {

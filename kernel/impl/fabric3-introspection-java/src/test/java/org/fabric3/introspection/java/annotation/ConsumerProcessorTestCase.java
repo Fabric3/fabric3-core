@@ -72,7 +72,7 @@ public class ConsumerProcessorTestCase extends TestCase {
         Map<String, ConsumerDefinition> consumers = componentType.getConsumers();
         ConsumerDefinition definition = consumers.get("onEvent");
         assertEquals(1, definition.getTypes().size());
-        assertEquals(String.class, definition.getTypes().get(0).getPhysical());
+        assertEquals(String.class, definition.getTypes().get(0).getType());
     }
 
     public void testSequenceMethod() throws Exception {

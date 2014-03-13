@@ -70,7 +70,7 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return Node.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
+        return Node.class.isAssignableFrom(source.getType()) && target instanceof JavaType;
     }
 
     public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)

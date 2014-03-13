@@ -80,17 +80,17 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         assertNotNull(baseInt);
 
         DataType returnType = baseInt.getOutputType();
-        assertEquals(Integer.TYPE, returnType.getPhysical());
+        assertEquals(Integer.TYPE, returnType.getType());
 
         List<?> parameterTypes = baseInt.getInputTypes();
         assertEquals(1, parameterTypes.size());
         DataType arg0 = (DataType) parameterTypes.get(0);
-        assertEquals(Integer.TYPE, arg0.getPhysical());
+        assertEquals(Integer.TYPE, arg0.getType());
 
         List<?> faultTypes = baseInt.getFaultTypes();
         assertEquals(1, faultTypes.size());
         DataType fault0 = (DataType) faultTypes.get(0);
-        assertEquals(IllegalArgumentException.class, fault0.getPhysical());
+        assertEquals(IllegalArgumentException.class, fault0.getType());
     }
 
     public void testBoundGenericInterface() {
@@ -118,7 +118,7 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         JavaTypeInfo info = returnType.getTypeInfo();
         assertEquals(Base.class, info.getRawType());
         assertTrue(info.getParameterTypesInfos().isEmpty());
-        assertEquals(Base.class, returnType.getPhysical());
+        assertEquals(Base.class, returnType.getType());
 
     }
 

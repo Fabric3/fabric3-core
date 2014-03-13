@@ -73,7 +73,7 @@ public class JavaGenericType extends JavaType<JavaTypeInfo> {
             return false;
         }
         DataType other = (DataType) o;
-        if (!getPhysical().equals(other.getPhysical())) {
+        if (!getType().equals(other.getType())) {
             return false;
         }
 
@@ -87,12 +87,12 @@ public class JavaGenericType extends JavaType<JavaTypeInfo> {
             }
             if (!bound) {
                 JavaClass<?> otherClazz = (JavaClass<?>) other;
-                return getTypeInfo().getRawType().equals(otherClazz.getPhysical());
+                return getTypeInfo().getRawType().equals(otherClazz.getType());
             } else {
                 return other instanceof JavaGenericType && getTypeInfo().equals(((JavaGenericType) other).getTypeInfo());
             }
         }
-        return getTypeInfo().getRawType().equals(other.getPhysical());
+        return getTypeInfo().getRawType().equals(other.getType());
     }
 
 }

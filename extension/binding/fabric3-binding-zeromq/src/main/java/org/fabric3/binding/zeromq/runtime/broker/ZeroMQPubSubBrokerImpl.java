@@ -317,7 +317,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         try {
             DataType dataType = getEventType(stream, loader);
             EventStreamHandler transformer;
-            if (dataType.getPhysical().equals(byte[][].class)) {
+            if (dataType.getType().equals(byte[][].class)) {
                 // multi-frame data
                 transformer = handlerFactory.createHandler(dataType, TWO_DIMENSIONAL_BYTES, loader);
             } else {
@@ -338,7 +338,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         try {
             DataType dataType = getEventTypeForConnection(connection, loader);
             EventStreamHandler head;
-            if (dataType.getPhysical().equals(byte[][].class)) {
+            if (dataType.getType().equals(byte[][].class)) {
                 // multi-frame data
                 head = handlerFactory.createHandler(TWO_DIMENSIONAL_BYTES, dataType, loader);
             } else {

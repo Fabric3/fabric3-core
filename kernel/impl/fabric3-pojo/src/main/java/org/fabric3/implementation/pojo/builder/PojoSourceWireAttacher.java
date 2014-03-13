@@ -116,7 +116,7 @@ public abstract class PojoSourceWireAttacher {
     @SuppressWarnings("unchecked")
     private Object createKey(DataType targetType, String value, ClassLoader classLoader) throws KeyInstantiationException {
         try {
-            Class<?> physical = targetType.getPhysical();
+            Class<?> physical = targetType.getType();
             List<Class<?>> types = new ArrayList<>();
             types.add(physical);
             Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(STRING_TYPE, targetType, types, types);

@@ -72,7 +72,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
     @SuppressWarnings({"unchecked"})
     public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws PropertyTransformException {
         try {
-            Class componentType = dataType.getPhysical().getComponentType();
+            Class componentType = dataType.getType().getComponentType();
             Class<?> type = componentType;
             if (type.isPrimitive()) {
                 type = ParamTypes.PRIMITIVE_TO_OBJECT.get(type);

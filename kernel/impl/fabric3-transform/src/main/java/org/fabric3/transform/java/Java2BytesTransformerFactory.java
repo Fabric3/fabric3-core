@@ -54,7 +54,7 @@ public class Java2BytesTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return source instanceof JavaType && byte[].class.equals(target.getPhysical());
+        return source instanceof JavaType && byte[].class.equals(target.getType());
     }
 
     public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) {

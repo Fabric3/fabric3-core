@@ -67,7 +67,7 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
     public ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader)
             throws PropertyTransformException {
         try {
-            Class<?> physical = type.getPhysical();
+            Class<?> physical = type.getType();
             List<Class<?>> types = new ArrayList<>();
             types.add(physical);
             Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, type, types);

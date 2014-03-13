@@ -52,24 +52,24 @@ import java.io.Serializable;
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
 public abstract class DataType implements Serializable {
     private static final long serialVersionUID = 1848442023940979720L;
-    private Class<?> physical;
+    private Class<?> type;
 
     /**
      * Construct a data type specifying the physical and logical types.
      *
-     * @param physical the physical class used by the runtime
+     * @param type the physical class used by the runtime
      */
-    public DataType(Class<?> physical) {
-        this.physical = physical;
+    public DataType(Class<?> type) {
+        this.type = type;
     }
 
     /**
-     * Returns the physical type used by the runtime.
+     * Returns the type used by the runtime.
      *
-     * @return the physical type used by the runtime
+     * @return the type used by the runtime
      */
-    public Class<?> getPhysical() {
-        return physical;
+    public Class<?> getType() {
+        return type;
     }
 
     /**
@@ -91,15 +91,15 @@ public abstract class DataType implements Serializable {
 
         DataType dataType = (DataType) o;
 
-        return physical.equals(dataType.physical);
+        return type.equals(dataType.type);
 
     }
 
     public int hashCode() {
-        return physical.hashCode();
+        return type.hashCode();
     }
 
     public String toString() {
-        return "[" + physical + "]";
+        return "[" + type + "]";
     }
 }

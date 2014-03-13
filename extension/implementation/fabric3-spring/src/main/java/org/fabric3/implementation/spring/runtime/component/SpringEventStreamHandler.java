@@ -134,7 +134,7 @@ public class SpringEventStreamHandler implements EventStreamHandler {
         for (Method method : beanClass.getMethods()) {
             Class<?>[] params = method.getParameterTypes();
             // setters are only supported
-            if (params.length == 1 && method.getName().equals(consumerName) && params[0].isAssignableFrom(type.getPhysical())) {
+            if (params.length == 1 && method.getName().equals(consumerName) && params[0].isAssignableFrom(type.getType())) {
                 beanMethod = method;
                 return beanMethod;
             }

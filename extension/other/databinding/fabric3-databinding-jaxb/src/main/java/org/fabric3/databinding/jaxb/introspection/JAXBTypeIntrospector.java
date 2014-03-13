@@ -37,7 +37,14 @@
 */
 package org.fabric3.databinding.jaxb.introspection;
 
-import java.awt.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import java.awt.Image;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -49,23 +56,14 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.OperationIntrospector;
 import org.fabric3.spi.model.type.java.JavaType;
-
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 /**
@@ -142,45 +140,45 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
     }
 
     private void introspectJAXB(JavaType<?> dataType) {
-        Class<?> physical = dataType.getPhysical();
+        Class<?> type = dataType.getType();
         // not an explicit JAXB type, but it can potentially be mapped
-        QName xsdName = JAXB_MAPPING.get(physical);
+        QName xsdName = JAXB_MAPPING.get(type);
         if (xsdName != null) {
             dataType.setXsdType(xsdName);
             return;
         }
-        XmlRootElement annotation = physical.getAnnotation(XmlRootElement.class);
+        XmlRootElement annotation = type.getAnnotation(XmlRootElement.class);
         if (annotation != null) {
             String namespace = annotation.namespace();
             if (DEFAULT.equals(namespace)) {
-                namespace = getDefaultNamespace(physical);
+                namespace = getDefaultNamespace(type);
             }
             String name = annotation.name();
             if (DEFAULT.equals(namespace)) {
                 // as per the JAXB specification
-                name = Introspector.decapitalize(physical.getSimpleName());
+                name = Introspector.decapitalize(type.getSimpleName());
             }
             xsdName = new QName(namespace, name);
             dataType.setXsdType(xsdName);
             return;
         }
-        XmlType typeAnnotation = physical.getAnnotation(XmlType.class);
+        XmlType typeAnnotation = type.getAnnotation(XmlType.class);
         if (typeAnnotation != null) {
             String namespace = typeAnnotation.namespace();
             if (DEFAULT.equals(namespace)) {
-                namespace = getDefaultNamespace(physical);
+                namespace = getDefaultNamespace(type);
             }
             String name = typeAnnotation.name();
             if (DEFAULT.equals(namespace)) {
                 // as per the JAXB specification
-                name = Introspector.decapitalize(physical.getSimpleName());
+                name = Introspector.decapitalize(type.getSimpleName());
             }
             xsdName = new QName(namespace, name);
             dataType.setXsdType(xsdName);
             return;
         }
         // the type is an unannotated Java class, heuristically determine a schema mapping
-        xsdName = mapper.deriveQName(physical);
+        xsdName = mapper.deriveQName(type);
         dataType.setXsdType(xsdName);
     }
 

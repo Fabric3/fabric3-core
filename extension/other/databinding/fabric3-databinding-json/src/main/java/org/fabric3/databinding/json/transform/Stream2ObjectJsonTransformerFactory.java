@@ -64,13 +64,13 @@ public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return source instanceof JsonType && InputStream.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
+        return source instanceof JsonType && InputStream.class.isAssignableFrom(source.getType()) && target instanceof JavaType;
     }
 
     public Stream2ObjectJsonTransformer create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
         JavaType type = (JavaType) target;
         ObjectMapper mapper = configurator.getDefaultMapper();
-        Class clazz = type.getPhysical();
+        Class clazz = type.getType();
         return new Stream2ObjectJsonTransformer(clazz, mapper);
     }
 

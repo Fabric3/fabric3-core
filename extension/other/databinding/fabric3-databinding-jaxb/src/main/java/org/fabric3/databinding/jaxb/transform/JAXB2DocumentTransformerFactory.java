@@ -73,7 +73,7 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return target.getPhysical().equals(Document.class) && source instanceof JavaType;
+        return target.getType().equals(Document.class) && source instanceof JavaType;
     }
 
     public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)

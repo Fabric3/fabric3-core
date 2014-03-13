@@ -263,7 +263,7 @@ public class GenerationHelper {
         Class<?>[] params = new Class<?>[types.size()];
         for (int i = 0; i < types.size(); i++) {
             DataType type = types.get(i);
-            params[i] = type.getPhysical();
+            params[i] = type.getType();
         }
         try {
             return serviceClass.getMethod(operation.getName(), params);

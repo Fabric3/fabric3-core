@@ -68,7 +68,7 @@ public class TransformerHandler implements EventStreamHandler {
     public TransformerHandler(DataType targetType, TransformerRegistry registry) {
         this.targetType = targetType;
         this.registry = registry;
-        Class<?> clazz = targetType.getPhysical();
+        Class<?> clazz = targetType.getType();
         typeList = cast(Collections.singletonList(clazz));
     }
 

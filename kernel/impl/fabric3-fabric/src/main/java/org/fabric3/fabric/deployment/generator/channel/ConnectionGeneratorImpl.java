@@ -251,7 +251,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             throw new GenerationException("A channel interface must have one parameter: operation " + operation.getName() + " on " + interfaceName);
         }
         for (DataType param : params) {
-            Class<?> paramType = param.getPhysical();
+            Class<?> paramType = param.getType();
             String paramName = paramType.getName();
             definition.addEventType(paramName);
         }
@@ -266,15 +266,15 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         for (DataType dataType : types) {
             if (dataType instanceof JavaType) {
                 // for now only support Java contracts
-                if (!Object.class.equals(dataType.getPhysical())) {
+                if (!Object.class.equals(dataType.getType())) {
                     typed = true;
-                    if (ChannelEvent.class.isAssignableFrom(dataType.getPhysical())) {
+                    if (ChannelEvent.class.isAssignableFrom(dataType.getType())) {
                         takesChannelEvent = true;
                     }
                 }
             }
             definition.setChannelEvent(takesChannelEvent);
-            definition.addEventType(dataType.getPhysical().getName());
+            definition.addEventType(dataType.getType().getName());
         }
         if (typed) {
             TypeEventFilterDefinition typeFilter = new TypeEventFilterDefinition(types);

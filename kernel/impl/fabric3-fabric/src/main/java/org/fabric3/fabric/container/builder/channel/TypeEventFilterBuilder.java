@@ -59,7 +59,7 @@ public class TypeEventFilterBuilder implements EventFilterBuilder<TypeEventFilte
             if (!(type instanceof JavaType)) {
                 throw new UnsupportedTypeException("Unsupported data type: " + type);
             }
-            classes[i] = type.getPhysical();
+            classes[i] = type.getType();
         }
         return new JavaTypeEventFilter(classes);
     }

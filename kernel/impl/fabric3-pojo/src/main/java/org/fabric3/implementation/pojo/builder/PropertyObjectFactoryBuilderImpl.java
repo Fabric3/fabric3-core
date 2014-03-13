@@ -74,7 +74,7 @@ public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBu
 
     public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader)
             throws BuilderException {
-        Class<?> physical = dataType.getPhysical();
+        Class<?> physical = dataType.getType();
         if (physical.isArray()) {
             return arrayBuilder.createFactory(name, dataType, value, classLoader);
         } else if (Map.class.equals(physical)) {

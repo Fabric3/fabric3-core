@@ -123,7 +123,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         if (reference.getDefinition().isKeyed()) {
             definition.setKeyed(true);
             DataType type = reference.getDefinition().getKeyDataType();
-            String className = type.getPhysical().getName();
+            String className = type.getType().getName();
             definition.setKeyClassName(className);
         }
     }

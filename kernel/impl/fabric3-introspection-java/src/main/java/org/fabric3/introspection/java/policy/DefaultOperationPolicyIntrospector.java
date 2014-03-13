@@ -30,7 +30,7 @@ public class DefaultOperationPolicyIntrospector implements OperationPolicyIntros
             Class<?>[] params = new Class<?>[types.size()];
             for (int i = 0; i < types.size(); i++) {
                 DataType type = types.get(i);
-                Class<?> physical = type.getPhysical();
+                Class<?> physical = type.getType();
                 params[i] = physical;
             }
             try {

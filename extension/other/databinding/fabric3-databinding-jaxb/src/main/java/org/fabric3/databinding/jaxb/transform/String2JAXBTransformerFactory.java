@@ -69,7 +69,7 @@ public class String2JAXBTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return source instanceof XSDType && String.class.equals(source.getPhysical()) && target instanceof JavaType;
+        return source instanceof XSDType && String.class.equals(source.getType()) && target instanceof JavaType;
     }
 
     public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)

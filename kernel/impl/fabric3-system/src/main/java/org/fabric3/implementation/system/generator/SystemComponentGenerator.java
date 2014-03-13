@@ -120,7 +120,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
 
         if (reference.getDefinition().isKeyed()) {
             definition.setKeyed(true);
-            String className = reference.getDefinition().getKeyDataType().getPhysical().getName();
+            String className = reference.getDefinition().getKeyDataType().getType().getName();
             definition.setKeyClassName(className);
         }
 

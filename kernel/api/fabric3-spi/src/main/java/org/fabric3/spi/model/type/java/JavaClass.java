@@ -57,7 +57,7 @@ public class JavaClass<T> extends JavaType<Class<T>> {
             return false;
         }
         DataType other = (DataType) o;
-        if (!getPhysical().equals(other.getPhysical())) {
+        if (!getType().equals(other.getType())) {
             return false;
         }
 
@@ -70,9 +70,9 @@ public class JavaClass<T> extends JavaType<Class<T>> {
                     break;
                 }
             }
-            return !bound && otherType.getTypeInfo().getRawType().equals(getPhysical());
+            return !bound && otherType.getTypeInfo().getRawType().equals(getType());
         }
-        return getPhysical().equals(other.getPhysical());
+        return getType().equals(other.getType());
     }
 
 }
