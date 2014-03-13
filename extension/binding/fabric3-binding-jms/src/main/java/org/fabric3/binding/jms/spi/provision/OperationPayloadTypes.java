@@ -48,12 +48,12 @@ import java.io.Serializable;
 /**
  * Defines message payload types for an operation.
  */
-public class OperationPayloadTypes implements Serializable{
+public class OperationPayloadTypes implements Serializable {
     private static final long serialVersionUID = 6091935206595784071L;
     private String name;
-    PayloadType inputType;
-    PayloadType outputType;
-    PayloadType faultType;
+    private PayloadType inputType;
+    private PayloadType outputType;
+    private PayloadType faultType;
 
     public OperationPayloadTypes(String name, PayloadType inputType, PayloadType outputType, PayloadType faultType) {
         this.name = name;
