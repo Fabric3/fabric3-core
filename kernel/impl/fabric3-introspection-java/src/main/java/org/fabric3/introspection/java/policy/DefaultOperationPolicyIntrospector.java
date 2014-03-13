@@ -29,9 +29,9 @@ public class DefaultOperationPolicyIntrospector implements OperationPolicyIntros
             List<DataType> types = operation.getInputTypes();
             Class<?>[] params = new Class<?>[types.size()];
             for (int i = 0; i < types.size(); i++) {
-                DataType type = types.get(i);
-                Class<?> physical = type.getType();
-                params[i] = physical;
+                DataType dataType = types.get(i);
+                Class<?> type = dataType.getType();
+                params[i] = type;
             }
             try {
                 Method method = implClass.getMethod(operation.getName(), params);

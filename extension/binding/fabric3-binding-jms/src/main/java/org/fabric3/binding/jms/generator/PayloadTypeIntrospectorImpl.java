@@ -43,15 +43,15 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import java.io.InputStream;
-import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.InputStream;
+import java.util.List;
 
-import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 
 /**
  * Default implementation of the PayloadTypeIntrospector. Message types are determined as follows:
@@ -87,14 +87,14 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
 
     private PayloadType introspectType(DataType param) throws JmsGenerationException {
 
-        Class<?> physical = param.getType();
-        if (physical.isPrimitive() && !Void.TYPE.equals(physical)) {
-            return calculatePrimitivePayloadType(physical);
-        } else if (InputStream.class.isAssignableFrom(physical)) {
+        Class<?> type = param.getType();
+        if (type.isPrimitive() && !Void.TYPE.equals(type)) {
+            return calculatePrimitivePayloadType(type);
+        } else if (InputStream.class.isAssignableFrom(type)) {
             return PayloadType.STREAM;
-        } else if (String.class.isAssignableFrom(physical)) {
+        } else if (String.class.isAssignableFrom(type)) {
             return PayloadType.TEXT;
-        } else if (physical.isAnnotationPresent(XmlRootElement.class) || physical.isAnnotationPresent(XmlType.class)) {
+        } else if (type.isAnnotationPresent(XmlRootElement.class) || type.isAnnotationPresent(XmlType.class)) {
             return PayloadType.XML;
         }
         return PayloadType.OBJECT;

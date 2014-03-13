@@ -74,16 +74,16 @@ public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBu
 
     public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader)
             throws BuilderException {
-        Class<?> physical = dataType.getType();
-        if (physical.isArray()) {
+        Class<?> type = dataType.getType();
+        if (type.isArray()) {
             return arrayBuilder.createFactory(name, dataType, value, classLoader);
-        } else if (Map.class.equals(physical)) {
+        } else if (Map.class.equals(type)) {
             return mapBuilder.createFactory(name, (JavaGenericType) dataType, value, classLoader);
-        } else if (List.class.equals(physical)) {
+        } else if (List.class.equals(type)) {
             return collectionBuilder.createFactory(new ArrayList<>(), name, (JavaGenericType) dataType, value, classLoader);
-        } else if (Set.class.equals(physical)) {
+        } else if (Set.class.equals(type)) {
             return collectionBuilder.createFactory(new HashSet<>(), name, (JavaGenericType) dataType, value, classLoader);
-        } else if (LinkedList.class.equals(physical)) {
+        } else if (LinkedList.class.equals(type)) {
             return collectionBuilder.createFactory(new LinkedList<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else {
             return objectBuilder.createFactory(name, dataType, value, classLoader);

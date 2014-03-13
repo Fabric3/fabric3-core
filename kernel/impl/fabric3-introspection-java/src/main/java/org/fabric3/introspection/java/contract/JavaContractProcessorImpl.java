@@ -124,22 +124,20 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         if (contract.isRemotable() != callbackContract.isRemotable()) {
             String forwardName = contract.getInterfaceName();
             String callbackName = callbackContract.getInterfaceName();
-            InvalidCallbackContract error = new InvalidCallbackContract("The remotable attribute on the forward and callback contract do not match: "
-                                                                                + forwardName + "," + callbackName, callbackClass, modelObjects);
+            InvalidCallbackContract error = new InvalidCallbackContract(
+                    "The remotable attribute on the forward and callback contract do not match: " + forwardName + "," + callbackName,
+                    callbackClass,
+                    modelObjects);
             context.addError(error);
         }
         contract.setCallbackContract(callbackContract);
     }
 
-    private JavaServiceContract introspectInterface(Class<?> interfaze,
-                                                    Class<?> baseClass,
-                                                    IntrospectionContext context,
-                                                    ModelObject... modelObjects) {
+    private JavaServiceContract introspectInterface(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context, ModelObject... modelObjects) {
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         contract.setInterfaceName(interfaze.getSimpleName());
 
-        boolean remotable =
-                interfaze.isAnnotationPresent(org.oasisopen.sca.annotation.Remotable.class) || interfaze.isAnnotationPresent(Remotable.class);
+        boolean remotable = interfaze.isAnnotationPresent(org.oasisopen.sca.annotation.Remotable.class) || interfaze.isAnnotationPresent(Remotable.class);
         contract.setRemotable(remotable);
 
         List<Operation> operations = introspectOperations(interfaze, baseClass, remotable, context, modelObjects);
@@ -192,8 +190,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     private DataType introspectReturnType(Method method, TypeMapping typeMapping) {
         Class<?> physicalReturnType = method.getReturnType();
         Type gReturnType = method.getGenericReturnType();
-        Type logicalReturnType = typeMapping.getActualType(gReturnType);
-        return createDataType(physicalReturnType, logicalReturnType, typeMapping);
+        Type actualReturnType = typeMapping.getActualType(gReturnType);
+        return createDataType(physicalReturnType, actualReturnType, typeMapping);
     }
 
     private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {
@@ -202,8 +200,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         List<DataType> parameterDataTypes = new ArrayList<>(gParamTypes.length);
         for (int i = 0; i < gParamTypes.length; i++) {
             Type gParamType = gParamTypes[i];
-            Type logicalParamType = typeMapping.getActualType(gParamType);
-            DataType dataType = createDataType(physicalParameterTypes[i], logicalParamType, typeMapping);
+            Type actualParamType = typeMapping.getActualType(gParamType);
+            DataType dataType = createDataType(physicalParameterTypes[i], actualParamType, typeMapping);
             parameterDataTypes.add(dataType);
         }
         return parameterDataTypes;
@@ -215,8 +213,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         List<DataType> faultDataTypes = new ArrayList<>(gFaultTypes.length);
         for (int i = 0; i < gFaultTypes.length; i++) {
             Type gFaultType = gFaultTypes[i];
-            Type logicalType = typeMapping.getActualType(gFaultType);
-            DataType dataType = createDataType(physicalFaultTypes[i], logicalType, typeMapping);
+            Type actualType = typeMapping.getActualType(gFaultType);
+            DataType dataType = createDataType(physicalFaultTypes[i], actualType, typeMapping);
             faultDataTypes.add(dataType);
         }
         return faultDataTypes;
@@ -235,18 +233,18 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     /**
      * Returns a data type from a logical and physical type pairing.
      *
-     * @param physicalType the physical type
-     * @param type         the type to construct the data type from
-     * @param mapping      the resolved generic type mappings
+     * @param rawType the raw type
+     * @param actualType    the type to construct the data type from
+     * @param mapping the resolved generic type mappings
      * @return the data type
      */
     @SuppressWarnings({"unchecked"})
-    private DataType createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
-        if (type instanceof Class) {
+    private DataType createDataType(Class<?> rawType, Type actualType, TypeMapping mapping) {
+        if (actualType instanceof Class) {
             // not a generic
-            return new JavaType(physicalType);
+            return new JavaType(rawType);
         } else {
-            JavaTypeInfo info = helper.createTypeInfo(type, mapping);
+            JavaTypeInfo info = helper.createTypeInfo(actualType, mapping);
             return new JavaGenericType(info);
         }
     }
@@ -268,6 +266,5 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             }
         }
     }
-
 
 }

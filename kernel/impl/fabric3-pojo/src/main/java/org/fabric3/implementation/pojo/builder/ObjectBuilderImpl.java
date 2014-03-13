@@ -64,13 +64,13 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
         super(transformerRegistry);
     }
 
-    public ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader)
+    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader)
             throws PropertyTransformException {
         try {
-            Class<?> physical = type.getType();
+            Class<?> type = dataType.getType();
             List<Class<?>> types = new ArrayList<>();
-            types.add(physical);
-            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, type, types);
+            types.add(type);
+            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, dataType, types);
             Element element = (Element) value.getDocumentElement().getFirstChild();
             Object instance = transformer.transform(element, classLoader);
             return new SingletonObjectFactory<>(instance);
