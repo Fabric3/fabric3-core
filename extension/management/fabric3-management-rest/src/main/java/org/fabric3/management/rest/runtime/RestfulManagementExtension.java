@@ -37,6 +37,7 @@
 */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -48,32 +49,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.http.HttpServletRequest;
-
-import org.fabric3.management.rest.transformer.TransformerPair;
-import org.fabric3.management.rest.transformer.TransformerPairService;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.host.runtime.ParseException;
+import org.fabric3.api.model.type.java.ManagementInfo;
+import org.fabric3.api.model.type.java.ManagementOperationInfo;
+import org.fabric3.api.model.type.java.OperationType;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.management.rest.framework.DynamicResourceService;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.management.rest.transformer.TransformerPair;
+import org.fabric3.management.rest.transformer.TransformerPairService;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
-import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.api.model.type.java.ManagementOperationInfo;
-import org.fabric3.api.model.type.java.OperationType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.model.type.json.JsonType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.transform.TransformationException;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Responsible for exporting components and instances as management resources.
@@ -83,8 +82,8 @@ import org.fabric3.spi.transform.TransformationException;
  * resource is later exported, any previously generated dynamic resource will be overriden.
  */
 public class RestfulManagementExtension implements ManagementExtension {
-    private static final JsonType<?> JSON_INPUT_TYPE = new JsonType<Object>(InputStream.class, Object.class);
-    private static final JsonType<?> JSON_OUTPUT_TYPE = new JsonType<Object>(byte[].class, Object.class);
+    private static final JsonType JSON_INPUT_TYPE = new JsonType(InputStream.class);
+    private static final JsonType JSON_OUTPUT_TYPE = new JsonType(byte[].class);
 
     private static final String EMPTY_PATH = "";
     private static final String ROOT_PATH = "/";

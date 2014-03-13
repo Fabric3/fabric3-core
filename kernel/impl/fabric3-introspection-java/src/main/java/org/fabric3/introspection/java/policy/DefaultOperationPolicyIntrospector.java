@@ -26,10 +26,10 @@ public class DefaultOperationPolicyIntrospector implements OperationPolicyIntros
     public void introspectPolicyOnOperations(ServiceContract contract, Class<?> implClass, IntrospectionContext context) {
         for (Operation operation : contract.getOperations()) {
             // determine the operation signature and look up the corresponding method on the implementation class
-            List<DataType<?>> types = operation.getInputTypes();
+            List<DataType> types = operation.getInputTypes();
             Class<?>[] params = new Class<?>[types.size()];
             for (int i = 0; i < types.size(); i++) {
-                DataType<?> type = types.get(i);
+                DataType type = types.get(i);
                 Class<?> physical = type.getPhysical();
                 params[i] = physical;
             }

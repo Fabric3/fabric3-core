@@ -53,16 +53,16 @@ public interface PhysicalDataTypes {
     /**
      * Denotes a Java type, i.e. an object or primitive
      */
-    DataType<?> JAVA_TYPE = new JavaClass<>(Object.class);
+    DataType JAVA_TYPE = new JavaClass<>(Object.class);
 
     /**
      * Denotes an XML DOM
      */
-    DataType<?> DOM = new XSDType(Document.class, new QName(XSDType.XSD_NS, "anyType"));
+    DataType DOM = new XSDType(Document.class, new QName(XSDType.XSD_NS, "anyType"));
 
     /**
      * Denotes a JAXB type
      */
-    DataType<?> JAXB = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
+    DataType JAXB = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
 
 }

@@ -52,7 +52,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 public class TypeEventFilterBuilder implements EventFilterBuilder<TypeEventFilterDefinition> {
 
     public EventFilter build(TypeEventFilterDefinition definition) throws BuilderException {
-        List<DataType<?>> types = definition.getTypes();
+        List<DataType> types = definition.getTypes();
         int i = 0;
         Class<?>[] classes = new Class<?>[types.size()];
         for (DataType type : types) {

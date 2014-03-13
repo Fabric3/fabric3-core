@@ -51,11 +51,11 @@ import org.fabric3.spi.transform.TransformationException;
 public class Property2DoubleTransformer implements SingleTypeTransformer<Node, Double> {
     private static final JavaClass<Double> TARGET = new JavaClass<>(Double.class);
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

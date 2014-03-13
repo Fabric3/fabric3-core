@@ -57,7 +57,7 @@ public abstract class AbstractPropertyBuilder {
 
 
     @SuppressWarnings({"unchecked"})
-    protected <T> Transformer<T, ?> getTransformer(String name, DataType<?> sourceType, DataType<?> targetType, List<Class<?>> types)
+    protected <T> Transformer<T, ?> getTransformer(String name, DataType sourceType, DataType targetType, List<Class<?>> types)
             throws TransformationException, PropertyTransformException {
         Transformer<T, ?> transformer = (Transformer<T, ?>) transformerRegistry.getTransformer(sourceType, targetType, types, types);
         if (transformer == null) {

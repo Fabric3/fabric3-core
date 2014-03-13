@@ -71,7 +71,7 @@ public class ConsumerDefinition extends AbstractConsumer<ComponentType> {
      * @param name  the consumer name
      * @param types the data types required by this consumer
      */
-    public ConsumerDefinition(String name, List<DataType<?>> types) {
+    public ConsumerDefinition(String name, List<DataType> types) {
         super(name, types);
     }
 

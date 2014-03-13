@@ -46,7 +46,7 @@ public class JavaClass<T> extends JavaType<Class<T>> {
     private static final long serialVersionUID = -901379909664326192L;
 
     public JavaClass(Class<T> clazz) {
-        super(clazz, clazz);
+        super(clazz);
     }
 
     public boolean equals(Object o) {
@@ -64,17 +64,15 @@ public class JavaClass<T> extends JavaType<Class<T>> {
         if (other instanceof JavaGenericType) {
             boolean bound = false;  // unbound parameters are equivalent to non-generic
             JavaGenericType otherType = (JavaGenericType) other;
-            for (JavaTypeInfo info : otherType.getLogical().getParameterTypesInfos()) {
+            for (JavaTypeInfo info : otherType.getTypeInfo().getParameterTypesInfos()) {
                 if (!Object.class.equals(info.getRawType())) {
                     bound = true;
                     break;
                 }
             }
-            if (!bound) {
-                return otherType.getLogical().getRawType().equals(getLogical());
-            }
+            return !bound && otherType.getTypeInfo().getRawType().equals(getPhysical());
         }
-        return getLogical().equals(other.getLogical());
+        return getPhysical().equals(other.getPhysical());
     }
 
 }

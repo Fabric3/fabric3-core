@@ -48,13 +48,13 @@ import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 public class TypeEventFilterDefinition extends PhysicalEventFilterDefinition {
     private static final long serialVersionUID = -7775958976426657691L;
 
-    private List<DataType<?>> types;
+    private List<DataType> types;
 
-    public TypeEventFilterDefinition(List<DataType<?>> types) {
+    public TypeEventFilterDefinition(List<DataType> types) {
         this.types = types;
     }
 
-    public List<DataType<?>> getTypes() {
+    public List<DataType> getTypes() {
         return types;
     }
 }

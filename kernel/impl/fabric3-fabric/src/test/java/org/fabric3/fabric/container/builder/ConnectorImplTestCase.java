@@ -78,7 +78,7 @@ import org.fabric3.spi.container.wire.Wire;
  *
  */
 public class ConnectorImplTestCase extends TestCase {
-    private static final DataType<?> DATA_TYPE = new XSDSimpleType(Document.class, new QName(XSDType.XSD_NS, "string"));
+    private static final DataType DATA_TYPE = new XSDSimpleType(Document.class, new QName(XSDType.XSD_NS, "string"));
     private ConnectorImpl connector;
     private PhysicalWireDefinition definition;
     private PhysicalOperationDefinition operation;

@@ -57,6 +57,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.oasisopen.sca.annotation.Callback;
 
@@ -78,17 +79,17 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         Operation baseInt = operations.get(0);
         assertNotNull(baseInt);
 
-        DataType<?> returnType = baseInt.getOutputType();
+        DataType returnType = baseInt.getOutputType();
         assertEquals(Integer.TYPE, returnType.getPhysical());
 
         List<?> parameterTypes = baseInt.getInputTypes();
         assertEquals(1, parameterTypes.size());
-        DataType<?> arg0 = (DataType<?>) parameterTypes.get(0);
+        DataType arg0 = (DataType) parameterTypes.get(0);
         assertEquals(Integer.TYPE, arg0.getPhysical());
 
         List<?> faultTypes = baseInt.getFaultTypes();
         assertEquals(1, faultTypes.size());
-        DataType<?> fault0 = (DataType<?>) faultTypes.get(0);
+        DataType fault0 = (DataType) faultTypes.get(0);
         assertEquals(IllegalArgumentException.class, fault0.getPhysical());
     }
 
@@ -112,9 +113,9 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         }
         assertNotNull(operation);
 
-        DataType<?> returnType = operation.getOutputType();
+        JavaGenericType returnType = (JavaGenericType) operation.getOutputType();
         // the return type should be unbound, which means the raw type (Base) will be used for the actual parameter type
-        JavaTypeInfo info = (JavaTypeInfo) returnType.getLogical();
+        JavaTypeInfo info = returnType.getTypeInfo();
         assertEquals(Base.class, info.getRawType());
         assertTrue(info.getParameterTypesInfos().isEmpty());
         assertEquals(Base.class, returnType.getPhysical());

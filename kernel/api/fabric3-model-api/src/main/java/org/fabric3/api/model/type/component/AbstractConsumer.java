@@ -57,7 +57,7 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
     private static final long serialVersionUID = -2867241238552796639L;
 
     private String name;
-    private List<DataType<?>> types;
+    private List<DataType> types;
 
     protected List<URI> sources = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
      * @param name  the consumer name
      * @param types the data types
      */
-    public AbstractConsumer(String name, List<DataType<?>> types) {
+    public AbstractConsumer(String name, List<DataType> types) {
         this.name = name;
         this.types = types;
     }
@@ -95,7 +95,7 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
      *
      * @return the data types required by this consumer
      */
-    public List<DataType<?>> getTypes() {
+    public List<DataType> getTypes() {
         return types;
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
      *
      * @param types the data types required by this consumer
      */
-    public void setTypes(List<DataType<?>> types) {
+    public void setTypes(List<DataType> types) {
         this.types = types;
     }
 

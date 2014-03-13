@@ -57,6 +57,6 @@ public interface TransformerPairService {
      * @return the pair
      * @throws TransformationException if an error occurs returning the pair
      */
-    TransformerPair getTransformerPair(List<Method> methods, DataType<?> inputType, DataType<?> outputType) throws TransformationException;
+    TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws TransformationException;
 
 }

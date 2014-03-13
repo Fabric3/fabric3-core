@@ -113,7 +113,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
                 Document value = propertyDefinition.getValue();
 
                 Type type = factory.getGenericType(source);
-                DataType<?> dataType = getDataType(type, typeMapping);
+                DataType dataType = getDataType(type, typeMapping);
 
                 ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
                 boolean many = propertyDefinition.isMany();
@@ -158,7 +158,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType<?> getDataType(Type type, TypeMapping typeMapping) {
+    private DataType getDataType(Type type, TypeMapping typeMapping) {
         if (type instanceof Class) {
             // non-generic type
             Class<?> nonGenericType = (Class<?>) type;

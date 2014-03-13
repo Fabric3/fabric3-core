@@ -53,8 +53,8 @@ public class TypeEventFilterBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
         TypeEventFilterBuilder builder = new TypeEventFilterBuilder();
-        DataType<?> type = new JavaClass<>(String.class);
-        List<DataType<?>> types = new ArrayList<>();
+        DataType type = new JavaClass<>(String.class);
+        List<DataType> types = new ArrayList<>();
         types.add(type);
         TypeEventFilterDefinition definition = new TypeEventFilterDefinition(types);
 

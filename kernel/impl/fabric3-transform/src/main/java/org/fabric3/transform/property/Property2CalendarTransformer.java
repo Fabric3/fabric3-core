@@ -58,7 +58,7 @@ public class Property2CalendarTransformer implements SingleTypeTransformer<Node,
 
     private final DatatypeFactory factory;
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;
     }
 
@@ -66,7 +66,7 @@ public class Property2CalendarTransformer implements SingleTypeTransformer<Node,
         factory = DatatypeFactory.newInstance();
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

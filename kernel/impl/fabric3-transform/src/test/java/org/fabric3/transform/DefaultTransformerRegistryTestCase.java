@@ -71,11 +71,11 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
             return 0;
         }
 
-        public boolean canTransform(DataType<?> source, DataType<?> target) {
+        public boolean canTransform(DataType source, DataType target) {
             return true;
         }
 
-        public Transformer<Object, Object> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
+        public Transformer<Object, Object> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
                 throws TransformationException {
             return new MockTransformer();
         }

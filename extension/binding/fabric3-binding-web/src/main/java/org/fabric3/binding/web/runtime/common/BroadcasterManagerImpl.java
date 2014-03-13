@@ -59,7 +59,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  */
 @EagerInit
 public class BroadcasterManagerImpl implements BroadcasterManager {
-    private static final JsonType<Object> JSON_TYPE = new JsonType<Object>(String.class, Object.class);
+    private static final JsonType JSON_TYPE = new JsonType(String.class);
 
     private TransformerRegistry registry;
     private Transformer<Object, String> jsonTransformer;

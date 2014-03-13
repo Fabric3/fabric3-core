@@ -245,12 +245,12 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         Operation operation = producer.getStreamOperation().getDefinition();
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(operation.getName());
         definition.setName(operation.getName());
-        List<DataType<?>> params = operation.getInputTypes();
+        List<DataType> params = operation.getInputTypes();
         if (params.size() < 1) {
             String interfaceName = producer.getServiceContract().getQualifiedInterfaceName();
             throw new GenerationException("A channel interface must have one parameter: operation " + operation.getName() + " on " + interfaceName);
         }
-        for (DataType<?> param : params) {
+        for (DataType param : params) {
             Class<?> paramType = param.getPhysical();
             String paramName = paramType.getName();
             definition.addEventType(paramName);
@@ -260,10 +260,10 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
     private PhysicalEventStreamDefinition generateEventStream(LogicalConsumer consumer) {
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("default");
-        List<DataType<?>> types = consumer.getDefinition().getTypes();
+        List<DataType> types = consumer.getDefinition().getTypes();
         boolean typed = false;
         boolean takesChannelEvent = false;
-        for (DataType<?> dataType : types) {
+        for (DataType dataType : types) {
             if (dataType instanceof JavaType) {
                 // for now only support Java contracts
                 if (!Object.class.equals(dataType.getPhysical())) {

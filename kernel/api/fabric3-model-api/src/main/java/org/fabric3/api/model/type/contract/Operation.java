@@ -56,9 +56,9 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
     private String name;
     private String wsdlName;
     private boolean remotable;
-    private DataType<?> outputType;
-    private List<DataType<?>> inputTypes;
-    private List<DataType<?>> faultTypes;
+    private DataType outputType;
+    private List<DataType> inputTypes;
+    private List<DataType> faultTypes;
 
     /**
      * Constructor.
@@ -68,9 +68,9 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
      * @param outputType the data type returned by the operation
      * @param faultTypes the data type of faults raised by the operation
      */
-    public Operation(String name, List<DataType<?>> inputTypes, DataType<?> outputType, List<DataType<?>> faultTypes) {
+    public Operation(String name, List<DataType> inputTypes, DataType outputType, List<DataType> faultTypes) {
         this.name = name;
-        List<DataType<?>> types = Collections.emptyList();
+        List<DataType> types = Collections.emptyList();
         this.inputTypes = inputTypes;
         this.outputType = outputType;
         this.faultTypes = (faultTypes == null) ? types : faultTypes;
@@ -112,7 +112,7 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
      *
      * @return the data types of the parameters passed to the operation
      */
-    public List<DataType<?>> getInputTypes() {
+    public List<DataType> getInputTypes() {
         return inputTypes;
     }
 
@@ -121,7 +121,7 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
      *
      * @return the data type returned by the operation
      */
-    public DataType<?> getOutputType() {
+    public DataType getOutputType() {
         return outputType;
     }
 
@@ -130,7 +130,7 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
      *
      * @return the data types of the faults raised by the operation
      */
-    public List<DataType<?>> getFaultTypes() {
+    public List<DataType> getFaultTypes() {
         if (faultTypes == null) {
             return Collections.emptyList();
         }

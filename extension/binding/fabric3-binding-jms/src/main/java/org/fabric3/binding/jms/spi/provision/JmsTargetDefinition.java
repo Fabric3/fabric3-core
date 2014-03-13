@@ -100,7 +100,7 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
                                List<OperationPayloadTypes> payloadTypes,
                                TransactionType transactionType,
                                List<PhysicalBindingHandlerDefinition> handlers,
-                               DataType<?>... types) {
+                               DataType... types) {
         super(types);
         this.metadata = metadata;
         this.transactionType = transactionType;

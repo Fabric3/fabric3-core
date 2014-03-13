@@ -251,7 +251,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         LogicalComponent<?> component = createComponent(parent);
 
         ConsumerDefinition consumerDefinition = new ConsumerDefinition("consumer");
-        DataType<?> javaClass = new JavaClass<>(Object.class);
+        DataType javaClass = new JavaClass<>(Object.class);
         List list = Collections.singletonList(javaClass);
         consumerDefinition.setTypes(list);
         LogicalConsumer consumer = new LogicalConsumer(URI.create("composite/component#consumer"), consumerDefinition, component);
@@ -266,7 +266,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ProducerDefinition producerDefinition = new ProducerDefinition("producer");
         LogicalProducer producer = new LogicalProducer(URI.create("composite/component#producer"), producerDefinition, component);
-        DataType<?> javaClass = new JavaClass<>(Object.class);
+        DataType javaClass = new JavaClass<>(Object.class);
         List list = Collections.singletonList(javaClass);
         Operation operationDefinition = new Operation("operation", list, null, null);
         LogicalOperation operation = new LogicalOperation(operationDefinition, producer);

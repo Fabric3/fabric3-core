@@ -65,7 +65,7 @@ public class TransformerPairServiceImpl implements TransformerPairService {
     }
 
     @SuppressWarnings({"unchecked"})
-    public TransformerPair getTransformerPair(List<Method> methods, DataType<?> inputType, DataType<?> outputType) throws TransformationException {
+    public TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws TransformationException {
         List<Class<?>> list = new ArrayList<>();
         JavaType<?> type;
         if (methods.size() == 1) {

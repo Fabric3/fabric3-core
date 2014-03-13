@@ -88,8 +88,8 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 continue;
             }
             // check input types
-            List<DataType<?>> inputTypes = operation.getInputTypes();
-            List<DataType<?>> candidateInputTypes = candidate.getInputTypes();
+            List<DataType> inputTypes = operation.getInputTypes();
+            List<DataType> candidateInputTypes = candidate.getInputTypes();
             if (inputTypes.size() != candidateInputTypes.size()) {
                 if (reportErrors) {
                     return new MatchResult("The number of parameters for the source and target operations are not equal for operation " + name);
@@ -98,8 +98,8 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 }
             }
             for (int i = 0; i < inputTypes.size(); i++) {
-                DataType<?> inputType = inputTypes.get(i);
-                DataType<?> candidateInputType = candidateInputTypes.get(i);
+                DataType inputType = inputTypes.get(i);
+                DataType candidateInputType = candidateInputTypes.get(i);
                 if (inputType.getXsdType() == null || !inputType.getXsdType().equals(candidateInputType.getXsdType())) {
                     if (inputType instanceof XSDComplexType) {
                         if (checkSequence((XSDComplexType) inputType, candidateInputType)) {
@@ -119,9 +119,9 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 }
             }
             // check output types
-            DataType<?> outputType = operation.getOutputType();
+            DataType outputType = operation.getOutputType();
             QName outputXsdType = outputType.getXsdType();
-            DataType<?> candidateOutputType = candidate.getOutputType();
+            DataType candidateOutputType = candidate.getOutputType();
             QName candidateOutputXsdType = candidateOutputType.getXsdType();
             if (outputXsdType == null || !outputXsdType.equals(candidateOutputXsdType)) {
                 if (outputType instanceof XSDComplexType) {
@@ -187,7 +187,7 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
      * @param type        the other type to compare
      * @return true if the types match
      */
-    private boolean checkSequence(XSDComplexType complexType, DataType<?> type) {
+    private boolean checkSequence(XSDComplexType complexType, DataType type) {
         if (complexType.isSequence() && complexType.getSequenceTypes().size() == 1) {
             XSDType sequenceType = complexType.getSequenceTypes().get(0);
             if (sequenceType.getXsdType().equals(type.getXsdType())) {

@@ -50,7 +50,7 @@ import org.fabric3.spi.model.physical.PhysicalDataTypes;
  */
 public class MetroWsdlTargetDefinition extends MetroTargetDefinition {
     private static final long serialVersionUID = 5531927726014190158L;
-    private static List<DataType<?>> PHYSICAL_DATA_TYPES = new ArrayList<>();
+    private static List<DataType> PHYSICAL_DATA_TYPES = new ArrayList<>();
     private String wsdl;
 
     static {
@@ -84,7 +84,7 @@ public class MetroWsdlTargetDefinition extends MetroTargetDefinition {
     }
 
     @Override
-    public List<DataType<?>> getPhysicalDataTypes() {
+    public List<DataType> getPhysicalDataTypes() {
         return PHYSICAL_DATA_TYPES;
     }
 

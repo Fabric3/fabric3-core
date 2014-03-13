@@ -17,5 +17,5 @@ public interface TransformerHandlerFactory {
      * @throws HandlerCreationException
      *          if there is an exception creating the handler
      */
-    EventStreamHandler createHandler(DataType<?> source, DataType<?> target, ClassLoader loader) throws HandlerCreationException;
+    EventStreamHandler createHandler(DataType source, DataType target, ClassLoader loader) throws HandlerCreationException;
 }

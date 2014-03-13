@@ -62,7 +62,7 @@ public class JAXBTypeIntrospectorTestCase extends TestCase {
     public void testDefaultMapping() throws Exception {
         Operation operation = createOperation("operation", int.class);
         introspector.introspect(operation, null, new DefaultIntrospectionContext());
-        DataType<?> dataType = operation.getInputTypes().get(0);
+        DataType dataType = operation.getInputTypes().get(0);
         assertEquals(XSD_INT, dataType.getXsdType());
     }
 
@@ -75,7 +75,7 @@ public class JAXBTypeIntrospectorTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     private Operation createOperation(String name, Class<?> paramType) {
         JavaClass<?> type = new JavaClass(paramType);
-        List<DataType<?>> in = new ArrayList<>();
+        List<DataType> in = new ArrayList<>();
         in.add(type);
         JavaClass<Void> outputType = new JavaClass<>(Void.class);
         return new Operation(name, in, outputType, null);

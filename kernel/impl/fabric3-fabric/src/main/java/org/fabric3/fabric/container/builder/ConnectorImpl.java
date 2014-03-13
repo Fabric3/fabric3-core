@@ -189,7 +189,7 @@ public class ConnectorImpl implements Connector {
         }
         PhysicalSourceDefinition sourceDefinition = definition.getSource();
         PhysicalTargetDefinition targetDefinition = definition.getTarget();
-        for (DataType<?> sourceType : sourceDefinition.getPhysicalDataTypes()) {
+        for (DataType sourceType : sourceDefinition.getPhysicalDataTypes()) {
             if (targetDefinition.getPhysicalDataTypes().contains(sourceType)) {
                 // transform for pass-by-value and not for different datatypes.
                 addTransformer(wire, definition, true);
@@ -224,8 +224,8 @@ public class ConnectorImpl implements Connector {
                 targetLoader = classLoaderRegistry.getClassLoader(targetId);
             }
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
-            List<DataType<?>> sourceTypes = sourceDefinition.getPhysicalDataTypes();
-            List<DataType<?>> targetTypes = targetDefinition.getPhysicalDataTypes();
+            List<DataType> sourceTypes = sourceDefinition.getPhysicalDataTypes();
+            List<DataType> targetTypes = targetDefinition.getPhysicalDataTypes();
             try {
                 Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
                 chain.addInterceptor(interceptor);

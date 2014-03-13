@@ -105,21 +105,21 @@ public class OperationResolverImplTestCase extends TestCase {
     }
 
     private <T> LogicalOperation createOperation(String name, Class<T> inputType) {
-        List<DataType<?>> input = new ArrayList<>();
+        List<DataType> input = new ArrayList<>();
         JavaClass<T> type = new JavaClass<>(inputType);
         input.add(type);
-        DataType<?> output = new JavaClass<>(String.class);
-        List<DataType<?>> faults = new ArrayList<>();
+        DataType output = new JavaClass<>(String.class);
+        List<DataType> faults = new ArrayList<>();
         faults.add(new JavaClass<>(Exception.class));
         Operation definition = new Operation(name, input, output, faults);
         return new LogicalOperation(definition, null);
     }
 
     private <T> LogicalOperation createXsdOperation(String name) {
-        DataType<?> stringType = new XSDSimpleType(String.class, STRING_QNAME);
-        List<DataType<?>> input = new ArrayList<>();
+        DataType stringType = new XSDSimpleType(String.class, STRING_QNAME);
+        List<DataType> input = new ArrayList<>();
         input.add(stringType);
-        Operation definition = new Operation(name, input, stringType, Collections.<DataType<?>>emptyList());
+        Operation definition = new Operation(name, input, stringType, Collections.<DataType>emptyList());
         return new LogicalOperation(definition, null);
     }
 }

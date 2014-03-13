@@ -82,8 +82,8 @@ import org.oasisopen.sca.annotation.Service;
  */
 @Service(ZeroMQPubSubBroker.class)
 public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {
-    private static final DataType<?> BYTES = new JavaClass<>(byte[].class);
-    private static final DataType<?> TWO_DIMENSIONAL_BYTES = new JavaClass<>(byte[][].class);
+    private static final DataType BYTES = new JavaClass<>(byte[].class);
+    private static final DataType TWO_DIMENSIONAL_BYTES = new JavaClass<>(byte[][].class);
 
     private static final String ZMQ = "zmq";
 
@@ -315,7 +315,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private void attachConnection(ChannelConnection connection, Publisher publisher, ClassLoader loader) throws BrokerException {
         EventStream stream = connection.getEventStream();
         try {
-            DataType<?> dataType = getEventType(stream, loader);
+            DataType dataType = getEventType(stream, loader);
             EventStreamHandler transformer;
             if (dataType.getPhysical().equals(byte[][].class)) {
                 // multi-frame data
@@ -336,7 +336,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws BrokerException {
         try {
-            DataType<?> dataType = getEventTypeForConnection(connection, loader);
+            DataType dataType = getEventTypeForConnection(connection, loader);
             EventStreamHandler head;
             if (dataType.getPhysical().equals(byte[][].class)) {
                 // multi-frame data
@@ -352,7 +352,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType<?> getEventType(EventStream stream, ClassLoader loader) throws ClassNotFoundException {
+    private DataType getEventType(EventStream stream, ClassLoader loader) throws ClassNotFoundException {
         Class<?> type;
         List<String> eventTypes = stream.getDefinition().getEventTypes();
         if (eventTypes.isEmpty()) {
@@ -365,7 +365,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType<?> getEventTypeForConnection(ChannelConnection connection, ClassLoader loader) throws BrokerException {
+    private DataType getEventTypeForConnection(ChannelConnection connection, ClassLoader loader) throws BrokerException {
         PhysicalEventStreamDefinition eventStreamDefinition = connection.getEventStream().getDefinition();
         if (!eventStreamDefinition.getEventTypes().isEmpty()) {
             try {

@@ -63,7 +63,7 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
     private Autowire autowire = Autowire.INHERITED;
 
     private boolean keyed;
-    private DataType<?> keyDataType;
+    private DataType keyDataType;
 
     private List<BindingDefinition> callbackBindings = new ArrayList<>();
 
@@ -210,7 +210,7 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
      *
      * @return the reference key type.
      */
-    public DataType<?> getKeyDataType() {
+    public DataType getKeyDataType() {
         return keyDataType;
     }
 
@@ -219,7 +219,7 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
      *
      * @param keyDataType the reference key type
      */
-    public void setKeyDataType(DataType<?> keyDataType) {
+    public void setKeyDataType(DataType keyDataType) {
         this.keyDataType = keyDataType;
     }
 

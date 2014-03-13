@@ -107,14 +107,14 @@ public abstract class PojoSourceWireAttacher {
             Class<Enum> enumClass = (Class<Enum>) keyType;
             return Enum.valueOf(enumClass, key);
         }
-        DataType<?> targetType = new JavaClass(keyType);
+        DataType targetType = new JavaClass(keyType);
         return createKey(targetType, key, targetClassLoader);
 
     }
 
 
     @SuppressWarnings("unchecked")
-    private Object createKey(DataType<?> targetType, String value, ClassLoader classLoader) throws KeyInstantiationException {
+    private Object createKey(DataType targetType, String value, ClassLoader classLoader) throws KeyInstantiationException {
         try {
             Class<?> physical = targetType.getPhysical();
             List<Class<?>> types = new ArrayList<>();

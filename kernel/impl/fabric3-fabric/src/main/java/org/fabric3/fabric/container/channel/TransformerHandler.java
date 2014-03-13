@@ -59,13 +59,13 @@ import org.fabric3.spi.transform.TransformerRegistry;
  */
 public class TransformerHandler implements EventStreamHandler {
     private EventStreamHandler next;
-    private DataType<Object> targetType;
+    private DataType targetType;
     private TransformerRegistry registry;
     private List<Class<?>> typeList;
 
-    private Map<DataType<?>, Transformer<Object, Object>> cache;
+    private Map<DataType, Transformer<Object, Object>> cache;
 
-    public TransformerHandler(DataType<Object> targetType, TransformerRegistry registry) {
+    public TransformerHandler(DataType targetType, TransformerRegistry registry) {
         this.targetType = targetType;
         this.registry = registry;
         Class<?> clazz = targetType.getPhysical();
@@ -84,7 +84,7 @@ public class TransformerHandler implements EventStreamHandler {
             Object content = ((EventWrapper) event).getEvent(targetType);
             if (content == null) {
                 try {
-                    DataType<?> type = wrapper.getType();
+                    DataType type = wrapper.getType();
                     ClassLoader loader = targetType.getClass().getClassLoader();
                     Transformer<Object, Object> transformer = cache.get(type);
                     if (transformer == null) {

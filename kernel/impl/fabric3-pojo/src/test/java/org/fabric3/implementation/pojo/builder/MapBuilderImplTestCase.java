@@ -65,7 +65,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  *
  */
 public class MapBuilderImplTestCase extends TestCase {
-    private static final DataType<?> JAVA_CLASS = new JavaClass<>(String.class);
+    private static final DataType JAVA_CLASS = new JavaClass<>(String.class);
     private DocumentBuilder documentBuilder;
     private TransformerRegistry registry;
     private MapBuilderImpl builder;

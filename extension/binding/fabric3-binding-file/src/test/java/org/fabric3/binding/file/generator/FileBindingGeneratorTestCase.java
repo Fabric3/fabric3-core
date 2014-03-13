@@ -105,9 +105,9 @@ public class FileBindingGeneratorTestCase extends TestCase {
     private ServiceContract createServiceContract() {
         ServiceContract contract = new JavaServiceContract(FileTransport.class);
         DataType inputType = new JavaClass<>(InputStream.class);
-        List<DataType<?>> input = Collections.<DataType<?>>singletonList(inputType);
-        List<DataType<?>> faultType = Collections.emptyList();
-        DataType<?> outputType = new JavaClass<>(Void.class);
+        List<DataType> input = Collections.<DataType>singletonList(inputType);
+        List<DataType> faultType = Collections.emptyList();
+        DataType outputType = new JavaClass<>(Void.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }
@@ -115,9 +115,9 @@ public class FileBindingGeneratorTestCase extends TestCase {
     private ServiceContract createReferenceContract() {
         ServiceContract contract = new JavaServiceContract(FileReferenceTransport.class);
         DataType inputType = new JavaClass<>(String.class);
-        List<DataType<?>> input = Collections.<DataType<?>>singletonList(inputType);
-        List<DataType<?>> faultType = Collections.emptyList();
-        DataType<?> outputType = new JavaClass<>(OutputStream.class);
+        List<DataType> input = Collections.<DataType>singletonList(inputType);
+        List<DataType> faultType = Collections.emptyList();
+        DataType outputType = new JavaClass<>(OutputStream.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }

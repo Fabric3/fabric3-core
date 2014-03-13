@@ -59,8 +59,8 @@ public class TransformerHandlerTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testTransform() throws Exception {
-        DataType<?> sourceType = new JsonType<>(String.class, "{test}");
-        DataType<?> targetType = new JavaClass<>(String.class);
+        DataType sourceType = new JsonType(String.class);
+        DataType targetType = new JavaClass<>(String.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
         Transformer transformer = EasyMock.createMock(Transformer.class);
 
@@ -76,7 +76,7 @@ public class TransformerHandlerTestCase extends TestCase {
 
         EasyMock.replay(registry, next, transformer);
 
-        TransformerHandler handler = new TransformerHandler((DataType<Object>) targetType, registry);
+        TransformerHandler handler = new TransformerHandler((DataType) targetType, registry);
         handler.setNext(next);
 
         Object event = new MockEvent();
@@ -91,13 +91,13 @@ public class TransformerHandlerTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testNoTransform() throws Exception {
-        DataType<?> dataType = new JavaClass<>(String.class);
+        DataType dataType = new JavaClass<>(String.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
         next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
 
         EasyMock.replay(registry, next);
 
-        TransformerHandler handler = new TransformerHandler((DataType<Object>) dataType, registry);
+        TransformerHandler handler = new TransformerHandler((DataType) dataType, registry);
         handler.setNext(next);
 
         handler.handle(new Object(), true);

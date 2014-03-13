@@ -97,7 +97,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
                                List<OperationPayloadTypes> payloadTypes,
                                TransactionType transactionType,
                                List<PhysicalBindingHandlerDefinition> handlers,
-                               DataType<?>... types) {
+                               DataType... types) {
         super(types);
         setUri(uri);
         this.metadata = metadata;

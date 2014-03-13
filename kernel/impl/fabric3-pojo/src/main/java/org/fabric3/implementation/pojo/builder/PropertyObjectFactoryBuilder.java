@@ -60,5 +60,5 @@ public interface PropertyObjectFactoryBuilder {
      * @return the ObjectFactory
      * @throws BuilderException if there is an error building the factory
      */
-    ObjectFactory<?> createFactory(String name, DataType<?> dataType, Document value, boolean many, ClassLoader classLoader) throws BuilderException;
+    ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) throws BuilderException;
 }

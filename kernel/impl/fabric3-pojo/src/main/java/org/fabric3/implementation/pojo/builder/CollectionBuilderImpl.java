@@ -76,7 +76,7 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
                                                           Document value,
                                                           ClassLoader classLoader) throws PropertyTransformException {
         try {
-            List<JavaTypeInfo> typeInfos = dataType.getLogical().getParameterTypesInfos();
+            List<JavaTypeInfo> typeInfos = dataType.getTypeInfo().getParameterTypesInfos();
             if (typeInfos.size() < 1) {
                 // programming error
                 throw new PropertyTransformException("Collection properties must have a value type");

@@ -62,14 +62,14 @@ public abstract class PhysicalTargetDefinition implements Serializable {
     private boolean callback;
     private URI callbackUri;
     private URI classLoaderId;
-    protected List<DataType<?>> physicalDataTypes = new ArrayList<>();
+    protected List<DataType> physicalDataTypes = new ArrayList<>();
 
     public PhysicalTargetDefinition() {
         // default to Java
         physicalDataTypes.add(PhysicalDataTypes.JAVA_TYPE);
     }
 
-    public PhysicalTargetDefinition(DataType<?>... types) {
+    public PhysicalTargetDefinition(DataType... types) {
         if (types != null) {
             physicalDataTypes.addAll(Arrays.asList(types));
         }
@@ -134,7 +134,7 @@ public abstract class PhysicalTargetDefinition implements Serializable {
      *
      * @return a list of supported physical data types by order of preference
      */
-    public List<DataType<?>> getPhysicalDataTypes() {
+    public List<DataType> getPhysicalDataTypes() {
         return physicalDataTypes;
     }
 

@@ -63,8 +63,8 @@ public interface TransformerInterceptorFactory {
      *                                      source-target type combinations
      */
     Interceptor createInterceptor(PhysicalOperationDefinition operation,
-                                  List<DataType<?>> sources,
-                                  List<DataType<?>> targets,
+                                  List<DataType> sources,
+                                  List<DataType> targets,
                                   ClassLoader targetLoader,
                                   ClassLoader sourceLoader) throws InterceptorCreationException;
 

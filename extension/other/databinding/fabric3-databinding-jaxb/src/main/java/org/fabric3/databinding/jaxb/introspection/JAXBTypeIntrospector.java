@@ -116,15 +116,15 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
 
     public void introspect(Operation operation, Method method, IntrospectionContext context) {
         // TODO perform error checking, e.g. mixing of databindings
-        List<DataType<?>> inputTypes = operation.getInputTypes();
-        for (DataType<?> type : inputTypes) {
+        List<DataType> inputTypes = operation.getInputTypes();
+        for (DataType type : inputTypes) {
             if (!(type instanceof JavaType)) {
                 // programming error
                 throw new AssertionError("Java contracts must use " + JavaType.class);
             }
             introspectJAXB((JavaType<?>) type);
         }
-        for (DataType<?> type : operation.getFaultTypes()) {
+        for (DataType type : operation.getFaultTypes()) {
             // FIXME need to process fault beans
             if (!(type instanceof JavaType)) {
                 // programming error
@@ -132,7 +132,7 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
             }
             introspectJAXB((JavaType<?>) type);
         }
-        DataType<?> outputType = operation.getOutputType();
+        DataType outputType = operation.getOutputType();
         if (!(outputType instanceof JavaType)) {
             // programming error
             throw new AssertionError("Java contracts must use " + JavaType.class);

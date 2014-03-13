@@ -94,7 +94,7 @@ import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySender, Fabric3EventListener<RuntimeStop> {
     private static final DataType BYTE_TYPE = new JavaClass<>(byte[].class);
     private static final DataType EMPTY_TYPE = new JavaClass<>(Void.class);
-    List<DataType<?>> TRANSPORT_TYPES;   // the transport type is a byte array
+    List<DataType> TRANSPORT_TYPES;   // the transport type is a byte array
 
     private static final String ZMQ = "zmq";
 
@@ -180,7 +180,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             InvocationChain chain = chains.get(i);
             try {
                 PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
-                List<DataType<?>> sourceTypes = createTypes(physicalOperation, loader);
+                List<DataType> sourceTypes = createTypes(physicalOperation, loader);
                 Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, sourceTypes, TRANSPORT_TYPES, loader, loader);
                 chain.addInterceptor(interceptor);
                 chain.addInterceptor(new UnwrappingInterceptor());
@@ -400,7 +400,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         for (InvocationChain chain : chains) {
             try {
                 PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
-                List<DataType<?>> targetTypes = createTypes(physicalOperation, loader);
+                List<DataType> targetTypes = createTypes(physicalOperation, loader);
                 Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, TRANSPORT_TYPES, targetTypes, loader, loader);
                 chain.addInterceptor(new WrappingInterceptor());
                 chain.addInterceptor(interceptor);
@@ -411,9 +411,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<DataType<?>> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws BrokerException {
+    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws BrokerException {
         try {
-            List<DataType<?>> dataTypes = new ArrayList<>();
+            List<DataType> dataTypes = new ArrayList<>();
             if (physicalOperation.getSourceParameterTypes().isEmpty()) {
                 // no params
                 dataTypes.add(EMPTY_TYPE);

@@ -60,7 +60,7 @@ public interface TransformerFactory {
      * @param target the target datatype
      * @return true if the factory creates transformers that can convert from the source to target data types
      */
-    boolean canTransform(DataType<?> source, DataType<?> target);
+    boolean canTransform(DataType source, DataType target);
 
     /**
      * Creates a transformer capable of converting from the source to target data types.
@@ -72,5 +72,5 @@ public interface TransformerFactory {
      * @return the transformer the transformer
      * @throws TransformationException if there was an error creating the transformer
      */
-    Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws TransformationException;
+    Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws TransformationException;
 }

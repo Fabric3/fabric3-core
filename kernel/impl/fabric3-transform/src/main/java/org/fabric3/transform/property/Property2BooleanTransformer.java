@@ -51,11 +51,11 @@ import org.fabric3.spi.transform.TransformationException;
 public class Property2BooleanTransformer implements SingleTypeTransformer<Node, Boolean> {
     private static final JavaClass<Boolean> TARGET = new JavaClass<>(Boolean.class);
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

@@ -55,7 +55,7 @@ public class Property2ClassTransformer implements SingleTypeTransformer<Node, Cl
 
     private final ClassLoaderRegistry classLoaderRegistry;
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;
     }
 
@@ -63,7 +63,7 @@ public class Property2ClassTransformer implements SingleTypeTransformer<Node, Cl
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

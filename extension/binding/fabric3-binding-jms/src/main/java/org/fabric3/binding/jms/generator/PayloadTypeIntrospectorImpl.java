@@ -67,10 +67,10 @@ import org.fabric3.api.model.type.contract.Operation;
 public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
 
     public OperationPayloadTypes introspect(Operation operation) throws JmsGenerationException {
-        List<DataType<?>> inputTypes = operation.getInputTypes();
+        List<DataType> inputTypes = operation.getInputTypes();
         PayloadType inputType;
         if (inputTypes.size() == 1) {
-            DataType<?> param = inputTypes.get(0);
+            DataType param = inputTypes.get(0);
             inputType = introspectType(param);
         } else {
             // more than one parameter, use an object type message
@@ -85,7 +85,7 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
         }
     }
 
-    private PayloadType introspectType(DataType<?> param) throws JmsGenerationException {
+    private PayloadType introspectType(DataType param) throws JmsGenerationException {
 
         Class<?> physical = param.getPhysical();
         if (physical.isPrimitive() && !Void.TYPE.equals(physical)) {

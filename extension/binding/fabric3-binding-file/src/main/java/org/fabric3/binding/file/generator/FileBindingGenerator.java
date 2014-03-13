@@ -136,7 +136,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
             throw new InvalidContractException("File transfer binding contracts must contain one operation of the form openStream(String id)");
         }
         Operation operation = contract.getOperations().get(0);
-        DataType<?> dataType = operation.getInputTypes().get(0);
+        DataType dataType = operation.getInputTypes().get(0);
         if (!(dataType instanceof JavaType)) {
             throw new InvalidContractException("Unsupported parameter type on binding contract: " + dataType);
         }
@@ -145,7 +145,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
             throw new InvalidContractException("Parameter type on binding contract must be a string: " + dataType);
         }
 
-        DataType<?> outputType = operation.getOutputType();
+        DataType outputType = operation.getOutputType();
         if (!(outputType instanceof JavaType)) {
             throw new InvalidContractException("Unsupported output type on binding contract: " + outputType);
         }
@@ -175,7 +175,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
      */
     private boolean isDataHandler(ServiceContract contract) {
         for (Operation operation : contract.getOperations()) {
-            for (DataType<?> dataType : operation.getInputTypes()) {
+            for (DataType dataType : operation.getInputTypes()) {
                 if (DataHandler.class.isAssignableFrom(dataType.getPhysical())) {
                     return true;
                 }

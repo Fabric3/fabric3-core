@@ -12,11 +12,11 @@ import org.fabric3.spi.transform.TransformationException;
 public class TwoDimensionByteArrayTransformer implements SingleTypeTransformer<byte[][], byte[][]> {
     private static final JavaClass<byte[][]> TYPE = new JavaClass<>(byte[][].class);
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return TYPE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TYPE;
     }
 

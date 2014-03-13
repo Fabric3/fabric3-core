@@ -69,11 +69,11 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
         return 0;
     }
 
-    public boolean canTransform(DataType<?> source, DataType<?> target) {
+    public boolean canTransform(DataType source, DataType target) {
         return Node.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
             throws TransformationException {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);
@@ -98,7 +98,7 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
         }
     }
 
-    private Transformer<Node, Object> createTransformer(DataType<?> source, Class<?> type, JAXBContext jaxbContext) {
+    private Transformer<Node, Object> createTransformer(DataType source, Class<?> type, JAXBContext jaxbContext) {
         if (type.isAnnotationPresent(XmlRootElement.class)) {
             if (XSDConstants.PROPERTY_TYPE.equals(source)) {
                 // the value is a property

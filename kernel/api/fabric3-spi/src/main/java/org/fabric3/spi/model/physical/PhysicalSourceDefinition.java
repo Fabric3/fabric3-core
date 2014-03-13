@@ -62,14 +62,14 @@ public abstract class PhysicalSourceDefinition implements Serializable {
     private boolean optimizable;
     private String key;
     private int order = Integer.MIN_VALUE;
-    protected List<DataType<?>> physicalDataTypes = new ArrayList<>();
+    protected List<DataType> physicalDataTypes = new ArrayList<>();
 
     public PhysicalSourceDefinition() {
         // default to Java
         physicalDataTypes.add(PhysicalDataTypes.JAVA_TYPE);
     }
 
-    public PhysicalSourceDefinition(DataType<?>... types) {
+    public PhysicalSourceDefinition(DataType... types) {
         if (types != null) {
             physicalDataTypes.addAll(Arrays.asList(types));
         }
@@ -152,7 +152,7 @@ public abstract class PhysicalSourceDefinition implements Serializable {
      *
      * @return a list of supported physical data types by order of preference
      */
-    public List<DataType<?>> getPhysicalDataTypes() {
+    public List<DataType> getPhysicalDataTypes() {
         return physicalDataTypes;
     }
 

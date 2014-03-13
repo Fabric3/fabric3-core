@@ -57,7 +57,7 @@ public interface TransformerRegistry {
      * @return the transformer or null if one is not found
      * @throws TransformationException if an error occurs returning the transformer
      */
-    Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes)
+    Transformer<?, ?> getTransformer(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes)
             throws TransformationException;
 
 

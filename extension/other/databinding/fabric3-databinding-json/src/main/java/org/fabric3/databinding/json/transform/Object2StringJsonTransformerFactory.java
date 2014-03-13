@@ -62,11 +62,11 @@ public class Object2StringJsonTransformerFactory implements TransformerFactory {
         return 0;
     }
 
-    public boolean canTransform(DataType<?> source, DataType<?> target) {
+    public boolean canTransform(DataType source, DataType target) {
         return target instanceof JsonType && String.class.equals(target.getPhysical()) && source instanceof JavaType;
     }
 
-    public Object2StringJsonTransformer create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
+    public Object2StringJsonTransformer create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
         ObjectMapper mapper = configurator.getDefaultMapper();
         return new Object2StringJsonTransformer(mapper);
     }

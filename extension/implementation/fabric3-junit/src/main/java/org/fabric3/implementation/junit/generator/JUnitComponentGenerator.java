@@ -124,7 +124,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
 
         if (reference.getDefinition().isKeyed()) {
             wireDefinition.setKeyed(true);
-            DataType<?> type = reference.getDefinition().getKeyDataType();
+            DataType type = reference.getDefinition().getKeyDataType();
             String className = type.getPhysical().getName();
             wireDefinition.setKeyClassName(className);
         }

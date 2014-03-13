@@ -54,11 +54,11 @@ import org.fabric3.spi.transform.TransformationException;
 public class Property2URITransformer implements SingleTypeTransformer<Node, URI> {
     private static final JavaClass<URI> TARGET = new JavaClass<>(URI.class);
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

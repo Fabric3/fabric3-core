@@ -212,15 +212,15 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         operation.setSourceReturnType(returnName);
         operation.setTargetReturnType(returnName);
 
-        for (DataType<?> fault : o.getFaultTypes()) {
+        for (DataType fault : o.getFaultTypes()) {
             Class<?> faultType = fault.getPhysical();
             String faultName = faultType.getName();
             operation.addSourceFaultType(faultName);
             operation.addTargetFaultType(faultName);
         }
 
-        List<DataType<?>> params = o.getInputTypes();
-        for (DataType<?> param : params) {
+        List<DataType> params = o.getInputTypes();
+        for (DataType param : params) {
             Class<?> paramType = param.getPhysical();
             String paramName = paramType.getName();
             operation.addSourceParameterType(paramName);
@@ -254,13 +254,13 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         Class<?> returnType = o.getOutputType().getPhysical();
         operation.setSourceReturnType(returnType.getName());
 
-        for (DataType<?> fault : o.getFaultTypes()) {
+        for (DataType fault : o.getFaultTypes()) {
             Class<?> faultType = fault.getPhysical();
             operation.addSourceFaultType(faultType.getName());
         }
 
-        List<DataType<?>> params = o.getInputTypes();
-        for (DataType<?> param : params) {
+        List<DataType> params = o.getInputTypes();
+        for (DataType param : params) {
             Class<?> paramType = param.getPhysical();
             operation.addSourceParameterType(paramType.getName());
         }
@@ -269,13 +269,13 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         Class<?> targetReturnType = targetDefinition.getOutputType().getPhysical();
         operation.setTargetReturnType(targetReturnType.getName());
 
-        for (DataType<?> targetFault : targetDefinition.getFaultTypes()) {
+        for (DataType targetFault : targetDefinition.getFaultTypes()) {
             Class<?> faultType = targetFault.getPhysical();
             operation.addTargetFaultType(faultType.getName());
         }
 
-        List<DataType<?>> targetParams = targetDefinition.getInputTypes();
-        for (DataType<?> param : targetParams) {
+        List<DataType> targetParams = targetDefinition.getInputTypes();
+        for (DataType param : targetParams) {
             Class<?> paramType = param.getPhysical();
             operation.addTargetParameterType(paramType.getName());
         }

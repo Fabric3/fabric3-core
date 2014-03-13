@@ -65,8 +65,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
 
     @SuppressWarnings({"unchecked"})
     public Interceptor createInterceptor(PhysicalOperationDefinition definition,
-                                         List<DataType<?>> sources,
-                                         List<DataType<?>> targets,
+                                         List<DataType> sources,
+                                         List<DataType> targets,
                                          ClassLoader targetLoader,
                                          ClassLoader sourceLoader) throws InterceptorCreationException {
         List<Class<?>> targetTypes = loadTargetInputTypes(definition, targetLoader);
@@ -75,10 +75,10 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
             // or binding. A search is performed by iterating the supported source and target types in order of preference.
             Transformer<Object, Object> inTransformer = null;
-            DataType<?> selectedSource = null;
-            DataType<?> selectedTarget = null;
-            for (DataType<?> source : sources) {
-                for (DataType<?> target : targets) {
+            DataType selectedSource = null;
+            DataType selectedTarget = null;
+            for (DataType source : sources) {
+                for (DataType target : targets) {
                     inTransformer = (Transformer<Object, Object>) registry.getTransformer(source, target, sourceTypes, targetTypes);
                     if (inTransformer != null) {
                         selectedSource = source;

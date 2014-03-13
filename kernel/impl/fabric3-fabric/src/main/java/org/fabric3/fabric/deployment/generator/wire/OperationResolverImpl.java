@@ -62,19 +62,19 @@ public class OperationResolverImpl implements OperationResolver {
 
             // match on actual or mapped WSDL name
             if (sourceDefinition.getName().equals(targetDefinition.getName()) || sourceDefinition.getWsdlName().equals(targetDefinition.getWsdlName())) {
-                List<DataType<?>> sourceInputTypes = sourceDefinition.getInputTypes();
-                List<DataType<?>> targetInputTypes = targetDefinition.getInputTypes();
-                DataType<?> sourceOutputType = sourceDefinition.getOutputType();
-                DataType<?> targetOutputType = targetDefinition.getOutputType();
+                List<DataType> sourceInputTypes = sourceDefinition.getInputTypes();
+                List<DataType> targetInputTypes = targetDefinition.getInputTypes();
+                DataType sourceOutputType = sourceDefinition.getOutputType();
+                DataType targetOutputType = targetDefinition.getOutputType();
                 if (sourceOutputType.equals(targetOutputType) && sourceInputTypes.equals(targetDefinition.getInputTypes())) {
                     return target;
                 }
                 if (sourceInputTypes.size() == targetInputTypes.size()) {
                     boolean equals = true;
                     for (int i = 0; i < sourceInputTypes.size(); i++) {
-                        DataType<?> sourceType = sourceInputTypes.get(i);
+                        DataType sourceType = sourceInputTypes.get(i);
                         QName sourceXsdType = sourceType.getXsdType();
-                        DataType<?> targetType = targetInputTypes.get(i);
+                        DataType targetType = targetInputTypes.get(i);
                         QName targetXsdType = targetType.getXsdType();
                         // compare by XSD type
                         if (sourceXsdType == null || targetXsdType == null || !sourceXsdType.equals(targetXsdType)) {
@@ -121,7 +121,7 @@ public class OperationResolverImpl implements OperationResolver {
      * @param type        the other type to compare
      * @return true if the types match
      */
-    private boolean checkSequence(XSDComplexType complexType, DataType<?> type) {
+    private boolean checkSequence(XSDComplexType complexType, DataType type) {
         if (complexType.isSequence() && complexType.getSequenceTypes().size() == 1) {
             XSDType sequenceType = complexType.getSequenceTypes().get(0);
             if (sequenceType.getXsdType().equals(type.getXsdType())) {

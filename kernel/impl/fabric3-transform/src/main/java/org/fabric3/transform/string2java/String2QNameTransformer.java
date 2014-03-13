@@ -53,11 +53,11 @@ public class String2QNameTransformer implements SingleTypeTransformer<String, QN
     private static final XSDSimpleType SOURCE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));
     private static final JavaClass<QName> TARGET = new JavaClass<>(QName.class);
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return SOURCE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

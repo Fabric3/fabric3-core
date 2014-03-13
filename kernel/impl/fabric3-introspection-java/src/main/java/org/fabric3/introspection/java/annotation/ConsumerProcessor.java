@@ -86,7 +86,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
             return;
         }
         TypeMapping typeMapping = context.getTypeMapping(implClass);
-        List<DataType<?>> types = introspectParameterTypes(method, typeMapping);
+        List<DataType> types = introspectParameterTypes(method, typeMapping);
         // TODO handle policies
         String name = helper.getSiteName(method, annotation.value());
         Signature signature = new Signature(method);
@@ -103,21 +103,21 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         componentType.add(definition, signature);
     }
 
-    private List<DataType<?>> introspectParameterTypes(Method method, TypeMapping typeMapping) {
+    private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalParameterTypes = method.getParameterTypes();
         Type[] gParamTypes = method.getGenericParameterTypes();
-        List<DataType<?>> parameterDataTypes = new ArrayList<>(gParamTypes.length);
+        List<DataType> parameterDataTypes = new ArrayList<>(gParamTypes.length);
         for (int i = 0; i < gParamTypes.length; i++) {
             Type gParamType = gParamTypes[i];
             Type logicalParamType = typeMapping.getActualType(gParamType);
-            DataType<?> dataType = createDataType(physicalParameterTypes[i], logicalParamType, typeMapping);
+            DataType dataType = createDataType(physicalParameterTypes[i], logicalParamType, typeMapping);
             parameterDataTypes.add(dataType);
         }
         return parameterDataTypes;
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType<?> createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
+    private DataType createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
         if (type instanceof Class) {
             // not a generic
             return new JavaClass(physicalType);

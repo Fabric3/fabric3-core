@@ -54,7 +54,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 public class WebTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 5975064272932161181L;
 
-    public WebTargetDefinition(URI uri, DataType<?> type) {
+    public WebTargetDefinition(URI uri, DataType type) {
         super(type);
         setUri(uri);
     }

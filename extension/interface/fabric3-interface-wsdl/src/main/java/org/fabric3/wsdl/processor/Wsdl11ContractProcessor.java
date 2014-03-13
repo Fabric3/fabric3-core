@@ -96,13 +96,13 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     private Operation createOperation(javax.wsdl.Operation operation, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         Input input = operation.getInput();
         Message message = input.getMessage();
-        List<DataType<?>> inputTypes = getInputTypes(message, collection, portType, context);
+        List<DataType> inputTypes = getInputTypes(message, collection, portType, context);
 
         Map faults = operation.getFaults();
-        List<DataType<?>> faultTypes = getFaultTypes(faults, collection, portType, context);
+        List<DataType> faultTypes = getFaultTypes(faults, collection, portType, context);
 
         Output output = operation.getOutput();
-        DataType<?> outputType = getOutputType(output, collection, portType, context);
+        DataType outputType = getOutputType(output, collection, portType, context);
 
         String name = operation.getName();
         Operation op = new Operation(name, inputTypes, outputType, faultTypes);
@@ -111,12 +111,12 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<DataType<?>> getInputTypes(Message message, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
-        List<DataType<?>> types = new ArrayList<>();
+    private List<DataType> getInputTypes(Message message, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
+        List<DataType> types = new ArrayList<>();
         // Note Message.getParts() may not return the parts in proper order; Message.getOrderedParts(null) does
         List parts = message.getOrderedParts(null);
         if (parts.isEmpty()) {
-            DataType<?> type = getElementDataType(message.getQName(), collection, portType, context);
+            DataType type = getElementDataType(message.getQName(), collection, portType, context);
             types.add(type);
         } else {
             for (Part part : (Collection<Part>) parts) {
@@ -130,8 +130,8 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     }
 
     @SuppressWarnings("unchecked")
-    private List<DataType<?>> getFaultTypes(Map faults, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
-        List<DataType<?>> types = new LinkedList<>();
+    private List<DataType> getFaultTypes(Map faults, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
+        List<DataType> types = new LinkedList<>();
         for (Fault fault : (Collection<Fault>) faults.values()) {
             Part part = (Part) fault.getMessage().getOrderedParts(null).get(0);
             XSDType dataType = getDataType(part, collection, portType, context);
@@ -143,7 +143,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
     }
 
-    private DataType<?> getOutputType(Output output, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
+    private DataType getOutputType(Output output, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         if (output == null) {
             // no output type specified (e.g. one-way operation), use void
             return new XSDSimpleType(Void.TYPE, new QName("void"));

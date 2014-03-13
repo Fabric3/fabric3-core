@@ -38,29 +38,27 @@
 
 package org.fabric3.implementation.pojo.builder;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.model.type.java.JavaTypeInfo;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
+import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.model.type.java.JavaGenericType;
-import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.transform.TransformationException;
-import org.fabric3.spi.transform.Transformer;
-import org.fabric3.spi.transform.TransformerRegistry;
-
 import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
 
 /**
@@ -82,7 +80,7 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
     public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader)
             throws PropertyTransformException {
         try {
-            List<JavaTypeInfo> typeInfos = type.getLogical().getParameterTypesInfos();
+            List<JavaTypeInfo> typeInfos = type.getTypeInfo().getParameterTypesInfos();
             if (typeInfos.size() < 2) {
                 // programming error
                 throw new PropertyTransformException("Map properties must have a key and value type");
@@ -90,7 +88,7 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
             Class<?> keyType = typeInfos.get(0).getRawType();
             List<Class<?>> keyTypes = new ArrayList<>();
             keyTypes.add(keyType);
-            Class<?> valueType = type.getLogical().getParameterTypesInfos().get(1).getRawType();
+            Class<?> valueType = type.getTypeInfo().getParameterTypesInfos().get(1).getRawType();
             List<Class<?>> valueTypes = new ArrayList<>();
             valueTypes.add(valueType);
 

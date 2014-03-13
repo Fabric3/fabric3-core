@@ -64,7 +64,7 @@ public class TransformerHandlerFactoryImpl implements TransformerHandlerFactory 
     }
 
     @SuppressWarnings({"unchecked"})
-    public EventStreamHandler createHandler(DataType<?> source, DataType<?> target, ClassLoader loader) throws HandlerCreationException {
+    public EventStreamHandler createHandler(DataType source, DataType target, ClassLoader loader) throws HandlerCreationException {
         try {
             // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
             // or binding. A search is performed by iterating the supported source and target types in order of preference.

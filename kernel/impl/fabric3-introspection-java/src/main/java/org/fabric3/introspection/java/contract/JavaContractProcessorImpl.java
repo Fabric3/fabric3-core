@@ -163,9 +163,9 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             String name = method.getName();
 
             TypeMapping typeMapping = getTypeMapping(interfaze, baseClass, context);
-            DataType<?> returnType = introspectReturnType(method, typeMapping);
-            List<DataType<?>> paramTypes = introspectParameterTypes(method, typeMapping);
-            List<DataType<?>> faultTypes = introspectFaultTypes(method, typeMapping);
+            DataType returnType = introspectReturnType(method, typeMapping);
+            List<DataType> paramTypes = introspectParameterTypes(method, typeMapping);
+            List<DataType> faultTypes = introspectFaultTypes(method, typeMapping);
 
             Operation operation = new Operation(name, paramTypes, returnType, faultTypes);
             operation.setRemotable(remotable);
@@ -190,34 +190,34 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         return operations;
     }
 
-    private DataType<?> introspectReturnType(Method method, TypeMapping typeMapping) {
+    private DataType introspectReturnType(Method method, TypeMapping typeMapping) {
         Class<?> physicalReturnType = method.getReturnType();
         Type gReturnType = method.getGenericReturnType();
         Type logicalReturnType = typeMapping.getActualType(gReturnType);
         return createDataType(physicalReturnType, logicalReturnType, typeMapping);
     }
 
-    private List<DataType<?>> introspectParameterTypes(Method method, TypeMapping typeMapping) {
+    private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalParameterTypes = method.getParameterTypes();
         Type[] gParamTypes = method.getGenericParameterTypes();
-        List<DataType<?>> parameterDataTypes = new ArrayList<>(gParamTypes.length);
+        List<DataType> parameterDataTypes = new ArrayList<>(gParamTypes.length);
         for (int i = 0; i < gParamTypes.length; i++) {
             Type gParamType = gParamTypes[i];
             Type logicalParamType = typeMapping.getActualType(gParamType);
-            DataType<?> dataType = createDataType(physicalParameterTypes[i], logicalParamType, typeMapping);
+            DataType dataType = createDataType(physicalParameterTypes[i], logicalParamType, typeMapping);
             parameterDataTypes.add(dataType);
         }
         return parameterDataTypes;
     }
 
-    private List<DataType<?>> introspectFaultTypes(Method method, TypeMapping typeMapping) {
+    private List<DataType> introspectFaultTypes(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalFaultTypes = method.getExceptionTypes();
         Type[] gFaultTypes = method.getGenericExceptionTypes();  // possible even though it is not possible to catch a generic exception type
-        List<DataType<?>> faultDataTypes = new ArrayList<>(gFaultTypes.length);
+        List<DataType> faultDataTypes = new ArrayList<>(gFaultTypes.length);
         for (int i = 0; i < gFaultTypes.length; i++) {
             Type gFaultType = gFaultTypes[i];
             Type logicalType = typeMapping.getActualType(gFaultType);
-            DataType<?> dataType = createDataType(physicalFaultTypes[i], logicalType, typeMapping);
+            DataType dataType = createDataType(physicalFaultTypes[i], logicalType, typeMapping);
             faultDataTypes.add(dataType);
         }
         return faultDataTypes;
@@ -242,7 +242,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
      * @return the data type
      */
     @SuppressWarnings({"unchecked"})
-    private DataType<?> createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
+    private DataType createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
         if (type instanceof Class) {
             // not a generic
             return new JavaClass(physicalType);

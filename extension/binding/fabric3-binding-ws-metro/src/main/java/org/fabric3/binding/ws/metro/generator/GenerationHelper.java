@@ -259,10 +259,10 @@ public class GenerationHelper {
      */
     @SuppressWarnings({"unchecked"})
     private static Method findMethod(Operation operation, Class<?> serviceClass) {
-        List<DataType<?>> types = operation.getInputTypes();
+        List<DataType> types = operation.getInputTypes();
         Class<?>[] params = new Class<?>[types.size()];
         for (int i = 0; i < types.size(); i++) {
-            DataType<?> type = types.get(i);
+            DataType type = types.get(i);
             params[i] = type.getPhysical();
         }
         try {

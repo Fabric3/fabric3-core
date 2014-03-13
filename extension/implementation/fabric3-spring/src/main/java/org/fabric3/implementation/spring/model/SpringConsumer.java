@@ -61,7 +61,7 @@ public class SpringConsumer extends ConsumerDefinition {
      * @param methodName the target method name on the bean to dispatch events to
      */
     public SpringConsumer(String name, JavaType<?> type, String targetBean, String methodName) {
-        super(name, Collections.<DataType<?>>singletonList(type));
+        super(name, Collections.<DataType>singletonList(type));
         this.type = type;
         this.beanName = targetBean;
         this.methodName = methodName;

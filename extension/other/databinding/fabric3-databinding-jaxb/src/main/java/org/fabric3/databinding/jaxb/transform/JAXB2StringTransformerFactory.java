@@ -72,11 +72,11 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
         return 0;
     }
 
-    public boolean canTransform(DataType<?> source, DataType<?> target) {
+    public boolean canTransform(DataType source, DataType target) {
         return target.getPhysical().equals(String.class) && target instanceof XSDType && source instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
             throws TransformationException {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);

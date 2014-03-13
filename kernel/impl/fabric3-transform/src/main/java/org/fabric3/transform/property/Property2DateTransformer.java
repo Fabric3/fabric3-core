@@ -58,11 +58,11 @@ public class Property2DateTransformer implements SingleTypeTransformer<Node, Dat
 
     private final DateFormat dateFormatter;
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return XSDConstants.PROPERTY_TYPE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

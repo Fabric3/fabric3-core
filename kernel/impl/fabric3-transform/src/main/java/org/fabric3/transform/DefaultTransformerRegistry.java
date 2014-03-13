@@ -84,7 +84,7 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
         this.factories = sorted;
     }
 
-    public Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes)
+    public Transformer<?, ?> getTransformer(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes)
             throws TransformationException {
         Key key = new Key(source, target);
         Transformer<?, ?> transformer = transformers.get(key);
@@ -101,10 +101,10 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
     }
 
     private static class Key {
-        private final DataType<?> source;
-        private final DataType<?> target;
+        private final DataType source;
+        private final DataType target;
 
-        public Key(DataType<?> source, DataType<?> target) {
+        public Key(DataType source, DataType target) {
             this.source = source;
             this.target = target;
         }

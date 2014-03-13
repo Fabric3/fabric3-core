@@ -57,16 +57,16 @@ import org.fabric3.api.model.type.contract.DataType;
 public class EventWrapper implements Serializable {
     private static final long serialVersionUID = 7377714429939143568L;
 
-    private DataType<?> defaultType;
+    private DataType defaultType;
     private final Object defaultEvent;
-    private Map<DataType<?>, Object> cache;
+    private Map<DataType, Object> cache;
 
-    public EventWrapper(DataType<?> type, Object event) {
+    public EventWrapper(DataType type, Object event) {
         this.defaultType = type;
         this.defaultEvent = event;
     }
 
-    public DataType<?> getType() {
+    public DataType getType() {
         return defaultType;
     }
 
@@ -74,7 +74,7 @@ public class EventWrapper implements Serializable {
         return defaultEvent;
     }
 
-    public <T> void cache(DataType<T> type, T representation) {
+    public <T> void cache(DataType type, T representation) {
         synchronized (defaultEvent) {
             if (cache == null) {
                 cache = new ConcurrentHashMap<>();
@@ -84,7 +84,7 @@ public class EventWrapper implements Serializable {
         cache.put(type, representation);
     }
 
-    public Object getEvent(DataType<?> type) {
+    public Object getEvent(DataType type) {
         if (cache != null) {
             return cache.get(type);
         }

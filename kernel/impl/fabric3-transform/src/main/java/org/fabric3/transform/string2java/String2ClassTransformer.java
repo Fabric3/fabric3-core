@@ -61,11 +61,11 @@ public class String2ClassTransformer implements SingleTypeTransformer<String, Cl
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public DataType<?> getSourceType() {
+    public DataType getSourceType() {
         return SOURCE;
     }
 
-    public DataType<?> getTargetType() {
+    public DataType getTargetType() {
         return TARGET;
     }
 

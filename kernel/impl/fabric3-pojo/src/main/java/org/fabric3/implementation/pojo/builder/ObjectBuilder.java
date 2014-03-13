@@ -58,6 +58,6 @@ public interface ObjectBuilder {
      * @return the object factory
      * @throws PropertyTransformException if there is an error creating the object factory
      */
-    ObjectFactory<?> createFactory(String name, DataType<?> type, Document value, ClassLoader classLoader) throws PropertyTransformException;
+    ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws PropertyTransformException;
 
 }

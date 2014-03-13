@@ -91,8 +91,8 @@ public class CachingAuthenticationService extends HttpServlet {
     private final static String APPLICATION_JSON = "application/json";
     private final static String APPLICATION_XML = "application/xml";
 
-    private final static DataType<?> JSON_TYPE = new JsonType<>(InputStream.class, String.class);
-    private static final DataType<?> XML_TYPE = new XSDType(String.class, new QName(XSDType.XSD_NS, "string"));
+    private final static DataType JSON_TYPE = new JsonType(InputStream.class);
+    private static final DataType XML_TYPE = new XSDType(String.class, new QName(XSDType.XSD_NS, "string"));
     private final static JavaClass<UsernamePasswordToken> JAVA_TYPE = new JavaClass<>(UsernamePasswordToken.class);
 
     private AuthenticationService authService;

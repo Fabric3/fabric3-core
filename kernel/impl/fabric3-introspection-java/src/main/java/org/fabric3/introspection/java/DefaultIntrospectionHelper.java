@@ -200,7 +200,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         } else if (MultiplicityType.DICTIONARY == multiplicityType) {
             Multiplicity multiplicity = required ? Multiplicity.ONE_N : Multiplicity.ZERO_N;
             definition.setMultiplicity(multiplicity);
-            DataType<?> keyType = getKeyType(type, typeMapping);
+            DataType keyType = getKeyType(type, typeMapping);
             definition.setKeyed(true);
             definition.setKeyDataType(keyType);
         } else {
@@ -338,9 +338,9 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
             List<? extends Operation> ops = definition.getServiceContract().getOperations();
             for (Operation operation : ops) {
                 String name = operation.getName();
-                List<? extends DataType<?>> inputTypes = operation.getInputTypes();
+                List<? extends DataType> inputTypes = operation.getInputTypes();
                 List<String> paramTypes = new ArrayList<>(inputTypes.size());
-                for (DataType<?> inputType : inputTypes) {
+                for (DataType inputType : inputTypes) {
                     paramTypes.add(inputType.getPhysical().getName());
                 }
                 operations.add(new Signature(name, paramTypes));
@@ -446,7 +446,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
      * @return the key type
      */
     @SuppressWarnings({"unchecked"})
-    private DataType<?> getKeyType(Type type, TypeMapping typeMapping) {
+    private DataType getKeyType(Type type, TypeMapping typeMapping) {
         Type actualType = typeMapping.getActualType(type);
         if (actualType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) actualType;

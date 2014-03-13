@@ -40,14 +40,13 @@ package org.fabric3.spi.model.type.json;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
- * A JSON type. The physical type represents the form the JSON type is stored in, e.g. a String. The logical type represents the Java class the type
- * corresponds to.
+ * A JSON type.
  */
-public class JsonType<T> extends DataType<T> {
+public class JsonType extends DataType {
     private static final long serialVersionUID = -2572176390449008142L;
 
-    public JsonType(Class<?> physical, T logical) {
-        super(physical, logical);
+    public JsonType(Class<?> type) {
+        super(type);
     }
 
 }

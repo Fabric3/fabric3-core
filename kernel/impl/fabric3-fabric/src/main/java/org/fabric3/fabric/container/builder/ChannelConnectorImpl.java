@@ -188,7 +188,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         List<String> eventTypes = streamDefinition.getEventTypes();
         String stringifiedType = eventTypes.get(0);
         try {
-            DataType<Object> type = new JavaClass(loader.loadClass(stringifiedType));
+            DataType type = new JavaClass(loader.loadClass(stringifiedType));
             TransformerHandler handler = new TransformerHandler(type, transformerRegistry);
             stream.addHandler(handler);
         } catch (ClassNotFoundException e) {

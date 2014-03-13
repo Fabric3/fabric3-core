@@ -51,10 +51,10 @@ import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_PLAIN;
  *
  */
 public final class ChannelUtils {
-    private static final JsonType<Object> JSON = new JsonType<Object>(String.class, Object.class);
+    private static final JsonType JSON = new JsonType(String.class);
 
     public static EventWrapper createWrapper(String contentType, String data) throws InvalidContentTypeException {
-        DataType<?> eventType;
+        DataType eventType;
         if ((contentType == null)) {
             throw new ServiceRuntimeException("No content type specified: " + contentType);
         } else if (contentType.contains(APPLICATION_JSON) || contentType.contains(TEXT_PLAIN)) {

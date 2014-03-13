@@ -43,20 +43,18 @@
  */
 package org.fabric3.binding.web.generator;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.provision.WebTargetDefinition;
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
-import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -64,6 +62,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.model.type.xsd.XSDType;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Generates metadata for attaching a service to a websocket or comet connection.
@@ -71,8 +70,8 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 @EagerInit
 public class WebBindingGenerator implements BindingGenerator<WebBindingDefinition> {
     private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
-    private static final DataType<?> XSD_TYPE = new XSDType(Object.class, XSD_ANY);
-    private static final DataType<?> JSON_TYPE = new JsonType<Object>(String.class, Object.class);
+    private static final DataType XSD_TYPE = new XSDType(Object.class, XSD_ANY);
+    private static final DataType JSON_TYPE = new JsonType(String.class);
 
     public PhysicalSourceDefinition generateSource(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
@@ -81,7 +80,7 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
         URI uri = binding.getParent().getUri();
         String wireFormat = binding.getDefinition().getWireFormat();
 
-        DataType<?> dataType = getDataType(wireFormat);
+        DataType dataType = getDataType(wireFormat);
         return new WebSourceDefinition(uri, contract, dataType);
     }
     public PhysicalTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> binding,
@@ -96,7 +95,7 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
         if (wireFormat == null) {
             wireFormat = introspectWireFormat(service);
         }
-        DataType<?> dataType = getDataType(wireFormat);
+        DataType dataType = getDataType(wireFormat);
         return new WebTargetDefinition(service.getUri(), dataType);
     }
 
@@ -129,7 +128,7 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
     }
 
 
-    private DataType<?> getDataType(String wireFormat) {
+    private DataType getDataType(String wireFormat) {
         if ("xml".equalsIgnoreCase(wireFormat)) {
             return XSD_TYPE;
         } else {

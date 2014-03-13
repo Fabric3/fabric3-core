@@ -47,12 +47,12 @@ import org.fabric3.api.model.type.contract.DataType;
  * For generic types, the logical type will contain resolved generic parameters. This allows for stronger type checking during wiring as resolved
  * generic parameter types can be used for type checking. For non-generic types, the physical and logical types will be the same.
  */
-public abstract class JavaType<T> extends DataType<T> {
+public abstract class JavaType<T> extends DataType {
     private static final long serialVersionUID = 9025728312058285754L;
     private QName xsdType;
 
-    public JavaType(Class<?> physical, T logical) {
-        super(physical, logical);
+    public JavaType(Class<?> physical) {
+        super(physical);
     }
 
     public QName getXsdType() {

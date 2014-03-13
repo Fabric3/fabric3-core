@@ -50,13 +50,13 @@ public interface SingleTypeTransformer<SOURCE, TARGET> extends Transformer<SOURC
      *
      * @return the type
      */
-    DataType<?> getSourceType();
+    DataType getSourceType();
 
     /**
      * Returns the type the transformer transforms to.
      *
      * @return the type
      */
-    DataType<?> getTargetType();
+    DataType getTargetType();
 
 }

@@ -64,7 +64,7 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
         super(transformerRegistry);
     }
 
-    public ObjectFactory<?> createFactory(String name, DataType<?> type, Document value, ClassLoader classLoader)
+    public ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader)
             throws PropertyTransformException {
         try {
             Class<?> physical = type.getPhysical();

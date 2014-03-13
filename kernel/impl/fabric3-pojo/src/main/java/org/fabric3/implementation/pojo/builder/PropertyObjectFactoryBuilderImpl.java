@@ -72,7 +72,7 @@ public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBu
         this.objectBuilder = objectBuilder;
     }
 
-    public ObjectFactory<?> createFactory(String name, DataType<?> dataType, Document value, boolean many, ClassLoader classLoader)
+    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader)
             throws BuilderException {
         Class<?> physical = dataType.getPhysical();
         if (physical.isArray()) {

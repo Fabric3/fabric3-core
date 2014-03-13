@@ -40,21 +40,27 @@ package org.fabric3.spi.model.type.java;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
- * A Java generic type. The physical type is the raw type, e.g. <code>List</code> for the parameterized type <code>List&lt;String&gt;</code>. The
- * logical type is a {@link JavaTypeInfo} which represents resolved generic type information. The logical type can be used to perform strong type
- * checking that includes the actual types of generic parameters, e.g. a check that can verify <code>List&lt;String&gt;</code> as opposed to just
- * <code>List</code>.
+ * A Java generic type. The physical type is the raw type, e.g. <code>List</code> for the parameterized type <code>List&lt;String&gt;</code>. The logical type
+ * is a {@link JavaTypeInfo} which represents resolved generic type information. The logical type can be used to perform strong type checking that includes the
+ * actual types of generic parameters, e.g. a check that can verify <code>List&lt;String&gt;</code> as opposed to just <code>List</code>.
  */
 public class JavaGenericType extends JavaType<JavaTypeInfo> {
     private static final long serialVersionUID = -8832071773275935399L;
 
+    private JavaTypeInfo info;
+
     public JavaGenericType(JavaTypeInfo info) {
-        super(info.getRawType(), info);
+        super(info.getRawType());
+        this.info = info;
+    }
+
+    public JavaTypeInfo getTypeInfo() {
+        return info;
     }
 
     /**
-     * Overrides <code>DataType.equals()</code> to implement equality between unbound generic types or generc types with <code>java.lang.Object</code>
-     * as an upper bound.
+     * Overrides <code>DataType.equals()</code> to implement equality between unbound generic types or generc types with <code>java.lang.Object</code> as an
+     * upper bound.
      *
      * @param o the object to test for equality
      * @return if the objects are equal
@@ -73,7 +79,7 @@ public class JavaGenericType extends JavaType<JavaTypeInfo> {
 
         if (other instanceof JavaClass) {
             boolean bound = false;  // unbound parameters are equivalent to non-generic types
-            for (JavaTypeInfo info : getLogical().getParameterTypesInfos()) {
+            for (JavaTypeInfo info : getTypeInfo().getParameterTypesInfos()) {
                 if (!Object.class.equals(info.getRawType())) {
                     bound = true;
                     break;
@@ -81,11 +87,12 @@ public class JavaGenericType extends JavaType<JavaTypeInfo> {
             }
             if (!bound) {
                 JavaClass<?> otherClazz = (JavaClass<?>) other;
-                return getLogical().getRawType().equals(otherClazz.getLogical());
+                return getTypeInfo().getRawType().equals(otherClazz.getPhysical());
+            } else {
+                return other instanceof JavaGenericType && getTypeInfo().equals(((JavaGenericType) other).getTypeInfo());
             }
         }
-        return getLogical().equals(other.getLogical());
+        return getTypeInfo().getRawType().equals(other.getPhysical());
     }
-
 
 }
