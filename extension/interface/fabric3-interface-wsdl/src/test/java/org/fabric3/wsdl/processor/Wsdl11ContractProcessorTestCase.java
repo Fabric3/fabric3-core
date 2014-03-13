@@ -78,13 +78,13 @@ public class Wsdl11ContractProcessorTestCase extends TestCase {
 
         DataType<QName> input = (DataType<QName>) operation.getInputTypes().get(0);
         assertTrue(input instanceof XSDSimpleType);
-        assertEquals("string", input.getLogical().getLocalPart());
+        assertEquals("string", input.getXsdType().getLocalPart());
 
         assertEquals(0, operation.getFaultTypes().size());
 
         DataType<QName> output = (DataType<QName>) operation.getOutputType();
         assertTrue(output instanceof XSDSimpleType);
-        assertEquals("float", output.getLogical().getLocalPart());
+        assertEquals("float", output.getXsdType().getLocalPart());
     }
 
     @Override
