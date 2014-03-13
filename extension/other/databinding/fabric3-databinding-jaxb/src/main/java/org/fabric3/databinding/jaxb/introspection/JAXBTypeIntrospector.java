@@ -70,6 +70,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
  * Introspects operations for the presence of JAXB types. If a parameter is a JAXB type, the JAXB intent is added to the operation.
  */
 public class JAXBTypeIntrospector implements OperationIntrospector {
+    private static final String JAXB = "JAXB";
     private static final String DEFAULT = "##default";
     private static final Map<Class, QName> JAXB_MAPPING;
 
@@ -160,6 +161,7 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
             }
             xsdName = new QName(namespace, name);
             dataType.setXsdType(xsdName);
+            dataType.setDatabinding(JAXB);
             return;
         }
         XmlType typeAnnotation = type.getAnnotation(XmlType.class);
@@ -175,6 +177,7 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
             }
             xsdName = new QName(namespace, name);
             dataType.setXsdType(xsdName);
+            dataType.setDatabinding(JAXB);
             return;
         }
         // the type is an unannotated Java class, heuristically determine a schema mapping

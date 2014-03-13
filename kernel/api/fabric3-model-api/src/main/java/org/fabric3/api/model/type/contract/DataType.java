@@ -54,6 +54,7 @@ public abstract class DataType implements Serializable {
     private static final long serialVersionUID = 1848442023940979720L;
     private Class<?> type;
     private QName xsdType;
+    private String databinding;
 
     /**
      * Constructor.
@@ -100,6 +101,24 @@ public abstract class DataType implements Serializable {
      */
     public void setXsdType(QName xsdType) {
         this.xsdType = xsdType;
+    }
+
+    /**
+     * Returns the databinding type (e.g. JAXB, JSON) or null.
+     *
+     * @return the databinding type or null.
+     */
+    public String getDatabinding() {
+        return databinding;
+    }
+
+    /**
+     * Sets the databinding type.
+     *
+     * @param databinding the databinding type
+     */
+    public void setDatabinding(String databinding) {
+        this.databinding = databinding;
     }
 
     public boolean equals(Object o) {
