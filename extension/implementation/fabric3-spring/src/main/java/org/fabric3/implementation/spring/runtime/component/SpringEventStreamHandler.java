@@ -59,7 +59,7 @@ import org.springframework.beans.BeansException;
 public class SpringEventStreamHandler implements EventStreamHandler {
     private String beanName;
     private String consumerName;
-    private JavaType<?> type;
+    private JavaType type;
     private SpringComponent component;
     private ClassLoader targetTCCLClassLoader;
     private Object beanProxy;
@@ -73,7 +73,7 @@ public class SpringEventStreamHandler implements EventStreamHandler {
      * @param type       the event type
      * @param component  the target component
      */
-    public SpringEventStreamHandler(String beanName, String methodName, JavaType<?> type, SpringComponent component) {
+    public SpringEventStreamHandler(String beanName, String methodName, JavaType type, SpringComponent component) {
         this.beanName = beanName;
         this.consumerName = methodName;
         this.type = type;

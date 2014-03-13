@@ -44,7 +44,7 @@ import org.fabric3.api.model.type.contract.DataType;
  * is a {@link JavaTypeInfo} which represents resolved generic type information. The logical type can be used to perform strong type checking that includes the
  * actual types of generic parameters, e.g. a check that can verify <code>List&lt;String&gt;</code> as opposed to just <code>List</code>.
  */
-public class JavaGenericType extends JavaType<JavaTypeInfo> {
+public class JavaGenericType extends JavaType {
     private static final long serialVersionUID = -8832071773275935399L;
 
     private JavaTypeInfo info;

@@ -72,7 +72,7 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
             throw new ConnectionAttachException("Target component not found: " + targetUri);
         }
         String beanName = target.getBeanName();
-        JavaType<?> type = target.getType();
+        JavaType type = target.getType();
         String consumerName = target.getMethodName();
         SpringEventStreamHandler handler = new SpringEventStreamHandler(beanName, consumerName, type, component);
         EventStream stream = connection.getEventStream();

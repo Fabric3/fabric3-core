@@ -149,7 +149,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         SpringConsumer springConsumer = (SpringConsumer) consumer.getDefinition();
         String beanName = springConsumer.getBeanName();
         String methodName = springConsumer.getMethodName();
-        JavaType<?> type = springConsumer.getType();
+        JavaType type = springConsumer.getType();
         URI uri = consumer.getParent().getUri();
         return new SpringConnectionTargetDefinition(beanName, methodName, type, uri);
     }

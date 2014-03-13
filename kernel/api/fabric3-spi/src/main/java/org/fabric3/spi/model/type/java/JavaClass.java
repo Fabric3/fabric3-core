@@ -42,7 +42,7 @@ import org.fabric3.api.model.type.contract.DataType;
 /**
  * A non-generic Java class. Since the class is not generic, the logical and physical representations are the same.
  */
-public class JavaClass<T> extends JavaType<Class<T>> {
+public class JavaClass<T> extends JavaType {
     private static final long serialVersionUID = -901379909664326192L;
 
     public JavaClass(Class<T> clazz) {

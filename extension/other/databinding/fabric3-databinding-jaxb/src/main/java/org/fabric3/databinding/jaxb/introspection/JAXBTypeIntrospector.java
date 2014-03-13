@@ -120,7 +120,7 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
                 // programming error
                 throw new AssertionError("Java contracts must use " + JavaType.class);
             }
-            introspectJAXB((JavaType<?>) type);
+            introspectJAXB((JavaType) type);
         }
         for (DataType type : operation.getFaultTypes()) {
             // FIXME need to process fault beans
@@ -128,18 +128,18 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
                 // programming error
                 throw new AssertionError("Java contracts must use " + JavaType.class);
             }
-            introspectJAXB((JavaType<?>) type);
+            introspectJAXB((JavaType) type);
         }
         DataType outputType = operation.getOutputType();
         if (!(outputType instanceof JavaType)) {
             // programming error
             throw new AssertionError("Java contracts must use " + JavaType.class);
         }
-        introspectJAXB((JavaType<?>) outputType);
+        introspectJAXB((JavaType) outputType);
 
     }
 
-    private void introspectJAXB(JavaType<?> dataType) {
+    private void introspectJAXB(JavaType dataType) {
         Class<?> type = dataType.getType();
         // not an explicit JAXB type, but it can potentially be mapped
         QName xsdName = JAXB_MAPPING.get(type);

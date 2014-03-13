@@ -49,7 +49,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 public class SpringConsumer extends ConsumerDefinition {
     private static final long serialVersionUID = 204519855340684340L;
     private String beanName;
-    private JavaType<?> type;
+    private JavaType type;
     private String methodName;
 
     /**
@@ -60,7 +60,7 @@ public class SpringConsumer extends ConsumerDefinition {
      * @param targetBean the target bean name to dispatch events to
      * @param methodName the target method name on the bean to dispatch events to
      */
-    public SpringConsumer(String name, JavaType<?> type, String targetBean, String methodName) {
+    public SpringConsumer(String name, JavaType type, String targetBean, String methodName) {
         super(name, Collections.<DataType>singletonList(type));
         this.type = type;
         this.beanName = targetBean;
@@ -90,7 +90,7 @@ public class SpringConsumer extends ConsumerDefinition {
      *
      * @return the event type
      */
-    public JavaType<?> getType() {
+    public JavaType getType() {
         return type;
     }
 }

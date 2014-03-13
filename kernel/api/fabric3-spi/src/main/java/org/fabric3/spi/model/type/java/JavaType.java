@@ -40,17 +40,13 @@ package org.fabric3.spi.model.type.java;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
- * An abstract Java type. For generic types, the physical type will be the raw type.
- * <p/>
- * For generic types, the logical type will contain resolved generic parameters. This allows for stronger type checking during wiring as resolved
- * generic parameter types can be used for type checking. For non-generic types, the physical and logical types will be the same.
+ * An abstract Java type.
  */
-public abstract class JavaType<T> extends DataType {
+public abstract class JavaType extends DataType {
     private static final long serialVersionUID = 9025728312058285754L;
 
     public JavaType(Class<?> physical) {
         super(physical);
     }
-
 
 }

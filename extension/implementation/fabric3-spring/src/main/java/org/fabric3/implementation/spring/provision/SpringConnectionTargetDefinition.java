@@ -48,7 +48,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 public class SpringConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = 967914855829805771L;
     private String beanName;
-    private JavaType<?> type;
+    private JavaType type;
     private String methodName;
 
     /**
@@ -59,7 +59,7 @@ public class SpringConnectionTargetDefinition extends PhysicalConnectionTargetDe
      * @param type       the event type
      * @param channelUri the URI of the source channel
      */
-    public SpringConnectionTargetDefinition(String beanName, String methodName, JavaType<?> type, URI channelUri) {
+    public SpringConnectionTargetDefinition(String beanName, String methodName, JavaType type, URI channelUri) {
         this.beanName = beanName;
         this.methodName = methodName;
         this.type = type;
@@ -74,7 +74,7 @@ public class SpringConnectionTargetDefinition extends PhysicalConnectionTargetDe
         return methodName;
     }
 
-    public JavaType<?> getType() {
+    public JavaType getType() {
         return type;
     }
 
