@@ -43,8 +43,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import java.util.List;
-
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -98,15 +96,6 @@ public abstract class PhysicalWireSourceDefinition extends PhysicalAttachPointDe
      */
     public void setKey(String key) {
         this.key = key;
-    }
-
-    /**
-     * Returns a list of supported data types supported by the source by order of preference.
-     *
-     * @return a list of supported data types by order of preference
-     */
-    public List<DataType> getDataTypes() {
-        return dataTypes;
     }
 
     /**

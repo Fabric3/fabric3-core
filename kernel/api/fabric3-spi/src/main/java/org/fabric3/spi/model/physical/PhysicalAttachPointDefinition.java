@@ -102,4 +102,13 @@ public abstract class PhysicalAttachPointDefinition implements Serializable {
         this.classLoaderId = classLoaderId;
     }
 
+    /**
+     * Returns a list of supported data types supported by the attach point by order of preference.
+     *
+     * @return a list of supported data types by order of preference
+     */
+    public List<DataType> getDataTypes() {
+        return dataTypes;
+    }
+
 }

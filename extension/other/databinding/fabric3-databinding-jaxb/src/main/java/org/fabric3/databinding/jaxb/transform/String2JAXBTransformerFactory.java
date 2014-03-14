@@ -37,22 +37,21 @@
 */
 package org.fabric3.databinding.jaxb.transform;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates Transformers capable of marshalling serialized XML Strings to JAXB types.
@@ -90,7 +89,7 @@ public class String2JAXBTransformerFactory implements TransformerFactory {
                 }
                 return new MultiValueArrayTransformer(transformers);
             } else {
-                throw new UnsupportedOperationException("Null parameter operations not yet supported");
+                return createTransformer(target.getType(), jaxbContext);
             }
         } catch (JAXBException e) {
             throw new TransformationException(e);

@@ -61,7 +61,7 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.contract.OperationIntrospector;
+import org.fabric3.spi.introspection.java.contract.TypeIntrospector;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
@@ -69,7 +69,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 /**
  * Introspects operations for the presence of JAXB types. If a parameter is a JAXB type, the JAXB intent is added to the operation.
  */
-public class JAXBTypeIntrospector implements OperationIntrospector {
+public class JAXBTypeIntrospector implements TypeIntrospector {
     private static final String JAXB = "JAXB";
     private static final String DEFAULT = "##default";
     private static final Map<Class, QName> JAXB_MAPPING;
@@ -121,7 +121,7 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
                 // programming error
                 throw new AssertionError("Java contracts must use " + JavaType.class);
             }
-            introspectJAXB((JavaType) type);
+            introspect(type);
         }
         for (DataType type : operation.getFaultTypes()) {
             // FIXME need to process fault beans
@@ -129,18 +129,18 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
                 // programming error
                 throw new AssertionError("Java contracts must use " + JavaType.class);
             }
-            introspectJAXB((JavaType) type);
+            introspect(type);
         }
         DataType outputType = operation.getOutputType();
         if (!(outputType instanceof JavaType)) {
             // programming error
             throw new AssertionError("Java contracts must use " + JavaType.class);
         }
-        introspectJAXB((JavaType) outputType);
+        introspect(outputType);
 
     }
 
-    private void introspectJAXB(JavaType dataType) {
+    public void introspect(DataType dataType) {
         Class<?> type = dataType.getType();
         // not an explicit JAXB type, but it can potentially be mapped
         QName xsdName = JAXB_MAPPING.get(type);

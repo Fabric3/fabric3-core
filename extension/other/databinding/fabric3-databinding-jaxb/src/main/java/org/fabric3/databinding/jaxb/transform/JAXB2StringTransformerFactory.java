@@ -75,8 +75,7 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
         return target.getType().equals(String.class) && target instanceof XSDType && source instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
-            throws TransformationException {
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws TransformationException {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);
             types.addAll(targetTypes);
@@ -93,7 +92,7 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
                 }
                 return new MultiValueArrayTransformer(transformers);
             } else {
-                throw new UnsupportedOperationException("Null parameter operations not yet supported");
+                return createTransformer(source.getType(), jaxbContext);
             }
         } catch (JAXBException e) {
             throw new TransformationException(e);
@@ -108,6 +107,5 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
             return new JAXBElement2StringTransformer(jaxbContext, name);
         }
     }
-
 
 }

@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.InterfaceIntrospector;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.introspection.java.contract.OperationIntrospector;
+import org.fabric3.spi.introspection.java.contract.TypeIntrospector;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -77,12 +77,12 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
 
     private final IntrospectionHelper helper;
     private List<InterfaceIntrospector> interfaceIntrospectors;
-    private List<OperationIntrospector> operationIntrospectors;
+    private List<TypeIntrospector> typeIntrospectors;
 
     public JavaContractProcessorImpl(@Reference IntrospectionHelper helper) {
         this.helper = helper;
         interfaceIntrospectors = new ArrayList<>();
-        operationIntrospectors = new ArrayList<>();
+        typeIntrospectors = new ArrayList<>();
     }
 
     @Reference(required = false)
@@ -91,8 +91,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     }
 
     @Reference(required = false)
-    public void setOperationIntrospectors(List<OperationIntrospector> operationIntrospectors) {
-        this.operationIntrospectors = operationIntrospectors;
+    public void setTypeIntrospectors(List<TypeIntrospector> typeIntrospectors) {
+        this.typeIntrospectors = typeIntrospectors;
     }
 
     public JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context, ModelObject... modelObjects) {
@@ -176,7 +176,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
                 operation.setWsdlName(webMethod.operationName());
             }
 
-            for (OperationIntrospector introspector : operationIntrospectors) {
+            for (TypeIntrospector introspector : typeIntrospectors) {
                 introspector.introspect(operation, method, context);
             }
             if (remotable) {

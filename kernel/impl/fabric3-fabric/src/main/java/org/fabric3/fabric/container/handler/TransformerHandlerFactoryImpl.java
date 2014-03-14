@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.container.handler;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
@@ -60,12 +59,11 @@ public class TransformerHandlerFactoryImpl implements TransformerHandlerFactory 
     }
 
     @SuppressWarnings({"unchecked"})
-    public EventStreamHandler createHandler(DataType source, DataType target, ClassLoader loader) throws HandlerCreationException {
+    public EventStreamHandler createHandler(DataType source, DataType target, List<Class<?>> eventTypes, ClassLoader loader) throws HandlerCreationException {
         try {
             // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
             // or binding. A search is performed by iterating the supported source and target types in order of preference.
-            List<Class<?>> empty = Collections.emptyList();
-            Transformer<Object, Object> transformer = (Transformer<Object, Object>) registry.getTransformer(source, target, empty, empty);
+            Transformer<Object, Object> transformer = (Transformer<Object, Object>) registry.getTransformer(source, target, eventTypes, eventTypes);
             if (transformer == null) {
                 throw new NoTransformerException("No transformer found for event types: " + source + "," + target);
             }

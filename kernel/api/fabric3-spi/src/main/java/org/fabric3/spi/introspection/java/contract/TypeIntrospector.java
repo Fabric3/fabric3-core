@@ -45,17 +45,17 @@ package org.fabric3.spi.introspection.java.contract;
 
 import java.lang.reflect.Method;
 
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Implementations evaluate the methods of a Java-based interface and populate the operation on the corresponding service contract with relevant
- * metadata.
+ * Introspects type information and populates it with additional metadata such as databinding information.
  */
-public interface OperationIntrospector {
+public interface TypeIntrospector {
 
     /**
-     * Perform the introspection.
+     * Introspects all types for an operation.
      *
      * @param operation the operation to update
      * @param method    the method to evaluate
@@ -63,4 +63,10 @@ public interface OperationIntrospector {
      */
     void introspect(Operation operation, Method method, IntrospectionContext context);
 
+    /**
+     * Introspects a type.
+     *
+     * @param dataType the type
+     */
+    void introspect(DataType dataType);
 }

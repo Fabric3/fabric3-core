@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.container.builder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,8 @@ import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.HandlerCreationException;
+import org.fabric3.spi.container.channel.TransformerHandlerFactory;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -77,6 +80,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
     private ClassLoaderRegistry classLoaderRegistry;
     private TransformerRegistry transformerRegistry;
+    private TransformerHandlerFactory transformerHandlerFactory;
 
     public ChannelConnectorImpl() {
     }
@@ -113,6 +117,11 @@ public class ChannelConnectorImpl implements ChannelConnector {
     public void setHandlerBuilders(Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>>
                                                handlerBuilders) {
         this.handlerBuilders = handlerBuilders;
+    }
+
+    @Reference(required = false)
+    public void setTransformerHandlerFactory(TransformerHandlerFactory factory) {
+        this.transformerHandlerFactory = factory;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -162,12 +171,44 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
         PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
         EventStream stream = new EventStreamImpl(streamDefinition);
+        addTypeTransformer(definition, stream, loader);
         addTransformer(streamDefinition, stream, loader);
         addFilters(streamDefinition, stream);
         addHandlers(streamDefinition, stream);
         int sequence = definition.getSource().getSequence();
 
         return new ChannelConnectionImpl(stream, sequence);
+    }
+
+    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) throws BuilderException {
+        if (transformerHandlerFactory == null) {
+            return;  // bootstrap
+        }
+        List<DataType> sourceTypes = definition.getSource().getDataTypes();
+        List<DataType> targetTypes = definition.getTarget().getDataTypes();
+        if (sourceTypes.isEmpty() || targetTypes.isEmpty()) {
+            return;
+        }
+        if (sourceTypes.size() > 1 || targetTypes.size() > 1) {
+            // for now, only support one data type
+            throw new BuilderException("Multi-type events are not supported");
+        }
+        DataType sourceType = sourceTypes.get(0);
+        DataType targetType = targetTypes.get(0);
+        if (sourceType.equals(targetType)) {
+            return;
+        }
+        try {
+            List<Class<?>> eventTypes = new ArrayList<>();
+            for (String type : stream.getDefinition().getEventTypes()) {
+                Class<?> clazz = loader.loadClass(type);
+                eventTypes.add(clazz);
+            }
+            EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
+            stream.addHandler(handler);
+        } catch (HandlerCreationException | ClassNotFoundException e) {
+            throw new BuilderException(e);
+        }
     }
 
     /**

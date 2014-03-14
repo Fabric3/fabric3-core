@@ -34,6 +34,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -319,10 +320,10 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             EventStreamHandler transformer;
             if (dataType.getType().equals(byte[][].class)) {
                 // multi-frame data
-                transformer = handlerFactory.createHandler(dataType, TWO_DIMENSIONAL_BYTES, loader);
+                transformer = handlerFactory.createHandler(dataType, TWO_DIMENSIONAL_BYTES, Collections.<Class<?>>emptyList(), loader);
             } else {
                 // single frame data
-                transformer = handlerFactory.createHandler(dataType, BYTES, loader);
+                transformer = handlerFactory.createHandler(dataType, BYTES, Collections.<Class<?>>emptyList(), loader);
             }
 
             stream.addHandler(transformer);
@@ -340,10 +341,10 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             EventStreamHandler head;
             if (dataType.getType().equals(byte[][].class)) {
                 // multi-frame data
-                head = handlerFactory.createHandler(TWO_DIMENSIONAL_BYTES, dataType, loader);
+                head = handlerFactory.createHandler(TWO_DIMENSIONAL_BYTES, dataType, Collections.<Class<?>>emptyList(), loader);
             } else {
                 // single frame data
-                head = handlerFactory.createHandler(BYTES, dataType, loader);
+                head = handlerFactory.createHandler(BYTES, dataType, Collections.<Class<?>>emptyList(), loader);
             }
             return head;
         } catch (HandlerCreationException e) {

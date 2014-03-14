@@ -44,7 +44,6 @@
 package org.fabric3.spi.model.physical;
 
 import java.net.URI;
-import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
 
@@ -99,15 +98,6 @@ public abstract class PhysicalWireTargetDefinition extends PhysicalAttachPointDe
      */
     public void setCallback(boolean callback) {
         this.callback = callback;
-    }
-
-    /**
-     * Returns a list of supported data types supported by the target by order of preference.
-     *
-     * @return a list of supported data types by order of preference
-     */
-    public List<DataType> getDataTypes() {
-        return dataTypes;
     }
 
     /**

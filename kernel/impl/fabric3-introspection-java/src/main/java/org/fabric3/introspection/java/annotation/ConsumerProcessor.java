@@ -49,6 +49,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.annotation.Consumer;
@@ -61,6 +62,7 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.introspection.java.contract.TypeIntrospector;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
@@ -73,6 +75,13 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
     private IntrospectionHelper helper;
+
+    private List<TypeIntrospector> typeIntrospectors = Collections.emptyList();
+
+    @Reference(required = false)
+    public void setTypeIntrospectors(List<TypeIntrospector> typeIntrospectors) {
+        this.typeIntrospectors = typeIntrospectors;
+    }
 
     public ConsumerProcessor(@Reference IntrospectionHelper helper) {
         super(Consumer.class);
@@ -118,13 +127,18 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
 
     @SuppressWarnings({"unchecked"})
     private DataType createDataType(Class<?> physicalType, Type type, TypeMapping mapping) {
+        JavaType dataType;
         if (type instanceof Class) {
             // not a generic
-            return new JavaType(physicalType);
+            dataType = new JavaType(physicalType);
         } else {
             JavaTypeInfo info = helper.createTypeInfo(type, mapping);
-            return new JavaGenericType(info);
+            dataType= new JavaGenericType(info);
         }
+        for (TypeIntrospector introspector : typeIntrospectors) {
+            introspector.introspect(dataType);
+        }
+        return dataType;
     }
 
     private void processSources(Consumer annotation, ConsumerDefinition definition, AccessibleObject member, Class<?> clazz, IntrospectionContext context) {
