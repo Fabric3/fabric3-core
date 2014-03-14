@@ -40,18 +40,14 @@ package org.fabric3.fabric.container.handler;
 import java.util.Collections;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.HandlerCreationException;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
-import org.fabric3.spi.model.physical.ParameterTypeHelper;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -76,38 +72,6 @@ public class TransformerHandlerFactoryImpl implements TransformerHandlerFactory 
             return new TransformerHandler(transformer, loader);
         } catch (TransformationException e) {
             throw new HandlerCreationException(e);
-        }
-    }
-
-    /**
-     * Loads the source-side parameter types in the contribution classloader associated with the source component.
-     *
-     * @param definition the physical operation definition
-     * @param loader     the  contribution classloader
-     * @return a collection of loaded parameter types
-     * @throws WiringException if an error occurs loading the parameter types
-     */
-    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
-        try {
-            return ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
-        } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
-        }
-    }
-
-    /**
-     * Loads the target-side parameter types in the contribution classloader associated with the target service.
-     *
-     * @param definition the physical operation definition
-     * @param loader     the  contribution classloader
-     * @return a collection of loaded parameter types
-     * @throws WiringException if an error occurs loading the parameter types
-     */
-    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
-        try {
-            return ParameterTypeHelper.loadTargetInParameterTypes(definition, loader);
-        } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
         }
     }
 

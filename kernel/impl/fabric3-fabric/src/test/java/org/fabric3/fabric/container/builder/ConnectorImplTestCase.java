@@ -170,8 +170,8 @@ public class ConnectorImplTestCase extends TestCase {
         sourceAttacher.attach(EasyMock.isA(PhysicalSourceDefinition.class), EasyMock.isA(PhysicalTargetDefinition.class), EasyMock.isA(Wire.class));
         targetAttacher.attach(EasyMock.isA(PhysicalSourceDefinition.class), EasyMock.isA(PhysicalTargetDefinition.class), EasyMock.isA(Wire.class));
 
-        definition.getTarget().getPhysicalDataTypes().clear();
-        definition.getTarget().getPhysicalDataTypes().add(DATA_TYPE);
+        definition.getTarget().getDataTypes().clear();
+        definition.getTarget().getDataTypes().add(DATA_TYPE);
         Interceptor interceptor = EasyMock.createMock(Interceptor.class);
 
         transformerFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),

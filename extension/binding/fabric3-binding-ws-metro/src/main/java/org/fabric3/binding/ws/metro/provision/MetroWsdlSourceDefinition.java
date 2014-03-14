@@ -67,8 +67,8 @@ public class MetroWsdlSourceDefinition extends MetroSourceDefinition {
                                      boolean bidirectional,
                                      List<PhysicalBindingHandlerDefinition> handlers) {
         super(serviceUri, endpointDefinition, wsdl, intents, bidirectional, handlers);
-        physicalDataTypes.clear();
-        physicalDataTypes.add(PhysicalDataTypes.DOM);
+        dataTypes.clear();
+        dataTypes.add(PhysicalDataTypes.DOM);
     }
 
 }

@@ -45,8 +45,8 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 import org.w3c.dom.Document;
 
 /**
- * Defines well-known physical data types. Binding and component extensions may declare the physical data types they support for service operation parameters on
- * {@link PhysicalTargetDefinition}.
+ * Defines well-known physical data types. Binding and component extensions may declare the data types they support for service operation parameters on {@link
+ * PhysicalTargetDefinition}.
  */
 public interface PhysicalDataTypes {
 

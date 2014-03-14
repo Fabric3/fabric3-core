@@ -84,7 +84,7 @@ public class MetroWsdlTargetDefinition extends MetroTargetDefinition {
     }
 
     @Override
-    public List<DataType> getPhysicalDataTypes() {
+    public List<DataType> getDataTypes() {
         return PHYSICAL_DATA_TYPES;
     }
 

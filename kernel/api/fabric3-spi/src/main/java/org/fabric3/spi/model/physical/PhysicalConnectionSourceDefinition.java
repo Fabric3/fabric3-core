@@ -46,6 +46,11 @@ package org.fabric3.spi.model.physical;
 import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Used to attach the source side of a channel connection. The source may be a producer, channel binding or channel.
@@ -59,6 +64,19 @@ public class PhysicalConnectionSourceDefinition implements Serializable {
     private int sequence = NO_SEQUENCE;
     private QName deployable;
     private URI classLoaderId;
+
+    protected List<DataType> dataTypes = new ArrayList<>();
+
+    public PhysicalConnectionSourceDefinition() {
+        // default to Java
+        dataTypes.add(PhysicalDataTypes.JAVA_TYPE);
+    }
+
+    public PhysicalConnectionSourceDefinition(DataType... types) {
+        if (types != null) {
+            dataTypes.addAll(Arrays.asList(types));
+        }
+    }
 
     public URI getUri() {
         return uri;
