@@ -100,7 +100,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI classLoaderId = component.getDefinition().getContributionUri();
         sourceDefinition.setClassLoaderId(classLoaderId);
 
-        PhysicalEventStreamDefinition eventStream = generateProducerOperation(producer);
+        PhysicalEventStreamDefinition eventStream = generateEventStream(producer);
 
         for (Map.Entry<LogicalChannel, ChannelDeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
@@ -241,7 +241,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         }
     }
 
-    private PhysicalEventStreamDefinition generateProducerOperation(LogicalProducer producer) throws GenerationException {
+    private PhysicalEventStreamDefinition generateEventStream(LogicalProducer producer) throws GenerationException {
         Operation operation = producer.getStreamOperation().getDefinition();
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(operation.getName());
         definition.setName(operation.getName());

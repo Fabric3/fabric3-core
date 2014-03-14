@@ -44,6 +44,7 @@
 package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
+import java.util.List;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
@@ -51,6 +52,7 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
@@ -65,6 +67,7 @@ import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.model.physical.ChannelConstants.DURABLE_INTENT;
@@ -75,6 +78,8 @@ import static org.fabric3.spi.model.physical.ChannelConstants.NON_PERSISTENT_INT
  */
 @EagerInit
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
+    private static final String JAXB = "JAXB";
+
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
@@ -98,8 +103,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         generateIntents(binding, metadata);
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
-
-        JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata);
+        DataType type = isJAXB(consumer.getDefinition().getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
+        JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata, type);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);
         }
@@ -118,7 +123,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         generateIntents(binding, metadata);
 
-        JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata);
+        DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
+
+        JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata, type);
         if (provisioner != null) {
             provisioner.generateConnectionTarget(definition);
         }
@@ -146,6 +153,15 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
             metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         }
 
+    }
+
+    private boolean isJAXB(List<DataType> eventTypes) {
+        for (DataType eventType : eventTypes) {
+            if (JAXB.equals(eventType.getDatabinding())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -46,6 +46,7 @@ package org.fabric3.binding.jms.spi.provision;
 import java.net.URI;
 
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
@@ -60,8 +61,10 @@ public class JmsConnectionTargetDefinition extends PhysicalConnectionTargetDefin
      *
      * @param uri      the target URI
      * @param metadata metadata used to create a JMS message producer.
+     * @param type     the data type events should be deserialized to
      */
-    public JmsConnectionTargetDefinition(URI uri, JmsBindingMetadata metadata) {
+    public JmsConnectionTargetDefinition(URI uri, JmsBindingMetadata metadata, DataType type) {
+        super(type);
         this.metadata = metadata;
         setUri(uri);
     }

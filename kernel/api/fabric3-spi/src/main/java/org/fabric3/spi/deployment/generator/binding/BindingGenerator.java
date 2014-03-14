@@ -70,13 +70,13 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @throws GenerationException if an error is raised during generation
      */
     PhysicalWireSourceDefinition generateSource(LogicalBinding<BD> serviceBinding,
-                                            ServiceContract contract,
-                                            List<LogicalOperation> operations,
-                                            EffectivePolicy policy) throws GenerationException;
+                                                ServiceContract contract,
+                                                List<LogicalOperation> operations,
+                                                EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when a reference
-     * is configured with a binding.
+     * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when a reference is
+     * configured with a binding.
      *
      * @param referenceBinding the binding specified on the reference
      * @param contract         the service contract
@@ -86,15 +86,14 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @throws GenerationException if an error is raised during generation
      */
     PhysicalWireTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding,
-                                            ServiceContract contract,
-                                            List<LogicalOperation> operations,
-                                            EffectivePolicy policy) throws GenerationException;
+                                                ServiceContract contract,
+                                                List<LogicalOperation> operations,
+                                                EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the
-     * reference is wired using the <code>@target</code> attribute of the <code>&lt;reference<&gt;</code> element. In this case, the reference is
-     * wired without a binding to a service hosted in the same domain and the target service binding configuration is used to calculate the physical
-     * wire for the reference.
+     * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the reference is
+     * wired using the <code>@target</code> attribute of the <code>&lt;reference&gt;</code> element. In this case, the reference is wired without a binding to a
+     * service hosted in the same domain and the target service binding configuration is used to calculate the physical wire for the reference.
      *
      * @param serviceBinding the binding specified on the service
      * @param contract       the service contract
@@ -104,8 +103,8 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @throws GenerationException if an error is raised during generation
      */
     PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations,
-                                                          EffectivePolicy policy) throws GenerationException;
+                                                              ServiceContract contract,
+                                                              List<LogicalOperation> operations,
+                                                              EffectivePolicy policy) throws GenerationException;
 
 }
