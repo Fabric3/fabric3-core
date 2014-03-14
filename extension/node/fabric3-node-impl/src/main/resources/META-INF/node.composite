@@ -44,7 +44,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentGenerator"/>
     </component>
 
-    <component name="NonManagedComponentSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalSourceDefinition">
+    <component name="NonManagedComponentSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentSourceWireAttacher"/>
     </component>
 

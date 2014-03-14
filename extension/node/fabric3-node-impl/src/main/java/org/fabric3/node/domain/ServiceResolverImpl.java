@@ -50,7 +50,7 @@ import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
-import org.fabric3.node.nonmanaged.NonManagedPhysicalSourceDefinition;
+import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -113,7 +113,7 @@ public class ServiceResolverImpl implements ServiceResolver {
                 pwd = wireGenerator.generateWire(wire);
             }
             pwd.getTarget().setClassLoaderId(Names.HOST_CONTRIBUTION);
-            NonManagedPhysicalSourceDefinition source = (NonManagedPhysicalSourceDefinition) pwd.getSource();
+            NonManagedPhysicalWireSourceDefinition source = (NonManagedPhysicalWireSourceDefinition) pwd.getSource();
             source.setClassLoaderId(Names.HOST_CONTRIBUTION);
             connector.connect(pwd);
             return interfaze.cast(source.getProxy());

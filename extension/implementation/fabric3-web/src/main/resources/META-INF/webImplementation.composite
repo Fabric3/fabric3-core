@@ -39,7 +39,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.InjectorFactoryImpl"/>
     </component>
 
-    <component name="WebSourceWireAttacher" f3:key="org.fabric3.implementation.web.provision.WebComponentSourceDefinition">
+    <component name="WebSourceWireAttacher" f3:key="org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceWireAttacher"/>
     </component>
 

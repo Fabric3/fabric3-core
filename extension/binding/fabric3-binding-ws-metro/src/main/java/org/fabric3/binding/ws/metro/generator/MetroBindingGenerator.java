@@ -42,7 +42,7 @@ import java.util.Map;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
@@ -50,7 +50,7 @@ import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Generates PhysicalWireSourceDefinitions and PhysicalWireTargetDefinitions for the Metro web services binding.
@@ -64,7 +64,7 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
     }
 
     @SuppressWarnings({"unchecked"})
-    public MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding,
+    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding,
                                                 ServiceContract contract,
                                                 List<LogicalOperation> operations,
                                                 EffectivePolicy policy) throws GenerationException {
@@ -73,7 +73,7 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
@@ -82,7 +82,7 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

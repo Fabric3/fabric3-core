@@ -86,9 +86,9 @@ import org.fabric3.binding.ws.metro.generator.resolver.WsdlResolutionException;
 import org.fabric3.binding.ws.metro.generator.resolver.WsdlResolver;
 import org.fabric3.binding.ws.metro.generator.validator.WsdlEndpointValidator;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.MetroJavaSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
@@ -170,7 +170,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         transformerFactory = TransformerFactory.newInstance();
     }
 
-    public MetroJavaSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
+    public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
 
         Class<?> serviceClass = loadServiceClass(contract);
@@ -259,7 +259,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
             boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
 
-            return new MetroJavaSourceDefinition(serviceUri,
+            return new MetroJavaWireSourceDefinition(serviceUri,
                                                  endpointDefinition,
                                                  interfaze,
                                                  generatedBytes,
@@ -276,7 +276,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         //        }
     }
 
-    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
+    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
         URL targetUrl = null;
         WsBindingDefinition definition = binding.getDefinition();
@@ -302,14 +302,14 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         return generateTarget(binding, targetUrl, contract, policy);
     }
 
-    public MetroTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
                                                               JavaServiceContract contract,
                                                               EffectivePolicy policy) throws GenerationException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding, policy);
         return generateTarget(serviceBinding, targetUrl, contract, policy);
     }
 
-    private MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
+    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
                                                  URL targetUrl,
                                                  JavaServiceContract contract,
                                                  EffectivePolicy policy) throws GenerationException {
@@ -405,7 +405,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
 
         int retries = definition.getRetries();
-        MetroJavaTargetDefinition targetDefinition = new MetroJavaTargetDefinition(endpointDefinition,
+        MetroJavaWireTargetDefinition targetDefinition = new MetroJavaWireTargetDefinition(endpointDefinition,
                                                                                    interfaze,
                                                                                    generatedBytes,
                                                                                    classLoaderUri,

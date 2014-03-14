@@ -8,11 +8,11 @@
         <f3:implementation.system class="org.fabric3.binding.file.runtime.receiver.ReceiverManagerImpl"/>
     </component>
 
-    <component name="FileSourceWireAttacher" f3:key="org.fabric3.binding.file.provision.FileBindingSourceDefinition">
+    <component name="FileSourceWireAttacher" f3:key="org.fabric3.binding.file.provision.FileBindingWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.binding.file.runtime.FileSourceWireAttacher"/>
     </component>
 
-    <component name="FileTargetWireAttacher" f3:key="org.fabric3.binding.file.provision.FileBindingTargetDefinition">
+    <component name="FileTargetWireAttacher" f3:key="org.fabric3.binding.file.provision.FileBindingWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.binding.file.runtime.FileTargetWireAttacher"/>
     </component>
 

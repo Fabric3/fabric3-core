@@ -42,11 +42,11 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.builder.MethodUtils;
-import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringInvoker;
 import org.fabric3.spi.container.builder.WiringException;
@@ -54,7 +54,7 @@ import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -65,7 +65,7 @@ import org.fabric3.spring.spi.WireListener;
  * Attaches the target side of a wire to a Spring component.
  */
 @EagerInit
-public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTargetDefinition> {
+public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTargetDefinition> {
     private ComponentManager manager;
     private ClassLoaderRegistry classLoaderRegistry;
     private List<WireListener> listeners = Collections.emptyList();
@@ -80,7 +80,7 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTarget
         this.listeners = listeners;
     }
 
-    public void attach(PhysicalSourceDefinition source, SpringTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target, Wire wire) throws WiringException {
         String beanName = target.getBeanName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Class<?> interfaze;
@@ -101,15 +101,15 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTarget
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, SpringTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target) throws WiringException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(SpringTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SpringWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    private SpringComponent getComponent(SpringTargetDefinition definition) throws WiringException {
+    private SpringComponent getComponent(SpringWireTargetDefinition definition) throws WiringException {
         URI uri = UriHelper.getDefragmentedName(definition.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {

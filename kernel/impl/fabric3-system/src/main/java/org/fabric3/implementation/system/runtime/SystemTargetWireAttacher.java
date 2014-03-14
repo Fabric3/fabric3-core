@@ -50,14 +50,14 @@ import java.util.List;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.system.provision.SystemTargetDefinition;
+import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -67,7 +67,7 @@ import org.fabric3.spi.container.wire.Wire;
  *
  */
 @EagerInit
-public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTargetDefinition> {
+public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTargetDefinition> {
 
     private final ComponentManager manager;
     private final ClassLoaderRegistry classLoaderRegistry;
@@ -78,7 +78,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalSourceDefinition source, SystemTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
@@ -114,11 +114,11 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, SystemTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

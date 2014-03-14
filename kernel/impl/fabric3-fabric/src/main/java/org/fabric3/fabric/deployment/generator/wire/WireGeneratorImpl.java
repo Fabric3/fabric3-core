@@ -68,8 +68,8 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
@@ -114,13 +114,13 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical wire to the target component
         ComponentGenerator targetGenerator = getGenerator(component);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
         targetDefinition.setClassLoaderId(service.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallbackUri(callbackUri);
 
         // generate the metadata used to attach the physical wire to the source transport
         BindingGenerator<T> sourceGenerator = getGenerator(binding);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, contract, operations, sourcePolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, contract, operations, sourcePolicy);
         sourceDefinition.setClassLoaderId(service.getParent().getDefinition().getContributionUri());
 
         // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor
@@ -146,12 +146,12 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical callback wire to the source component
         ComponentGenerator sourceGenerator = getGenerator(component);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
         // generate the metadata used to attach the physical callback wire to the target transport
         BindingGenerator<T> bindingGenerator = getGenerator(binding);
-        PhysicalTargetDefinition targetDefinition = bindingGenerator.generateTarget(binding, callbackContract, operations, targetPolicy);
+        PhysicalWireTargetDefinition targetDefinition = bindingGenerator.generateTarget(binding, callbackContract, operations, targetPolicy);
         targetDefinition.setCallback(true);
         targetDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
@@ -175,7 +175,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical wire to the source component
         ComponentGenerator sourceGenerator = getGenerator(component);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
 
         // use the binding name as the source key
         String key = binding.getDefinition().getName();
@@ -185,7 +185,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical wire to the target transport
         BindingGenerator<T> targetGenerator = getGenerator(binding);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(binding, contract, operations, targetPolicy);
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(binding, contract, operations, targetPolicy);
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
             AbstractReference referenceDefinition = reference.getDefinition();
@@ -215,12 +215,12 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical callback wire to the source transport
         BindingGenerator<T> sourceGenerator = getGenerator(binding);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, callbackContract, operations, targetPolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, callbackContract, operations, targetPolicy);
         sourceDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
         // generate the metadata used to attach the physical callback wire to the target component
         ComponentGenerator targetGenerator = getGenerator(component);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackService, sourcePolicy);
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackService, sourcePolicy);
         targetDefinition.setClassLoaderId(callbackService.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallback(true);
 
@@ -251,12 +251,12 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // Generates the wire source metadata
         ComponentGenerator sourceGenerator = getGenerator(component);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateResourceSource(resourceReference);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateResourceSource(resourceReference);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
         // Generates the wire target metadata
         ResourceReferenceGenerator<T> targetGenerator = getGenerator(resourceDefinition);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateWireTarget(resourceReference);
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateWireTarget(resourceReference);
         targetDefinition.setClassLoaderId(resourceReference.getParent().getDefinition().getContributionUri());
         boolean optimizable = targetDefinition.isOptimizable();
 
@@ -300,7 +300,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical wire to the source component
         ComponentGenerator sourceGenerator = getGenerator(source);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
 
         String key = getKey(target);
@@ -311,7 +311,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical wire to the target component
         ComponentGenerator targetGenerator = getGenerator(target);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
         targetDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
         ServiceContract serviceContract = service.getServiceContract();
         ServiceContract callbackContract = serviceContract.getCallbackContract();
@@ -369,7 +369,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical wire to the source component
         ComponentGenerator sourceGenerator = getGenerator(reference.getParent());
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
 
         String key = getKey(source);
@@ -383,7 +383,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate metadata to attach the physical wire to the target transport (which is the reference binding)
         List<LogicalOperation> sourceOperations = reference.getOperations();
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateServiceBindingTarget(serviceBinding,
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateServiceBindingTarget(serviceBinding,
                                                                                                  serviceContract,
                                                                                                  sourceOperations,
                                                                                                  targetPolicy);
@@ -435,12 +435,12 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical callback wire to the source component (the component providing the forward service)
         ComponentGenerator sourceGenerator = getGenerator(sourceComponent);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
+        PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
         sourceDefinition.setClassLoaderId(sourceComponent.getDefinition().getContributionUri());
 
         // generate the metadata used to attach the physical callback wire to the target component (the client of the forward service)
         ComponentGenerator targetGenerator = getGenerator(targetComponent);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackService, targetPolicy);
+        PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackService, targetPolicy);
         targetDefinition.setClassLoaderId(targetComponent.getDefinition().getContributionUri());
         targetDefinition.setCallback(true);
 
@@ -468,13 +468,13 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate metadata to attach the physical callback wire to the source transport
         BindingGenerator bindingGenerator = getGenerator(referenceBinding);
-        PhysicalSourceDefinition sourceDefinition = bindingGenerator.generateSource(referenceBinding, referenceCallbackContract, operations, targetPolicy);
+        PhysicalWireSourceDefinition sourceDefinition = bindingGenerator.generateSource(referenceBinding, referenceCallbackContract, operations, targetPolicy);
         URI contributionUri = target.getDefinition().getContributionUri();
         sourceDefinition.setClassLoaderId(contributionUri);
 
         // generate the metadata used to attach the physical callback wire to the target component (the component containing the forward reference)
         ComponentGenerator componentGenerator = getGenerator(target);
-        PhysicalTargetDefinition targetDefinition = componentGenerator.generateTarget(callbackService, targetPolicy);
+        PhysicalWireTargetDefinition targetDefinition = componentGenerator.generateTarget(callbackService, targetPolicy);
         targetDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
 
         // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor

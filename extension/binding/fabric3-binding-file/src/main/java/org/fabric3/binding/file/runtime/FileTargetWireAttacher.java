@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.file.ReferenceAdapter;
-import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.WiringException;
@@ -53,7 +53,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -63,7 +63,7 @@ import org.fabric3.spi.container.wire.Wire;
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 @EagerInit
-public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTargetDefinition> {
+public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWireTargetDefinition> {
     private static final ReferenceAdapter ADAPTER = new DefaultReferenceAdapter();
 
     private ClassLoaderRegistry registry;
@@ -76,7 +76,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
 
-    public void attach(PhysicalSourceDefinition source, FileBindingTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target, Wire wire) throws WiringException {
         File location = resolve(target.getLocation());
         location.mkdirs();
 
@@ -87,11 +87,11 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, FileBindingTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws WiringException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(FileBindingTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(FileBindingWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
@@ -116,7 +116,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
      * @return the adaptor
      * @throws WiringException if there is an error instantiating the class or returning a component instance.
      */
-    private ReferenceAdapter getAdaptor(FileBindingTargetDefinition source) throws WiringException {
+    private ReferenceAdapter getAdaptor(FileBindingWireTargetDefinition source) throws WiringException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();

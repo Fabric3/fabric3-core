@@ -38,8 +38,8 @@ import java.util.List;
 
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBindingDefinition;
-import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
-import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -49,7 +49,7 @@ import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
@@ -74,7 +74,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         this.info = info;
     }
 
-    public FileBindingSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
+    public FileBindingWireSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
                                                       ServiceContract contract,
                                                       List<LogicalOperation> operations,
                                                       EffectivePolicy policy) throws GenerationException {
@@ -100,10 +100,10 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         if (delay == -1) {
             delay = defaultDelay;
         }
-        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay, dataHandler);
+        return new FileBindingWireSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay, dataHandler);
     }
 
-    public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
+    public FileBindingWireTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
                                                       ServiceContract contract,
                                                       List<LogicalOperation> operations,
                                                       EffectivePolicy policy) throws GenerationException {
@@ -112,10 +112,10 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         String location = definition.getLocation();
         String adapterClass = definition.getAdapterClass();
         URI adaptorUri = getAdaptorUri(definition);
-        return new FileBindingTargetDefinition(location, adapterClass, adaptorUri);
+        return new FileBindingWireTargetDefinition(location, adapterClass, adaptorUri);
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBindingDefinition> binding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

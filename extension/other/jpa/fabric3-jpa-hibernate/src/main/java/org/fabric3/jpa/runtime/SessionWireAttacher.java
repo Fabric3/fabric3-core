@@ -45,21 +45,21 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.jpa.provision.SessionTargetDefinition;
+import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 
 /**
  *
  */
-public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefinition> {
+public class SessionWireAttacher implements TargetWireAttacher<SessionWireTargetDefinition> {
     private EntityManagerFactoryResolver emfResolver;
     private ClassLoaderRegistry registry;
     private TransactionManager tm;
@@ -83,7 +83,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(SessionTargetDefinition definition) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws WiringException {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -106,11 +106,11 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
         }
     }
 
-    public void attach(PhysicalSourceDefinition source, SessionTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalSourceDefinition source, SessionTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 

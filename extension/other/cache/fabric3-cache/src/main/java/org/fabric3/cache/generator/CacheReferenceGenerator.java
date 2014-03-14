@@ -41,19 +41,19 @@ package org.fabric3.cache.generator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.cache.model.CacheReferenceDefinition;
-import org.fabric3.cache.provision.CacheTargetDefinition;
+import org.fabric3.cache.provision.CacheWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 
 /**
- * Generates a {@link CacheTargetDefinition} for a component cache resource.
+ * Generates a {@link CacheWireTargetDefinition} for a component cache resource.
  */
 @EagerInit
 public class CacheReferenceGenerator implements ResourceReferenceGenerator<CacheReferenceDefinition> {
 
-    public CacheTargetDefinition generateWireTarget(LogicalResourceReference<CacheReferenceDefinition> resourceReference) {
+    public CacheWireTargetDefinition generateWireTarget(LogicalResourceReference<CacheReferenceDefinition> resourceReference) {
         CacheReferenceDefinition definition = resourceReference.getDefinition();
-        return new CacheTargetDefinition(definition.getCacheName());
+        return new CacheWireTargetDefinition(definition.getCacheName());
     }
 }

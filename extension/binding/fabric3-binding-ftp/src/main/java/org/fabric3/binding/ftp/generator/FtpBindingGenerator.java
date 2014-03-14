@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
+import org.fabric3.binding.ftp.provision.FtpWireTargetDefinition;
 import org.oasisopen.sca.annotation.Property;
 import org.w3c.dom.Element;
 
@@ -49,8 +50,7 @@ import org.fabric3.binding.ftp.common.Constants;
 import org.fabric3.binding.ftp.model.FtpBindingDefinition;
 import org.fabric3.binding.ftp.model.TransferMode;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
-import org.fabric3.binding.ftp.provision.FtpSourceDefinition;
-import org.fabric3.binding.ftp.provision.FtpTargetDefinition;
+import org.fabric3.binding.ftp.provision.FtpWireSourceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
@@ -58,7 +58,7 @@ import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  *
@@ -87,7 +87,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
         this.socketTimeout = socketTimeout;
     }
 
-    public FtpSourceDefinition generateSource(LogicalBinding<FtpBindingDefinition> binding,
+    public FtpWireSourceDefinition generateSource(LogicalBinding<FtpBindingDefinition> binding,
                                               ServiceContract contract,
                                               List<LogicalOperation> operations,
                                               EffectivePolicy policy) throws GenerationException {
@@ -96,7 +96,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
             throw new GenerationException("Expects only one operation");
         }
 
-        FtpSourceDefinition hwsd = new FtpSourceDefinition();
+        FtpWireSourceDefinition hwsd = new FtpWireSourceDefinition();
         URI targetUri = binding.getDefinition().getTargetUri();
         hwsd.setUri(targetUri);
 
@@ -104,7 +104,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
 
     }
 
-    public FtpTargetDefinition generateTarget(LogicalBinding<FtpBindingDefinition> binding,
+    public FtpWireTargetDefinition generateTarget(LogicalBinding<FtpBindingDefinition> binding,
                                               ServiceContract contract,
                                               List<LogicalOperation> operations,
                                               EffectivePolicy policy) throws GenerationException {
@@ -119,7 +119,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
 
         FtpSecurity security = processPolicies(policy);
 
-        FtpTargetDefinition hwtd = new FtpTargetDefinition(id, active, security, connectTimeout, socketTimeout);
+        FtpWireTargetDefinition hwtd = new FtpWireTargetDefinition(id, active, security, connectTimeout, socketTimeout);
         hwtd.setUri(definition.getTargetUri());
         if (!definition.getSTORCommands().isEmpty()) {
             hwtd.setSTORCommands(definition.getSTORCommands());
@@ -129,7 +129,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
 
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<FtpBindingDefinition> serviceBinding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FtpBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

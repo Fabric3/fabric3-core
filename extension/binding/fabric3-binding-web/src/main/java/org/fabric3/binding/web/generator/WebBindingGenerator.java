@@ -50,16 +50,16 @@ import java.util.List;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.web.model.WebBindingDefinition;
-import org.fabric3.binding.web.provision.WebSourceDefinition;
-import org.fabric3.binding.web.provision.WebTargetDefinition;
+import org.fabric3.binding.web.provision.WebWireSourceDefinition;
+import org.fabric3.binding.web.provision.WebWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -73,7 +73,7 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
     private static final DataType XSD_TYPE = new XSDType(Object.class, XSD_ANY);
     private static final DataType JSON_TYPE = new JsonType(String.class);
 
-    public PhysicalSourceDefinition generateSource(LogicalBinding<WebBindingDefinition> binding,
+    public PhysicalWireSourceDefinition generateSource(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
@@ -81,9 +81,9 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
         String wireFormat = binding.getDefinition().getWireFormat();
 
         DataType dataType = getDataType(wireFormat);
-        return new WebSourceDefinition(uri, contract, dataType);
+        return new WebWireSourceDefinition(uri, contract, dataType);
     }
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
@@ -96,10 +96,10 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
             wireFormat = introspectWireFormat(service);
         }
         DataType dataType = getDataType(wireFormat);
-        return new WebTargetDefinition(service.getUri(), dataType);
+        return new WebWireTargetDefinition(service.getUri(), dataType);
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<WebBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WebBindingDefinition> binding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

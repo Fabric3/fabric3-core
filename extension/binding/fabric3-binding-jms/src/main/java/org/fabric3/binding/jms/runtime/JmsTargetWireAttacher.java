@@ -54,6 +54,7 @@ import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.transaction.TransactionManager;
 
+import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
@@ -69,7 +70,6 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.OperationPropertiesDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
@@ -79,7 +79,7 @@ import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -87,7 +87,7 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  * Attaches the reference end of a wire to a JMS destination.
  */
-public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefinition> {
+public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDefinition> {
     private AdministeredObjectResolver resolver;
     private TransactionManager tm;
     private ClassLoaderRegistry classLoaderRegistry;
@@ -104,7 +104,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void attach(PhysicalSourceDefinition source, JmsTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws WiringException {
 
         WireConfiguration wireConfiguration = new WireConfiguration();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
@@ -142,7 +142,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
 
     }
 
-    public void detach(PhysicalSourceDefinition source, JmsTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws WiringException {
         try {
             resolver.release(target.getMetadata().getConnectionFactory());
         } catch (JmsResolutionException e) {
@@ -150,7 +150,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(JmsTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
@@ -248,7 +248,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         }
     }
 
-    private void resolveAdministeredObjects(JmsTargetDefinition target, WireConfiguration wireConfiguration) throws WiringException {
+    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws WiringException {
         JmsBindingMetadata metadata = target.getMetadata();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -312,7 +312,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
     }
 
 
-    private List<BindingHandler<Message>> createHandlers(JmsTargetDefinition target) {
+    private List<BindingHandler<Message>> createHandlers(JmsWireTargetDefinition target) {
         if (target.getHandlers().isEmpty()) {
             return null;
         }

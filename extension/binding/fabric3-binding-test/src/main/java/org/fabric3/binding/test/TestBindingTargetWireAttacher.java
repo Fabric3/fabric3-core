@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -55,14 +55,14 @@ import org.fabric3.spi.container.wire.Wire;
  *
  */
 @EagerInit
-public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBindingTargetDefinition> {
+public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBindingWireTargetDefinition> {
     private final BindingChannel channel;
 
     public TestBindingTargetWireAttacher(@Reference BindingChannel channel) {
         this.channel = channel;
     }
 
-    public void attach(PhysicalSourceDefinition source, TestBindingTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws WiringException {
         for (InvocationChain chain : wire.getInvocationChains()) {
             URI destination = target.getUri();
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -72,11 +72,11 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, TestBindingTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws WiringException {
         //        throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(TestBindingTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 }

@@ -37,8 +37,8 @@
 */
 package org.fabric3.binding.ws.metro.generator;
 
-import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
@@ -59,7 +59,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire source definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> serviceBinding, T contract, EffectivePolicy policy)
+    MetroWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> serviceBinding, T contract, EffectivePolicy policy)
             throws GenerationException;
 
     /**
@@ -71,7 +71,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding, T contract, EffectivePolicy policy)
+    MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding, T contract, EffectivePolicy policy)
             throws GenerationException;
 
     /**
@@ -83,7 +83,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+    MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
                                                        T contract,
                                                        EffectivePolicy policy) throws GenerationException;
 

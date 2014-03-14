@@ -24,7 +24,7 @@
         <f3:implementation.system class="org.fabric3.monitor.generator.MonitorResourceReferenceGenerator"/>
     </component>
 
-    <component name="MonitorWireAttacher" f3:key="org.fabric3.monitor.provision.MonitorTargetDefinition">
+    <component name="MonitorWireAttacher" f3:key="org.fabric3.monitor.provision.MonitorWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.monitor.runtime.MonitorWireAttacher"/>
     </component>
 

@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.rs.provision.AuthenticationType;
-import org.fabric3.binding.rs.provision.RsSourceDefinition;
+import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
 import org.fabric3.binding.rs.runtime.container.RsContainer;
 import org.fabric3.binding.rs.runtime.container.RsContainerException;
@@ -61,7 +61,7 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.security.BasicAuthenticator;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
@@ -73,7 +73,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefinition> {
+public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefinition> {
     private ServletHost servletHost;
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
@@ -105,7 +105,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         this.logLevel = Level.parse(level);
     }
 
-    public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
+    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WireAttachException {
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
@@ -131,7 +131,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         }
     }
 
-    public void detach(RsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
@@ -139,11 +139,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         monitor.removedEndpoint(sourceUri);
     }
 
-    public void attachObjectFactory(RsSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) throws WiringException {
+    public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public void detachObjectFactory(RsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
@@ -155,7 +155,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         return servletMapping;
     }
 
-    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container)
+    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container)
             throws ClassNotFoundException, RsContainerException, WireAttachException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<>();
@@ -205,7 +205,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         methodBuilder.handledBy(handler, template.getInvocable().getHandlingMethod());
     }
 
-    private boolean authenticate(RsSourceDefinition sourceDefinition) {
+    private boolean authenticate(RsWireSourceDefinition sourceDefinition) {
         if (AuthenticationType.BASIC == sourceDefinition.getAuthenticationType()) {
             return true;
         } else if (AuthenticationType.STATEFUL_FORM == sourceDefinition.getAuthenticationType()) {

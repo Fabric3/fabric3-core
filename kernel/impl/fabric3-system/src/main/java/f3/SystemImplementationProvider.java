@@ -53,8 +53,8 @@ import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristi
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
-import org.fabric3.implementation.system.provision.SystemSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemTargetDefinition;
+import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
+import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
 import org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
@@ -62,9 +62,9 @@ import org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
-import org.fabric3.implementation.system.singleton.SingletonSourceDefinition;
+import org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition;
 import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
-import org.fabric3.implementation.system.singleton.SingletonTargetDefinition;
+import org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
 import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
 import org.fabric3.spi.model.type.system.SystemImplementation;
@@ -89,15 +89,15 @@ public class SystemImplementationProvider {
 
     private static void addSingletonImplementation(CompositeBuilder compositeBuilder) {
         compositeBuilder.component(newBuilder(SingletonComponentGenerator.class).key(SingletonImplementation.class.getName()).build());
-        compositeBuilder.component(newBuilder(SingletonSourceWireAttacher.class).key(SingletonSourceDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SingletonTargetWireAttacher.class).key(SingletonTargetDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(SingletonSourceWireAttacher.class).key(SingletonWireSourceDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(SingletonTargetWireAttacher.class).key(SingletonWireTargetDefinition.class.getName()).build());
     }
 
     private static void addSystemImplementation(CompositeBuilder compositeBuilder) {
         compositeBuilder.component(newBuilder(SystemImplementationLoader.class).key(Namespaces.F3_PREFIX + "implementation.system").build());
         compositeBuilder.component(newBuilder(SystemComponentBuilder.class).key(SystemComponentDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SystemSourceWireAttacher.class).key(SystemSourceDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SystemTargetWireAttacher.class).key(SystemTargetDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(SystemSourceWireAttacher.class).key(SystemWireSourceDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(SystemTargetWireAttacher.class).key(SystemWireTargetDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(SystemSourceConnectionAttacher.class).key(SystemConnectionSourceDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(SystemTargetConnectionAttacher.class).key(SystemConnectionTargetDefinition.class.getName()).build());
 

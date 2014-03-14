@@ -51,7 +51,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -62,28 +62,28 @@ import org.fabric3.spi.container.wire.Wire;
  * Reinjects singleton components after the runtime bootstrap.
  */
 @EagerInit
-public class SingletonSourceWireAttacher implements SourceWireAttacher<SingletonSourceDefinition> {
+public class SingletonSourceWireAttacher implements SourceWireAttacher<SingletonWireSourceDefinition> {
     private ComponentManager manager;
 
     public SingletonSourceWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public void attach(SingletonSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(SingletonSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
     }
 
-    public void detachObjectFactory(SingletonSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
 
-    public void attachObjectFactory(SingletonSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
+    public void attachObjectFactory(SingletonWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
             throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);

@@ -40,8 +40,8 @@ package org.fabric3.runtime.weblogic.jms.generator;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
@@ -49,11 +49,11 @@ import org.fabric3.spi.deployment.generator.GenerationException;
  */
 public class WebLogicJmsResourceProvisioner implements JmsResourceProvisioner {
 
-    public void generateSource(JmsSourceDefinition definition) throws GenerationException {
+    public void generateSource(JmsWireSourceDefinition definition) throws GenerationException {
         // TODO implement
     }
 
-    public void generateTarget(JmsTargetDefinition definition) throws GenerationException {
+    public void generateTarget(JmsWireTargetDefinition definition) throws GenerationException {
         // TODO implement
     }
 

@@ -43,7 +43,7 @@ import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -55,7 +55,7 @@ import org.oasisopen.sca.annotation.Reference;
  * physical source definition. The proxy or instance can then be returned to the non-managed code.
  */
 @EagerInit
-public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher<NonManagedPhysicalSourceDefinition> {
+public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher<NonManagedPhysicalWireSourceDefinition> {
     private WireProxyService proxyService;
     private ClassLoaderRegistry classLoaderRegistry;
 
@@ -64,7 +64,7 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(NonManagedPhysicalSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(Names.HOST_CONTRIBUTION);
             Class<?> interfaze = loader.loadClass(source.getInterface());
@@ -75,7 +75,7 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         }
     }
 
-    public void attachObjectFactory(NonManagedPhysicalSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
+    public void attachObjectFactory(NonManagedPhysicalWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
             throws WiringException {
         try {
             source.setProxy(objectFactory.getInstance());
@@ -84,9 +84,9 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         }
     }
 
-    public void detach(NonManagedPhysicalSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
     }
 
-    public void detachObjectFactory(NonManagedPhysicalSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
     }
 }

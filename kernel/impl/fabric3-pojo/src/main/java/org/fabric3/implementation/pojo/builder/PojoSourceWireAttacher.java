@@ -49,9 +49,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
+import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.spi.model.type.xsd.XSDType;
@@ -82,7 +82,7 @@ public abstract class PojoSourceWireAttacher {
      * @throws KeyInstantiationException if there is an error instantiating the key
      */
     @SuppressWarnings("unchecked")
-    protected Object getKey(PojoSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition) throws KeyInstantiationException {
+    protected Object getKey(PojoWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition) throws KeyInstantiationException {
         if (!sourceDefinition.isKeyed()) {
             return null;
         }

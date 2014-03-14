@@ -44,16 +44,16 @@ import java.util.List;
 import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  *
  */
 public final class MethodUtils {
 
-    public static Method findMethod(PhysicalSourceDefinition sourceDefinition,
-                                    PhysicalTargetDefinition targetDefinition,
+    public static Method findMethod(PhysicalWireSourceDefinition sourceDefinition,
+                                    PhysicalWireTargetDefinition targetDefinition,
                                     PhysicalOperationDefinition operation,
                                     Class<?> implementationClass,
                                     ClassLoader loader,

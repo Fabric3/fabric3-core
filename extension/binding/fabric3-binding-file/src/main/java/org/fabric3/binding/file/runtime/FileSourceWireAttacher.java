@@ -40,13 +40,13 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 import java.net.URI;
 
+import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
@@ -58,7 +58,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -68,7 +68,7 @@ import org.fabric3.spi.container.wire.Wire;
  *
  */
 @EagerInit
-public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSourceDefinition> {
+public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWireSourceDefinition> {
     private static final ServiceAdapter ADAPTER = new DefaultServiceAdapter();
     private static final ServiceAdapter JAF_ADAPTER = new DataHandlerServiceAdapter();
 
@@ -90,7 +90,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         this.baseDir = new File(hostInfo.getDataDir(), "inbox");
     }
 
-    public void attach(FileBindingSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         String id = source.getUri().toString();
 
         File location = getLocation(source);
@@ -122,26 +122,26 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         receiverManager.create(configuration);
     }
 
-    public void detach(FileBindingSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         String id = source.getUri().toString();
         receiverManager.remove(id);
     }
 
-    public void attachObjectFactory(FileBindingSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) {
+    public void attachObjectFactory(FileBindingWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
 
     }
 
-    public void detachObjectFactory(FileBindingSourceDefinition source, PhysicalTargetDefinition target) {
+    public void detachObjectFactory(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 
-    private File getLocation(FileBindingSourceDefinition source) {
+    private File getLocation(FileBindingWireSourceDefinition source) {
         String location = source.getLocation();
         return resolve(location);
     }
 
-    private File getArchiveLocation(FileBindingSourceDefinition source) {
+    private File getArchiveLocation(FileBindingWireSourceDefinition source) {
         File archiveLocation = null;
         String archiveLocationStr = source.getArchiveLocation();
         if (archiveLocationStr != null) {
@@ -150,7 +150,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         return archiveLocation;
     }
 
-    private File getErrorLocation(FileBindingSourceDefinition source) {
+    private File getErrorLocation(FileBindingWireSourceDefinition source) {
         File errorLocation = null;
         String errorLocationStr = source.getErrorLocation();
         if (errorLocationStr != null) {
@@ -180,7 +180,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
      * @return the adaptor
      * @throws WiringException if there is an error instantiating the class or returning a component instance.
      */
-    private ServiceAdapter getAdaptor(FileBindingSourceDefinition source) throws WiringException {
+    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws WiringException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();

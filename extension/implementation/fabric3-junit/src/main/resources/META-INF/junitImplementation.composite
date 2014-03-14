@@ -50,11 +50,11 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.junit.generator.JUnitBindingGenerator"/>
     </component>
 
-    <component name="JunitSourceWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitSourceDefinition">
+    <component name="JunitSourceWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.implementation.junit.runtime.JunitSourceWireAttacher"/>
     </component>
 
-    <component name="JUnitTargetWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitTargetDefinition">
+    <component name="JUnitTargetWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.implementation.junit.runtime.JUnitTargetWireAttacher"/>
     </component>
 

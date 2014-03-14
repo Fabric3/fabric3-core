@@ -44,15 +44,15 @@
 package org.fabric3.spi.container.builder.component;
 
 import org.fabric3.spi.container.builder.WiringException;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Attaches and detaches a wire to/from a target component or transport binding.
  */
-public interface TargetWireAttacher<PTD extends PhysicalTargetDefinition> {
+public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
     /**
      * Attaches a wire to a target component or outgoing transport binding.
      *
@@ -61,7 +61,7 @@ public interface TargetWireAttacher<PTD extends PhysicalTargetDefinition> {
      * @param wire   the wire
      * @throws WiringException if an exception occurs during the attach operation
      */
-    void attach(PhysicalSourceDefinition source, PTD target, Wire wire) throws WiringException;
+    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws WiringException;
 
     /**
      * Detaches a wire from a target component or outgoing transport binding.
@@ -70,7 +70,7 @@ public interface TargetWireAttacher<PTD extends PhysicalTargetDefinition> {
      * @param target metadata for performing the attach
      * @throws WiringException if an exception occurs during the detach operation
      */
-    void detach(PhysicalSourceDefinition source, PTD target) throws WiringException;
+    void detach(PhysicalWireSourceDefinition source, PTD target) throws WiringException;
 
     /**
      * Create an ObjectFactory that returns a direct target instance.

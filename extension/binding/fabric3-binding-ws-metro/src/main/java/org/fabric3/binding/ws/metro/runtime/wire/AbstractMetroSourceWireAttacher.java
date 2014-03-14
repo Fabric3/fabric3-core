@@ -42,7 +42,7 @@ import javax.xml.ws.handler.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.binding.ws.metro.runtime.core.ServiceCallbackAddressHandler;
@@ -50,13 +50,13 @@ import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Base source wire attacher that provisions web service endpoints.
  */
-public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefinition> implements SourceWireAttacher<T> {
+public abstract class AbstractMetroSourceWireAttacher<T extends MetroWireSourceDefinition> implements SourceWireAttacher<T> {
     protected EndpointService endpointService;
     private BindingHandlerRegistry handlerRegistry;
 
@@ -65,14 +65,14 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefin
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void detachObjectFactory(T source, PhysicalTargetDefinition target) {
+    public void detachObjectFactory(T source, PhysicalWireTargetDefinition target) {
     }
 
-    public void attachObjectFactory(T source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) {
+    public void attachObjectFactory(T source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 
-    protected List<Handler> createHandlers(MetroSourceDefinition source) {
+    protected List<Handler> createHandlers(MetroWireSourceDefinition source) {
         if (source.getHandlers().isEmpty() && !source.isBidirectional()) {
             return null;
         }

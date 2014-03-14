@@ -36,10 +36,10 @@ destination uri the reference should flow invocations to as in:
         <f3:implementation.system class="org.fabric3.binding.test.TestBindingGenerator"/>
     </component>
 
-    <component f3:key="org.fabric3.binding.test.TestBindingSourceDefinition" name="TestBindingSourceWireAttacher">
+    <component f3:key="org.fabric3.binding.test.TestBindingWireSourceDefinition" name="TestBindingSourceWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.test.TestBindingSourceWireAttacher"/>
     </component>
-    <component f3:key="org.fabric3.binding.test.TestBindingTargetDefinition" name="TestBindingTargetWireAttacher">
+    <component f3:key="org.fabric3.binding.test.TestBindingWireTargetDefinition" name="TestBindingTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.test.TestBindingTargetWireAttacher"/>
     </component>
 

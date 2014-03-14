@@ -18,12 +18,12 @@
     </component>
 
     <component name="ZeroMQSourceAttacher"
-               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition">
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQSourceAttacher"/>
     </component>
 
     <component name="ZeroMQTargetAttacher"
-               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition">
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQTargetAttacher"/>
     </component>
 

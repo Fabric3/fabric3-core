@@ -40,7 +40,7 @@ package org.fabric3.execution.generator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.execution.model.ExecutorServiceResourceReference;
-import org.fabric3.execution.provision.ExecutorServiceTargetDefinition;
+import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
@@ -50,7 +50,7 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 @EagerInit
 public class ExecutorServiceResourceReferenceGenerator implements ResourceReferenceGenerator<ExecutorServiceResourceReference> {
 
-    public ExecutorServiceTargetDefinition generateWireTarget(LogicalResourceReference<ExecutorServiceResourceReference> reference) {
-        return new ExecutorServiceTargetDefinition();
+    public ExecutorServiceWireTargetDefinition generateWireTarget(LogicalResourceReference<ExecutorServiceResourceReference> reference) {
+        return new ExecutorServiceWireTargetDefinition();
     }
 }

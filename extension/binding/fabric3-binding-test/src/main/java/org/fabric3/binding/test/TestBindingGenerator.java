@@ -48,7 +48,7 @@ import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Implementation of the test binding generator.
@@ -56,31 +56,31 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 @EagerInit
 public class TestBindingGenerator implements BindingGenerator<TestBindingDefinition> {
 
-    public TestBindingSourceDefinition generateSource(LogicalBinding<TestBindingDefinition> logicalBinding,
+    public TestBindingWireSourceDefinition generateSource(LogicalBinding<TestBindingDefinition> logicalBinding,
                                                       ServiceContract contract,
                                                       List<LogicalOperation> operations,
                                                       EffectivePolicy policy) throws GenerationException {
-        TestBindingSourceDefinition definition = new TestBindingSourceDefinition();
+        TestBindingWireSourceDefinition definition = new TestBindingWireSourceDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
         return definition;
     }
 
-    public TestBindingTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> logicalBinding,
+    public TestBindingWireTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> logicalBinding,
                                                       ServiceContract contract,
                                                       List<LogicalOperation> operations,
                                                       EffectivePolicy policy) throws GenerationException {
 
-        TestBindingTargetDefinition definition = new TestBindingTargetDefinition();
+        TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
         return definition;
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBindingDefinition> serviceBinding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {
 
-        TestBindingTargetDefinition definition = new TestBindingTargetDefinition();
+        TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
 
         URI path = serviceBinding.getDefinition().getTargetUri();
         definition.setUri(path);

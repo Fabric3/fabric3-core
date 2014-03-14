@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.model.HibernateSessionResourceReference;
 import org.fabric3.jpa.override.OverrideRegistry;
-import org.fabric3.jpa.provision.SessionTargetDefinition;
+import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
@@ -58,10 +58,10 @@ public class SessionResourceReferenceGenerator implements ResourceReferenceGener
         this.registry = registry;
     }
 
-    public SessionTargetDefinition generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> logicalResourceReference) {
+    public SessionWireTargetDefinition generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> logicalResourceReference) {
         HibernateSessionResourceReference resource = logicalResourceReference.getDefinition();
         String unitName = resource.getUnitName();
-        SessionTargetDefinition definition = new SessionTargetDefinition(unitName);
+        SessionWireTargetDefinition definition = new SessionWireTargetDefinition(unitName);
 
         PersistenceOverrides overrides = registry.resolve(unitName);
         if (overrides != null) {

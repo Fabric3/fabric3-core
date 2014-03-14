@@ -22,11 +22,11 @@
         <f3:implementation.system class="org.fabric3.implementation.system.singleton.SingletonComponentGenerator"/>
     </component>
 
-    <component name="SingletonWireSourceAttacher" f3:key="org.fabric3.implementation.system.singleton.SingletonSourceDefinition">
+    <component name="SingletonWireSourceAttacher" f3:key="org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher"/>
     </component>
 
-    <component name="SingletonWireTargetAttacher" f3:key="org.fabric3.implementation.system.singleton.SingletonTargetDefinition">
+    <component name="SingletonWireTargetAttacher" f3:key="org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher"/>
     </component>
 

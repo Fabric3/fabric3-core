@@ -39,11 +39,11 @@ package org.fabric3.resource.generator;
 
 import java.net.URI;
 
+import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.host.Names;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
-import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
@@ -54,11 +54,11 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 @EagerInit
 public class SystemSourcedResourceReferenceGenerator implements ResourceReferenceGenerator<SystemSourcedResourceReference> {
 
-    public SystemSourcedTargetDefinition generateWireTarget(LogicalResourceReference<SystemSourcedResourceReference> resourceReference) throws GenerationException {
+    public SystemSourcedWireTargetDefinition generateWireTarget(LogicalResourceReference<SystemSourcedResourceReference> resourceReference) throws GenerationException {
         SystemSourcedResourceReference definition = resourceReference.getDefinition();
         String mappedName = definition.getMappedName();
         URI targetUri = URI.create(Names.RUNTIME_NAME + "/" + mappedName);
-        SystemSourcedTargetDefinition targetDefinition = new SystemSourcedTargetDefinition();
+        SystemSourcedWireTargetDefinition targetDefinition = new SystemSourcedWireTargetDefinition();
         targetDefinition.setUri(targetUri);
         return targetDefinition;
     }

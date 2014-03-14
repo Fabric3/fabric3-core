@@ -49,7 +49,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.wss.SecurityEnvironment;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.MetroWsdlTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWsdlWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
@@ -60,7 +60,7 @@ import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.WiringException;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -69,7 +69,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a WSDL contract to a wire.
  */
-public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroWsdlTargetDefinition> {
+public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroWsdlWireTargetDefinition> {
     private FeatureResolver resolver;
     private SecurityEnvironment securityEnvironment;
     private ExecutorService executorService;
@@ -88,7 +88,7 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.cache = cache;
     }
 
-    public void attach(PhysicalSourceDefinition source, MetroWsdlTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, MetroWsdlWireTargetDefinition target, Wire wire) throws WiringException {
         ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
         List<QName> requestedIntents = target.getIntents();
 
@@ -118,11 +118,11 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
     }
 
-    public ObjectFactory<?> createObjectFactory(MetroWsdlTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(MetroWsdlWireTargetDefinition target) throws WiringException {
         return null;
     }
 
-    public void detach(PhysicalSourceDefinition source, MetroWsdlTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, MetroWsdlWireTargetDefinition target) throws WiringException {
         try {
             cache.remove(target.getUri());
         } catch (CacheException e) {

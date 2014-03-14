@@ -45,19 +45,19 @@ package org.fabric3.implementation.system.runtime;
 
 import java.net.URI;
 
+import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
@@ -70,7 +70,7 @@ import org.fabric3.spi.container.wire.Wire;
  *
  */
 @EagerInit
-public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<SystemSourceDefinition> {
+public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<SystemWireSourceDefinition> {
 
     private final ComponentManager manager;
     private WireProxyService proxyService;
@@ -94,7 +94,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         this.proxyService = proxyService;
     }
 
-    public void attach(SystemSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         if (proxyService == null) {
             throw new WiringException("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
@@ -135,18 +135,18 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         }
     }
 
-    public void detach(SystemSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(SystemSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
 
-    public void attachObjectFactory(SystemSourceDefinition source, ObjectFactory<?> factory, PhysicalTargetDefinition target) throws WiringException {
+    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target) throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

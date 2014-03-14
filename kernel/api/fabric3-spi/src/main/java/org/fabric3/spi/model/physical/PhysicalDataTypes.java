@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
 
 /**
  * Defines well-known physical data types. Binding and component extensions may declare the data types they support for service operation parameters on {@link
- * PhysicalTargetDefinition}.
+ * PhysicalWireTargetDefinition}.
  */
 public interface PhysicalDataTypes {
 

@@ -41,11 +41,11 @@ import javax.sql.DataSource;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.datasource.provision.DataSourceTargetDefinition;
+import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -53,22 +53,22 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  * Attaches to a runtime DataSource.
  */
-public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceTargetDefinition> {
+public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWireTargetDefinition> {
     private DataSourceRegistry registry;
 
     public DataSourceWireAttacher(@Reference DataSourceRegistry registry) {
         this.registry = registry;
     }
 
-    public void attach(PhysicalSourceDefinition source, DataSourceTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws WiringException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalSourceDefinition source, DataSourceTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<DataSource> createObjectFactory(DataSourceTargetDefinition target) throws WiringException {
+    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws WiringException {
         String dataSourceName = target.getDataSourceName();
         DataSource source = registry.getDataSource(dataSourceName);
         if (!target.isOptional() && source == null) {

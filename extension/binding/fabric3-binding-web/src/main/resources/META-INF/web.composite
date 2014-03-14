@@ -43,7 +43,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.PubSubManagerImpl"/>
     </component>
 
-    <component name="WebBindingSourceWireAttacher" f3:key="org.fabric3.binding.web.provision.WebSourceDefinition">
+    <component name="WebBindingSourceWireAttacher" f3:key="org.fabric3.binding.web.provision.WebWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.binding.web.runtime.service.WebSourceWireAttacher"/>
         <property name="timeout" source="$systemConfig//f3:web.binding/@timeout" />
     </component>
@@ -61,7 +61,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.WebTargetConnectionAttacher"/>
     </component>
 
-    <component name="WebTargetWireAttacher" f3:key="org.fabric3.binding.web.provision.WebTargetDefinition">
+    <component name="WebTargetWireAttacher" f3:key="org.fabric3.binding.web.provision.WebWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.binding.web.runtime.service.WebTargetWireAttacher"/>
     </component>
 

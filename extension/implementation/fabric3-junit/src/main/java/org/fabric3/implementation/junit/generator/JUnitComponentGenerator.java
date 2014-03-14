@@ -43,9 +43,9 @@ import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.java.provision.JavaSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
-import org.fabric3.implementation.junit.provision.JUnitTargetDefinition;
+import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -64,8 +64,8 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -109,12 +109,12 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return physical;
     }
 
-    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = getInterfaceName(serviceContract);
 
-        JavaSourceDefinition wireDefinition = new JavaSourceDefinition();
+        JavaWireSourceDefinition wireDefinition = new JavaWireSourceDefinition();
         wireDefinition.setUri(uri);
         wireDefinition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
         wireDefinition.setInterfaceName(interfaceName);
@@ -132,7 +132,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return wireDefinition;
     }
 
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
@@ -149,13 +149,13 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
     }
 
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
 
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
         String interfaceName = getInterfaceName(serviceContract);
 
-        JavaSourceDefinition wireDefinition = new JavaSourceDefinition();
+        JavaWireSourceDefinition wireDefinition = new JavaWireSourceDefinition();
         wireDefinition.setUri(uri);
         wireDefinition.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
         wireDefinition.setInterfaceName(interfaceName);
@@ -166,8 +166,8 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return contract.getQualifiedInterfaceName();
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        JUnitTargetDefinition wireDefinition = new JUnitTargetDefinition();
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        JUnitWireTargetDefinition wireDefinition = new JUnitWireTargetDefinition();
         wireDefinition.setUri(service.getUri());
         return wireDefinition;
     }

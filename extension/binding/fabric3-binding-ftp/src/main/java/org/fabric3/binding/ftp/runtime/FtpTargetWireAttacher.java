@@ -46,10 +46,10 @@ import org.apache.commons.net.SocketFactory;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
-import org.fabric3.binding.ftp.provision.FtpTargetDefinition;
+import org.fabric3.binding.ftp.provision.FtpWireTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -57,14 +57,14 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  *
  */
-public class FtpTargetWireAttacher implements TargetWireAttacher<FtpTargetDefinition> {
+public class FtpTargetWireAttacher implements TargetWireAttacher<FtpWireTargetDefinition> {
     private FtpInterceptorMonitor monitor;
 
     public FtpTargetWireAttacher(@Monitor FtpInterceptorMonitor monitor) {
         this.monitor = monitor;
     }
 
-    public void attach(PhysicalSourceDefinition source, FtpTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, FtpWireTargetDefinition target, Wire wire) throws WiringException {
 
         InvocationChain invocationChain = wire.getInvocationChains().iterator().next();
         URI uri = target.getUri();
@@ -94,11 +94,11 @@ public class FtpTargetWireAttacher implements TargetWireAttacher<FtpTargetDefini
 
     }
 
-    public void detach(PhysicalSourceDefinition source, FtpTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, FtpWireTargetDefinition target) throws WiringException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(FtpTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(FtpWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 

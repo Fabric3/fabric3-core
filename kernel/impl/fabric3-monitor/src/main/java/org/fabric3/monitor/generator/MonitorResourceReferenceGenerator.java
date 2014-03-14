@@ -40,7 +40,7 @@ package org.fabric3.monitor.generator;
 import java.net.URI;
 
 import org.fabric3.monitor.model.MonitorResourceReference;
-import org.fabric3.monitor.provision.MonitorTargetDefinition;
+import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
@@ -52,12 +52,12 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class MonitorResourceReferenceGenerator implements ResourceReferenceGenerator<MonitorResourceReference> {
 
-    public MonitorTargetDefinition generateWireTarget(LogicalResourceReference<MonitorResourceReference> resourceReference) {
+    public MonitorWireTargetDefinition generateWireTarget(LogicalResourceReference<MonitorResourceReference> resourceReference) {
         LogicalComponent<?> component = resourceReference.getParent();
         String type = resourceReference.getDefinition().getServiceContract().getQualifiedInterfaceName();
         URI monitorable = component.getUri();
         String destination = resourceReference.getDefinition().getDestination();
-        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, monitorable, destination);
+        MonitorWireTargetDefinition definition = new MonitorWireTargetDefinition(type, monitorable, destination);
         definition.setOptimizable(true);
         return definition;
     }

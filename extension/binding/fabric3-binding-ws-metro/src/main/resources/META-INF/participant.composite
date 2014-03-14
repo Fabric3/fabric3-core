@@ -14,19 +14,19 @@ Public License. See the accompanying license file for details.
            name="MetroParticipantExtension"
            autowire="true">
 
-    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaSourceDefinition" name="MetroJavaSourceWireAttacher">
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition" name="MetroJavaSourceWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaSourceWireAttacher"/>
     </component>
 
-    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlSourceDefinition" name="MetroWsdlSourceWireAttacher">
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireSourceDefinition" name="MetroWsdlSourceWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlSourceWireAttacher"/>
     </component>
 
-    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition" name="MetroJavaTargetWireAttacher">
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition" name="MetroJavaTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaTargetWireAttacher"/>
     </component>
 
-    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlTargetDefinition" name="MetroWsdlTargetWireAttacher">
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireTargetDefinition" name="MetroWsdlTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlTargetWireAttacher"/>
     </component>
 

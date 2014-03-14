@@ -44,8 +44,8 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
-import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -69,7 +69,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
         LogicalService service = new LogicalService(uri, null, null);
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, service);
 
-        FileBindingSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
+        FileBindingWireSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
         assertNotNull(physical.getLocation());
         assertNotNull(physical.getArchiveLocation());
         assertEquals(Strategy.ARCHIVE, physical.getStrategy());
@@ -97,7 +97,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
         FileBindingDefinition definition = new FileBindingDefinition("binding", "location", "error");
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, null);
 
-        FileBindingTargetDefinition physical = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
+        FileBindingWireTargetDefinition physical = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
         assertNotNull(physical.getLocation());
     }
 

@@ -46,7 +46,7 @@ import java.net.URL;
 import java.util.List;
 
 import com.sun.xml.ws.api.BindingID;
-import org.fabric3.binding.ws.metro.provision.MetroWsdlSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWsdlWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.DocumentInvoker;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
@@ -59,7 +59,7 @@ import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.WiringException;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.annotation.Reference;
@@ -67,7 +67,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Source wire attacher that provisions WSDL-based web service endpoints.
  */
-public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroWsdlSourceDefinition> {
+public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroWsdlWireSourceDefinition> {
     private FeatureResolver featureResolver;
     private BindingIdResolver bindingIdResolver;
     private ArtifactCache cache;
@@ -83,7 +83,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.cache = cache;
     }
 
-    public void attach(MetroWsdlSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
@@ -133,7 +133,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
         }
     }
 
-    public void detach(MetroWsdlSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         try {
             URI servicePath = source.getEndpointDefinition().getServicePath();
             cache.remove(servicePath);

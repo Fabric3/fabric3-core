@@ -51,7 +51,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.web.provision.WebSourceDefinition;
+import org.fabric3.binding.web.provision.WebWireSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
@@ -60,7 +60,7 @@ import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -70,7 +70,7 @@ import org.fabric3.spi.container.wire.Wire;
  * receiving invocations and routing them to the appropriate service based on the request path.
  */
 @EagerInit
-public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefinition> {
+public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDefinition> {
     private static final String CONTEXT_PATH = "/web/*";
 
     private ServiceManager serviceManager;
@@ -139,7 +139,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         atmosphereFramework.destroy();
     }
 
-    public void attach(WebSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         String path = getPath(source);
         if (wire.getInvocationChains().size() != 1) {
             // the websocket binding only supports service contracts with one operation
@@ -154,18 +154,18 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         monitor.provisionedEndpoint(prefix + path);
     }
 
-    public void detach(WebSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         String path = getPath(source);
         serviceManager.unregister(path);
         String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
         monitor.removedEndpoint(prefix + path);
     }
 
-    public void attachObjectFactory(WebSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) {
+    public void attachObjectFactory(WebWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(WebSourceDefinition source, PhysicalTargetDefinition target) {
+    public void detachObjectFactory(WebWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 
@@ -175,7 +175,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
      * @param source the source metadata
      * @return the path
      */
-    private String getPath(WebSourceDefinition source) {
+    private String getPath(WebWireSourceDefinition source) {
         return source.getUri().getPath().substring(1);
     }
 

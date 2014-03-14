@@ -40,16 +40,16 @@ package org.fabric3.jpa.runtime;
 import java.net.URI;
 import javax.persistence.EntityManagerFactory;
 
+import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -57,7 +57,7 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  * Attaches the target side of entity manager factories.
  */
-public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitTargetDefinition> {
+public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitWireTargetDefinition> {
     private EntityManagerFactoryResolver emfResolver;
     private ClassLoaderRegistry registry;
 
@@ -72,15 +72,15 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         this.registry = registry;
     }
 
-    public void attach(PhysicalSourceDefinition source, PersistenceUnitTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws WiringException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalSourceDefinition source, PersistenceUnitTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceUnitTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws WiringException {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
         ClassLoader classLoader = registry.getClassLoader(classLoaderUri);

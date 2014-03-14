@@ -19,7 +19,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.cache.runtime.CacheRegistryImpl"/>
     </component>
 
-    <component name="CacheTargetWireAttacher" f3:key="org.fabric3.cache.provision.CacheTargetDefinition">
+    <component name="CacheTargetWireAttacher" f3:key="org.fabric3.cache.provision.CacheWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.cache.runtime.CacheTargetWireAttacher"/>
     </component>
 

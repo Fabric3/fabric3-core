@@ -29,7 +29,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.resource.generator.SystemSourcedResourceReferenceGenerator"/>
     </component>
 
-    <component name="SystemSourcedResourceWireAttacher" f3:key="org.fabric3.resource.provision.SystemSourcedTargetDefinition">
+    <component name="SystemSourcedResourceWireAttacher" f3:key="org.fabric3.resource.provision.SystemSourcedWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.resource.runtime.SystemSourcedResourceWireAttacher"/>
     </component>
 

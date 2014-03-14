@@ -37,8 +37,8 @@ import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -62,20 +62,20 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
     private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
     private static final String TARGET_URI = "targetUri";
 
-    public ZeroMQSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> binding,
+    public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> binding,
                                                  ServiceContract contract,
                                                  List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         if (binding.isCallback()) {
             URI uri = URI.create("zmq://" + contract.getInterfaceName());
-            return new ZeroMQSourceDefinition(uri, metadata);
+            return new ZeroMQWireSourceDefinition(uri, metadata);
         } else {
-            return new ZeroMQSourceDefinition(metadata);
+            return new ZeroMQWireSourceDefinition(metadata);
         }
     }
 
-    public ZeroMQTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
+    public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
                                                  ServiceContract contract,
                                                  List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
@@ -84,7 +84,7 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
 
         if (binding.isCallback()) {
             URI targetUri = URI.create("zmq://" + contract.getInterfaceName());
-            return new ZeroMQTargetDefinition(targetUri, metadata);
+            return new ZeroMQWireTargetDefinition(targetUri, metadata);
         }
         URI targetUri;
         // If this is an undeployment, use the previously calculated target URI. This must be done since the target component may no longer
@@ -100,7 +100,7 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
         return generateTarget(contract, targetUri, metadata);
     }
 
-    public ZeroMQTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
+    public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
                                                                ServiceContract contract,
                                                                List<LogicalOperation> operations,
                                                                EffectivePolicy policy) throws GenerationException {
@@ -109,13 +109,13 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
         return generateTarget(contract, targetUri, metadata);
     }
 
-    private ZeroMQTargetDefinition generateTarget(ServiceContract contract, URI targetUri, ZeroMQMetadata metadata) {
+    private ZeroMQWireTargetDefinition generateTarget(ServiceContract contract, URI targetUri, ZeroMQMetadata metadata) {
         boolean hasCallback = contract.getCallbackContract() != null;
         if (hasCallback) {
             URI callbackUri = URI.create("zmq://" + contract.getCallbackContract().getInterfaceName());
-            return new ZeroMQTargetDefinition(targetUri, callbackUri, metadata);
+            return new ZeroMQWireTargetDefinition(targetUri, callbackUri, metadata);
         }
-        return new ZeroMQTargetDefinition(targetUri, metadata);
+        return new ZeroMQWireTargetDefinition(targetUri, metadata);
     }
 
     /**

@@ -39,10 +39,10 @@ package org.fabric3.implementation.java.runtime;
 
 import java.net.URI;
 
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
@@ -54,7 +54,7 @@ import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
@@ -67,7 +67,7 @@ import org.fabric3.spi.container.wire.Wire;
  * Attaches and detaches wires to and from Java components.
  */
 @EagerInit
-public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaSourceDefinition> {
+public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaWireSourceDefinition> {
 
     private ComponentManager manager;
     private WireProxyService proxyService;
@@ -81,7 +81,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition, Wire wire) throws WiringException {
+    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws WiringException {
         URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
@@ -104,18 +104,18 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    public void detach(JavaSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(JavaSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
 
-    public void attachObjectFactory(JavaSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalTargetDefinition targetDefinition)
+    public void attachObjectFactory(JavaWireSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalWireTargetDefinition targetDefinition)
             throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
@@ -132,8 +132,8 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     private void processReference(Wire wire,
-                                  JavaSourceDefinition sourceDefinition,
-                                  PhysicalTargetDefinition targetDefinition,
+                                  JavaWireSourceDefinition sourceDefinition,
+                                  PhysicalWireTargetDefinition targetDefinition,
                                   JavaComponent source,
                                   Injectable injectable,
                                   Class<?> type) throws KeyInstantiationException {
@@ -158,7 +158,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    private void processCallback(Wire wire, PhysicalTargetDefinition targetDefinition, JavaComponent source, Injectable injectable, Class<?> type)
+    private void processCallback(Wire wire, PhysicalWireTargetDefinition targetDefinition, JavaComponent source, Injectable injectable, Class<?> type)
             throws KeyInstantiationException {
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();

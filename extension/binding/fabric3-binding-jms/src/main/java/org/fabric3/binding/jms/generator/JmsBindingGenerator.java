@@ -63,8 +63,8 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
-import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
@@ -105,7 +105,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         this.provisioner = provisioner;
     }
 
-    public JmsSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding,
+    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding,
                                               ServiceContract contract,
                                               List<LogicalOperation> operations,
                                               EffectivePolicy policy) throws GenerationException {
@@ -125,11 +125,11 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         URI uri = binding.getDefinition().getTargetUri();
 
         List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
-        JmsSourceDefinition definition;
+        JmsWireSourceDefinition definition;
         if (isJAXB(contract)) {
-            definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
+            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
         } else {
-            definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers);
+            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateSource(definition);
@@ -141,7 +141,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         return definition;
     }
 
-    public JmsTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding,
+    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding,
                                               ServiceContract contract,
                                               List<LogicalOperation> operations,
                                               EffectivePolicy policy) throws GenerationException {
@@ -155,11 +155,11 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
         List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
-        JmsTargetDefinition definition;
+        JmsWireTargetDefinition definition;
         if (isJAXB(contract)) {
-            definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
+            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
         } else {
-            definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers);
+            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateTarget(definition);
@@ -181,7 +181,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         return definition;
     }
 
-    public JmsTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> binding,
+    public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> binding,
                                                             ServiceContract contract,
                                                             List<LogicalOperation> operations,
                                                             EffectivePolicy policy) throws GenerationException {

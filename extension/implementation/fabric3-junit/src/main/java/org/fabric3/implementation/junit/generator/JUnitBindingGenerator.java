@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
-import org.fabric3.implementation.junit.provision.JUnitSourceDefinition;
+import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
@@ -51,7 +51,7 @@ import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Attaches wires to Junit components to the WireHolder.
@@ -59,24 +59,24 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 @EagerInit
 public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefinition> {
 
-    public JUnitSourceDefinition generateSource(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
+    public JUnitWireSourceDefinition generateSource(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
                                                 ServiceContract contract,
                                                 List<LogicalOperation> operations,
                                                 EffectivePolicy policy) throws GenerationException {
         ComponentDefinition<?> definition = bindingDefinition.getParent().getParent().getDefinition();
         String testName = definition.getImplementation().getArtifactName();
         ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
-        return new JUnitSourceDefinition(testName, configuration);
+        return new JUnitWireSourceDefinition(testName, configuration);
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
+    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<JUnitBindingDefinition> serviceBinding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JUnitBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

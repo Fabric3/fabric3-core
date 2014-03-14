@@ -26,11 +26,11 @@
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemComponentBuilder"/>
     </component>
 
-    <component name="SystemSourceWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemSourceDefinition">
+    <component name="SystemSourceWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemSourceWireAttacher"/>
     </component>
 
-    <component name="SystemTargetWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemTargetDefinition">
+    <component name="SystemTargetWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetWireAttacher"/>
     </component>
 

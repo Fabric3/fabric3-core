@@ -56,11 +56,11 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaComponentBuilder"/>
     </component>
 
-    <component name="JavaSourceWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaSourceDefinition">
+    <component name="JavaSourceWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaSourceWireAttacher"/>
     </component>
 
-    <component name="JavaTargetWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaTargetDefinition">
+    <component name="JavaTargetWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaTargetWireAttacher"/>
     </component>
 

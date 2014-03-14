@@ -42,7 +42,7 @@ import javax.xml.ws.handler.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.CallbackTargetHandler;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.ReferenceCallbackAddressHandler;
@@ -51,12 +51,12 @@ import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Base {@link TargetWireAttacher} functionality for web services.
  */
-public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDefinition> implements TargetWireAttacher<T> {
+public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalWireTargetDefinition> implements TargetWireAttacher<T> {
     private BindingHandlerRegistry handlerRegistry;
     private EndpointService endpointService;
 
@@ -65,7 +65,7 @@ public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDe
         this.endpointService = endpointService;
     }
 
-    protected List<Handler> createHandlers(MetroTargetDefinition target) {
+    protected List<Handler> createHandlers(MetroWireTargetDefinition target) {
         if (target.getHandlers().isEmpty() && !target.isBidirectional() && !target.isCallback()) {
             return null;
         }

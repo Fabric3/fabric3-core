@@ -51,11 +51,11 @@ import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
- * Generates {@link PhysicalSourceDefinition}s and {@link PhysicalTargetDefinition}s for resolved wire bindings.
+ * Generates {@link PhysicalWireSourceDefinition}s and {@link PhysicalWireTargetDefinition}s for resolved wire bindings.
  */
 public interface BindingGenerator<BD extends BindingDefinition> {
 
@@ -69,7 +69,7 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @return Physical wire source definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalSourceDefinition generateSource(LogicalBinding<BD> serviceBinding,
+    PhysicalWireSourceDefinition generateSource(LogicalBinding<BD> serviceBinding,
                                             ServiceContract contract,
                                             List<LogicalOperation> operations,
                                             EffectivePolicy policy) throws GenerationException;
@@ -85,7 +85,7 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding,
+    PhysicalWireTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding,
                                             ServiceContract contract,
                                             List<LogicalOperation> operations,
                                             EffectivePolicy policy) throws GenerationException;
@@ -103,7 +103,7 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding,
+    PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding,
                                                           ServiceContract contract,
                                                           List<LogicalOperation> operations,
                                                           EffectivePolicy policy) throws GenerationException;

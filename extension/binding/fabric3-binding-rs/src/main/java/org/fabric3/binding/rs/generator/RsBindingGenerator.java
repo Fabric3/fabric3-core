@@ -42,20 +42,20 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
+import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
+import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.binding.rs.model.RsBindingDefinition;
 import org.fabric3.binding.rs.provision.AuthenticationType;
-import org.fabric3.binding.rs.provision.RsSourceDefinition;
-import org.fabric3.binding.rs.provision.RsTargetDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Implementation of the REST binding generator.
@@ -68,7 +68,7 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
     private static final QName F3_BASIC_AUTHENTICATION = new QName(org.fabric3.api.Namespaces.F3, "clientAuthentication");
     private static final QName F3_DIGEST_AUTHENTICATION = null;
 
-    public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,
+    public RsWireSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
@@ -76,17 +76,17 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
         URI uri = binding.getDefinition().getTargetUri();
 
         AuthenticationType type = calculateAuthenticationType(binding, operations);
-        return new RsSourceDefinition(interfaze, uri, type);
+        return new RsWireSourceDefinition(interfaze, uri, type);
     }
 
-    public RsTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding,
+    public RsWireTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding,
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
-        return new RsTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
+        return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

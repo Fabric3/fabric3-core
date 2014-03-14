@@ -65,10 +65,10 @@ import org.fabric3.binding.ws.metro.generator.resolver.EndpointResolver;
 import org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolver;
 import org.fabric3.binding.ws.metro.generator.resolver.WsdlResolver;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroWsdlSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroWsdlTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWsdlWireSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWsdlWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
@@ -118,7 +118,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         transformerFactory = TransformerFactory.newInstance();
     }
 
-    public MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
+    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
         URI targetUri = binding.getDefinition().getTargetUri();
         Definition wsdl;
@@ -203,10 +203,10 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         }
 
         URI serviceUri = binding.getParent().getUri();
-        return new MetroWsdlSourceDefinition(serviceUri, endpointDefinition, serializedWsdl, intentNames, binding.isCallback(), handlers);
+        return new MetroWsdlWireSourceDefinition(serviceUri, endpointDefinition, serializedWsdl, intentNames, binding.isCallback(), handlers);
     }
 
-    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
+    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
         URL targetUrl = null;
         URI targetUri = binding.getDefinition().getTargetUri();
@@ -221,7 +221,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         return generateTarget(binding, targetUrl, contract, policy);
     }
 
-    public MetroTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
                                                               WsdlServiceContract contract,
                                                               EffectivePolicy policy) throws GenerationException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding, policy);
@@ -229,7 +229,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
 
     }
 
-    private MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
+    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
                                                  URL targetUrl,
                                                  WsdlServiceContract contract,
                                                  EffectivePolicy policy) throws GenerationException {
@@ -321,7 +321,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         // obtain connection information
         ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(definition);
 
-        return new MetroWsdlTargetDefinition(endpointDefinition, serializedWsdl, intentNames, securityConfiguration, connectionConfiguration, false, handlers);
+        return new MetroWsdlWireTargetDefinition(endpointDefinition, serializedWsdl, intentNames, securityConfiguration, connectionConfiguration, false, handlers);
     }
 
     /**

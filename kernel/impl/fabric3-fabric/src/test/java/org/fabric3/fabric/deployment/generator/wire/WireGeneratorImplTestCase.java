@@ -66,8 +66,8 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
@@ -327,7 +327,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         EasyMock.expect(bindingGenerator.generateSource(EasyMock.isA(LogicalBinding.class),
                                                         EasyMock.isA(ServiceContract.class),
                                                         EasyMock.isA(List.class),
-                                                        (EffectivePolicy) EasyMock.isNull())).andReturn(new MockSourceDefinition());
+                                                        (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireSourceDefinition());
         EasyMock.expect(registry.getBindingGenerator(EasyMock.isA(Class.class))).andReturn(bindingGenerator);
         return bindingGenerator;
     }
@@ -338,7 +338,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         EasyMock.expect(bindingGenerator.generateServiceBindingTarget(EasyMock.isA(LogicalBinding.class),
                                                                       EasyMock.isA(ServiceContract.class),
                                                                       EasyMock.isA(List.class),
-                                                                      (EffectivePolicy) EasyMock.isNull())).andReturn(new MockTargetDefinition());
+                                                                      (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireTargetDefinition());
         EasyMock.expect(registry.getBindingGenerator(EasyMock.isA(Class.class))).andReturn(bindingGenerator);
         return bindingGenerator;
     }
@@ -349,7 +349,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         EasyMock.expect(bindingGenerator.generateServiceBindingTarget(EasyMock.isA(LogicalBinding.class),
                                                                       EasyMock.isA(ServiceContract.class),
                                                                       EasyMock.isA(List.class),
-                                                                      (EffectivePolicy) EasyMock.isNull())).andReturn(new MockTargetDefinition());
+                                                                      (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireTargetDefinition());
         EasyMock.expect(registry.getBindingGenerator(EasyMock.isA(Class.class))).andReturn(bindingGenerator);
         return bindingGenerator;
     }
@@ -360,7 +360,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         EasyMock.expect(bindingGenerator.generateTarget(EasyMock.isA(LogicalBinding.class),
                                                         EasyMock.isA(ServiceContract.class),
                                                         EasyMock.isA(List.class),
-                                                        (EffectivePolicy) EasyMock.isNull())).andReturn(new MockTargetDefinition());
+                                                        (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireTargetDefinition());
         EasyMock.expect(registry.getBindingGenerator(EasyMock.isA(Class.class))).andReturn(bindingGenerator);
         return bindingGenerator;
     }
@@ -369,7 +369,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     private ComponentGenerator setupTargetComponentGenerator(GeneratorRegistry registry) throws GenerationException {
         ComponentGenerator componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generateTarget(EasyMock.isA(LogicalService.class),
-                                                          (EffectivePolicy) EasyMock.isNull())).andReturn(new MockTargetDefinition());
+                                                          (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireTargetDefinition());
 
         EasyMock.expect(registry.getComponentGenerator(EasyMock.isA(Class.class))).andReturn(componentGenerator);
         return componentGenerator;
@@ -379,7 +379,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     private ComponentGenerator setupSourceComponentGenerator(GeneratorRegistry registry) throws GenerationException {
         ComponentGenerator componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generateSource(EasyMock.isA(LogicalReference.class),
-                                                          (EffectivePolicy) EasyMock.isNull())).andReturn(new MockSourceDefinition());
+                                                          (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireSourceDefinition());
 
         EasyMock.expect(registry.getComponentGenerator(EasyMock.isA(Class.class))).andReturn(componentGenerator);
         return componentGenerator;
@@ -389,7 +389,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     private ComponentGenerator setupCallbackComponentGenerator(GeneratorRegistry registry) throws GenerationException {
         ComponentGenerator componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generateCallbackSource(EasyMock.isA(LogicalService.class),
-                                                                  (EffectivePolicy) EasyMock.isNull())).andReturn(new MockSourceDefinition());
+                                                                  (EffectivePolicy) EasyMock.isNull())).andReturn(new MockWireSourceDefinition());
 
         EasyMock.expect(registry.getComponentGenerator(EasyMock.isA(Class.class))).andReturn(componentGenerator);
         return componentGenerator;
@@ -517,11 +517,11 @@ public class WireGeneratorImplTestCase extends TestCase {
         }
     }
 
-    private class MockSourceDefinition extends PhysicalSourceDefinition {
+    private class MockWireSourceDefinition extends PhysicalWireSourceDefinition {
         private static final long serialVersionUID = -3656506060148889502L;
     }
 
-    private class MockTargetDefinition extends PhysicalTargetDefinition {
+    private class MockWireTargetDefinition extends PhysicalWireTargetDefinition {
         private static final long serialVersionUID = 9192215132618200005L;
     }
 

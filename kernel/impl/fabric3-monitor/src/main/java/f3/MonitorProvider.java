@@ -47,7 +47,7 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
 import org.fabric3.monitor.introspection.MonitorProcessor;
 import org.fabric3.monitor.model.MonitorResourceReference;
-import org.fabric3.monitor.provision.MonitorTargetDefinition;
+import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorServiceImpl;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
@@ -65,7 +65,7 @@ public class MonitorProvider {
 
         compositeBuilder.component(newBuilder(MonitorProcessor.class).key(Monitor.class.getName()).build());
         compositeBuilder.component(newBuilder(MonitorResourceReferenceGenerator.class).key(MonitorResourceReference.class.getName()).build());
-        compositeBuilder.component(newBuilder(MonitorWireAttacher.class).key(MonitorTargetDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(MonitorWireAttacher.class).key(MonitorWireTargetDefinition.class.getName()).build());
 
         compositeBuilder.component(newBuilder(MonitorServiceImpl.class).build());
 

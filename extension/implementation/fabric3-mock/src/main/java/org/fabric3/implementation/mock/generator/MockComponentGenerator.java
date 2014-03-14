@@ -37,10 +37,10 @@
 */
 package org.fabric3.implementation.mock.generator;
 
+import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.implementation.mock.provision.MockSourceDefinition;
-import org.fabric3.implementation.mock.provision.MockTargetDefinition;
+import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -55,7 +55,7 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 
 /**
  *
@@ -70,19 +70,19 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         return componentDefinition;
     }
 
-    public MockTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        MockTargetDefinition definition = new MockTargetDefinition();
+    public MockWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        MockWireTargetDefinition definition = new MockWireTargetDefinition();
         definition.setUri(service.getUri());
         ServiceContract serviceContract = service.getDefinition().getServiceContract();
         definition.setMockedInterface(serviceContract.getQualifiedInterfaceName());
         return definition;
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
         throw new UnsupportedOperationException("Mock objects cannot have resources");
     }
 
-    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) {
         throw new UnsupportedOperationException("Mock objects cannot be the source of a wire");
     }
 
@@ -94,8 +94,8 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        return new MockSourceDefinition();
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        return new MockWireSourceDefinition();
     }
 
 }

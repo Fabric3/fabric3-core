@@ -36,11 +36,11 @@ import java.util.List;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -48,7 +48,7 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  *
  */
-public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefinition> {
+public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSourceDefinition> {
     private ZeroMQWireBroker broker;
     private ClassLoaderRegistry registry;
 
@@ -57,7 +57,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefi
         this.registry = registry;
     }
 
-    public void attach(ZeroMQSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -74,7 +74,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefi
         }
     }
 
-    public void detach(ZeroMQSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -88,12 +88,12 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefi
         }
     }
 
-    public void attachObjectFactory(ZeroMQSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
+    public void attachObjectFactory(ZeroMQWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
             throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(ZeroMQSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 

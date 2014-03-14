@@ -46,13 +46,13 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
+import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spring.spi.WireListener;
@@ -61,7 +61,7 @@ import org.fabric3.spring.spi.WireListener;
  * Attaches the source side of a wire to a Spring component.
  */
 @EagerInit
-public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSourceDefinition> {
+public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSourceDefinition> {
     private ComponentManager manager;
     private WireProxyService proxyService;
 
@@ -81,7 +81,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
         this.listeners = listeners;
     }
 
-    public void attach(SpringSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -99,7 +99,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
         }
     }
 
-    public void attachObjectFactory(SpringSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
+    public void attachObjectFactory(SpringWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
             throws WiringException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
@@ -113,17 +113,17 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
         }
     }
 
-    public void detach(SpringSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         component.detach(referenceName);
     }
 
-    public void detachObjectFactory(SpringSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
         detach(source, target);
     }
 
-    private SpringComponent getComponent(SpringSourceDefinition definition) throws WiringException {
+    private SpringComponent getComponent(SpringWireSourceDefinition definition) throws WiringException {
         URI uri = definition.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {

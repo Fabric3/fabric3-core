@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
+import org.fabric3.xquery.provision.XQueryComponentWireSourceDefinition;
+import org.fabric3.xquery.provision.XQueryComponentWireTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
@@ -74,12 +76,10 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.xquery.provision.XQueryComponentDefinition;
-import org.fabric3.xquery.provision.XQueryComponentSourceDefinition;
-import org.fabric3.xquery.provision.XQueryComponentTargetDefinition;
 import org.fabric3.xquery.scdl.XQueryComponentType;
 import org.fabric3.xquery.scdl.XQueryImplementation;
 import org.fabric3.xquery.scdl.XQueryProperty;
@@ -218,16 +218,16 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         }
     }
 
-    public XQueryComponentSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
-        XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
+    public XQueryComponentWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+        XQueryComponentWireSourceDefinition sourceDefinition = new XQueryComponentWireSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
         return sourceDefinition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
-        XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
+        XQueryComponentWireSourceDefinition sourceDefinition = new XQueryComponentWireSourceDefinition();
         LogicalComponent<XQueryImplementation> source = (LogicalComponent<XQueryImplementation>) service.getParent();
         XQueryComponentType type = source.getDefinition().getImplementation().getComponentType();
         String name = null;
@@ -248,8 +248,8 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         return sourceDefinition;
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        XQueryComponentTargetDefinition targetDefinition = new XQueryComponentTargetDefinition();
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        XQueryComponentWireTargetDefinition targetDefinition = new XQueryComponentWireTargetDefinition();
         targetDefinition.setUri(service.getUri());
         return targetDefinition;
     }
@@ -262,8 +262,8 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
-        XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+        XQueryComponentWireSourceDefinition sourceDefinition = new XQueryComponentWireSourceDefinition();
         sourceDefinition.setUri(resourceReference.getParent().getUri());
         return sourceDefinition;
     }

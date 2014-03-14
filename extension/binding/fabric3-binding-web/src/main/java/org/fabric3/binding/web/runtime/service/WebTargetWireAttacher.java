@@ -40,11 +40,11 @@ package org.fabric3.binding.web.runtime.service;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.web.provision.WebTargetDefinition;
+import org.fabric3.binding.web.provision.WebWireTargetDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -53,25 +53,25 @@ import org.fabric3.spi.container.wire.Wire;
  * Attaches a callback proxy to a websocket.
  */
 @EagerInit
-public class WebTargetWireAttacher implements TargetWireAttacher<WebTargetDefinition> {
+public class WebTargetWireAttacher implements TargetWireAttacher<WebWireTargetDefinition> {
     private BroadcasterManager broadcasterManager;
 
     public WebTargetWireAttacher(@Reference BroadcasterManager broadcasterManager) {
         this.broadcasterManager = broadcasterManager;
     }
 
-    public void attach(PhysicalSourceDefinition source, WebTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target, Wire wire) throws WiringException {
         WebCallbackInterceptor interceptor = new WebCallbackInterceptor(broadcasterManager);
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, WebTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target) throws WiringException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(WebTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(WebWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 }

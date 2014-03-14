@@ -39,26 +39,26 @@ package org.fabric3.xquery.runtime;
 
 import java.net.URI;
 
+import org.fabric3.xquery.provision.XQueryComponentWireSourceDefinition;
+import org.fabric3.xquery.provision.XQueryComponentWireTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.xquery.provision.XQueryComponentSourceDefinition;
-import org.fabric3.xquery.provision.XQueryComponentTargetDefinition;
 
 /**
  *
  */
 @EagerInit
-public class XQueryComponentTargetWireAttacher implements TargetWireAttacher<XQueryComponentTargetDefinition> {
+public class XQueryComponentTargetWireAttacher implements TargetWireAttacher<XQueryComponentWireTargetDefinition> {
 
     private ComponentManager manager;
 
@@ -66,7 +66,7 @@ public class XQueryComponentTargetWireAttacher implements TargetWireAttacher<XQu
         this.manager = manager;
     }
 
-    public void attach(PhysicalSourceDefinition source, XQueryComponentTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, XQueryComponentWireTargetDefinition target, Wire wire) throws WiringException {
         URI targetURI = UriHelper.getDefragmentedName(target.getUri());
         String serviceName = target.getUri().getFragment();
         XQueryComponent component = (XQueryComponent) manager.getComponent(targetURI);
@@ -74,15 +74,15 @@ public class XQueryComponentTargetWireAttacher implements TargetWireAttacher<XQu
 
     }
 
-    public void detach(PhysicalSourceDefinition source, XQueryComponentTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, XQueryComponentWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public void detachFromTarget(XQueryComponentSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    public void detachFromTarget(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(XQueryComponentTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(XQueryComponentWireTargetDefinition target) throws WiringException {
         URI sourceUri = UriHelper.getDefragmentedName(target.getUri());
         String referenceName = target.getUri().getFragment();
         XQueryComponent component = (XQueryComponent) manager.getComponent(sourceUri);

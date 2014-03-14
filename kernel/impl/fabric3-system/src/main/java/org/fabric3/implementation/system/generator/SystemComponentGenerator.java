@@ -37,6 +37,7 @@ package org.fabric3.implementation.system.generator;
 
 import java.net.URI;
 
+import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -46,8 +47,7 @@ import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
-import org.fabric3.implementation.system.provision.SystemSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemTargetDefinition;
+import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
@@ -62,8 +62,8 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -108,9 +108,9 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         URI uri = reference.getUri();
-        SystemSourceDefinition definition = new SystemSourceDefinition();
+        SystemWireSourceDefinition definition = new SystemWireSourceDefinition();
         definition.setOptimizable(true);
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
@@ -127,12 +127,12 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return definition;
     }
 
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        SystemTargetDefinition definition = new SystemTargetDefinition();
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        SystemWireTargetDefinition definition = new SystemWireTargetDefinition();
         definition.setOptimizable(true);
         definition.setUri(service.getUri());
         return definition;
@@ -165,9 +165,9 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return definition;
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         URI uri = resourceReference.getUri();
-        SystemSourceDefinition definition = new SystemSourceDefinition();
+        SystemWireSourceDefinition definition = new SystemWireSourceDefinition();
         definition.setOptimizable(true);
         definition.setUri(uri);
         String name = uri.getFragment();

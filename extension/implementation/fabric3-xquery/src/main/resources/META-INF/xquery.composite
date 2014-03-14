@@ -27,11 +27,11 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.xquery.control.XQueryComponentGenerator"/>
     </component>
 
-    <component f3:key="org.fabric3.xquery.provision.XQueryComponentSourceDefinition" name="org.fabric3.xquery.runtime.XQueryComponentSourceWireAttacher">
+    <component f3:key="org.fabric3.xquery.provision.XQueryComponentWireSourceDefinition" name="org.fabric3.xquery.runtime.XQueryComponentSourceWireAttacher">
         <f3:implementation.system class="org.fabric3.xquery.runtime.XQueryComponentSourceWireAttacher"/>
     </component>
 
-    <component f3:key="org.fabric3.xquery.provision.XQueryComponentTargetDefinition" name="org.fabric3.xquery.runtime.XQueryComponentTargetWireAttacher">
+    <component f3:key="org.fabric3.xquery.provision.XQueryComponentWireTargetDefinition" name="org.fabric3.xquery.runtime.XQueryComponentTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.xquery.runtime.XQueryComponentTargetWireAttacher"/>
     </component>
 

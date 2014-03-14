@@ -23,11 +23,11 @@ Public License. See the accompanying license file for details.
         <property name="validating" source="$systemConfig//f3:spring/@validating"/>
     </component>
 
-    <component name="SpringSourceWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringSourceDefinition">
+    <component name="SpringSourceWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringSourceWireAttacher"/>
     </component>
 
-    <component name="SpringTargetWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringTargetDefinition">
+    <component name="SpringTargetWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringTargetWireAttacher"/>
     </component>
 

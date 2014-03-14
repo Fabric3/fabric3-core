@@ -42,7 +42,7 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.datasource.provision.DataSourceTargetDefinition;
+import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
@@ -61,7 +61,7 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
-        DataSourceTargetDefinition definition = new DataSourceTargetDefinition("datasource", false);
+        DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", false);
         ObjectFactory<DataSource> factory = attacher.createObjectFactory(definition);
         assertEquals(dataSource, factory.getInstance());
 
@@ -78,7 +78,7 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
-        DataSourceTargetDefinition definition = new DataSourceTargetDefinition("datasource", true);
+        DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", true);
         ObjectFactory<DataSource> factory = attacher.createObjectFactory(definition);
         assertNull(factory.getInstance());    // datasource not found, inject null
 
@@ -94,7 +94,7 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
-        DataSourceTargetDefinition definition = new DataSourceTargetDefinition("datasource", false);
+        DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", false);
         try {
             attacher.createObjectFactory(definition);
             fail();

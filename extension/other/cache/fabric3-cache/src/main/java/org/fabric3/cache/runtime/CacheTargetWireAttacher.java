@@ -40,10 +40,10 @@ package org.fabric3.cache.runtime;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.provision.CacheTargetDefinition;
+import org.fabric3.cache.provision.CacheWireTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -51,22 +51,22 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  *
  */
-public class CacheTargetWireAttacher implements TargetWireAttacher<CacheTargetDefinition> {
+public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTargetDefinition> {
     private CacheRegistry registry;
 
     public CacheTargetWireAttacher(@Reference CacheRegistry registry) {
         this.registry = registry;
     }
 
-    public void attach(PhysicalSourceDefinition source, CacheTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target, Wire wire) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalSourceDefinition source, CacheTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<?> createObjectFactory(CacheTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(CacheWireTargetDefinition target) throws WiringException {
         String name = target.getCacheName();
         Object cache = registry.getCache(name);
         if (cache == null) {

@@ -41,6 +41,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -50,7 +51,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
-import org.fabric3.implementation.web.provision.WebComponentSourceDefinition;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -70,8 +70,8 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectionSite;
 
@@ -106,21 +106,21 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return physical;
     }
 
-    public WebComponentSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
-        WebComponentSourceDefinition sourceDefinition = new WebComponentSourceDefinition();
+    public WebComponentWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+        WebComponentWireSourceDefinition sourceDefinition = new WebComponentWireSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
         return sourceDefinition;
     }
 
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         return null;
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         return null;
     }
 

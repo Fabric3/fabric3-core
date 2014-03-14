@@ -56,8 +56,8 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Generates metadata used to provision components and physical wires to a runtime.
@@ -75,7 +75,7 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalComponentDefinition generate(C component) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
+     * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
      * is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param reference the source logical reference
@@ -83,10 +83,10 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      * @return the metadata used to attach the wire to its source on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException;
+    PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
+     * Generates a {@link PhysicalWireTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
      * is specific to the component implementation type and used when the wire is attached to its target on a runtime.
      *
      * @param service the target logical service
@@ -94,10 +94,10 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      * @return the metadata used to attach the wire to its target on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException;
+    PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in the
+     * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param service the forward service the callback is being generated for
@@ -105,7 +105,7 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      * @return the metadata used to attach the wire to its source on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException;
+    PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException;
 
     /**
      * Generates a {@link PhysicalConnectionSourceDefinition} used to attach an event connection to its source producer.
@@ -126,13 +126,13 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
+     * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param resourceReference the source logical resource
      * @return the metadata used to attach the wire to its source on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException;
+    PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException;
 
 }

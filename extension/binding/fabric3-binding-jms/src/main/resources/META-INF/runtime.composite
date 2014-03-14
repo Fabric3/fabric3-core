@@ -21,11 +21,11 @@ licensed under the Apache 2.0 license.
         <property name="pauseOnStart" source="$systemConfig//f3:jms/@pause.on.start"/>
     </component>
 
-    <component name="JmsSourceWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsSourceDefinition">
+    <component name="JmsSourceWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsSourceWireAttacher"/>
     </component>
 
-    <component name="JmsTargetWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsTargetDefinition">
+    <component name="JmsTargetWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsTargetWireAttacher"/>
     </component>
 

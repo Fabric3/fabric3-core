@@ -39,14 +39,14 @@ package org.fabric3.resource.runtime;
 
 import java.net.URI;
 
+import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.Wire;
@@ -54,22 +54,22 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  * Attaches to a service in the runtime domain.
  */
-public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedTargetDefinition> {
+public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedWireTargetDefinition> {
     private final ComponentManager manager;
 
     public SystemSourcedResourceWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public void attach(PhysicalSourceDefinition source, SystemSourcedTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target, Wire wire) throws WiringException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalSourceDefinition source, SystemSourcedTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemSourcedTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SystemSourcedWireTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {

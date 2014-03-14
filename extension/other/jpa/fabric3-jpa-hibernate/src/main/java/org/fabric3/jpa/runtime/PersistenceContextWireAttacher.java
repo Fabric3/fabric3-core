@@ -45,21 +45,21 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
+import org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Attaches the target side of entity manager factories.
  */
-public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextTargetDefinition> {
+public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextWireTargetDefinition> {
     private EntityManagerFactoryResolver emfResolver;
     private ClassLoaderRegistry registry;
     private TransactionManager tm;
@@ -83,7 +83,7 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceContextTargetDefinition definition) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(PersistenceContextWireTargetDefinition definition) throws WiringException {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -106,11 +106,11 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
         }
     }
 
-    public void attach(PhysicalSourceDefinition source, PersistenceContextTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target, Wire wire) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalSourceDefinition source, PersistenceContextTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 

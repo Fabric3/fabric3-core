@@ -37,18 +37,18 @@
 */
 package org.fabric3.monitor.runtime;
 
+import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
-import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -56,7 +56,7 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  * TargetWireAttacher that handles monitor resources.
  */
-public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefinition> {
+public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTargetDefinition> {
     private final MonitorProxyService monitorService;
     private ComponentManager componentManager;
     private final ClassLoaderRegistry classLoaderRegistry;
@@ -69,15 +69,15 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefi
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalSourceDefinition source, MonitorTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target, Wire wire) throws WiringException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalSourceDefinition source, MonitorTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(MonitorTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws WiringException {
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());

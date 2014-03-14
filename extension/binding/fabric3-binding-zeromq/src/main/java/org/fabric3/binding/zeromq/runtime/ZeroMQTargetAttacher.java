@@ -33,13 +33,13 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -47,7 +47,7 @@ import org.fabric3.spi.container.wire.Wire;
 /**
  *
  */
-public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefinition> {
+public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTargetDefinition> {
     private ZeroMQWireBroker broker;
     private ClassLoaderRegistry registry;
 
@@ -56,7 +56,7 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefi
         this.registry = registry;
     }
 
-    public void attach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) throws WiringException {
         final URI sourceUri = source.getUri();
         String id = sourceUri.getPath().substring(1) + "/" + sourceUri.getFragment();   // strip leading '/'
         URI targetUri = target.getUri();
@@ -69,7 +69,7 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefi
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) throws WiringException {
         String id = source.getUri().toString();
         URI uri = target.getUri();
         try {
@@ -79,7 +79,7 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefi
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(ZeroMQTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(ZeroMQWireTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 

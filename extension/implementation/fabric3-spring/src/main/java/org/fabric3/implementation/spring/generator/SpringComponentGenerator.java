@@ -50,8 +50,8 @@ import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
-import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
-import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
+import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
+import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
@@ -70,8 +70,8 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -106,7 +106,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         ServiceContract contract = reference.getLeafReference().getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring reference contracts are always defined by Java interfaces
@@ -115,10 +115,10 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = reference.getParent().getUri();
         String referenceName = reference.getDefinition().getName();
-        return new SpringSourceDefinition(referenceName, interfaze, uri);
+        return new SpringWireSourceDefinition(referenceName, interfaze, uri);
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         if (!(service.getLeafService().getDefinition() instanceof SpringService)) {
             // programming error
             throw new GenerationException("Expected service type: " + service.getDefinition().getClass().getName());
@@ -133,7 +133,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         String target = springService.getTarget();
         String interfaceName = contract.getQualifiedInterfaceName();
         URI uri = service.getUri();
-        return new SpringTargetDefinition(target, interfaceName, uri);
+        return new SpringWireTargetDefinition(target, interfaceName, uri);
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
@@ -154,11 +154,11 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return new SpringConnectionTargetDefinition(beanName, methodName, type, uri);
     }
 
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

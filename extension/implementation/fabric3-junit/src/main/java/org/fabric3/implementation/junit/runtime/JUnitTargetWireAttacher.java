@@ -41,10 +41,10 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.fabric3.implementation.java.runtime.JavaComponent;
-import org.fabric3.implementation.junit.provision.JUnitTargetDefinition;
+import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.pojo.component.InvokerInterceptor;
-import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
+import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.container.builder.WiringException;
@@ -54,7 +54,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -65,7 +65,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches and detaches wires from Java components.
  */
-public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitTargetDefinition> {
+public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTargetDefinition> {
 
     private final ComponentManager manager;
     private ReflectionFactory reflectionFactory;
@@ -79,7 +79,7 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitTargetDe
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalSourceDefinition sourceDefinition, JUnitTargetDefinition targetDefinition, Wire wire) throws WireAttachException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, JUnitWireTargetDefinition targetDefinition, Wire wire) throws WireAttachException {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
         if (component == null) {
@@ -96,7 +96,7 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitTargetDe
             Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader, classLoaderRegistry);
             ServiceInvoker invoker = reflectionFactory.createServiceInvoker(method);
             InvokerInterceptor interceptor;
-            if (sourceDefinition instanceof PojoSourceDefinition && targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
+            if (sourceDefinition instanceof PojoWireSourceDefinition && targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
                 interceptor = new InvokerInterceptor(invoker, target);
             } else {
@@ -117,11 +117,11 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitTargetDe
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, JUnitTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, JUnitWireTargetDefinition target) throws WiringException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JUnitTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(JUnitWireTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

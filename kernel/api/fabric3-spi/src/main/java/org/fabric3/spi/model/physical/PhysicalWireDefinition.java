@@ -43,9 +43,9 @@
  */
 package org.fabric3.spi.model.physical;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 /**
  * Used to provision a wire on a runtime. Contains metadata for attaching the wire to a source transport or component and target transport or
@@ -54,23 +54,23 @@ import javax.xml.namespace.QName;
 public class PhysicalWireDefinition implements Serializable {
     private static final long serialVersionUID = 995196092611674935L;
 
-    private PhysicalSourceDefinition source;
-    private PhysicalTargetDefinition target;
+    private PhysicalWireSourceDefinition source;
+    private PhysicalWireTargetDefinition target;
     private QName sourceDeployable;
     private QName targetDeployable;
 
     private final Set<PhysicalOperationDefinition> operations;
     private boolean optimizable;
 
-    public PhysicalWireDefinition(PhysicalSourceDefinition source, PhysicalTargetDefinition target, Set<PhysicalOperationDefinition> operations) {
+    public PhysicalWireDefinition(PhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Set<PhysicalOperationDefinition> operations) {
         this.source = source;
         this.target = target;
         this.operations = operations;
     }
 
-    public PhysicalWireDefinition(PhysicalSourceDefinition source,
+    public PhysicalWireDefinition(PhysicalWireSourceDefinition source,
                                   QName sourceDeployable,
-                                  PhysicalTargetDefinition target,
+                                  PhysicalWireTargetDefinition target,
                                   QName targetDeployable,
                                   Set<PhysicalOperationDefinition> operations) {
         this.source = source;
@@ -130,7 +130,7 @@ public class PhysicalWireDefinition implements Serializable {
      *
      * @return the physical definition for the source side of the wire
      */
-    public PhysicalSourceDefinition getSource() {
+    public PhysicalWireSourceDefinition getSource() {
         return source;
     }
 
@@ -139,7 +139,7 @@ public class PhysicalWireDefinition implements Serializable {
      *
      * @return the physical definition for the target side of the wire
      */
-    public PhysicalTargetDefinition getTarget() {
+    public PhysicalWireTargetDefinition getTarget() {
         return target;
     }
 

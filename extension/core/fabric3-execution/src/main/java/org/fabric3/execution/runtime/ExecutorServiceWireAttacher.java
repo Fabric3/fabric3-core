@@ -41,17 +41,17 @@ import java.util.concurrent.ExecutorService;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.execution.provision.ExecutorServiceTargetDefinition;
+import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 
 /**
  */
-public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceTargetDefinition> {
+public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceWireTargetDefinition> {
     private SingletonObjectFactory<ExecutorService> factory;
 
     public ExecutorServiceWireAttacher(@Reference ExecutorService executorService) {
@@ -59,15 +59,15 @@ public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorS
         this.factory = new SingletonObjectFactory<ExecutorService>(proxy);
     }
 
-    public void attach(PhysicalSourceDefinition source, ExecutorServiceTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws WiringException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalSourceDefinition source, ExecutorServiceTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceTargetDefinition target) throws WiringException {
+    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceWireTargetDefinition target) throws WiringException {
         return factory;
     }
 

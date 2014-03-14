@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.Wire;
@@ -54,21 +54,21 @@ import org.fabric3.spi.container.wire.Wire;
  * Exists as a no-op attacher for system singleton components
  */
 @EagerInit
-public class SingletonTargetWireAttacher implements TargetWireAttacher<SingletonTargetDefinition> {
+public class SingletonTargetWireAttacher implements TargetWireAttacher<SingletonWireTargetDefinition> {
     private final ComponentManager manager;
 
     public SingletonTargetWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public void attach(PhysicalSourceDefinition source, SingletonTargetDefinition target, Wire wire)
+    public void attach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target, Wire wire)
             throws WiringException {
     }
 
-    public void detach(PhysicalSourceDefinition source, SingletonTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target) throws WiringException {
     }
 
-    public ObjectFactory<?> createObjectFactory(SingletonTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SingletonWireTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SingletonComponent targetComponent = (SingletonComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

@@ -39,14 +39,14 @@ package org.fabric3.implementation.java.generator;
 
 import java.net.URI;
 
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.java.provision.JavaSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.api.model.type.component.CallbackDefinition;
@@ -109,7 +109,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
 
-    public void generateWireSource(JavaSourceDefinition definition, LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -152,7 +152,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setConsumerSignature(signature);
     }
 
-    public void generateCallbackWireSource(JavaSourceDefinition definition,
+    public void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                            LogicalComponent<? extends JavaImplementation> component,
                                            ServiceContract serviceContract,
                                            EffectivePolicy policy) throws GenerationException {
@@ -182,7 +182,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference)
+    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference)
             throws GenerationException {
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
@@ -194,7 +194,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateWireTarget(JavaTargetDefinition definition, LogicalService service) throws GenerationException {
+    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws GenerationException {
         LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);
