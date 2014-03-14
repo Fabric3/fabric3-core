@@ -66,14 +66,14 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
             throws ConnectionAttachException {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
-        URI targetUri = target.getTargetUri();
+        URI targetUri = target.getUri();
         channel.subscribe(targetUri, connection);
     }
 
     public void detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
-        URI targetUri = target.getTargetUri();
+        URI targetUri = target.getUri();
         channel.unsubscribe(targetUri);
     }
 

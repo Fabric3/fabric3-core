@@ -76,7 +76,7 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
 
     public void attach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI targetUri = target.getTargetUri();
+        URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         SystemComponent component = (SystemComponent) manager.getComponent(targetName);
         if (component == null) {

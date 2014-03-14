@@ -86,7 +86,7 @@ public class WebConnectionBindingGenerator implements ConnectionBindingGenerator
                                                                        ChannelDeliveryType deliveryType) {
         WebConnectionTargetDefinition definition = new WebConnectionTargetDefinition();
         URI channelUri = binding.getParent().getUri();
-        definition.setTargetUri(channelUri);
+        definition.setUri(channelUri);
         return definition;
     }
 

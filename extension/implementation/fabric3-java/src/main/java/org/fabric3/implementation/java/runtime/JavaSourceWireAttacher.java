@@ -64,7 +64,7 @@ import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.Wire;
 
 /**
- * Attaches and detaches wires to and from Java components.
+ * Attaches and detaches wires from a Java component.
  */
 @EagerInit
 public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaWireSourceDefinition> {

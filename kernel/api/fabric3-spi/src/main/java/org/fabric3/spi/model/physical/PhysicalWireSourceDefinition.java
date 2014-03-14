@@ -43,10 +43,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import java.io.Serializable;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
@@ -54,61 +50,18 @@ import org.fabric3.api.model.type.contract.DataType;
 /**
  * Represents the source side of a wire.
  */
-public abstract class PhysicalWireSourceDefinition implements Serializable {
+public abstract class PhysicalWireSourceDefinition extends PhysicalAttachPointDefinition {
     private static final long serialVersionUID = 2560576437284123839L;
 
-    private URI uri;
-    private URI classLoaderId;
     private boolean optimizable;
     private String key;
     private int order = Integer.MIN_VALUE;
-    protected List<DataType> dataTypes = new ArrayList<>();
 
     public PhysicalWireSourceDefinition() {
-        // default to Java
-        dataTypes.add(PhysicalDataTypes.JAVA_TYPE);
     }
 
     public PhysicalWireSourceDefinition(DataType... types) {
-        if (types != null) {
-            dataTypes.addAll(Arrays.asList(types));
-        }
-    }
-
-    /**
-     * Returns the URI of the physical component that is the source of invocations on this wire.
-     *
-     * @return the URI of the physical component that is the source of invocations on this wire
-     */
-    public URI getUri() {
-        return uri;
-    }
-
-    /**
-     * Sets the URI of the physical component that is the source of invocations on this wire.
-     *
-     * @param uri the URI of the physical component that is the source of invocations on this wire
-     */
-    public void setUri(URI uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * Returns the id of the classloader associated with the source.
-     *
-     * @return the id of the classloader associated with the source
-     */
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    /**
-     * Sets the id of the classloader associated with the source.
-     *
-     * @param classLoaderId the id of the classloader associated with the source
-     */
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+        super(types);
     }
 
     /**

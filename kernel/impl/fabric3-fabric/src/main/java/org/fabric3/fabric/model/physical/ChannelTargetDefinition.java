@@ -51,7 +51,7 @@ public class ChannelTargetDefinition extends PhysicalConnectionTargetDefinition 
 
     public ChannelTargetDefinition(URI uri, ChannelSide channelSide) {
         this.channelSide = channelSide;
-        setTargetUri(uri);
+        setUri(uri);
     }
 
     public ChannelSide getChannelSide() {

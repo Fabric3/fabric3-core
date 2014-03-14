@@ -53,7 +53,7 @@ public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDe
     public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata, boolean dedicatedThread) {
         this.metadata = metadata;
         this.dedicatedThread = dedicatedThread;
-        setTargetUri(uri);
+        setUri(uri);
     }
 
     public ZeroMQMetadata getMetadata() {

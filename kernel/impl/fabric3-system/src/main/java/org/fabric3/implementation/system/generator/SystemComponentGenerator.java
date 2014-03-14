@@ -154,7 +154,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         SystemConnectionTargetDefinition definition = new SystemConnectionTargetDefinition();
         LogicalComponent<? extends SystemImplementation> component = (LogicalComponent<? extends SystemImplementation>) consumer.getParent();
         URI uri = component.getUri();
-        definition.setTargetUri(uri);
+        definition.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
         if (signature == null) {

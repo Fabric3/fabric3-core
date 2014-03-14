@@ -63,7 +63,7 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
 
     public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
+        URI uri = target.getUri();
         Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);
     }

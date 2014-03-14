@@ -34,61 +34,72 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
+import java.io.Serializable;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
- * Used to attach the source side of a channel connection. The source may be a producer, channel binding or channel.
+ * Metadata for attaching a wire or channel connection to a source or target.
  */
-public class PhysicalConnectionSourceDefinition extends PhysicalAttachPointDefinition {
-    private static final long serialVersionUID = 3395589699751449558L;
+public abstract class PhysicalAttachPointDefinition implements Serializable {
+    private static final long serialVersionUID = -1905533250691356716L;
 
-    public static final int NO_SEQUENCE = 0;
+    private URI uri;
+    private URI classLoaderId;
+    protected List<DataType> dataTypes = new ArrayList<>();
 
-    private int sequence = NO_SEQUENCE;
-    private QName deployable;
-
-    public PhysicalConnectionSourceDefinition() {
+    public PhysicalAttachPointDefinition() {
+        // default to Java
+        dataTypes.add(PhysicalDataTypes.JAVA_TYPE);
     }
 
-    public PhysicalConnectionSourceDefinition(DataType... types) {
-        super(types);
-    }
-
-    /**
-     * Returns the sequence a consumer should be passed events, if supported by the channel type.
-     *
-     * @return the sequence a consumer should be passed events, if supported by the channel type
-     */
-    public int getSequence() {
-        return sequence;
+    public PhysicalAttachPointDefinition(DataType... types) {
+        if (types != null) {
+            dataTypes.addAll(Arrays.asList(types));
+        }
     }
 
     /**
-     * Sets the sequence a consumer should be passed events, if supported by the channel type.
+     * Returns the URI of the attach point such as a reference, callback, resource, producer, service or consumer.
      *
-     * @param sequence the sequence a consumer should be passed events, if supported by the channel type.
+     * @return the attach point URI
      */
-    public void setSequence(int sequence) {
-        this.sequence = sequence;
+    public URI getUri() {
+        return uri;
     }
 
-    public QName getDeployable() {
-        return deployable;
+    /**
+     * Sets the URI of the attach point such as a reference, callback, resource, producer, service or consumer.
+     *
+     * @param uri the attach point URI
+     */
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
+    /**
+     * Returns the id of the classloader associated with the attach point.
+     *
+     * @return the id of the classloader associated with the attach point
+     */
+    public URI getClassLoaderId() {
+        return classLoaderId;
+    }
+
+    /**
+     * Sets the id of the classloader associated with the attach point.
+     *
+     * @param classLoaderId the id of the classloader associated with the attach point
+     */
+    public void setClassLoaderId(URI classLoaderId) {
+        this.classLoaderId = classLoaderId;
     }
 
 }

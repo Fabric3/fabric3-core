@@ -85,7 +85,7 @@ public class ChannelSourceAttacherTestCase extends TestCase {
         private static final long serialVersionUID = 9073512301309928102L;
 
         public MockPhysicalDefinition(URI uri) {
-            setTargetUri(uri);
+            setUri(uri);
         }
     }
 }

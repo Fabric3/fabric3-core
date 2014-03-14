@@ -142,7 +142,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
         // TODO support promotion by returning the leaf component URI instead of the parent component URI
         URI uri = component.getUri();
-        definition.setTargetUri(uri);
+        definition.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
         if (signature == null) {

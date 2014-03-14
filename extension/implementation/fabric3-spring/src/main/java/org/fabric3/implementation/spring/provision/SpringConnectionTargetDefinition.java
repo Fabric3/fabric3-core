@@ -63,7 +63,7 @@ public class SpringConnectionTargetDefinition extends PhysicalConnectionTargetDe
         this.beanName = beanName;
         this.methodName = methodName;
         this.type = type;
-        setTargetUri(channelUri);
+        setUri(channelUri);
     }
 
     public String getBeanName() {

@@ -63,7 +63,7 @@ public class JmsConnectionTargetDefinition extends PhysicalConnectionTargetDefin
      */
     public JmsConnectionTargetDefinition(URI uri, JmsBindingMetadata metadata) {
         this.metadata = metadata;
-        setTargetUri(uri);
+        setUri(uri);
     }
 
     public JmsBindingMetadata getMetadata() {

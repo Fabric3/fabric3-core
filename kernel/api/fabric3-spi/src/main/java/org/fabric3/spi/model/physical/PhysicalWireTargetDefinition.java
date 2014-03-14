@@ -43,10 +43,7 @@
  */
 package org.fabric3.spi.model.physical;
 
-import java.io.Serializable;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
@@ -54,43 +51,18 @@ import org.fabric3.api.model.type.contract.DataType;
 /**
  * Represents the target side of a physical wire.
  */
-public abstract class PhysicalWireTargetDefinition implements Serializable {
+public abstract class PhysicalWireTargetDefinition extends PhysicalAttachPointDefinition {
     private static final long serialVersionUID = -8430498259706831133L;
 
-    private URI uri;
     private boolean optimizable;
     private boolean callback;
     private URI callbackUri;
-    private URI classLoaderId;
-    protected List<DataType> dataTypes = new ArrayList<>();
 
     public PhysicalWireTargetDefinition() {
-        // default to Java
-        dataTypes.add(PhysicalDataTypes.JAVA_TYPE);
     }
 
     public PhysicalWireTargetDefinition(DataType... types) {
-        if (types != null) {
-            dataTypes.addAll(Arrays.asList(types));
-        }
-    }
-
-    /**
-     * Returns the URI of the physical component targeted by this wire.
-     *
-     * @return the URI of the physical component targeted by this wire
-     */
-    public URI getUri() {
-        return uri;
-    }
-
-    /**
-     * Sets the URI of the physical component targeted by this wire.
-     *
-     * @param uri the URI of the physical component targeted by this wire
-     */
-    public void setUri(URI uri) {
-        this.uri = uri;
+        super(types);
     }
 
     /**
@@ -154,24 +126,6 @@ public abstract class PhysicalWireTargetDefinition implements Serializable {
      */
     public void setOptimizable(boolean optimizable) {
         this.optimizable = optimizable;
-    }
-
-    /**
-     * Returns the id of the classloader associated with the target component.
-     *
-     * @return the id of the classloader associated with the target component
-     */
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    /**
-     * Sets the id of the classloader associated with the target component.
-     *
-     * @param classLoaderId the id of the classloader associated with the target component
-     */
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
     }
 
 }

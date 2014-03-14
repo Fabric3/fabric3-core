@@ -44,42 +44,21 @@
 package org.fabric3.spi.model.physical;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
  */
-public class PhysicalConnectionTargetDefinition implements Serializable {
+public class PhysicalConnectionTargetDefinition extends PhysicalAttachPointDefinition {
     private static final long serialVersionUID = 3395589699751449558L;
-    private URI uri;
     private QName deployable;
-    private URI classLoaderId;
-
-    protected List<DataType> dataTypes = new ArrayList<>();
 
     public PhysicalConnectionTargetDefinition() {
-        // default to Java
-        dataTypes.add(PhysicalDataTypes.JAVA_TYPE);
     }
 
     public PhysicalConnectionTargetDefinition(DataType... types) {
-        if (types != null) {
-            dataTypes.addAll(Arrays.asList(types));
-        }
-    }
-
-    public void setTargetUri(URI uri) {
-        this.uri = uri;
-    }
-
-    public URI getTargetUri() {
-        return uri;
+        super(types);
     }
 
     public QName getDeployable() {
@@ -88,14 +67,6 @@ public class PhysicalConnectionTargetDefinition implements Serializable {
 
     public void setDeployable(QName deployable) {
         this.deployable = deployable;
-    }
-
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
     }
 
 }

@@ -66,7 +66,7 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
 
     public void attach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI targetUri = target.getTargetUri();
+        URI targetUri = target.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(targetUri);
         if (component == null) {
             throw new ConnectionAttachException("Target component not found: " + targetUri);
