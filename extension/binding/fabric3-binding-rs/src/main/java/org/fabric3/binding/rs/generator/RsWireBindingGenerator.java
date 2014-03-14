@@ -44,13 +44,13 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.binding.rs.model.RsBindingDefinition;
 import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -61,7 +61,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  * Implementation of the REST binding generator.
  */
 @EagerInit
-public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {
+public class RsWireBindingGenerator implements WireBindingGenerator<RsBindingDefinition> {
     private static final QName F3_AUTHORIZATION = new QName(org.fabric3.api.Namespaces.F3, "authorization");
     private static final QName SCA_AUTHORIZATION = new QName(Constants.SCA_NS, "authorization");
     private static final QName SCA_AUTHENTICATION = new QName(Constants.SCA_NS, "clientAuthentication");

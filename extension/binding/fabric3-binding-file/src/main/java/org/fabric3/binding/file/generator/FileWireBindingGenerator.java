@@ -44,7 +44,7 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -59,7 +59,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class FileBindingGenerator implements BindingGenerator<FileBindingDefinition> {
+public class FileWireBindingGenerator implements WireBindingGenerator<FileBindingDefinition> {
     private static final String REGEX_ALL = ".*";
     private HostInfo info;
 
@@ -70,7 +70,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         this.defaultDelay = delay;
     }
 
-    public FileBindingGenerator(@Reference HostInfo info) {
+    public FileWireBindingGenerator(@Reference HostInfo info) {
         this.info = info;
     }
 

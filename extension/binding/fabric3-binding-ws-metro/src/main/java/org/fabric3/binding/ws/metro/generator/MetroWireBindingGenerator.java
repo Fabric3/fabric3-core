@@ -40,12 +40,12 @@ package org.fabric3.binding.ws.metro.generator;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -55,7 +55,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 /**
  * Generates PhysicalWireSourceDefinitions and PhysicalWireTargetDefinitions for the Metro web services binding.
  */
-public class MetroBindingGenerator implements BindingGenerator<WsBindingDefinition> {
+public class MetroWireBindingGenerator implements WireBindingGenerator<WsBindingDefinition> {
     private Map<Class<?>, MetroGeneratorDelegate> delegates;
 
     @Reference

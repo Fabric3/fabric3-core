@@ -48,7 +48,7 @@ import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.fabric.deployment.command.DetachWireCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;

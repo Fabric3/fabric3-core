@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.deployment.generator.binding;
+package org.fabric3.spi.deployment.generator.wire;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 /**
  * Generates {@link PhysicalWireSourceDefinition}s and {@link PhysicalWireTargetDefinition}s for resolved wire bindings.
  */
-public interface BindingGenerator<BD extends BindingDefinition> {
+public interface WireBindingGenerator<BD extends BindingDefinition> {
 
     /**
      * Generates metadata used to attach a physical wire connected to a target service to a source transport.

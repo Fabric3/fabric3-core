@@ -67,7 +67,7 @@ import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -81,7 +81,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
  */
 @EagerInit
-public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinition> {
+public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingDefinition> {
     private static final String JAXB = "JAXB";
 
     private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
@@ -95,7 +95,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
-    public JmsBindingGenerator(@Reference PayloadTypeIntrospector introspector, @Reference HostInfo info) {
+    public JmsWireBindingGenerator(@Reference PayloadTypeIntrospector introspector, @Reference HostInfo info) {
         this.introspector = introspector;
         this.info = info;
     }

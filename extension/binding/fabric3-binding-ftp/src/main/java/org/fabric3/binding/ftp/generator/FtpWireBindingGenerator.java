@@ -53,7 +53,7 @@ import org.fabric3.binding.ftp.provision.FtpSecurity;
 import org.fabric3.binding.ftp.provision.FtpWireSourceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.definitions.PolicySet;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -63,7 +63,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 /**
  *
  */
-public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinition> {
+public class FtpWireBindingGenerator implements WireBindingGenerator<FtpBindingDefinition> {
     private int connectTimeout = 120000; // two minutes
     private int socketTimeout = 1800000;  // default timeout of 30 minutes
 

@@ -53,7 +53,7 @@ import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.binding.web.provision.WebWireSourceDefinition;
 import org.fabric3.binding.web.provision.WebWireTargetDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -68,7 +68,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Generates metadata for attaching a service to a websocket or comet connection.
  */
 @EagerInit
-public class WebBindingGenerator implements BindingGenerator<WebBindingDefinition> {
+public class WebWireBindingGenerator implements WireBindingGenerator<WebBindingDefinition> {
     private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
     private static final DataType XSD_TYPE = new XSDType(Object.class, XSD_ANY);
     private static final DataType JSON_TYPE = new JsonType(String.class);

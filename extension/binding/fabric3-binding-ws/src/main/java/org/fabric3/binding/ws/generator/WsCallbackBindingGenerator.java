@@ -38,7 +38,7 @@
 package org.fabric3.binding.ws.generator;
 
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.oasisopen.sca.annotation.EagerInit;
 

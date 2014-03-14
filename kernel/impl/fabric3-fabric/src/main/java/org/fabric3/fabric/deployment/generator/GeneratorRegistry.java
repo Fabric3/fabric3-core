@@ -49,7 +49,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.deployment.generator.channel.EventStreamHandlerGenerator;
@@ -74,13 +74,13 @@ public interface GeneratorRegistry {
     <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns a {@link BindingGenerator} for the specified binding class.
+     * Returns a {@link WireBindingGenerator} for the specified binding class.
      *
      * @param clazz The binding type type the generator handles.
      * @return The registered binding generator.
      * @throws GeneratorNotFoundException if no generator is registered for the binding type
      */
-    <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends BindingDefinition> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Returns a {@link ConnectionBindingGenerator} for the specified binding class.

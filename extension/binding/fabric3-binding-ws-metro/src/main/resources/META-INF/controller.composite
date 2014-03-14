@@ -55,8 +55,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacherImpl"/>
     </component>
 
-    <component name="MetroBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroBindingGenerator"/>
+    <component name="MetroWireBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroWireBindingGenerator"/>
     </component>
 
     <component name="WsdlGeneratorDelegate" f3:key="org.fabric3.wsdl.model.WsdlServiceContract">

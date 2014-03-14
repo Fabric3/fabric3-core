@@ -19,8 +19,8 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingLoader"/>
     </component>
 
-    <component name="JmsBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
-        <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsBindingGenerator"/>
+    <component name="JmsWireBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsWireBindingGenerator"/>
     </component>
 
     <component name="JmsBindingPostProcessor">

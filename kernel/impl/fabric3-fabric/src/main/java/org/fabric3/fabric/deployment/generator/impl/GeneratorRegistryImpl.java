@@ -54,7 +54,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.deployment.generator.channel.EventStreamHandlerGenerator;
@@ -69,7 +69,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class GeneratorRegistryImpl implements GeneratorRegistry {
     private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<>();
-    private Map<Class<?>, BindingGenerator<?>> bindingGenerators = new HashMap<>();
+    private Map<Class<?>, WireBindingGenerator<?>> bindingGenerators = new HashMap<>();
     private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new ConcurrentHashMap<>();
     private Map<QName, InterceptorGenerator> interceptorGenerators = new HashMap<>();
     private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new HashMap<>();
@@ -82,7 +82,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @Reference(required = false)
-    public void setBindingGenerators(Map<Class<?>, BindingGenerator<?>> bindingGenerators) {
+    public void setBindingGenerators(Map<Class<?>, WireBindingGenerator<?>> bindingGenerators) {
         this.bindingGenerators = bindingGenerators;
     }
 
@@ -119,7 +119,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         resourceReferenceGenerators.put(clazz, generator);
     }
 
-    public <T extends BindingDefinition> void register(Class<T> clazz, BindingGenerator<T> generator) {
+    public <T extends BindingDefinition> void register(Class<T> clazz, WireBindingGenerator<T> generator) {
         bindingGenerators.put(clazz, generator);
     }
 
@@ -133,8 +133,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
-        BindingGenerator<T> generator = (BindingGenerator<T>) bindingGenerators.get(clazz);
+    public <T extends BindingDefinition> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+        WireBindingGenerator<T> generator = (WireBindingGenerator<T>) bindingGenerators.get(clazz);
         if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
         }

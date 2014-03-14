@@ -39,6 +39,7 @@ package org.fabric3.implementation.junit.generator;
 
 import java.util.List;
 
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.junit.common.ContextConfiguration;
@@ -46,7 +47,6 @@ import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -57,7 +57,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  * Attaches wires to Junit components to the WireHolder.
  */
 @EagerInit
-public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefinition> {
+public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBindingDefinition> {
 
     public JUnitWireSourceDefinition generateSource(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
                                                 ServiceContract contract,

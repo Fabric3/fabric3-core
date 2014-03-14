@@ -53,7 +53,7 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -81,7 +81,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     public void testGenerateBoundService() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         ComponentGenerator componentGenerator = setupTargetComponentGenerator(registry);
-        BindingGenerator bindingGenerator = setupBindingGenerator(registry);
+        WireBindingGenerator bindingGenerator = setupBindingGenerator(registry);
         ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
         PolicyResolver policyResolver = setupPolicyResolver();
         PhysicalOperationGenerator operationGenerator = setupOperationGenerator();
@@ -100,7 +100,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     public void testGenerateBoundServiceCallback() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         ComponentGenerator componentGenerator = setupCallbackComponentGenerator(registry);
-        BindingGenerator bindingGenerator = setupTargetBindingGenerator(registry);
+        WireBindingGenerator bindingGenerator = setupTargetBindingGenerator(registry);
         ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
         PolicyResolver policyResolver = setupCallbackPolicyResolver();
         PhysicalOperationGenerator operationGenerator = setupOperationGenerator();
@@ -120,7 +120,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     public void testGenerateBoundReference() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         ComponentGenerator componentGenerator = setupSourceComponentGenerator(registry);
-        BindingGenerator bindingGenerator = setupTargetBindingGenerator(registry);
+        WireBindingGenerator bindingGenerator = setupTargetBindingGenerator(registry);
         ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
         PolicyResolver policyResolver = setupPolicyResolver();
         PhysicalOperationGenerator operationGenerator = setupOperationGenerator();
@@ -140,7 +140,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     public void testGenerateBoundReferenceCallback() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         ComponentGenerator componentGenerator = setupTargetComponentGenerator(registry);
-        BindingGenerator bindingGenerator = setupBindingGenerator(registry);
+        WireBindingGenerator bindingGenerator = setupBindingGenerator(registry);
         ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
         PolicyResolver policyResolver = setupCallbackPolicyResolver();
         PhysicalOperationGenerator operationGenerator = setupOperationGenerator();
@@ -212,7 +212,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        BindingGenerator bindingGenerator = setupServiceBindingTargetGenerator(registry);
+        WireBindingGenerator bindingGenerator = setupServiceBindingTargetGenerator(registry);
         ComponentGenerator componentGenerator = setupSourceComponentGenerator(registry);
         ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
         PolicyResolver policyResolver = setupRemotePolicyResolver();
@@ -242,7 +242,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        BindingGenerator sourceBindingGenerator = setupBindingGenerator(registry);
+        WireBindingGenerator sourceBindingGenerator = setupBindingGenerator(registry);
         ComponentGenerator componentGenerator = setupTargetComponentGenerator(registry);
         ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
         PolicyResolver policyResolver = setupRemoteCallbackPolicyResolver();
@@ -322,8 +322,8 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private BindingGenerator setupBindingGenerator(GeneratorRegistry registry) throws GenerationException {
-        BindingGenerator bindingGenerator = EasyMock.createMock(BindingGenerator.class);
+    private WireBindingGenerator setupBindingGenerator(GeneratorRegistry registry) throws GenerationException {
+        WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateSource(EasyMock.isA(LogicalBinding.class),
                                                         EasyMock.isA(ServiceContract.class),
                                                         EasyMock.isA(List.class),
@@ -333,8 +333,8 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private BindingGenerator setupServiceBindingTargetGenerator(GeneratorRegistry registry) throws GenerationException {
-        BindingGenerator bindingGenerator = EasyMock.createMock(BindingGenerator.class);
+    private WireBindingGenerator setupServiceBindingTargetGenerator(GeneratorRegistry registry) throws GenerationException {
+        WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateServiceBindingTarget(EasyMock.isA(LogicalBinding.class),
                                                                       EasyMock.isA(ServiceContract.class),
                                                                       EasyMock.isA(List.class),
@@ -344,8 +344,8 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private BindingGenerator setupReferenceBindingTargetGenerator(GeneratorRegistry registry) throws GenerationException {
-        BindingGenerator bindingGenerator = EasyMock.createMock(BindingGenerator.class);
+    private WireBindingGenerator setupReferenceBindingTargetGenerator(GeneratorRegistry registry) throws GenerationException {
+        WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateServiceBindingTarget(EasyMock.isA(LogicalBinding.class),
                                                                       EasyMock.isA(ServiceContract.class),
                                                                       EasyMock.isA(List.class),
@@ -355,8 +355,8 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private BindingGenerator setupTargetBindingGenerator(GeneratorRegistry registry) throws GenerationException {
-        BindingGenerator bindingGenerator = EasyMock.createMock(BindingGenerator.class);
+    private WireBindingGenerator setupTargetBindingGenerator(GeneratorRegistry registry) throws GenerationException {
+        WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateTarget(EasyMock.isA(LogicalBinding.class),
                                                         EasyMock.isA(ServiceContract.class),
                                                         EasyMock.isA(List.class),

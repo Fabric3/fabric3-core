@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     </component>
 
     <!-- Ftp Binding Generator -->
-    <component name="FtpBindingGenerator" f3:key="org.fabric3.binding.ftp.model.FtpBindingDefinition">
-        <f3:implementation.system class="org.fabric3.binding.ftp.generator.FtpBindingGenerator"/>
+    <component name="FtpWireBindingGenerator" f3:key="org.fabric3.binding.ftp.model.FtpBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.ftp.generator.FtpWireBindingGenerator"/>
         <!-- sets the optional socket connect timeout property from the system configuration domain property -->
         <property name="connectTimeout" source="$systemConfig//f3:ftp.binding/@connectTimeout"/>
         <!-- sets the optional client timeout property from the system configuration domain property -->

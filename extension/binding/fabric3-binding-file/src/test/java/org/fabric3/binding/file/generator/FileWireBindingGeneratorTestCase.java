@@ -56,8 +56,8 @@ import org.fabric3.spi.model.type.java.JavaType;
 /**
  *
  */
-public class FileBindingGeneratorTestCase extends TestCase {
-    private FileBindingGenerator generator;
+public class FileWireBindingGeneratorTestCase extends TestCase {
+    private FileWireBindingGenerator generator;
 
     private EffectivePolicy policy;
 
@@ -133,7 +133,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        generator = new FileBindingGenerator(info);
+        generator = new FileWireBindingGenerator(info);
         policy = EasyMock.createNiceMock(EffectivePolicy.class);
     }
 }

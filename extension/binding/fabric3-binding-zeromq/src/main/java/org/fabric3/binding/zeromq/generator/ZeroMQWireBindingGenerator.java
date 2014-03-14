@@ -42,7 +42,7 @@ import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
+import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -58,7 +58,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
-public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDefinition> {
+public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBindingDefinition> {
     private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
     private static final String TARGET_URI = "targetUri";
 

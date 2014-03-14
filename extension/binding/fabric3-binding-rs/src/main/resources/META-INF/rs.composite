@@ -30,8 +30,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.rs.introspection.RsJavaResourceProcessorExtension"/>
     </component>
 
-    <component name="RsBindingGenerator" f3:key="org.fabric3.api.binding.rs.model.RsBindingDefinition">
-        <f3:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
+    <component name="RsWireBindingGenerator" f3:key="org.fabric3.api.binding.rs.model.RsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.rs.generator.RsWireBindingGenerator"/>
     </component>
 
     <component name="ProviderResourceGenerator" f3:key="org.fabric3.binding.rs.model.ProviderResourceDefinition">

@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.deployment.generator.binding;
+package org.fabric3.spi.deployment.generator.wire;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -46,10 +46,16 @@ import org.fabric3.spi.model.instance.LogicalBinding;
  */
 public interface CallbackBindingGenerator<BD extends BindingDefinition> {
 
+    /**
+     * Generates a callback binding definition for a service.
+     *
+     * @param forwardBinding
+     * @return
+     */
     BD generateServiceCallback(LogicalBinding<BD> forwardBinding);
 
     /**
-     * Generates a callback binding definition for the forward binding.
+     * Generates a callback binding definition for a reference.
      *
      * @param forwardBinding the forward binding
      * @return the binding definition
