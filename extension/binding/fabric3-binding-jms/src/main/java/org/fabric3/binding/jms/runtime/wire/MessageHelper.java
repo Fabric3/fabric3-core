@@ -109,13 +109,6 @@ public class MessageHelper {
             TextMessage textMessage = (TextMessage) message;
             payload = textMessage.getText();
             break;
-        case XML:
-            if (!(message instanceof TextMessage)) {
-                throw new JmsBadMessageException("Invalid message type. Expecting TextMessage");
-            }
-            TextMessage xmlMessage = (TextMessage) message;
-            payload = xmlMessage.getText();
-            break;
         case BOOLEAN:
             if (!(message instanceof BytesMessage)) {
                 throw new JmsBadMessageException("Invalid message type. Expecting BytesMessage");

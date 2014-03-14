@@ -66,7 +66,6 @@ import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
@@ -83,6 +82,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinition> {
+    private static final String JAXB = "JAXB";
 
     private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
     private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
@@ -125,15 +125,10 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         URI uri = binding.getDefinition().getTargetUri();
 
         List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
-        JmsSourceDefinition definition = null;
-        for (OperationPayloadTypes types : payloadTypes) {
-            if (PayloadType.XML == types.getInputType()) {
-                // set the source type to string XML
-                definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
-                break;
-            }
-        }
-        if (definition == null) {
+        JmsSourceDefinition definition;
+        if (isJAXB(contract)) {
+            definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
+        } else {
             definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers);
         }
         if (provisioner != null) {
@@ -160,14 +155,10 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
         List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
-        JmsTargetDefinition definition = null;
-        for (OperationPayloadTypes types : payloadTypes) {
-            if (PayloadType.XML == types.getInputType()) {
-                definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
-                break;
-            }
-        }
-        if (definition == null) {
+        JmsTargetDefinition definition;
+        if (isJAXB(contract)) {
+            definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
+        } else {
             definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers);
         }
         if (provisioner != null) {
@@ -197,9 +188,18 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         return generateTarget(binding, contract, operations, policy);
     }
 
+    private boolean isJAXB(ServiceContract contract) {
+        for (Operation operation : contract.getOperations()) {
+            if (!operation.getInputTypes().isEmpty() && JAXB.equals(operation.getInputTypes().get(0).getDatabinding())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     * Verifies a response connection factory destination is provided on a reference for request-response MEP.  If not, the request connection factory
-     * is used and a response destination is manufactured by taking the request destination name and appending a "Response" suffix.
+     * Verifies a response connection factory destination is provided on a reference for request-response MEP.  If not, the request connection factory is used
+     * and a response destination is manufactured by taking the request destination name and appending a "Response" suffix.
      *
      * @param metadata the JMS metadata
      * @param contract the service contract
@@ -223,11 +223,10 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     }
 
     /**
-     * Verifies a response connection factory destination is provided on a service for request-response MEP.  If not, the request connection factory
-     * is used.
+     * Verifies a response connection factory destination is provided on a service for request-response MEP.  If not, the request connection factory is used.
      * <p/>
-     * Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header
-     * of the message request.
+     * Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of the
+     * message request.
      *
      * @param metadata the JMS metadata
      * @param contract the service contract
@@ -357,6 +356,5 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         destination.addProperties(spec.getProperties());
         return destination;
     }
-
 
 }

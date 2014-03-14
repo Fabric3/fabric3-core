@@ -139,9 +139,6 @@ public class ServiceListener implements MessageListener {
                     }
                     invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
                     break;
-                case XML:
-                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
-                    break;
                 case TEXT:
                     // non-encoded text
                     payload = new Object[]{payload};
@@ -169,9 +166,6 @@ public class ServiceListener implements MessageListener {
                         boolean oneWay,
                         TransactionType transactionType) throws JMSException, JmsBadMessageException {
         WorkContext workContext = setWorkContext(request);
-        if (PayloadType.XML == payloadTypes.getInputType()) {
-            payload = new Object[]{payload};
-        }
         org.fabric3.spi.container.invocation.Message inMessage = MessageCache.getAndResetMessage();
         inMessage.setWorkContext(workContext);
         inMessage.setBody(payload);
@@ -248,7 +242,6 @@ public class ServiceListener implements MessageListener {
         switch (payloadType) {
             case STREAM:
                 throw new UnsupportedOperationException("Stream message not yet supported");
-            case XML:
             case TEXT:
                 if (payload != null && !(payload instanceof String)) {
                     // this should not happen

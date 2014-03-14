@@ -47,6 +47,6 @@ package org.fabric3.binding.jms.spi.provision;
  * Defines message payload types.
  */
 public enum PayloadType {
-    TEXT, OBJECT, STREAM, SHORT, INTEGER, DOUBLE, FLOAT, LONG, CHARACTER, BOOLEAN, BYTE, XML
+    TEXT, OBJECT, STREAM, SHORT, INTEGER, DOUBLE, FLOAT, LONG, CHARACTER, BOOLEAN, BYTE
 
 }

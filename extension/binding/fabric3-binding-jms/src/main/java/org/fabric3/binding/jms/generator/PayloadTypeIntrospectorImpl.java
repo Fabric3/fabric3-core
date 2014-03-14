@@ -43,8 +43,6 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.InputStream;
 import java.util.List;
 
@@ -54,35 +52,49 @@ import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 
 /**
- * Default implementation of the PayloadTypeIntrospector. Message types are determined as follows:
+ * Default implementation of the PayloadTypeIntrospector.
+ * <p/>
+ * JMS Payload types are mapped as follows:
  * <pre>
  * <ul>
- * <li>If the parameters are primitives, the specific primitive type is returned
- * <li>If the parameters are a stream, a stream message is returned
- * <li>If the parameters are Serializable, an object message is returned
- * <li>If the parameter is annotated with @XmlRootElement or @XmlType, an XML type is returned
+ * <li>If the data type are primitives, the specific primitive payload type is returned
+ * <li>If the data type are a stream, a stream payload type is returned
+ * <li>If the data type is a String, a text payload type is returned
+ * <li>If the data type has an associated JAXB databinding, a text payload type is returned
+ * <li>Otherwise an object payload type is returned
  * <ul>
  * </pre>
+ * <p/>
+ * Note that this implementation currently supports mapping JAXB data types; additional data types such as Protobufs could be supported in the future.
  */
 public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
+    private static final String JAXB = "JAXB";
 
     public OperationPayloadTypes introspect(Operation operation) throws JmsGenerationException {
+        PayloadType inputType = getInputPayloadType(operation);
+        PayloadType outputType = introspectType(operation.getOutputType());
+        PayloadType faultType = getFaultPayloadType(operation);
+        return new OperationPayloadTypes(operation.getName(), inputType, outputType, faultType);
+    }
+
+    private PayloadType getInputPayloadType(Operation operation) throws JmsGenerationException {
         List<DataType> inputTypes = operation.getInputTypes();
-        PayloadType inputType;
         if (inputTypes.size() == 1) {
             DataType param = inputTypes.get(0);
-            inputType = introspectType(param);
+            return introspectType(param);
         } else {
             // more than one parameter, use an object type message
-            inputType = PayloadType.OBJECT;
+            return PayloadType.OBJECT;
         }
-        PayloadType outputType = introspectType(operation.getOutputType());
-        if (outputType == PayloadType.XML) {
-            // if output is XML, send faults as XML as well. Otherwise, send them as objects
-            return new OperationPayloadTypes(operation.getName(), inputType, outputType, PayloadType.XML);
-        } else {
-            return new OperationPayloadTypes(operation.getName(), inputType, outputType, PayloadType.OBJECT);
+    }
+
+    private PayloadType getFaultPayloadType(Operation operation) throws JmsGenerationException {
+        for (DataType dataType : operation.getFaultTypes()) {
+            if ("JAXB".equals(dataType.getDatabinding())) {
+                return PayloadType.TEXT;
+            }
         }
+        return PayloadType.OBJECT;
     }
 
     private PayloadType introspectType(DataType param) throws JmsGenerationException {
@@ -92,10 +104,8 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
             return calculatePrimitivePayloadType(type);
         } else if (InputStream.class.isAssignableFrom(type)) {
             return PayloadType.STREAM;
-        } else if (String.class.isAssignableFrom(type)) {
+        } else if (String.class.isAssignableFrom(type) || JAXB.equals(param.getDatabinding())) {
             return PayloadType.TEXT;
-        } else if (type.isAnnotationPresent(XmlRootElement.class) || type.isAnnotationPresent(XmlType.class)) {
-            return PayloadType.XML;
         }
         return PayloadType.OBJECT;
     }

@@ -288,7 +288,6 @@ public class JmsInterceptor implements Interceptor {
                 return jmsMessage;
             case STREAM:
                 throw new UnsupportedOperationException("Not yet implemented");
-            case XML:
             case TEXT:
                 if (payload.length != 1) {
                     throw new UnsupportedOperationException("Only single parameter operations are supported");
