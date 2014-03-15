@@ -53,9 +53,9 @@ import org.fabric3.binding.rs.runtime.container.RsContainerManager;
 import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
 import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -105,7 +105,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         this.logLevel = Level.parse(level);
     }
 
-    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WireAttachException {
+    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws AttachException {
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
@@ -125,13 +125,13 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
             monitor.provisionedEndpoint(sourceUri);
         } catch (ClassNotFoundException e) {
             String name = source.getRsClass();
-            throw new WireAttachException("Unable to load interface class " + name, sourceUri, null, e);
+            throw new AttachException("Unable to load interface class " + name, e);
         } catch (RsContainerException e) {
-            throw new WireAttachException("Error attaching source: " + sourceUri, e);
+            throw new AttachException("Error attaching source: " + sourceUri, e);
         }
     }
 
-    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
@@ -139,11 +139,12 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         monitor.removedEndpoint(sourceUri);
     }
 
-    public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) throws WiringException {
+    public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
+            throws BuilderException {
         throw new AssertionError();
     }
 
-    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         throw new AssertionError();
     }
 
@@ -156,7 +157,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     }
 
     private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container)
-            throws ClassNotFoundException, RsContainerException, WireAttachException {
+            throws ClassNotFoundException, RsContainerException, AttachException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -179,10 +180,10 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         }
     }
 
-    private Resource createResource(F3ResourceHandler handler) throws WireAttachException {
+    private Resource createResource(F3ResourceHandler handler) throws AttachException {
         Resource template = Resource.from(handler.getInterface());
         if (template == null) {
-            throw new WireAttachException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
+            throw new AttachException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
         }
         Resource.Builder resourceBuilder = Resource.builder(template.getPath());
         for (ResourceMethod resourceMethod : template.getAllMethods()) {

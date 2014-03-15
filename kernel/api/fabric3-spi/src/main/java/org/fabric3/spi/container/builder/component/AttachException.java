@@ -48,18 +48,18 @@ import org.fabric3.spi.container.builder.BuilderException;
 /**
  *
  */
-public class ConnectionAttachException extends BuilderException {
+public class AttachException extends BuilderException {
     private static final long serialVersionUID = -2269016155932491868L;
 
-    public ConnectionAttachException(String message) {
+    public AttachException(String message) {
         super(message);
     }
 
-    public ConnectionAttachException(Throwable cause) {
+    public AttachException(Throwable cause) {
         super(cause);
     }
 
-    public ConnectionAttachException(String message, Throwable cause) {
+    public AttachException(String message, Throwable cause) {
         super(message, cause);
     }
 

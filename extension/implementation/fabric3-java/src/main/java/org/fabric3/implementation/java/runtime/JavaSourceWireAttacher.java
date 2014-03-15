@@ -48,9 +48,9 @@ import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
@@ -81,12 +81,12 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws WiringException {
+    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws BuilderException {
         URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
         if (source == null) {
-            throw new WiringException("Source callback not found: " + sourceName);
+            throw new BuilderException("Source callback not found: " + sourceName);
         }
         Injectable injectable = sourceDefinition.getInjectable();
 
@@ -95,7 +95,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
             type = classLoaderRegistry.loadClass(sourceDefinition.getClassLoaderId(), sourceDefinition.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = sourceDefinition.getInterfaceName();
-            throw new WireAttachException("Unable to load interface class: " + name, sourceUri, null, e);
+            throw new AttachException("Unable to load interface class: " + name, e);
         }
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             processCallback(wire, targetDefinition, source, injectable, type);
@@ -104,11 +104,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -116,7 +116,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     public void attachObjectFactory(JavaWireSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalWireTargetDefinition targetDefinition)
-            throws WiringException {
+            throws BuilderException {
         URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
         Injectable injectable = sourceDefinition.getInjectable();

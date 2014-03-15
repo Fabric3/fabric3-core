@@ -51,24 +51,8 @@ import org.fabric3.spi.container.builder.BuilderException;
 public class BuilderNotFoundException extends BuilderException {
     private static final long serialVersionUID = 2604579115547966762L;
 
-    public BuilderNotFoundException() {
-        super();
-    }
-
     public BuilderNotFoundException(String message) {
         super(message);
-    }
-
-    public BuilderNotFoundException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public BuilderNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public BuilderNotFoundException(Throwable cause) {
-        super(cause);
     }
 
 }

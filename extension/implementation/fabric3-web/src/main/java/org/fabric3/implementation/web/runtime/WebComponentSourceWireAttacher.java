@@ -43,7 +43,7 @@ import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -63,34 +63,34 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
         this.manager = manager;
     }
 
-    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
         try {
             component.attachWire(referenceName, wire);
         } catch (ObjectCreationException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 
-    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         // TODO implement
     }
 
-    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         // TODO implement
     }
 
     public void attachObjectFactory(WebComponentWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws WiringException {
+            throws BuilderException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
         try {
             component.attachWire(referenceName, objectFactory);
         } catch (ObjectCreationException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 }

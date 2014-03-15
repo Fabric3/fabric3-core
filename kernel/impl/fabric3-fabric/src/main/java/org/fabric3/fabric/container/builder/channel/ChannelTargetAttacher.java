@@ -40,7 +40,7 @@ package org.fabric3.fabric.container.builder.channel;
 import java.net.URI;
 
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
@@ -62,13 +62,13 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         URI uri = target.getUri();
         Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) throws ConnectionAttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) throws AttachException {
         // no-op since channel do not maintain references to incoming handlers
     }
 

@@ -61,7 +61,7 @@ import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
@@ -98,7 +98,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     }
 
     public void attach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
@@ -126,16 +126,16 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             }
             containerManager.register(configuration);
         } catch (JMSException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 
-    public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
         try {
             containerManager.unregister(source.getUri());
             resolver.release(source.getMetadata().getConnectionFactory());
         } catch (JMSException | JmsResolutionException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 
@@ -160,7 +160,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source, String clientId) throws ConnectionAttachException {
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source, String clientId) throws AttachException {
         try {
             JmsBindingMetadata metadata = source.getMetadata();
             ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
@@ -174,7 +174,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             }
             return new ResolvedObjects(requestConnectionFactory, requestDestination);
         } catch (JmsResolutionException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 

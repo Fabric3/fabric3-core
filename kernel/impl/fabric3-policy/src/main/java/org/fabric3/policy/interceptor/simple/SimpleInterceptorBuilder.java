@@ -71,11 +71,11 @@ public class SimpleInterceptorBuilder implements InterceptorBuilder<SimpleInterc
             Class<Interceptor> interceptorClass = (Class<Interceptor>) loader.loadClass(className);
             return interceptorClass.newInstance();
         } catch (InstantiationException ex) {
-            throw new SimpleInterceptorBuilderException("Unable to instantiate", className, ex);
+            throw new SimpleInterceptorBuilderException("Unable to instantiate: " + className, ex);
         } catch (IllegalAccessException ex) {
-            throw new SimpleInterceptorBuilderException("Cannot access class or constructor", className, ex);
+            throw new SimpleInterceptorBuilderException("Cannot access class or constructor: " + className, ex);
         } catch (ClassNotFoundException ex) {
-            throw new SimpleInterceptorBuilderException("Class not found", className, ex);
+            throw new SimpleInterceptorBuilderException("Class not found: " + className, ex);
         }
 
     }

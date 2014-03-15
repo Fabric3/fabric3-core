@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  *
@@ -58,7 +58,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
         this.classLoaderUpdater = classLoaderUpdater;
     }
 
-    public Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws WiringException {
+    public Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws BuilderException {
         try {
             Class<?> seiClass;
             if (classBytes != null) {
@@ -71,7 +71,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
             classLoaderUpdater.updateClassLoader(seiClass);
             return seiClass;
         } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 

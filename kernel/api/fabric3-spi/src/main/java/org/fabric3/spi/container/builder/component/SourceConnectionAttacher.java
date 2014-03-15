@@ -58,17 +58,17 @@ public interface SourceConnectionAttacher<PCSD extends PhysicalConnectionSourceD
      * @param source     the source metadata
      * @param target     the target metadata
      * @param connection the channel connection
-     * @throws ConnectionAttachException if an error is encountered performing the attach
+     * @throws AttachException if an error is encountered performing the attach
      */
-    void attach(PCSD source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws ConnectionAttachException;
+    void attach(PCSD source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws AttachException;
 
     /**
      * Detach a connection from a source.
      *
      * @param source the source metadata
      * @param target the target metadata
-     * @throws ConnectionAttachException if an error is encountered performing the attach
+     * @throws AttachException if an error is encountered performing the attach
      */
-    void detach(PCSD source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException;
+    void detach(PCSD source, PhysicalConnectionTargetDefinition target) throws AttachException;
 
 }

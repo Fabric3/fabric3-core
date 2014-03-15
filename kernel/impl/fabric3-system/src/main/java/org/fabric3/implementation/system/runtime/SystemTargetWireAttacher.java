@@ -51,9 +51,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -72,13 +72,12 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
     private final ComponentManager manager;
     private final ClassLoaderRegistry classLoaderRegistry;
 
-    public SystemTargetWireAttacher(@Reference ComponentManager manager,
-                                    @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public SystemTargetWireAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws BuilderException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
@@ -95,18 +94,14 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
                 try {
                     paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
                 } catch (ClassNotFoundException e) {
-                    URI sourceUri = source.getUri();
-                    URI targetUri = target.getUri();
-                    throw new WireAttachException("Implementation class not found", sourceUri, targetUri, e);
+                    throw new AttachException("Implementation class not found", e);
                 }
             }
             Method method;
             try {
                 method = implementationClass.getMethod(operation.getName(), paramTypes);
             } catch (NoSuchMethodException e) {
-                URI sourceUri = source.getUri();
-                URI targetUri = target.getUri();
-                throw new WireAttachException("No matching method found", sourceUri, targetUri, e);
+                throw new AttachException("No matching method found", e);
             }
 
             SystemInvokerInterceptor interceptor = new SystemInvokerInterceptor(method, targetComponent);
@@ -114,11 +109,11 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws BuilderException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws BuilderException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

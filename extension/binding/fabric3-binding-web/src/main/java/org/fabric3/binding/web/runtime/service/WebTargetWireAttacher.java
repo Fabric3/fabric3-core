@@ -42,7 +42,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.web.provision.WebWireTargetDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -60,18 +60,18 @@ public class WebTargetWireAttacher implements TargetWireAttacher<WebWireTargetDe
         this.broadcasterManager = broadcasterManager;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target, Wire wire) throws BuilderException {
         WebCallbackInterceptor interceptor = new WebCallbackInterceptor(broadcasterManager);
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target) throws BuilderException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(WebWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(WebWireTargetDefinition target) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 }

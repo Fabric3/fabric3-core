@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -57,7 +57,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         this.registry = registry;
     }
 
-    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -70,11 +70,11 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
             ZeroMQMetadata metadata = source.getMetadata();
             broker.connectToReceiver(uri, chains, metadata, loader);
         } catch (BrokerException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 
-    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -84,16 +84,16 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         try {
             broker.releaseReceiver(uri);
         } catch (BrokerException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 
     public void attachObjectFactory(ZeroMQWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws WiringException {
+            throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 

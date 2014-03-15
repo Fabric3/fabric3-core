@@ -42,7 +42,7 @@ import java.util.concurrent.ExecutorService;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -59,15 +59,15 @@ public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorS
         this.factory = new SingletonObjectFactory<ExecutorService>(proxy);
     }
 
-    public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws BuilderException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target) throws BuilderException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceWireTargetDefinition target) throws BuilderException {
         return factory;
     }
 

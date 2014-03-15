@@ -52,9 +52,9 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -83,9 +83,9 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
     }
 
     /**
-     * Used for lazy injection of the proxy service. Since the ProxyService is only available after extensions are loaded and this class is loaded
-     * during runtime bootstrap, injection of the former service must be delayed. This is achieved by setting the reference to no required. when the
-     * ProxyService becomes available, it will be wired to this reference.
+     * Used for lazy injection of the proxy service. Since the ProxyService is only available after extensions are loaded and this class is loaded during
+     * runtime bootstrap, injection of the former service must be delayed. This is achieved by setting the reference to no required. when the ProxyService
+     * becomes available, it will be wired to this reference.
      *
      * @param proxyService the service used to create reference proxies
      */
@@ -94,11 +94,10 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         this.proxyService = proxyService;
     }
 
-    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         if (proxyService == null) {
-            throw new WiringException("Attempt to inject a non-optimized wire during runtime bootstrap.");
+            throw new BuilderException("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
-        URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -108,7 +107,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new WireAttachException("Unable to load interface class: " + name, sourceUri, null, e);
+            throw new AttachException("Unable to load interface class: " + name, e);
         }
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             throw new UnsupportedOperationException("Callbacks are not supported on system components");
@@ -130,23 +129,23 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
                     component.setObjectFactory(injectable, factory);
                 }
             } catch (ProxyCreationException e) {
-                throw new WiringException(e);
+                throw new BuilderException(e);
             }
         }
     }
 
-    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
 
-    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target) throws WiringException {
+    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target) throws BuilderException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

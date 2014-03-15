@@ -46,13 +46,13 @@ package org.fabric3.implementation.pojo.manager;
 import org.fabric3.spi.container.builder.BuilderException;
 
 /**
- * The builder exception for IF provider.
+ *
  */
 public class ImplementationBuildException extends BuilderException {
     private static final long serialVersionUID = -2582100608101918880L;
 
-    public ImplementationBuildException(String message, String identifier) {
-        super(message, identifier);
+    public ImplementationBuildException(String message) {
+        super(message);
     }
 
     public ImplementationBuildException(Throwable cause) {

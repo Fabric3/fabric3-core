@@ -37,12 +37,12 @@
 */
 package org.fabric3.resource.runtime;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Denotes a missing or invalid resource.
  */
-public class ResourceNotFoundException extends WiringException {
+public class ResourceNotFoundException extends BuilderException {
     private static final long serialVersionUID = -6195665759311521757L;
 
     public ResourceNotFoundException(String message) {

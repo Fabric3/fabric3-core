@@ -40,7 +40,7 @@ package org.fabric3.implementation.system.runtime;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -76,15 +76,15 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         if (proxyService == null) {
-            throw new ConnectionAttachException("Channel proxy service not found");
+            throw new AttachException("Channel proxy service not found");
         }
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         if (component == null) {
-            throw new ConnectionAttachException("Source component not found: " + sourceName);
+            throw new AttachException("Source component not found: " + sourceName);
         }
         Injectable injectable = source.getInjectable();
         Class<?> type;
@@ -92,17 +92,17 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new ConnectionAttachException("Unable to load interface class: " + name, e);
+            throw new AttachException("Unable to load interface class: " + name, e);
         }
         try {
             ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
             component.setObjectFactory(injectable, factory);
         } catch (ProxyCreationException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 
-    public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();

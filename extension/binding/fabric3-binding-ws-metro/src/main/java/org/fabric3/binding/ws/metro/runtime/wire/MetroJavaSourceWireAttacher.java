@@ -60,7 +60,7 @@ import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -92,7 +92,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.artifactCache = artifactCache;
     }
 
-    public void attach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
             QName serviceName = endpointDefinition.getServiceName();
@@ -109,7 +109,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             byte[] bytes = source.getGeneratedInterface();
 
             if (!(classLoader instanceof SecureClassLoader)) {
-                throw new WiringException("Classloader for " + interfaze + " must be a SecureClassLoader");
+                throw new BuilderException("Classloader for " + interfaze + " must be a SecureClassLoader");
             }
             Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
 
@@ -160,11 +160,11 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                 Thread.currentThread().setContextClassLoader(old);
             }
         } catch (EndpointException | CacheException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 
-    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
             URI servicePath = endpointDefinition.getServicePath();
@@ -180,7 +180,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
 
             endpointService.unregisterService(path);
         } catch (CacheException | EndpointException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 

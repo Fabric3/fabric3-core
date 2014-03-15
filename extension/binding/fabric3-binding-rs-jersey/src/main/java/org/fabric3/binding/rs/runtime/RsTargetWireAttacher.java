@@ -7,7 +7,7 @@ import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.fabric3.binding.rs.runtime.container.RsClientInterceptor;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -26,7 +26,7 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws BuilderException {
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(def.getClassLoaderId());
         List<InvocationChain> invocationChains = wire.getInvocationChains();
         URI uri = def.getUri();
@@ -44,15 +44,15 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
                 chain.addInterceptor(new RsClientInterceptor(operationName, interfaceClass, uri, args));
             }
         } catch (Exception e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws BuilderException {
         // no-op
     }
 

@@ -59,17 +59,8 @@ public class BuilderException extends Fabric3Exception {
         super(message);
     }
 
-
-    protected BuilderException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public BuilderException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    protected BuilderException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     public BuilderException(Throwable cause) {

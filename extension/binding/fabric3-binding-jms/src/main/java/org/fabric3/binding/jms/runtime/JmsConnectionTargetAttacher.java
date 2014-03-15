@@ -55,7 +55,7 @@ import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
@@ -74,7 +74,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
 
         // resolve the connection factories and destinations
         JmsBindingMetadata metadata = target.getMetadata();
@@ -88,18 +88,18 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
             DestinationDefinition destinationDefinition = metadata.getDestination();
             destination = resolver.resolve(destinationDefinition, connectionFactory);
         } catch (JmsResolutionException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
         EventStream stream = connection.getEventStream();
         JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent);
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target) throws AttachException {
         try {
             resolver.release(target.getMetadata().getConnectionFactory());
         } catch (JmsResolutionException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 

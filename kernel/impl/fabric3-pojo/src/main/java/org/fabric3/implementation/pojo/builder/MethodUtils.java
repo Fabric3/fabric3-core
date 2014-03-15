@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.spi.container.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -57,7 +57,7 @@ public final class MethodUtils {
                                     PhysicalOperationDefinition operation,
                                     Class<?> implementationClass,
                                     ClassLoader loader,
-                                    ClassLoaderRegistry classLoaderRegistry) throws WireAttachException {
+                                    ClassLoaderRegistry classLoaderRegistry) throws AttachException {
         List<String> params = operation.getTargetParameterTypes();
         Class<?>[] paramTypes = new Class<?>[params.size()];
         assert loader != null;
@@ -68,7 +68,7 @@ public final class MethodUtils {
             } catch (ClassNotFoundException e) {
                 URI sourceUri = sourceDefinition.getUri();
                 URI targetUri = targetDefinition.getUri();
-                throw new WireAttachException("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
+                throw new AttachException("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
             }
         }
         Method method = null;
@@ -85,7 +85,7 @@ public final class MethodUtils {
             if (method == null) {
                 URI sourceUri = sourceDefinition.getUri();
                 URI targetUri = targetDefinition.getUri();
-                throw new WireAttachException("No matching method found when wiring " + sourceUri + " to " + targetUri);
+                throw new AttachException("No matching method found when wiring " + sourceUri + " to " + targetUri);
             }
         } else {
             // operation is remote, match on operation names and parameter types
@@ -94,7 +94,7 @@ public final class MethodUtils {
             } catch (NoSuchMethodException e) {
                 URI sourceUri = sourceDefinition.getUri();
                 URI targetUri = targetDefinition.getUri();
-                throw new WireAttachException("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
+                throw new AttachException("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
             }
         }
         return method;

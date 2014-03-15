@@ -32,11 +32,11 @@ package org.fabric3.binding.zeromq.runtime;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -55,7 +55,7 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
 
         ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
         URI subscriberId = source.getUri();
@@ -63,17 +63,17 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
             ZeroMQMetadata metadata = source.getMetadata();
             broker.subscribe(subscriberId, metadata, connection, loader);
         } catch (BrokerException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 
-    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
         ZeroMQMetadata metadata = source.getMetadata();
         URI subscriberId = source.getUri();
         try {
             broker.unsubscribe(subscriberId, metadata);
         } catch (BrokerException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 

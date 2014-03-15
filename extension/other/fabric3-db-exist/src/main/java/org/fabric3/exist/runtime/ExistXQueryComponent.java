@@ -23,7 +23,7 @@ import org.exist.EXistException;
 import org.exist.xquery.XPathException;
 import org.fabric3.api.host.Fabric3RuntimeException;
 import org.fabric3.spi.Lifecycle;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.xquery.runtime.XQueryComponent;
@@ -60,12 +60,12 @@ public class ExistXQueryComponent extends XQueryComponent implements Lifecycle {
         super.start();
     }
 
-    public void attachSourceWire(String name, InteractionType interactionType,String callbackUri, Wire wire) throws WiringException {
+    public void attachSourceWire(String name, InteractionType interactionType,String callbackUri, Wire wire) throws BuilderException {
         compiler.linkSourceWire(name, interactionType, callbackUri, wire);
 
     }
 
-    public void attachTargetWire(String name, InteractionType interactionType, Wire wire) throws WiringException {
+    public void attachTargetWire(String name, InteractionType interactionType, Wire wire) throws BuilderException {
         compiler.linkTargetWire(name, interactionType, wire);
 
     }

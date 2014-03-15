@@ -58,7 +58,7 @@ import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -83,7 +83,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.cache = cache;
     }
 
-    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
@@ -127,18 +127,18 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                             handlers);
             endpointService.registerService(configuration);
         } catch (CacheException | EndpointException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
     }
 
-    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         try {
             URI servicePath = source.getEndpointDefinition().getServicePath();
             cache.remove(servicePath);
         } catch (CacheException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 

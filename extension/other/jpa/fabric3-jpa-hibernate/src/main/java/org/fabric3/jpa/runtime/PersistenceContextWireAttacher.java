@@ -49,7 +49,7 @@ import org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -83,7 +83,7 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceContextWireTargetDefinition definition) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(PersistenceContextWireTargetDefinition definition) throws BuilderException {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -100,17 +100,17 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
                 return new StatefulEntityManagerProxyFactory(unitName, emService, tm);
             }
         } catch (JpaResolutionException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
 
-    public void attach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target, Wire wire) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 

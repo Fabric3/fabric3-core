@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -60,15 +60,15 @@ public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWire
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws BuilderException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws BuilderException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws BuilderException {
         String dataSourceName = target.getDataSourceName();
         DataSource source = registry.getDataSource(dataSourceName);
         if (!target.isOptional() && source == null) {

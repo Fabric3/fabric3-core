@@ -39,7 +39,7 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 
 import java.security.SecureClassLoader;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Utility methods for wire attachers.
@@ -53,8 +53,8 @@ public interface WireAttacherHelper {
      * @param classBytes  the byte array. May be null.
      * @param classLoader the classloader to load the class with
      * @return the loaded class
-     * @throws WiringException if the class cannot be loaded
+     * @throws BuilderException if the class cannot be loaded
      */
-    Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws WiringException;
+    Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws BuilderException;
 
 }

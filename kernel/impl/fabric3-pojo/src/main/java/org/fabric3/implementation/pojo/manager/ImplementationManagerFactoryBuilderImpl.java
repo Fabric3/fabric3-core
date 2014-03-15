@@ -92,7 +92,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
             for (int i = 0; i < cdiSources.length; i++) {
                 if (cdiSources[i] == null) {
                     String clazz = ctr.getName();
-                    throw new ImplementationBuildException("No injection value for constructor parameter " + i + " in class " + clazz, clazz);
+                    throw new ImplementationBuildException("No injection value for constructor parameter " + i + " in class " + clazz);
                 }
             }
 

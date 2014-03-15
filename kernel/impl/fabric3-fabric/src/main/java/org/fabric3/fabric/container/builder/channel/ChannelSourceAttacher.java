@@ -39,12 +39,12 @@ package org.fabric3.fabric.container.builder.channel;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
@@ -63,14 +63,14 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
     }
 
     public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();
         channel.subscribe(targetUri, connection);
     }
 
-    public void detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();

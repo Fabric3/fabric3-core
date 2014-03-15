@@ -74,7 +74,7 @@ import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -104,7 +104,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws BuilderException {
 
         WireConfiguration wireConfiguration = new WireConfiguration();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
@@ -142,15 +142,15 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws BuilderException {
         try {
             resolver.release(target.getMetadata().getConnectionFactory());
         } catch (JmsResolutionException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
@@ -160,9 +160,9 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
      *
      * @param configuration the interceptor configuration
      * @param metadata      the JMS binding metadata
-     * @throws WiringException if an error processing headers occurs
+     * @throws BuilderException if an error processing headers occurs
      */
-    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws WiringException {
+    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws BuilderException {
         HeadersDefinition uriHeaders = metadata.getUriHeaders();
         HeadersDefinition headers = metadata.getHeaders();
         Map<String, OperationPropertiesDefinition> properties = metadata.getOperationProperties();
@@ -209,7 +209,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws WiringException {
+    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws BuilderException {
         for (Map.Entry<String, String> entry : definition.getProperties().entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -224,14 +224,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
                     long time = Long.valueOf(value);
                     configuration.setTimeToLive(time);
                 } catch (NumberFormatException e) {
-                    throw new WiringException(e);
+                    throw new BuilderException(e);
                 }
             } else if (configuration.getPriority() == -1 && "JMSPriority".equals(key)) {
                 try {
                     int priority = Integer.valueOf(value);
                     configuration.setPriority(priority);
                 } catch (NumberFormatException e) {
-                    throw new WiringException(e);
+                    throw new BuilderException(e);
                 }
             } else {
                 // user-defined property
@@ -248,7 +248,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws WiringException {
+    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws BuilderException {
         JmsBindingMetadata metadata = target.getMetadata();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -287,17 +287,17 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
             }
         } catch (JmsResolutionException | JMSException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
 
     }
 
-    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws WiringException {
+    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws BuilderException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
-            throw new WiringException("Destination is not a queue: " + requestDestinationDefinition.getName());
+            throw new BuilderException("Destination is not a queue: " + requestDestinationDefinition.getName());
         } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
-            throw new WiringException("Destination is not a topic: " + requestDestinationDefinition.getName());
+            throw new BuilderException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
 

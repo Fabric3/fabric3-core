@@ -49,7 +49,7 @@ import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -83,7 +83,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws BuilderException {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -100,17 +100,17 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
                 return new StatefulSessionProxyFactory(unitName, emService, tm);
             }
         } catch (JpaResolutionException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 

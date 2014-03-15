@@ -39,6 +39,7 @@ package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -46,7 +47,6 @@ import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -73,29 +73,29 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         if (component == null) {
-            throw new ConnectionAttachException("Source component not found: " + sourceName);
+            throw new AttachException("Source component not found: " + sourceName);
         }
         Class<?> type;
         try {
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new ConnectionAttachException("Unable to load interface class: " + name, e);
+            throw new AttachException("Unable to load interface class: " + name, e);
         }
         try {
             ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
             component.attach(source.getProducerName(), type, factory);
         } catch (ProxyCreationException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 
-    public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         component.detach(source.getProducerName());

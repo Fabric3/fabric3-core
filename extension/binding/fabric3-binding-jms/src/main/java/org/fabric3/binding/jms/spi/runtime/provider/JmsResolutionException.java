@@ -37,12 +37,12 @@
 */
 package org.fabric3.binding.jms.spi.runtime.provider;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Denotes an error looking up a connection factory or destination.
  */
-public class JmsResolutionException extends WiringException {
+public class JmsResolutionException extends BuilderException {
     private static final long serialVersionUID = -2022498980450562546L;
 
     public JmsResolutionException(String message) {

@@ -59,7 +59,7 @@ import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -88,7 +88,7 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.cache = cache;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MetroWsdlWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, MetroWsdlWireTargetDefinition target, Wire wire) throws BuilderException {
         ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
         List<QName> requestedIntents = target.getIntents();
 
@@ -99,7 +99,7 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
             URI servicePath = target.getEndpointDefinition().getUrl().toURI();
             wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
         } catch (CacheException | URISyntaxException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
 
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
@@ -118,15 +118,15 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
     }
 
-    public ObjectFactory<?> createObjectFactory(MetroWsdlWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(MetroWsdlWireTargetDefinition target) throws BuilderException {
         return null;
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MetroWsdlWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, MetroWsdlWireTargetDefinition target) throws BuilderException {
         try {
             cache.remove(target.getUri());
         } catch (CacheException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 

@@ -58,17 +58,17 @@ public interface TargetConnectionAttacher<PCTD extends PhysicalConnectionTargetD
      * @param source     the source metadata
      * @param target     the target metadata
      * @param connection the connection that flows events from a source
-     * @throws ConnectionAttachException if an error is encountered performing the attach
+     * @throws AttachException if an error is encountered performing the attach
      */
-    void attach(PhysicalConnectionSourceDefinition source, PCTD target, ChannelConnection connection) throws ConnectionAttachException;
+    void attach(PhysicalConnectionSourceDefinition source, PCTD target, ChannelConnection connection) throws AttachException;
 
     /**
      * Detach a connection from a target.
      *
      * @param source the source metadata
      * @param target the target metadata
-     * @throws ConnectionAttachException if an error is encountered performing the attach
+     * @throws AttachException if an error is encountered performing the attach
      */
-    void detach(PhysicalConnectionSourceDefinition source, PCTD target) throws ConnectionAttachException;
+    void detach(PhysicalConnectionSourceDefinition source, PCTD target) throws AttachException;
 
 }

@@ -49,8 +49,8 @@ public class SimpleInterceptorBuilderException extends BuilderException {
         super(message);
     }
 
-    public SimpleInterceptorBuilderException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public SimpleInterceptorBuilderException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

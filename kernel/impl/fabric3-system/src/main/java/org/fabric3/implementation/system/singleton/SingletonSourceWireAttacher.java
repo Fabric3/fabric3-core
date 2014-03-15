@@ -48,7 +48,7 @@ import java.net.URI;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -69,14 +69,14 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
         this.manager = manager;
     }
 
-    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
     }
 
-    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -84,7 +84,7 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
     }
 
     public void attachObjectFactory(SingletonWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws WiringException {
+            throws BuilderException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

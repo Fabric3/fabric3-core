@@ -42,12 +42,12 @@ import java.net.URI;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
@@ -75,12 +75,12 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         SystemComponent component = (SystemComponent) manager.getComponent(targetName);
         if (component == null) {
-            throw new ConnectionAttachException("Target component not found: " + targetName);
+            throw new AttachException("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
 
@@ -92,17 +92,17 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target) throws AttachException {
         // no-op
     }
 
-    private Method loadMethod(SystemConnectionTargetDefinition target, SystemComponent component) throws ConnectionAttachException {
+    private Method loadMethod(SystemConnectionTargetDefinition target, SystemComponent component) throws AttachException {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {
             return signature.getMethod(implementationClass);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 

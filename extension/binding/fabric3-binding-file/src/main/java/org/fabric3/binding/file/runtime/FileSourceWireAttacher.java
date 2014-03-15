@@ -52,7 +52,7 @@ import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -90,7 +90,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "inbox");
     }
 
-    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
         String id = source.getUri().toString();
 
         File location = getLocation(source);
@@ -122,7 +122,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         receiverManager.create(configuration);
     }
 
-    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws WiringException {
+    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
         String id = source.getUri().toString();
         receiverManager.remove(id);
     }
@@ -178,9 +178,9 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
      *
      * @param source the definition
      * @return the adaptor
-     * @throws WiringException if there is an error instantiating the class or returning a component instance.
+     * @throws BuilderException if there is an error instantiating the class or returning a component instance.
      */
-    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws WiringException {
+    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws BuilderException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();
@@ -189,10 +189,10 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
             }
             Component component = manager.getComponent(adapterUri);
             if (component == null) {
-                throw new WiringException("Binding adaptor component not found: " + adapterUri);
+                throw new BuilderException("Binding adaptor component not found: " + adapterUri);
             }
             if (!(component instanceof AtomicComponent)) {
-                throw new WiringException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+                throw new BuilderException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
             }
             return new ServiceAdaptorWrapper((AtomicComponent) component);
         }
@@ -200,12 +200,12 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         ClassLoader loader = registry.getClassLoader(uri);
         if (loader == null) {
             // this should not happen
-            throw new WiringException("ClassLoader not found: " + uri);
+            throw new BuilderException("ClassLoader not found: " + uri);
         }
         try {
             return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
     }
 

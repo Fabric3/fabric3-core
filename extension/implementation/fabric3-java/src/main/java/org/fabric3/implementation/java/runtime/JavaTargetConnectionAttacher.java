@@ -42,12 +42,12 @@ import java.net.URI;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
@@ -75,12 +75,12 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         JavaComponent component = (JavaComponent) manager.getComponent(targetName);
         if (component == null) {
-            throw new ConnectionAttachException("Target component not found: " + targetName);
+            throw new AttachException("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
 
@@ -92,17 +92,17 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws AttachException {
         // no-op
     }
 
-    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws ConnectionAttachException {
+    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws AttachException {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {
             return signature.getMethod(implementationClass);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 

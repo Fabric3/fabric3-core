@@ -40,7 +40,7 @@ import org.exist.xquery.value.SequenceType;
 import org.fabric3.exist.ExistDBInstance;
 import org.fabric3.exist.transform.Transformer;
 import org.fabric3.exist.transform.TransformerRegistry;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -129,29 +129,29 @@ public class ExistXQueryCompiler {
         }
     }
 
-    public void linkPropertyValues(Map<String, Document> propertyValues) throws WiringException {
+    public void linkPropertyValues(Map<String, Document> propertyValues) throws BuilderException {
         for (Map.Entry<String, Document> entry : propertyValues.entrySet()) {
             String name = entry.getKey();
             PropertyVariable var = variables.get(name);
             if (var != null) {
                 var.value = entry.getValue();
             } else {
-                throw new WiringException("Property does not exist: " + name);
+                throw new BuilderException("Property does not exist: " + name);
             }
         }
     }
 
-    public void linkSourceWire(String name, InteractionType interactionType, String callbackUri, Wire wire) throws WiringException {
+    public void linkSourceWire(String name, InteractionType interactionType, String callbackUri, Wire wire) throws BuilderException {
         Map<String, ExistFunction> operations = references.get(name);
         if (operations == null) {
-            throw new WiringException(String.format("No operations defined for ", source));
+            throw new BuilderException(String.format("No operations defined for ", source));
         }
         for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : wire.getInvocationChains().entrySet()) {
             PhysicalOperationDefinition op = entry.getKey();
             InvocationChain chain = entry.getValue();
             ExistFunction function = operations.get(op.getName());
             if (function == null) {
-                throw new WiringException(String.format("Undefined operation ", op.getName()));
+                throw new BuilderException(String.format("Undefined operation ", op.getName()));
             }
             function.chain = chain;
             function.callbackUri=callbackUri;
@@ -159,7 +159,7 @@ public class ExistXQueryCompiler {
         }
     }
 
-    public void linkTargetWire(String name, InteractionType interactionType, Wire wire) throws WiringException {
+    public void linkTargetWire(String name, InteractionType interactionType, Wire wire) throws BuilderException {
         Map<String, ExistFunction> operations = services.get(name);
         if (operations == null) {
             if ("XQueryService".equals(name)) {
@@ -169,7 +169,7 @@ public class ExistXQueryCompiler {
                 service = new ExistXQService();
                 service.chain = chain;
             } else {
-                throw new WiringException(String.format("No operations defined for ", name));
+                throw new BuilderException(String.format("No operations defined for ", name));
             }
         } else {
             for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : wire.getInvocationChains().entrySet()) {
@@ -177,7 +177,7 @@ public class ExistXQueryCompiler {
                 InvocationChain chain = entry.getValue();
                 ExistFunction function = operations.get(op.getName());
                 if (function == null) {
-                    throw new WiringException(String.format("Undefined operation ", op.getName()));
+                    throw new BuilderException(String.format("Undefined operation ", op.getName()));
                 }
                 function.chain = chain;
                 generateSignature(function, op);
@@ -186,7 +186,7 @@ public class ExistXQueryCompiler {
 
     }
 
-    void generateSignature(ExistFunction function, PhysicalOperationDefinition physicalOperation) throws WiringException {
+    void generateSignature(ExistFunction function, PhysicalOperationDefinition physicalOperation) throws BuilderException {
         function.signature = new FunctionSignature(function.functionName);
         List<String> opArgumentTypes = physicalOperation.getParameters();
         String opReturnType = physicalOperation.getReturnType();
@@ -207,7 +207,7 @@ public class ExistXQueryCompiler {
             function.returnType = clazz;
             returnType = new SequenceType(function.returnTransform.valueType(), function.returnTransform.cardinality());
         } catch (ClassNotFoundException ce) {
-            throw new WiringException(ce);
+            throw new BuilderException(ce);
         }
 
         function.signature.setArgumentTypes(argumentTypes);

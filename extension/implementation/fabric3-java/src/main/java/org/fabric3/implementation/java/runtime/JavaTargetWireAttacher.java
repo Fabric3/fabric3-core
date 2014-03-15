@@ -48,9 +48,9 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.pojo.component.InvokerInterceptor;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.Component;
@@ -78,11 +78,11 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) throws WireAttachException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) throws AttachException {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
         if (component == null) {
-            throw new WireAttachException("Target not found: " + targetName);
+            throw new AttachException("Target not found: " + targetName);
         }
         JavaComponent target = (JavaComponent) component;
 
@@ -109,11 +109,11 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws BuilderException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws BuilderException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

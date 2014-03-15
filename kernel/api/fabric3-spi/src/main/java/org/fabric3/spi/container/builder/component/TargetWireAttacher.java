@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -59,26 +59,26 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param source metadata for performing the attach
      * @param target metadata for performing the attach
      * @param wire   the wire
-     * @throws WiringException if an exception occurs during the attach operation
+     * @throws BuilderException if an exception occurs during the attach operation
      */
-    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws WiringException;
+    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws BuilderException;
 
     /**
      * Detaches a wire from a target component or outgoing transport binding.
      *
      * @param source metadata for performing the attach
      * @param target metadata for performing the attach
-     * @throws WiringException if an exception occurs during the detach operation
+     * @throws BuilderException if an exception occurs during the detach operation
      */
-    void detach(PhysicalWireSourceDefinition source, PTD target) throws WiringException;
+    void detach(PhysicalWireSourceDefinition source, PTD target) throws BuilderException;
 
     /**
      * Create an ObjectFactory that returns a direct target instance.
      *
      * @param target metadata for performing the attach
      * @return an ObjectFactory that returns the target instance
-     * @throws WiringException if an exception occurs during the attach operation
+     * @throws BuilderException if an exception occurs during the attach operation
      */
-    ObjectFactory<?> createObjectFactory(PTD target) throws WiringException;
+    ObjectFactory<?> createObjectFactory(PTD target) throws BuilderException;
 
 }

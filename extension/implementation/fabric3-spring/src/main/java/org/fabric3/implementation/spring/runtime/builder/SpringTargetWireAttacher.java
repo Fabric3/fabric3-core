@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringInvoker;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -80,14 +80,14 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         this.listeners = listeners;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target, Wire wire) throws WiringException {
+    public void attach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target, Wire wire) throws BuilderException {
         String beanName = target.getBeanName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(target.getBeanInterface());
         } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
+            throw new BuilderException(e);
         }
         for (WireListener listener : listeners) {
             listener.onAttach(wire);
@@ -101,19 +101,19 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target) throws WiringException {
+    public void detach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target) throws BuilderException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(SpringWireTargetDefinition target) throws WiringException {
+    public ObjectFactory<?> createObjectFactory(SpringWireTargetDefinition target) throws BuilderException {
         throw new UnsupportedOperationException();
     }
 
-    private SpringComponent getComponent(SpringWireTargetDefinition definition) throws WiringException {
+    private SpringComponent getComponent(SpringWireTargetDefinition definition) throws BuilderException {
         URI uri = UriHelper.getDefragmentedName(definition.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {
-            throw new WiringException("Target not found: " + uri);
+            throw new BuilderException("Target not found: " + uri);
         }
         return component;
     }

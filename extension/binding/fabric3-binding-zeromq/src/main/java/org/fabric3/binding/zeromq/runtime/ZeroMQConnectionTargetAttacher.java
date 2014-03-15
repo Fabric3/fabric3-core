@@ -32,7 +32,7 @@ package org.fabric3.binding.zeromq.runtime;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -52,7 +52,7 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
+            throws AttachException {
         try {
             ZeroMQMetadata metadata = target.getMetadata();
             String connectionId = source.getUri().toString();
@@ -60,17 +60,17 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
             boolean dedicatedThread = target.isDedicatedThread();
             broker.connect(connectionId, metadata, dedicatedThread, connection, loader);
         } catch (BrokerException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) throws AttachException {
         try {
             ZeroMQMetadata metadata = target.getMetadata();
             String connectionId = source.getUri().toString();
             broker.release(connectionId, metadata);
         } catch (BrokerException e) {
-            throw new ConnectionAttachException(e);
+            throw new AttachException(e);
         }
     }
 

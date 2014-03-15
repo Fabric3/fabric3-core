@@ -47,30 +47,28 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.Connector;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.wire.InvocationChainImpl;
 import org.fabric3.fabric.container.wire.WireImpl;
-import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.BuilderException;
-import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.wire.InterceptorCreationException;
-import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InterceptorCreationException;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * The default connector implementation.
@@ -180,9 +178,9 @@ public class ConnectorImpl implements Connector {
      *
      * @param wire       the wire
      * @param definition the physical wire definition
-     * @throws WiringException if there is an error creating a transformer
+     * @throws BuilderException if there is an error creating a transformer
      */
-    private void processTransform(Wire wire, PhysicalWireDefinition definition) throws WiringException {
+    private void processTransform(Wire wire, PhysicalWireDefinition definition) throws BuilderException {
         if (!transform) {
             // short-circuit during bootstrap
             return;
@@ -205,9 +203,9 @@ public class ConnectorImpl implements Connector {
      * @param wire           the wire
      * @param definition     the physical wire definition
      * @param checkPassByRef true if a check needs to be performed for support of pass-by-reference
-     * @throws WiringException if there is an error creating a transformer
+     * @throws BuilderException if there is an error creating a transformer
      */
-    private void addTransformer(Wire wire, PhysicalWireDefinition definition, boolean checkPassByRef) throws WiringException {
+    private void addTransformer(Wire wire, PhysicalWireDefinition definition, boolean checkPassByRef) throws BuilderException {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
         URI sourceId = sourceDefinition.getClassLoaderId();
@@ -230,7 +228,7 @@ public class ConnectorImpl implements Connector {
                 Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
                 chain.addInterceptor(interceptor);
             } catch (InterceptorCreationException e) {
-                throw new WiringException(e);
+                throw new BuilderException(e);
             }
         }
     }
