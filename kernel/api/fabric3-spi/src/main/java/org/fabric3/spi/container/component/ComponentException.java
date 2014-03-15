@@ -58,16 +58,8 @@ public abstract class ComponentException extends Fabric3Exception {
         super(message);
     }
 
-    protected ComponentException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     protected ComponentException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    protected ComponentException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     protected ComponentException(Throwable cause) {

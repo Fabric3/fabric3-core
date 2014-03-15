@@ -163,7 +163,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+            throw new ContributionResolutionException("Contribution not found: " + identifier);
         }
 
         ResourceElement<S, ?> referred = find(uri, Serializable.class, symbol);
@@ -202,7 +202,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+            throw new ContributionResolutionException("Contribution not found: " + identifier);
         }
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
         return updater.update(value, contribution, dependentContributions);
@@ -213,19 +213,18 @@ public class MetaDataStoreImpl implements MetaDataStore {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+            throw new ContributionResolutionException("Contribution not found: " + identifier);
         }
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
         return updater.remove(value, contribution, dependentContributions);
     }
-
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
             throws StoreException {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+            throw new ContributionResolutionException("Contribution not found: " + identifier);
         }
 
         return resolve(contribution, type, symbol, context);
@@ -236,7 +235,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+            throw new ContributionResolutionException("Contribution not found: " + identifier);
         }
         List<ResourceElement<?, V>> artifacts = new ArrayList<>();
         for (Resource resource : contribution.getResources()) {
@@ -440,10 +439,8 @@ public class MetaDataStoreImpl implements MetaDataStore {
         }
         for (ContributionWire<?, ?> wire : contribution.getWires()) {
             Contribution imported = cache.get(wire.getExportContributionUri());
-            if (imported.getManifest().isExtension()
-                    && !extensions.contains(imported)
-                    && !imported.getUri().equals(Names.HOST_CONTRIBUTION)
-                    && !imported.getUri().equals(Names.BOOT_CONTRIBUTION)) {
+            if (imported.getManifest().isExtension() && !extensions.contains(imported) && !imported.getUri().equals(Names.HOST_CONTRIBUTION)
+                && !imported.getUri().equals(Names.BOOT_CONTRIBUTION)) {
                 // only add to the list of extensions if the imported contribution is an extension, is not already present,
                 // and is not the host or boot classloaders.
                 extensions.add(imported);
@@ -461,7 +458,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
         }
         return extensions;
     }
-
 
     @SuppressWarnings({"unchecked"})
     private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolveInternal(Contribution contribution,

@@ -48,7 +48,6 @@ package org.fabric3.api.host;
  */
 public abstract class Fabric3Exception extends Exception {
     private static final long serialVersionUID = -7847121698339635268L;
-    private final String identifier;
 
     /**
      * Override constructor from Exception.
@@ -57,7 +56,6 @@ public abstract class Fabric3Exception extends Exception {
      */
     protected Fabric3Exception() {
         super();
-        this.identifier = null;
     }
 
     /**
@@ -68,19 +66,6 @@ public abstract class Fabric3Exception extends Exception {
      */
     public Fabric3Exception(String message) {
         super(message);
-        this.identifier = null;
-    }
-
-    /**
-     * Override constructor from Exception.
-     *
-     * @param message    passed to Exception
-     * @param identifier additional error information referred to in the error message
-     * @see Exception
-     */
-    public Fabric3Exception(String message, String identifier) {
-        super(message);
-        this.identifier = identifier;
     }
 
     /**
@@ -92,20 +77,6 @@ public abstract class Fabric3Exception extends Exception {
      */
     public Fabric3Exception(String message, Throwable cause) {
         super(message, cause);
-        this.identifier = null;
-    }
-
-    /**
-     * Override constructor from Exception.
-     *
-     * @param message    passed to Exception
-     * @param identifier additional error information referred to in the error message
-     * @param cause      passed to Exception
-     * @see Exception
-     */
-    public Fabric3Exception(String message, String identifier, Throwable cause) {
-        super(message, cause);
-        this.identifier = identifier;
     }
 
     /**
@@ -116,15 +87,6 @@ public abstract class Fabric3Exception extends Exception {
      */
     public Fabric3Exception(Throwable cause) {
         super(cause);
-        this.identifier = null;
     }
 
-    /**
-     * Returns a string representing additional error information referred to in the error message.
-     *
-     * @return additional error information
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
 }

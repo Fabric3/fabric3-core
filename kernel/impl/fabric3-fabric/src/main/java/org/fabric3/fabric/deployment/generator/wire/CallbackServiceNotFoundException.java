@@ -45,7 +45,7 @@ import org.fabric3.spi.deployment.generator.GenerationException;
 public class CallbackServiceNotFoundException extends GenerationException {
     private static final long serialVersionUID = 5437567367368328467L;
 
-    public CallbackServiceNotFoundException(String message, String identifier) {
-        super(message, identifier);
+    public CallbackServiceNotFoundException(String message) {
+        super(message);
     }
 }

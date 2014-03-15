@@ -43,7 +43,7 @@ package org.fabric3.api.host.domain;
 public class DeployableNotFoundException extends DeploymentException {
     private static final long serialVersionUID = -8572491242992185157L;
 
-    public DeployableNotFoundException(String message, String identifier) {
-        super(message, identifier);
+    public DeployableNotFoundException(String message) {
+        super(message);
     }
 }

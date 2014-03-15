@@ -50,14 +50,9 @@ import org.fabric3.spi.container.objectfactory.ObjectCreationException;
  */
 public class NullPrimitiveException extends ObjectCreationException {
     private static final long serialVersionUID = 4043316381690250609L;
-    private final int param;
 
     public NullPrimitiveException(String identifier, int param) {
-        super(null, identifier);
-        this.param = param;
+        super("Cannot assign null value to primitive for parameter " + param + " of " + identifier);
     }
 
-    public String getMessage() {
-        return "Cannot assign null value to primitive for parameter " + param + " of " + getIdentifier();
-    }
 }

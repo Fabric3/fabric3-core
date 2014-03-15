@@ -56,16 +56,8 @@ public class DeploymentException extends DomainException {
         super(message);
     }
 
-    public DeploymentException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public DeploymentException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public DeploymentException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     public DeploymentException(Throwable cause) {

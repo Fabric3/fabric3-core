@@ -43,14 +43,14 @@
  */
 package org.fabric3.implementation.reflection.jdk;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Injects a value created by an {@link ObjectFactory} using a given method.
@@ -86,7 +86,7 @@ public class MethodInjector implements Injector<Object> {
             throw new AssertionError("Method is not accessible:" + method);
         } catch (IllegalArgumentException | InvocationTargetException e) {
             String id = method.toString();
-            throw new ObjectCreationException("Exception thrown by setter: " + id, id, e);
+            throw new ObjectCreationException("Exception thrown by setter: " + id, e);
         }
     }
 

@@ -37,19 +37,13 @@
  */
 package org.fabric3.xquery.control;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
-
-import org.fabric3.xquery.provision.XQueryComponentWireSourceDefinition;
-import org.fabric3.xquery.provision.XQueryComponentWireTargetDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
 
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -61,9 +55,9 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
-import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -80,10 +74,15 @@ import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.xquery.provision.XQueryComponentDefinition;
+import org.fabric3.xquery.provision.XQueryComponentWireSourceDefinition;
+import org.fabric3.xquery.provision.XQueryComponentWireTargetDefinition;
 import org.fabric3.xquery.scdl.XQueryComponentType;
 import org.fabric3.xquery.scdl.XQueryImplementation;
 import org.fabric3.xquery.scdl.XQueryProperty;
 import org.fabric3.xquery.scdl.XQueryServiceContract;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -241,7 +240,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         }
         if (name == null) {
             String interfaze = callbackContract.getQualifiedInterfaceName();
-            throw new GenerationException("Callback  not found for type: " + interfaze, interfaze);
+            throw new GenerationException("Callback  not found for type: " + interfaze);
         }
         sourceDefinition.setUri(URI.create(source.getUri().toString() + "#" + name));
         sourceDefinition.setOptimizable(false);

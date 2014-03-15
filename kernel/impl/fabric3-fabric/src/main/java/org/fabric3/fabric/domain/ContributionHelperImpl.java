@@ -109,7 +109,7 @@ public class ContributionHelperImpl implements ContributionHelper {
         ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
         if (element == null) {
             String id = deployable.toString();
-            throw new DeployableNotFoundException("Deployable not found: " + id, id);
+            throw new DeployableNotFoundException("Deployable not found: " + id);
         }
 
         return element.getValue();

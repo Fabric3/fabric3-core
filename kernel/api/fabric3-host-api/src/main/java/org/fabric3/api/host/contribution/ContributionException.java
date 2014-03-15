@@ -59,16 +59,8 @@ public class ContributionException extends Fabric3Exception {
         super(cause);
     }
 
-    public ContributionException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public ContributionException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public ContributionException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
 }

@@ -51,14 +51,6 @@ public class StoreException extends ContributionException {
         super(message, cause);
     }
 
-    public StoreException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public StoreException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
     public StoreException(Throwable cause) {
         super(cause);
     }

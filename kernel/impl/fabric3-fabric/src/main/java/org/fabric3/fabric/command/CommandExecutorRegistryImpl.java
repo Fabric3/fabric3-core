@@ -69,7 +69,7 @@ public class CommandExecutorRegistryImpl implements CommandExecutorRegistry {
         Class<? extends Command> clazz = command.getClass();
         CommandExecutor<T> executor = (CommandExecutor<T>) executors.get(clazz);
         if (executor == null) {
-            throw new ExecutorNotFoundException("No registered executor for command: " + clazz.getName(), clazz.getName());
+            throw new ExecutorNotFoundException("No registered executor for command: " + clazz.getName());
         }
         executor.execute(command);
     }

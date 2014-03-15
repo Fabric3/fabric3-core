@@ -55,7 +55,4 @@ public class InstallException extends ContributionException {
         super(message, cause);
     }
 
-    public InstallException(String message, String identifier) {
-        super(message, identifier);
-    }
 }

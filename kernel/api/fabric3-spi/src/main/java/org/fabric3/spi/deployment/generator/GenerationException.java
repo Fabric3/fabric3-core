@@ -58,16 +58,8 @@ public class GenerationException extends Fabric3Exception {
         super(message);
     }
 
-    public GenerationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public GenerationException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public GenerationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     public GenerationException(Throwable cause) {

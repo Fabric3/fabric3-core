@@ -43,15 +43,8 @@ package org.fabric3.spi.introspection;
 public class ImplementationNotFoundException extends IntrospectionException {
     private static final long serialVersionUID = -5872848682083357587L;
 
-    public ImplementationNotFoundException(String identifier) {
-        super(identifier);
+    public ImplementationNotFoundException(String className, Throwable cause) {
+        super("Unable to load implementation class: " + className, cause);
     }
 
-    public ImplementationNotFoundException(String identifier, Throwable cause) {
-        super(identifier, cause);
-    }
-
-    public String getMessage() {
-        return "Unable to load implementation class: " + getIdentifier();
-    }
 }

@@ -60,7 +60,7 @@ public class InitializationException extends Fabric3Exception {
     }
 
     public InitializationException(String message, Throwable cause) {
-        super(message, null, cause);
+        super(message, cause);
     }
 
 }

@@ -56,16 +56,15 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
     // file extension to content type map
     private Map<String, String> extensionMap = new HashMap<>();
 
-
     @Init
     public void init() {
-        extensionMap.put("xml","application/xml");
-        extensionMap.put("composite","text/vnd.fabric3.composite+xml");
-        extensionMap.put("zip","application/zip");
-        extensionMap.put("jar","application/zip");
-        extensionMap.put("definitions","text/vnd.fabric3.definitions+xml");
-        extensionMap.put("wsdl","text/wsdl+xml");
-        extensionMap.put("contribution","text/vnd.fabric3.contribution");
+        extensionMap.put("xml", "application/xml");
+        extensionMap.put("composite", "text/vnd.fabric3.composite+xml");
+        extensionMap.put("zip", "application/zip");
+        extensionMap.put("jar", "application/zip");
+        extensionMap.put("definitions", "text/vnd.fabric3.definitions+xml");
+        extensionMap.put("wsdl", "text/wsdl+xml");
+        extensionMap.put("contribution", "text/vnd.fabric3.contribution");
     }
 
     public String getContentType(URL contentUrl) throws ContentTypeResolutionException {
@@ -84,13 +83,13 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
                 contentType = connection.getContentType();
             }
 
-            if (contentType == null ||  "application/octet-stream".equals(contentType)) {
+            if (contentType == null || "application/octet-stream".equals(contentType)) {
                 return null;
             }
 
             return contentType;
         } catch (IOException ex) {
-            throw new ContentTypeResolutionException("Unable to resolve content type: " + urlString, urlString, ex);
+            throw new ContentTypeResolutionException("Unable to resolve content type: " + urlString, ex);
         }
     }
 
@@ -114,6 +113,5 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
     public void unregister(String fileExtension) {
         extensionMap.remove(fileExtension);
     }
-
 
 }

@@ -108,7 +108,6 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         helper.processPropertyValues(component, definition);
     }
 
-
     public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
@@ -171,7 +170,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
         if (name == null) {
             String interfaze = serviceContract.getQualifiedInterfaceName();
-            throw new CallbackSiteNotFoundException("Callback injection site not found for type: " + interfaze, interfaze);
+            throw new CallbackSiteNotFoundException("Callback injection site not found for type: " + interfaze);
         }
 
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);
@@ -182,8 +181,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference)
-            throws GenerationException {
+    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) throws GenerationException {
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();

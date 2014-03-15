@@ -59,16 +59,8 @@ public class ObjectCreationException extends Fabric3Exception {
         super(message);
     }
 
-    public ObjectCreationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public ObjectCreationException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public ObjectCreationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     public ObjectCreationException(Throwable cause) {

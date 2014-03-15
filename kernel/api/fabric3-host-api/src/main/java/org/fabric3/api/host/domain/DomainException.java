@@ -55,16 +55,8 @@ public class DomainException extends Fabric3Exception {
         super(message);
     }
 
-    public DomainException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public DomainException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public DomainException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     public DomainException() {

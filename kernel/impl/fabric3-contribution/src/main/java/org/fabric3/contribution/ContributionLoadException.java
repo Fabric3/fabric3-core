@@ -45,15 +45,8 @@ import org.fabric3.api.host.contribution.InstallException;
 public class ContributionLoadException extends InstallException {
     private static final long serialVersionUID = 4545049826186872284L;
 
-    public ContributionLoadException(String message) {
-        super(message);
-    }
-
     public ContributionLoadException(Throwable cause) {
         super(cause);
     }
 
-    public ContributionLoadException(String message, String identifier) {
-        super(message, identifier);
-    }
 }

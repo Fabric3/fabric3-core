@@ -106,7 +106,7 @@ public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
             throw new AssertionError("Constructor is not accessible: " + id);
         } catch (InvocationTargetException e) {
             String id = constructor.toString();
-            throw new ObjectCreationException("Exception thrown by constructor: " + id, id, e.getCause());
+            throw new ObjectCreationException("Exception thrown by constructor: " + id, e.getCause());
         }
     }
 }

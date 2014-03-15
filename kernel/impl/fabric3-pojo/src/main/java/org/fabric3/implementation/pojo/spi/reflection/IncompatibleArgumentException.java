@@ -50,16 +50,9 @@ import org.fabric3.spi.container.objectfactory.ObjectCreationException;
  */
 public class IncompatibleArgumentException extends ObjectCreationException {
     private static final long serialVersionUID = 7837357233260840672L;
-    private final int param;
-    private final String type;
 
     public IncompatibleArgumentException(String identifier, int param, String type) {
-        super(null, identifier);
-        this.param = param;
-        this.type = type;
+        super("Unable to assign parameter of type " + type + " to parameter " + param + " of " + identifier);
     }
 
-    public String getMessage() {
-        return "Unable to assign parameter of type " + type + " to parameter " + param + " of " + getIdentifier();
-    }
 }

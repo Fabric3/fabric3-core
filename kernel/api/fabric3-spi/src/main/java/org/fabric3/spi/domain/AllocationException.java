@@ -49,15 +49,4 @@ public class AllocationException extends Fabric3Exception {
         super(message);
     }
 
-    public AllocationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public AllocationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    public AllocationException(Throwable cause) {
-        super(cause);
-    }
 }

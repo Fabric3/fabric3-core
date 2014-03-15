@@ -67,7 +67,7 @@ public class XmlProcessorRegistryImpl implements XmlProcessorRegistry {
         XmlProcessor processor = cache.get(name);
         if (processor == null) {
             String id = name.toString();
-            throw new XmlProcessorTypeNotFoundException("XML processor not found for: " + id, id);
+            throw new XmlProcessorTypeNotFoundException("XML processor not found for: " + id);
         }
         processor.processContent(contribution, reader, context);
     }

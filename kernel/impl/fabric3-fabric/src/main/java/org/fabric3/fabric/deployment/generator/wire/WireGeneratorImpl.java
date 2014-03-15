@@ -384,9 +384,9 @@ public class WireGeneratorImpl implements WireGenerator {
         // generate metadata to attach the physical wire to the target transport (which is the reference binding)
         List<LogicalOperation> sourceOperations = reference.getOperations();
         PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateServiceBindingTarget(serviceBinding,
-                                                                                                 serviceContract,
-                                                                                                 sourceOperations,
-                                                                                                 targetPolicy);
+                                                                                                     serviceContract,
+                                                                                                     sourceOperations,
+                                                                                                     targetPolicy);
         targetDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
@@ -495,7 +495,7 @@ public class WireGeneratorImpl implements WireGenerator {
             String name = contract.getInterfaceName();
             URI uri = source.getUri();
             throw new CallbackServiceNotFoundException(
-                    "Callback service not found: " + name + " on component: " + uri + " originating from reference :" + referenceName, name);
+                    "Callback service not found: " + name + " on component: " + uri + " originating from reference :" + referenceName);
         }
         return URI.create(source.getUri().toString() + "#" + candidate.getDefinition().getName());
     }

@@ -45,11 +45,7 @@ import org.fabric3.api.host.contribution.StoreException;
 public class ContributionResolutionException extends StoreException {
     private static final long serialVersionUID = 3325874555450166967L;
 
-    public ContributionResolutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ContributionResolutionException(String message, String identifier) {
-        super(message, identifier);
+    public ContributionResolutionException(String message) {
+        super(message);
     }
 }

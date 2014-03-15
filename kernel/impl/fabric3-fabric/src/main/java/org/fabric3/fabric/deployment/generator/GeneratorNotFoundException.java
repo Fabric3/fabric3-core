@@ -47,7 +47,6 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.spi.deployment.generator.GenerationException;
 
-
 /**
  *
  */
@@ -55,14 +54,11 @@ public class GeneratorNotFoundException extends GenerationException {
     private static final long serialVersionUID = -4738988978020234242L;
 
     public GeneratorNotFoundException(Class<?> type) {
-        super("Generator not registered for type: " + type.getName(), type.getName());
+        super("Generator not registered for type: " + type.getName());
     }
 
     public GeneratorNotFoundException(QName type) {
-        super("Generator not registered for type: " + type.toString(), type.toString());
+        super("Generator not registered for type: " + type.toString());
     }
 
-    public GeneratorNotFoundException(String type) {
-        super("Generator not registered for type: " + type, type);
-    }
 }

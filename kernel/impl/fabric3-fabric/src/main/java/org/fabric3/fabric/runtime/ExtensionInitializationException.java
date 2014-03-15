@@ -45,19 +45,8 @@ import org.fabric3.api.host.runtime.InitializationException;
 public class ExtensionInitializationException extends InitializationException {
     private static final long serialVersionUID = 7390375093657355129L;
 
-    public ExtensionInitializationException(String message) {
-        super(message);
-    }
-
     public ExtensionInitializationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public String getMessage() {
-        if (getIdentifier() != null) {
-            return super.getMessage() + ": " + getIdentifier();
-        } else {
-            return super.getMessage();
-        }
-    }
 }
