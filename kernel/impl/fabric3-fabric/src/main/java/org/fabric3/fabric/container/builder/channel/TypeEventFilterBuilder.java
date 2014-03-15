@@ -41,7 +41,7 @@ import java.util.List;
 
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -51,7 +51,7 @@ import org.fabric3.spi.model.type.java.JavaType;
  */
 public class TypeEventFilterBuilder implements EventFilterBuilder<TypeEventFilterDefinition> {
 
-    public EventFilter build(TypeEventFilterDefinition definition) throws BuilderException {
+    public EventFilter build(TypeEventFilterDefinition definition) throws BuildException {
         List<DataType> types = definition.getTypes();
         int i = 0;
         Class<?>[] classes = new Class<?>[types.size()];

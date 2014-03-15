@@ -39,10 +39,10 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -62,7 +62,7 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         this.channel = channel;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws BuildException {
         for (InvocationChain chain : wire.getInvocationChains()) {
             URI destination = target.getUri();
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -72,11 +72,11 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws BuildException {
         //        throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 }

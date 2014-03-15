@@ -41,6 +41,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -48,7 +49,6 @@ import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -81,7 +81,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         this.listeners = listeners;
     }
 
-    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -95,12 +95,12 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
                 listener.onAttach(wire);
             }
         } catch (ClassNotFoundException | ProxyCreationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
     public void attachObjectFactory(SpringWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuilderException {
+            throws BuildException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -109,25 +109,25 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
             interfaze = loader.loadClass(source.getInterface());
             component.attach(referenceName, interfaze, objectFactory);
         } catch (ClassNotFoundException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
-    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         component.detach(referenceName);
     }
 
-    public void detachObjectFactory(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         detach(source, target);
     }
 
-    private SpringComponent getComponent(SpringWireSourceDefinition definition) throws BuilderException {
+    private SpringComponent getComponent(SpringWireSourceDefinition definition) throws BuildException {
         URI uri = definition.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {
-            throw new BuilderException("Source not found: " + uri);
+            throw new BuildException("Source not found: " + uri);
         }
         return component;
     }

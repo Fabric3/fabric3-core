@@ -43,9 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -53,15 +50,10 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.transaction.TransactionManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
-import org.fabric3.binding.jms.runtime.wire.InterceptorConfiguration;
-import org.fabric3.binding.jms.runtime.wire.JmsInterceptor;
-import org.fabric3.binding.jms.runtime.wire.ResponseListener;
-import org.fabric3.binding.jms.runtime.wire.WireConfiguration;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
@@ -70,19 +62,25 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.OperationPropertiesDefinition;
+import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
+import org.fabric3.binding.jms.runtime.wire.InterceptorConfiguration;
+import org.fabric3.binding.jms.runtime.wire.JmsInterceptor;
+import org.fabric3.binding.jms.runtime.wire.ResponseListener;
+import org.fabric3.binding.jms.runtime.wire.WireConfiguration;
+import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the reference end of a wire to a JMS destination.
@@ -92,7 +90,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
     private TransactionManager tm;
     private ClassLoaderRegistry classLoaderRegistry;
     private BindingHandlerRegistry handlerRegistry;
-
 
     public JmsTargetWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference TransactionManager tm,
@@ -104,7 +101,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws BuildException {
 
         WireConfiguration wireConfiguration = new WireConfiguration();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
@@ -142,27 +139,23 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws BuilderException {
-        try {
-            resolver.release(target.getMetadata().getConnectionFactory());
-        } catch (JmsResolutionException e) {
-            throw new BuilderException(e);
-        }
+    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws BuildException {
+        resolver.release(target.getMetadata().getConnectionFactory());
     }
 
-    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws BuildException {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Processes JMS headers for the interceptor configuration. URI headers are given precedence, followed by header values configured on operation
-     * properties and the binding.jms/headers element respectively.
+     * Processes JMS headers for the interceptor configuration. URI headers are given precedence, followed by header values configured on operation properties
+     * and the binding.jms/headers element respectively.
      *
      * @param configuration the interceptor configuration
      * @param metadata      the JMS binding metadata
-     * @throws BuilderException if an error processing headers occurs
+     * @throws BuildException if an error processing headers occurs
      */
-    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws BuilderException {
+    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws BuildException {
         HeadersDefinition uriHeaders = metadata.getUriHeaders();
         HeadersDefinition headers = metadata.getHeaders();
         Map<String, OperationPropertiesDefinition> properties = metadata.getOperationProperties();
@@ -209,7 +202,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws BuilderException {
+    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws BuildException {
         for (Map.Entry<String, String> entry : definition.getProperties().entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -224,14 +217,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
                     long time = Long.valueOf(value);
                     configuration.setTimeToLive(time);
                 } catch (NumberFormatException e) {
-                    throw new BuilderException(e);
+                    throw new BuildException(e);
                 }
             } else if (configuration.getPriority() == -1 && "JMSPriority".equals(key)) {
                 try {
                     int priority = Integer.valueOf(value);
                     configuration.setPriority(priority);
                 } catch (NumberFormatException e) {
-                    throw new BuilderException(e);
+                    throw new BuildException(e);
                 }
             } else {
                 // user-defined property
@@ -248,7 +241,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws BuilderException {
+    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws BuildException {
         JmsBindingMetadata metadata = target.getMetadata();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -286,18 +279,18 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
                 }
 
             }
-        } catch (JmsResolutionException | JMSException e) {
-            throw new BuilderException(e);
+        } catch (JMSException e) {
+            throw new BuildException(e);
         }
 
     }
 
-    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws BuilderException {
+    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws BuildException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
-            throw new BuilderException("Destination is not a queue: " + requestDestinationDefinition.getName());
+            throw new BuildException("Destination is not a queue: " + requestDestinationDefinition.getName());
         } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
-            throw new BuilderException("Destination is not a topic: " + requestDestinationDefinition.getName());
+            throw new BuildException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
 
@@ -310,7 +303,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         // programming error
         throw new AssertionError("Error resolving operation: " + operationName);
     }
-
 
     private List<BindingHandler<Message>> createHandlers(JmsWireTargetDefinition target) {
         if (target.getHandlers().isEmpty()) {

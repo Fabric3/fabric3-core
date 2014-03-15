@@ -47,11 +47,11 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -77,7 +77,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws BuildException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
@@ -109,11 +109,11 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws BuildException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

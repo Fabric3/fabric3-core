@@ -50,18 +50,17 @@ import org.fabric3.binding.ws.metro.provision.MetroWsdlWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.DocumentInvoker;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
-import org.fabric3.binding.ws.metro.runtime.core.EndpointException;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.F3Provider;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
-import org.fabric3.spi.repository.ArtifactCache;
-import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.BuilderException;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.repository.ArtifactCache;
+import org.fabric3.spi.repository.CacheException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -83,7 +82,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.cache = cache;
     }
 
-    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
@@ -126,19 +125,19 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                             generatedSchemas,
                                                                             handlers);
             endpointService.registerService(configuration);
-        } catch (CacheException | EndpointException e) {
-            throw new BuilderException(e);
+        } catch (CacheException e) {
+            throw new BuildException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
     }
 
-    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         try {
             URI servicePath = source.getEndpointDefinition().getServicePath();
             cache.remove(servicePath);
         } catch (CacheException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 

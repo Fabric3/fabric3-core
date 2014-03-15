@@ -37,10 +37,10 @@
 */
 package org.fabric3.timer.runtime;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.timer.provision.PhysicalTimerPoolResource;
 import org.fabric3.timer.spi.PoolAllocationException;
@@ -57,19 +57,19 @@ public class TimerPoolBuilder implements ResourceBuilder<PhysicalTimerPoolResour
         this.service = service;
     }
 
-    public void build(PhysicalTimerPoolResource definition) throws BuilderException {
+    public void build(PhysicalTimerPoolResource definition) throws BuildException {
         try {
             service.allocate(definition.getName(), definition.getCoreSize());
         } catch (PoolAllocationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
-    public void remove(PhysicalTimerPoolResource definition) throws BuilderException {
+    public void remove(PhysicalTimerPoolResource definition) throws BuildException {
         try {
             service.deallocate(definition.getName());
         } catch (PoolAllocationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 }

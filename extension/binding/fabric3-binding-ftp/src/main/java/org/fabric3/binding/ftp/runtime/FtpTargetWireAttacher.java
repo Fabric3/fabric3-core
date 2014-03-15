@@ -47,7 +47,7 @@ import org.apache.commons.net.SocketFactory;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
 import org.fabric3.binding.ftp.provision.FtpWireTargetDefinition;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -64,7 +64,7 @@ public class FtpTargetWireAttacher implements TargetWireAttacher<FtpWireTargetDe
         this.monitor = monitor;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, FtpWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, FtpWireTargetDefinition target, Wire wire) throws BuildException {
 
         InvocationChain invocationChain = wire.getInvocationChains().iterator().next();
         URI uri = target.getUri();
@@ -89,16 +89,16 @@ public class FtpTargetWireAttacher implements TargetWireAttacher<FtpWireTargetDe
 
             invocationChain.addInterceptor(targetInterceptor);
         } catch (UnknownHostException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, FtpWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, FtpWireTargetDefinition target) throws BuildException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(FtpWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(FtpWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 

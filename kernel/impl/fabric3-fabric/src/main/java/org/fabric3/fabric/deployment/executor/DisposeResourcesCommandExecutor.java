@@ -45,12 +45,12 @@ package org.fabric3.fabric.deployment.executor;
 
 import java.util.Map;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.deployment.command.DisposeResourcesCommand;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
@@ -93,7 +93,7 @@ public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeR
         }
         try {
             builder.remove(definition);
-        } catch (BuilderException e) {
+        } catch (BuildException e) {
             throw new ExecutionException(e);
         }
     }

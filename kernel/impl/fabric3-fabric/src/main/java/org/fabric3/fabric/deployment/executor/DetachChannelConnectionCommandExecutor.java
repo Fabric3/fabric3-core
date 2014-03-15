@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.deployment.executor;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -44,7 +45,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.fabric.deployment.command.DetachChannelConnectionCommand;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
@@ -71,7 +71,7 @@ public class DetachChannelConnectionCommandExecutor implements CommandExecutor<D
     public void execute(DetachChannelConnectionCommand command) throws ExecutionException {
         try {
             connector.disconnect(command.getDefinition());
-        } catch (BuilderException be) {
+        } catch (BuildException be) {
             throw new AssertionError(be);
         }
     }

@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
@@ -57,16 +57,16 @@ public interface ComponentBuilder<D extends PhysicalComponentDefinition, C exten
      *
      * @param definition physical component definition of the component to be built
      * @return the component
-     * @throws BuilderException if unable to build the component
+     * @throws BuildException if unable to build the component
      */
-    C build(D definition) throws BuilderException;
+    C build(D definition) throws BuildException;
 
     /**
      * Disposes a component.
      *
      * @param definition physical component definition of the component to be built.
      * @param component  the component
-     * @throws BuilderException if unable to build the component
+     * @throws BuildException if unable to build the component
      */
-    void dispose(D definition, C component) throws BuilderException;
+    void dispose(D definition, C component) throws BuildException;
 }

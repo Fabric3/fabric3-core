@@ -39,9 +39,9 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -57,20 +57,20 @@ public class TestBindingSourceWireAttacher implements SourceWireAttacher<TestBin
         this.channel = channel;
     }
 
-    public void attach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         // register the wire to the bound service so it can be invoked through the channel from a bound reference
         URI callbackUri = target.getCallbackUri();
         channel.registerDestinationWire(source.getUri(), wire, callbackUri);
     }
 
-    public void detach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 
-    public void detachObjectFactory(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 
     public void attachObjectFactory(TestBindingWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)
-            throws BuilderException {
+            throws BuildException {
         throw new AssertionError();
     }
 }

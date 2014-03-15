@@ -41,12 +41,12 @@ import java.util.Map;
 import java.util.Properties;
 import javax.naming.NamingException;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.jndi.spi.JndiContextManager;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 
 /**
@@ -60,22 +60,22 @@ public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDe
         this.manager = manager;
     }
 
-    public void build(PhysicalJndiContextDefinition definition) throws BuilderException {
+    public void build(PhysicalJndiContextDefinition definition) throws BuildException {
         for (Map.Entry<String, Properties> entry : definition.getContexts().entrySet()) {
             try {
                 manager.register(entry.getKey(), entry.getValue());
             } catch (NamingException e) {
-                throw new BuilderException(e);
+                throw new BuildException(e);
             }
         }
     }
 
-    public void remove(PhysicalJndiContextDefinition definition) throws BuilderException {
+    public void remove(PhysicalJndiContextDefinition definition) throws BuildException {
         for (String name : definition.getContexts().keySet()) {
             try {
                 manager.unregister(name);
             } catch (NamingException e) {
-                throw new BuilderException(e);
+                throw new BuildException(e);
             }
         }
     }

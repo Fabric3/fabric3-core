@@ -37,13 +37,13 @@
 */
 package org.fabric3.implementation.junit.runtime;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -75,12 +75,12 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         this.authenticationService = authenticationService;
     }
 
-    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         String testName = source.getTestName();
         ContextConfiguration configuration = source.getConfiguration();
         if (configuration != null) {
             if (authenticationService == null) {
-                throw new BuilderException("Security information set for the test but a security extension has not been installed in the runtime");
+                throw new BuildException("Security information set for the test but a security extension has not been installed in the runtime");
             }
             // configuration an authentication interceptor to set the subject on the work context
             for (InvocationChain chain : wire.getInvocationChains()) {
@@ -95,14 +95,14 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
     }
 
     public void attachObjectFactory(JUnitWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuilderException {
+            throws BuildException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 
-    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 
 

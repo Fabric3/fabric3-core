@@ -39,9 +39,9 @@ package org.fabric3.policy.interceptor.simple;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.wire.Interceptor;
@@ -57,7 +57,7 @@ public class SimpleInterceptorBuilder implements InterceptorBuilder<SimpleInterc
     }
 
     @SuppressWarnings("unchecked")
-    public Interceptor build(SimpleInterceptorDefinition definition) throws BuilderException {
+    public Interceptor build(SimpleInterceptorDefinition definition) throws BuildException {
 
         String className = definition.getInterceptorClass();
         URI classLoaderUri = definition.getPolicyClassLoaderId();

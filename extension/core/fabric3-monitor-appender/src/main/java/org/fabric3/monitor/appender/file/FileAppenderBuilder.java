@@ -42,7 +42,7 @@ import java.io.File;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -58,7 +58,7 @@ public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Appender build(PhysicalFileAppenderDefinition definition) throws BuilderException {
+    public Appender build(PhysicalFileAppenderDefinition definition) throws BuildException {
         File outputDir = new File(hostInfo.getDataDir(), "logs");
         outputDir.mkdirs();
         File outputFile = new File(outputDir, definition.getFileName());
@@ -74,7 +74,7 @@ public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender
             RollStrategy strategy = new SizeRollStrategy(rollSize, maxBackups);
             return new FileAppender(outputFile, strategy, false);
         } else {
-            throw new BuilderException("Unknown roll type: " + rollType);
+            throw new BuildException("Unknown roll type: " + rollType);
         }
 
     }

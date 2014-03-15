@@ -41,13 +41,13 @@ package org.fabric3.cache.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
@@ -64,7 +64,7 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void build(PhysicalCacheSetDefinition definition) throws BuilderException {
+    public void build(PhysicalCacheSetDefinition definition) throws BuildException {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.build(cacheDefinition);
@@ -72,18 +72,18 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void remove(PhysicalCacheSetDefinition definition) throws BuilderException {
+    public void remove(PhysicalCacheSetDefinition definition) throws BuildException {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.remove(cacheDefinition);
         }
     }
 
-    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws BuilderException {
+    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws BuildException {
         Class<? extends PhysicalResourceDefinition> type = cacheDefinition.getClass();
         CacheBuilder<?> builder = builders.get(type);
         if (builder == null) {
-            throw new BuilderException("Cache builder not found for type: " + type);
+            throw new BuildException("Cache builder not found for type: " + type);
         }
         return builder;
     }

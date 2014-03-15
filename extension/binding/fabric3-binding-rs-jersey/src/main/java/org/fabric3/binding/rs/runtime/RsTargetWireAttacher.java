@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.fabric3.binding.rs.runtime.container.RsClientInterceptor;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -26,7 +26,7 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws BuildException {
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(def.getClassLoaderId());
         List<InvocationChain> invocationChains = wire.getInvocationChains();
         URI uri = def.getUri();
@@ -44,15 +44,15 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
                 chain.addInterceptor(new RsClientInterceptor(operationName, interfaceClass, uri, args));
             }
         } catch (Exception e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws BuildException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws BuildException {
         // no-op
     }
 

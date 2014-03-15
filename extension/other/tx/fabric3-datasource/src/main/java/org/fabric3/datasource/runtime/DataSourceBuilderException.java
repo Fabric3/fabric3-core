@@ -37,12 +37,12 @@
 */
 package org.fabric3.datasource.runtime;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  *
  */
-public class DataSourceBuilderException extends BuilderException {
+public class DataSourceBuilderException extends BuildException {
     private static final long serialVersionUID = -1759805806096578062L;
 
     public DataSourceBuilderException(Throwable cause) {

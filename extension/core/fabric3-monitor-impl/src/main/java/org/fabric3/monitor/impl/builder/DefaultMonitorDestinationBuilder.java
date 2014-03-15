@@ -52,7 +52,7 @@ import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.writer.EventWriter;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -85,13 +85,13 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws BuilderException {
+    public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws BuildException {
         // create the appenders for the destination
         List<Appender> appenders = new ArrayList<>();
         for (PhysicalAppenderDefinition appenderDefinition : definition.getDefinitions()) {
             AppenderBuilder builder = appenderBuilders.get(appenderDefinition.getClass());
             if (builder == null) {
-                throw new BuilderException("Unknown appender type: " + definition.getClass());
+                throw new BuildException("Unknown appender type: " + definition.getClass());
             }
             Appender appender = builder.build(appenderDefinition);
             appenders.add(appender);
@@ -102,17 +102,17 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
         try {
             destination.start();
         } catch (IOException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
         registry.register(destination);
     }
 
-    public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws BuilderException {
+    public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws BuildException {
         MonitorDestination destination = registry.unregister(definition.getName());
         try {
             destination.stop();
         } catch (IOException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
 
     }

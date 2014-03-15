@@ -43,6 +43,7 @@
  */
 package org.fabric3.fabric.deployment.executor;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -50,7 +51,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.container.builder.classloader.ClassLoaderBuilder;
 import org.fabric3.fabric.deployment.command.ProvisionClassloaderCommand;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
@@ -78,7 +78,7 @@ public class ProvisionClassloaderCommandExecutor implements CommandExecutor<Prov
     public void execute(ProvisionClassloaderCommand command) throws ExecutionException {
         try {
             classLoaderBuilder.build(command.getClassLoaderDefinition());
-        } catch (BuilderException e) {
+        } catch (BuildException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
 

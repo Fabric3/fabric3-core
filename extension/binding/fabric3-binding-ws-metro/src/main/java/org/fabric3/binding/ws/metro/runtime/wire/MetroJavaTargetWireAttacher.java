@@ -65,10 +65,10 @@ import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -114,7 +114,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.monitor = monitor;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws BuildException {
 
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
@@ -127,7 +127,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
             byte[] bytes = target.getGeneratedInterface();
 
             if (!(classLoader instanceof SecureClassLoader)) {
-                throw new BuilderException("Classloader for " + interfaze + " must be a SecureClassLoader");
+                throw new BuildException("Classloader for " + interfaze + " must be a SecureClassLoader");
             }
             Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
 
@@ -176,16 +176,16 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 Thread.currentThread().setContextClassLoader(old);
             }
         } catch (CacheException | URISyntaxException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
 
     }
 
-    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws BuildException {
         return null;
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws BuildException {
         // no-op
     }
 

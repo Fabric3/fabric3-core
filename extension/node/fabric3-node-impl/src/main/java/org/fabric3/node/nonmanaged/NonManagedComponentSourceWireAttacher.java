@@ -40,7 +40,7 @@ package org.fabric3.node.nonmanaged;
 import org.fabric3.api.host.Names;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -64,29 +64,29 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(Names.HOST_CONTRIBUTION);
             Class<?> interfaze = loader.loadClass(source.getInterface());
             Object proxy = proxyService.createObjectFactory(interfaze, wire, null).getInstance();
             source.setProxy(proxy);
         } catch (ProxyCreationException | ClassNotFoundException | ObjectCreationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
     public void attachObjectFactory(NonManagedPhysicalWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuilderException {
+            throws BuildException {
         try {
             source.setProxy(objectFactory.getInstance());
         } catch (ObjectCreationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
-    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 
-    public void detachObjectFactory(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 }

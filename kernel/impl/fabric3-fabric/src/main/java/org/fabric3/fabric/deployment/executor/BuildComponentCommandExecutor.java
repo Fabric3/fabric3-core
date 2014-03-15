@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -55,7 +56,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.container.builder.BuilderNotFoundException;
 import org.fabric3.fabric.deployment.command.BuildComponentCommand;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -112,7 +112,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
             for (ComponentBuilderListener listener : listeners) {
                 listener.onBuild(component, definition);
             }
-        } catch (BuilderException | RegistrationException e) {
+        } catch (BuildException | RegistrationException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }
@@ -122,10 +122,10 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
      *
      * @param definition the component definition.
      * @return Component to be built.
-     * @throws BuilderException if an exception building is encountered
+     * @throws BuildException if an exception building is encountered
      */
     @SuppressWarnings("unchecked")
-    private Component build(PhysicalComponentDefinition definition) throws BuilderException {
+    private Component build(PhysicalComponentDefinition definition) throws BuildException {
 
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {

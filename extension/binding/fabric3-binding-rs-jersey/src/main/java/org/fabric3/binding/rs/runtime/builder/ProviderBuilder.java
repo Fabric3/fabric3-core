@@ -48,7 +48,7 @@ import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
 import org.fabric3.binding.rs.runtime.filter.ProxyRequestFilter;
 import org.fabric3.binding.rs.runtime.filter.ProxyResponseFilter;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.Reference;
@@ -73,7 +73,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalProviderResourceDefinition definition) throws BuilderException {
+    public void build(PhysicalProviderResourceDefinition definition) throws BuildException {
         try {
             URI filterUri = definition.getProviderUri();
 
@@ -87,12 +87,12 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 filterRegistry.registerGlobalFilter(filterUri, filter);
             }
         } catch (ClassNotFoundException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalProviderResourceDefinition definition) throws BuilderException {
+    public void remove(PhysicalProviderResourceDefinition definition) throws BuildException {
         try {
             if (definition.getBindingAnnotation() != null) {
                 String bindingAnnotation = definition.getBindingAnnotation();
@@ -105,7 +105,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 filterRegistry.unregisterGlobalFilter(filterUri);
             }
         } catch (ClassNotFoundException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 

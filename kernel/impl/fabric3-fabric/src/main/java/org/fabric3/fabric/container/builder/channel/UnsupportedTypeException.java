@@ -37,12 +37,12 @@
 */
 package org.fabric3.fabric.container.builder.channel;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  *
  */
-public class UnsupportedTypeException extends BuilderException{
+public class UnsupportedTypeException extends BuildException {
     private static final long serialVersionUID = 3357845158275691387L;
 
     public UnsupportedTypeException(String message) {

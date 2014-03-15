@@ -43,12 +43,12 @@
  */
 package org.fabric3.fabric.container.builder;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  *
  */
-public class AttacherNotFoundException extends BuilderException {
+public class AttacherNotFoundException extends BuildException {
     private static final long serialVersionUID = 2604579115547966762L;
 
     public AttacherNotFoundException(String message) {

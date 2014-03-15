@@ -45,10 +45,10 @@ package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -69,14 +69,14 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
         this.manager = manager;
     }
 
-    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
     }
 
-    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -84,7 +84,7 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
     }
 
     public void attachObjectFactory(SingletonWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuilderException {
+            throws BuildException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

@@ -55,15 +55,15 @@ public interface ChannelConnector {
      * channel, or channel binding).
      *
      * @param definition the connection metadata
-     * @throws BuilderException if an error creating the connect is encountered
+     * @throws BuildException if an error creating the connect is encountered
      */
-    void connect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
+    void connect(PhysicalChannelConnectionDefinition definition) throws BuildException;
 
     /**
      * Removes a channel connection.
      *
      * @param definition the connection metadata
-     * @throws BuilderException if an error disconnecting is encountered
+     * @throws BuildException if an error disconnecting is encountered
      */
-    void disconnect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
+    void disconnect(PhysicalChannelConnectionDefinition definition) throws BuildException;
 }

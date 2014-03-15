@@ -44,6 +44,7 @@ import org.atmosphere.cache.HeaderBroadcasterCache;
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -56,7 +57,6 @@ import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
 import org.fabric3.binding.web.runtime.common.LongRunningExecutorService;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.host.ServletHost;
@@ -139,7 +139,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDe
         atmosphereFramework.destroy();
     }
 
-    public void attach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         String path = getPath(source);
         if (wire.getInvocationChains().size() != 1) {
             // the websocket binding only supports service contracts with one operation
@@ -154,7 +154,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDe
         monitor.provisionedEndpoint(prefix + path);
     }
 
-    public void detach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         String path = getPath(source);
         serviceManager.unregister(path);
         String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);

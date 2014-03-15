@@ -39,10 +39,10 @@ package org.fabric3.xquery.runtime;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -64,7 +64,7 @@ public class XQueryComponentSourceWireAttacher implements SourceWireAttacher<XQu
         this.manager = manager;
     }
 
-    public void attach(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         String callbackUri = null;
@@ -75,23 +75,23 @@ public class XQueryComponentSourceWireAttacher implements SourceWireAttacher<XQu
         component.attachSourceWire(referenceName, callbackUri, wire);
     }
 
-    public void detach(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 
     public void attachObjectFactory(XQueryComponentWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuilderException {
+            throws BuildException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         XQueryComponent component = (XQueryComponent) manager.getComponent(sourceUri);
         try {
             component.attachObjectFactory(referenceName, objectFactory);
         } catch (ObjectCreationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
-    public void detachObjectFactory(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(XQueryComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 

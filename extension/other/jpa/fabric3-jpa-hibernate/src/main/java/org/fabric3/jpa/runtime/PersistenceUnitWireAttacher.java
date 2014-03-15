@@ -41,12 +41,12 @@ import java.net.URI;
 import javax.persistence.EntityManagerFactory;
 
 import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -72,15 +72,15 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws BuildException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws BuildException {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
         ClassLoader classLoader = registry.getClassLoader(classLoaderUri);
@@ -92,7 +92,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
             EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, overrides, classLoader);
             return new SingletonObjectFactory<>(entityManagerFactory);
         } catch (JpaResolutionException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

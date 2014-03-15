@@ -30,11 +30,11 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  */
-public class BrokerException extends Fabric3Exception {
+public class BrokerException extends BuildException {
     private static final long serialVersionUID = 4442369221828416074L;
 
     public BrokerException(Throwable cause) {

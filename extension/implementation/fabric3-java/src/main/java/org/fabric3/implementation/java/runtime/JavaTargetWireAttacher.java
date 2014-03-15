@@ -44,11 +44,11 @@ import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.pojo.component.InvokerInterceptor;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -109,11 +109,11 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws BuildException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws BuildException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

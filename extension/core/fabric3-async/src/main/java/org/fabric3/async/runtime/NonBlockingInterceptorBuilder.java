@@ -39,11 +39,11 @@ package org.fabric3.async.runtime;
 
 import java.util.concurrent.ExecutorService;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
 
@@ -59,7 +59,7 @@ public class NonBlockingInterceptorBuilder implements InterceptorBuilder<NonBloc
         this.monitor = monitor;
     }
 
-    public Interceptor build(NonBlockingInterceptorDefinition definition) throws BuilderException {
+    public Interceptor build(NonBlockingInterceptorDefinition definition) throws BuildException {
         return new NonBlockingInterceptor(executorService, monitor);
     }
 

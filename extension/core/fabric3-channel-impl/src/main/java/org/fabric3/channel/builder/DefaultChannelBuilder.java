@@ -47,7 +47,7 @@ import org.fabric3.channel.impl.AsyncFanOutHandler;
 import org.fabric3.channel.impl.DefaultChannelImpl;
 import org.fabric3.channel.impl.FanOutHandler;
 import org.fabric3.channel.impl.SyncFanOutHandler;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
@@ -73,7 +73,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         this.bindingBuilders = builders;
     }
 
-    public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
+    public Channel build(PhysicalChannelDefinition definition) throws BuildException {
         URI uri = definition.getUri();
         QName deployable = definition.getDeployable();
 
@@ -93,12 +93,12 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         return channel;
     }
 
-    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws BuilderException {
+    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws BuildException {
         disposeBinding(channel, definition.getBindingDefinition());
     }
 
     @SuppressWarnings({"unchecked"})
-    private void buildBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws BuilderException {
+    private void buildBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws BuildException {
         if (bindingDefinition != null) {
             ChannelBindingBuilder builder = getBuilder(bindingDefinition);
             builder.build(bindingDefinition, channel);
@@ -106,17 +106,17 @@ public class DefaultChannelBuilder implements ChannelBuilder {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void disposeBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws BuilderException {
+    private void disposeBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws BuildException {
         if (bindingDefinition != null) {
             ChannelBindingBuilder builder = getBuilder(bindingDefinition);
             builder.dispose(bindingDefinition, channel);
         }
     }
 
-    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition definition) throws BuilderException {
+    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition definition) throws BuildException {
         ChannelBindingBuilder<?> builder = bindingBuilders.get(definition.getClass());
         if (builder == null) {
-            throw new BuilderException("Channel binding builder not found for type " + definition.getClass());
+            throw new BuildException("Channel binding builder not found for type " + definition.getClass());
         }
         return builder;
     }

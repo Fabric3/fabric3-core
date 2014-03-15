@@ -44,9 +44,9 @@ import java.util.List;
 
 import org.easymock.IMocksControl;
 import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -86,11 +86,11 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws BuildException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws BuildException {
         Class<?> mockedInterface = loadInterface(target);
         Object mock = createMock(mockedInterface);
         return new SingletonObjectFactory<>(mock);

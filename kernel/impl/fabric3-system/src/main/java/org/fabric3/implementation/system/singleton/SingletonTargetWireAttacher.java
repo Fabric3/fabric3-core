@@ -39,10 +39,10 @@ package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -62,13 +62,13 @@ public class SingletonTargetWireAttacher implements TargetWireAttacher<Singleton
     }
 
     public void attach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target, Wire wire)
-            throws BuilderException {
+            throws BuildException {
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target) throws BuildException {
     }
 
-    public ObjectFactory<?> createObjectFactory(SingletonWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(SingletonWireTargetDefinition target) throws BuildException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SingletonComponent targetComponent = (SingletonComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

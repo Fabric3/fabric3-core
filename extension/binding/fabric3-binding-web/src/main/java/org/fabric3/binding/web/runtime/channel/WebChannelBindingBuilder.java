@@ -46,6 +46,7 @@ import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.Broadcaster;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -59,7 +60,6 @@ import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
 import org.fabric3.binding.web.runtime.common.LongRunningExecutorService;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.EventStream;
@@ -150,7 +150,7 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         atmosphereFramework.destroy();
     }
 
-    public void build(WebChannelBindingDefinition definition, Channel channel) throws BuilderException {
+    public void build(WebChannelBindingDefinition definition, Channel channel) throws BuildException {
         URI sourceUri = channel.getUri();
         String path = UriHelper.getBaseName(sourceUri);
         OperationsAllowed allowed = definition.getAllowed();
@@ -183,7 +183,7 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
 
     }
 
-    public void dispose(WebChannelBindingDefinition definition, Channel channel) throws BuilderException {
+    public void dispose(WebChannelBindingDefinition definition, Channel channel) throws BuildException {
         URI sourceUri = channel.getUri();
 
         String path = UriHelper.getBaseName(sourceUri);

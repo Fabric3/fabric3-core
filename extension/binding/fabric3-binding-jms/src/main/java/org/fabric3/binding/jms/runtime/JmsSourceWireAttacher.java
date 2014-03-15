@@ -54,13 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
-import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
-import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
-import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
-import org.fabric3.binding.jms.runtime.wire.InvocationChainHolder;
-import org.fabric3.binding.jms.runtime.wire.ServiceListener;
-import org.fabric3.binding.jms.runtime.wire.WireHolder;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
@@ -68,26 +61,32 @@ import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
+import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
+import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
+import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
+import org.fabric3.binding.jms.runtime.wire.InvocationChainHolder;
+import org.fabric3.binding.jms.runtime.wire.ServiceListener;
+import org.fabric3.binding.jms.runtime.wire.WireHolder;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
-import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
 
 /**
  * Attaches a channel or consumer to a JMS destination.
@@ -115,7 +114,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         URI serviceUri = target.getUri();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         TransactionType trxType = source.getTransactionType();
@@ -146,7 +145,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             }
             containerManager.register(configuration);
         } catch (JMSException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
@@ -177,63 +176,60 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         //        configuration.setLocalDelivery();
     }
 
-    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         try {
             containerManager.unregister(target.getUri());
             // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
             resolver.release(source.getMetadata().getConnectionFactory());
         } catch (JMSException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 
-    public void attachObjectFactory(JmsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition) throws BuilderException {
+    public void attachObjectFactory(JmsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)
+            throws BuildException {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsWireSourceDefinition source) throws BuilderException {
-        try {
-            JmsBindingMetadata metadata = source.getMetadata();
-            ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
+    private ResolvedObjects resolveAdministeredObjects(JmsWireSourceDefinition source) throws BuildException {
+        JmsBindingMetadata metadata = source.getMetadata();
+        ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
 
-            ConnectionFactory requestConnectionFactory = resolver.resolve(requestDefinition);
-            DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-            Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
+        ConnectionFactory requestConnectionFactory = resolver.resolve(requestDefinition);
+        DestinationDefinition requestDestinationDefinition = metadata.getDestination();
+        Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
 
-            validateDestination(requestDestination, requestDestinationDefinition);
+        validateDestination(requestDestination, requestDestinationDefinition);
 
-            ConnectionFactory responseConnectionFactory = null;
-            Destination responseDestination = null;
-            if (metadata.isResponse()) {
-                ConnectionFactoryDefinition responseDefinition = metadata.getResponseConnectionFactory();
-                responseConnectionFactory = resolver.resolve(responseDefinition);
-                DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
-                if (responseDestinationDefinition != null) {
-                    // it is legal to omit the response destination, in which case the service must use the JMSReplyTo header from the request message
-                    responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
-                    validateDestination(responseDestination, responseDestinationDefinition);
-                }
+        ConnectionFactory responseConnectionFactory = null;
+        Destination responseDestination = null;
+        if (metadata.isResponse()) {
+            ConnectionFactoryDefinition responseDefinition = metadata.getResponseConnectionFactory();
+            responseConnectionFactory = resolver.resolve(responseDefinition);
+            DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
+            if (responseDestinationDefinition != null) {
+                // it is legal to omit the response destination, in which case the service must use the JMSReplyTo header from the request message
+                responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
+                validateDestination(responseDestination, responseDestinationDefinition);
             }
-            return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
-        } catch (JmsResolutionException e) {
-            throw new BuilderException(e);
         }
+        return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
     }
 
-    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws BuilderException {
+    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws BuildException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
-            throw new BuilderException("Destination is not a queue: " + requestDestinationDefinition.getName());
+            throw new BuildException("Destination is not a queue: " + requestDestinationDefinition.getName());
         } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
-            throw new BuilderException("Destination is not a topic: " + requestDestinationDefinition.getName());
+            throw new BuildException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
 
-    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, TransactionType trxType) throws BuilderException {
+    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, TransactionType trxType) throws BuildException {
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
@@ -242,7 +238,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             PhysicalOperationDefinition definition = chain.getPhysicalOperation();
             OperationPayloadTypes payloadType = resolveOperation(definition.getName(), types);
             if (payloadType == null) {
-                throw new BuilderException("Payload type not found for operation: " + definition.getName());
+                throw new BuildException("Payload type not found for operation: " + definition.getName());
             }
             chainHolders.add(new InvocationChainHolder(chain, payloadType));
         }

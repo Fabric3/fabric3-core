@@ -37,12 +37,12 @@
 */
 package org.fabric3.cache.spi;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  * Denotes an error deploying or undeploying cache resources.
  */
-public class CacheBuildException extends BuilderException {
+public class CacheBuildException extends BuildException {
     private static final long serialVersionUID = 3793169162642657545L;
 
     public CacheBuildException(String message) {

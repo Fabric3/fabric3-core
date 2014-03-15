@@ -43,12 +43,12 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  *
  */
-public class AttachException extends BuilderException {
+public class AttachException extends BuildException {
     private static final long serialVersionUID = -2269016155932491868L;
 
     public AttachException(String message) {

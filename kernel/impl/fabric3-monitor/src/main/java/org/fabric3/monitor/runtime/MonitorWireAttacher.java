@@ -38,11 +38,11 @@
 package org.fabric3.monitor.runtime;
 
 import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -69,15 +69,15 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target, Wire wire) throws BuildException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws BuildException {
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());

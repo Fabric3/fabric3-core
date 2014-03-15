@@ -43,6 +43,7 @@
  */
 package org.fabric3.fabric.deployment.executor;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -50,7 +51,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.fabric.deployment.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
@@ -77,7 +77,7 @@ public class AttachChannelConnectionCommandExecutor implements CommandExecutor<A
     public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
         try {
             connector.connect(command.getDefinition());
-        } catch (BuilderException e) {
+        } catch (BuildException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }

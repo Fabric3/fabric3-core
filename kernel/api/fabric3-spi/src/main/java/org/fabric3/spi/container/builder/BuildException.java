@@ -48,22 +48,22 @@ import org.fabric3.api.host.Fabric3Exception;
 /**
  * The root exception for the builder package. Builder exceptions denote a non-recoverable failure.
  */
-public class BuilderException extends Fabric3Exception {
+public class BuildException extends Fabric3Exception {
     private static final long serialVersionUID = 3208972591954615326L;
 
-    public BuilderException() {
+    public BuildException() {
         super();
     }
 
-    public BuilderException(String message) {
+    public BuildException(String message) {
         super(message);
     }
 
-    public BuilderException(String message, Throwable cause) {
+    public BuildException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public BuilderException(Throwable cause) {
+    public BuildException(Throwable cause) {
         super(cause);
     }
 

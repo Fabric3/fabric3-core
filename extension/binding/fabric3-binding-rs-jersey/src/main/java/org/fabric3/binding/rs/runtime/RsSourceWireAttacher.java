@@ -53,7 +53,7 @@ import org.fabric3.binding.rs.runtime.container.RsContainerManager;
 import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
 import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -131,7 +131,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         }
     }
 
-    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
@@ -140,11 +140,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     }
 
     public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuilderException {
+            throws BuildException {
         throw new AssertionError();
     }
 
-    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         throw new AssertionError();
     }
 

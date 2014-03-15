@@ -43,12 +43,12 @@
  */
 package org.fabric3.implementation.pojo.builder;
 
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 
 /**
  *
  */
-public class KeyInstantiationException extends BuilderException {
+public class KeyInstantiationException extends BuildException {
     private static final long serialVersionUID = -8972606779645126030L;
 
     public KeyInstantiationException(String message) {

@@ -41,6 +41,7 @@ import java.io.File;
 import java.net.URI;
 
 import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -52,7 +53,6 @@ import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -90,7 +90,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "inbox");
     }
 
-    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
         String id = source.getUri().toString();
 
         File location = getLocation(source);
@@ -122,7 +122,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         receiverManager.create(configuration);
     }
 
-    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         String id = source.getUri().toString();
         receiverManager.remove(id);
     }
@@ -178,9 +178,9 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
      *
      * @param source the definition
      * @return the adaptor
-     * @throws BuilderException if there is an error instantiating the class or returning a component instance.
+     * @throws BuildException if there is an error instantiating the class or returning a component instance.
      */
-    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws BuilderException {
+    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws BuildException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();
@@ -189,10 +189,10 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
             }
             Component component = manager.getComponent(adapterUri);
             if (component == null) {
-                throw new BuilderException("Binding adaptor component not found: " + adapterUri);
+                throw new BuildException("Binding adaptor component not found: " + adapterUri);
             }
             if (!(component instanceof AtomicComponent)) {
-                throw new BuilderException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+                throw new BuildException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
             }
             return new ServiceAdaptorWrapper((AtomicComponent) component);
         }
@@ -200,12 +200,12 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         ClassLoader loader = registry.getClassLoader(uri);
         if (loader == null) {
             // this should not happen
-            throw new BuilderException("ClassLoader not found: " + uri);
+            throw new BuildException("ClassLoader not found: " + uri);
         }
         try {
             return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 

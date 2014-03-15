@@ -40,6 +40,7 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 import java.net.URI;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -47,7 +48,6 @@ import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -76,7 +76,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
 
-    public void attach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target, Wire wire) throws BuilderException {
+    public void attach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target, Wire wire) throws BuildException {
         File location = resolve(target.getLocation());
         location.mkdirs();
 
@@ -87,11 +87,11 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws BuilderException {
+    public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws BuildException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(FileBindingWireTargetDefinition target) throws BuilderException {
+    public ObjectFactory<?> createObjectFactory(FileBindingWireTargetDefinition target) throws BuildException {
         throw new UnsupportedOperationException();
     }
 
@@ -114,9 +114,9 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
      *
      * @param source the definition
      * @return the adaptor
-     * @throws BuilderException if there is an error instantiating the class or returning a component instance.
+     * @throws BuildException if there is an error instantiating the class or returning a component instance.
      */
-    private ReferenceAdapter getAdaptor(FileBindingWireTargetDefinition source) throws BuilderException {
+    private ReferenceAdapter getAdaptor(FileBindingWireTargetDefinition source) throws BuildException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();
@@ -125,10 +125,10 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
             }
             Component component = manager.getComponent(adapterUri);
             if (component == null) {
-                throw new BuilderException("Binding adaptor component not found: " + adapterUri);
+                throw new BuildException("Binding adaptor component not found: " + adapterUri);
             }
             if (!(component instanceof AtomicComponent)) {
-                throw new BuilderException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+                throw new BuildException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
             }
             return new ReferenceAdaptorWrapper((AtomicComponent) component);
         }
@@ -136,12 +136,12 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         ClassLoader loader = registry.getClassLoader(uri);
         if (loader == null) {
             // this should not happen
-            throw new BuilderException("ClassLoader not found: " + uri);
+            throw new BuildException("ClassLoader not found: " + uri);
         }
         try {
             return (ReferenceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new BuilderException(e);
+            throw new BuildException(e);
         }
     }
 

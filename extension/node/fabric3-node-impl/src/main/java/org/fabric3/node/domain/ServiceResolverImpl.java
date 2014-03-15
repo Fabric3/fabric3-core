@@ -51,7 +51,7 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingSelector;
@@ -117,7 +117,7 @@ public class ServiceResolverImpl implements ServiceResolver {
             source.setClassLoaderId(Names.HOST_CONTRIBUTION);
             connector.connect(pwd);
             return interfaze.cast(source.getProxy());
-        } catch (GenerationException | BuilderException e) {
+        } catch (GenerationException | BuildException e) {
             throw new ResolverException(e);
         }
     }

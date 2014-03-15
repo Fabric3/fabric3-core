@@ -48,13 +48,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.container.builder.BuilderNotFoundException;
 import org.fabric3.fabric.deployment.command.DisposeComponentCommand;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -111,7 +111,7 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
             }
         } catch (RegistrationException e) {
             throw new ExecutionException("Unexpected exception un-registering component: " + uri, e);
-        } catch (BuilderException e) {
+        } catch (BuildException e) {
             throw new ExecutionException(e);
         }
 

@@ -55,16 +55,16 @@ public interface Connector {
      * binding source (for bound services) or to a binding target (for bound references).
      *
      * @param definition metadata describing the wire to create
-     * @throws BuilderException if an error creating the wire occurs
+     * @throws BuildException if an error creating the wire occurs
      */
-    void connect(PhysicalWireDefinition definition) throws BuilderException;
+    void connect(PhysicalWireDefinition definition) throws BuildException;
 
 
     /**
      * Disconnects a wire between two components or a component and a binding.
      *
      * @param definition the metadata describing the wire to disconnect
-     * @throws BuilderException if an error disconnecting the wire occurs
+     * @throws BuildException if an error disconnecting the wire occurs
      */
-    void disconnect(PhysicalWireDefinition definition) throws BuilderException;
+    void disconnect(PhysicalWireDefinition definition) throws BuildException;
 }

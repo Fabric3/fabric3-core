@@ -40,6 +40,7 @@ package org.fabric3.implementation.java.runtime;
 import java.net.URI;
 
 import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.spi.container.builder.BuildException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -48,7 +49,6 @@ import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -81,12 +81,12 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws BuilderException {
+    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws BuildException {
         URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
         if (source == null) {
-            throw new BuilderException("Source callback not found: " + sourceName);
+            throw new BuildException("Source callback not found: " + sourceName);
         }
         Injectable injectable = sourceDefinition.getInjectable();
 
@@ -104,11 +104,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuilderException {
+    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -116,7 +116,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     public void attachObjectFactory(JavaWireSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalWireTargetDefinition targetDefinition)
-            throws BuilderException {
+            throws BuildException {
         URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
         Injectable injectable = sourceDefinition.getInjectable();

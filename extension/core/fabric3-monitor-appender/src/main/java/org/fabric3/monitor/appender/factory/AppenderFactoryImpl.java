@@ -59,7 +59,7 @@ import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
-import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -178,7 +178,7 @@ public class AppenderFactoryImpl implements AppenderFactory {
             try {
                 Appender appender = builder.build(definition);
                 appenders.add(appender);
-            } catch (BuilderException e) {
+            } catch (BuildException e) {
                 throw new AppenderCreationException(e);
             }
         }
