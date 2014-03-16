@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
+import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**

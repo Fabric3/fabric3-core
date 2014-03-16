@@ -40,12 +40,12 @@ package org.fabric3.binding.test;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.spi.deployment.generator.wire.WireBindingGenerator;
+import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;

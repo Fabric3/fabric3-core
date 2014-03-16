@@ -40,8 +40,8 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.URL;
 
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**

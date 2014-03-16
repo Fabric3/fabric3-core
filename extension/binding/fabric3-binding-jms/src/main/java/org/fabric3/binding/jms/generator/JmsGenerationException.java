@@ -43,7 +43,7 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  * Denotes a general generation error.

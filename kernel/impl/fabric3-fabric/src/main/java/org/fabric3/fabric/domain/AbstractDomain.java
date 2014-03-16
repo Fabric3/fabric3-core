@@ -49,7 +49,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
@@ -59,29 +58,29 @@ import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.domain.DomainJournal;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.definitions.PolicySet;
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
+import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
+import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.spi.deployment.generator.Deployment;
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.Generator;
-import org.fabric3.spi.deployment.generator.policy.PolicyActivationException;
-import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;
-import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
-import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;
-import org.fabric3.spi.domain.AllocationException;
-import org.fabric3.spi.domain.Allocator;
+import org.fabric3.spi.domain.allocator.AllocationException;
+import org.fabric3.spi.domain.allocator.Allocator;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.spi.domain.generator.Deployment;
+import org.fabric3.spi.domain.generator.Generator;
+import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
+import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
+import org.fabric3.spi.domain.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.model.instance.CopyUtil;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -296,28 +295,20 @@ public abstract class AbstractDomain implements Domain {
         for (QName deployable : names) {
             collector.markForCollection(deployable, domain);
         }
+        Deployment deployment = generator.generate(domain, true);
+        collector.collect(domain);
+        Deployment fullDeployment = null;
+        if (generateFullDeployment) {
+            fullDeployment = generator.generate(domain, false);
+        }
+        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
         try {
-            Deployment deployment = generator.generate(domain, true);
-            collector.collect(domain);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false);
+            deployer.deploy(deploymentPackage);
+        } catch (DeploymentException e) {
+            if (!force) {
+                throw e;
             }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            try {
-                deployer.deploy(deploymentPackage);
-            } catch (DeploymentException e) {
-                if (!force) {
-                    throw e;
-                }
-                // force undeployment in effect: ignore deployment exceptions
-            }
-        } catch (GenerationException e) {
-            StringBuilder list = new StringBuilder();
-            for (QName deployable : names) {
-                list.append(" ").append(deployable);
-            }
-            throw new DeploymentException("Error undeploying:" + list, e);
+            // force undeployment in effect: ignore deployment exceptions
         }
         for (QName deployable : names) {
             contribution.releaseLock(deployable);
@@ -344,25 +335,21 @@ public abstract class AbstractDomain implements Domain {
             domain = CopyUtil.copy(domain);
         }
         collector.markForCollection(deployable, domain);
-        try {
-            if (!simulated) {
-                Deployment deployment = generator.generate(domain, true);
-                collector.collect(domain);
-                Deployment fullDeployment = null;
-                if (generateFullDeployment) {
-                    fullDeployment = generator.generate(domain, false);
-                }
-                DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-                deployer.deploy(deploymentPackage);
-            } else {
-                collector.collect(domain);
+        if (!simulated) {
+            Deployment deployment = generator.generate(domain, true);
+            collector.collect(domain);
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain, false);
             }
-            URI uri = composite.getContributionUri();
-            Contribution contribution = metadataStore.find(uri);
-            contribution.releaseLock(deployable);
-        } catch (GenerationException e) {
-            throw new DeploymentException("Error undeploying:" + deployable);
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
+        } else {
+            collector.collect(domain);
         }
+        URI uri = composite.getContributionUri();
+        Contribution contribution = metadataStore.find(uri);
+        contribution.releaseLock(deployable);
         logicalComponentManager.replaceRootComponent(domain);
         for (DeployListener listener : listeners) {
             listener.onUndeployCompleted(deployable);
@@ -378,13 +365,9 @@ public abstract class AbstractDomain implements Domain {
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
-        try {
-            Set<PolicySet> policySets = policyRegistry.deactivateDefinitions(uri);
-            if (!policySets.isEmpty()) {
-                undeployPolicySets(policySets);
-            }
-        } catch (PolicyActivationException e) {
-            throw new DeploymentException(e);
+        Set<PolicySet> policySets = policyRegistry.deactivateDefinitions(uri);
+        if (!policySets.isEmpty()) {
+            undeployPolicySets(policySets);
         }
     }
 
@@ -545,10 +528,6 @@ public abstract class AbstractDomain implements Domain {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw e;
-        } catch (PolicyResolutionException e) {
-            // release the contribution locks if there was an error
-            contributionHelper.releaseLocks(contributions);
-            throw new DeploymentException("Error deploying composite", e);
         }
     }
 
@@ -632,19 +611,15 @@ public abstract class AbstractDomain implements Domain {
         allocate(domain, plan);
         // Select bindings
         selectBinding(domain);
-        try {
-            // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(domain, true);
-            collector.markAsProvisioned(domain);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false);
-            }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
-        } catch (GenerationException e) {
-            throw new DeploymentException("Error deploying components", e);
+        // generate and provision any new components and new wires
+        Deployment deployment = generator.generate(domain, true);
+        collector.markAsProvisioned(domain);
+        Deployment fullDeployment = null;
+        if (generateFullDeployment) {
+            fullDeployment = generator.generate(domain, false);
         }
+        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+        deployer.deploy(deploymentPackage);
     }
 
     /**
@@ -712,12 +687,7 @@ public abstract class AbstractDomain implements Domain {
             // registry not available until after bootstrap
             return Collections.emptySet();
         }
-        try {
-            return policyRegistry.activateDefinitions(contribution.getUri());
-        } catch (PolicyActivationException e) {
-            // TODO rollback policy activation
-            throw new DeploymentException(e);
-        }
+        return policyRegistry.activateDefinitions(contribution.getUri());
     }
 
     private void deployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
@@ -725,20 +695,16 @@ public abstract class AbstractDomain implements Domain {
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);
         }
-        try {
-            policyAttacher.attachPolicies(policySets, domain, true);
-            // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(domain, true);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false);
-            }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
-            logicalComponentManager.replaceRootComponent(domain);
-        } catch (GenerationException e) {
-            throw new DeploymentException(e);
+        policyAttacher.attachPolicies(policySets, domain, true);
+        // generate and provision any new components and new wires
+        Deployment deployment = generator.generate(domain, true);
+        Deployment fullDeployment = null;
+        if (generateFullDeployment) {
+            fullDeployment = generator.generate(domain, false);
         }
+        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+        deployer.deploy(deploymentPackage);
+        logicalComponentManager.replaceRootComponent(domain);
     }
 
     private void undeployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
@@ -746,20 +712,16 @@ public abstract class AbstractDomain implements Domain {
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);
         }
-        try {
-            policyAttacher.detachPolicies(policySets, domain);
-            // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(domain, true);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false);
-            }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
-            logicalComponentManager.replaceRootComponent(domain);
-        } catch (GenerationException e) {
-            throw new DeploymentException(e);
+        policyAttacher.detachPolicies(policySets, domain);
+        // generate and provision any new components and new wires
+        Deployment deployment = generator.generate(domain, true);
+        Deployment fullDeployment = null;
+        if (generateFullDeployment) {
+            fullDeployment = generator.generate(domain, false);
         }
+        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+        deployer.deploy(deploymentPackage);
+        logicalComponentManager.replaceRootComponent(domain);
     }
 
 }

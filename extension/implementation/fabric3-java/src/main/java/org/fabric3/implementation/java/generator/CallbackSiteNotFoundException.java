@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.java.generator;
 
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  * Thrown when a injection site cannot be found for a callback.

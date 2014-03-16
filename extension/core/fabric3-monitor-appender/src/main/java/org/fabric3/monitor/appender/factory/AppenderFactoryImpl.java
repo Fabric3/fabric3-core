@@ -59,7 +59,7 @@ import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;

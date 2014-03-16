@@ -38,7 +38,7 @@
 package org.fabric3.monitor.appender.component;
 
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**

@@ -39,7 +39,7 @@ package org.fabric3.binding.zeromq.generator;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.spi.deployment.generator.wire.CallbackBindingGenerator;
+import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.oasisopen.sca.annotation.EagerInit;
 

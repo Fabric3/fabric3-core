@@ -65,7 +65,7 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl;
+import org.fabric3.fabric.domain.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;

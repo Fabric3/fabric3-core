@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.ws.metro.generator.policy;
 
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  * Thrown when an error is encountered attaching a WS-Policy expression in a WSDL document.

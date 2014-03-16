@@ -42,7 +42,7 @@ import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  *

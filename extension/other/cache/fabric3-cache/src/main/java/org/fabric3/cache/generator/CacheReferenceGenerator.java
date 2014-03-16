@@ -42,7 +42,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.cache.model.CacheReferenceDefinition;
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
-import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 

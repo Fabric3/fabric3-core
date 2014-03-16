@@ -65,7 +65,7 @@ import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
+import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;

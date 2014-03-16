@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.domain;
 
-import org.fabric3.spi.deployment.generator.Deployment;
+import org.fabric3.spi.domain.generator.Deployment;
 
 /**
  * Encapsulates a Deployment. The current Deployment contains the incremental DeploymentUnits which are to be applied to zones in the domain. The full

@@ -43,8 +43,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.domain.AllocationException;
-import org.fabric3.spi.domain.Allocator;
+import org.fabric3.spi.domain.allocator.AllocationException;
+import org.fabric3.spi.domain.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResource;

@@ -3,7 +3,7 @@ package org.fabric3.policy.resolver;
 import java.util.Set;
 
 import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.domain.generator.policy.PolicyResolutionException;
 
 /**
  *

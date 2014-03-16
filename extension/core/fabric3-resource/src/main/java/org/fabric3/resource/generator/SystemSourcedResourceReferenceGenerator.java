@@ -44,8 +44,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.host.Names;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**

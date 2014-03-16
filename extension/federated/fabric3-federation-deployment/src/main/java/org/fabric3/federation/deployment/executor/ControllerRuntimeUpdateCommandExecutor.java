@@ -42,27 +42,25 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
-import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.deployment.generator.Deployment;
-import org.fabric3.spi.deployment.generator.DeploymentUnit;
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.Generator;
 import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.spi.domain.generator.Deployment;
+import org.fabric3.spi.domain.generator.DeploymentUnit;
+import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes a {@link RuntimeUpdateCommand} on the controller by regenerating deployment commands for the current state of the zone.
@@ -105,8 +103,9 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
             byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
             List<CompensatableCommand> commands = unit.getCommands();
             byte[] serializedCommands = serialize((Serializable) commands);
-            SerializedDeploymentUnit serializedUnit =
-                    new SerializedDeploymentUnit(serializedProvisionCommands, serializedExtensionCommands, serializedCommands);
+            SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedProvisionCommands,
+                                                                                   serializedExtensionCommands,
+                                                                                   serializedCommands);
             DeploymentCommand deploymentCommand = new DeploymentCommand(zone, serializedUnit, serializedUnit);
             RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
             command.setResponse(response);
@@ -118,12 +117,8 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
 
     private DeploymentUnit regenerate(String zoneId) throws DeploymentException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
-        try {
-            Deployment deployment = generator.generate(domain, false);
-            return deployment.getDeploymentUnit(zoneId);
-        } catch (GenerationException e) {
-            throw new DeploymentException(e);
-        }
+        Deployment deployment = generator.generate(domain, false);
+        return deployment.getDeploymentUnit(zoneId);
     }
 
     private byte[] serialize(Serializable serializable) throws ExecutionException {

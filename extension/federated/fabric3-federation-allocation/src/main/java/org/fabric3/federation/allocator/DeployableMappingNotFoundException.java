@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.allocator;
 
-import org.fabric3.spi.domain.AllocationException;
+import org.fabric3.spi.domain.allocator.AllocationException;
 
 /**
  *

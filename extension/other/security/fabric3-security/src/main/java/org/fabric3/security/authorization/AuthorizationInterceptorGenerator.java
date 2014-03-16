@@ -43,9 +43,9 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
-import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
+import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 

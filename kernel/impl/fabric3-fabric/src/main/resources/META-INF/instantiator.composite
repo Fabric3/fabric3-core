@@ -19,43 +19,43 @@
            autowire="true">
 
     <component name="LogicalModelInstantiator">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.LogicalModelInstantiatorImpl"/>
     </component>
 
     <component name="AtomicComponentInstantiator">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.component.AtomicComponentInstantiatorImpl"/>
     </component>
 
     <component name="CompositeComponentInstantiator">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.component.CompositeComponentInstantiatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.component.CompositeComponentInstantiatorImpl"/>
     </component>
 
     <component name="WireInstantiator">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.wire.WireInstantiatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl"/>
     </component>
 
     <component name="ChannelInstantiator">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.channel.ChannelInstantiatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.channel.ChannelInstantiatorImpl"/>
     </component>
 
     <component name="PromotionNormalizer">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.promotion.PromotionNormalizerImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.promotion.PromotionNormalizerImpl"/>
     </component>
 
     <component name="AutowireNormalizer">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.component.AutowireNormalizerImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.component.AutowireNormalizerImpl"/>
     </component>
 
     <component name="PromotionResolutionService">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.promotion.PromotionResolutionServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.promotion.PromotionResolutionServiceImpl"/>
     </component>
 
     <component name="TypeAutowireResolver">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.wire.TypeAutowireResolver"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver"/>
     </component>
 
     <component name="AutowireInstantiator">
-        <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.wire.AutowireInstantiatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.instantiator.wire.AutowireInstantiatorImpl"/>
     </component>
 
     <component name="DocumentLoader">
@@ -63,7 +63,7 @@
     </component>
 
     <component name="Collector">
-        <f3:implementation.system class="org.fabric3.fabric.domain.CollectorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.collector.CollectorImpl"/>
     </component>
 
 </composite>

@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.file.generator;
 
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  *

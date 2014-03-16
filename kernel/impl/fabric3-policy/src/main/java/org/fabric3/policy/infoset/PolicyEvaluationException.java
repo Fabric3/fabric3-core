@@ -37,7 +37,7 @@
 */
 package org.fabric3.policy.infoset;
 
-import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.domain.generator.policy.PolicyResolutionException;
 
 /**
  *

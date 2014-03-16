@@ -46,6 +46,8 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.collector.CollectorImpl;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;

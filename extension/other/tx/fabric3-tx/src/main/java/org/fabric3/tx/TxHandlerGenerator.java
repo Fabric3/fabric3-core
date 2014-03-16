@@ -40,9 +40,9 @@ package org.fabric3.tx;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
-import org.fabric3.spi.deployment.generator.channel.EventStreamHandlerGenerator;
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
+import org.fabric3.spi.domain.generator.channel.EventStreamHandlerGenerator;
+import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**

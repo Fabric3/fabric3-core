@@ -38,7 +38,7 @@
 
 package org.fabric3.cache.spi;
 
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.domain.generator.GenerationException;
 
 
 /**

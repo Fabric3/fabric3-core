@@ -46,7 +46,7 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
-import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
+import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;

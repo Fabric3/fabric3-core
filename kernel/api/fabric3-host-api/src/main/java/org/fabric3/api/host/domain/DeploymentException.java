@@ -43,10 +43,12 @@
  */
 package org.fabric3.api.host.domain;
 
+import org.fabric3.api.host.Fabric3Exception;
+
 /**
- * Denotes an deploying a composite.
+ * Denotes an exception deploying a composite.
  */
-public class DeploymentException extends DomainException {
+public class DeploymentException extends Fabric3Exception {
     private static final long serialVersionUID = -8846536703004740119L;
 
     public DeploymentException() {

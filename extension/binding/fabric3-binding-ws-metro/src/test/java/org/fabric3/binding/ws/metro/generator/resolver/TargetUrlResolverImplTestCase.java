@@ -50,7 +50,7 @@ import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
+import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;

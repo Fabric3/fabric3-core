@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.model.PersistenceUnitResourceReference;
 import org.fabric3.jpa.override.OverrideRegistry;
-import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
