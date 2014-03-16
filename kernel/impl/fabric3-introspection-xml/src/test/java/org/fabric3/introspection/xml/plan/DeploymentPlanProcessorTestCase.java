@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.plan.DeploymentPlan;
+import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  *

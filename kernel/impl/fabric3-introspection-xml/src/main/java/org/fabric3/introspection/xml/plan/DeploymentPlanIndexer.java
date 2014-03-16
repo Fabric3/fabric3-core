@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.plan.DeploymentPlan;
+import org.fabric3.spi.model.plan.DeploymentPlan;
 
 import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN;
 import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NAMESPACE;

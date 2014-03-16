@@ -56,7 +56,7 @@ import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.plan.DeploymentPlan;
+import org.fabric3.spi.model.plan.DeploymentPlan;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;

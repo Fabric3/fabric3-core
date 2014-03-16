@@ -46,7 +46,7 @@ import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.plan.DeploymentPlan;
+import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  * Provides utility functions for working with contributions.

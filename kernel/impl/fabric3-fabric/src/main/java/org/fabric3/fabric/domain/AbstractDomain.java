@@ -87,7 +87,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.plan.DeploymentPlan;
+import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  * Base class for a domain.

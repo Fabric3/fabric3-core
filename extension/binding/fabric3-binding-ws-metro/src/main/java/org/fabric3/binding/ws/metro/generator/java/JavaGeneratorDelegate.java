@@ -173,7 +173,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
 
-        Class<?> serviceClass = loadServiceClass(contract);
+        URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
+        Class<?> serviceClass = loadServiceClass(contract, contributionUri);
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);
 
@@ -260,16 +261,16 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
 
             return new MetroJavaWireSourceDefinition(serviceUri,
-                                                 endpointDefinition,
-                                                 interfaze,
-                                                 generatedBytes,
-                                                 classLoaderUri,
-                                                 wsdl,
-                                                 schemas,
-                                                 intentNames,
-                                                 wsdlLocation,
-                                                 bidirectional,
-                                                 handlers);
+                                                     endpointDefinition,
+                                                     interfaze,
+                                                     generatedBytes,
+                                                     classLoaderUri,
+                                                     wsdl,
+                                                     schemas,
+                                                     intentNames,
+                                                     wsdlLocation,
+                                                     bidirectional,
+                                                     handlers);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -303,17 +304,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     }
 
     public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
-                                                              JavaServiceContract contract,
-                                                              EffectivePolicy policy) throws GenerationException {
+                                                                  JavaServiceContract contract,
+                                                                  EffectivePolicy policy) throws GenerationException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding, policy);
         return generateTarget(serviceBinding, targetUrl, contract, policy);
     }
 
     private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
-                                                 URL targetUrl,
-                                                 JavaServiceContract contract,
-                                                 EffectivePolicy policy) throws GenerationException {
-        Class<?> serviceClass = loadServiceClass(contract);
+                                                     URL targetUrl,
+                                                     JavaServiceContract contract,
+                                                     EffectivePolicy policy) throws GenerationException {
+        URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
+        Class<?> serviceClass = loadServiceClass(contract, contributionUri);
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);
 
@@ -406,18 +408,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         int retries = definition.getRetries();
         MetroJavaWireTargetDefinition targetDefinition = new MetroJavaWireTargetDefinition(endpointDefinition,
-                                                                                   interfaze,
-                                                                                   generatedBytes,
-                                                                                   classLoaderUri,
-                                                                                   wsdl,
-                                                                                   schemas,
-                                                                                   wsdlLocation,
-                                                                                   intentNames,
-                                                                                   securityConfiguration,
-                                                                                   connectionConfiguration,
-                                                                                   retries,
-                                                                                   bidirectional,
-                                                                                   handlers);
+                                                                                           interfaze,
+                                                                                           generatedBytes,
+                                                                                           classLoaderUri,
+                                                                                           wsdl,
+                                                                                           schemas,
+                                                                                           wsdlLocation,
+                                                                                           intentNames,
+                                                                                           securityConfiguration,
+                                                                                           connectionConfiguration,
+                                                                                           retries,
+                                                                                           bidirectional,
+                                                                                           handlers);
         if (binding.isCallback()) {
             targetDefinition.setUri(binding.getParent().getUri());
         }
@@ -457,33 +459,17 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     /**
      * Loads a service contract class in either a host environment that supports classloader isolation or one that does not, in which case the TCCL is used.
      *
-     * @param javaContract the contract
+     * @param javaContract    the contract
+     * @param contributionUri the          contribution URI the contract class is loaded in
      * @return the loaded class
      */
-    private Class<?> loadServiceClass(JavaServiceContract javaContract) {
-        ClassLoader loader;
-        if (info.supportsClassLoaderIsolation()) {
-            URI classLoaderUri = javaContract.getContributionClassLoaderUri();
-            if (classLoaderUri == null) {
-                loader = Thread.currentThread().getContextClassLoader();
-            } else {
-                loader = classLoaderRegistry.getClassLoader(classLoaderUri);
-                if (loader == null) {
-                    // programming error
-                    throw new AssertionError("Classloader not found: " + classLoaderUri);
-                }
-            }
-        } else {
-            loader = Thread.currentThread().getContextClassLoader();
-        }
-        Class<?> clazz;
+    private Class<?> loadServiceClass(JavaServiceContract javaContract, URI contributionUri) throws GenerationException {
+        ClassLoader loader = classLoaderRegistry.getClassLoader(contributionUri);
         try {
-            clazz = loader.loadClass(javaContract.getInterfaceClass());
+            return loader.loadClass(javaContract.getInterfaceClass());
         } catch (ClassNotFoundException e) {
-            // programming error
-            throw new AssertionError(e);
+            throw new GenerationException(e);
         }
-        return clazz;
     }
 
     private ServiceEndpointDefinition createServiceEndpointDefinition(LogicalBinding<WsBindingDefinition> binding,

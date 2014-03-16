@@ -35,12 +35,12 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.plan;
+package org.fabric3.spi.model.plan;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 /**
  * Represents a Fabric3 deployment plan. Deployment plans are used to map a logical assembly to a physical topology during deployment. For example, a

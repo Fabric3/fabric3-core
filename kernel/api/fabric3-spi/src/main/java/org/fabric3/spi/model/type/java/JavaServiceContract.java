@@ -44,13 +44,11 @@
 package org.fabric3.spi.model.type.java;
 
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Signature;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Represents a service contract specified using a Java interface
@@ -65,7 +63,6 @@ public class JavaServiceContract extends ServiceContract {
     private List<String> interfaces;
     private String superType;
     private List<Signature> methodSignatures;
-    private URI contributionClassLoaderUri;
 
     /**
      * Constructor used for testing.
@@ -107,10 +104,6 @@ public class JavaServiceContract extends ServiceContract {
         return methodSignatures;
     }
 
-    public URI getContributionClassLoaderUri() {
-        return contributionClassLoaderUri;
-    }
-
     private void introspectInterface(Class<?> interfaceClass) {
         this.interfaceClass = interfaceClass.getName();
         methodSignatures = new ArrayList<>();
@@ -126,9 +119,6 @@ public class JavaServiceContract extends ServiceContract {
             }
         }
         addInterfaces(interfaceClass, interfaces);
-        if (interfaceClass.getClassLoader() instanceof MultiParentClassLoader) {
-            contributionClassLoaderUri = ((MultiParentClassLoader) interfaceClass.getClassLoader()).getName();
-        }
     }
 
     /**
