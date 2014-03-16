@@ -56,7 +56,7 @@ import org.fabric3.wsdl.contribution.BindingSymbol;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.ServiceSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
-import org.fabric3.wsdl.factory.Wsdl4JFactory;
+import org.fabric3.wsdl.contribution.Wsdl4JFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

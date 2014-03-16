@@ -49,18 +49,20 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
-import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ServiceDefinition;
-import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  *
@@ -258,7 +260,8 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(InterfaceWithSetter.class, mapping);
 
-        ServiceContract contract = new JavaContractProcessorImpl(helper).introspect(InterfaceWithSetter.class, context);
+        JavaServiceContract contract = createContract();
+
         AbstractService definition = new ServiceDefinition("InterfaceWithSetter", contract);
         services.add(definition);
         assertEquals(expected, helper.getInjectionMethods(InjectionWithInterface.class, services));
@@ -272,4 +275,14 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
         boundMapping = new TypeMapping();
         helper.resolveTypeParameters(BoundTypes.class, boundMapping);
     }
+
+    private JavaServiceContract createContract() {
+        JavaServiceContract contract = new JavaServiceContract(InterfaceWithSetter.class);
+        List inputTypes = Collections.singletonList(new JavaType(Integer.TYPE));
+        JavaType outputType = new JavaType(Void.class);
+        Operation operation = new Operation("setFromInterface", inputTypes, outputType, Collections.<DataType>emptyList());
+        contract.setOperations(Collections.singletonList(operation));
+        return contract;
+    }
+
 }

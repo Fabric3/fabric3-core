@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="Wsdl4JFactory">
-        <f3:implementation.system class="org.fabric3.wsdl.factory.impl.Wsdl4JFactoryImpl"/>
+        <f3:implementation.system class="org.fabric3.wsdl.contribution.impl.Wsdl4JFactoryImpl"/>
     </component>
 
     <component name="WsdlResourceProcessor">

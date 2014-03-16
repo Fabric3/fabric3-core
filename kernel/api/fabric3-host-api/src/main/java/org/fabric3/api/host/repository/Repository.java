@@ -71,7 +71,7 @@ public interface Repository {
      *
      * @param uri The artifact URI
      * @return A URL pointing to the artifact or null if the artifact cannot be found
-     * @throws RepositoryException if an exception occurs storing the artifact
+     * @throws RepositoryException if an exception occurs finding the artifact
      */
     URL find(URI uri) throws RepositoryException;
 

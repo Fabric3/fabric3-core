@@ -35,10 +35,8 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.wsdl.factory.impl;
+package org.fabric3.wsdl.contribution.impl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Service;
@@ -51,15 +49,15 @@ import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import junit.framework.TestCase;
-import org.w3c.dom.Element;
-
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.wsdl.contribution.impl.SourceWsdlLocator;
+import org.w3c.dom.Element;
 
 /**
  *

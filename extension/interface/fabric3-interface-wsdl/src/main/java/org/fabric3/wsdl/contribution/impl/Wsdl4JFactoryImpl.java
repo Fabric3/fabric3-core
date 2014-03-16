@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.wsdl.factory.impl;
+package org.fabric3.wsdl.contribution.impl;
 
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionDeserializer;
@@ -48,7 +48,7 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.wsdl.factory.Wsdl4JFactory;
+import org.fabric3.wsdl.contribution.Wsdl4JFactory;
 
 /**
  * An implementation of WsdlFactory that accepts registration and deregistration of WSDLReader and WSDLWriter extensions.

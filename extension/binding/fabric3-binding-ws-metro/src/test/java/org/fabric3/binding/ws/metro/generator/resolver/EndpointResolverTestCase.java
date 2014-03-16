@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.fabric3.binding.ws.metro.generator.WsdlElement;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
-import org.fabric3.wsdl.factory.impl.Wsdl4JFactoryImpl;
+import org.fabric3.wsdl.contribution.impl.Wsdl4JFactoryImpl;
 
 public class EndpointResolverTestCase extends TestCase {
 	

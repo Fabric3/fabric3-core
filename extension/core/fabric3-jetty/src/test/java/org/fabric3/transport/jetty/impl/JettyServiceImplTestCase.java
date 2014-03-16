@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.transport.jetty;
+package org.fabric3.transport.jetty.impl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -59,11 +59,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.transport.jetty.impl.JettyServiceImpl;
-import org.fabric3.transport.jetty.impl.TransportMonitor;
+import org.fabric3.spi.runtime.event.EventService;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;

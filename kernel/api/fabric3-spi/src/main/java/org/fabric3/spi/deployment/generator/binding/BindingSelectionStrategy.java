@@ -44,5 +44,10 @@ import java.util.List;
  */
 public interface BindingSelectionStrategy {
 
+    /**
+     * Orders the collection of providers.
+     *
+     * @param providers the providers to order. The collection is updated.
+     */
     void order(List<BindingProvider> providers);
 }

@@ -37,9 +37,9 @@
 */
 package org.fabric3.api.host.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.component.Composite;
 
@@ -66,9 +66,8 @@ public interface Domain {
     void include(QName deployable, String plan) throws DeploymentException;
 
     /**
-     * Include all deployables contained in the list of contributions in the domain. If deployment plans are present in the composites, they will be
-     * used. This operation is intended for composites that are synthesized from multiple deployable composites that are associated with individual
-     * deployment plans.
+     * Include all deployables contained in the list of contributions in the domain. If deployment plans are present in the composites, they will be used. This
+     * operation is intended for composites that are synthesized from multiple deployable composites that are associated with individual deployment plans.
      *
      * @param uris the contributions to deploy
      * @throws DeploymentException if an error is encountered during inclusion
@@ -79,8 +78,8 @@ public interface Domain {
      * Include a composite in the domain.
      *
      * @param composite the composite to include
-     * @param simulated true if the include is a simulation. Simulated includes skip generation and deployment to runtimes. In addition, simulated
-     *                  deployments are not fail-fast, i.e. they will be completed if assembly errors exist.
+     * @param simulated true if the include is a simulation. Simulated includes skip generation and deployment to runtimes. In addition, simulated deployments
+     *                  are not fail-fast, i.e. they will be completed if assembly errors exist.
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(Composite composite, boolean simulated) throws DeploymentException;
@@ -89,8 +88,8 @@ public interface Domain {
      * Remove all deployables in a contribution from the domain.
      *
      * @param uri   the contribution URI
-     * @param force true if the undeployment operation should ignore errors from runtimes and remove logical components on the controller. If true,
-     *              undeployment will also succeed if no participants are available.
+     * @param force true if the undeployment operation should ignore errors from runtimes and remove logical components on the controller. If true, undeployment
+     *              will also succeed if no participants are available.
      * @throws DeploymentException if an error is encountered during undeployment
      */
     void undeploy(URI uri, boolean force) throws DeploymentException;
@@ -121,7 +120,7 @@ public interface Domain {
     void deactivateDefinitions(URI uri) throws DeploymentException;
 
     /**
-     * Initiates a recovery operation using a Map of deployables to plans.
+     * Initiates a recovery operation using a journal containing the recorded domain state.
      *
      * @param journal the domain journal containing the recorded domain state
      * @throws DeploymentException if an error is encountered during recovery

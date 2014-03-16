@@ -1,15 +1,15 @@
 package org.fabric3.wsdl.contribution.impl;
 
+import javax.wsdl.xml.WSDLLocator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.wsdl.xml.WSDLLocator;
-
-import org.xml.sax.InputSource;
 
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.wsdl.contribution.impl.InvalidWsdl;
+import org.xml.sax.InputSource;
 
 /**
  * Implementation of javax.wsdl.xml.WSDLLocator that delegates import resolution to the Source

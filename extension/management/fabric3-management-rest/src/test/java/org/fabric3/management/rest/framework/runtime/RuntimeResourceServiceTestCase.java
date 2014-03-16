@@ -37,19 +37,17 @@
 */
 package org.fabric3.management.rest.framework.runtime;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.Role;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.management.rest.model.Resource;
-import org.fabric3.management.rest.runtime.ManagementMonitor;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 
@@ -79,12 +77,9 @@ public class RuntimeResourceServiceTestCase extends TestCase {
         EasyMock.verify(info, request);
     }
 
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ManagementMonitor monitor = EasyMock.createNiceMock(ManagementMonitor.class);
-        EasyMock.replay(monitor);
 
         info = EasyMock.createMock(HostInfo.class);
         service = new RuntimeResourceService(info);
@@ -96,6 +91,5 @@ public class RuntimeResourceServiceTestCase extends TestCase {
         String path = "/runtime/resource1";
         return new ResourceMapping("resource1", path, path, Verb.GET, null, new Object(), null, Collections.<Role>emptySet());
     }
-
 
 }

@@ -81,7 +81,7 @@ import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.wsdl.factory.Wsdl4JFactory;
+import org.fabric3.wsdl.contribution.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;

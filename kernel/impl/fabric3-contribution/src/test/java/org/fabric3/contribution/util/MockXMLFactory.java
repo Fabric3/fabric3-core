@@ -1,4 +1,4 @@
-package org.fabric3.contribution;
+package org.fabric3.contribution.util;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;

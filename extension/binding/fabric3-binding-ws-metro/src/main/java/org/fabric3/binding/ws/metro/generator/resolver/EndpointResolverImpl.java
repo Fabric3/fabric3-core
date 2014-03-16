@@ -54,7 +54,7 @@ import java.net.URL;
 import org.fabric3.binding.ws.metro.generator.WsdlElement;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
-import org.fabric3.wsdl.factory.Wsdl4JFactory;
+import org.fabric3.wsdl.contribution.Wsdl4JFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

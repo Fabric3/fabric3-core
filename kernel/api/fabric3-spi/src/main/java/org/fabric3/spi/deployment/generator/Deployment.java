@@ -53,8 +53,9 @@ import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 
 /**
- * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain. A DeploymentUnit is
- * composed of 1..N {@link Command}s, which are executed on a participant runtime to perform tasks such as creating a component or wire.
+ * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain.
+ * <p/>
+ * A DeploymentUnit is composed of 1..N {@link Command}s, which are executed on a runtime to perform tasks such as creating a component or wire.
  */
 public class Deployment {
     private String id;
