@@ -49,7 +49,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
-import org.fabric3.spi.util.ParamTypes;
+import org.fabric3.spi.model.physical.ParamTypes;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -72,7 +72,7 @@ import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.util.ParamTypes;
+import org.fabric3.spi.model.physical.ParamTypes;
 import org.w3c.dom.Document;
 
 /**

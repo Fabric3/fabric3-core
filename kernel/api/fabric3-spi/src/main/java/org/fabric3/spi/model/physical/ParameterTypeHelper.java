@@ -40,8 +40,6 @@ package org.fabric3.spi.model.physical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.util.ParamTypes;
-
 /**
  * Utility class for loading operation parameter and fault types.
  */
