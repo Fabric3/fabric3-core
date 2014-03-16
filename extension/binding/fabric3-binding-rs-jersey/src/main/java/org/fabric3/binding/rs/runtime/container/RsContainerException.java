@@ -37,12 +37,12 @@
 */
 package org.fabric3.binding.rs.runtime.container;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class RsContainerException extends Fabric3Exception {
+public class RsContainerException extends ContainerException {
     private static final long serialVersionUID = 4043858922111535742L;
 
     public RsContainerException(Throwable cause) {

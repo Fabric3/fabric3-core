@@ -33,7 +33,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
@@ -57,7 +57,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         this.registry = registry;
     }
 
-    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -66,36 +66,27 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         }
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
-        try {
-            ZeroMQMetadata metadata = source.getMetadata();
-            broker.connectToReceiver(uri, chains, metadata, loader);
-        } catch (BrokerException e) {
-            throw new BuildException(e);
-        }
+        ZeroMQMetadata metadata = source.getMetadata();
+        broker.connectToReceiver(uri, chains, metadata, loader);
     }
 
-    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
         } else {
             uri = target.getUri();
         }
-        try {
-            broker.releaseReceiver(uri);
-        } catch (BrokerException e) {
-            throw new BuildException(e);
-        }
+        broker.releaseReceiver(uri);
     }
 
     public void attachObjectFactory(ZeroMQWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuildException {
+            throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
-
 
 }

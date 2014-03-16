@@ -37,22 +37,14 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
+import javax.servlet.ServletException;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
-
-import javax.servlet.ServletException;
 
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.Broadcaster;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.provision.WebChannelBindingDefinition;
@@ -60,12 +52,18 @@ import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
 import org.fabric3.binding.web.runtime.common.LongRunningExecutorService;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a channel to the gateway servlet that accepts incoming comet and websocket connections using Atmosphere. The gateway servlet is
@@ -150,7 +148,7 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         atmosphereFramework.destroy();
     }
 
-    public void build(WebChannelBindingDefinition definition, Channel channel) throws BuildException {
+    public void build(WebChannelBindingDefinition definition, Channel channel) throws ContainerException {
         URI sourceUri = channel.getUri();
         String path = UriHelper.getBaseName(sourceUri);
         OperationsAllowed allowed = definition.getAllowed();
@@ -183,7 +181,7 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
 
     }
 
-    public void dispose(WebChannelBindingDefinition definition, Channel channel) throws BuildException {
+    public void dispose(WebChannelBindingDefinition definition, Channel channel) throws ContainerException {
         URI sourceUri = channel.getUri();
 
         String path = UriHelper.getBaseName(sourceUri);

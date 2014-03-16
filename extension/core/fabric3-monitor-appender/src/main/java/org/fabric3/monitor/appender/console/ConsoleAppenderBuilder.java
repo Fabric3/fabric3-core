@@ -39,7 +39,7 @@ package org.fabric3.monitor.appender.console;
 
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.monitor.spi.appender.AppenderCreationException;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -48,7 +48,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ConsoleAppenderBuilder implements AppenderBuilder<PhysicalConsoleAppenderDefinition> {
 
-    public Appender build(PhysicalConsoleAppenderDefinition definition) throws BuildException {
+    public Appender build(PhysicalConsoleAppenderDefinition definition) throws AppenderCreationException {
         return new ConsoleAppender();
     }
 }

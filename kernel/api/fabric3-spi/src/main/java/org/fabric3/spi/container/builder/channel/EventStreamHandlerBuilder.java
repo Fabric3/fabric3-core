@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.container.builder.channel;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
@@ -51,8 +51,8 @@ public interface EventStreamHandlerBuilder<PHD extends PhysicalHandlerDefinition
      *
      * @param definition the handler definition.
      * @return the handler
-     * @throws BuildException if there is an error creating the handler
+     * @throws ContainerException if there is an error creating the handler
      */
-    EventStreamHandler build(PHD definition) throws BuildException;
+    EventStreamHandler build(PHD definition) throws ContainerException;
 
 }

@@ -34,7 +34,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -56,32 +56,23 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTarget
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) throws BuildException {
-        final URI sourceUri = source.getUri();
+    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) throws ContainerException {
+        URI sourceUri = source.getUri();
         String id = sourceUri.getPath().substring(1) + "/" + sourceUri.getFragment();   // strip leading '/'
         URI targetUri = target.getUri();
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
-        try {
-            broker.connectToSender(id, targetUri, chains, target.getMetadata(), loader);
-        } catch (BrokerException e) {
-            throw new BuildException(e);
-        }
+        broker.connectToSender(id, targetUri, chains, target.getMetadata(), loader);
     }
 
-    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) throws ContainerException {
         String id = source.getUri().toString();
         URI uri = target.getUri();
-        try {
-            broker.releaseSender(id, uri);
-        } catch (BrokerException e) {
-            throw new BuildException(e);
-        }
+        broker.releaseSender(id, uri);
     }
 
-    public ObjectFactory<?> createObjectFactory(ZeroMQWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(ZeroMQWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
-
 
 }

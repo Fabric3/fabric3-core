@@ -49,7 +49,7 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -121,7 +121,7 @@ public class ChannelResolverImpl implements ChannelResolver {
             }
             throw new GenerationException("Source generator not found");
 
-        } catch (GenerationException | BuildException e) {
+        } catch (GenerationException | ContainerException e) {
             throw new ResolverException(e);
         }
     }

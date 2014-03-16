@@ -37,7 +37,7 @@
 */
 package org.fabric3.security.authorization;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
@@ -60,7 +60,7 @@ public class AuthorizationInterceptorBuilder implements InterceptorBuilder<Autho
      * @param definition Authorization interceptor definition.
      * @return An instance of the authorization interceptor.
      */
-    public Interceptor build(AuthorizationInterceptorDefinition definition) throws BuildException {
+    public Interceptor build(AuthorizationInterceptorDefinition definition) throws ContainerException {
         return new RoleBasedAuthorizationInterceptor(definition.getRoles(), authorizationService);
     }
 

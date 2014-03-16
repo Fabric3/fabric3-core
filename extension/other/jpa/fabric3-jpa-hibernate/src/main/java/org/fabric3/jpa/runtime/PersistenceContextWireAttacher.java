@@ -37,24 +37,22 @@
 */
 package org.fabric3.jpa.runtime;
 
-import java.net.URI;
 import javax.transaction.TransactionManager;
-
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
-import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the target side of entity manager factories.
@@ -83,7 +81,7 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceContextWireTargetDefinition definition) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(PersistenceContextWireTargetDefinition definition) throws ContainerException {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -99,18 +97,16 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
             } else {
                 return new StatefulEntityManagerProxyFactory(unitName, emService, tm);
             }
-        } catch (JpaResolutionException e) {
-            throw new BuildException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
 
-    public void attach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 

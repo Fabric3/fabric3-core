@@ -43,12 +43,12 @@
  */
 package org.fabric3.implementation.pojo.builder;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class PropertyTransformException extends BuildException {
+public class PropertyTransformException extends ContainerException {
     private static final long serialVersionUID = -8543494515576133797L;
 
     public PropertyTransformException(String message) {

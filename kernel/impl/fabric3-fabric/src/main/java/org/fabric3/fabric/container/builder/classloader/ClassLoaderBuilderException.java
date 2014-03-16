@@ -43,12 +43,12 @@
  */
 package org.fabric3.fabric.container.builder.classloader;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class ClassLoaderBuilderException extends BuildException {
+public class ClassLoaderBuilderException extends ContainerException {
     private static final long serialVersionUID = 5397716085705723079L;
 
     public ClassLoaderBuilderException(String message) {

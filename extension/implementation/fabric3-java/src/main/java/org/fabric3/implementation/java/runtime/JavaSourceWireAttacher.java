@@ -39,29 +39,25 @@ package org.fabric3.implementation.java.runtime;
 
 import java.net.URI;
 
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
-import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.AttachException;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
+import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
-import org.fabric3.spi.container.wire.Wire;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches and detaches wires from a Java component.
@@ -81,12 +77,12 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws BuildException {
+    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
         URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
         if (source == null) {
-            throw new BuildException("Source callback not found: " + sourceName);
+            throw new ContainerException("Source callback not found: " + sourceName);
         }
         Injectable injectable = sourceDefinition.getInjectable();
 
@@ -95,7 +91,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
             type = classLoaderRegistry.loadClass(sourceDefinition.getClassLoaderId(), sourceDefinition.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = sourceDefinition.getInterfaceName();
-            throw new AttachException("Unable to load interface class: " + name, e);
+            throw new ContainerException("Unable to load interface class: " + name, e);
         }
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             processCallback(wire, targetDefinition, source, injectable, type);
@@ -104,11 +100,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -116,7 +112,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     public void attachObjectFactory(JavaWireSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalWireTargetDefinition targetDefinition)
-            throws BuildException {
+            throws ContainerException {
         URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
         Injectable injectable = sourceDefinition.getInjectable();
@@ -136,44 +132,36 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
                                   PhysicalWireTargetDefinition targetDefinition,
                                   JavaComponent source,
                                   Injectable injectable,
-                                  Class<?> type) throws KeyInstantiationException {
+                                  Class<?> type) throws ContainerException {
         String callbackUri = null;
         URI uri = targetDefinition.getCallbackUri();
         if (uri != null) {
             callbackUri = uri.toString();
         }
 
-        try {
-            ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
-            if (sourceDefinition.isKeyed() || sourceDefinition.isOrdered()) {
-                Object key = getKey(sourceDefinition, targetDefinition);
-                int order = sourceDefinition.getOrder();
-                InjectionAttributes attributes = new InjectionAttributes(key, order);
-                source.setObjectFactory(injectable, factory, attributes);
-            } else {
-                source.setObjectFactory(injectable, factory);
-            }
-        } catch (ProxyCreationException e) {
-            throw new KeyInstantiationException(e);
+        ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
+        if (sourceDefinition.isKeyed() || sourceDefinition.isOrdered()) {
+            Object key = getKey(sourceDefinition, targetDefinition);
+            int order = sourceDefinition.getOrder();
+            InjectionAttributes attributes = new InjectionAttributes(key, order);
+            source.setObjectFactory(injectable, factory, attributes);
+        } else {
+            source.setObjectFactory(injectable, factory);
         }
     }
 
     private void processCallback(Wire wire, PhysicalWireTargetDefinition targetDefinition, JavaComponent source, Injectable injectable, Class<?> type)
-            throws KeyInstantiationException {
+            throws ContainerException {
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();
         ObjectFactory<?> factory = source.getObjectFactory(injectable);
         boolean multiThreaded = Scope.COMPOSITE.equals(container.getScope());
-        try {
-            if (factory == null) {
-                factory = proxyService.createCallbackObjectFactory(type, multiThreaded, callbackUri, wire);
-            } else {
-                factory = proxyService.updateCallbackObjectFactory(factory, type, multiThreaded, callbackUri, wire);
-            }
-            source.setObjectFactory(injectable, factory);
-        } catch (ProxyCreationException e) {
-            throw new KeyInstantiationException(e);
+        if (factory == null) {
+            factory = proxyService.createCallbackObjectFactory(type, multiThreaded, callbackUri, wire);
+        } else {
+            factory = proxyService.updateCallbackObjectFactory(factory, type, multiThreaded, callbackUri, wire);
         }
+        source.setObjectFactory(injectable, factory);
     }
 
 }

@@ -47,7 +47,7 @@ import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.fabric.container.channel.FilterHandler;
 import org.fabric3.fabric.container.channel.TransformerHandler;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
@@ -125,7 +125,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void connect(PhysicalChannelConnectionDefinition definition) throws BuildException {
+    public void connect(PhysicalChannelConnectionDefinition definition) throws ContainerException {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -144,7 +144,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void disconnect(PhysicalChannelConnectionDefinition definition) throws BuildException {
+    public void disconnect(PhysicalChannelConnectionDefinition definition) throws ContainerException {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -164,9 +164,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param definition the connection definition
      * @return the connection
-     * @throws BuildException if there is an error creating the connection
+     * @throws ContainerException if there is an error creating the connection
      */
-    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws BuildException {
+    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws ContainerException {
         ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
 
         PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
@@ -180,7 +180,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         return new ChannelConnectionImpl(stream, sequence);
     }
 
-    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) throws BuildException {
+    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) throws ContainerException {
         if (transformerHandlerFactory == null) {
             return;  // bootstrap
         }
@@ -191,7 +191,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         }
         if (sourceTypes.size() > 1 || targetTypes.size() > 1) {
             // for now, only support one data type
-            throw new BuildException("Multi-type events are not supported");
+            throw new ContainerException("Multi-type events are not supported");
         }
         DataType sourceType = sourceTypes.get(0);
         DataType targetType = targetTypes.get(0);
@@ -207,7 +207,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
             EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
             stream.addHandler(handler);
         } catch (HandlerCreationException | ClassNotFoundException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -217,10 +217,10 @@ public class ChannelConnectorImpl implements ChannelConnector {
      * @param streamDefinition the stream definition
      * @param stream           the stream being created
      * @param loader           the target classloader to use for the transformation
-     * @throws BuildException if there is an error adding a filter
+     * @throws ContainerException if there is an error adding a filter
      */
     @SuppressWarnings({"unchecked"})
-    private void addTransformer(PhysicalEventStreamDefinition streamDefinition, EventStream stream, ClassLoader loader) throws BuildException {
+    private void addTransformer(PhysicalEventStreamDefinition streamDefinition, EventStream stream, ClassLoader loader) throws ContainerException {
         if (transformerRegistry == null) {
             // no transformer registry configured (e.g. during bootstrap) so skip
             return;
@@ -232,7 +232,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
             TransformerHandler handler = new TransformerHandler(type, transformerRegistry);
             stream.addHandler(handler);
         } catch (ClassNotFoundException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -241,10 +241,10 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param streamDefinition the stream definition
      * @param stream           the stream being created
-     * @throws BuildException if there is an error adding a filter
+     * @throws ContainerException if there is an error adding a filter
      */
     @SuppressWarnings({"unchecked"})
-    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws BuildException {
+    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws ContainerException {
         for (PhysicalEventFilterDefinition definition : streamDefinition.getFilters()) {
             EventFilterBuilder builder = filterBuilders.get(definition.getClass());
             EventFilter filter = builder.build(definition);
@@ -258,10 +258,10 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param streamDefinition the stream definition
      * @param stream           the stream being created
-     * @throws BuildException if there is an error adding a handler
+     * @throws ContainerException if there is an error adding a handler
      */
     @SuppressWarnings({"unchecked"})
-    private void addHandlers(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws BuildException {
+    private void addHandlers(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws ContainerException {
         for (PhysicalHandlerDefinition definition : streamDefinition.getHandlers()) {
             EventStreamHandlerBuilder builder = handlerBuilders.get(definition.getClass());
             EventStreamHandler handler = builder.build(definition);

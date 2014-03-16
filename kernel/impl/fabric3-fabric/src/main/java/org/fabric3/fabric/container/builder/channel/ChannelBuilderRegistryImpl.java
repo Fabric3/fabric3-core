@@ -41,7 +41,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
@@ -67,7 +67,7 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
         this.builders = builders;
     }
 
-    public Channel build(PhysicalChannelDefinition definition) throws BuildException {
+    public Channel build(PhysicalChannelDefinition definition) throws ContainerException {
         URI uri = definition.getUri();
         ChannelSide channelSide = definition.getChannelSide();
         Channel channel = channelManager.getAndIncrementChannel(uri, channelSide);
@@ -80,11 +80,11 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
             channelManager.register(channel);
             return channel;
         } catch (RegistrationException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void dispose(PhysicalChannelDefinition definition) throws BuildException {
+    public void dispose(PhysicalChannelDefinition definition) throws ContainerException {
         ChannelBuilder builder = getBuilder(definition);
         try {
             URI uri = definition.getUri();
@@ -96,14 +96,14 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
             }
 
         } catch (RegistrationException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
-    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws BuildException {
+    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws ContainerException {
         ChannelBuilder builder = builders.get(definition.getType());
         if (builder == null) {
-            throw new BuildException("Channel builder not found for type " + definition.getType());
+            throw new ContainerException("Channel builder not found for type " + definition.getType());
         }
         return builder;
     }

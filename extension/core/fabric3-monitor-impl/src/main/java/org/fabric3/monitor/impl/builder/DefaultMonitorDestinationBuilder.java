@@ -47,12 +47,13 @@ import org.fabric3.monitor.impl.destination.DefaultMonitorDestination;
 import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
+import org.fabric3.monitor.spi.appender.AppenderCreationException;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.writer.EventWriter;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -85,15 +86,20 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws BuildException {
+    public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws ContainerException {
         // create the appenders for the destination
         List<Appender> appenders = new ArrayList<>();
         for (PhysicalAppenderDefinition appenderDefinition : definition.getDefinitions()) {
             AppenderBuilder builder = appenderBuilders.get(appenderDefinition.getClass());
             if (builder == null) {
-                throw new BuildException("Unknown appender type: " + definition.getClass());
+                throw new ContainerException("Unknown appender type: " + definition.getClass());
             }
-            Appender appender = builder.build(appenderDefinition);
+            Appender appender;
+            try {
+                appender = builder.build(appenderDefinition);
+            } catch (AppenderCreationException e) {
+                throw new ContainerException(e);
+            }
             appenders.add(appender);
         }
 
@@ -102,17 +108,17 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
         try {
             destination.start();
         } catch (IOException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
         registry.register(destination);
     }
 
-    public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws BuildException {
+    public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws ContainerException {
         MonitorDestination destination = registry.unregister(definition.getName());
         try {
             destination.stop();
         } catch (IOException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
 
     }

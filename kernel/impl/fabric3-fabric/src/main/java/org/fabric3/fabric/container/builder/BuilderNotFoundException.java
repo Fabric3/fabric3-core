@@ -43,12 +43,12 @@
  */
 package org.fabric3.fabric.container.builder;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Represents an error processing an assembly model
  */
-public class BuilderNotFoundException extends BuildException {
+public class BuilderNotFoundException extends ContainerException {
     private static final long serialVersionUID = 2604579115547966762L;
 
     public BuilderNotFoundException(String message) {

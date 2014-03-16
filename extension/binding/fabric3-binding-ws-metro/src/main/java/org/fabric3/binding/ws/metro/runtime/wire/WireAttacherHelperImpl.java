@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureClassLoader;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
@@ -58,7 +58,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
         this.classLoaderUpdater = classLoaderUpdater;
     }
 
-    public Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws BuildException {
+    public Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws ContainerException {
         try {
             Class<?> seiClass;
             if (classBytes != null) {
@@ -71,7 +71,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
             classLoaderUpdater.updateClassLoader(seiClass);
             return seiClass;
         } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 

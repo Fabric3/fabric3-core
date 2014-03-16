@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.deployment.executor;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.fabric.deployment.command.DisposeChannelCommand;
 import org.fabric3.spi.command.CommandExecutor;
@@ -76,7 +76,7 @@ public class DisposeChannelCommandExecutor implements CommandExecutor<DisposeCha
         try {
             PhysicalChannelDefinition definition = command.getDefinition();
             channelBuilderRegistry.dispose(definition);
-        } catch (BuildException e) {
+        } catch (ContainerException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }

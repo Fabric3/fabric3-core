@@ -37,12 +37,12 @@
 */
 package org.fabric3.datasource.spi;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class DataSourceFactoryException extends Fabric3Exception {
+public class DataSourceFactoryException extends ContainerException {
     private static final long serialVersionUID = 6382360958341658668L;
 
     public DataSourceFactoryException(String message) {

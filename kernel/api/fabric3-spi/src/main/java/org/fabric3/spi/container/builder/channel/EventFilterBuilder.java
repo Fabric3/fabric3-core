@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.container.builder.channel;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 
 /**
@@ -50,8 +50,8 @@ public interface EventFilterBuilder<PFD extends PhysicalEventFilterDefinition> {
      *
      * @param definition the filter definition.
      * @return the filter
-     * @throws BuildException if there is an error creating the filter
+     * @throws ContainerException if there is an error creating the filter
      */
-    EventFilter build(PFD definition) throws BuildException;
+    EventFilter build(PFD definition) throws ContainerException;
 
 }

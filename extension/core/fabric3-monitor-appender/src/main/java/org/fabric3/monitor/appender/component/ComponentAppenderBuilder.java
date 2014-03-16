@@ -44,10 +44,10 @@ import java.nio.ByteBuffer;
 import org.fabric3.api.host.Names;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.spi.container.builder.BuildException;
-import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.monitor.spi.appender.AppenderCreationException;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -63,15 +63,15 @@ public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalCompone
         this.componentManager = componentManager;
     }
 
-    public Appender build(PhysicalComponentAppenderDefinition definition) throws BuildException {
+    public Appender build(PhysicalComponentAppenderDefinition definition) throws AppenderCreationException {
         URI uri = URI.create(Names.RUNTIME_NAME + "/" + definition.getComponentName());
 
         Component component = componentManager.getComponent(uri);
         if (component == null) {
-            throw new BuildException("Component not found: " + uri);
+            throw new AppenderCreationException("Component not found: " + uri);
         }
         if (!(component instanceof AtomicComponent)) {
-            throw new BuildException("Component must be atomic: " + uri);
+            throw new AppenderCreationException("Component must be atomic: " + uri);
         }
         AtomicComponent atomicComponent = (AtomicComponent) component;
         return new AppenderAdapter(atomicComponent);

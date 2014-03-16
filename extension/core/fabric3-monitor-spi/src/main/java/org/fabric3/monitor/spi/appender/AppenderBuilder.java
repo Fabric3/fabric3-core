@@ -38,7 +38,6 @@
 package org.fabric3.monitor.spi.appender;
 
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
-import org.fabric3.spi.container.builder.BuildException;
 
 /**
  * Instantiates an {@link Appender} from a definition.
@@ -50,7 +49,7 @@ public interface AppenderBuilder<D extends PhysicalAppenderDefinition> {
      *
      * @param definition the definition
      * @return the appender
-     * @throws BuildException if there is an error creating the appender
+     * @throws AppenderCreationException if there is an error creating the appender
      */
-    Appender build(D definition) throws BuildException;
+    Appender build(D definition) throws AppenderCreationException;
 }

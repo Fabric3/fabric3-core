@@ -39,7 +39,7 @@ package org.fabric3.datasource.runtime;
 
 import javax.sql.DataSource;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
@@ -60,15 +60,15 @@ public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWire
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws ContainerException {
         String dataSourceName = target.getDataSourceName();
         DataSource source = registry.getDataSource(dataSourceName);
         if (!target.isOptional() && source == null) {

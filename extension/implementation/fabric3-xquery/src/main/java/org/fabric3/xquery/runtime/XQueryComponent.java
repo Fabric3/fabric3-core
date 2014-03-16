@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -76,9 +76,9 @@ public abstract class XQueryComponent implements AtomicComponent {
         this.classLoaderId = classLoaderId;
     }
 
-    public abstract void attachSourceWire(String name, String callbackUri, Wire wire) throws BuildException;
+    public abstract void attachSourceWire(String name, String callbackUri, Wire wire) throws ContainerException;
 
-    public abstract void attachTargetWire(String name, Wire wire) throws BuildException;
+    public abstract void attachTargetWire(String name, Wire wire) throws ContainerException;
 
     public void attachObjectFactory(String name, ObjectFactory<?> factory) throws ObjectCreationException {
         referenceFactories.put(name, factory);

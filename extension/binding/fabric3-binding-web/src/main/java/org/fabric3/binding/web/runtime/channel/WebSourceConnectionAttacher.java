@@ -38,7 +38,7 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
-import org.fabric3.spi.container.builder.component.AttachException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -51,7 +51,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     public void attach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
     }
 
-    public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
+    public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
     }
 
 }

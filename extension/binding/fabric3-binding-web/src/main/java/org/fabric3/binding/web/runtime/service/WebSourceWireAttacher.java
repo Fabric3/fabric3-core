@@ -37,33 +37,32 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
-import java.util.concurrent.ExecutorService;
 import javax.servlet.ServletException;
+import java.util.concurrent.ExecutorService;
 
 import org.atmosphere.cache.HeaderBroadcasterCache;
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebWireSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
 import org.fabric3.binding.web.runtime.common.LongRunningExecutorService;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.host.ServletHost;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for
@@ -139,7 +138,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDe
         atmosphereFramework.destroy();
     }
 
-    public void attach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         String path = getPath(source);
         if (wire.getInvocationChains().size() != 1) {
             // the websocket binding only supports service contracts with one operation
@@ -154,7 +153,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDe
         monitor.provisionedEndpoint(prefix + path);
     }
 
-    public void detach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(WebWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         String path = getPath(source);
         serviceManager.unregister(path);
         String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);

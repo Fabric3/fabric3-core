@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.deployment.executor;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -69,8 +69,8 @@ public class DetachWireCommandExecutor implements CommandExecutor<DetachWireComm
     public void execute(DetachWireCommand command) throws ExecutionException {
         try {
             connector.disconnect(command.getPhysicalWireDefinition());
-        } catch (BuildException be) {
-            throw new AssertionError(be);
+        } catch (ContainerException e) {
+            throw new ExecutionException(e);
         }
     }
 }

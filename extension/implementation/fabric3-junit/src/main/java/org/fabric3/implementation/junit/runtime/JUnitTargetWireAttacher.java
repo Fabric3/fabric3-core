@@ -47,18 +47,17 @@ import org.fabric3.implementation.pojo.component.InvokerInterceptor;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.container.builder.BuildException;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.UriHelper;
 import org.junit.Test;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -79,11 +78,11 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTarg
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, JUnitWireTargetDefinition targetDefinition, Wire wire) throws AttachException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, JUnitWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
         if (component == null) {
-            throw new AttachException("Target not found: " + targetName);
+            throw new ContainerException("Target not found: " + targetName);
         }
         JavaComponent target = (JavaComponent) component;
 
@@ -117,11 +116,11 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTarg
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JUnitWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, JUnitWireTargetDefinition target) throws ContainerException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JUnitWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(JUnitWireTargetDefinition target) throws ContainerException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

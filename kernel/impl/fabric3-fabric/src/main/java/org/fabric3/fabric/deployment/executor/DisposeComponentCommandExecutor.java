@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -111,7 +111,7 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
             }
         } catch (RegistrationException e) {
             throw new ExecutionException("Unexpected exception un-registering component: " + uri, e);
-        } catch (BuildException e) {
+        } catch (ContainerException e) {
             throw new ExecutionException(e);
         }
 

@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -60,18 +60,18 @@ public class WebTargetWireAttacher implements TargetWireAttacher<WebWireTargetDe
         this.broadcasterManager = broadcasterManager;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target, Wire wire) throws ContainerException {
         WebCallbackInterceptor interceptor = new WebCallbackInterceptor(broadcasterManager);
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, WebWireTargetDefinition target) throws ContainerException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(WebWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(WebWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 }

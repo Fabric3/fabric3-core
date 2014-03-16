@@ -48,23 +48,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.fabric.container.builder.BuilderNotFoundException;
+import org.fabric3.fabric.deployment.command.BuildComponentCommand;
+import org.fabric3.spi.command.CommandExecutor;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
+import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.fabric.container.builder.BuilderNotFoundException;
-import org.fabric3.fabric.deployment.command.BuildComponentCommand;
-import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.component.RegistrationException;
-import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Builds a component on a runtime.
@@ -112,7 +110,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
             for (ComponentBuilderListener listener : listeners) {
                 listener.onBuild(component, definition);
             }
-        } catch (BuildException | RegistrationException e) {
+        } catch (ContainerException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }
@@ -122,10 +120,10 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
      *
      * @param definition the component definition.
      * @return Component to be built.
-     * @throws BuildException if an exception building is encountered
+     * @throws ContainerException if an exception building is encountered
      */
     @SuppressWarnings("unchecked")
-    private Component build(PhysicalComponentDefinition definition) throws BuildException {
+    private Component build(PhysicalComponentDefinition definition) throws ContainerException {
 
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
@@ -133,6 +131,5 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
         }
         return builder.build(definition);
     }
-
 
 }

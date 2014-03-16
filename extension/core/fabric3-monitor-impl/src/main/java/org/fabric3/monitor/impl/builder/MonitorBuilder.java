@@ -42,7 +42,7 @@ import java.util.Map;
 import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -60,23 +60,23 @@ public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalMonitorDefinition definition) throws BuildException {
+    public void build(PhysicalMonitorDefinition definition) throws ContainerException {
         PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
         MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
         builder.build(destinationDefinition);
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalMonitorDefinition definition) throws BuildException {
+    public void remove(PhysicalMonitorDefinition definition) throws ContainerException {
         PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
         MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
         builder.remove(destinationDefinition);
     }
 
-    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestinationDefinition destinationDefinition) throws BuildException {
+    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestinationDefinition destinationDefinition) throws ContainerException {
         MonitorDestinationBuilder builder = builders.get(destinationDefinition.getClass());
         if (builder == null) {
-            throw new BuildException("Unknown destination type: " + destinationDefinition.getClass().getName());
+            throw new ContainerException("Unknown destination type: " + destinationDefinition.getClass().getName());
         }
         return builder;
     }

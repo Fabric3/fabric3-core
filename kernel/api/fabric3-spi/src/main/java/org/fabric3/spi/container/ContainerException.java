@@ -41,27 +41,30 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.container.builder.component;
+package org.fabric3.spi.container;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
- *
+ * Denotes a non-recoverable failure during a runtime operation.
  */
-public class AttachException extends BuildException {
-    private static final long serialVersionUID = -2269016155932491868L;
+public class ContainerException extends Fabric3Exception {
+    private static final long serialVersionUID = 3208972591954615326L;
 
-    public AttachException(String message) {
+    public ContainerException() {
+        super();
+    }
+
+    public ContainerException(String message) {
         super(message);
     }
 
-    public AttachException(Throwable cause) {
-        super(cause);
-    }
-
-    public AttachException(String message, Throwable cause) {
+    public ContainerException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    public ContainerException(Throwable cause) {
+        super(cause);
+    }
 
 }

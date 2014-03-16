@@ -42,7 +42,7 @@ import java.net.URI;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.builder.component.AttachException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -75,12 +75,12 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection)
-            throws AttachException {
+            throws ContainerException {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         JavaComponent component = (JavaComponent) manager.getComponent(targetName);
         if (component == null) {
-            throw new AttachException("Target component not found: " + targetName);
+            throw new ContainerException("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
 
@@ -92,17 +92,17 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws AttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws ContainerException {
         // no-op
     }
 
-    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws AttachException {
+    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws ContainerException {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {
             return signature.getMethod(implementationClass);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new AttachException(e);
+            throw new ContainerException(e);
         }
     }
 

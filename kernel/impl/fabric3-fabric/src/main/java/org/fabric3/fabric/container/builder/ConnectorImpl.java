@@ -51,14 +51,13 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.wire.InvocationChainImpl;
 import org.fabric3.fabric.container.wire.WireImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
-import org.fabric3.spi.container.wire.InterceptorCreationException;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -101,14 +100,14 @@ public class ConnectorImpl implements Connector {
     }
 
     @Reference(required = false)
-    public void setSourceAttachers(Map<Class<? extends PhysicalWireSourceDefinition>,
-            SourceWireAttacher<? extends PhysicalWireSourceDefinition>> sourceAttachers) {
+    public void setSourceAttachers(Map<Class<? extends PhysicalWireSourceDefinition>, SourceWireAttacher<? extends PhysicalWireSourceDefinition>>
+                                               sourceAttachers) {
         this.sourceAttachers = sourceAttachers;
     }
 
     @Reference
-    public void setTargetAttachers(Map<Class<? extends PhysicalWireTargetDefinition>,
-            TargetWireAttacher<? extends PhysicalWireTargetDefinition>> targetAttachers) {
+    public void setTargetAttachers(Map<Class<? extends PhysicalWireTargetDefinition>, TargetWireAttacher<? extends PhysicalWireTargetDefinition>>
+                                               targetAttachers) {
         this.targetAttachers = targetAttachers;
     }
 
@@ -116,7 +115,7 @@ public class ConnectorImpl implements Connector {
         this.transform = transform;
     }
 
-    public void connect(PhysicalWireDefinition definition) throws BuildException {
+    public void connect(PhysicalWireDefinition definition) throws ContainerException {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
         if (sourceAttacher == null) {
@@ -138,7 +137,7 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public void disconnect(PhysicalWireDefinition definition) throws BuildException {
+    public void disconnect(PhysicalWireDefinition definition) throws ContainerException {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
         if (sourceAttacher == null) {
@@ -158,7 +157,7 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    Wire createWire(PhysicalWireDefinition definition) throws BuildException {
+    Wire createWire(PhysicalWireDefinition definition) throws ContainerException {
         Wire wire = new WireImpl();
         for (PhysicalOperationDefinition operation : definition.getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
@@ -178,9 +177,9 @@ public class ConnectorImpl implements Connector {
      *
      * @param wire       the wire
      * @param definition the physical wire definition
-     * @throws BuildException if there is an error creating a transformer
+     * @throws ContainerException if there is an error creating a transformer
      */
-    private void processTransform(Wire wire, PhysicalWireDefinition definition) throws BuildException {
+    private void processTransform(Wire wire, PhysicalWireDefinition definition) throws ContainerException {
         if (!transform) {
             // short-circuit during bootstrap
             return;
@@ -203,9 +202,9 @@ public class ConnectorImpl implements Connector {
      * @param wire           the wire
      * @param definition     the physical wire definition
      * @param checkPassByRef true if a check needs to be performed for support of pass-by-reference
-     * @throws BuildException if there is an error creating a transformer
+     * @throws ContainerException if there is an error creating a transformer
      */
-    private void addTransformer(Wire wire, PhysicalWireDefinition definition, boolean checkPassByRef) throws BuildException {
+    private void addTransformer(Wire wire, PhysicalWireDefinition definition, boolean checkPassByRef) throws ContainerException {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
         URI sourceId = sourceDefinition.getClassLoaderId();
@@ -224,12 +223,8 @@ public class ConnectorImpl implements Connector {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             List<DataType> sourceTypes = sourceDefinition.getDataTypes();
             List<DataType> targetTypes = targetDefinition.getDataTypes();
-            try {
-                Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
-                chain.addInterceptor(interceptor);
-            } catch (InterceptorCreationException e) {
-                throw new BuildException(e);
-            }
+            Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
+            chain.addInterceptor(interceptor);
         }
     }
 

@@ -37,12 +37,12 @@
 */
 package org.fabric3.policy.interceptor.simple;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Exception thrown in case of instantiating interceptors.
  */
-public class SimpleInterceptorBuilderException extends BuildException {
+public class SimpleInterceptorBuilderException extends ContainerException {
     private static final long serialVersionUID = -3619466088352819526L;
 
     public SimpleInterceptorBuilderException(String message) {

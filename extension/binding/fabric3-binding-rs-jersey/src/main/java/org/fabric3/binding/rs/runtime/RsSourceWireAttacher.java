@@ -53,9 +53,8 @@ import org.fabric3.binding.rs.runtime.container.RsContainerManager;
 import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
 import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -105,7 +104,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         this.logLevel = Level.parse(level);
     }
 
-    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws AttachException {
+    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
@@ -125,13 +124,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
             monitor.provisionedEndpoint(sourceUri);
         } catch (ClassNotFoundException e) {
             String name = source.getRsClass();
-            throw new AttachException("Unable to load interface class " + name, e);
-        } catch (RsContainerException e) {
-            throw new AttachException("Error attaching source: " + sourceUri, e);
+            throw new ContainerException("Unable to load interface class " + name, e);
         }
     }
 
-    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
@@ -140,11 +137,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     }
 
     public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuildException {
+            throws ContainerException {
         throw new AssertionError();
     }
 
-    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 
@@ -157,7 +154,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     }
 
     private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container)
-            throws ClassNotFoundException, RsContainerException, AttachException {
+            throws ClassNotFoundException, RsContainerException, ContainerException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -180,10 +177,10 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         }
     }
 
-    private Resource createResource(F3ResourceHandler handler) throws AttachException {
+    private Resource createResource(F3ResourceHandler handler) throws ContainerException {
         Resource template = Resource.from(handler.getInterface());
         if (template == null) {
-            throw new AttachException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
+            throw new ContainerException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
         }
         Resource.Builder resourceBuilder = Resource.builder(template.getPath());
         for (ResourceMethod resourceMethod : template.getAllMethods()) {

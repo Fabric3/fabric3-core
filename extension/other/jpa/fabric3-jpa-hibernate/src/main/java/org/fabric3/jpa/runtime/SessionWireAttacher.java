@@ -40,7 +40,7 @@ package org.fabric3.jpa.runtime;
 import java.net.URI;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
@@ -83,7 +83,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws ContainerException {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -100,17 +100,17 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
                 return new StatefulSessionProxyFactory(unitName, emService, tm);
             }
         } catch (JpaResolutionException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 

@@ -45,7 +45,7 @@ package org.fabric3.fabric.deployment.executor;
 
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -93,7 +93,7 @@ public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResou
         }
         try {
             builder.build(definition);
-        } catch (BuildException e) {
+        } catch (ContainerException e) {
             throw new ExecutionException(e);
         }
     }

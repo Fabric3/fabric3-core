@@ -39,7 +39,7 @@ package org.fabric3.policy.interceptor.simple;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
@@ -57,7 +57,7 @@ public class SimpleInterceptorBuilder implements InterceptorBuilder<SimpleInterc
     }
 
     @SuppressWarnings("unchecked")
-    public Interceptor build(SimpleInterceptorDefinition definition) throws BuildException {
+    public Interceptor build(SimpleInterceptorDefinition definition) throws ContainerException {
 
         String className = definition.getInterceptorClass();
         URI classLoaderUri = definition.getPolicyClassLoaderId();
@@ -70,12 +70,8 @@ public class SimpleInterceptorBuilder implements InterceptorBuilder<SimpleInterc
         try {
             Class<Interceptor> interceptorClass = (Class<Interceptor>) loader.loadClass(className);
             return interceptorClass.newInstance();
-        } catch (InstantiationException ex) {
-            throw new SimpleInterceptorBuilderException("Unable to instantiate: " + className, ex);
-        } catch (IllegalAccessException ex) {
-            throw new SimpleInterceptorBuilderException("Cannot access class or constructor: " + className, ex);
-        } catch (ClassNotFoundException ex) {
-            throw new SimpleInterceptorBuilderException("Class not found: " + className, ex);
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new SimpleInterceptorBuilderException("Unable load class: " + className, e);
         }
 
     }

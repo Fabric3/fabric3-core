@@ -39,34 +39,33 @@ package org.fabric3.fabric.synthesizer;
 
 import java.net.URI;
 
-import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.spi.model.type.system.SystemImplementation;
-import org.fabric3.implementation.system.singleton.SingletonComponent;
-import org.fabric3.implementation.system.singleton.SingletonImplementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.implementation.system.singleton.SingletonComponent;
+import org.fabric3.implementation.system.singleton.SingletonImplementation;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.component.RegistrationException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.component.ScopedComponent;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.host.Names.BOOT_CONTRIBUTION;
@@ -115,11 +114,10 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             scopeContainer.register(physical);
             // initialize the component - needed for reinjection to work
             scopeContainer.getInstance(physical);
-        } catch (RegistrationException | InstanceLifecycleException | AssemblyException e) {
+        } catch (ContainerException | AssemblyException e) {
             throw new ComponentRegistrationException(e);
         }
     }
-
 
     private <S, I extends S> LogicalComponent<?> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)
             throws InvalidServiceContractException, AssemblyException {
@@ -192,6 +190,5 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         component.setClassLoaderId(BOOT_CONTRIBUTION);
         return component;
     }
-
 
 }

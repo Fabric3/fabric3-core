@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
@@ -73,7 +73,7 @@ public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBu
     }
 
     public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader)
-            throws BuildException {
+            throws ContainerException {
         Class<?> type = dataType.getType();
         if (type.isArray()) {
             return arrayBuilder.createFactory(name, dataType, value, classLoader);

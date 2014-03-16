@@ -37,15 +37,13 @@
 */
 package org.fabric3.datasource.runtime;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+import org.fabric3.datasource.provision.PhysicalDataSourceResource;
+import org.fabric3.datasource.spi.DataSourceFactory;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.datasource.provision.PhysicalDataSourceResource;
-import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
-import org.fabric3.datasource.spi.DataSourceFactory;
-import org.fabric3.datasource.spi.DataSourceFactoryException;
-import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 
 /**
  *
@@ -58,23 +56,15 @@ public class DataSourceBuilder implements ResourceBuilder<PhysicalDataSourceReso
         this.factory = factory;
     }
 
-    public void build(PhysicalDataSourceResource definition) throws BuildException {
+    public void build(PhysicalDataSourceResource definition) throws ContainerException {
         for (DataSourceConfiguration configuration : definition.getConfigurations()) {
-            try {
-                factory.create(configuration);
-            } catch (DataSourceFactoryException e) {
-                throw new DataSourceBuilderException(e);
-            }
+            factory.create(configuration);
         }
     }
 
-    public void remove(PhysicalDataSourceResource definition) throws BuildException {
+    public void remove(PhysicalDataSourceResource definition) throws ContainerException {
         for (DataSourceConfiguration configuration : definition.getConfigurations()) {
-            try {
-                factory.remove(configuration);
-            } catch (DataSourceFactoryException e) {
-                throw new DataSourceBuilderException(e);
-            }
+            factory.remove(configuration);
         }
     }
 }

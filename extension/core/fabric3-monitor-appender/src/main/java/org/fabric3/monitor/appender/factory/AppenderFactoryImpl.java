@@ -52,14 +52,13 @@ import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.appender.console.ConsoleAppender;
 import org.fabric3.monitor.appender.console.ConsoleAppenderDefinition;
-import org.fabric3.monitor.spi.appender.AppenderCreationException;
-import org.fabric3.monitor.spi.appender.AppenderFactory;
-import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
+import org.fabric3.monitor.spi.appender.AppenderCreationException;
+import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.model.type.AppenderDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -175,12 +174,8 @@ public class AppenderFactoryImpl implements AppenderFactory {
             if (builder == null) {
                 throw new AppenderCreationException("Unknown appender type: " + definition.getClass());
             }
-            try {
-                Appender appender = builder.build(definition);
-                appenders.add(appender);
-            } catch (BuildException e) {
-                throw new AppenderCreationException(e);
-            }
+            Appender appender = builder.build(definition);
+            appenders.add(appender);
         }
         return appenders;
     }

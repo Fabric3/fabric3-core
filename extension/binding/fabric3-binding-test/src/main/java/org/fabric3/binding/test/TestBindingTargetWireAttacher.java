@@ -39,7 +39,7 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -62,7 +62,7 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         this.channel = channel;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws ContainerException {
         for (InvocationChain chain : wire.getInvocationChains()) {
             URI destination = target.getUri();
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -72,11 +72,11 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws ContainerException {
         //        throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 }

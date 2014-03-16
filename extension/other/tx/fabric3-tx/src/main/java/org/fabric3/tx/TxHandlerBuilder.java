@@ -39,7 +39,7 @@ package org.fabric3.tx;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -58,7 +58,7 @@ public class TxHandlerBuilder implements EventStreamHandlerBuilder<TxHandlerDefi
         this.monitor = monitor;
     }
 
-    public EventStreamHandler build(TxHandlerDefinition interceptorDefinition) throws BuildException {
+    public EventStreamHandler build(TxHandlerDefinition interceptorDefinition) throws ContainerException {
         return new TxEventStreamHandler(transactionManager, interceptorDefinition.getAction(), monitor);
     }
 

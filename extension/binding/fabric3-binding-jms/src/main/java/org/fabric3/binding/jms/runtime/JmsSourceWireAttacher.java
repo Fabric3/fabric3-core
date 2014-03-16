@@ -71,9 +71,9 @@ import org.fabric3.binding.jms.runtime.wire.WireHolder;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -114,7 +114,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         URI serviceUri = target.getUri();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         TransactionType trxType = source.getTransactionType();
@@ -145,7 +145,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             }
             containerManager.register(configuration);
         } catch (JMSException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -176,26 +176,26 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         //        configuration.setLocalDelivery();
     }
 
-    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         try {
             containerManager.unregister(target.getUri());
             // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
             resolver.release(source.getMetadata().getConnectionFactory());
         } catch (JMSException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
     public void attachObjectFactory(JmsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)
-            throws BuildException {
+            throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsWireSourceDefinition source) throws BuildException {
+    private ResolvedObjects resolveAdministeredObjects(JmsWireSourceDefinition source) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
         ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
 
@@ -220,16 +220,16 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
     }
 
-    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws BuildException {
+    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws ContainerException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
-            throw new BuildException("Destination is not a queue: " + requestDestinationDefinition.getName());
+            throw new ContainerException("Destination is not a queue: " + requestDestinationDefinition.getName());
         } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
-            throw new BuildException("Destination is not a topic: " + requestDestinationDefinition.getName());
+            throw new ContainerException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
 
-    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, TransactionType trxType) throws BuildException {
+    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, TransactionType trxType) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
@@ -238,7 +238,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             PhysicalOperationDefinition definition = chain.getPhysicalOperation();
             OperationPayloadTypes payloadType = resolveOperation(definition.getName(), types);
             if (payloadType == null) {
-                throw new BuildException("Payload type not found for operation: " + definition.getName());
+                throw new ContainerException("Payload type not found for operation: " + definition.getName());
             }
             chainHolders.add(new InvocationChainHolder(chain, payloadType));
         }

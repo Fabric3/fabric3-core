@@ -52,7 +52,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuild
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.api.implementation.timer.model.TimerData;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -109,7 +109,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         this.topologyService = topologyService;
     }
 
-    public TimerComponent build(TimerComponentDefinition definition) throws BuildException {
+    public TimerComponent build(TimerComponentDefinition definition) throws ContainerException {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -122,7 +122,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         try {
             implClass = classLoader.loadClass(managerDefinition.getImplementationClass());
         } catch (ClassNotFoundException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
 
@@ -151,7 +151,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         return component;
     }
 
-    public void dispose(TimerComponentDefinition definition, TimerComponent component) throws BuildException {
+    public void dispose(TimerComponentDefinition definition, TimerComponent component) throws ContainerException {
         dispose(definition);
     }
 

@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -59,26 +59,26 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param source metadata for performing the attach
      * @param target metadata for performing the attach
      * @param wire   the wire
-     * @throws BuildException if an exception occurs during the attach operation
+     * @throws ContainerException if an exception occurs during the attach operation
      */
-    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws BuildException;
+    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws ContainerException;
 
     /**
      * Detaches a wire from a target component or outgoing transport binding.
      *
      * @param source metadata for performing the attach
      * @param target metadata for performing the attach
-     * @throws BuildException if an exception occurs during the detach operation
+     * @throws ContainerException if an exception occurs during the detach operation
      */
-    void detach(PhysicalWireSourceDefinition source, PTD target) throws BuildException;
+    void detach(PhysicalWireSourceDefinition source, PTD target) throws ContainerException;
 
     /**
      * Create an ObjectFactory that returns a direct target instance.
      *
      * @param target metadata for performing the attach
      * @return an ObjectFactory that returns the target instance
-     * @throws BuildException if an exception occurs during the attach operation
+     * @throws ContainerException if an exception occurs during the attach operation
      */
-    ObjectFactory<?> createObjectFactory(PTD target) throws BuildException;
+    ObjectFactory<?> createObjectFactory(PTD target) throws ContainerException;
 
 }

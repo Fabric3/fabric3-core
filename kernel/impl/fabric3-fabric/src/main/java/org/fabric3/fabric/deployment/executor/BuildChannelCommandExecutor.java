@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.deployment.executor;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.fabric.deployment.command.BuildChannelCommand;
 import org.fabric3.spi.command.CommandExecutor;
@@ -77,7 +77,7 @@ public class BuildChannelCommandExecutor implements CommandExecutor<BuildChannel
         try {
             PhysicalChannelDefinition definition = command.getDefinition();
             channelBuilderRegistry.build(definition);
-        } catch (BuildException e) {
+        } catch (ContainerException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }

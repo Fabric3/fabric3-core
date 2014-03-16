@@ -41,25 +41,23 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
+import org.fabric3.implementation.pojo.builder.MethodUtils;
+import org.fabric3.implementation.pojo.component.InvokerInterceptor;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.pojo.builder.MethodUtils;
-import org.fabric3.implementation.pojo.component.InvokerInterceptor;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches and detaches wires from Java components.
@@ -78,11 +76,11 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) throws AttachException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
         if (component == null) {
-            throw new AttachException("Target not found: " + targetName);
+            throw new ContainerException("Target not found: " + targetName);
         }
         JavaComponent target = (JavaComponent) component;
 
@@ -109,11 +107,11 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws ContainerException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws ContainerException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

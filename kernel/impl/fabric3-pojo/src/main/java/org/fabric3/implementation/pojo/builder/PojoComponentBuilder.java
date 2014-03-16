@@ -58,7 +58,7 @@ import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
@@ -97,7 +97,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         this.info = info;
     }
 
-    protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws BuildException {
+    protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws ContainerException {
         List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
 
         TypeMapping typeMapping = new TypeMapping();
@@ -123,7 +123,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         }
     }
 
-    protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws BuildException {
+    protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws ContainerException {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
             ObjectFactory<Object> objectFactory = component.createObjectFactory();
@@ -131,19 +131,19 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
                 URI uri = definition.getComponentUri();
                 managementService.export(uri, info, objectFactory, classLoader);
             } catch (ManagementException e) {
-                throw new BuildException(e);
+                throw new ContainerException(e);
             }
         }
     }
 
-    protected void dispose(PojoComponentDefinition definition) throws BuildException {
+    protected void dispose(PojoComponentDefinition definition) throws ContainerException {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
             try {
                 URI uri = definition.getComponentUri();
                 managementService.remove(uri, info);
             } catch (ManagementException e) {
-                throw new BuildException(e);
+                throw new ContainerException(e);
             }
         }
     }

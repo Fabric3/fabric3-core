@@ -43,6 +43,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -50,7 +51,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 /**
  * Attaches and detaches a {@link ChannelConnection} from a component producer, channel or channel binding.
  */
-public interface SourceConnectionAttacher<PCSD extends PhysicalConnectionSourceDefinition> {
+public interface SourceConnectionAttacher<P extends PhysicalConnectionSourceDefinition> {
 
     /**
      * Attach a connection to a component producer or channel binding transport.
@@ -58,17 +59,17 @@ public interface SourceConnectionAttacher<PCSD extends PhysicalConnectionSourceD
      * @param source     the source metadata
      * @param target     the target metadata
      * @param connection the channel connection
-     * @throws AttachException if an error is encountered performing the attach
+     * @throws ContainerException if an error is encountered performing the attach
      */
-    void attach(PCSD source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws AttachException;
+    void attach(P source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws ContainerException;
 
     /**
      * Detach a connection from a source.
      *
      * @param source the source metadata
      * @param target the target metadata
-     * @throws AttachException if an error is encountered performing the attach
+     * @throws ContainerException if an error is encountered performing the attach
      */
-    void detach(PCSD source, PhysicalConnectionTargetDefinition target) throws AttachException;
+    void detach(P source, PhysicalConnectionTargetDefinition target) throws ContainerException;
 
 }

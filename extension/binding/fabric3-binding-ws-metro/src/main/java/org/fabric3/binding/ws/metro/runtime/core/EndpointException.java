@@ -37,12 +37,12 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class EndpointException extends BuildException {
+public class EndpointException extends ContainerException {
     private static final long serialVersionUID = 8571000382431313326L;
 
     public EndpointException(String message, Throwable cause) {

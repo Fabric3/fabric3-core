@@ -39,7 +39,7 @@ package org.fabric3.tx;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -58,7 +58,7 @@ public class TxInterceptorBuilder implements InterceptorBuilder<TxInterceptorDef
         this.monitor = monitor;
     }
 
-    public Interceptor build(TxInterceptorDefinition interceptorDefinition) throws BuildException {
+    public Interceptor build(TxInterceptorDefinition interceptorDefinition) throws ContainerException {
         return new TxInterceptor(transactionManager, interceptorDefinition.getAction(), monitor);
     }
 

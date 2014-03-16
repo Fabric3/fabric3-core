@@ -48,7 +48,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -76,7 +76,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         this.factoryBuilder = factoryBuilder;
     }
 
-    public JavaComponent build(JavaComponentDefinition definition) throws BuildException {
+    public JavaComponent build(JavaComponentDefinition definition) throws ContainerException {
         if (definition.getInstance() != null) {
             return buildNonManagedComponent(definition);
         } else {
@@ -84,11 +84,11 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         }
     }
 
-    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws BuildException {
+    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws ContainerException {
         dispose(definition);
     }
 
-    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) throws BuildException {
+    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) throws ContainerException {
         URI uri = definition.getComponentUri();
 
         QName deployable = definition.getDeployable();

@@ -39,7 +39,7 @@ package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.builder.component.AttachException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -65,11 +65,11 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target, ChannelConnection connection)
-            throws AttachException {
+            throws ContainerException {
         URI targetUri = target.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(targetUri);
         if (component == null) {
-            throw new AttachException("Target component not found: " + targetUri);
+            throw new ContainerException("Target component not found: " + targetUri);
         }
         String beanName = target.getBeanName();
         JavaType type = target.getType();
@@ -79,7 +79,7 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) throws AttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) throws ContainerException {
         // no-op
     }
 

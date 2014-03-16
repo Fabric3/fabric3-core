@@ -38,7 +38,7 @@
 
 package org.fabric3.cache.runtime;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
@@ -58,19 +58,19 @@ public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTarg
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<?> createObjectFactory(CacheWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(CacheWireTargetDefinition target) throws ContainerException {
         String name = target.getCacheName();
         Object cache = registry.getCache(name);
         if (cache == null) {
-            throw new BuildException("Cache not found: " + name);
+            throw new ContainerException("Cache not found: " + name);
         }
         return new SingletonObjectFactory<>(cache);
     }

@@ -43,12 +43,12 @@
  */
 package org.fabric3.spi.container.objectfactory;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Denotes an error creating a new object instance.
  */
-public class ObjectCreationException extends Fabric3Exception {
+public class ObjectCreationException extends ContainerException {
     private static final long serialVersionUID = -6423113430265944499L;
 
     public ObjectCreationException() {

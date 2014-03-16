@@ -32,7 +32,7 @@ package org.fabric3.binding.zeromq.runtime;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.builder.component.AttachException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
@@ -55,26 +55,18 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws AttachException {
+            throws ContainerException {
 
         ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
         URI subscriberId = source.getUri();
-        try {
-            ZeroMQMetadata metadata = source.getMetadata();
-            broker.subscribe(subscriberId, metadata, connection, loader);
-        } catch (BrokerException e) {
-            throw new AttachException(e);
-        }
+        ZeroMQMetadata metadata = source.getMetadata();
+        broker.subscribe(subscriberId, metadata, connection, loader);
     }
 
-    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
+    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
         ZeroMQMetadata metadata = source.getMetadata();
         URI subscriberId = source.getUri();
-        try {
-            broker.unsubscribe(subscriberId, metadata);
-        } catch (BrokerException e) {
-            throw new AttachException(e);
-        }
+        broker.unsubscribe(subscriberId, metadata);
     }
 
 }

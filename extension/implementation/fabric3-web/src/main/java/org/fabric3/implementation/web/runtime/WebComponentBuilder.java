@@ -46,7 +46,7 @@ import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -73,7 +73,7 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
         this.info = info;
     }
 
-    public WebComponent build(WebComponentDefinition definition) throws BuildException {
+    public WebComponent build(WebComponentDefinition definition) throws ContainerException {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         // TODO fix properties
@@ -95,7 +95,7 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
                                 info);
     }
 
-    public void dispose(WebComponentDefinition definition, WebComponent component) throws BuildException {
+    public void dispose(WebComponentDefinition definition, WebComponent component) throws ContainerException {
         // no-op
     }
 }

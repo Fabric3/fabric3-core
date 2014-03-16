@@ -37,12 +37,12 @@
 */
 package org.fabric3.datasource.runtime;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Denotes a missing or invalid DataSource.
  */
-public class DataSourceNotFoundException extends BuildException {
+public class DataSourceNotFoundException extends ContainerException {
     private static final long serialVersionUID = 1775542460273141013L;
 
     public DataSourceNotFoundException(String message) {

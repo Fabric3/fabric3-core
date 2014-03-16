@@ -43,12 +43,12 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class ImplementationBuildException extends BuildException {
+public class ImplementationBuildException extends ContainerException {
     private static final long serialVersionUID = -2582100608101918880L;
 
     public ImplementationBuildException(String message) {

@@ -37,12 +37,12 @@
 */
 package org.fabric3.spi.container.wire;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Thrown when a transformer interceptor cannot be created.
  */
-public class InterceptorCreationException extends Fabric3Exception {
+public class InterceptorCreationException extends ContainerException {
     private static final long serialVersionUID = -3119130836236306468L;
 
     public InterceptorCreationException(Throwable cause) {

@@ -43,12 +43,12 @@
  */
 package org.fabric3.spi.container.channel;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class RegistrationException extends Fabric3Exception {
+public class RegistrationException extends ContainerException {
     private static final long serialVersionUID = -2331741137749158129L;
 
     public RegistrationException(String message) {

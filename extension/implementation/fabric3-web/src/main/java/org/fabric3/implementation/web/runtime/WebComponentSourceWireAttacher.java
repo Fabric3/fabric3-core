@@ -40,17 +40,15 @@ package org.fabric3.implementation.web.runtime;
 import java.net.URI;
 
 import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Source WireAttacher for web components.
@@ -63,34 +61,26 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
         this.manager = manager;
     }
 
-    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
-        try {
-            component.attachWire(referenceName, wire);
-        } catch (ObjectCreationException e) {
-            throw new BuildException(e);
-        }
+        component.attachWire(referenceName, wire);
     }
 
-    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         // TODO implement
     }
 
-    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         // TODO implement
     }
 
     public void attachObjectFactory(WebComponentWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuildException {
+            throws ContainerException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
-        try {
-            component.attachWire(referenceName, objectFactory);
-        } catch (ObjectCreationException e) {
-            throw new BuildException(e);
-        }
+        component.attachWire(referenceName, objectFactory);
     }
 }

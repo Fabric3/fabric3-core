@@ -37,22 +37,20 @@
 */
 package org.fabric3.jpa.runtime;
 
-import java.net.URI;
 import javax.persistence.EntityManagerFactory;
-
-import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
-import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the target side of entity manager factories.
@@ -72,15 +70,15 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws ContainerException {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
         ClassLoader classLoader = registry.getClassLoader(classLoaderUri);
@@ -91,8 +89,6 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
             PersistenceOverrides overrides = target.getOverrides();
             EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, overrides, classLoader);
             return new SingletonObjectFactory<>(entityManagerFactory);
-        } catch (JpaResolutionException e) {
-            throw new BuildException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

@@ -43,12 +43,12 @@
  */
 package org.fabric3.spi.container.component;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * An checked exception encountered by an {@link org.fabric3.spi.container.component.Component}
  */
-public abstract class ComponentException extends Fabric3Exception {
+public abstract class ComponentException extends ContainerException {
     private static final long serialVersionUID = 8347960569937255812L;
 
     protected ComponentException() {

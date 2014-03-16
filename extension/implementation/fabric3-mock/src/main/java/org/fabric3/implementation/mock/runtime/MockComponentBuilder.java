@@ -41,7 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.easymock.IMocksControl;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -63,7 +63,7 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
         this.control = control;
     }
 
-    public MockComponent build(MockComponentDefinition componentDefinition) throws BuildException {
+    public MockComponent build(MockComponentDefinition componentDefinition) throws ContainerException {
         List<String> interfaces = componentDefinition.getInterfaces();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(componentDefinition.getClassLoaderId());
 
@@ -80,7 +80,7 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
         return new MockComponent(componentDefinition.getComponentUri(), objectFactory);
     }
 
-    public void dispose(MockComponentDefinition definition, MockComponent component) throws BuildException {
+    public void dispose(MockComponentDefinition definition, MockComponent component) throws ContainerException {
         //no-op
     }
 

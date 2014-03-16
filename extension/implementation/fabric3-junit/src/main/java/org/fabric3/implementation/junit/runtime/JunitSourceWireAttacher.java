@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.junit.runtime;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -75,12 +75,12 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         this.authenticationService = authenticationService;
     }
 
-    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         String testName = source.getTestName();
         ContextConfiguration configuration = source.getConfiguration();
         if (configuration != null) {
             if (authenticationService == null) {
-                throw new BuildException("Security information set for the test but a security extension has not been installed in the runtime");
+                throw new ContainerException("Security information set for the test but a security extension has not been installed in the runtime");
             }
             // configuration an authentication interceptor to set the subject on the work context
             for (InvocationChain chain : wire.getInvocationChains()) {
@@ -95,14 +95,14 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
     }
 
     public void attachObjectFactory(JUnitWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws BuildException {
+            throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
     }
 
-    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
     }
 
 

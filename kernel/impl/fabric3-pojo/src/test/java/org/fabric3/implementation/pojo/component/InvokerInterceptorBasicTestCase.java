@@ -50,8 +50,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
@@ -139,7 +139,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         InstanceLifecycleException ex = new InstanceLifecycleException("test");
         try {
             EasyMock.expect(component.getInstance()).andThrow(ex);
-        } catch (ComponentException e) {
+        } catch (ContainerException e) {
             throw new AssertionError();
         }
         control.replay();

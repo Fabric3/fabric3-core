@@ -39,7 +39,7 @@ package org.fabric3.execution.runtime;
 
 import java.util.concurrent.ExecutorService;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
@@ -59,15 +59,15 @@ public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorS
         this.factory = new SingletonObjectFactory<ExecutorService>(proxy);
     }
 
-    public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceWireTargetDefinition target) throws ContainerException {
         return factory;
     }
 

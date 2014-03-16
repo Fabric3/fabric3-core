@@ -43,6 +43,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -50,7 +51,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 /**
  * Attaches and detaches a pub/sub connection to a channel, component consumer, or channel binding.
  */
-public interface TargetConnectionAttacher<PCTD extends PhysicalConnectionTargetDefinition> {
+public interface TargetConnectionAttacher<P extends PhysicalConnectionTargetDefinition> {
 
     /**
      * Attach a connection to a target, which can be a channel, component consumer, or channel binding.
@@ -58,17 +59,17 @@ public interface TargetConnectionAttacher<PCTD extends PhysicalConnectionTargetD
      * @param source     the source metadata
      * @param target     the target metadata
      * @param connection the connection that flows events from a source
-     * @throws AttachException if an error is encountered performing the attach
+     * @throws ContainerException if an error is encountered performing the attach
      */
-    void attach(PhysicalConnectionSourceDefinition source, PCTD target, ChannelConnection connection) throws AttachException;
+    void attach(PhysicalConnectionSourceDefinition source, P target, ChannelConnection connection) throws ContainerException;
 
     /**
      * Detach a connection from a target.
      *
      * @param source the source metadata
      * @param target the target metadata
-     * @throws AttachException if an error is encountered performing the attach
+     * @throws ContainerException if an error is encountered performing the attach
      */
-    void detach(PhysicalConnectionSourceDefinition source, PCTD target) throws AttachException;
+    void detach(PhysicalConnectionSourceDefinition source, P target) throws ContainerException;
 
 }

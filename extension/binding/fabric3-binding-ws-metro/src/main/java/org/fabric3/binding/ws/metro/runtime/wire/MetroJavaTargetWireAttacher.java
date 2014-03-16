@@ -65,7 +65,7 @@ import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
@@ -114,7 +114,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.monitor = monitor;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws ContainerException {
 
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
@@ -127,7 +127,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
             byte[] bytes = target.getGeneratedInterface();
 
             if (!(classLoader instanceof SecureClassLoader)) {
-                throw new BuildException("Classloader for " + interfaze + " must be a SecureClassLoader");
+                throw new ContainerException("Classloader for " + interfaze + " must be a SecureClassLoader");
             }
             Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
 
@@ -176,16 +176,16 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 Thread.currentThread().setContextClassLoader(old);
             }
         } catch (CacheException | URISyntaxException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
 
     }
 
-    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws ContainerException {
         return null;
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws ContainerException {
         // no-op
     }
 

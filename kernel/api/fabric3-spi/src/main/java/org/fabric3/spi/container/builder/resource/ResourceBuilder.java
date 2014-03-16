@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.builder.resource;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
@@ -55,16 +55,16 @@ public interface ResourceBuilder<R extends PhysicalResourceDefinition> {
      * Builds a resource from its physical resource definition.
      *
      * @param definition the physical resource definition
-     * @throws BuildException If unable to build the resource
+     * @throws ContainerException If unable to build the resource
      */
-    void build(R definition) throws BuildException;
+    void build(R definition) throws ContainerException;
 
     /**
      * Removes a resource on a runtime.
      *
      * @param definition the physical resource definition
-     * @throws BuildException If unable to remove the resource
+     * @throws ContainerException If unable to remove the resource
      */
-    void remove(R definition) throws BuildException;
+    void remove(R definition) throws ContainerException;
 
 }

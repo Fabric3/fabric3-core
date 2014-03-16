@@ -43,12 +43,12 @@
  */
 package org.fabric3.implementation.pojo.spi.proxy;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Denotes an error creating a proxy
  */
-public class ProxyCreationException extends Fabric3Exception {
+public class ProxyCreationException extends ContainerException {
     private static final long serialVersionUID = 2141262852616522838L;
 
     public ProxyCreationException() {

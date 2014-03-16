@@ -37,12 +37,12 @@
 */
 package org.fabric3.jpa.api;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
-public class JpaResolutionException extends Fabric3Exception {
+public class JpaResolutionException extends ContainerException {
     private static final long serialVersionUID = 8918152702982814428L;
 
     public JpaResolutionException(String message, Throwable cause) {

@@ -49,30 +49,29 @@ import javax.jms.JMSException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.binding.jms.model.CacheLevel;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
-import org.fabric3.api.binding.jms.model.CacheLevel;
-import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
-import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.component.AttachException;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
+import static org.fabric3.api.binding.jms.model.CacheLevel.CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
-import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
-import static org.fabric3.api.binding.jms.model.CacheLevel.CONNECTION;
 
 /**
  * Attaches a consumer to a JMS destination.
@@ -98,7 +97,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     }
 
     public void attach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws AttachException {
+            throws ContainerException {
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
@@ -126,16 +125,16 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             }
             containerManager.register(configuration);
         } catch (JMSException e) {
-            throw new AttachException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
+    public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
         try {
             containerManager.unregister(source.getUri());
             resolver.release(source.getMetadata().getConnectionFactory());
-        } catch (JMSException | JmsResolutionException e) {
-            throw new AttachException(e);
+        } catch (JMSException e) {
+            throw new ContainerException(e);
         }
     }
 
@@ -155,27 +154,23 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
 
         configuration.setDurable(metadata.isDurable());
-//        configuration.setDeliveryMode();
-//        configuration.setExceptionListener();
-//        configuration.setLocalDelivery();
+        //        configuration.setDeliveryMode();
+        //        configuration.setExceptionListener();
+        //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source, String clientId) throws AttachException {
-        try {
-            JmsBindingMetadata metadata = source.getMetadata();
-            ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
-            ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
-            DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-            Destination requestDestination;
-            if (metadata.isDurable()) {
-                requestDestination = resolver.resolve(requestDestinationDefinition, clientId, requestConnectionFactory);
-            } else {
-                requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
-            }
-            return new ResolvedObjects(requestConnectionFactory, requestDestination);
-        } catch (JmsResolutionException e) {
-            throw new AttachException(e);
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source, String clientId) throws ContainerException {
+        JmsBindingMetadata metadata = source.getMetadata();
+        ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
+        ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
+        DestinationDefinition requestDestinationDefinition = metadata.getDestination();
+        Destination requestDestination;
+        if (metadata.isDurable()) {
+            requestDestination = resolver.resolve(requestDestinationDefinition, clientId, requestConnectionFactory);
+        } else {
+            requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
         }
+        return new ResolvedObjects(requestConnectionFactory, requestDestination);
     }
 
     private class ResolvedObjects {

@@ -44,18 +44,16 @@ import java.util.List;
 
 import org.easymock.IMocksControl;
 import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.builder.component.AttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -69,7 +67,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         this.control = control;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) throws AttachException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
 
         Class<?> mockedInterface = loadInterface(targetDefinition);
         Object mock = createMock(mockedInterface);
@@ -86,11 +84,11 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws ContainerException {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws ContainerException {
         Class<?> mockedInterface = loadInterface(target);
         Object mock = createMock(mockedInterface);
         return new SingletonObjectFactory<>(mock);
@@ -99,7 +97,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
     private Method getOperationMethod(Class<?> mockedInterface,
                                       PhysicalOperationDefinition op,
                                       PhysicalWireSourceDefinition sourceDefinition,
-                                      MockWireTargetDefinition wireTargetDefinition) throws AttachException {
+                                      MockWireTargetDefinition wireTargetDefinition) throws ContainerException {
         List<String> parameters = op.getTargetParameterTypes();
         for (Method method : mockedInterface.getMethods()) {
             if (method.getName().equals(op.getName())) {
@@ -117,7 +115,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
             }
         }
 
-        throw new AttachException("Failed to match method: " + op.getName() + " " + op.getSourceParameterTypes());
+        throw new ContainerException("Failed to match method: " + op.getName() + " " + op.getSourceParameterTypes());
     }
 
     private Object createMock(Class<?> mockedInterface) {
@@ -128,14 +126,13 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         }
     }
 
-    private Class<?> loadInterface(MockWireTargetDefinition target) throws AttachException {
+    private Class<?> loadInterface(MockWireTargetDefinition target) throws ContainerException {
         String interfaceClass = target.getMockedInterface();
         try {
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             return classLoader.loadClass(interfaceClass);
         } catch (ClassNotFoundException e) {
-            URI targetUri = target.getUri();
-            throw new AttachException("Unable to load interface " + interfaceClass);
+            throw new ContainerException("Unable to load interface " + interfaceClass);
         }
     }
 

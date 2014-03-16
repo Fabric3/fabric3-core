@@ -40,7 +40,7 @@ package org.fabric3.resource.runtime;
 import java.net.URI;
 
 import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -61,15 +61,15 @@ public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<Sys
         this.manager = manager;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target, Wire wire) throws ContainerException {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target) throws BuildException {
+    public void detach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target) throws ContainerException {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemSourcedWireTargetDefinition target) throws BuildException {
+    public ObjectFactory<?> createObjectFactory(SystemSourcedWireTargetDefinition target) throws ContainerException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {

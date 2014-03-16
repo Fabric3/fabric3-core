@@ -54,7 +54,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuild
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -83,7 +83,7 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         this.factoryBuilder = factoryBuilder;
     }
 
-    public SystemComponent build(SystemComponentDefinition definition) throws BuildException {
+    public SystemComponent build(SystemComponentDefinition definition) throws ContainerException {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -103,7 +103,7 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         return component;
     }
 
-    public void dispose(SystemComponentDefinition definition, SystemComponent component) throws BuildException {
+    public void dispose(SystemComponentDefinition definition, SystemComponent component) throws ContainerException {
         dispose(definition);
     }
 

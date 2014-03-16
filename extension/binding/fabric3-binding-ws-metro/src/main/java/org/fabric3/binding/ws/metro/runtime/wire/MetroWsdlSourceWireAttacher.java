@@ -54,8 +54,8 @@ import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.F3Provider;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.BuildException;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -82,7 +82,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.cache = cache;
     }
 
-    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
@@ -126,18 +126,18 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                             handlers);
             endpointService.registerService(configuration);
         } catch (CacheException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
     }
 
-    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(MetroWsdlWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         try {
             URI servicePath = source.getEndpointDefinition().getServicePath();
             cache.remove(servicePath);
         } catch (CacheException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 

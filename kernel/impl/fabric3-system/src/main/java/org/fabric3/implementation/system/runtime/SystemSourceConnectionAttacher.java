@@ -37,23 +37,22 @@
 */
 package org.fabric3.implementation.system.runtime;
 
+import java.net.URI;
+import java.util.List;
+
+import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
-import org.fabric3.spi.container.builder.component.AttachException;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
-
-import java.net.URI;
-import java.util.List;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a System component producer.
@@ -76,15 +75,15 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws AttachException {
+            throws ContainerException {
         if (proxyService == null) {
-            throw new AttachException("Channel proxy service not found");
+            throw new ContainerException("Channel proxy service not found");
         }
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         if (component == null) {
-            throw new AttachException("Source component not found: " + sourceName);
+            throw new ContainerException("Source component not found: " + sourceName);
         }
         Injectable injectable = source.getInjectable();
         Class<?> type;
@@ -92,17 +91,13 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new AttachException("Unable to load interface class: " + name, e);
+            throw new ContainerException("Unable to load interface class: " + name, e);
         }
-        try {
-            ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
-            component.setObjectFactory(injectable, factory);
-        } catch (ProxyCreationException e) {
-            throw new AttachException(e);
-        }
+        ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
+        component.setObjectFactory(injectable, factory);
     }
 
-    public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws AttachException {
+    public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();

@@ -41,7 +41,7 @@ package org.fabric3.cache.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -64,7 +64,7 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void build(PhysicalCacheSetDefinition definition) throws BuildException {
+    public void build(PhysicalCacheSetDefinition definition) throws ContainerException {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.build(cacheDefinition);
@@ -72,18 +72,18 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void remove(PhysicalCacheSetDefinition definition) throws BuildException {
+    public void remove(PhysicalCacheSetDefinition definition) throws ContainerException {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.remove(cacheDefinition);
         }
     }
 
-    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws BuildException {
+    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws ContainerException {
         Class<? extends PhysicalResourceDefinition> type = cacheDefinition.getClass();
         CacheBuilder<?> builder = builders.get(type);
         if (builder == null) {
-            throw new BuildException("Cache builder not found for type: " + type);
+            throw new ContainerException("Cache builder not found for type: " + type);
         }
         return builder;
     }

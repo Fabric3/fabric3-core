@@ -45,26 +45,23 @@ package org.fabric3.implementation.system.runtime;
 
 import java.net.URI;
 
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.fabric3.spi.container.builder.BuildException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.AttachException;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
+import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
+import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
-import org.fabric3.spi.container.wire.Wire;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -94,9 +91,9 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         this.proxyService = proxyService;
     }
 
-    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws BuildException {
+    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         if (proxyService == null) {
-            throw new BuildException("Attempt to inject a non-optimized wire during runtime bootstrap.");
+            throw new ContainerException("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
@@ -107,7 +104,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new AttachException("Unable to load interface class: " + name, e);
+            throw new ContainerException("Unable to load interface class: " + name, e);
         }
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             throw new UnsupportedOperationException("Callbacks are not supported on system components");
@@ -117,35 +114,32 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             if (uri != null) {
                 callbackUri = uri.toString();
             }
-            try {
-                ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
+            ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
 
-                if (source.isKeyed() || source.isOrdered()) {
-                    Object key = getKey(source, target);
-                    int order = source.getOrder();
-                    InjectionAttributes attributes = new InjectionAttributes(key, order);
-                    component.setObjectFactory(injectable, factory, attributes);
-                } else {
-                    component.setObjectFactory(injectable, factory);
-                }
-            } catch (ProxyCreationException e) {
-                throw new BuildException(e);
+            if (source.isKeyed() || source.isOrdered()) {
+                Object key = getKey(source, target);
+                int order = source.getOrder();
+                InjectionAttributes attributes = new InjectionAttributes(key, order);
+                component.setObjectFactory(injectable, factory, attributes);
+            } else {
+                component.setObjectFactory(injectable, factory);
             }
         }
     }
 
-    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
 
-    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target) throws BuildException {
+    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target)
+            throws ContainerException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

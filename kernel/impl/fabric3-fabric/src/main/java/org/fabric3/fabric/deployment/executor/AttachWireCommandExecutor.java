@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.deployment.executor;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -82,7 +82,7 @@ public class AttachWireCommandExecutor implements CommandExecutor<AttachWireComm
     public void execute(AttachWireCommand command) throws ExecutionException {
         try {
             connector.connect(command.getPhysicalWireDefinition());
-        } catch (BuildException e) {
+        } catch (ContainerException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }

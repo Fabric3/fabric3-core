@@ -53,7 +53,7 @@ import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.ContextAnnotationPostProcessor;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -101,7 +101,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public SpringComponent build(SpringComponentDefinition definition) throws BuildException {
+    public SpringComponent build(SpringComponentDefinition definition) throws ContainerException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
         if (classLoader instanceof MultiParentClassLoader) {
             // add the extension classloader as a parent of the app classloader since Spring classes must be visible to the application
@@ -136,20 +136,20 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias, POST_PROCESSORS);
     }
 
-    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuildException {
+    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws ContainerException {
         for (ApplicationContextListener listener : listeners) {
             SCAApplicationContext context = component.getParent();
             listener.onDispose(context);
         }
     }
 
-    private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws BuildException {
+    private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws ContainerException {
         List<String> contextLocations = definition.getContextLocations();
         for (String location : contextLocations) {
 
             URL resource = classLoader.getResource(definition.getBaseLocation());
             if (resource == null) {
-                throw new BuildException("Resource path not found:" + definition.getBaseLocation());
+                throw new ContainerException("Resource path not found:" + definition.getBaseLocation());
             }
             String path = resource.getPath();
             File filePath = new File(path);
@@ -157,7 +157,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
                 URL url = new File(filePath, location).toURI().toURL();
                 sources.add(url);
             } catch (MalformedURLException e) {
-                throw new BuildException(e);
+                throw new ContainerException(e);
             }
         }
     }
@@ -188,23 +188,23 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         }
     }
 
-    private void resolveJarSources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws BuildException {
+    private void resolveJarSources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws ContainerException {
         try {
             for (String location : definition.getContextLocations()) {
                 URL resource = classLoader.getResource(definition.getBaseLocation());
                 if (resource == null) {
-                    throw new BuildException("Resource was null: " + definition.getBaseLocation());
+                    throw new ContainerException("Resource was null: " + definition.getBaseLocation());
                 }
                 URL url = new URL("jar:" + resource.toExternalForm() + location);
                 sources.add(url);
 
             }
         } catch (MalformedURLException e) {
-            throw new BuildException(e);
+            throw new ContainerException(e);
         }
     }
 
-    protected Map<String, Pair> createProperties(SpringComponentDefinition definition) throws BuildException {
+    protected Map<String, Pair> createProperties(SpringComponentDefinition definition) throws ContainerException {
         List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
         Map<String, Pair> values = new HashMap<>();
 

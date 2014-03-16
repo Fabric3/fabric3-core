@@ -39,7 +39,7 @@ package org.fabric3.binding.ftp.runtime;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.builder.BuildException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -69,7 +69,7 @@ public class FtpSourceWireAttacher implements SourceWireAttacher<FtpWireSourceDe
         this.monitor = monitor;
     }
 
-    public void attach(FtpWireSourceDefinition source, PhysicalWireTargetDefinition target, final Wire wire) throws BuildException {
+    public void attach(FtpWireSourceDefinition source, PhysicalWireTargetDefinition target, final Wire wire) throws ContainerException {
         URI uri = source.getUri();
         String servicePath = uri.getSchemeSpecificPart();
         if (servicePath.startsWith("//")) {
@@ -77,23 +77,23 @@ public class FtpSourceWireAttacher implements SourceWireAttacher<FtpWireSourceDe
         }
         BindingFtpLet bindingFtpLet = new BindingFtpLet(servicePath, wire, monitor);
         if (ftpLetContainer == null) {
-            throw new BuildException(
+            throw new ContainerException(
                     "An FTP server was not configured for this runtime. Ensure the FTP server extension is installed and configured properly.");
         }
         ftpLetContainer.registerFtpLet(servicePath, bindingFtpLet);
 
     }
 
-    public void detach(FtpWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detach(FtpWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(FtpWireSourceDefinition source, PhysicalWireTargetDefinition target) throws BuildException {
+    public void detachObjectFactory(FtpWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
     public void attachObjectFactory(FtpWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)
-            throws BuildException {
+            throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
