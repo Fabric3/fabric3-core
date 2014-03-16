@@ -545,7 +545,7 @@ public abstract class AbstractDomain implements Domain {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw e;
-        } catch (AllocationException | PolicyResolutionException e) {
+        } catch (PolicyResolutionException e) {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw new DeploymentException("Error deploying composite", e);
@@ -629,11 +629,7 @@ public abstract class AbstractDomain implements Domain {
      */
     private void allocateAndDeploy(LogicalCompositeComponent domain, DeploymentPlan plan) throws DeploymentException {
         // Allocate the components to runtime nodes
-        try {
-            allocate(domain, plan);
-        } catch (AllocationException e) {
-            throw new DeploymentException("Error deploying composite", e);
-        }
+        allocate(domain, plan);
         // Select bindings
         selectBinding(domain);
         try {
