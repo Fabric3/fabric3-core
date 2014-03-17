@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.command;
 
-import org.fabric3.spi.domain.command.Response;
+import org.fabric3.spi.container.command.Response;
 
 /**
  * A response returned to the controller when a runtime has successfully processed a {@link DeploymentCommand}.

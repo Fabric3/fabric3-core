@@ -49,7 +49,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.domain.command.BuildComponentCommand;
+import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;

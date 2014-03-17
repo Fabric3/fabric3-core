@@ -49,7 +49,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.domain.command.DisposeComponentCommand;
+import org.fabric3.fabric.container.command.DisposeComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;

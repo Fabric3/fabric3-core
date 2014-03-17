@@ -48,8 +48,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.domain.command.BuildResourcesCommand;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.BuildResourcesCommand;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 

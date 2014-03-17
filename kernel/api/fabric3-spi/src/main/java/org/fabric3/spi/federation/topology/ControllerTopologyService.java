@@ -40,9 +40,9 @@ package org.fabric3.spi.federation.topology;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.spi.domain.command.Command;
-import org.fabric3.spi.domain.command.Response;
-import org.fabric3.spi.domain.command.ResponseCommand;
+import org.fabric3.spi.container.command.Command;
+import org.fabric3.spi.container.command.Response;
+import org.fabric3.spi.container.command.ResponseCommand;
 
 /**
  * Responsible for controller communications across a federated (distributed) domain.

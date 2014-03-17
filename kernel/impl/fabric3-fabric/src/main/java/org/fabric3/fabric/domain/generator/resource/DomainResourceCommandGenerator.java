@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.domain.generator.resource;
 
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResource;
 

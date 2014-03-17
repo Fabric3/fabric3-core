@@ -37,11 +37,11 @@
 */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.fabric.domain.command.DetachChannelConnectionCommand;
+import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

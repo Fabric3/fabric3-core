@@ -45,10 +45,10 @@ package org.fabric3.fabric.container.executor;
 
 import java.net.URI;
 
-import org.fabric3.fabric.domain.command.StartComponentCommand;
+import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.Constructor;

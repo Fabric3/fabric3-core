@@ -43,11 +43,11 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.fabric.domain.command.DisposeChannelCommand;
+import org.fabric3.fabric.container.command.DisposeChannelCommand;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

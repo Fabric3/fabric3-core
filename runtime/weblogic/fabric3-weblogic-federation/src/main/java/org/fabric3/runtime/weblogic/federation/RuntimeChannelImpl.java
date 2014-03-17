@@ -45,10 +45,10 @@ import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
-import org.fabric3.spi.domain.command.Command;
-import org.fabric3.spi.domain.command.Response;
-import org.fabric3.spi.domain.command.ResponseCommand;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.Command;
+import org.fabric3.spi.container.command.Response;
+import org.fabric3.spi.container.command.ResponseCommand;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**

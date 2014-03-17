@@ -48,8 +48,8 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.builder.classloader.ClassLoaderBuilder;
-import org.fabric3.fabric.domain.command.UnprovisionClassloaderCommand;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.UnprovisionClassloaderCommand;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
 /**

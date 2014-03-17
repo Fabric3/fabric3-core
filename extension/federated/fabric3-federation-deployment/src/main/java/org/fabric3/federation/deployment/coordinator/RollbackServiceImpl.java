@@ -48,10 +48,10 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.domain.command.Command;
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
+import org.fabric3.spi.container.command.CompensatableCommand;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

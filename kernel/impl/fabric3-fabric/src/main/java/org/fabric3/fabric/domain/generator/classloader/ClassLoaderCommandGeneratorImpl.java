@@ -48,11 +48,11 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.DependencyResolver;
-import org.fabric3.fabric.domain.command.AttachExtensionCommand;
-import org.fabric3.fabric.domain.command.ProvisionClassloaderCommand;
-import org.fabric3.fabric.domain.command.UnprovisionClassloaderCommand;
+import org.fabric3.fabric.container.command.AttachExtensionCommand;
+import org.fabric3.fabric.container.command.ProvisionClassloaderCommand;
+import org.fabric3.fabric.container.command.UnprovisionClassloaderCommand;
 import org.fabric3.api.host.Names;
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.model.os.Library;

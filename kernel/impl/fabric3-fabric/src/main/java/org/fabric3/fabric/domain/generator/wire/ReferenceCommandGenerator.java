@@ -43,9 +43,9 @@ import java.util.Map;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.fabric.domain.command.AttachWireCommand;
-import org.fabric3.fabric.domain.command.ConnectionCommand;
-import org.fabric3.fabric.domain.command.DetachWireCommand;
+import org.fabric3.fabric.container.command.AttachWireCommand;
+import org.fabric3.fabric.container.command.ConnectionCommand;
+import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;

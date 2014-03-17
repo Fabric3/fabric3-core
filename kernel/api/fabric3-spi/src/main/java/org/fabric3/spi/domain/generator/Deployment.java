@@ -49,8 +49,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.host.Names;
-import org.fabric3.spi.domain.command.Command;
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
+import org.fabric3.spi.container.command.CompensatableCommand;
 
 /**
  * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain.

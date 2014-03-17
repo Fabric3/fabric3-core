@@ -46,7 +46,7 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.fabric.domain.command.ConnectionCommand;
+import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;

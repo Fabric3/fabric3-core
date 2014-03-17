@@ -39,7 +39,7 @@ package org.fabric3.federation.deployment.coordinator;
 
 import java.util.List;
 
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.CompensatableCommand;
 
 /**
  * Reverts the runtime to a previous state.

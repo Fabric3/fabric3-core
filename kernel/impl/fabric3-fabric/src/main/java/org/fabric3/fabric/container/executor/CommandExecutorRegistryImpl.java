@@ -46,11 +46,11 @@ package org.fabric3.fabric.container.executor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.fabric.domain.command.ExecutorNotFoundException;
+import org.fabric3.fabric.container.command.ExecutorNotFoundException;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
-import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.Command;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**

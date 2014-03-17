@@ -49,12 +49,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.fabric.container.builder.BuilderNotFoundException;
-import org.fabric3.fabric.domain.command.BuildComponentCommand;
+import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;

@@ -51,8 +51,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.fabric.domain.command.StopContextCommand;
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.fabric.container.command.StopContextCommand;
+import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 

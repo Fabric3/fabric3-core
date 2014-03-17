@@ -39,8 +39,8 @@ package org.fabric3.spi.federation.topology;
 
 import java.io.Serializable;
 
-import org.fabric3.spi.domain.command.Response;
-import org.fabric3.spi.domain.command.ResponseCommand;
+import org.fabric3.spi.container.command.Response;
+import org.fabric3.spi.container.command.ResponseCommand;
 
 /**
  * Responsible for participant communications within a domain zone.

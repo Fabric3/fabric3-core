@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.CompensatableCommand;
 
 /**
  * Used to deploy composites to a zone. Provision commands are executed first, followed by extension commands as deployment commands may require

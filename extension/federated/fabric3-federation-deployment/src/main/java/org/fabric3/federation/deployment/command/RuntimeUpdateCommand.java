@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.command;
 
-import org.fabric3.spi.domain.command.ResponseCommand;
+import org.fabric3.spi.container.command.ResponseCommand;
 
 /**
  * Sent by participant to receive deployment updates. The participant may send the update request to a controller or another zone member (typically

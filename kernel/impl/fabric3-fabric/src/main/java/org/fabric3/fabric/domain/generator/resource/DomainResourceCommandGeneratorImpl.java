@@ -42,11 +42,11 @@ import java.util.List;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.domain.command.BuildResourcesCommand;
-import org.fabric3.fabric.domain.command.DisposeResourcesCommand;
+import org.fabric3.fabric.container.command.BuildResourcesCommand;
+import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.api.model.type.component.ResourceDefinition;
-import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;

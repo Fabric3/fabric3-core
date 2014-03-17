@@ -39,11 +39,11 @@ package org.fabric3.fabric.container.executor;
 
 import java.net.URI;
 
-import org.fabric3.fabric.domain.command.StopComponentCommand;
+import org.fabric3.fabric.container.command.StopComponentCommand;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
-import org.fabric3.spi.container.command.ExecutionException;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.ExecutionException;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.EagerInit;

@@ -43,14 +43,14 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.fabric.domain.command.AttachChannelConnectionCommand;
-import org.fabric3.fabric.domain.command.BuildChannelCommand;
-import org.fabric3.fabric.domain.command.ChannelConnectionCommand;
-import org.fabric3.fabric.domain.command.DetachChannelConnectionCommand;
-import org.fabric3.fabric.domain.command.DisposeChannelCommand;
+import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
+import org.fabric3.fabric.container.command.BuildChannelCommand;
+import org.fabric3.fabric.container.command.ChannelConnectionCommand;
+import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
+import org.fabric3.fabric.container.command.DisposeChannelCommand;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;

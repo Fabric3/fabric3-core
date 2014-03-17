@@ -37,8 +37,8 @@
 */
 package org.fabric3.fabric.domain.generator.wire;
 
-import org.fabric3.fabric.domain.command.AttachWireCommand;
-import org.fabric3.fabric.domain.command.ConnectionCommand;
+import org.fabric3.fabric.container.command.AttachWireCommand;
+import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;

@@ -44,11 +44,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.domain.command.ProvisionExtensionsCommand;
+import org.fabric3.fabric.container.command.ProvisionExtensionsCommand;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.domain.Domain;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.oasisopen.sca.annotation.EagerInit;
 

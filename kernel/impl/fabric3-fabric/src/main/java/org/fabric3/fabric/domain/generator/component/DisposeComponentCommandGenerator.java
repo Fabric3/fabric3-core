@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.fabric.domain.command.DisposeComponentCommand;
+import org.fabric3.fabric.container.command.DisposeComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
