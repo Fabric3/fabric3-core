@@ -62,7 +62,7 @@
     </component>
 
     <component name="ComponentProcessor">
-        <f3:implementation.system class="org.fabric3.fabric.introspection.ComponentProcessorImpl"/>
+        <f3:implementation.system class="org.fabric3.introspection.java.ComponentProcessorImpl"/>
     </component>
 
     <component name="FSArtifactCache">

@@ -54,6 +54,7 @@ import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.annotation.wire.Order;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.introspection.java.ComponentProcessorImpl;
 import org.fabric3.introspection.java.DefaultClassVisitor;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.ReferenceProcessorImpl;
@@ -106,6 +107,8 @@ public class JavaIntrospectionProvider {
         CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
 
         compositeBuilder.component(newBuilder(DefaultIntrospectionHelper.class).build());
+
+        compositeBuilder.component(newBuilder(ComponentProcessorImpl.class).build());
 
         compositeBuilder.component(newBuilder(JavaContractProcessorImpl.class).build());
 

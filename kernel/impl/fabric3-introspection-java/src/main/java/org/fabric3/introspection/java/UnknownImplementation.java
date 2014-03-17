@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.introspection;
+package org.fabric3.introspection.java;
 
 import org.fabric3.api.host.failure.ValidationFailure;
 

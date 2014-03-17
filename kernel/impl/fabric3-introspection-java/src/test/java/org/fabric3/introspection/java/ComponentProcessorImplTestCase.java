@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.introspection;
+package org.fabric3.introspection.java;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -47,6 +47,7 @@ import org.easymock.EasyMock;
 import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
+import org.fabric3.introspection.java.ComponentProcessorImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
