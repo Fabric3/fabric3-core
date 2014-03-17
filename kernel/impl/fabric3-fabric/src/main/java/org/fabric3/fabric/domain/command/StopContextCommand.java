@@ -39,7 +39,7 @@ package org.fabric3.fabric.domain.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 
 public class StopContextCommand implements CompensatableCommand {
     private static final long serialVersionUID = 6161772793715132968L;

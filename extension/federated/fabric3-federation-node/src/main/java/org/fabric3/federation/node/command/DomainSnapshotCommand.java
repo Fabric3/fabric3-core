@@ -37,8 +37,8 @@
 */
 package org.fabric3.federation.node.command;
 
-import org.fabric3.spi.command.Response;
-import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.domain.command.Response;
+import org.fabric3.spi.domain.command.ResponseCommand;
 
 /**
  *

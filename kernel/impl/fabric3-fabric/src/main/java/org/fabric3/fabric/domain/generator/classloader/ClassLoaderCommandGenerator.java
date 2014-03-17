@@ -40,7 +40,7 @@ package org.fabric3.fabric.domain.generator.classloader;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.domain.generator.GenerationException;
 

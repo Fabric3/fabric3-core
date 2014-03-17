@@ -41,20 +41,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
-import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -106,10 +104,9 @@ public class RollbackServiceImpl implements RollbackService {
             if (scopeRegistry != null) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
-        } catch (ExecutionException | InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             throw new RollbackException(e);
         }
     }
-
 
 }

@@ -64,7 +64,7 @@ import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Export;

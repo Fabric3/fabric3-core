@@ -45,12 +45,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.DeploymentErrorResponse;
 import org.fabric3.federation.deployment.command.DeploymentResponse;
@@ -58,16 +55,18 @@ import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.federation.deployment.coordinator.DeploymentCache;
 import org.fabric3.federation.deployment.coordinator.RollbackException;
 import org.fabric3.federation.deployment.coordinator.RollbackService;
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.domain.command.CompensatableCommand;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes {@link DeploymentCommand}s on a participant. If there is an error processing a command, a rollback to the previous runtime state will be
@@ -117,7 +116,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         messagePump.stop();
     }
 
-    public synchronized void execute(DeploymentCommand command) throws ExecutionException {
+    public synchronized void execute(DeploymentCommand command) throws ContainerException {
         try {
             monitor.received();
             deploymentQueue.put(command);
@@ -214,7 +213,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                 return false;
             } catch (InstanceLifecycleException e) {
                 return handleRollback(command, marker, commands, e);
-            } catch (ExecutionException e) {
+            } catch (ContainerException e) {
                 return handleRollback(command, marker, commands, e);
             }
         }

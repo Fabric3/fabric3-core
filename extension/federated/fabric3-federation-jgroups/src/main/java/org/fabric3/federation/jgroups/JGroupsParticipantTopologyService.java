@@ -52,12 +52,12 @@ import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.command.Response;
-import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.domain.command.Response;
+import org.fabric3.spi.domain.command.ResponseCommand;
 import org.fabric3.spi.federation.topology.ControllerNotFoundException;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
@@ -383,7 +383,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
         try {
             DeploymentCommand deploymentCommand = updateResponse.getDeploymentCommand();
             executorRegistry.execute(deploymentCommand);
-        } catch (ExecutionException e) {
+        } catch (ContainerException e) {
             throw new MessageException(e);
         }
         monitor.updated();
@@ -438,7 +438,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
 
     private class ControllerAvailableCommandExecutor implements CommandExecutor<ControllerAvailableCommand> {
 
-        public void execute(ControllerAvailableCommand command) throws ExecutionException {
+        public void execute(ControllerAvailableCommand command) throws ContainerException {
             if (UPDATED == state) {
                 return;
             }

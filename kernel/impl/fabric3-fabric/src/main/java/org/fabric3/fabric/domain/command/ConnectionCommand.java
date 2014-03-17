@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 
 /**
  * Contains commands for attaching and detaching wires for a component.

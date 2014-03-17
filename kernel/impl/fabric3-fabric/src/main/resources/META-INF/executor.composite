@@ -18,100 +18,100 @@
 
 
     <component name="CommandExecutorRegistry">
-        <f3:implementation.system class="org.fabric3.fabric.command.CommandExecutorRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.CommandExecutorRegistryImpl"/>
     </component>
 
     <component name="ProvisionedExtensionTracker">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.ProvisionedExtensionTrackerImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionedExtensionTrackerImpl"/>
     </component>
 
     <component name="ClassloaderProvisionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.ProvisionClassloaderCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionClassloaderCommandExecutor"/>
     </component>
 
     <component name="AttachExtensionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.AttachExtensionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.AttachExtensionCommandExecutor"/>
     </component>
 
     <component name="DetachExtensionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.DetachExtensionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.DetachExtensionCommandExecutor"/>
     </component>
 
     <component name="BuildComponentCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.BuildComponentCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.BuildComponentCommandExecutor"/>
     </component>
 
     <component name="DisposeComponentCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.DisposeComponentCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.DisposeComponentCommandExecutor"/>
     </component>
 
     <component name="BuildChannelCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.BuildChannelCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.BuildChannelCommandExecutor"/>
     </component>
 
     <component name="DisposeChannelCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.DisposeChannelCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.DisposeChannelCommandExecutor"/>
     </component>
 
     <component name="WireAttachCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.AttachWireCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.AttachWireCommandExecutor"/>
     </component>
 
     <component name="AttachChannelConnectionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.AttachChannelConnectionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.AttachChannelConnectionCommandExecutor"/>
     </component>
 
     <component name="ComponentStartCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.StartComponentCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.StartComponentCommandExecutor"/>
     </component>
 
     <component name="StartCompositeContextCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.StartContextCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.StartContextCommandExecutor"/>
     </component>
 
     <component name="ComponentStopCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.StopComponentCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.StopComponentCommandExecutor"/>
     </component>
 
     <component name="StopCompositeContextCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.StopContextCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.StopContextCommandExecutor"/>
     </component>
 
     <component name="WireDetachCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.DetachWireCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.DetachWireCommandExecutor"/>
     </component>
 
     <component name="DetachChannelConnectionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.DetachChannelConnectionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.DetachChannelConnectionCommandExecutor"/>
     </component>
 
     <component name="BuildResourcesCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.BuildResourcesCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.BuildResourcesCommandExecutor"/>
     </component>
 
     <component name="DisposeResourcesCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.DisposeResourcesCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.DisposeResourcesCommandExecutor"/>
     </component>
 
     <component name="UnprovisionClassloaderCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.UnprovisionClassloaderCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.UnprovisionClassloaderCommandExecutor"/>
     </component>
 
     <component name="ConnectionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.ConnectionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.ConnectionCommandExecutor"/>
     </component>
 
     <component name="ChannelConnectionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.ChannelConnectionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.ChannelConnectionCommandExecutor"/>
     </component>
 
     <component name="ProvisionExtensionsCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.ProvisionExtensionsCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionExtensionsCommandExecutor"/>
         <reference name="domain" target="RuntimeDomain"/>
     </component>
 
     <component name="UnProvisionExtensionsCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.domain.executor.UnProvisionExtensionsCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.executor.UnProvisionExtensionsCommandExecutor"/>
         <reference name="domain" target="RuntimeDomain"/>
     </component>
 

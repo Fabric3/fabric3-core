@@ -48,13 +48,13 @@ import org.easymock.EasyMock;
 
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.ExecutionException;
 import org.fabric3.spi.domain.generator.Deployment;
 
 import static org.fabric3.api.host.Names.LOCAL_ZONE;

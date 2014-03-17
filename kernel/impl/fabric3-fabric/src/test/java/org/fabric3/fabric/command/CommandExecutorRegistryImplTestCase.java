@@ -45,8 +45,9 @@ package org.fabric3.fabric.command;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.CommandExecutor;
+import org.fabric3.fabric.container.executor.CommandExecutorRegistryImpl;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.container.command.CommandExecutor;
 
 /**
  *

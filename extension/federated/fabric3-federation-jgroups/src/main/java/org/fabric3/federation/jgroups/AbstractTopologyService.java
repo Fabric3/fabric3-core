@@ -41,6 +41,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Executor;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.domain.command.Response;
+import org.fabric3.spi.domain.command.ResponseCommand;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.RemoteSystemException;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.JoinDomain;
+import org.fabric3.spi.runtime.event.RuntimeStop;
 import org.jgroups.Channel;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
@@ -53,21 +67,6 @@ import org.jgroups.stack.Protocol;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.annotation.management.Management;
-import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.Response;
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.JoinDomain;
-import org.fabric3.spi.runtime.event.RuntimeStop;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.RemoteSystemException;
 
 /**
  * Provides base functionality for JGroups-based topology services.
@@ -88,7 +87,6 @@ public abstract class AbstractTopologyService {
     protected boolean printLocalAddress;
     protected long defaultTimeout = 10000;
     // TODO add properties from http://community.jboss.org/wiki/SystemProps
-
 
     public AbstractTopologyService(HostInfo info,
                                    CommandExecutorRegistry executorRegistry,
@@ -211,7 +209,7 @@ public abstract class AbstractTopologyService {
                 monitor.receiveMessage(runtimeName);
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
-            } catch (MessageException | ExecutionException e) {
+            } catch (MessageException | ContainerException e) {
                 monitor.error("Error receiving message from: " + runtimeName, e);
             }
         }
@@ -239,16 +237,7 @@ public abstract class AbstractTopologyService {
                 Response response = command.getResponse();
                 response.setRuntimeName(runtimeName);
                 return helper.serialize(response);
-            } catch (MessageException e) {
-                monitor.error("Error handling message from: " + runtimeName, e);
-                RemoteSystemException ex = new RemoteSystemException(e);
-                ex.setRuntimeName(runtimeName);
-                try {
-                    return helper.serialize(ex);
-                } catch (MessageException e1) {
-                    monitor.error("Error handling message from: " + runtimeName, e);
-                }
-            } catch (ExecutionException e) {
+            } catch (MessageException | ContainerException e) {
                 monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
                 ex.setRuntimeName(runtimeName);
@@ -261,6 +250,5 @@ public abstract class AbstractTopologyService {
             throw new MessageRuntimeException("Unable to handle request");
         }
     }
-
 
 }

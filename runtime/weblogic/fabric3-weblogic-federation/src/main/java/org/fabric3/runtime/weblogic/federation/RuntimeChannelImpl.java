@@ -44,11 +44,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.Response;
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.domain.command.Response;
+import org.fabric3.spi.domain.command.ResponseCommand;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**
@@ -97,7 +97,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
             return serializationService.serialize(response);
         } catch (IOException | ClassNotFoundException e) {
             throw new ChannelException(e);
-        } catch (ExecutionException e) {
+        } catch (ContainerException e) {
             // execution exception is not on the server classpath; record message only and log it locally
             monitor.error(e);
             throw new ChannelException(e.getMessage());
@@ -113,7 +113,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
             executorRegistry.execute(command);
         } catch (IOException | ClassNotFoundException e) {
             throw new ChannelException(e);
-        } catch (ExecutionException e) {
+        } catch (ContainerException e) {
             // execution exception is not on the server classpath; record message only and log it locally
             monitor.error(e);
             throw new ChannelException(e.getMessage());

@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.node.command;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.domain.command.Command;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**

@@ -45,7 +45,7 @@ package org.fabric3.fabric.domain.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 
 /**
  * Starts a composite context on a runtime.

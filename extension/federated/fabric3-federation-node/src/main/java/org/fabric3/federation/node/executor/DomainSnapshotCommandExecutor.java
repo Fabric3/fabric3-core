@@ -43,10 +43,10 @@ import java.net.URI;
 import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -75,7 +75,7 @@ public class DomainSnapshotCommandExecutor implements CommandExecutor<DomainSnap
         executorRegistry.register(DomainSnapshotCommand.class, this);
     }
 
-    public synchronized void execute(DomainSnapshotCommand command) throws ExecutionException {
+    public synchronized void execute(DomainSnapshotCommand command) throws ContainerException {
         if (snapshot == null) {
             LogicalCompositeComponent domain = lcm.getRootComponent();
             snapshot = SnapshotHelper.snapshot(domain, LogicalState.NEW);

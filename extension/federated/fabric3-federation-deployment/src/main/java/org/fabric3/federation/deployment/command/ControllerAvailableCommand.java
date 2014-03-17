@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.command;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.domain.command.Command;
 
 /**
  * Announces the availability of a controller in the domain. Controllers announce availability after they have joined the domain and performed

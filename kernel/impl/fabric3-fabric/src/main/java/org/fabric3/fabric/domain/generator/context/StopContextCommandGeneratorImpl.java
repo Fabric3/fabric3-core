@@ -45,7 +45,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.domain.command.StopContextCommand;
 import org.fabric3.api.host.Names;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;

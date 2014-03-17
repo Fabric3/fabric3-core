@@ -37,21 +37,21 @@
 */
 package org.fabric3.federation.provisioning;
 
+import javax.servlet.http.HttpServlet;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
-import javax.servlet.http.HttpServlet;
 
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.ExecutionException;
+import org.fabric3.spi.host.ServletHost;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
-
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.host.ServletHost;
 
 /**
  * Processes a request for the provisioning URL of a contribution artifact. This implementation uses a Servlet provided by subclasses to provision
@@ -120,7 +120,7 @@ public abstract class AbstractProvisionCommandExecutor implements CommandExecuto
         registry.register(ProvisionCommand.class, this);
     }
 
-    public void execute(ProvisionCommand command) throws ExecutionException {
+    public void execute(ProvisionCommand command) throws ContainerException {
         try {
             URI contributionUri = command.getContributionUri();
             String path = "/" + mappingPath;

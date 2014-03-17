@@ -37,18 +37,17 @@
 */
 package org.fabric3.federation.deployment.executor;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.coordinator.DeploymentCache;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes a {@link RuntimeUpdateCommand} on a zone leader by returning the cached deployment command for the current state of the zone.
@@ -72,7 +71,7 @@ public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpda
         executorRegistry.register(RuntimeUpdateCommand.class, this);
     }
 
-    public void execute(RuntimeUpdateCommand command) throws ExecutionException {
+    public void execute(RuntimeUpdateCommand command) throws ContainerException {
         String runtime = command.getRuntimeName();
         monitor.updateRequest(runtime);
         // pull from cache

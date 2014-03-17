@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.command;
 
-import org.fabric3.spi.command.Response;
+import org.fabric3.spi.domain.command.Response;
 
 /**
  * A response to a {@link RuntimeUpdateCommand}. The response may contain a {@link DeploymentCommand} to be executed by the originating runtime or may

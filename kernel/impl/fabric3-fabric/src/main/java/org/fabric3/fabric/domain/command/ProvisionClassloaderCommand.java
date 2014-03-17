@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.domain.command;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
 /**

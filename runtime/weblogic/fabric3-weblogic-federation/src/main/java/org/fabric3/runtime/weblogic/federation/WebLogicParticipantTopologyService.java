@@ -62,18 +62,18 @@ import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.command.Response;
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.JoinDomain;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.spi.domain.command.Response;
+import org.fabric3.spi.domain.command.ResponseCommand;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.JoinDomain;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -405,7 +405,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
         try {
             DeploymentCommand deploymentCommand = updateResponse.getDeploymentCommand();
             executorRegistry.execute(deploymentCommand);
-        } catch (ExecutionException e) {
+        } catch (ContainerException e) {
             monitor.error(e);
             // return true to avoid multiple attempts to update the runtime in the case of a deployment error
             return true;

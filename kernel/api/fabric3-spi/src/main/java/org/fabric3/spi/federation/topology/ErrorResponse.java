@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.federation.topology;
 
-import org.fabric3.spi.command.Response;
+import org.fabric3.spi.domain.command.Response;
 
 /**
  * An response to a synchronous message indicating an error processing the message.

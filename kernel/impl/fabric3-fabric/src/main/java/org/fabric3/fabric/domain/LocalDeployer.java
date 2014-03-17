@@ -47,18 +47,18 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.fabric.command.ExecutorNotFoundException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.fabric.domain.command.ExecutorNotFoundException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.domain.command.Command;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.DeploymentUnit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -70,9 +70,7 @@ public class LocalDeployer implements Deployer {
     private ScopeRegistry scopeRegistry;
     private DeployerMonitor monitor;
 
-    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry,
-                         @Reference ScopeRegistry scopeRegistry,
-                         @Monitor DeployerMonitor monitor) {
+    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry, @Monitor DeployerMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.scopeRegistry = scopeRegistry;
         this.monitor = monitor;
@@ -108,7 +106,7 @@ public class LocalDeployer implements Deployer {
             try {
                 executorRegistry.execute(command);
                 ++marker;
-            } catch (ExecutionException e) {
+            } catch (ContainerException e) {
                 rollback(commands, marker);
                 throw new DeploymentException(e);
             }
@@ -135,9 +133,9 @@ public class LocalDeployer implements Deployer {
             }
         } catch (ExecutorNotFoundException ex) {
             // this is thrown when an error occurs during bootstrap: some of the command executors may not have be deployed at this point, which
-            // results in an ExecutorNotFoundException. Log an ignore
+            // results in an ExecutorNotFoundException. Log and ignore
             monitor.rollbackAborted();
-        } catch (ExecutionException | InstanceLifecycleException ex) {
+        } catch (ContainerException ex) {
             monitor.rollbackError("local", ex);
         }
     }

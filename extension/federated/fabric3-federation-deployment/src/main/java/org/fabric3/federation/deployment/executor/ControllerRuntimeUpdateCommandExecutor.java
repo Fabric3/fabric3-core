@@ -43,19 +43,19 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.DeploymentUnit;
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -87,48 +87,47 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
         executorRegistry.register(RuntimeUpdateCommand.class, this);
     }
 
-    public void execute(RuntimeUpdateCommand command) throws ExecutionException {
-        try {
-            String runtimeName = command.getRuntimeName();
-            monitor.updateRequest(runtimeName);
-            String zone = command.getZoneName();
+    public void execute(RuntimeUpdateCommand command) throws ContainerException {
+        String runtimeName = command.getRuntimeName();
+        monitor.updateRequest(runtimeName);
+        String zone = command.getZoneName();
 
-            // A full generation must be performed since the runtime requesting the update has no previous deployment state (i.e. it is booting).
-            // The full and current deployment will therefore be the same.
-            DeploymentUnit unit = regenerate(zone);
+        // A full generation must be performed since the runtime requesting the update has no previous deployment state (i.e. it is booting).
+        // The full and current deployment will therefore be the same.
+        DeploymentUnit unit = regenerate(zone);
 
-            List<CompensatableCommand> provisionCommands = unit.getProvisionCommands();
-            byte[] serializedProvisionCommands = serialize((Serializable) provisionCommands);
-            List<CompensatableCommand> extensionCommands = unit.getExtensionCommands();
-            byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-            List<CompensatableCommand> commands = unit.getCommands();
-            byte[] serializedCommands = serialize((Serializable) commands);
-            SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedProvisionCommands,
-                                                                                   serializedExtensionCommands,
-                                                                                   serializedCommands);
-            DeploymentCommand deploymentCommand = new DeploymentCommand(zone, serializedUnit, serializedUnit);
-            RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
-            command.setResponse(response);
-            monitor.sendingUpdate(runtimeName);
-        } catch (DeploymentException e) {
-            throw new ExecutionException(e);
-        }
+        List<CompensatableCommand> provisionCommands = unit.getProvisionCommands();
+        byte[] serializedProvisionCommands = serialize((Serializable) provisionCommands);
+        List<CompensatableCommand> extensionCommands = unit.getExtensionCommands();
+        byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
+        List<CompensatableCommand> commands = unit.getCommands();
+        byte[] serializedCommands = serialize((Serializable) commands);
+        SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedProvisionCommands, serializedExtensionCommands, serializedCommands);
+        DeploymentCommand deploymentCommand = new DeploymentCommand(zone, serializedUnit, serializedUnit);
+        RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
+        command.setResponse(response);
+        monitor.sendingUpdate(runtimeName);
     }
 
-    private DeploymentUnit regenerate(String zoneId) throws DeploymentException {
+    private DeploymentUnit regenerate(String zoneId) throws ContainerException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
-        Deployment deployment = generator.generate(domain, false);
+        Deployment deployment;
+        try {
+            deployment = generator.generate(domain, false);
+        } catch (GenerationException e) {
+            throw new ContainerException(e);
+        }
         return deployment.getDeploymentUnit(zoneId);
     }
 
-    private byte[] serialize(Serializable serializable) throws ExecutionException {
+    private byte[] serialize(Serializable serializable) throws ContainerException {
         try {
             ByteArrayOutputStream bas = new ByteArrayOutputStream();
             MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
             stream.writeObject(serializable);
             return bas.toByteArray();
         } catch (IOException e) {
-            throw new ExecutionException(e);
+            throw new ContainerException(e);
         }
     }
 }

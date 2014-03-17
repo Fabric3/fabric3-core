@@ -39,7 +39,7 @@ package org.fabric3.fabric.domain.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.domain.command.CompensatableCommand;
 
 /**
  * Base class for extension commands.
