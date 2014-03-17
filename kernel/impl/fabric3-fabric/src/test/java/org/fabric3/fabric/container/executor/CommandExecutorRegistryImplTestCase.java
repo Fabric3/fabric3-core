@@ -41,11 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.command;
+package org.fabric3.fabric.container.executor;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.container.executor.CommandExecutorRegistryImpl;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.executor.CommandExecutor;
 
