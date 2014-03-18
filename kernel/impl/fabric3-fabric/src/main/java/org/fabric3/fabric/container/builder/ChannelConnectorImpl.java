@@ -45,7 +45,6 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.fabric.container.channel.FilterHandler;
-import org.fabric3.fabric.container.channel.TransformerHandler;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
@@ -65,8 +64,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
-import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -79,7 +76,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
     private Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>> handlerBuilders;
 
     private ClassLoaderRegistry classLoaderRegistry;
-    private TransformerRegistry transformerRegistry;
     private TransformerHandlerFactory transformerHandlerFactory;
 
     public ChannelConnectorImpl() {
@@ -88,11 +84,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
     @Reference
     public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    @Reference
-    public void setTransformerRegistry(TransformerRegistry transformerRegistry) {
-        this.transformerRegistry = transformerRegistry;
     }
 
     @Reference(required = false)
@@ -172,7 +163,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
         PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
         EventStream stream = new EventStreamImpl(streamDefinition);
         addTypeTransformer(definition, stream, loader);
-        addTransformer(streamDefinition, stream, loader);
         addFilters(streamDefinition, stream);
         addHandlers(streamDefinition, stream);
         int sequence = definition.getSource().getSequence();
@@ -207,31 +197,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
             EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
             stream.addHandler(handler);
         } catch (HandlerCreationException | ClassNotFoundException e) {
-            throw new ContainerException(e);
-        }
-    }
-
-    /**
-     * Adds event transformers to convert an event from one format to another.
-     *
-     * @param streamDefinition the stream definition
-     * @param stream           the stream being created
-     * @param loader           the target classloader to use for the transformation
-     * @throws ContainerException if there is an error adding a filter
-     */
-    @SuppressWarnings({"unchecked"})
-    private void addTransformer(PhysicalEventStreamDefinition streamDefinition, EventStream stream, ClassLoader loader) throws ContainerException {
-        if (transformerRegistry == null) {
-            // no transformer registry configured (e.g. during bootstrap) so skip
-            return;
-        }
-        List<String> eventTypes = streamDefinition.getEventTypes();
-        String stringifiedType = eventTypes.get(0);
-        try {
-            DataType type = new JavaType(loader.loadClass(stringifiedType));
-            TransformerHandler handler = new TransformerHandler(type, transformerRegistry);
-            stream.addHandler(handler);
-        } catch (ClassNotFoundException e) {
             throw new ContainerException(e);
         }
     }

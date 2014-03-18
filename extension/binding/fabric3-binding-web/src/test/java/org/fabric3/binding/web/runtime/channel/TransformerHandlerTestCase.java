@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.container.channel;
+package org.fabric3.binding.web.runtime.channel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -44,7 +44,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.Transformer;

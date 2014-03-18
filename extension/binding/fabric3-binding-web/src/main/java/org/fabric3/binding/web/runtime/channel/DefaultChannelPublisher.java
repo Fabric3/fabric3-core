@@ -38,7 +38,6 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.EventWrapper;
 
 /**
  * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.

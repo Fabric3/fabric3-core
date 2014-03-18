@@ -48,7 +48,6 @@ import java.io.InputStream;
 
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
-import org.fabric3.spi.container.channel.EventWrapper;
 
 /**
  * Coordinates the RESTful pub/sub protocol for active channels. Incoming requests are routed through the Atmosphere gateway servlet to this

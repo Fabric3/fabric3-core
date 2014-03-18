@@ -38,7 +38,6 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.EventWrapper;
 
 /**
  * Blocks publishing events to a channel.

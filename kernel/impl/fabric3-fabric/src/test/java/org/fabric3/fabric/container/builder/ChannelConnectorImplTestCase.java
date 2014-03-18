@@ -49,7 +49,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.container.builder.channel.EventStreamHandlerBuilder;
@@ -57,14 +57,12 @@ import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.PassThroughHandler;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
-import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  *
@@ -92,7 +90,7 @@ public class ChannelConnectorImplTestCase extends TestCase {
 
         Map filterBuilderMap = Collections.singletonMap(MockFilterDefinition.class, filterBuilder);
         connector.setFilterBuilders(filterBuilderMap);
-        Map handlerMap =  Collections.singletonMap(MockHandlerDefinition.class, handlerBuilder);
+        Map handlerMap = Collections.singletonMap(MockHandlerDefinition.class, handlerBuilder);
         connector.setHandlerBuilders(handlerMap);
 
         EasyMock.replay(sourceAttacher, targetAttacher, handlerBuilder, filterBuilder);
@@ -120,15 +118,13 @@ public class ChannelConnectorImplTestCase extends TestCase {
         ClassLoaderRegistry classLoaderRegistry = EasyMock.createMock((ClassLoaderRegistry.class));
         EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.isA(URI.class))).andReturn(getClass().getClassLoader()).anyTimes();
 
-        TransformerRegistry transformerRegistry = EasyMock.createMock(TransformerRegistry.class);
-        EasyMock.replay(classLoaderRegistry, transformerRegistry);
+        EasyMock.replay(classLoaderRegistry);
 
         sourceAttacher = EasyMock.createMock(SourceConnectionAttacher.class);
         targetAttacher = EasyMock.createMock(TargetConnectionAttacher.class);
 
         connector = new ChannelConnectorImpl();
         connector.setClassLoaderRegistry(classLoaderRegistry);
-        connector.setTransformerRegistry(transformerRegistry);
         Map sourceAttachers = Collections.singletonMap(MockSourceDefinition.class, sourceAttacher);
         Map targetAttachers = Collections.singletonMap(MockTargetDefinition.class, targetAttacher);
         connector.setSourceAttachers(sourceAttachers);
@@ -159,11 +155,11 @@ public class ChannelConnectorImplTestCase extends TestCase {
 
     }
 
-    private class MockFilterDefinition extends PhysicalEventFilterDefinition{
+    private class MockFilterDefinition extends PhysicalEventFilterDefinition {
         private static final long serialVersionUID = 4679150177565902805L;
     }
 
-    private class MockHandlerDefinition extends PhysicalHandlerDefinition{
+    private class MockHandlerDefinition extends PhysicalHandlerDefinition {
         private static final long serialVersionUID = -460538402100677668L;
     }
 

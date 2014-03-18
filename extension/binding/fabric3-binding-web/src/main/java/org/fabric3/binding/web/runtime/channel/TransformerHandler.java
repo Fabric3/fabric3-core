@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.container.channel;
+package org.fabric3.binding.web.runtime.channel;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;

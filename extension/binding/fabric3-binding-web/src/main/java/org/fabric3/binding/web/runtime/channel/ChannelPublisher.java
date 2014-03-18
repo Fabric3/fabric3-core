@@ -38,7 +38,6 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.EventWrapper;
 
 /**
  * Receives incoming requests for a channel published as a web endpoint.
