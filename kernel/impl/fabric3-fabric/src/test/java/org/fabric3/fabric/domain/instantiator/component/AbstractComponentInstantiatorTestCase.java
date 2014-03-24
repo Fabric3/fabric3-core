@@ -43,20 +43,19 @@
  */
 package org.fabric3.fabric.domain.instantiator.component;
 
-import java.net.URI;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.net.URI;
 
 import junit.framework.TestCase;
+import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.PropertyValue;
+import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
-import org.fabric3.api.model.type.component.CompositeImplementation;
-import org.fabric3.api.model.type.component.PropertyValue;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
  *
@@ -128,7 +127,13 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
 
     public void testUnknownVariable() {
         PropertyValue propertyValue = new PropertyValue("property", "$foo");
-        Document value = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
+        Document value = null;
+        try {
+            value = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
+        } catch (PropertyTypeException e) {
+            // Windows throws javax.xml.xpath.XPathExpressionException
+
+        }
         assertNull(value);
     }
 
