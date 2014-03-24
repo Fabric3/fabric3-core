@@ -127,7 +127,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         try {
 
             URL location = contribution.getLocation();
-            Path symFile = Paths.get(location.toURI().getSchemeSpecificPart());
+            Path symFile = Paths.get(location.toURI());
             List<String> paths = Files.readAllLines(symFile, Charset.defaultCharset());
 
             if (paths.isEmpty()) {
