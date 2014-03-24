@@ -76,7 +76,7 @@ public class EventStreamListener implements MessageListener {
                 handler.handle(message.getObject(), true);
             } else if (request instanceof TextMessage) {
                 TextMessage message = (TextMessage) request;
-                handler.handle(new Object[]{message.getText()}, true);
+                handler.handle(message.getText(), true);
             } else {
                 String type = request.getClass().getName();
                 monitor.invalidMessageType(type);

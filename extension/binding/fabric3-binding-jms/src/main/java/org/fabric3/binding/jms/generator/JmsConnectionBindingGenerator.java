@@ -95,7 +95,10 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         URI uri = consumer.getUri();
 
         // set the client id specifier
-        String specifier = JmsGeneratorHelper.getSourceSpecifier(uri);
+        if (metadata.getClientIdSpecifier() == null) {
+            metadata.setClientIdSpecifier(JmsGeneratorHelper.getSourceSpecifier(uri));
+        }
+        String specifier = metadata.getClientIdSpecifier();
         metadata.setClientIdSpecifier(specifier);
         ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);  // TODO support transactions
