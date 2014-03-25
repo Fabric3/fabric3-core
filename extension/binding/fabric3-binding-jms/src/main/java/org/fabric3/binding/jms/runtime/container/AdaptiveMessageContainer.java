@@ -650,7 +650,7 @@ public class AdaptiveMessageContainer {
      */
     private Session createSession(Connection connection) throws JMSException {
         if (javaEEXAEnabled && TransactionType.GLOBAL == transactionType) {
-            // Java EE containers requires require the transacted parameter to be set to false for XA transactions
+            // Java EE containers require the transacted parameter to be set to false for XA transactions
             return connection.createSession(false, Session.SESSION_TRANSACTED);
         }
         // non-Java EE/XA environment (e.g. Atomikos, a local transaction or no transaction)

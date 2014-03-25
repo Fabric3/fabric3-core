@@ -118,6 +118,12 @@ public class JmsBindingDefinitionBuilder extends AbstractBuilder {
         return this;
     }
 
+    public JmsBindingDefinitionBuilder connectionFactoryProperty(String name, String value) {
+        checkState();
+        binding.getJmsMetadata().getConnectionFactory().addProperty(name, value);
+        return this;
+    }
+
     public JmsBindingDefinitionBuilder connectionFactoryCreate(CreateOption option) {
         checkState();
         binding.getJmsMetadata().getConnectionFactory().setCreate(option);

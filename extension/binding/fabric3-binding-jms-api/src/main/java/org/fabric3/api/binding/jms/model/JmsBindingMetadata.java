@@ -277,17 +277,18 @@ public class JmsBindingMetadata extends ModelObject {
         copy.connectionFactory.setCreate(this.connectionFactory.getCreate());
         copy.connectionFactory.setName(this.connectionFactory.getName());
         copy.connectionFactory.setTemplateName(this.connectionFactory.getTemplateName());
-        copy.connectionFactory.getProperties().putAll(this.connectionFactory.getProperties());
+        copy.connectionFactory.addProperties(this.connectionFactory.getProperties()
+        );
         copy.response = this.response;
 
         copy.headers.setDeliveryMode(this.headers.getDeliveryMode());
-        copy.headers.getProperties().putAll(this.headers.getProperties());
+        copy.headers.addProperties(this.headers.getProperties());
         copy.headers.setPriority(this.headers.getPriority());
         copy.headers.setTimeToLive(this.headers.getTimeToLive());
         copy.headers.setJmsType(this.headers.getJmsType());
 
         copy.uriHeaders.setDeliveryMode(this.uriHeaders.getDeliveryMode());
-        copy.uriHeaders.getProperties().putAll(this.uriHeaders.getProperties());
+        copy.uriHeaders.addProperties(this.uriHeaders.getProperties());
         copy.uriHeaders.setPriority(this.uriHeaders.getPriority());
         copy.uriHeaders.setTimeToLive(this.uriHeaders.getTimeToLive());
         copy.uriHeaders.setJmsType(this.uriHeaders.getJmsType());

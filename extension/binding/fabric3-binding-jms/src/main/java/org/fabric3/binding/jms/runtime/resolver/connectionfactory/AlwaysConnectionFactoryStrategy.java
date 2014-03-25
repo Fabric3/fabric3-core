@@ -83,8 +83,8 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
 
     public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
         try {
-            Map<String, String> props = definition.getProperties();
-            String className = props.get("class");
+            Map<String, String> properties = definition.getProperties();
+            String className = properties.get("class");
             ConnectionFactory factory;
             String name = definition.getName();
             String templateName = definition.getTemplateName();
@@ -99,9 +99,9 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
                 if (configuration == null) {
                     throw new JmsResolutionException("Connection Factory template not found: " + templateName);
                 }
-                factory = creatorRegistry.create(configuration);
+                factory = creatorRegistry.create(configuration, properties);
             } else {
-                factory = instantiate(className, props);
+                factory = instantiate(className, properties);
             }
             created.add(name);
             return manager.register(name, factory);

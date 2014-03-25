@@ -1,16 +1,15 @@
 package org.fabric3.binding.jms.runtime.connection;
 
+import javax.jms.ConnectionFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.jms.ConnectionFactory;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -25,12 +24,12 @@ public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCr
     }
 
     @SuppressWarnings({"unchecked"})
-    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException {
         ConnectionFactoryCreator creator = creators.get(configuration.getClass());
         if (creator == null) {
             throw new ConnectionFactoryCreationException("Provider not found: " + configuration.getClass().getName());
         }
-        ConnectionFactory factory = creator.create(configuration);
+        ConnectionFactory factory = creator.create(configuration, properties);
         factories.put(factory, creator);
         return factory;
     }

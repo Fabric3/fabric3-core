@@ -1,20 +1,14 @@
 package org.fabric3.binding.jms.runtime.connection;
 
+import javax.jms.ConnectionFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.jms.ConnectionFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
@@ -26,7 +20,11 @@ import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
-
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY;
 import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
@@ -47,8 +45,8 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_C
  * &lt;/jms&gt;
  * </pre>
  * <p/>
- * Note that the unqualified forms for connection factory and template definitions may be used: <code>&lt;connection.factory ...&gt;</code>. In this
- * case, if more than one JMS provider is present, one will be selected.
+ * Note that the unqualified forms for connection factory and template definitions may be used: <code>&lt;connection.factory ...&gt;</code>. In this case, if
+ * more than one JMS provider is present, one will be selected.
  */
 @EagerInit
 public class ConfigurationBuilder {
@@ -108,10 +106,9 @@ public class ConfigurationBuilder {
             templateRegistry.registerTemplate(configuration);
         }
 
-
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
-            ConnectionFactory factory = creatorRegistry.create(configuration);
+            ConnectionFactory factory = creatorRegistry.create(configuration, Collections.<String, String>emptyMap());
             manager.register(configuration.getName(), factory);
             factories.add(factory);
         }
@@ -140,13 +137,13 @@ public class ConfigurationBuilder {
 
             if (manager.get(DEFAULT_CONNECTION_FACTORY) == null) {
                 // default connection factory was not configured, create one
-                ConnectionFactory factory = creatorRegistry.create(localConfig);
+                ConnectionFactory factory = creatorRegistry.create(localConfig, Collections.<String, String>emptyMap());
                 manager.register(DEFAULT_CONNECTION_FACTORY, factory);
             }
 
             if (manager.get(DEFAULT_XA_CONNECTION_FACTORY) == null) {
                 // default XA connection factory was not configured, create one
-                ConnectionFactory xaFactory = creatorRegistry.create(xaConfig);
+                ConnectionFactory xaFactory = creatorRegistry.create(xaConfig, Collections.<String, String>emptyMap());
                 manager.register(DEFAULT_XA_CONNECTION_FACTORY, xaFactory);
             }
         }
@@ -179,31 +176,30 @@ public class ConfigurationBuilder {
             throws XMLStreamException, InvalidConfigurationException {
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                String name = reader.getName().getLocalPart();
-                if (name.equals("connection.factory")) {
-                    // no factory specified, pick the first one
-                    if (parsers.isEmpty()) {
-                        throw new InvalidConfigurationException("JMS provider not installed");
+                case XMLStreamConstants.START_ELEMENT:
+                    String name = reader.getName().getLocalPart();
+                    if (name.equals("connection.factory")) {
+                        // no factory specified, pick the first one
+                        if (parsers.isEmpty()) {
+                            throw new InvalidConfigurationException("JMS provider not installed");
+                        }
+                        ConnectionFactoryConfigurationParser parser = parsers.values().iterator().next();
+                        ConnectionFactoryConfiguration configuration = parser.parse(reader);
+                        configurations.add(configuration);
+                    } else if (name.startsWith("connection.factory") && !name.equals("connection.factory.templates")) {
+                        ConnectionFactoryConfigurationParser parser = parsers.get(name);
+                        if (parser == null) {
+                            throw new InvalidConfigurationException("No JMS provider found for: " + name);
+                        }
+                        ConnectionFactoryConfiguration configuration = parser.parse(reader);
+                        configurations.add(configuration);
                     }
-                    ConnectionFactoryConfigurationParser parser = parsers.values().iterator().next();
-                    ConnectionFactoryConfiguration configuration = parser.parse(reader);
-                    configurations.add(configuration);
-                } else if (name.startsWith("connection.factory") && !name.equals("connection.factory.templates")) {
-                    ConnectionFactoryConfigurationParser parser = parsers.get(name);
-                    if (parser == null) {
-                        throw new InvalidConfigurationException("No JMS provider found for: " + name);
-                    }
-                    ConnectionFactoryConfiguration configuration = parser.parse(reader);
-                    configurations.add(configuration);
-                }
 
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                return;
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    return;
             }
         }
     }
-
 
 }

@@ -75,7 +75,7 @@ public abstract class PropertyAwareObject extends ModelObject {
      */
     public void addProperties(Map<String, String> properties) {
         ensurePropertiesNotNull();
-        properties.putAll(properties);
+        this.properties.putAll(properties);
     }
 
     /**
