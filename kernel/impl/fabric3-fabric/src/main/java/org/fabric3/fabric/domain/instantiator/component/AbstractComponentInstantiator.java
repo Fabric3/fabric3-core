@@ -239,7 +239,7 @@ public abstract class AbstractComponentInstantiator {
         } catch (XPathExpressionException e) {
             if (e.getCause() instanceof TransformerException) {
                 String message = e.getCause().getMessage();
-                if (message.startsWith("resolveVariable for variable") || message.endsWith("returning null")) {
+                if (message.contains("resolveVariable") || message.contains("null")) {
                     return null;
                 }
             }
