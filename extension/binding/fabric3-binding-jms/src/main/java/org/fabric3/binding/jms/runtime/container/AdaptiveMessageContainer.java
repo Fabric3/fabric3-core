@@ -118,7 +118,7 @@ public class AdaptiveMessageContainer {
      * Constructor. Creates a new container for receiving messages from a destination and dispatching them to a MessageListener.
      *
      * @param configuration     the container configuration
-     * @param receiveTimeout    the timeout for receiving messages in seconds
+     * @param receiveTimeout    the timeout for receiving messages in milliseconds
      * @param connectionManager the connection manager
      * @param work              the unit of work
      * @param statistics        the message statistics tracker
@@ -164,9 +164,9 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sets the timeout value for receiving messages from a destination. The default is no timeout.
+     * Sets the timeout value for receiving messages from a destination in milliseconds. The default is no timeout.
      *
-     * @param timeout the timeout value for receiving messages from a destination.
+     * @param timeout the timeout value for receiving messages from a destination in milliseconds.
      */
     @ManagementOperation(description = "The timeout value for receiving messages from a destination")
     public void setReceiveTimeout(int timeout) {

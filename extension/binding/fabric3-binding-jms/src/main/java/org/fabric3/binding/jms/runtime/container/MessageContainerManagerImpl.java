@@ -83,7 +83,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
     private HostInfo hostInfo;
 
     private ContainerManagerMonitor managerMonitor;
-    private int transactionTimeout = DEFAULT_TRX_TIMEOUT;
+    private int transactionTimeout = DEFAULT_TRX_TIMEOUT;   // in seconds per the JTA spec
 
     public MessageContainerManagerImpl(@Reference EventService eventService,
                                        @Reference ExecutorService executorService,
@@ -170,8 +170,8 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         int cacheLevel = configuration.getCacheLevel();
         boolean cacheConnection = cacheLevel >= CACHE_CONNECTION;
 
-        // set the receive timeout to half of the trx timeout
-        int receiveTimeout = transactionTimeout / 2;
+        // set the receive timeout to half of the trx timeout - note receive timeout is in milliseconds and transaction timeout is in seconds
+        int receiveTimeout = (transactionTimeout / 2) * 500;
 
         ContainerStatistics statistics = new ContainerStatistics();
         ConnectionManager connectionManager = new ConnectionManager(factory, uri, clientId, cacheConnection, durable, containerMonitor);
