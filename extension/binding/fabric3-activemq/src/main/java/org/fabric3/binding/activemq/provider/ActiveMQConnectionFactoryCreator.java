@@ -72,11 +72,15 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
             case XA:
                 ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(getUri(configuration, properties));
                 xaFactory.setProperties(configuration.getFactoryProperties());
+                xaFactory.setUserName(configuration.getUsername());
+                xaFactory.setPassword(configuration.getPassword());
                 return xaFactory;
             default:
                 // default to local pooled
                 ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(getUri(configuration, properties));
                 wrapped.setProperties(configuration.getFactoryProperties());
+                wrapped.setUserName(configuration.getUsername());
+                wrapped.setPassword(configuration.getPassword());
                 return new PooledConnectionFactory(wrapped);
         }
     }

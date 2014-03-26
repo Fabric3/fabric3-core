@@ -37,23 +37,21 @@
 */
 package org.fabric3.binding.activemq.provider;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Parses {@link ActiveMQConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory
- * templates.
+ * Parses {@link ActiveMQConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory templates.
  */
 @EagerInit
 public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionFactoryConfigurationParser {
@@ -69,6 +67,11 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
             invalidConfiguration("Connection factory name not configured", reader, null);
         }
         ActiveMQConnectionFactoryConfiguration configuration = new ActiveMQConnectionFactoryConfiguration(name);
+
+        String username = reader.getAttributeValue(null, "username");
+        configuration.setUsername(username);
+        String password = reader.getAttributeValue(null, "password");
+        configuration.setPassword(password);
 
         String typeString = reader.getAttributeValue(null, "type");
         if (typeString != null) {
@@ -87,20 +90,20 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         }
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                String localPart = reader.getName().getLocalPart();
-                if ("factory.properties".equals(localPart)) {
-                    parseFactoryProperties(configuration, reader);
-                } else if ("pool.properties".equals(localPart)) {
-                    parsePoolProperties(configuration, reader);
-                } else {
-                    invalidConfiguration("Unrecognized element " + localPart + " in system configuration", reader, null);
-                }
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                if (reader.getName().getLocalPart().startsWith("connection.factory")) {
-                    return configuration;
-                }
+                case XMLStreamConstants.START_ELEMENT:
+                    String localPart = reader.getName().getLocalPart();
+                    if ("factory.properties".equals(localPart)) {
+                        parseFactoryProperties(configuration, reader);
+                    } else if ("pool.properties".equals(localPart)) {
+                        parsePoolProperties(configuration, reader);
+                    } else {
+                        invalidConfiguration("Unrecognized element " + localPart + " in system configuration", reader, null);
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (reader.getName().getLocalPart().startsWith("connection.factory")) {
+                        return configuration;
+                    }
             }
         }
     }
@@ -108,16 +111,16 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
     private void parseFactoryProperties(ActiveMQConnectionFactoryConfiguration configuration, XMLStreamReader reader) throws XMLStreamException {
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                configuration.setFactoryProperty(reader.getName().getLocalPart(), reader.getElementText());
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                if ("factory.properties".equals(reader.getName().getLocalPart())) {
+                case XMLStreamConstants.START_ELEMENT:
+                    configuration.setFactoryProperty(reader.getName().getLocalPart(), reader.getElementText());
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if ("factory.properties".equals(reader.getName().getLocalPart())) {
+                        return;
+                    }
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
                     return;
-                }
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                return;
             }
         }
     }
@@ -125,16 +128,16 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
     private void parsePoolProperties(ActiveMQConnectionFactoryConfiguration configuration, XMLStreamReader reader) throws XMLStreamException {
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                configuration.setPoolProperty(reader.getName().getLocalPart(), reader.getElementText());
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                if ("pool.properties".equals(reader.getName().getLocalPart())) {
+                case XMLStreamConstants.START_ELEMENT:
+                    configuration.setPoolProperty(reader.getName().getLocalPart(), reader.getElementText());
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if ("pool.properties".equals(reader.getName().getLocalPart())) {
+                        return;
+                    }
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
                     return;
-                }
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                return;
             }
         }
     }
@@ -155,6 +158,5 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         }
         throw new InvalidConfigurationException(message + " [" + line + "," + col + "]");
     }
-
 
 }

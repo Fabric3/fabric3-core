@@ -37,10 +37,10 @@
 */
 package org.fabric3.binding.activemq.provider;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -49,19 +49,17 @@ import org.easymock.EasyMock;
  *
  */
 public class ActiveMQConnectionFactoryConfigurationParserTestCase extends TestCase {
-    private static final String XML =
-            "   <connection.factory name='testFactory' broker.url='vm://broker' type='xa'>" +
-            "      <factory.properties>" +
-            "           <optimizedMessageDispatch>true</optimizedMessageDispatch>" +
-            "      </factory.properties>" +
-            "      <pool.properties>" +
-            "            <maxSize>10</maxSize>" +
-            "      </pool.properties>" +
-            "   </connection.factory>";
+    private static final String XML = "   <connection.factory name='testFactory' broker.url='vm://broker' type='xa' username='foo' password='bar'>" +
+                                      "      <factory.properties>" +
+                                      "           <optimizedMessageDispatch>true</optimizedMessageDispatch>" +
+                                      "      </factory.properties>" +
+                                      "      <pool.properties>" +
+                                      "            <maxSize>10</maxSize>" +
+                                      "      </pool.properties>" +
+                                      "   </connection.factory>";
 
     private ActiveMQConnectionFactoryConfigurationParser parser;
     private XMLStreamReader reader;
-
 
     public void testParse() throws Exception {
         ActiveMQConnectionFactoryConfiguration configuration = parser.parse(reader);
@@ -69,6 +67,8 @@ public class ActiveMQConnectionFactoryConfigurationParserTestCase extends TestCa
         assertEquals("testFactory", (configuration.getName()));
         assertEquals(1, configuration.getPoolProperties().size());
         assertEquals(1, configuration.getFactoryProperties().size());
+        assertEquals("foo", configuration.getUsername());
+        assertEquals("bar", configuration.getPassword());
     }
 
     protected void setUp() throws Exception {

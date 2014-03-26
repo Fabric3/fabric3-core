@@ -43,6 +43,8 @@ package org.fabric3.binding.jms.spi.runtime.connection;
 public abstract class ConnectionFactoryConfiguration {
     private String name;
     private ConnectionFactoryType type = ConnectionFactoryType.XA;
+    private String username;
+    private String password;
 
     /**
      * Constructor.
@@ -80,5 +82,39 @@ public abstract class ConnectionFactoryConfiguration {
         this.type = type;
     }
 
+    /**
+     * Returns the optional username for accessing the connection factory.
+     *
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
 
+    /**
+     * Sets the optional username for accessing the connection factory.
+     *
+     * @param username the username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Returns the optional password for accessing the connection factory.
+     *
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the optional password for accessing the connection factory.
+     *
+     * @param password the password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
