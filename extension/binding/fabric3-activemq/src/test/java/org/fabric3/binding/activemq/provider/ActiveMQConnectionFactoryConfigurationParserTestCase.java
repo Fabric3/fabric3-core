@@ -45,7 +45,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 
 /**
  *

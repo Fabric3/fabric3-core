@@ -56,6 +56,7 @@ import org.fabric3.api.model.type.component.CompositeService;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Property;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.api.model.type.component.WireDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -103,6 +104,18 @@ public class CompositeBuilder extends AbstractBuilder {
      * @return the builder
      */
     public CompositeBuilder channel(ChannelDefinition definition) {
+        checkState();
+        composite.add(definition);
+        return this;
+    }
+
+    /**
+     * Adds a resource definition to the composite.
+     *
+     * @param definition the resource definition
+     * @return the builder
+     */
+    public CompositeBuilder resource(ResourceDefinition definition) {
         checkState();
         composite.add(definition);
         return this;

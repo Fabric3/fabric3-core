@@ -3,9 +3,9 @@ package org.fabric3.binding.hornetq.provider;
 import javax.jms.ConnectionFactory;
 import java.util.Map;
 
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.api.jms.HornetQJMSClient;

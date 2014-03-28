@@ -35,8 +35,9 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.spi.runtime.connection;
+package org.fabric3.api.binding.jms.resource;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -44,7 +45,8 @@ import java.util.Properties;
 /**
  * A base connection factory configuration.
  */
-public class ConnectionFactoryConfiguration {
+public class ConnectionFactoryConfiguration implements Serializable {
+    private static final long serialVersionUID = 6041948376851715924L;
     private String name;
     private ConnectionFactoryType type = ConnectionFactoryType.XA;
     private String username;
@@ -67,6 +69,15 @@ public class ConnectionFactoryConfiguration {
     }
 
     /**
+     * Constructor.
+     *
+     * @param name the connection factory name
+     */
+    public ConnectionFactoryConfiguration(String name) {
+        this.name = name;
+    }
+
+    /**
      * Returns the connection factory name.
      *
      * @return the connection factory name.
@@ -76,12 +87,21 @@ public class ConnectionFactoryConfiguration {
     }
 
     /**
-     * Returns the JMS provider name.
+     * Returns the JMS provider name or null if the default provider should be used.
      *
      * @return the JMS provider name
      */
     public String getProvider() {
         return provider;
+    }
+
+    /**
+     * Sets the JMS provider.
+     *
+     * @param provider the JMS provider
+     */
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     /**

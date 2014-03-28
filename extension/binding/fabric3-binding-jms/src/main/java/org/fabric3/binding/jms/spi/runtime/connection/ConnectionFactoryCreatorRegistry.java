@@ -40,6 +40,8 @@ package org.fabric3.binding.jms.spi.runtime.connection;
 import javax.jms.ConnectionFactory;
 import java.util.Map;
 
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+
 /**
  * Creates connection factory instances.
  */

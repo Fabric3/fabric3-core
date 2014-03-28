@@ -3,7 +3,7 @@ package org.fabric3.binding.jms.spi.runtime.provider;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 
 /**
  * Parses a connection factory configuration from an XML stream.

@@ -37,12 +37,12 @@
 */
 package org.fabric3.binding.jms.spi.runtime.manager;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Denotes an error registering a connection factory.
  */
-public class FactoryRegistrationException extends Fabric3Exception {
+public class FactoryRegistrationException extends ContainerException {
     private static final long serialVersionUID = -9001751422278517341L;
 
     public FactoryRegistrationException(String message) {

@@ -35,4 +35,9 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.generator.PayloadTypeIntrospectorImpl"/>
     </component>
 
+    <component name="ConnectionFactoryResourceGenerator" f3:key="org.fabric3.api.binding.jms.resource.ConnectionFactoryResource">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.ConnectionFactoryResourceGenerator"/>
+    </component>
+
+
 </composite>

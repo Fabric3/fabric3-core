@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
@@ -25,9 +25,13 @@ public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCr
 
     @SuppressWarnings({"unchecked"})
     public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException {
-        ConnectionFactoryCreator creator = creators.get(configuration.getProvider());
+        if (creators.isEmpty()) {
+            throw new ConnectionFactoryCreationException("JMS Provider not installed");
+        }
+        String provider = configuration.getProvider();
+        ConnectionFactoryCreator creator = provider == null ? creators.values().iterator().next() : creators.get(provider);
         if (creator == null) {
-            throw new ConnectionFactoryCreationException("Provider not found: " + configuration.getProvider());
+            throw new ConnectionFactoryCreationException("Provider not found: " + provider);
         }
         ConnectionFactory factory = creator.create(configuration, properties);
         factories.put(factory, creator);

@@ -35,34 +35,24 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.spi.runtime.provider;
-
-import javax.jms.ConnectionFactory;
-
-import java.util.Map;
+package org.fabric3.binding.jms.spi.provision;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * Implemented by a JMS provider to create connection factories on demand.
+ *
  */
-public interface ConnectionFactoryCreator {
+public class PhysicalConnectionFactoryResource extends PhysicalResourceDefinition {
+    private static final long serialVersionUID = -6529799778509572177L;
 
-    /**
-     * Creates the connection factory.
-     *
-     * @param configuration the configuration
-     * @param properties    the JMS connection factory properties
-     * @return the connection factory
-     * @throws ConnectionFactoryCreationException if there is an error creating the connection factory
-     */
-    ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException;
+    private ConnectionFactoryConfiguration configuration;
 
-    /**
-     * Releases the connection factory. Implementations may close open connections and remove any resources allocated by the connection factory.
-     *
-     * @param factory the factory to release
-     */
-    void release(ConnectionFactory factory);
+    public PhysicalConnectionFactoryResource(ConnectionFactoryConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public ConnectionFactoryConfiguration getConfiguration() {
+        return configuration;
+    }
 }

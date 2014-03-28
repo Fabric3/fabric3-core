@@ -37,6 +37,8 @@
 */
 package org.fabric3.binding.jms.spi.runtime.connection;
 
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+
 /**
  * Manages JMS connection factory templates.
  */

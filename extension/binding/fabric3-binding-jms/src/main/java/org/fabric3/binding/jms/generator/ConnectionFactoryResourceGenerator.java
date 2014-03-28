@@ -35,34 +35,22 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.spi.runtime.provider;
+package org.fabric3.binding.jms.generator;
 
-import javax.jms.ConnectionFactory;
-
-import java.util.Map;
-
-import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryResource;
+import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
+import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
+import org.fabric3.spi.model.instance.LogicalResource;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Implemented by a JMS provider to create connection factories on demand.
+ * Generates connection factory definitions.
  */
-public interface ConnectionFactoryCreator {
+@EagerInit
+public class ConnectionFactoryResourceGenerator implements ResourceGenerator<ConnectionFactoryResource> {
 
-    /**
-     * Creates the connection factory.
-     *
-     * @param configuration the configuration
-     * @param properties    the JMS connection factory properties
-     * @return the connection factory
-     * @throws ConnectionFactoryCreationException if there is an error creating the connection factory
-     */
-    ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException;
-
-    /**
-     * Releases the connection factory. Implementations may close open connections and remove any resources allocated by the connection factory.
-     *
-     * @param factory the factory to release
-     */
-    void release(ConnectionFactory factory);
+    public PhysicalConnectionFactoryResource generateResource(LogicalResource<ConnectionFactoryResource> resource) throws GenerationException {
+        return new PhysicalConnectionFactoryResource(resource.getDefinition().getConfiguration());
+    }
 }

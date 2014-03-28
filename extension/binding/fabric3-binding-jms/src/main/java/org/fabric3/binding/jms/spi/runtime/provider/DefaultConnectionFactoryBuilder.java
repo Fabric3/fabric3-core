@@ -1,7 +1,7 @@
 package org.fabric3.binding.jms.spi.runtime.provider;
 
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 
 /**
  * Builds default connection factory configurations for a provider which can be used to instantiate connection factories. These connection factories

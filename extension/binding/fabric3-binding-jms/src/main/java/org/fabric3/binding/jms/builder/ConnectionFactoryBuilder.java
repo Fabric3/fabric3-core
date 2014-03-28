@@ -35,34 +35,41 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.spi.runtime.provider;
+package org.fabric3.binding.jms.builder;
 
 import javax.jms.ConnectionFactory;
-
-import java.util.Map;
+import java.util.Collections;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
+import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
+import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.resource.ResourceBuilder;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Implemented by a JMS provider to create connection factories on demand.
+ *
  */
-public interface ConnectionFactoryCreator {
+@EagerInit
+public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnectionFactoryResource> {
+    private ConnectionFactoryCreatorRegistry registry;
+    private ConnectionFactoryManager manager;
 
-    /**
-     * Creates the connection factory.
-     *
-     * @param configuration the configuration
-     * @param properties    the JMS connection factory properties
-     * @return the connection factory
-     * @throws ConnectionFactoryCreationException if there is an error creating the connection factory
-     */
-    ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException;
+    public ConnectionFactoryBuilder(@Reference ConnectionFactoryCreatorRegistry registry, @Reference ConnectionFactoryManager manager) {
+        this.registry = registry;
+        this.manager = manager;
+    }
 
-    /**
-     * Releases the connection factory. Implementations may close open connections and remove any resources allocated by the connection factory.
-     *
-     * @param factory the factory to release
-     */
-    void release(ConnectionFactory factory);
+    public void build(PhysicalConnectionFactoryResource definition) throws ContainerException {
+        ConnectionFactoryConfiguration configuration = definition.getConfiguration();
+        ConnectionFactory factory = registry.create(configuration, Collections.<String, String>emptyMap());
+        manager.register(configuration.getName(), factory);
+    }
+
+    public void remove(PhysicalConnectionFactoryResource definition) throws ContainerException {
+        ConnectionFactory factory = manager.unregister(definition.getConfiguration().getName());
+        registry.release(factory);
+    }
 }

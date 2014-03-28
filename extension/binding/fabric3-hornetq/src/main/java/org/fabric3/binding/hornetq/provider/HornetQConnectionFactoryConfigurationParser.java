@@ -5,8 +5,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
 import org.oasisopen.sca.annotation.EagerInit;

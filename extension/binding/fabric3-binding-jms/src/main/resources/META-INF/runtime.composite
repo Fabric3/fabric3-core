@@ -93,5 +93,8 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.builder.JmsChannelBindingBuilder"/>
     </component>
 
+    <component name="ConnectionFactoryBuilder" f3:key="org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource">
+        <f3:implementation.system class="org.fabric3.binding.jms.builder.ConnectionFactoryBuilder"/>
+    </component>
 
 </composite>
