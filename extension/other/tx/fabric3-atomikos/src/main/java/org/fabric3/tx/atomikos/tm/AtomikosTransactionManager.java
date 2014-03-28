@@ -171,7 +171,7 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     @Destroy
     public void destroy() {
         if (uts != null) {
-            uts.shutdown(true);
+            uts.shutdown(false);
             uts = null;
         }
     }

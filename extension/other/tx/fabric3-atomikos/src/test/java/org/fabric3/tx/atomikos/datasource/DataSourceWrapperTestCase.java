@@ -95,7 +95,15 @@ public class DataSourceWrapperTestCase extends TestCase {
             return null;
         }
 
-        public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        protected Object unwrapVendorInstance() {
+            return null;
+        }
+
+        public boolean isWrapperFor(Class<?> iface) {
+            return false;
+        }
+
+        protected boolean isAssignableFromWrappedVendorClass(Class<?> aClass) {
             return false;
         }
 
