@@ -51,7 +51,7 @@
         <!-- if the JUnit version changes, update the ITest Plugin TestConstants value -->
         <junit.version>4.11</junit.version>
 
-        <atomikos.version>3.9.3</atomikos.version>
+        <atomikos.version>3.8.0</atomikos.version>
         <atmosphere.version>1.0.13</atmosphere.version>
         <aetherVersion>0.9.0.M2</aetherVersion>
     </properties>
