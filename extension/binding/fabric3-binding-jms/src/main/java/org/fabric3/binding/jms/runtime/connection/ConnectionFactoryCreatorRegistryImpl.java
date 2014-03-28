@@ -15,19 +15,19 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCreatorRegistry {
-    private Map<Class<?>, ConnectionFactoryCreator> creators = Collections.emptyMap();
+    private Map<String, ConnectionFactoryCreator> creators = Collections.emptyMap();
     private Map<ConnectionFactory, ConnectionFactoryCreator> factories = new HashMap<>();
 
     @Reference(required = false)
-    public void setCreators(Map<Class<?>, ConnectionFactoryCreator> creators) {
+    public void setCreators(Map<String, ConnectionFactoryCreator> creators) {
         this.creators = creators;
     }
 
     @SuppressWarnings({"unchecked"})
     public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException {
-        ConnectionFactoryCreator creator = creators.get(configuration.getClass());
+        ConnectionFactoryCreator creator = creators.get(configuration.getProvider());
         if (creator == null) {
-            throw new ConnectionFactoryCreationException("Provider not found: " + configuration.getClass().getName());
+            throw new ConnectionFactoryCreationException("Provider not found: " + configuration.getProvider());
         }
         ConnectionFactory factory = creator.create(configuration, properties);
         factories.put(factory, creator);

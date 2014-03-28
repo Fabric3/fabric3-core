@@ -3,6 +3,7 @@ package org.fabric3.binding.hornetq.provider;
 import javax.jms.ConnectionFactory;
 import java.util.Map;
 
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
@@ -17,11 +18,11 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Creates HornetQ connection factories.
  */
 @EagerInit
-public class HornetQConnectionFactoryCreator implements ConnectionFactoryCreator<HornetQConnectionFactoryConfiguration> {
+public class HornetQConnectionFactoryCreator implements ConnectionFactoryCreator {
 
-    public ConnectionFactory create(HornetQConnectionFactoryConfiguration configuration, Map<String, String> properties)
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties)
             throws ConnectionFactoryCreationException {
-        Map<String, Object> parameters = configuration.getParameters();
+        Map<String, Object> parameters = configuration.getAttributes();
         TransportConfiguration transportConfiguration = new TransportConfiguration(NettyConnectorFactory.class.getName(), parameters);
         JMSFactoryType type = convertType(configuration.getType());
         return (ConnectionFactory) HornetQJMSClient.createConnectionFactoryWithHA(type, transportConfiguration);

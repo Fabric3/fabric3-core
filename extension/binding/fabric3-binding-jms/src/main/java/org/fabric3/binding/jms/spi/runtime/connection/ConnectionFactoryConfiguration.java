@@ -37,22 +37,33 @@
 */
 package org.fabric3.binding.jms.spi.runtime.connection;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * A base connection factory configuration.
  */
-public abstract class ConnectionFactoryConfiguration {
+public class ConnectionFactoryConfiguration {
     private String name;
     private ConnectionFactoryType type = ConnectionFactoryType.XA;
     private String username;
     private String password;
+    private String provider;
+
+    private Map<String, Object> attributes = new HashMap<>();
+
+    private Properties factoryProperties = new Properties();
 
     /**
      * Constructor.
      *
-     * @param name the connection factory name.
+     * @param name     the connection factory name
+     * @param provider the  JMS provider name
      */
-    public ConnectionFactoryConfiguration(String name) {
+    public ConnectionFactoryConfiguration(String name, String provider) {
         this.name = name;
+        this.provider = provider;
     }
 
     /**
@@ -62,6 +73,15 @@ public abstract class ConnectionFactoryConfiguration {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the JMS provider name.
+     *
+     * @return the JMS provider name
+     */
+    public String getProvider() {
+        return provider;
     }
 
     /**
@@ -116,5 +136,54 @@ public abstract class ConnectionFactoryConfiguration {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Sets a factory property.
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    public void setFactoryProperty(String key, String value) {
+        factoryProperties.put(key, value);
+    }
+
+    /**
+     * Returns the factory properties.
+     *
+     * @return factory properties
+     */
+    public Properties getFactoryProperties() {
+        return factoryProperties;
+    }
+
+    /**
+     * Sets a provider-specific attribute such as a connection URL.
+     *
+     * @param type the attribute type
+     * @param key  the key
+     * @return the attribute or null if not found
+     */
+    public <T> T getAttribute(Class<T> type, String key) {
+        return type.cast(attributes.get(key));
+    }
+
+    /**
+     * Adds a provider-specific attribute.
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    public void addAttribute(String key, Object value) {
+        attributes.put(key, value);
+    }
+
+    /**
+     * Returns the provider attributes.
+     *
+     * @return the attributes
+     */
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 }

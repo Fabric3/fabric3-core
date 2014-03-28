@@ -44,6 +44,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
@@ -51,7 +52,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Parses {@link ActiveMQConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory templates.
+ * Parses {@link ConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory templates.
  */
 @EagerInit
 public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionFactoryConfigurationParser {
@@ -61,12 +62,12 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         this.defaultBrokerName = helper.getDefaultBrokerName();
     }
 
-    public ActiveMQConnectionFactoryConfiguration parse(XMLStreamReader reader) throws InvalidConfigurationException, XMLStreamException {
+    public ConnectionFactoryConfiguration parse(XMLStreamReader reader) throws InvalidConfigurationException, XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             invalidConfiguration("Connection factory name not configured", reader, null);
         }
-        ActiveMQConnectionFactoryConfiguration configuration = new ActiveMQConnectionFactoryConfiguration(name);
+        ConnectionFactoryConfiguration configuration = new ConnectionFactoryConfiguration(name, "activemq");
 
         String username = reader.getAttributeValue(null, "username");
         configuration.setUsername(username);
@@ -84,7 +85,7 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         }
         try {
             URI uri = new URI(urlString);
-            configuration.setBrokerUri(uri);
+            configuration.addAttribute("broker.uri", uri);
         } catch (URISyntaxException e) {
             invalidConfiguration("Invalid broker URL", reader, e);
         }
@@ -94,8 +95,6 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
                     String localPart = reader.getName().getLocalPart();
                     if ("factory.properties".equals(localPart)) {
                         parseFactoryProperties(configuration, reader);
-                    } else if ("pool.properties".equals(localPart)) {
-                        parsePoolProperties(configuration, reader);
                     } else {
                         invalidConfiguration("Unrecognized element " + localPart + " in system configuration", reader, null);
                     }
@@ -108,7 +107,7 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         }
     }
 
-    private void parseFactoryProperties(ActiveMQConnectionFactoryConfiguration configuration, XMLStreamReader reader) throws XMLStreamException {
+    private void parseFactoryProperties(ConnectionFactoryConfiguration configuration, XMLStreamReader reader) throws XMLStreamException {
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -116,23 +115,6 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     if ("factory.properties".equals(reader.getName().getLocalPart())) {
-                        return;
-                    }
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    return;
-            }
-        }
-    }
-
-    private void parsePoolProperties(ActiveMQConnectionFactoryConfiguration configuration, XMLStreamReader reader) throws XMLStreamException {
-        while (true) {
-            switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    configuration.setPoolProperty(reader.getName().getLocalPart(), reader.getElementText());
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if ("pool.properties".equals(reader.getName().getLocalPart())) {
                         return;
                     }
                     break;

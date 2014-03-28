@@ -37,7 +37,7 @@
         <f3:implementation.system class="org.fabric3.binding.activemq.provider.BrokerHelperImpl"/>
     </component>
 
-    <component name="ActiveMQConnectionFactoryCreator" f3:key="org.fabric3.binding.activemq.provider.ActiveMQConnectionFactoryConfiguration">
+    <component name="ActiveMQConnectionFactoryCreator" f3:key="activemq">
         <f3:implementation.system class="org.fabric3.binding.activemq.provider.ActiveMQConnectionFactoryCreator"/>
     </component>
 

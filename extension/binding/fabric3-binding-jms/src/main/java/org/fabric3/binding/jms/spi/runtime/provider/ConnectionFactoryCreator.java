@@ -47,7 +47,7 @@ import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationE
 /**
  * Implemented by a JMS provider to create connection factories on demand.
  */
-public interface ConnectionFactoryCreator<T extends ConnectionFactoryConfiguration> {
+public interface ConnectionFactoryCreator {
 
     /**
      * Creates the connection factory.
@@ -57,7 +57,7 @@ public interface ConnectionFactoryCreator<T extends ConnectionFactoryConfigurati
      * @return the connection factory
      * @throws ConnectionFactoryCreationException if there is an error creating the connection factory
      */
-    ConnectionFactory create(T configuration, Map<String, String> properties) throws ConnectionFactoryCreationException;
+    ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException;
 
     /**
      * Releases the connection factory. Implementations may close open connections and remove any resources allocated by the connection factory.

@@ -41,9 +41,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 
 /**
  *
@@ -53,19 +55,15 @@ public class ActiveMQConnectionFactoryConfigurationParserTestCase extends TestCa
                                       "      <factory.properties>" +
                                       "           <optimizedMessageDispatch>true</optimizedMessageDispatch>" +
                                       "      </factory.properties>" +
-                                      "      <pool.properties>" +
-                                      "            <maxSize>10</maxSize>" +
-                                      "      </pool.properties>" +
                                       "   </connection.factory>";
 
     private ActiveMQConnectionFactoryConfigurationParser parser;
     private XMLStreamReader reader;
 
     public void testParse() throws Exception {
-        ActiveMQConnectionFactoryConfiguration configuration = parser.parse(reader);
-        assertEquals("vm://broker", configuration.getBrokerUri().toString());
+        ConnectionFactoryConfiguration configuration = parser.parse(reader);
+        assertEquals("vm://broker", configuration.getAttribute(URI.class, "broker.uri").toString());
         assertEquals("testFactory", (configuration.getName()));
-        assertEquals(1, configuration.getPoolProperties().size());
         assertEquals(1, configuration.getFactoryProperties().size());
         assertEquals("foo", configuration.getUsername());
         assertEquals("bar", configuration.getPassword());

@@ -45,6 +45,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.apache.activemq.pool.PooledConnectionFactory;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
@@ -55,7 +56,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Creates ActiveMQ connection factories on demand.
  */
 @EagerInit
-public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreator<ActiveMQConnectionFactoryConfiguration> {
+public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreator {
     public static final String BROKER_URI = "broker.uri";
     private URI brokerUri;
 
@@ -64,8 +65,7 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
         brokerUri = URI.create("vm://" + brokerName);
     }
 
-    public ConnectionFactory create(ActiveMQConnectionFactoryConfiguration configuration, Map<String, String> properties)
-            throws ConnectionFactoryCreationException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException {
         ConnectionFactoryType type = configuration.getType();
         switch (type) {
 
@@ -93,15 +93,16 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
 
     }
 
-    private URI getUri(ActiveMQConnectionFactoryConfiguration configuration, Map<String, String> properties) {
+    private URI getUri(ConnectionFactoryConfiguration configuration, Map<String, String> properties) {
         // check if the broker uri was overridden by the JMS properties, e.g. when a connection factory template does not contain a URI but the specific
         // binding configuration on a service, reference, or channel does
         String brokerOverride = properties.get(BROKER_URI);
         if (brokerOverride != null) {
             return URI.create(brokerOverride);
         }
-        if (configuration.getBrokerUri() != null) {
-            return configuration.getBrokerUri();
+        URI attribute = configuration.getAttribute(URI.class, "broker.uri");
+        if (attribute != null) {
+            return attribute;
         }
         return brokerUri;
     }

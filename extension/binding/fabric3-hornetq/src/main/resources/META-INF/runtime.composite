@@ -25,7 +25,7 @@
         <f3:implementation.system class="org.fabric3.binding.hornetq.provider.HornetQConnectionFactoryConfigurationParser"/>
     </component>
 
-    <component name="HornetQConnectionFactoryCreator" f3:key="org.fabric3.binding.hornetq.provider.HornetQConnectionFactoryConfiguration">
+    <component name="HornetQConnectionFactoryCreator" f3:key="hornetmq">
         <f3:implementation.system class="org.fabric3.binding.hornetq.provider.HornetQConnectionFactoryCreator"/>
     </component>
 

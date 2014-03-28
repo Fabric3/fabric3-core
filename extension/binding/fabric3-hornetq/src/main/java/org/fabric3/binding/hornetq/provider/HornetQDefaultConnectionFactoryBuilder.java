@@ -13,7 +13,7 @@ import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuil
 public class HornetQDefaultConnectionFactoryBuilder implements DefaultConnectionFactoryBuilder {
 
     public ConnectionFactoryConfiguration createDefaultFactory(String name, ConnectionFactoryType type) {
-        HornetQConnectionFactoryConfiguration configuration = new HornetQConnectionFactoryConfiguration(name);
+        ConnectionFactoryConfiguration configuration = new ConnectionFactoryConfiguration(name, "hornetmq");
         configuration.setType(type);
         return configuration;
     }

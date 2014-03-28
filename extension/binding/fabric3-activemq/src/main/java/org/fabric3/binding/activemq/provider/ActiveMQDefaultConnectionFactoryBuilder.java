@@ -20,10 +20,9 @@ public class ActiveMQDefaultConnectionFactoryBuilder implements DefaultConnectio
         this.defaultBrokerName = URI.create(helper.getDefaultBrokerName());
     }
 
-
     public ConnectionFactoryConfiguration createDefaultFactory(String name, ConnectionFactoryType type) {
-        ActiveMQConnectionFactoryConfiguration configuration = new ActiveMQConnectionFactoryConfiguration(name);
-        configuration.setBrokerUri(defaultBrokerName);
+        ConnectionFactoryConfiguration configuration = new ConnectionFactoryConfiguration(name, "activemq");
+        configuration.addAttribute("broker.uri", defaultBrokerName);
         configuration.setType(type);
         return configuration;
     }
