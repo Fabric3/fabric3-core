@@ -72,58 +72,54 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 public class JMSBindingLoaderTestCase extends TestCase {
     // wireFormat; activation spec; messageSelection
-    private static final String JMS_BINDING =
-            "   <binding.jms correlationScheme='correlationID'>" +
-                    "      <destination jndiName='serviceQueue' type='queue' create='always'>" +
-                    "         <property name='prop1'>val</property>" +
-                    "      </destination>" +
-                    "      <connectionFactory jndiName='serviceQueue' create='always'>" +
-                    "         <property name='prop1'>val</property>" +
-                    "      </connectionFactory>" +
-                    "      <response>" +
-                    "          <destination jndiName='clientQueue' type='queue' create='always'/>" +
-                    "          <connectionFactory jndiName='clientQueue' create='always'>" +
-                    "             <property name='prop1'>val</property>" +
-                    "          </connectionFactory>" +
-                    "       </response>" +
-                    "       <headers type='jmstype' deliveryMode='persistent' timeToLive='10000' priority='1'>" +
-                    "          <property name='headerProp'>val</property>" +
-                    "       </headers>" +
-                    "       <operationProperties name='testOperationProperties1'>" +
-                    "          <property name='testHeadersPropertyProperty'>TestHeadersPropertyProperty</property>" +
-                    "          <headers>" +
-                    "             <property name='nested'>NestedHeader</property>" +
-                    "          </headers>" +
-                    "       </operationProperties>" +
-                    "       <operationProperties name='testOperationProperties2' selectedOperation='NativeName'/>" +
-                    "   </binding.jms>";
+    private static final String JMS_BINDING = "   <binding.jms correlationScheme='correlationID'>" +
+                                              "      <destination jndiName='serviceQueue' type='queue' create='always'>" +
+                                              "         <property name='prop1'>val</property>" +
+                                              "      </destination>" +
+                                              "      <connectionFactory jndiName='serviceQueue' create='always'>" +
+                                              "         <property name='prop1'>val</property>" +
+                                              "      </connectionFactory>" +
+                                              "      <response>" +
+                                              "          <destination jndiName='clientQueue' type='queue' create='always'/>" +
+                                              "          <connectionFactory jndiName='clientQueue' create='always'>" +
+                                              "             <property name='prop1'>val</property>" +
+                                              "          </connectionFactory>" +
+                                              "       </response>" +
+                                              "       <headers type='jmstype' deliveryMode='persistent' timeToLive='10000' priority='1'>" +
+                                              "          <property name='headerProp'>val</property>" +
+                                              "       </headers>" +
+                                              "       <operationProperties name='testOperationProperties1'>" +
+                                              "          <property name='testHeadersPropertyProperty'>TestHeadersPropertyProperty</property>" +
+                                              "          <headers>" +
+                                              "             <property name='nested'>NestedHeader</property>" +
+                                              "          </headers>" +
+                                              "       </operationProperties>" +
+                                              "       <operationProperties name='testOperationProperties2' selectedOperation='NativeName'/>" +
+                                              "   </binding.jms>";
 
-    private static final String ACTIVATION_SPEC =
-            "   <binding.jms>" +
-                    "<activationSpec jndiName='serviceQueue' create='always'>" +
-                    "   <property name='prop1'>val</property>" +
-                    "</activationSpec>" +
-                    "   <response>" +
-                    "      <activationSpec jndiName='clientQueue' create='always'>" +
-                    "         <property name='prop1'>val</property>" +
-                    "      </activationSpec>" +
-                    "   </response>" +
-                    "</binding.jms>";
+    private static final String ACTIVATION_SPEC = "   <binding.jms>" +
+                                                  "<activationSpec jndiName='serviceQueue' create='always'>" +
+                                                  "   <property name='prop1'>val</property>" +
+                                                  "</activationSpec>" +
+                                                  "   <response>" +
+                                                  "      <activationSpec jndiName='clientQueue' create='always'>" +
+                                                  "         <property name='prop1'>val</property>" +
+                                                  "      </activationSpec>" +
+                                                  "   </response>" +
+                                                  "</binding.jms>";
 
-    private static final String MESSAGE_SELECTION =
-            "   <binding.jms>" +
-                    "   <messageSelection selector='select'>" +
-                    "      <property name='prop1'>val</property>" +
-                    "   </messageSelection>" +
-                    "</binding.jms>";
+    private static final String MESSAGE_SELECTION = "   <binding.jms>" +
+                                                    "   <messageSelection selector='select'>" +
+                                                    "      <property name='prop1'>val</property>" +
+                                                    "   </messageSelection>" +
+                                                    "</binding.jms>";
 
-    private static final String BINDING_HANDLER =
-            "   <binding.jms>" +
-                    "   <destination jndiName='serviceQueue' type='queue' create='always'>" +
-                    "         <property name='prop1'>val</property> " +
-                    "      </destination>" +
-                    "         <f3:handler target=\"SomeHandler\" xmlns:f3=\"urn:fabric3.org\" />" +
-                    "</binding.jms>";
+    private static final String BINDING_HANDLER = "   <binding.jms>" +
+                                                  "   <destination jndiName='serviceQueue' type='queue' create='always'>" +
+                                                  "         <property name='prop1'>val</property> " +
+                                                  "      </destination>" +
+                                                  "         <f3:handler target=\"SomeHandler\" xmlns:f3=\"urn:fabric3.org\" />" +
+                                                  "</binding.jms>";
 
     private XMLInputFactory factory;
     private JmsBindingLoader loader;
@@ -145,7 +141,6 @@ public class JMSBindingLoaderTestCase extends TestCase {
         assertEquals(CreateOption.ALWAYS, destination.getCreate());
         assertEquals(1, destination.getProperties().size());
         assertEquals("val", destination.getProperties().get("prop1"));
-
 
         // verify connection factory
         ConnectionFactoryDefinition connectionFactory = metadata.getConnectionFactory();
@@ -216,7 +211,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
         LoaderRegistry registry = EasyMock.createStrictMock(LoaderRegistry.class);
 
         URI uri = URI.create("TestHandler");
-        EasyMock.expect(registry.load(reader,BindingHandlerDefinition.class,context)).andReturn(new BindingHandlerDefinition(uri));
+        EasyMock.expect(registry.load(reader, BindingHandlerDefinition.class, context)).andReturn(new BindingHandlerDefinition(uri));
         EasyMock.replay(helper, handlerRegistry, registry);
 
         JmsBindingLoader loader = new JmsBindingLoader(helper, registry);

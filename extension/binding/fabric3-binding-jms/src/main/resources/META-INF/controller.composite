@@ -39,5 +39,9 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.generator.ConnectionFactoryResourceGenerator"/>
     </component>
 
+    <component name="ConnectionFactoryResourceLoader" f3:key="f3:connection.factory">
+        <f3:implementation.system class="org.fabric3.binding.jms.introspection.ConnectionFactoryResourceLoader"/>
+    </component>
+
 
 </composite>

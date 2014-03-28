@@ -46,6 +46,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
  *
@@ -61,7 +62,8 @@ public class ActiveMQConnectionFactoryConfigurationParserTestCase extends TestCa
     private XMLStreamReader reader;
 
     public void testParse() throws Exception {
-        ConnectionFactoryConfiguration configuration = parser.parse(reader);
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        ConnectionFactoryConfiguration configuration = parser.parse(reader, context);
         assertEquals("vm://broker", configuration.getAttribute(URI.class, "broker.uri").toString());
         assertEquals("testFactory", (configuration.getName()));
         assertEquals(1, configuration.getFactoryProperties().size());

@@ -46,8 +46,12 @@ import java.net.URISyntaxException;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
-import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryConfigurationParser;
+import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -62,10 +66,12 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         this.defaultBrokerName = helper.getDefaultBrokerName();
     }
 
-    public ConnectionFactoryConfiguration parse(XMLStreamReader reader) throws InvalidConfigurationException, XMLStreamException {
+    public ConnectionFactoryConfiguration parse(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
+        Location location = reader.getLocation();
         if (name == null) {
-            invalidConfiguration("Connection factory name not configured", reader, null);
+            MissingAttribute error = new MissingAttribute("Connection factory name not configured", location, null);
+            context.addError(error);
         }
         ConnectionFactoryConfiguration configuration = new ConnectionFactoryConfiguration(name, "activemq");
 
@@ -87,7 +93,8 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
             URI uri = new URI(urlString);
             configuration.addAttribute("broker.uri", uri);
         } catch (URISyntaxException e) {
-            invalidConfiguration("Invalid broker URL", reader, e);
+            InvalidValue error = new InvalidValue("Invalid broker URL", location, e);
+            context.addError(error);
         }
         while (true) {
             switch (reader.next()) {
@@ -96,7 +103,10 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
                     if ("factory.properties".equals(localPart)) {
                         parseFactoryProperties(configuration, reader);
                     } else {
-                        invalidConfiguration("Unrecognized element " + localPart + " in system configuration", reader, null);
+                        UnrecognizedAttribute error = new UnrecognizedAttribute("Unrecognized element " + localPart + " in system configuration",
+                                                                                location,
+                                                                                null);
+                        context.addError(error);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:

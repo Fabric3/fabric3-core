@@ -11,15 +11,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
-import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryConfigurationParser;
+import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -184,14 +186,18 @@ public class ConfigurationBuilder {
                             throw new InvalidConfigurationException("JMS provider not installed");
                         }
                         ConnectionFactoryConfigurationParser parser = parsers.values().iterator().next();
-                        ConnectionFactoryConfiguration configuration = parser.parse(reader);
+                        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+                        ConnectionFactoryConfiguration configuration = parser.parse(reader, context);
+                        checkErrors(context);
                         configurations.add(configuration);
                     } else if (name.startsWith("connection.factory") && !name.equals("connection.factory.templates")) {
                         ConnectionFactoryConfigurationParser parser = parsers.get(name);
                         if (parser == null) {
                             throw new InvalidConfigurationException("No JMS provider found for: " + name);
                         }
-                        ConnectionFactoryConfiguration configuration = parser.parse(reader);
+                        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+                        ConnectionFactoryConfiguration configuration = parser.parse(reader, context);
+                        checkErrors(context);
                         configurations.add(configuration);
                     }
 
@@ -199,6 +205,17 @@ public class ConfigurationBuilder {
                 case XMLStreamConstants.END_DOCUMENT:
                     return;
             }
+        }
+    }
+
+    private void checkErrors(DefaultIntrospectionContext context) throws InvalidConfigurationException {
+        if (context.hasErrors()) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("The following errors were found:\n");
+            for (ValidationFailure error : context.getErrors()) {
+                builder.append(error.getMessage()).append("\n");
+            }
+            throw new InvalidConfigurationException(builder.toString());
         }
     }
 
