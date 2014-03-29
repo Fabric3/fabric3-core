@@ -43,16 +43,15 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.destination;
 
-import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation that attempts to resolve a a destination via provider resolvers and, if it is not found, will create it.
@@ -66,7 +65,7 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
         Destination destination;
         for (DestinationResolver resolver : resolvers) {
             destination = resolver.resolve(definition);
@@ -74,7 +73,7 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
                 return destination;
             }
         }
-        return always.getDestination(definition, clientId, factory);
+        return always.getDestination(definition, factory);
     }
 
 }

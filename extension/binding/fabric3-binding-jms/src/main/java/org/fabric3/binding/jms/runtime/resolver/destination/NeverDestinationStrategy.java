@@ -43,16 +43,15 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.destination;
 
-import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation that always resolves a destination against JNDI and never attempts to create it.
@@ -65,7 +64,7 @@ public class NeverDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
         for (DestinationResolver resolver : resolvers) {
             Destination destination = resolver.resolve(definition);
             if (destination != null) {

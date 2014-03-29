@@ -59,8 +59,10 @@ import org.oasisopen.sca.annotation.Reference;
 public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreator {
     public static final String BROKER_URI = "broker.uri";
     private URI brokerUri;
+    private HostInfo info;
 
     public ActiveMQConnectionFactoryCreator(@Reference HostInfo info) {
+        this.info = info;
         String brokerName = info.getRuntimeName().replace(":", ".");
         brokerUri = URI.create("vm://" + brokerName);
     }
@@ -74,14 +76,16 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
                 xaFactory.setProperties(configuration.getFactoryProperties());
                 xaFactory.setUserName(configuration.getUsername());
                 xaFactory.setPassword(configuration.getPassword());
+                setClientId(configuration, xaFactory);
                 return xaFactory;
             default:
                 // default to local pooled
-                ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(getUri(configuration, properties));
-                wrapped.setProperties(configuration.getFactoryProperties());
-                wrapped.setUserName(configuration.getUsername());
-                wrapped.setPassword(configuration.getPassword());
-                return new PooledConnectionFactory(wrapped);
+                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(getUri(configuration, properties));
+                factory.setProperties(configuration.getFactoryProperties());
+                factory.setUserName(configuration.getUsername());
+                factory.setPassword(configuration.getPassword());
+                setClientId(configuration, factory);
+                return new PooledConnectionFactory(factory);
         }
     }
 
@@ -91,6 +95,18 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
             pooled.stop();
         }
 
+    }
+
+    private void setClientId(ConnectionFactoryConfiguration configuration, ActiveMQConnectionFactory factory) {
+        String clientId = configuration.getClientId();
+        if (clientId != null) {
+            if (ConnectionFactoryConfiguration.RUNTIME.equals(clientId)) {
+                // client id is set to the runtime name
+                factory.setClientID(info.getRuntimeName().replace(":", "."));
+            } else {
+                factory.setClientID(clientId);
+            }
+        }
     }
 
     private URI getUri(ConnectionFactoryConfiguration configuration, Map<String, String> properties) {

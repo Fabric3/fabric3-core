@@ -67,6 +67,18 @@ public class ConnectionFactoryResourceBuilder extends AbstractBuilder {
         return this;
     }
 
+    /**
+     * Sets the client id. The runtime name can be used via the <code>{runtime}</code> parameter.
+     *
+     * @param clientId the client id
+     * @return the builder
+     */
+    public ConnectionFactoryResourceBuilder clientId(String clientId) {
+        checkState();
+        definition.getConfiguration().setClientId(clientId);
+        return this;
+    }
+
     public ConnectionFactoryResourceBuilder attribute(String key, Object value) {
         checkState();
         definition.getConfiguration().addAttribute(key, value);

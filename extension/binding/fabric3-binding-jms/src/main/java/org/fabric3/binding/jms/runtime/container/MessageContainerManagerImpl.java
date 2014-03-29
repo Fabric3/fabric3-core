@@ -165,7 +165,6 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         }
         ConnectionFactory factory = configuration.getFactory();
         TransactionType type = configuration.getType();
-        String clientId = configuration.getClientId();
         boolean durable = configuration.isDurable();
         int cacheLevel = configuration.getCacheLevel();
         boolean cacheConnection = cacheLevel >= CACHE_CONNECTION;
@@ -174,7 +173,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         int receiveTimeout = (transactionTimeout / 2) * 500;
 
         ContainerStatistics statistics = new ContainerStatistics();
-        ConnectionManager connectionManager = new ConnectionManager(factory, uri, clientId, cacheConnection, durable, containerMonitor);
+        ConnectionManager connectionManager = new ConnectionManager(factory, uri, cacheConnection, durable, containerMonitor);
         UnitOfWork transactionHelper = new UnitOfWork(uri, type, transactionTimeout, tm, statistics);
         AdaptiveMessageContainer container = new AdaptiveMessageContainer(configuration,
                                                                           receiveTimeout,

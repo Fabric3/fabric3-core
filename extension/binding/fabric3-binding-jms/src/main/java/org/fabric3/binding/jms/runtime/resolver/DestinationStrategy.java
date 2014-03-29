@@ -58,11 +58,10 @@ public interface DestinationStrategy {
      * Gets the destination based on SCA JMS binding rules.
      *
      * @param definition Destination definition.
-     * @param clientId   the JMS client id or null if one is not set
      * @param factory    Connection factory.
      * @return Looked up or created destination.
      * @throws JmsResolutionException if there is an error looking up the destination
      */
-    Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException;
+    Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException;
 
 }

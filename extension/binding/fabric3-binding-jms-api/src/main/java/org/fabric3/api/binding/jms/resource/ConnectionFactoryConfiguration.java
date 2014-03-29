@@ -47,11 +47,15 @@ import java.util.Properties;
  */
 public class ConnectionFactoryConfiguration implements Serializable {
     private static final long serialVersionUID = 6041948376851715924L;
+
+    public static final String RUNTIME = "{runtime}";
+
     private String name;
+    private String provider;
     private ConnectionFactoryType type = ConnectionFactoryType.XA;
     private String username;
     private String password;
-    private String provider;
+    private String clientId;
 
     private Map<String, Object> attributes = new HashMap<>();
 
@@ -156,6 +160,24 @@ public class ConnectionFactoryConfiguration implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Returns the connection client id.
+     *
+     * @return the connection client id.
+     */
+    public String getClientId() {
+        return clientId;
+    }
+
+    /**
+     * Sets the connection client id.
+     *
+     * @param clientId the connection client id.
+     */
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     /**

@@ -37,10 +37,10 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
-import java.net.URI;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import java.net.URI;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 
@@ -50,7 +50,6 @@ import org.fabric3.binding.jms.runtime.common.JmsHelper;
 public class ConnectionManager {
     private URI listenerUri;
     private ConnectionFactory connectionFactory;
-    private String clientId;
     private boolean cacheConnection;
     private boolean durable;
 
@@ -64,21 +63,14 @@ public class ConnectionManager {
      *
      * @param connectionFactory the connection factory to use for creating JMS resources
      * @param listenerUri       the listener URI, typically a service or consumer
-     * @param clientId          the JMS client id
-     * @param cacheConnection   true if the JMS connection should be cached. Generally, this is false if the underlying JMS provider supports
-     *                          transparent caching.
+     * @param cacheConnection   true if the JMS connection should be cached. Generally, this is false if the underlying JMS provider supports transparent
+     *                          caching.
      * @param durable           true if the connection must be configured for durable messages
      * @param monitor           the monitor for reporting events and errors
      */
-    public ConnectionManager(ConnectionFactory connectionFactory,
-                             URI listenerUri,
-                             String clientId,
-                             boolean cacheConnection,
-                             boolean durable,
-                             MessageContainerMonitor monitor) {
+    public ConnectionManager(ConnectionFactory connectionFactory, URI listenerUri, boolean cacheConnection, boolean durable, MessageContainerMonitor monitor) {
         this.listenerUri = listenerUri;
         this.connectionFactory = connectionFactory;
-        this.clientId = clientId;
         this.cacheConnection = cacheConnection;
         this.durable = durable;
         this.monitor = monitor;
@@ -104,7 +96,6 @@ public class ConnectionManager {
                 // set TCCL since some JMS providers require it
                 Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
                 connection = connectionFactory.createConnection();
-                setClientId(connection);
                 connection.start();
                 return connection;
             } finally {
@@ -147,7 +138,6 @@ public class ConnectionManager {
             // set TCCL since some JMS providers require it
             Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
             connection = connectionFactory.createConnection();
-            setClientId(connection);
             return connection;
         } catch (JMSException ex) {
             JmsHelper.closeQuietly(connection);
@@ -225,18 +215,5 @@ public class ConnectionManager {
             sharedConnection.start();
         }
     }
-
-    /**
-     * Sets the client id if the connection is used for a durable subscription and the id has not yet been set.
-     *
-     * @param connection the connection
-     * @throws JMSException if there is an error setting the id
-     */
-    private void setClientId(Connection connection) throws JMSException {
-        if (durable && (connection.getClientID() == null || !connection.getClientID().equals(clientId))) {
-            connection.setClientID(clientId);
-        }
-    }
-
 
 }

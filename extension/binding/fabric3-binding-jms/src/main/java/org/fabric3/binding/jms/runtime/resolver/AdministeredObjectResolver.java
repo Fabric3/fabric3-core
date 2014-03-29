@@ -45,8 +45,8 @@ import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
- * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by
- * {@link ConnectionFactoryDefinition} or {@link DestinationDefinition}.
+ * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by {@link
+ * ConnectionFactoryDefinition} or {@link DestinationDefinition}.
  */
 public interface AdministeredObjectResolver {
 
@@ -60,7 +60,7 @@ public interface AdministeredObjectResolver {
     ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException;
 
     /**
-     * Resolves a destination for non-durable subscriptions.
+     * Resolves a destination.
      *
      * @param definition the destination definition
      * @param factory    the connection factory
@@ -68,17 +68,6 @@ public interface AdministeredObjectResolver {
      * @throws JmsResolutionException if there is an error during resolution
      */
     Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException;
-
-    /**
-     * Resolves a destination used for durable subscriptions.
-     *
-     * @param definition the destination definition
-     * @param clientId   the JMS client id
-     * @param factory    the connection factory
-     * @return the destination
-     * @throws JmsResolutionException if there is an error during resolution
-     */
-    Destination resolve(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException;
 
     /**
      * Signals that a connection factory is being released and resources can be disposed.

@@ -100,7 +100,7 @@ public class JmsBindingDefinitionBuilder extends AbstractBuilder {
         return this;
     }
 
-    public JmsBindingDefinitionBuilder clientId(String id) {
+    public JmsBindingDefinitionBuilder subscriptionId(String id) {
         checkState();
         binding.getJmsMetadata().setClientIdSpecifier(id);
         return this;

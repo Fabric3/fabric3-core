@@ -37,17 +37,16 @@
 */
 package org.fabric3.binding.jms.runtime.resolver;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -55,7 +54,6 @@ import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 public class AdministeredObjectResolverImpl implements AdministeredObjectResolver {
     private Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies = new HashMap<>();
     private Map<CreateOption, DestinationStrategy> destinationStrategies = new HashMap<>();
-
 
     public AdministeredObjectResolverImpl(@Reference Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies,
                                           @Reference Map<CreateOption, DestinationStrategy> destinationStrategies) {
@@ -70,16 +68,12 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
     }
 
     public Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
-        return resolve(definition, null, factory);
-    }
-
-    public Destination resolve(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
         CreateOption create = definition.getCreate();
         DestinationStrategy strategy = destinationStrategies.get(create);
         if (strategy == null) {
             throw new AssertionError("DestinationStrategy not configured: " + create);
         }
-        return strategy.getDestination(definition, clientId, factory);
+        return strategy.getDestination(definition, factory);
     }
 
     public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {

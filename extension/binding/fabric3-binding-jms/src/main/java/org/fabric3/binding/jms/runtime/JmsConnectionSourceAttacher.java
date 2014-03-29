@@ -53,7 +53,6 @@ import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
@@ -82,17 +81,14 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     private ClassLoaderRegistry classLoaderRegistry;
     private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
-    private HostInfo info;
 
     public JmsConnectionSourceAttacher(@Reference AdministeredObjectResolver resolver,
                                        @Reference ClassLoaderRegistry classLoaderRegistry,
                                        @Reference MessageContainerManager containerManager,
-                                       @Reference HostInfo info,
                                        @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
         this.containerManager = containerManager;
-        this.info = info;
         this.monitor = monitor;
     }
 
@@ -102,9 +98,8 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
         JmsBindingMetadata metadata = source.getMetadata();
-        String clientId = info.getDomain().getAuthority() + ":" + info.getRuntimeName() + ":" + metadata.getClientIdSpecifier();
 
-        ResolvedObjects objects = resolveAdministeredObjects(source, clientId);
+        ResolvedObjects objects = resolveAdministeredObjects(source);
 
         ContainerConfiguration configuration = new ContainerConfiguration();
         try {
@@ -112,7 +107,6 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             Destination destination = objects.getRequestDestination();
             EventStream stream = connection.getEventStream();
             EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
-            configuration.setClientId(clientId);
             configuration.setDestinationType(metadata.getDestination().geType());
             configuration.setDestination(destination);
             configuration.setFactory(connectionFactory);
@@ -159,17 +153,12 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source, String clientId) throws ContainerException {
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
         ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
         ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
         DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-        Destination requestDestination;
-        if (metadata.isDurable()) {
-            requestDestination = resolver.resolve(requestDestinationDefinition, clientId, requestConnectionFactory);
-        } else {
-            requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
-        }
+        Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
         return new ResolvedObjects(requestConnectionFactory, requestDestination);
     }
 

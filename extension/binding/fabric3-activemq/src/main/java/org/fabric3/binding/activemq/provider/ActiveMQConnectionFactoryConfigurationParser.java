@@ -47,7 +47,6 @@ import java.net.URISyntaxException;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
-import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -74,6 +73,9 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
             context.addError(error);
         }
         ConnectionFactoryConfiguration configuration = new ConnectionFactoryConfiguration(name, "activemq");
+
+        String clientId = reader.getAttributeValue(null, "client.id");
+        configuration.setClientId(clientId);
 
         String username = reader.getAttributeValue(null, "username");
         configuration.setUsername(username);
@@ -134,21 +136,5 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         }
     }
 
-    private void invalidConfiguration(String message, XMLStreamReader reader, Exception e) throws InvalidConfigurationException {
-        Location location = reader.getLocation();
-        if (location == null) {
-            // runtime has no external config file
-            if (e != null) {
-                throw new InvalidConfigurationException(message, e);
-            }
-            throw new InvalidConfigurationException(message);
-        }
-        int line = location.getLineNumber();
-        int col = location.getColumnNumber();
-        if (e != null) {
-            throw new InvalidConfigurationException(message + " [" + line + "," + col + "]", e);
-        }
-        throw new InvalidConfigurationException(message + " [" + line + "," + col + "]");
-    }
 
 }

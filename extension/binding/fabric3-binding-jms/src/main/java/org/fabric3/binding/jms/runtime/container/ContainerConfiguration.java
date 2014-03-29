@@ -37,11 +37,11 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
-import java.net.URI;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.MessageListener;
+import java.net.URI;
 
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.TransactionType;
@@ -71,7 +71,6 @@ public class ContainerConfiguration {
     private long recoveryInterval = 5000;   // default 5 seconds
     private boolean durable;
     private boolean localDelivery;
-    private String clientId;
     private DestinationType destinationType;
 
     public URI getUri() {
@@ -228,11 +227,4 @@ public class ContainerConfiguration {
         this.localDelivery = localDelivery;
     }
 
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
 }
