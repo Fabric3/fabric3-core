@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.binding.jms.model.ActivationSpec;
-import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
@@ -67,8 +66,8 @@ import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.domain.generator.GenerationException;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
+import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -106,17 +105,17 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
     }
 
     public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding,
-                                              ServiceContract contract,
-                                              List<LogicalOperation> operations,
-                                              EffectivePolicy policy) throws GenerationException {
+                                                  ServiceContract contract,
+                                                  List<LogicalOperation> operations,
+                                                  EffectivePolicy policy) throws GenerationException {
 
         TransactionType transactionType = getTransactionType(operations, policy);
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
-        // set the client id specifier
-        String specifier = JmsGeneratorHelper.getSourceSpecifier(binding.getParent().getUri());
-        metadata.setClientIdSpecifier(specifier);
-
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), transactionType);
+        if (metadata.getResponseConnectionFactory() != null) {
+            JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), transactionType);
+        }
         processServiceResponse(metadata, contract);
 
         generateIntents(binding, metadata);
@@ -135,21 +134,26 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             provisioner.generateSource(definition);
         }
 
-        setDefaultFactoryConfigurations(metadata, transactionType, specifier);
         processDestinationDefinitions(metadata, false);
 
         return definition;
     }
 
     public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding,
-                                              ServiceContract contract,
-                                              List<LogicalOperation> operations,
-                                              EffectivePolicy policy) throws GenerationException {
+                                                  ServiceContract contract,
+                                                  List<LogicalOperation> operations,
+                                                  EffectivePolicy policy) throws GenerationException {
 
         TransactionType transactionType = getTransactionType(operations, policy);
 
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
+
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), transactionType);
+        if (metadata.getResponseConnectionFactory() != null) {
+            JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), transactionType);
+        }
+
         processReferenceResponse(metadata, contract);
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
@@ -165,8 +169,6 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             provisioner.generateTarget(definition);
         }
 
-        String specifier = JmsGeneratorHelper.getTargetSpecifier(binding.getParent().getUri());
-        setDefaultFactoryConfigurations(metadata, transactionType, specifier);
         processDestinationDefinitions(metadata, true);
 
         if (contract.getCallbackContract() != null) {
@@ -182,9 +184,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
     }
 
     public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> binding,
-                                                            ServiceContract contract,
-                                                            List<LogicalOperation> operations,
-                                                            EffectivePolicy policy) throws GenerationException {
+                                                                ServiceContract contract,
+                                                                List<LogicalOperation> operations,
+                                                                EffectivePolicy policy) throws GenerationException {
         return generateTarget(binding, contract, operations, policy);
     }
 
@@ -308,17 +310,6 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             types.add(payloadType);
         }
         return types;
-    }
-
-    private void setDefaultFactoryConfigurations(JmsBindingMetadata metadata, TransactionType trxType, String specifier) {
-        // create the connection factory name if one not explicitly given
-        ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, trxType);
-
-        ConnectionFactoryDefinition responseFactory = metadata.getResponseConnectionFactory();
-        if (responseFactory != null) {
-            JmsGeneratorHelper.generateDefaultFactoryConfiguration(responseFactory, specifier + "Response", trxType);
-        }
     }
 
     private void processDestinationDefinitions(JmsBindingMetadata metadata, boolean reference) throws JmsGenerationException {

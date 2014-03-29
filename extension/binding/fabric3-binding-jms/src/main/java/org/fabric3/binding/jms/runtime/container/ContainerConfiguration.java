@@ -72,6 +72,7 @@ public class ContainerConfiguration {
     private boolean durable;
     private boolean localDelivery;
     private DestinationType destinationType;
+    private String subscriptionId;
 
     public URI getUri() {
         return uri;
@@ -227,4 +228,11 @@ public class ContainerConfiguration {
         this.localDelivery = localDelivery;
     }
 
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
 }

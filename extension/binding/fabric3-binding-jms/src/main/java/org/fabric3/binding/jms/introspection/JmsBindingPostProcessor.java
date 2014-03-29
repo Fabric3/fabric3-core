@@ -132,7 +132,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         metadata.setDestination(destination);
 
         metadata.setCacheLevel(configuration.cacheLevel());
-        metadata.setClientIdSpecifier(getNullibleValue(configuration.clientIdSpecifier()));
+        metadata.setSubscriptionId(getNullibleValue(configuration.subscriptionId()));
         metadata.setCorrelationScheme(configuration.correlation());
         metadata.setDurable(configuration.durable());
         metadata.setIdleLimit(configuration.idleLimit());

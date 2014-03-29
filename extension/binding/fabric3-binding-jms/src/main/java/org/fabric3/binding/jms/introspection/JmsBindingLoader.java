@@ -124,7 +124,6 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                       "destination",
                       "connectionFactory",
                       "messageSelection",
-                      "connectionFactory.template",
                       "type",
                       "timeToLive",
                       "resourceAdapter",
@@ -271,11 +270,6 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         } else if (cacheLevel != null) {
             InvalidValue error = new InvalidValue("Invalid cache level attribute", startLocation);
             context.addError(error);
-        }
-
-        String templateName = reader.getAttributeValue(null, "connectionFactory.template");
-        if (templateName != null) {
-            metadata.getConnectionFactory().setTemplateName(templateName);
         }
 
         String idleLimit = reader.getAttributeValue(null, "idle.limit");

@@ -102,19 +102,13 @@ public class JmsBindingDefinitionBuilder extends AbstractBuilder {
 
     public JmsBindingDefinitionBuilder subscriptionId(String id) {
         checkState();
-        binding.getJmsMetadata().setClientIdSpecifier(id);
+        binding.getJmsMetadata().setSubscriptionId(id);
         return this;
     }
 
     public JmsBindingDefinitionBuilder connectionFactoryName(String name) {
         checkState();
         binding.getJmsMetadata().getConnectionFactory().setName(name);
-        return this;
-    }
-
-    public JmsBindingDefinitionBuilder connectionFactoryTemplate(String name) {
-        checkState();
-        binding.getJmsMetadata().getConnectionFactory().setTemplateName(name);
         return this;
     }
 

@@ -43,32 +43,28 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
-import java.util.List;
 import javax.jms.ConnectionFactory;
+import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Implementation that attempts to resolve a connection by searching the {@link }ConnectionFactoryManager}, {@link ConnectionFactoryResolver},
- * JNDI and then, if not found, creating it.
+ * Implementation that attempts to resolve a connection by searching the {@link }ConnectionFactoryManager}, {@link ConnectionFactoryResolver}, JNDI and then, if
+ * not found, creating it.
  */
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private AlwaysConnectionFactoryStrategy always;
     private ConnectionFactoryManager manager;
     private List<ConnectionFactoryResolver> resolvers;
 
-    public IfNotExistConnectionFactoryStrategy(@Reference ConnectionFactoryTemplateRegistry registry,
-                                               @Reference ConnectionFactoryCreatorRegistry creatorRegistry,
-                                               @Reference ConnectionFactoryManager manager) {
-        this.always = new AlwaysConnectionFactoryStrategy(registry, creatorRegistry, manager);
+    public IfNotExistConnectionFactoryStrategy(@Reference ConnectionFactoryCreatorRegistry creatorRegistry, @Reference ConnectionFactoryManager manager) {
+        this.always = new AlwaysConnectionFactoryStrategy(creatorRegistry, manager);
         this.manager = manager;
     }
 
@@ -77,8 +73,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
         this.resolvers = resolvers;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition)
-            throws JmsResolutionException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
         String name = definition.getName();
         if (name != null) {
             // check if the connection factory has already been created

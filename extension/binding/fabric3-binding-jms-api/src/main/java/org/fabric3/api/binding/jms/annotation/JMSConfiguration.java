@@ -185,10 +185,10 @@ public @interface JMSConfiguration {
     public boolean localDelivery() default false;
 
     /**
-     * Specifies the client identifier for subscriptions.
+     * Specifies the subscription id for durable messaging.
      *
-     * @return the client identifier
+     * @return the subscription id
      */
-    public String clientIdSpecifier() default "";
+    public String subscriptionId() default "";
 
 }

@@ -73,11 +73,6 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.jndi.JndiClassLoaderUpdater"/>
     </component>
 
-
-    <component name="ConnectionFactoryTemplateRegistry">
-        <f3:implementation.system class="org.fabric3.binding.jms.runtime.connection.ConnectionFactoryTemplateRegistryImpl"/>
-    </component>
-
     <component name="ConnectionFactoryCreatorRegistry">
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.connection.ConnectionFactoryCreatorRegistryImpl"/>
     </component>
@@ -86,7 +81,6 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.connection.ConfigurationBuilder"/>
         <property name="defaultProvider" source="$systemConfig//f3:jms/@default.provider"/>
         <property name="connectionFactories" source="$systemConfig//f3:jms/f3:connection.factories"/>
-        <property name="connectionFactoryTemplates" source="$systemConfig//f3:jms/f3:connection.factory.templates"/>
     </component>
 
     <component name="JmsChannelBindingBuilder" f3:key="org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition">

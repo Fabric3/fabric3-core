@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
+import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.api.host.failure.ValidationFailure;
+import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
-import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
-import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -31,7 +30,7 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_CONN
 import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
 /**
- * Creates connection factories and templates configured in the runtime system configuration in the form of:
+ * Creates connection factories configured in the runtime system configuration in the form of:
  * <pre>
  * &lt;jms&gt;
  *    &lt;connection.factories&gt;
@@ -39,11 +38,6 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_C
  *       ...
  *       &lt;/connection.factory.activemq&gt;
  *    &lt;/connection.factories&gt;
- *    &lt;connection.factory.templates&gt;
- *       &lt;connection.factory.activemq name='testFactory' broker.url='...' type='xa'&gt;
- *       ...
- *       &lt;/connection.factory.activemq&gt;
- *    &lt;/connection.factory.templates&gt;
  * &lt;/jms&gt;
  * </pre>
  * <p/>
@@ -52,7 +46,6 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_C
  */
 @EagerInit
 public class ConfigurationBuilder {
-    private ConnectionFactoryTemplateRegistry templateRegistry;
     private ConnectionFactoryCreatorRegistry creatorRegistry;
     private ConnectionFactoryManager manager;
 
@@ -62,14 +55,10 @@ public class ConfigurationBuilder {
     private Map<String, DefaultConnectionFactoryBuilder> defaultBuilders = Collections.emptyMap();
 
     private List<ConnectionFactoryConfiguration> factoryConfigurations = new ArrayList<>();
-    private List<ConnectionFactoryConfiguration> templateConfigurations = new ArrayList<>();
 
     private List<ConnectionFactory> factories = new ArrayList<>();
 
-    public ConfigurationBuilder(@Reference ConnectionFactoryTemplateRegistry templateRegistry,
-                                @Reference ConnectionFactoryCreatorRegistry creatorRegistry,
-                                @Reference ConnectionFactoryManager manager) {
-        this.templateRegistry = templateRegistry;
+    public ConfigurationBuilder(@Reference ConnectionFactoryCreatorRegistry creatorRegistry, @Reference ConnectionFactoryManager manager) {
         this.creatorRegistry = creatorRegistry;
         this.manager = manager;
     }
@@ -95,19 +84,8 @@ public class ConfigurationBuilder {
         parseConfigurations(factoryConfigurations, reader);
     }
 
-    @Property(required = false)
-    public void setConnectionFactoryTemplates(XMLStreamReader reader) throws XMLStreamException, InvalidConfigurationException {
-        templateConfigurations.clear();
-        parseConfigurations(templateConfigurations, reader);
-    }
-
     @Init
     public void init() throws FactoryRegistrationException, ConnectionFactoryCreationException {
-        // register templates
-        for (ConnectionFactoryConfiguration configuration : templateConfigurations) {
-            templateRegistry.registerTemplate(configuration);
-        }
-
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             ConnectionFactory factory = creatorRegistry.create(configuration, Collections.<String, String>emptyMap());
@@ -128,14 +106,6 @@ public class ConfigurationBuilder {
             }
             ConnectionFactoryConfiguration localConfig = builder.createDefaultFactory(DEFAULT_CONNECTION_FACTORY, ConnectionFactoryType.LOCAL);
             ConnectionFactoryConfiguration xaConfig = builder.createDefaultFactory(DEFAULT_XA_CONNECTION_FACTORY, ConnectionFactoryType.XA);
-
-            // check if default templates registered
-            if (templateRegistry.getTemplate(DEFAULT_CONNECTION_FACTORY) == null) {
-                templateRegistry.registerTemplate(localConfig);
-            }
-            if (templateRegistry.getTemplate(DEFAULT_XA_CONNECTION_FACTORY) == null) {
-                templateRegistry.registerTemplate(xaConfig);
-            }
 
             if (manager.get(DEFAULT_CONNECTION_FACTORY) == null) {
                 // default connection factory was not configured, create one
@@ -185,16 +155,17 @@ public class ConfigurationBuilder {
                         if (parsers.isEmpty()) {
                             throw new InvalidConfigurationException("JMS provider not installed");
                         }
-                        ConnectionFactoryConfigurationParser parser = parsers.values().iterator().next();
-                        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-                        ConnectionFactoryConfiguration configuration = parser.parse(reader, context);
-                        checkErrors(context);
-                        configurations.add(configuration);
-                    } else if (name.startsWith("connection.factory") && !name.equals("connection.factory.templates")) {
-                        ConnectionFactoryConfigurationParser parser = parsers.get(name);
-                        if (parser == null) {
-                            throw new InvalidConfigurationException("No JMS provider found for: " + name);
+                        String provider = reader.getAttributeValue(null, "provider");
+                        ConnectionFactoryConfigurationParser parser;
+                        if (provider == null) {
+                            parser = parsers.values().iterator().next();
+                        } else {
+                            parser = parsers.get(provider);
+                            if (parser == null) {
+                                throw new InvalidConfigurationException("JMS provider not installed: " + provider);
+                            }
                         }
+
                         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
                         ConnectionFactoryConfiguration configuration = parser.parse(reader, context);
                         checkErrors(context);

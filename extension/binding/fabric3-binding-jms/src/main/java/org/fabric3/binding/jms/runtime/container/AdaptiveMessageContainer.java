@@ -92,7 +92,7 @@ public class AdaptiveMessageContainer {
     private int idleLimit;
     private int maxMessagesToProcess;
     private long recoveryInterval;
-    private String subscriptionName;
+    private String subscriptionId;
     private boolean localDelivery;
     private String messageSelector;
 
@@ -142,7 +142,7 @@ public class AdaptiveMessageContainer {
         messageListener = configuration.getMessageListener();
         exceptionListener = configuration.getExceptionListener();
         messageSelector = configuration.getMessageSelector();
-
+        subscriptionId = configuration.getSubscriptionId();
         setReceiveTimeout(receiveTimeout);
         setMaxMessagesToProcess(configuration.getMaxMessagesToProcess());
         setMaxReceivers(configuration.getMaxReceivers());
@@ -368,8 +368,8 @@ public class AdaptiveMessageContainer {
      * @return the name of the durable subscription or null if none is set
      */
     @ManagementOperation(description = "The durable topic subscription name")
-    public String getSubscriptionName() {
-        return subscriptionName;
+    public String getSubscriptionId() {
+        return subscriptionId;
     }
 
     @ManagementOperation(description = "The transaction type")
@@ -482,9 +482,6 @@ public class AdaptiveMessageContainer {
      * @throws JMSException if an initialization error occurs
      */
     public void initialize() throws JMSException {
-        if (isDurable()) {
-            subscriptionName = "listenerSubscription";
-        }
         try {
             synchronized (syncMonitor) {
                 initialized = true;
@@ -668,7 +665,7 @@ public class AdaptiveMessageContainer {
     private MessageConsumer createConsumer(Session session) throws JMSException {
         if (DestinationType.TOPIC == destinationType) {
             if (isDurable()) {
-                return session.createDurableSubscriber((Topic) destination, subscriptionName, messageSelector, localDelivery);
+                return session.createDurableSubscriber((Topic) destination, subscriptionId, messageSelector, localDelivery);
             } else {
                 return session.createConsumer(destination, messageSelector, localDelivery);
             }
@@ -908,7 +905,7 @@ public class AdaptiveMessageContainer {
             synchronized (connectionManager) {
                 if (isDurable() && session != null) {
                     try {
-                        session.unsubscribe(subscriptionName);
+                        session.unsubscribe(subscriptionId);
                     } catch (JMSException e) {
                         monitor.listenerError(listenerUri.toString(), e);
                     }

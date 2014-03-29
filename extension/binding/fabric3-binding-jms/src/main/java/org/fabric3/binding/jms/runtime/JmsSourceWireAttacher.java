@@ -172,7 +172,6 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         //        configuration.setDeliveryMode();
         //        configuration.setDurableSubscriptionName();
         //        configuration.setExceptionListener();
-        //        configuration.setClientId();
         //        configuration.setLocalDelivery();
     }
 

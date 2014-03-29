@@ -48,25 +48,6 @@ package org.fabric3.api.binding.jms.model;
  */
 public class ConnectionFactoryDefinition extends AdministeredObjectDefinition {
     private static final long serialVersionUID = -1167106940062628310L;
-    private String templateName;
-
-    /**
-     * Returns the JMS connection factory template name to use when configuring the connection factory.
-     *
-     * @return the JMS connection factory template or null
-     */
-    public String getTemplateName() {
-        return templateName;
-    }
-
-    /**
-     * Sets the JMS connection factory template name to use when configuring the connection factory.
-     *
-     * @param name the template name
-     */
-    public void setTemplateName(String name) {
-        this.templateName = name;
-    }
 
     /**
      * Returns true if the definition has been configured in the binding entry.
@@ -74,6 +55,6 @@ public class ConnectionFactoryDefinition extends AdministeredObjectDefinition {
      * @return true if the definition has been configured in the binding entry
      */
     public boolean isConfigured() {
-        return templateName != null || getName() != null;
+        return getName() != null;
     }
 }

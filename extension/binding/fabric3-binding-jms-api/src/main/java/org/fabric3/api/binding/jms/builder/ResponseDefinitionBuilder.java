@@ -91,12 +91,6 @@ public class ResponseDefinitionBuilder extends AbstractBuilder {
         return this;
     }
 
-    public ResponseDefinitionBuilder connectionFactoryTemplate(String name) {
-        checkState();
-        responseDefinition.getConnectionFactory().setTemplateName(name);
-        return this;
-    }
-
     public ResponseDefinitionBuilder connectionFactoryCreate(CreateOption option) {
         checkState();
         responseDefinition.getConnectionFactory().setCreate(option);

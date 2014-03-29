@@ -53,12 +53,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
+import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
@@ -69,14 +66,10 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryCreatorRegistry creatorRegistry;
-    private ConnectionFactoryTemplateRegistry registry;
     private ConnectionFactoryManager manager;
     private Set<String> created = new HashSet<>();
 
-    public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryTemplateRegistry registry,
-                                           @Reference ConnectionFactoryCreatorRegistry creatorRegistry,
-                                           @Reference ConnectionFactoryManager manager) {
-        this.registry = registry;
+    public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryCreatorRegistry creatorRegistry, @Reference ConnectionFactoryManager manager) {
         this.creatorRegistry = creatorRegistry;
         this.manager = manager;
     }
@@ -85,27 +78,11 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
         try {
             Map<String, String> properties = definition.getProperties();
             String className = properties.get("class");
-            ConnectionFactory factory;
+            ConnectionFactory factory = instantiate(className, properties);
             String name = definition.getName();
-            String templateName = definition.getTemplateName();
-            if (className == null) {
-                if (creatorRegistry == null) {
-                    throw new JmsResolutionException("A connection factory class was not specified for: " + name);
-                }
-                if (templateName == null) {
-                    throw new JmsResolutionException("A connection factory template must be specified");
-                }
-                ConnectionFactoryConfiguration configuration = registry.getTemplate(templateName);
-                if (configuration == null) {
-                    throw new JmsResolutionException("Connection Factory template not found: " + templateName);
-                }
-                factory = creatorRegistry.create(configuration, properties);
-            } else {
-                factory = instantiate(className, properties);
-            }
             created.add(name);
             return manager.register(name, factory);
-        } catch (ConnectionFactoryCreationException | FactoryRegistrationException e) {
+        } catch (FactoryRegistrationException e) {
             throw new JmsResolutionException(e);
         }
     }

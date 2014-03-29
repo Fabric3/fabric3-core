@@ -39,12 +39,15 @@ package org.fabric3.binding.jms.introspection;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.Collections;
+import java.util.Map;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -58,13 +61,26 @@ import org.oasisopen.sca.annotation.Reference;
 public class ConnectionFactoryResourceLoader implements TypeLoader<ConnectionFactoryResource> {
 
     @Reference(required = false)
-    protected ConnectionFactoryConfigurationParser parser;
+    protected Map<String, ConnectionFactoryConfigurationParser> parsers = Collections.emptyMap();
 
     public ConnectionFactoryResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        if (parser == null) {
+        if (parsers.isEmpty()) {
             // skip the resource
             return null;
         }
+        String provider = reader.getAttributeValue(null, "provider");
+        ConnectionFactoryConfigurationParser parser;
+        if (provider == null) {
+            parser = parsers.values().iterator().next();
+        } else {
+            parser = parsers.get(provider);
+            if (parser == null) {
+                UnrecognizedAttribute error = new UnrecognizedAttribute("JMS provider not installed: " + provider, reader.getLocation(), null);
+                context.addError(error);
+                return null;
+            }
+        }
+
         ConnectionFactoryConfiguration configuration = parser.parse(reader, context);
         return new ConnectionFactoryResource(configuration);
     }

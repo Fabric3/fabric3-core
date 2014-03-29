@@ -46,7 +46,6 @@ package org.fabric3.binding.jms.generator;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
@@ -92,18 +91,18 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
                                                                        LogicalBinding<JmsBindingDefinition> binding,
                                                                        ChannelDeliveryType deliveryType) throws GenerationException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
+
+        generateIntents(binding, metadata);
+
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), TransactionType.NONE);
         URI uri = consumer.getUri();
 
         // set the client id specifier
-        if (metadata.getClientIdSpecifier() == null) {
-            metadata.setClientIdSpecifier(JmsGeneratorHelper.getSourceSpecifier(uri));
+        if (metadata.getSubscriptionId() == null && metadata.isDurable()) {
+            metadata.setSubscriptionId(JmsGeneratorHelper.getSubscriptionId(uri));
         }
-        String specifier = metadata.getClientIdSpecifier();
-        metadata.setClientIdSpecifier(specifier);
-        ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);  // TODO support transactions
-
-        generateIntents(binding, metadata);
+        String specifier = metadata.getSubscriptionId();
+        metadata.setSubscriptionId(specifier);
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
         DataType type = isJAXB(consumer.getDefinition().getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
@@ -120,11 +119,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
-        String specifier = JmsGeneratorHelper.getTargetSpecifier(producer.getUri());
-        ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);   // TODO support transactions
-
         generateIntents(binding, metadata);
+
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), TransactionType.NONE);
 
         DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
 

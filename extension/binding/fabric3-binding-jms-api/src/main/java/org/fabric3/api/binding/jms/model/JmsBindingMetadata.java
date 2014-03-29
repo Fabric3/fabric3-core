@@ -80,7 +80,7 @@ public class JmsBindingMetadata extends ModelObject {
     private long recoveryInterval = 5000;   // default 5 seconds
     private boolean durable = false;
     private boolean localDelivery;
-    private String clientIdSpecifier;
+    private String subscriptionId;
 
     public ConnectionFactoryDefinition getConnectionFactory() {
         return connectionFactory;
@@ -260,12 +260,12 @@ public class JmsBindingMetadata extends ModelObject {
         this.localDelivery = localDelivery;
     }
 
-    public String getClientIdSpecifier() {
-        return clientIdSpecifier;
+    public String getSubscriptionId() {
+        return subscriptionId;
     }
 
-    public void setClientIdSpecifier(String specifier) {
-        this.clientIdSpecifier = specifier;
+    public void setSubscriptionId(String id) {
+        this.subscriptionId = id;
     }
 
     public JmsBindingMetadata snapshot() {
@@ -276,9 +276,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.messageSelection = this.messageSelection;
         copy.connectionFactory.setCreate(this.connectionFactory.getCreate());
         copy.connectionFactory.setName(this.connectionFactory.getName());
-        copy.connectionFactory.setTemplateName(this.connectionFactory.getTemplateName());
-        copy.connectionFactory.addProperties(this.connectionFactory.getProperties()
-        );
+        copy.connectionFactory.addProperties(this.connectionFactory.getProperties());
         copy.response = this.response;
 
         copy.headers.setDeliveryMode(this.headers.getDeliveryMode());
@@ -308,7 +306,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.recoveryInterval = this.recoveryInterval;
         copy.durable = this.durable;
         copy.localDelivery = this.localDelivery;
-        copy.clientIdSpecifier = this.clientIdSpecifier;
+        copy.subscriptionId = this.subscriptionId;
         copy.activationSpec = this.activationSpec;
         return copy;
     }

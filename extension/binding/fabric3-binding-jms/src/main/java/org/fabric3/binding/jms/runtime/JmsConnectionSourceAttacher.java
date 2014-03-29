@@ -146,7 +146,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         configuration.setMaxReceivers(metadata.getMaxReceivers());
         configuration.setMinReceivers(metadata.getMinReceivers());
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
-
+        configuration.setSubscriptionId(metadata.getSubscriptionId());
         configuration.setDurable(metadata.isDurable());
         //        configuration.setDeliveryMode();
         //        configuration.setExceptionListener();

@@ -47,14 +47,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.TransactionType;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
-
-import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY;
-import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY;
+import org.fabric3.binding.jms.common.JmsConnectionConstants;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**
  * Contains helper functions used during generation.
@@ -62,45 +60,33 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_C
 public class JmsGeneratorHelper {
 
     /**
-     * Converts a URI to a JMS specifier that can be used for creating client id or connection factory name for the source side of a wire or channel
-     * connection. Hierarchical URIs are converted to dot notation by replacing '/' with '.'.
+     * Converts a URI to a JMS subscription id format. Hierarchical URIs are converted to dot notation by replacing '/' with '.'.
      *
      * @param uri the URI
      * @return the specifier
      */
-    public static String getSourceSpecifier(URI uri) {
-        return getSpecifier(uri) + "Source";
+    public static String getSubscriptionId(URI uri) {
+        String id = uri.getPath().substring(1).replace("/", ".");
+        String fragment = uri.getFragment();
+        if (fragment != null) {
+            id = id + "." + fragment;
+        }
+        return id;
     }
 
     /**
-     * Converts a URI to a JMS specifier that can be used for creating client id or connection factory name for the target side of a wire or channel
-     * connection. Hierarchical URIs are converted to dot notation by replacing '/' with '.'.
+     * Generates a default connection factory configuration if a factory or class name is not configured.
      *
-     * @param uri the URI
-     * @return the specifier
+     * @param factory the connection factory definition to configure
+     * @param trxType the transaction type
      */
-    public static String getTargetSpecifier(URI uri) {
-        return getSpecifier(uri) + "Target";
-    }
-
-
-    /**
-     * Generates a default connection factory configuration.
-     *
-     * @param factory   the connection factory definition to configure
-     * @param specifier the factory specifier used to generate a unique name
-     * @param trxType   the transaction type
-     */
-    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, String specifier, TransactionType trxType) {
-        if (factory.getName() == null && factory.getTemplateName() == null) {
-            factory.setName(specifier);
+    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, TransactionType trxType) {
+        if (factory.getName() == null && !factory.getProperties().containsKey("class")) {
             if (TransactionType.GLOBAL == trxType) {
-                factory.setTemplateName(DEFAULT_XA_CONNECTION_FACTORY);
+                factory.setName(JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY);
             } else {
-                factory.setTemplateName(DEFAULT_CONNECTION_FACTORY);
+                factory.setName(JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY);
             }
-        } else if (factory.getTemplateName() != null) {
-            factory.setName(specifier);
         }
     }
 
@@ -113,16 +99,6 @@ public class JmsGeneratorHelper {
         }
         return handlers;
     }
-
-    private static String getSpecifier(URI uri) {
-        String specifier = uri.getPath().substring(1).replace("/", ".");
-        String fragment = uri.getFragment();
-        if (fragment != null) {
-            specifier = specifier + "." + fragment;
-        }
-        return specifier;
-    }
-
 
     private JmsGeneratorHelper() {
     }
