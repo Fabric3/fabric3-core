@@ -37,25 +37,15 @@
 */
 package org.fabric3.binding.jms.spi.runtime.manager;
 
-import java.util.Map;
 import javax.jms.ConnectionFactory;
+import java.util.Map;
 
 /**
- * Manages JMS connection factories. Implementations are responsible for registering connection factories provided by a JMS provider with the runtime
- * JTA transaction manager in a way specific to the latter. For example, a ConnectionFactoryManager may implement JMS connection and session pooling
- * specific to the transaction manager.
+ * Manages JMS connection factories. Implementations are responsible for registering connection factories provided by a JMS provider with the runtime JTA
+ * transaction manager in a way specific to the latter. For example, a ConnectionFactoryManager may implement JMS connection and session pooling specific to the
+ * transaction manager.
  */
 public interface ConnectionFactoryManager {
-
-    /**
-     * Registers a connection factory.
-     *
-     * @param name    the connection factory name
-     * @param factory the connection factory
-     * @return the registered connection factory, which may be a wrapper
-     * @throws FactoryRegistrationException if there is an error registering
-     */
-    ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException;
 
     /**
      * Registers a connection factory.

@@ -43,18 +43,16 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
-import java.util.Collections;
-import java.util.List;
 import javax.jms.ConnectionFactory;
+import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, and then JNDI.
@@ -88,7 +86,7 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
                     break;
                 }
             }
-            return manager.register(name, factory, Collections.<String, String>emptyMap());
+            return manager.register(name, factory, definition.getProperties());
         } catch (FactoryRegistrationException e) {
             throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         }

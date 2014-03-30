@@ -38,6 +38,9 @@
 package org.fabric3.binding.jms.builder;
 
 import javax.jms.ConnectionFactory;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
@@ -64,11 +67,22 @@ public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnect
     public void build(PhysicalConnectionFactoryResource definition) throws ContainerException {
         ConnectionFactoryConfiguration configuration = definition.getConfiguration();
         ConnectionFactory factory = registry.create(configuration);
-        manager.register(configuration.getName(), factory);
+        String name = configuration.getName();
+        Map<String, String> factoryProperties = getProperties(configuration);
+        manager.register(name, factory, factoryProperties);
     }
 
     public void remove(PhysicalConnectionFactoryResource definition) throws ContainerException {
         ConnectionFactory factory = manager.unregister(definition.getConfiguration().getName());
         registry.release(factory);
+    }
+
+    private Map<String, String> getProperties(ConnectionFactoryConfiguration configuration) {
+        Properties properties = configuration.getFactoryProperties();
+        Map<String, String> factoryProperties = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            factoryProperties.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return factoryProperties;
     }
 }

@@ -6,9 +6,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
@@ -89,7 +91,7 @@ public class ConfigurationBuilder {
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             ConnectionFactory factory = creatorRegistry.create(configuration);
-            manager.register(configuration.getName(), factory);
+            manager.register(configuration.getName(), factory, getProperties(configuration));
             factories.add(factory);
         }
 
@@ -110,13 +112,13 @@ public class ConfigurationBuilder {
             if (manager.get(DEFAULT_CONNECTION_FACTORY) == null) {
                 // default connection factory was not configured, create one
                 ConnectionFactory factory = creatorRegistry.create(localConfig);
-                manager.register(DEFAULT_CONNECTION_FACTORY, factory);
+                manager.register(DEFAULT_CONNECTION_FACTORY, factory, getProperties(localConfig));
             }
 
             if (manager.get(DEFAULT_XA_CONNECTION_FACTORY) == null) {
                 // default XA connection factory was not configured, create one
                 ConnectionFactory xaFactory = creatorRegistry.create(xaConfig);
-                manager.register(DEFAULT_XA_CONNECTION_FACTORY, xaFactory);
+                manager.register(DEFAULT_XA_CONNECTION_FACTORY, xaFactory, getProperties(localConfig));
             }
         }
 
@@ -188,6 +190,15 @@ public class ConfigurationBuilder {
             }
             throw new InvalidConfigurationException(builder.toString());
         }
+    }
+
+    private Map<String, String> getProperties(ConnectionFactoryConfiguration configuration) {
+        Properties properties = configuration.getFactoryProperties();
+        Map<String, String> factoryProperties = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            factoryProperties.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return factoryProperties;
     }
 
 }

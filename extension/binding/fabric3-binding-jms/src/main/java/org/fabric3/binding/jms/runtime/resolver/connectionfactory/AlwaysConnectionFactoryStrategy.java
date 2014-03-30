@@ -81,7 +81,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             ConnectionFactory factory = instantiate(className, properties);
             String name = definition.getName();
             created.add(name);
-            return manager.register(name, factory);
+            return manager.register(name, factory, definition.getProperties());
         } catch (FactoryRegistrationException e) {
             throw new JmsResolutionException(e);
         }

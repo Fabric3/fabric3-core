@@ -40,7 +40,6 @@ package org.fabric3.tx.atomikos.jms.connection;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.XAConnectionFactory;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,10 +100,6 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             return bean;
         }
         return nonXA.get(name);
-    }
-
-    public ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException {
-        return register(name, factory, Collections.<String, String>emptyMap());
     }
 
     public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws FactoryRegistrationException {

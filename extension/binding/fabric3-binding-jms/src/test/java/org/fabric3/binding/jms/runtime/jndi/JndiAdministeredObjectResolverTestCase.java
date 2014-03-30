@@ -39,10 +39,10 @@ package org.fabric3.binding.jms.runtime.jndi;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
@@ -59,7 +59,7 @@ public class JndiAdministeredObjectResolverTestCase extends TestCase {
     public void testResolveConnectionFactory() throws Exception {
         ConnectionFactory factory = EasyMock.createMock(ConnectionFactory.class);
         EasyMock.expect(contextManager.lookup(ConnectionFactory.class, "test")).andReturn(factory);
-        EasyMock.expect(factoryManager.register("test", factory)).andReturn(factory);
+        EasyMock.expect(factoryManager.register( EasyMock.eq("test"), EasyMock.eq(factory), EasyMock.isA(Map.class))).andReturn(factory);
         EasyMock.replay(factory, contextManager, factoryManager);
 
         ConnectionFactoryDefinition definition = new ConnectionFactoryDefinition();

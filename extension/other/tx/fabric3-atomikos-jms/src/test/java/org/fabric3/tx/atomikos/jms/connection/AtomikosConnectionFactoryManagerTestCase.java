@@ -38,14 +38,14 @@
 
 package org.fabric3.tx.atomikos.jms.connection;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.XAConnectionFactory;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.management.ManagementService;
 
 /**
@@ -55,10 +55,7 @@ public class AtomikosConnectionFactoryManagerTestCase extends TestCase {
 
     public void testRegisterXA() throws Exception {
         ManagementService managementService = EasyMock.createMock(ManagementService.class);
-        managementService.export(EasyMock.isA(String.class),
-                                 EasyMock.isA(String.class),
-                                 EasyMock.isA(String.class),
-                                 EasyMock.isA(Object.class));
+        managementService.export(EasyMock.isA(String.class), EasyMock.isA(String.class), EasyMock.isA(String.class), EasyMock.isA(Object.class));
         managementService.remove(EasyMock.isA(String.class), EasyMock.isA(String.class));
 
         MockConnectionFactory factory = EasyMock.createMock(MockConnectionFactory.class);
@@ -86,10 +83,7 @@ public class AtomikosConnectionFactoryManagerTestCase extends TestCase {
 
     public void testRegisterXANoUnregisterBeforeDestroy() throws Exception {
         ManagementService managementService = EasyMock.createMock(ManagementService.class);
-        managementService.export(EasyMock.isA(String.class),
-                                 EasyMock.isA(String.class),
-                                 EasyMock.isA(String.class),
-                                 EasyMock.isA(Object.class));
+        managementService.export(EasyMock.isA(String.class), EasyMock.isA(String.class), EasyMock.isA(String.class), EasyMock.isA(Object.class));
         managementService.remove(EasyMock.isA(String.class), EasyMock.isA(String.class));
 
         MockConnectionFactory factory = EasyMock.createMock(MockConnectionFactory.class);
@@ -97,7 +91,7 @@ public class AtomikosConnectionFactoryManagerTestCase extends TestCase {
         EasyMock.replay(managementService, factory);
 
         AtomikosConnectionFactoryManager manager = new AtomikosConnectionFactoryManager(managementService);
-        manager.register("factory", factory);
+        manager.register("factory", factory, Collections.<String, String>emptyMap());
         assertNotNull(manager.get("factory"));
         manager.destroy();
         EasyMock.verify(managementService, factory);
@@ -109,7 +103,7 @@ public class AtomikosConnectionFactoryManagerTestCase extends TestCase {
         EasyMock.replay(managementService, factory);
 
         AtomikosConnectionFactoryManager manager = new AtomikosConnectionFactoryManager(managementService);
-        manager.register("factory", factory);
+        manager.register("factory", factory, Collections.<String, String>emptyMap());
         assertNotNull(manager.get("factory"));
         manager.unregister("factory");
         manager.destroy();
@@ -120,6 +114,5 @@ public class AtomikosConnectionFactoryManagerTestCase extends TestCase {
 
     private interface MockConnectionFactory extends ConnectionFactory, XAConnectionFactory {
     }
-
 
 }
