@@ -88,7 +88,7 @@ public class ConfigurationBuilder {
     public void init() throws FactoryRegistrationException, ConnectionFactoryCreationException {
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
-            ConnectionFactory factory = creatorRegistry.create(configuration, Collections.<String, String>emptyMap());
+            ConnectionFactory factory = creatorRegistry.create(configuration);
             manager.register(configuration.getName(), factory);
             factories.add(factory);
         }
@@ -109,13 +109,13 @@ public class ConfigurationBuilder {
 
             if (manager.get(DEFAULT_CONNECTION_FACTORY) == null) {
                 // default connection factory was not configured, create one
-                ConnectionFactory factory = creatorRegistry.create(localConfig, Collections.<String, String>emptyMap());
+                ConnectionFactory factory = creatorRegistry.create(localConfig);
                 manager.register(DEFAULT_CONNECTION_FACTORY, factory);
             }
 
             if (manager.get(DEFAULT_XA_CONNECTION_FACTORY) == null) {
                 // default XA connection factory was not configured, create one
-                ConnectionFactory xaFactory = creatorRegistry.create(xaConfig, Collections.<String, String>emptyMap());
+                ConnectionFactory xaFactory = creatorRegistry.create(xaConfig);
                 manager.register(DEFAULT_XA_CONNECTION_FACTORY, xaFactory);
             }
         }

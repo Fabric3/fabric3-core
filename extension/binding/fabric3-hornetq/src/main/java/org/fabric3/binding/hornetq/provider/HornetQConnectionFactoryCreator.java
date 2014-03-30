@@ -20,8 +20,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class HornetQConnectionFactoryCreator implements ConnectionFactoryCreator {
 
-    public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties)
-            throws ConnectionFactoryCreationException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException {
         Map<String, Object> parameters = configuration.getAttributes();
         TransportConfiguration transportConfiguration = new TransportConfiguration(NettyConnectorFactory.class.getName(), parameters);
         JMSFactoryType type = convertType(configuration.getType());

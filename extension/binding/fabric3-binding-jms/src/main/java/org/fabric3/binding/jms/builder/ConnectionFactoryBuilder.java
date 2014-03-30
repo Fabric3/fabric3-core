@@ -38,7 +38,6 @@
 package org.fabric3.binding.jms.builder;
 
 import javax.jms.ConnectionFactory;
-import java.util.Collections;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
@@ -64,7 +63,7 @@ public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnect
 
     public void build(PhysicalConnectionFactoryResource definition) throws ContainerException {
         ConnectionFactoryConfiguration configuration = definition.getConfiguration();
-        ConnectionFactory factory = registry.create(configuration, Collections.<String, String>emptyMap());
+        ConnectionFactory factory = registry.create(configuration);
         manager.register(configuration.getName(), factory);
     }
 

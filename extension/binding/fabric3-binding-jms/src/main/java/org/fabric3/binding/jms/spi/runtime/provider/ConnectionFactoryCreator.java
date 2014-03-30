@@ -39,8 +39,6 @@ package org.fabric3.binding.jms.spi.runtime.provider;
 
 import javax.jms.ConnectionFactory;
 
-import java.util.Map;
-
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 
@@ -53,11 +51,10 @@ public interface ConnectionFactoryCreator {
      * Creates the connection factory.
      *
      * @param configuration the configuration
-     * @param properties    the JMS connection factory properties
      * @return the connection factory
      * @throws ConnectionFactoryCreationException if there is an error creating the connection factory
      */
-    ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException;
+    ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException;
 
     /**
      * Releases the connection factory. Implementations may close open connections and remove any resources allocated by the connection factory.

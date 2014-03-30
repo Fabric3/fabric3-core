@@ -39,15 +39,14 @@ package org.fabric3.binding.activemq.provider;
 
 import javax.jms.ConnectionFactory;
 import java.net.URI;
-import java.util.Map;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.apache.activemq.pool.PooledConnectionFactory;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -57,7 +56,6 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreator {
-    public static final String BROKER_URI = "broker.uri";
     private URI brokerUri;
     private HostInfo info;
 
@@ -67,12 +65,12 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
         brokerUri = URI.create("vm://" + brokerName);
     }
 
-    public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException {
         ConnectionFactoryType type = configuration.getType();
         switch (type) {
 
             case XA:
-                ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(getUri(configuration, properties));
+                ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(getUri(configuration));
                 xaFactory.setProperties(configuration.getFactoryProperties());
                 xaFactory.setUserName(configuration.getUsername());
                 xaFactory.setPassword(configuration.getPassword());
@@ -80,7 +78,7 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
                 return xaFactory;
             default:
                 // default to local pooled
-                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(getUri(configuration, properties));
+                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(getUri(configuration));
                 factory.setProperties(configuration.getFactoryProperties());
                 factory.setUserName(configuration.getUsername());
                 factory.setPassword(configuration.getPassword());
@@ -109,13 +107,7 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
         }
     }
 
-    private URI getUri(ConnectionFactoryConfiguration configuration, Map<String, String> properties) {
-        // check if the broker uri was overridden by the JMS properties, e.g. when a connection factory template does not contain a URI but the specific
-        // binding configuration on a service, reference, or channel does
-        String brokerOverride = properties.get(BROKER_URI);
-        if (brokerOverride != null) {
-            return URI.create(brokerOverride);
-        }
+    private URI getUri(ConnectionFactoryConfiguration configuration) {
         URI attribute = configuration.getAttribute(URI.class, "broker.uri");
         if (attribute != null) {
             return attribute;

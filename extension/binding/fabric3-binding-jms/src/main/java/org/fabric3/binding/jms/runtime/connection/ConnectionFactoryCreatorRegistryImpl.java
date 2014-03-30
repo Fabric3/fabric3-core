@@ -24,7 +24,7 @@ public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCr
     }
 
     @SuppressWarnings({"unchecked"})
-    public ConnectionFactory create(ConnectionFactoryConfiguration configuration, Map<String, String> properties) throws ConnectionFactoryCreationException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException {
         if (creators.isEmpty()) {
             throw new ConnectionFactoryCreationException("JMS Provider not installed");
         }
@@ -33,7 +33,7 @@ public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCr
         if (creator == null) {
             throw new ConnectionFactoryCreationException("Provider not found: " + provider);
         }
-        ConnectionFactory factory = creator.create(configuration, properties);
+        ConnectionFactory factory = creator.create(configuration);
         factories.put(factory, creator);
         return factory;
     }
