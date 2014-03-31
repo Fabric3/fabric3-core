@@ -48,7 +48,6 @@ import java.util.List;
 
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -59,7 +58,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public class JmsWireTargetDefinition extends PhysicalWireTargetDefinition {
     private static final long serialVersionUID = -151189038434425132L;
     private JmsBindingMetadata metadata;
-    private TransactionType transactionType;
+    private SessionType sessionType;
     private List<OperationPayloadTypes> payloadTypes;
     private DestinationDefinition callbackDestination;
     private List<PhysicalBindingHandlerDefinition> handlers;
@@ -70,16 +69,16 @@ public class JmsWireTargetDefinition extends PhysicalWireTargetDefinition {
      * @param uri             the service URI
      * @param metadata        metadata used to create a JMS message producer.
      * @param payloadTypes    the JMS payload types
-     * @param transactionType the transaction type
+     * @param sessionType the transaction type
      * @param handlers        binding handlers to be engaged for the service
      */
     public JmsWireTargetDefinition(URI uri,
                                    JmsBindingMetadata metadata,
                                    List<OperationPayloadTypes> payloadTypes,
-                                   TransactionType transactionType,
+                                   SessionType sessionType,
                                    List<PhysicalBindingHandlerDefinition> handlers) {
         this.metadata = metadata;
-        this.transactionType = transactionType;
+        this.sessionType = sessionType;
         this.payloadTypes = payloadTypes;
         this.handlers = handlers;
         setUri(uri);
@@ -91,19 +90,19 @@ public class JmsWireTargetDefinition extends PhysicalWireTargetDefinition {
      * @param uri             the service URI
      * @param metadata        metadata used to create a JMS message producer.
      * @param payloadTypes    the JMS payload types
-     * @param transactionType the transaction type
+     * @param sessionType the transaction type
      * @param handlers        binding handlers to be engaged for the service
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML
      */
     public JmsWireTargetDefinition(URI uri,
                                    JmsBindingMetadata metadata,
                                    List<OperationPayloadTypes> payloadTypes,
-                                   TransactionType transactionType,
+                                   SessionType sessionType,
                                    List<PhysicalBindingHandlerDefinition> handlers,
                                    DataType... types) {
         super(types);
         this.metadata = metadata;
-        this.transactionType = transactionType;
+        this.sessionType = sessionType;
         this.payloadTypes = payloadTypes;
         this.handlers = handlers;
         setUri(uri);
@@ -117,8 +116,8 @@ public class JmsWireTargetDefinition extends PhysicalWireTargetDefinition {
         return payloadTypes;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public SessionType getSessionType() {
+        return sessionType;
     }
 
     public void setCallbackDestination(DestinationDefinition definition) {

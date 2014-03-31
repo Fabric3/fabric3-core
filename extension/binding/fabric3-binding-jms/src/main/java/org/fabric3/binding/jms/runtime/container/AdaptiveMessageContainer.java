@@ -57,7 +57,7 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.binding.jms.model.DestinationType;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
@@ -86,7 +86,7 @@ public class AdaptiveMessageContainer {
     private DestinationType destinationType;
     private Destination destination;
     private int cacheLevel;
-    private TransactionType transactionType;
+    private SessionType sessionType;
     private int minReceivers;
     private int maxReceivers;
     private int idleLimit;
@@ -138,7 +138,7 @@ public class AdaptiveMessageContainer {
         destinationType = configuration.getDestinationType();
         destination = configuration.getDestination();
         cacheLevel = configuration.getCacheLevel();
-        transactionType = configuration.getType();
+        sessionType = configuration.getType();
         messageListener = configuration.getMessageListener();
         exceptionListener = configuration.getExceptionListener();
         messageSelector = configuration.getMessageSelector();
@@ -373,8 +373,8 @@ public class AdaptiveMessageContainer {
     }
 
     @ManagementOperation(description = "The transaction type")
-    public String getTransactionType() {
-        return transactionType.toString();
+    public String getSessionType() {
+        return sessionType.toString();
     }
 
     /**
@@ -650,12 +650,12 @@ public class AdaptiveMessageContainer {
      * @throws JMSException if there is an error creating the session
      */
     private Session createSession(Connection connection) throws JMSException {
-        if (javaEEXAEnabled && TransactionType.GLOBAL == transactionType) {
+        if (javaEEXAEnabled && SessionType.GLOBAL_TRANSACTED == sessionType) {
             // Java EE containers require the transacted parameter to be set to false for XA transactions
             return connection.createSession(false, Session.SESSION_TRANSACTED);
         }
         // non-Java EE/XA environment (e.g. Atomikos, a local transaction or no transaction)
-        boolean transacted = TransactionType.SESSION == transactionType || TransactionType.GLOBAL == transactionType;
+        boolean transacted = SessionType.LOCAL_TRANSACTED == sessionType || SessionType.GLOBAL_TRANSACTED == sessionType;
         return connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
     }
 

@@ -50,7 +50,7 @@ import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
@@ -94,7 +94,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         generateIntents(binding, metadata);
 
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), TransactionType.NONE);
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), SessionType.AUTO_ACKNOWLEDGE);
         URI uri = consumer.getUri();
 
         // set the client id specifier
@@ -121,7 +121,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         generateIntents(binding, metadata);
 
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), TransactionType.NONE);
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), SessionType.AUTO_ACKNOWLEDGE);
 
         DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
 

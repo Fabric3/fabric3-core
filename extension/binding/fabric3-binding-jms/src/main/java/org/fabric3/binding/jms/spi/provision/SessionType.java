@@ -41,13 +41,13 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.api.binding.jms.model;
+package org.fabric3.binding.jms.spi.provision;
 
 /**
- * Defines transaction types.
+ * Defines the JMS session type.
  */
-public enum TransactionType {
+public enum SessionType {
 
-    GLOBAL, NONE, SESSION
+    GLOBAL_TRANSACTED, AUTO_ACKNOWLEDGE, LOCAL_TRANSACTED
 
 }

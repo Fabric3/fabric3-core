@@ -60,7 +60,7 @@ import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
@@ -122,7 +122,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
     public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         URI serviceUri = target.getUri();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
-        TransactionType trxType = source.getTransactionType();
+        SessionType trxType = source.getSessionType();
         WireHolder wireHolder = createWireHolder(wire, source, trxType);
 
         ResolvedObjects objects = resolveAdministeredObjects(source);
@@ -234,7 +234,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         }
     }
 
-    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, TransactionType trxType) throws ContainerException {
+    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, SessionType trxType) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();

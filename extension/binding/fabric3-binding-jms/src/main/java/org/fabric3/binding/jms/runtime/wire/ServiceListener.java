@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
@@ -86,7 +86,7 @@ public class ServiceListener implements MessageListener {
     private InvocationChainHolder onMessageHolder;
     private Destination defaultResponseDestination;
     private ConnectionFactory responseFactory;
-    private TransactionType transactionType;
+    private SessionType sessionType;
     private ClassLoader classLoader;
     private ListenerMonitor monitor;
     private XMLFactory xmlFactory;
@@ -96,7 +96,7 @@ public class ServiceListener implements MessageListener {
     public ServiceListener(WireHolder wireHolder,
                            Destination defaultResponseDestination,
                            ConnectionFactory responseFactory,
-                           TransactionType transactionType,
+                           SessionType sessionType,
                            ClassLoader classLoader,
                            XMLFactory xmlFactory,
                            List<BindingHandler<Message>> handlers,
@@ -104,7 +104,7 @@ public class ServiceListener implements MessageListener {
         this.wireHolder = wireHolder;
         this.defaultResponseDestination = defaultResponseDestination;
         this.responseFactory = responseFactory;
-        this.transactionType = transactionType;
+        this.sessionType = sessionType;
         this.classLoader = classLoader;
         this.xmlFactory = xmlFactory;
         this.handlers = handlers;
@@ -137,18 +137,18 @@ public class ServiceListener implements MessageListener {
                     if (payload != null && !payload.getClass().isArray()) {
                         payload = new Object[]{payload};
                     }
-                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, sessionType);
                     break;
                 case TEXT:
                     // non-encoded text
                     payload = new Object[]{payload};
-                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, sessionType);
                     break;
                 case STREAM:
                     throw new UnsupportedOperationException();
                 default:
                     payload = new Object[]{payload};
-                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, sessionType);
                     break;
             }
         } catch (JMSException | JmsBadMessageException e) {
@@ -164,7 +164,7 @@ public class ServiceListener implements MessageListener {
                         Object payload,
                         OperationPayloadTypes payloadTypes,
                         boolean oneWay,
-                        TransactionType transactionType) throws JMSException, JmsBadMessageException {
+                        SessionType sessionType) throws JMSException, JmsBadMessageException {
         WorkContext workContext = setWorkContext(request);
         org.fabric3.spi.container.invocation.Message inMessage = MessageCache.getAndResetMessage();
         inMessage.setWorkContext(workContext);
@@ -183,7 +183,7 @@ public class ServiceListener implements MessageListener {
         Session responseSession = null;
         try {
             connection = responseFactory.createConnection();
-            if (TransactionType.GLOBAL == transactionType) {
+            if (SessionType.GLOBAL_TRANSACTED == sessionType) {
                 responseSession = connection.createSession(true, Session.SESSION_TRANSACTED);
             } else {
                 responseSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

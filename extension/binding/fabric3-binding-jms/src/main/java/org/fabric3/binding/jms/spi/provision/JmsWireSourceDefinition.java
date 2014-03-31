@@ -47,7 +47,6 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -58,7 +57,7 @@ import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 public class JmsWireSourceDefinition extends PhysicalWireSourceDefinition {
     private static final long serialVersionUID = -4274093421849649471L;
     private JmsBindingMetadata metadata;
-    private TransactionType transactionType;
+    private SessionType sessionType;
     private List<OperationPayloadTypes> payloadTypes;
     private List<PhysicalBindingHandlerDefinition> handlers;
 
@@ -68,16 +67,16 @@ public class JmsWireSourceDefinition extends PhysicalWireSourceDefinition {
      * @param uri             the service URI
      * @param metadata        metadata used to create a JMS message consumer.
      * @param payloadTypes    the JMS payload types keyed by operation name
-     * @param transactionType the transaction type
+     * @param sessionType the transaction type
      * @param handlers        binding handlers to be engaged for the service
      */
     public JmsWireSourceDefinition(URI uri,
                                    JmsBindingMetadata metadata,
                                    List<OperationPayloadTypes> payloadTypes,
-                                   TransactionType transactionType,
+                                   SessionType sessionType,
                                    List<PhysicalBindingHandlerDefinition> handlers) {
         this.metadata = metadata;
-        this.transactionType = transactionType;
+        this.sessionType = sessionType;
         this.payloadTypes = payloadTypes;
         this.handlers = handlers;
         setUri(uri);
@@ -89,20 +88,20 @@ public class JmsWireSourceDefinition extends PhysicalWireSourceDefinition {
      * @param uri             the service URI
      * @param metadata        metadata used to create a JMS message consumer.
      * @param payloadTypes    the JMS payload types keyed by operation name
-     * @param transactionType the transaction type
+     * @param sessionType the transaction type
      * @param handlers        binding handlers to be engaged for the service
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML
      */
     public JmsWireSourceDefinition(URI uri,
                                    JmsBindingMetadata metadata,
                                    List<OperationPayloadTypes> payloadTypes,
-                                   TransactionType transactionType,
+                                   SessionType sessionType,
                                    List<PhysicalBindingHandlerDefinition> handlers,
                                    DataType... types) {
         super(types);
         setUri(uri);
         this.metadata = metadata;
-        this.transactionType = transactionType;
+        this.sessionType = sessionType;
         this.payloadTypes = payloadTypes;
         this.handlers = handlers;
     }
@@ -116,8 +115,8 @@ public class JmsWireSourceDefinition extends PhysicalWireSourceDefinition {
         return payloadTypes;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public SessionType getSessionType() {
+        return sessionType;
     }
 
     public List<PhysicalBindingHandlerDefinition> getHandlers() {

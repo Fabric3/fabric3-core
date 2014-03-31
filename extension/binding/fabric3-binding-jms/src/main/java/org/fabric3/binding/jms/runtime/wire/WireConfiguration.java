@@ -42,7 +42,7 @@ import javax.jms.Destination;
 import javax.transaction.TransactionManager;
 
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 
 /**
  * Template for configuring non-operation specific objects for a JmsInterceptor.
@@ -54,7 +54,7 @@ public class WireConfiguration {
     private Destination callbackDestination;
     private ClassLoader classloader;
     private ResponseListener responseListener;
-    private TransactionType transactionType;
+    private SessionType sessionType;
     private TransactionManager tm;
     private long responseTimeout;
     boolean persistent = true;
@@ -116,12 +116,12 @@ public class WireConfiguration {
         this.responseListener = responseListener;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public SessionType getSessionType() {
+        return sessionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
+    public void setSessionType(SessionType sessionType) {
+        this.sessionType = sessionType;
     }
 
     public TransactionManager getTransactionManager() {

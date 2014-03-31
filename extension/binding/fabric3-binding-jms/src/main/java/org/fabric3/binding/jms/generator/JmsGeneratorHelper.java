@@ -49,7 +49,7 @@ import java.util.List;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.binding.jms.common.JmsConnectionConstants;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -80,9 +80,9 @@ public class JmsGeneratorHelper {
      * @param factory the connection factory definition to configure
      * @param trxType the transaction type
      */
-    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, TransactionType trxType) {
+    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, SessionType trxType) {
         if (factory.getName() == null && !factory.getProperties().containsKey("class")) {
-            if (TransactionType.GLOBAL == trxType) {
+            if (SessionType.GLOBAL_TRANSACTED == trxType) {
                 factory.setName(JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY);
             } else {
                 factory.setName(JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY);

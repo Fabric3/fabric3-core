@@ -56,7 +56,7 @@ import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -109,12 +109,12 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
                                                   List<LogicalOperation> operations,
                                                   EffectivePolicy policy) throws GenerationException {
 
-        TransactionType transactionType = getTransactionType(operations, policy);
+        SessionType sessionType = getTransactionType(operations, policy);
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), transactionType);
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), sessionType);
         if (metadata.getResponseConnectionFactory() != null) {
-            JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), transactionType);
+            JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), sessionType);
         }
         processServiceResponse(metadata, contract);
 
@@ -126,9 +126,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
         JmsWireSourceDefinition definition;
         if (isJAXB(contract)) {
-            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
+            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, sessionType, handlers, PhysicalDataTypes.JAXB);
         } else {
-            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers);
+            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, sessionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateSource(definition);
@@ -144,14 +144,14 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
                                                   List<LogicalOperation> operations,
                                                   EffectivePolicy policy) throws GenerationException {
 
-        TransactionType transactionType = getTransactionType(operations, policy);
+        SessionType sessionType = getTransactionType(operations, policy);
 
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), transactionType);
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), sessionType);
         if (metadata.getResponseConnectionFactory() != null) {
-            JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), transactionType);
+            JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), sessionType);
         }
 
         processReferenceResponse(metadata, contract);
@@ -161,9 +161,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
         JmsWireTargetDefinition definition;
         if (isJAXB(contract)) {
-            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, PhysicalDataTypes.JAXB);
+            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, sessionType, handlers, PhysicalDataTypes.JAXB);
         } else {
-            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers);
+            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, sessionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateTarget(definition);
@@ -271,29 +271,29 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
      * @param policy     the applicable policy
      * @return the transaction type
      */
-    private TransactionType getTransactionType(List<LogicalOperation> operations, EffectivePolicy policy) {
+    private SessionType getTransactionType(List<LogicalOperation> operations, EffectivePolicy policy) {
 
         // If any operation has the intent, return that
         for (LogicalOperation operation : operations) {
             for (Intent intent : policy.getIntents(operation)) {
                 QName name = intent.getName();
                 if (TRANSACTED_ONEWAY.equals(name)) {
-                    return TransactionType.GLOBAL;
+                    return SessionType.GLOBAL_TRANSACTED;
                 } else if (IMMEDIATE_ONEWAY.equals(name)) {
-                    return TransactionType.NONE;
+                    return SessionType.AUTO_ACKNOWLEDGE;
                 }
             }
         }
         for (Intent intent : policy.getProvidedEndpointIntents()) {
             QName name = intent.getName();
             if (TRANSACTED_ONEWAY.equals(name)) {
-                return TransactionType.GLOBAL;
+                return SessionType.GLOBAL_TRANSACTED;
             } else if (IMMEDIATE_ONEWAY.equals(name)) {
-                return TransactionType.NONE;
+                return SessionType.AUTO_ACKNOWLEDGE;
             }
         }
         //no transaction policy specified, use local
-        return TransactionType.NONE;
+        return SessionType.AUTO_ACKNOWLEDGE;
     }
 
     /**

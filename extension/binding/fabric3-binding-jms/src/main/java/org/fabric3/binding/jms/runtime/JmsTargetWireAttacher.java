@@ -109,7 +109,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         wireConfiguration.setTransactionManager(tm);
         wireConfiguration.setCorrelationScheme(target.getMetadata().getCorrelationScheme());
         wireConfiguration.setResponseTimeout(target.getMetadata().getResponseTimeout());
-        wireConfiguration.setTransactionType(target.getTransactionType());
+        wireConfiguration.setSessionType(target.getSessionType());
 
         JmsBindingMetadata metadata = target.getMetadata();
         HeadersDefinition headers = metadata.getHeaders();

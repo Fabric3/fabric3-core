@@ -40,7 +40,7 @@ package org.fabric3.binding.jms.runtime.wire;
 import java.util.List;
 
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 
 /**
  * Holder for Wires and required metadata for performing an invocation.
@@ -48,27 +48,27 @@ import org.fabric3.api.binding.jms.model.TransactionType;
 public class WireHolder {
     private List<InvocationChainHolder> chains;
     private CorrelationScheme correlationScheme;
-    private TransactionType transactionType;
+    private SessionType sessionType;
 
     /**
      * Constructor.
      *
      * @param chains            InvocationChains contained by the wire
      * @param correlationScheme the correlation scheme if the wire uses request-response, otherwise null
-     * @param transactionType   the transaction type if the wire uses request-response, otherwise null
+     * @param sessionType   the transaction type if the wire uses request-response, otherwise null
      */
-    public WireHolder(List<InvocationChainHolder> chains, CorrelationScheme correlationScheme, TransactionType transactionType) {
+    public WireHolder(List<InvocationChainHolder> chains, CorrelationScheme correlationScheme, SessionType sessionType) {
         this.chains = chains;
         this.correlationScheme = correlationScheme;
-        this.transactionType = transactionType;
+        this.sessionType = sessionType;
     }
 
     public CorrelationScheme getCorrelationScheme() {
         return correlationScheme;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public SessionType getSessionType() {
+        return sessionType;
     }
 
     public List<InvocationChainHolder> getInvocationChains() {

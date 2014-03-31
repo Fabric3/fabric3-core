@@ -66,7 +66,7 @@ import java.util.UUID;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.invocation.CallbackReference;
@@ -95,7 +95,7 @@ public class JmsInterceptor implements Interceptor {
     private ResponseListener responseListener;
     private ClassLoader classLoader;
     private boolean oneWay;
-    private TransactionType transactionType;
+    private SessionType sessionType;
     private TransactionManager tm;
     private long responseTimeout;
     private boolean persistent;
@@ -122,7 +122,7 @@ public class JmsInterceptor implements Interceptor {
         this.classLoader = wireConfig.getClassloader();
         this.responseListener = wireConfig.getResponseListener();
         this.tm = wireConfig.getTransactionManager();
-        this.transactionType = wireConfig.getTransactionType();
+        this.sessionType = wireConfig.getSessionType();
         this.responseTimeout = wireConfig.getResponseTimeout();
         this.persistent = wireConfig.isPersistent();
         this.oneWay = configuration.isOneWay();
@@ -150,14 +150,14 @@ public class JmsInterceptor implements Interceptor {
             int status = tm.getStatus();
             Transaction suspended = null;
             boolean begun = false;
-            if (Status.STATUS_NO_TRANSACTION == status && TransactionType.GLOBAL == transactionType) {
+            if (Status.STATUS_NO_TRANSACTION == status && SessionType.GLOBAL_TRANSACTED == sessionType) {
                 tm.begin();
                 begun = true;
-            } else if ((Status.STATUS_ACTIVE == status && TransactionType.NONE == transactionType)) {
+            } else if ((Status.STATUS_ACTIVE == status && SessionType.AUTO_ACKNOWLEDGE == sessionType)) {
                 suspended = tm.suspend();
             }
 
-            if (TransactionType.GLOBAL == transactionType) {
+            if (SessionType.GLOBAL_TRANSACTED == sessionType) {
                 session = connection.createSession(true, Session.SESSION_TRANSACTED);
             } else {
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

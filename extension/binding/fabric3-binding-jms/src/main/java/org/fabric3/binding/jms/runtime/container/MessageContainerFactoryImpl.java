@@ -43,7 +43,7 @@ import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -82,7 +82,7 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
 
     public AdaptiveMessageContainer create(ContainerConfiguration configuration) {
         ConnectionFactory factory = configuration.getFactory();
-        TransactionType type = configuration.getType();
+        SessionType type = configuration.getType();
         boolean durable = configuration.isDurable();
         int cacheLevel = configuration.getCacheLevel();
         boolean cacheConnection = cacheLevel >= CACHE_CONNECTION;
@@ -98,11 +98,11 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
         return new AdaptiveMessageContainer(configuration, receiveTimeout, connectionManager, work, statistics, executorService, javaEE, containerMonitor);
     }
 
-    private UnitOfWork createWork(URI uri, TransactionType type, ContainerStatistics statistics) {
+    private UnitOfWork createWork(URI uri, SessionType type, ContainerStatistics statistics) {
         switch (type) {
-            case GLOBAL:
+            case GLOBAL_TRANSACTED:
                 return new JtaUnitOfWork(uri, transactionTimeout, tm, statistics);
-            case SESSION:
+            case LOCAL_TRANSACTED:
                 return new LocalTransactionUnitOfWork(uri, statistics);
             default:
                 return new AutoAckUnitOfWork();

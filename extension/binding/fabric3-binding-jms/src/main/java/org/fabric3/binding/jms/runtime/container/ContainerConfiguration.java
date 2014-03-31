@@ -44,7 +44,7 @@ import javax.jms.MessageListener;
 import java.net.URI;
 
 import org.fabric3.api.binding.jms.model.DestinationType;
-import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 
 /**
  * Configuration for registering a MessageListener with a {@link MessageContainerManager}.
@@ -55,7 +55,7 @@ public class ContainerConfiguration {
 
     private MessageListener messageListener;
     private ExceptionListener exceptionListener;
-    private TransactionType type = TransactionType.NONE;
+    private SessionType type = SessionType.AUTO_ACKNOWLEDGE;
     private Destination destination;
     private ConnectionFactory factory;
     private int cacheLevel;
@@ -106,11 +106,11 @@ public class ContainerConfiguration {
         this.exceptionListener = exceptionListener;
     }
 
-    public TransactionType getType() {
+    public SessionType getType() {
         return type;
     }
 
-    public void setType(TransactionType type) {
+    public void setType(SessionType type) {
         this.type = type;
     }
 
