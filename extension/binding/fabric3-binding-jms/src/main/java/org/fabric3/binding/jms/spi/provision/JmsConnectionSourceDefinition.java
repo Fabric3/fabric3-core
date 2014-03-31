@@ -55,17 +55,20 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 public class JmsConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -1573426921591142923L;
     private JmsBindingMetadata metadata;
+    private SessionType sessionType;
 
     /**
      * Constructor.
      *
-     * @param uri      the service URI
-     * @param metadata metadata used to create a JMS message consumer
-     * @param type     the data type events should be deserialized from
+     * @param uri         the service URI
+     * @param metadata    metadata used to create a JMS message consumer
+     * @param type        the data type events should be deserialized from
+     * @param sessionType the session type
      */
-    public JmsConnectionSourceDefinition(URI uri, JmsBindingMetadata metadata, DataType type) {
+    public JmsConnectionSourceDefinition(URI uri, JmsBindingMetadata metadata, DataType type, SessionType sessionType) {
         super(type);
         this.metadata = metadata;
+        this.sessionType = sessionType;
         setUri(uri);
     }
 
@@ -73,4 +76,7 @@ public class JmsConnectionSourceDefinition extends PhysicalConnectionSourceDefin
         return metadata;
     }
 
+    public SessionType getSessionType() {
+        return sessionType;
+    }
 }

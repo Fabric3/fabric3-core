@@ -109,7 +109,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
                                                   List<LogicalOperation> operations,
                                                   EffectivePolicy policy) throws GenerationException {
 
-        SessionType sessionType = getTransactionType(operations, policy);
+        SessionType sessionType = getSessionType(operations, policy);
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), sessionType);
@@ -144,7 +144,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
                                                   List<LogicalOperation> operations,
                                                   EffectivePolicy policy) throws GenerationException {
 
-        SessionType sessionType = getTransactionType(operations, policy);
+        SessionType sessionType = getSessionType(operations, policy);
 
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
@@ -271,7 +271,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
      * @param policy     the applicable policy
      * @return the transaction type
      */
-    private SessionType getTransactionType(List<LogicalOperation> operations, EffectivePolicy policy) {
+    private SessionType getSessionType(List<LogicalOperation> operations, EffectivePolicy policy) {
 
         // If any operation has the intent, return that
         for (LogicalOperation operation : operations) {
@@ -292,7 +292,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
                 return SessionType.AUTO_ACKNOWLEDGE;
             }
         }
-        //no transaction policy specified, use local
+        //no transaction policy specified, use auto-acknowledge
         return SessionType.AUTO_ACKNOWLEDGE;
     }
 

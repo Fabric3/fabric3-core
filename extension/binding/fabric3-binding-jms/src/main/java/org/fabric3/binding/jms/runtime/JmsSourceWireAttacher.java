@@ -141,7 +141,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             configuration.setFactory(requestFactory);
             configuration.setMessageListener(listener);
             configuration.setUri(serviceUri);
-            configuration.setType(trxType);
+            configuration.setSessionType(trxType);
             populateConfiguration(configuration, source.getMetadata());
 
             if (containerManager.isRegistered(serviceUri)) {
@@ -234,7 +234,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         }
     }
 
-    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, SessionType trxType) throws ContainerException {
+    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, SessionType sessionType) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
@@ -247,7 +247,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             }
             chainHolders.add(new InvocationChainHolder(chain, payloadType));
         }
-        return new WireHolder(chainHolders, correlationScheme, trxType);
+        return new WireHolder(chainHolders, correlationScheme);
     }
 
     private OperationPayloadTypes resolveOperation(String operationName, List<OperationPayloadTypes> payloadTypes) {

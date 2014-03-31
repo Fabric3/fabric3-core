@@ -43,7 +43,7 @@ import javax.jms.Session;
 import java.net.URI;
 
 /**
- * Implements unit of work boundaries for a client acknowledgement mode.
+ * Implements unit of work boundaries for client acknowledgement mode.
  */
 public class ClientAckUnitOfWork implements UnitOfWork {
     private URI uri;
@@ -62,10 +62,14 @@ public class ClientAckUnitOfWork implements UnitOfWork {
     }
 
     public void end(Session session, Message message) throws WorkException {
+        if (message == null) {
+            // message can be null if the consumer receive loop timed out without returning a message.
+            return;
+        }
         try {
             message.acknowledge();
         } catch (JMSException e) {
-            throw new WorkException(e);
+            throw new WorkException("Error handling message for " + uri, e);
         }
     }
 

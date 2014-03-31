@@ -48,6 +48,6 @@ package org.fabric3.binding.jms.spi.provision;
  */
 public enum SessionType {
 
-    GLOBAL_TRANSACTED, AUTO_ACKNOWLEDGE, LOCAL_TRANSACTED
+    GLOBAL_TRANSACTED, LOCAL_TRANSACTED, AUTO_ACKNOWLEDGE, CLIENT_ACKNOWLEDGE
 
 }

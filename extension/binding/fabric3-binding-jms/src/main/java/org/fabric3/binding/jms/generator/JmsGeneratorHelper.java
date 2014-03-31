@@ -77,12 +77,12 @@ public class JmsGeneratorHelper {
     /**
      * Generates a default connection factory configuration if a factory or class name is not configured.
      *
-     * @param factory the connection factory definition to configure
-     * @param trxType the transaction type
+     * @param factory     the connection factory definition to configure
+     * @param sessionType the session type
      */
-    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, SessionType trxType) {
+    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, SessionType sessionType) {
         if (factory.getName() == null && !factory.getProperties().containsKey("class")) {
-            if (SessionType.GLOBAL_TRANSACTED == trxType) {
+            if (SessionType.GLOBAL_TRANSACTED == sessionType) {
                 factory.setName(JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY);
             } else {
                 factory.setName(JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY);

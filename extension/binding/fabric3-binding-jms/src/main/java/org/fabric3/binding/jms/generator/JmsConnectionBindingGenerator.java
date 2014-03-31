@@ -43,6 +43,7 @@
  */
 package org.fabric3.binding.jms.generator;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
@@ -50,12 +51,12 @@ import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -79,6 +80,11 @@ import static org.fabric3.spi.model.physical.ChannelConstants.NON_PERSISTENT_INT
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
     private static final String JAXB = "JAXB";
 
+    /**
+     * Indicates consumers on a channel will receive messages using CLIENT_ACKNOWLEDGE mode
+     */
+    private static final QName CLIENT_ACKNOWLEDGE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "clientAcknowledge");
+
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
@@ -93,8 +99,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         generateIntents(binding, metadata);
+        SessionType sessionType = getSessionType(binding);
 
-        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), SessionType.AUTO_ACKNOWLEDGE);
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), sessionType);
         URI uri = consumer.getUri();
 
         // set the client id specifier
@@ -105,12 +112,16 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         metadata.setSubscriptionId(specifier);
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
-        DataType type = isJAXB(consumer.getDefinition().getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
-        JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata, type);
+        DataType dataType = isJAXB(consumer.getDefinition().getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
+        JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata, dataType, sessionType);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);
         }
         return definition;
+    }
+
+    private SessionType getSessionType(LogicalBinding<JmsBindingDefinition> binding) {
+        return binding.getDefinition().getIntents().contains(CLIENT_ACKNOWLEDGE_INTENT) ? SessionType.CLIENT_ACKNOWLEDGE : SessionType.AUTO_ACKNOWLEDGE;
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,

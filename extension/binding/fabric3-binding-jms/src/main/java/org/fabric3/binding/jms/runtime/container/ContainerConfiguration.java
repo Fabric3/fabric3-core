@@ -106,11 +106,11 @@ public class ContainerConfiguration {
         this.exceptionListener = exceptionListener;
     }
 
-    public SessionType getType() {
+    public SessionType getSessionType() {
         return type;
     }
 
-    public void setType(SessionType type) {
+    public void setSessionType(SessionType type) {
         this.type = type;
     }
 

@@ -207,7 +207,12 @@ public class ConnectionFactoryConfiguration implements Serializable {
      * @return the attribute or null if not found
      */
     public <T> T getAttribute(Class<T> type, String key) {
-        return type.cast(attributes.get(key));
+        Object value = attributes.get(key);
+        if (value != null && !type.isInstance(value)) {
+            throw new IllegalArgumentException(
+                    "Attribute " + key + " is expected to be of type " + type.getName() + " but is of type " + value.getClass().getName());
+        }
+        return type.cast(value);
     }
 
     /**

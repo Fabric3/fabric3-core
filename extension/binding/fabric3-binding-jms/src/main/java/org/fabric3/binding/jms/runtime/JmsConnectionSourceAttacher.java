@@ -117,6 +117,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             configuration.setFactory(connectionFactory);
             configuration.setMessageListener(listener);
             configuration.setUri(serviceUri);
+            configuration.setSessionType(source.getSessionType());
             populateConfiguration(configuration, metadata);
             if (containerManager.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned

@@ -82,7 +82,7 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
 
     public AdaptiveMessageContainer create(ContainerConfiguration configuration) {
         ConnectionFactory factory = configuration.getFactory();
-        SessionType type = configuration.getType();
+        SessionType type = configuration.getSessionType();
         boolean durable = configuration.isDurable();
         int cacheLevel = configuration.getCacheLevel();
         boolean cacheConnection = cacheLevel >= CACHE_CONNECTION;
@@ -104,6 +104,8 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
                 return new JtaUnitOfWork(uri, transactionTimeout, tm, statistics);
             case LOCAL_TRANSACTED:
                 return new LocalTransactionUnitOfWork(uri, statistics);
+            case CLIENT_ACKNOWLEDGE:
+                return new ClientAckUnitOfWork(uri);
             default:
                 return new AutoAckUnitOfWork();
         }

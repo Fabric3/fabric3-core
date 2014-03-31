@@ -153,7 +153,7 @@ public class JmsInterceptor implements Interceptor {
             if (Status.STATUS_NO_TRANSACTION == status && SessionType.GLOBAL_TRANSACTED == sessionType) {
                 tm.begin();
                 begun = true;
-            } else if ((Status.STATUS_ACTIVE == status && SessionType.AUTO_ACKNOWLEDGE == sessionType)) {
+            } else if ((Status.STATUS_ACTIVE == status && (SessionType.AUTO_ACKNOWLEDGE == sessionType || SessionType.CLIENT_ACKNOWLEDGE == sessionType))) {
                 suspended = tm.suspend();
             }
 

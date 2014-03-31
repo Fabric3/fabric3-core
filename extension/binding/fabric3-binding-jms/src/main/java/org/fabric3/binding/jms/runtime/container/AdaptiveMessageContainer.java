@@ -138,7 +138,7 @@ public class AdaptiveMessageContainer {
         destinationType = configuration.getDestinationType();
         destination = configuration.getDestination();
         cacheLevel = configuration.getCacheLevel();
-        sessionType = configuration.getType();
+        sessionType = configuration.getSessionType();
         messageListener = configuration.getMessageListener();
         exceptionListener = configuration.getExceptionListener();
         messageSelector = configuration.getMessageSelector();
@@ -372,7 +372,7 @@ public class AdaptiveMessageContainer {
         return subscriptionId;
     }
 
-    @ManagementOperation(description = "The transaction type")
+    @ManagementOperation(description = "The session type")
     public String getSessionType() {
         return sessionType.toString();
     }
@@ -656,7 +656,15 @@ public class AdaptiveMessageContainer {
         }
         // non-Java EE/XA environment (e.g. Atomikos, a local transaction or no transaction)
         boolean transacted = SessionType.LOCAL_TRANSACTED == sessionType || SessionType.GLOBAL_TRANSACTED == sessionType;
-        return connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
+        if (transacted) {
+            return connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
+        } else {
+            if (SessionType.AUTO_ACKNOWLEDGE == sessionType) {
+                return connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            } else {
+                return connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+            }
+        }
     }
 
     /**
@@ -771,7 +779,7 @@ public class AdaptiveMessageContainer {
          * Loops while the container is running, receiving and dispatching messages.
          *
          * @return true if a message was received on executing the loop
-         * @throws JMSException         if an error occurs processing a message
+         * @throws JMSException  if an error occurs processing a message
          * @throws WorkException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
         private boolean receiveLoop() throws JMSException, WorkException {
@@ -830,7 +838,7 @@ public class AdaptiveMessageContainer {
          * Waits to receive a single message. If a message is received in the configured timeframe, it is dispatched to the listener.
          *
          * @return true if a message was received
-         * @throws JMSException         if there was an error receiving the message
+         * @throws JMSException  if there was an error receiving the message
          * @throws WorkException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
         private boolean receive() throws JMSException, WorkException {
@@ -848,7 +856,7 @@ public class AdaptiveMessageContainer {
          * Initiates a transaction context if required and performs the blocking receive on the JMS destination.
          *
          * @return true if a message was received
-         * @throws JMSException         if a JMS-related exception occurred during the receive
+         * @throws JMSException  if a JMS-related exception occurred during the receive
          * @throws WorkException if a transaction exception occurred during thr receive
          */
         private boolean doReceive() throws JMSException, WorkException {
