@@ -121,7 +121,9 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
                     Thread.currentThread().setContextClassLoader(old);
                 }
             }
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+            throw new InvocationRuntimeException(e.getTargetException());
+        } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
         }
     }

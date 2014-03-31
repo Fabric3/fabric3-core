@@ -57,8 +57,9 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.binding.jms.model.DestinationType;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
+import org.fabric3.binding.jms.spi.provision.SessionType;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
@@ -900,6 +901,10 @@ public class AdaptiveMessageContainer {
                     statistics.incrementMessagesReceived();
                     work.end(session, message);
                     return true;
+                } catch (InvocationRuntimeException e) {
+                    // report original exception
+                    monitor.receiveError(containerUri, e.getCause());
+                    work.rollback(session);
                 } catch (RuntimeException | Error e) {
                     monitor.receiveError(containerUri, e);
                     work.rollback(session);
