@@ -55,7 +55,9 @@ import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
+import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
+import org.fabric3.binding.jms.runtime.container.MessageContainerFactory;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
@@ -79,15 +81,18 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
+    private MessageContainerFactory containerFactory;
     private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
 
     public JmsConnectionSourceAttacher(@Reference AdministeredObjectResolver resolver,
                                        @Reference ClassLoaderRegistry classLoaderRegistry,
+                                       @Reference MessageContainerFactory containerFactory,
                                        @Reference MessageContainerManager containerManager,
                                        @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
+        this.containerFactory = containerFactory;
         this.containerManager = containerManager;
         this.monitor = monitor;
     }
@@ -117,7 +122,8 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
                 // the wire has changed and it is being reprovisioned
                 containerManager.unregister(serviceUri);
             }
-            containerManager.register(configuration);
+            AdaptiveMessageContainer container = containerFactory.create(configuration);
+            containerManager.register(container);
         } catch (JMSException e) {
             throw new ContainerException(e);
         }

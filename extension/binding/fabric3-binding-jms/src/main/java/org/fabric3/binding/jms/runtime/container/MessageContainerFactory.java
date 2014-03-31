@@ -35,39 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-
 package org.fabric3.binding.jms.runtime.container;
 
-import javax.jms.JMSException;
-import java.net.URI;
-
 /**
- * Manages {@link AdaptiveMessageContainer}s used to receive messages from a JMS provider.
+ * Creates {@link AdaptiveMessageContainer} instances.
  */
-public interface MessageContainerManager {
+public interface MessageContainerFactory {
 
     /**
-     * Returns true if a listener for the service URI is registered.
+     * Create an {@link AdaptiveMessageContainer} from the given configuration.
      *
-     * @param uri the container URI
-     * @return true if a listener is registered
+     * @param configuration the configuration
+     * @return the container
      */
-    boolean isRegistered(URI uri);
-
-    /**
-     * Register a container which dispatches inbound JMS messages.
-     *
-     * @param container the container
-     * @throws JMSException if an error registering the container is encountered
-     */
-    public void register(AdaptiveMessageContainer container) throws JMSException;
-
-    /**
-     * Unregister a container.
-     *
-     * @param uri the container URI
-     * @throws JMSException if an error un-registering the container is encountered
-     */
-    public void unregister(URI uri) throws JMSException;
+    AdaptiveMessageContainer create(ContainerConfiguration configuration);
 
 }

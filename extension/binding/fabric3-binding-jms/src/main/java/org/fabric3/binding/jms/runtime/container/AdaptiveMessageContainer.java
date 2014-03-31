@@ -82,7 +82,7 @@ public class AdaptiveMessageContainer {
 
     // container configuration
     private int receiveTimeout;
-    private URI listenerUri;
+    private URI containerUri;
     private DestinationType destinationType;
     private Destination destination;
     private int cacheLevel;
@@ -134,7 +134,7 @@ public class AdaptiveMessageContainer {
                                     ExecutorService executorService,
                                     boolean javaEEXAEnabled,
                                     MessageContainerMonitor monitor) {
-        listenerUri = configuration.getUri();
+        containerUri = configuration.getUri();
         destinationType = configuration.getDestinationType();
         destination = configuration.getDestination();
         cacheLevel = configuration.getCacheLevel();
@@ -476,6 +476,10 @@ public class AdaptiveMessageContainer {
         }
     }
 
+    public URI getContainerUri() {
+        return containerUri;
+    }
+
     /**
      * Initializes and starts the container. Once started, messages will be received.
      *
@@ -591,7 +595,7 @@ public class AdaptiveMessageContainer {
                 exceptionListener.onException((JMSException) e);
             }
         }
-        monitor.listenerError(listenerUri.toString(), e);
+        monitor.listenerError(containerUri.toString(), e);
     }
 
     /**
@@ -755,9 +759,9 @@ public class AdaptiveMessageContainer {
                 } else if (isRunning()) {
                     int nonPausedReceivers = getReceiverCount() - getPausedReceiversCount();
                     if (nonPausedReceivers < 1) {
-                        monitor.pauseError(listenerUri.toString());
+                        monitor.pauseError(containerUri.toString());
                     } else if (nonPausedReceivers < getMinReceivers()) {
-                        monitor.minimumError(listenerUri.toString());
+                        monitor.minimumError(containerUri.toString());
                     }
                 }
             }
@@ -786,7 +790,7 @@ public class AdaptiveMessageContainer {
                         boolean waiting = false;
                         while ((active = isInitialized()) && !isRunning()) {
                             if (interrupted) {
-                                throw new IllegalStateException("Interrupted while waiting for restart for " + listenerUri);
+                                throw new IllegalStateException("Interrupted while waiting for restart for " + containerUri);
                             }
                             if (!isRunning()) {
                                 return false;
@@ -889,7 +893,7 @@ public class AdaptiveMessageContainer {
                     work.end(session, message);
                     return true;
                 } catch (RuntimeException | Error e) {
-                    monitor.receiveError(listenerUri, e);
+                    monitor.receiveError(containerUri, e);
                     work.rollback(session);
                 }
                 return false;
@@ -907,7 +911,7 @@ public class AdaptiveMessageContainer {
                     try {
                         session.unsubscribe(subscriptionId);
                     } catch (JMSException e) {
-                        monitor.listenerError(listenerUri.toString(), e);
+                        monitor.listenerError(containerUri.toString(), e);
                     }
                 }
                 JmsHelper.closeQuietly(session);

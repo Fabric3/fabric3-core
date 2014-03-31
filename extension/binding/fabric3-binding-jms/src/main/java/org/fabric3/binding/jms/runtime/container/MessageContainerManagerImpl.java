@@ -38,17 +38,12 @@
 
 package org.fabric3.binding.jms.runtime.container;
 
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.transaction.TransactionManager;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.binding.jms.model.TransactionType;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
@@ -63,7 +58,6 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 
 /**
  *
@@ -71,42 +65,20 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_C
 @EagerInit
 @Service({MessageContainerManager.class, Transport.class})
 public class MessageContainerManagerImpl implements MessageContainerManager, Transport {
-    private static final int DEFAULT_TRX_TIMEOUT = 30;
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<>();
     private boolean started;
     private boolean pausedOnStart;
     private EventService eventService;
-    private ExecutorService executorService;
-    private TransactionManager tm;
-    private MessageContainerMonitor containerMonitor;
     private ManagementService managementService;
-    private HostInfo hostInfo;
 
     private ContainerManagerMonitor managerMonitor;
-    private int transactionTimeout = DEFAULT_TRX_TIMEOUT;   // in seconds per the JTA spec
 
     public MessageContainerManagerImpl(@Reference EventService eventService,
-                                       @Reference ExecutorService executorService,
-                                       @Reference TransactionManager tm,
                                        @Reference ManagementService managementService,
-                                       @Reference HostInfo hostInfo,
-                                       @Monitor MessageContainerMonitor containerMonitor,
                                        @Monitor ContainerManagerMonitor managerMonitor) {
         this.eventService = eventService;
-        this.executorService = executorService;
-        this.tm = tm;
         this.managementService = managementService;
-        this.hostInfo = hostInfo;
-        this.containerMonitor = containerMonitor;
         this.managerMonitor = managerMonitor;
-    }
-
-    @Property(required = false)
-    public void setTransactionTimeout(int timeout) {
-        if (timeout <= 0) {
-            throw new IllegalArgumentException("Invalid transaction timeout: " + timeout);
-        }
-        this.transactionTimeout = timeout;
     }
 
     @Property(required = false)
@@ -158,31 +130,8 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         return containers.containsKey(serviceUri);
     }
 
-    public void register(ContainerConfiguration configuration) throws JMSException {
-        URI uri = configuration.getUri();
-        if (containers.containsKey(uri)) {
-            throw new JMSException("Container already registered: " + uri);
-        }
-        ConnectionFactory factory = configuration.getFactory();
-        TransactionType type = configuration.getType();
-        boolean durable = configuration.isDurable();
-        int cacheLevel = configuration.getCacheLevel();
-        boolean cacheConnection = cacheLevel >= CACHE_CONNECTION;
-
-        // set the receive timeout to half of the trx timeout - note receive timeout is in milliseconds and transaction timeout is in seconds
-        int receiveTimeout = (transactionTimeout / 2) * 500;
-
-        ContainerStatistics statistics = new ContainerStatistics();
-        ConnectionManager connectionManager = new ConnectionManager(factory, uri, cacheConnection, durable, containerMonitor);
-        UnitOfWork transactionHelper = new UnitOfWork(uri, type, transactionTimeout, tm, statistics);
-        AdaptiveMessageContainer container = new AdaptiveMessageContainer(configuration,
-                                                                          receiveTimeout,
-                                                                          connectionManager,
-                                                                          transactionHelper,
-                                                                          statistics,
-                                                                          executorService,
-                                                                          hostInfo.isJavaEEXAEnabled(),
-                                                                          containerMonitor);
+    public void register(AdaptiveMessageContainer container) throws JMSException {
+        URI uri = container.getContainerUri();
         containers.put(uri, container);
 
         try {

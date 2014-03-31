@@ -62,7 +62,9 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
+import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
+import org.fabric3.binding.jms.runtime.container.MessageContainerFactory;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.runtime.wire.InvocationChainHolder;
@@ -95,6 +97,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
 
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
+    private MessageContainerFactory containerFactory;
     private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
     private XMLFactory xmlFactory;
@@ -102,12 +105,14 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
 
     public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
+                                 @Reference MessageContainerFactory containerFactory,
                                  @Reference MessageContainerManager containerManager,
                                  @Reference XMLFactory xmlFactory,
                                  @Reference BindingHandlerRegistry handlerRegistry,
                                  @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
+        this.containerFactory = containerFactory;
         this.containerManager = containerManager;
         this.xmlFactory = xmlFactory;
         this.monitor = monitor;
@@ -143,7 +148,8 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
                 // the wire has changed and it is being reprovisioned
                 containerManager.unregister(serviceUri);
             }
-            containerManager.register(configuration);
+            AdaptiveMessageContainer container = containerFactory.create(configuration);
+            containerManager.register(container);
         } catch (JMSException e) {
             throw new ContainerException(e);
         }
