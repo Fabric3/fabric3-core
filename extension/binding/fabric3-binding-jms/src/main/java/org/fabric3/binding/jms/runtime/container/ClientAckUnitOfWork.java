@@ -40,11 +40,22 @@ package org.fabric3.binding.jms.runtime.container;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import java.net.URI;
 
 /**
  * Implements unit of work boundaries for a client acknowledgement mode.
  */
 public class ClientAckUnitOfWork implements UnitOfWork {
+    private URI uri;
+
+    /**
+     * Constructor.
+     *
+     * @param uri the container URI this unit is associated with
+     */
+    public ClientAckUnitOfWork(URI uri) {
+        this.uri = uri;
+    }
 
     public void begin() throws WorkException {
         // do nothing
@@ -62,7 +73,7 @@ public class ClientAckUnitOfWork implements UnitOfWork {
         try {
             session.recover();
         } catch (JMSException e) {
-            throw new WorkException(e);
+            throw new WorkException("Error handling message for " + uri, e);
         }
     }
 

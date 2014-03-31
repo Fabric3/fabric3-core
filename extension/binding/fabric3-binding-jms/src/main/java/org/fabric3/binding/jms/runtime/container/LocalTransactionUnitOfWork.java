@@ -40,19 +40,23 @@ package org.fabric3.binding.jms.runtime.container;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import java.net.URI;
 
 /**
  * Implements unit of work boundaries for a local transaction.
  */
 public class LocalTransactionUnitOfWork implements UnitOfWork {
+    private URI uri;
     private ContainerStatistics statistics;
 
     /**
      * Constructor.
      *
+     * @param uri        the container URI this unit is associated with
      * @param statistics the JMS statistics tracker
      */
-    public LocalTransactionUnitOfWork(ContainerStatistics statistics) {
+    public LocalTransactionUnitOfWork(URI uri, ContainerStatistics statistics) {
+        this.uri = uri;
         this.statistics = statistics;
     }
 
@@ -64,7 +68,7 @@ public class LocalTransactionUnitOfWork implements UnitOfWork {
         try {
             session.commit();
         } catch (JMSException e) {
-            throw new WorkException(e);
+            throw new WorkException("Error handling message for " + uri, e);
         }
         statistics.incrementTransactions();
     }
@@ -73,7 +77,7 @@ public class LocalTransactionUnitOfWork implements UnitOfWork {
         try {
             session.rollback();
         } catch (JMSException e) {
-            throw new WorkException(e);
+            throw new WorkException("Error handling message for " + uri, e);
         }
         statistics.incrementTransactionsRolledBack();
     }

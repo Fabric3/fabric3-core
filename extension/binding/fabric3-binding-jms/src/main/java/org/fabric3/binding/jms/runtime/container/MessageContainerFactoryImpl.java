@@ -103,7 +103,7 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
             case GLOBAL:
                 return new JtaUnitOfWork(uri, transactionTimeout, tm, statistics);
             case SESSION:
-                return new LocalTransactionUnitOfWork(statistics);
+                return new LocalTransactionUnitOfWork(uri, statistics);
             default:
                 return new AutoAckUnitOfWork();
         }

@@ -51,8 +51,8 @@ import java.net.URI;
 /**
  * Implements unit of work boundaries for a JMS operation.
  */
-public class JtaUnitOfWork implements UnitOfWork{
-    private URI listenerUri;
+public class JtaUnitOfWork implements UnitOfWork {
+    private URI uri;
     private int transactionTimeout;
     private TransactionManager tm;
 
@@ -61,13 +61,13 @@ public class JtaUnitOfWork implements UnitOfWork{
     /**
      * Constructor.
      *
-     * @param listenerUri the listener URI, typically a service or consumer
-     * @param timeout     transaction timeout in seconds
-     * @param tm          the JTA transaction manager for transacted messaging
-     * @param statistics  the JMS statistics tracker
+     * @param uri        the container URI this unit is associated with
+     * @param timeout    transaction timeout in seconds
+     * @param tm         the JTA transaction manager for transacted messaging
+     * @param statistics the JMS statistics tracker
      */
-    public JtaUnitOfWork(URI listenerUri, int timeout, TransactionManager tm, ContainerStatistics statistics) {
-        this.listenerUri = listenerUri;
+    public JtaUnitOfWork(URI uri, int timeout, TransactionManager tm, ContainerStatistics statistics) {
+        this.uri = uri;
         this.transactionTimeout = timeout;
         this.tm = tm;
         this.statistics = statistics;
@@ -92,7 +92,7 @@ public class JtaUnitOfWork implements UnitOfWork{
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException | SecurityException | IllegalStateException e) {
-            throw new WorkException("Error handling message for " + listenerUri, e);
+            throw new WorkException("Error handling message for " + uri, e);
         }
     }
 
@@ -103,7 +103,7 @@ public class JtaUnitOfWork implements UnitOfWork{
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
-            throw new WorkException("Error reverting transaction for " + listenerUri, e);
+            throw new WorkException("Error reverting transaction for " + uri, e);
         }
     }
 
