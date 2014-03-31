@@ -772,9 +772,9 @@ public class AdaptiveMessageContainer {
          *
          * @return true if a message was received on executing the loop
          * @throws JMSException         if an error occurs processing a message
-         * @throws TransactionException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
+         * @throws WorkException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receiveLoop() throws JMSException, TransactionException {
+        private boolean receiveLoop() throws JMSException, WorkException {
             boolean received = false;
             boolean active = true;
             while (active) {
@@ -831,9 +831,9 @@ public class AdaptiveMessageContainer {
          *
          * @return true if a message was received
          * @throws JMSException         if there was an error receiving the message
-         * @throws TransactionException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
+         * @throws WorkException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receive() throws JMSException, TransactionException {
+        private boolean receive() throws JMSException, WorkException {
             try {
                 setRecoveryMarker();
                 boolean received = doReceive();
@@ -849,9 +849,9 @@ public class AdaptiveMessageContainer {
          *
          * @return true if a message was received
          * @throws JMSException         if a JMS-related exception occurred during the receive
-         * @throws TransactionException if a transaction exception occurred during thr receive
+         * @throws WorkException if a transaction exception occurred during thr receive
          */
-        private boolean doReceive() throws JMSException, TransactionException {
+        private boolean doReceive() throws JMSException, WorkException {
             synchronized (syncMonitor) {
                 if (!isRunning()) {
                     return false;

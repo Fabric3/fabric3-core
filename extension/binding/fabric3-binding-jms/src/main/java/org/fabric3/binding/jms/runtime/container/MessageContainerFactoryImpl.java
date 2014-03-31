@@ -93,8 +93,19 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
         ContainerStatistics statistics = new ContainerStatistics();
         URI uri = configuration.getUri();
         ConnectionManager connectionManager = new ConnectionManager(factory, uri, cacheConnection, durable, containerMonitor);
-        UnitOfWork work = new UnitOfWork(uri, type, transactionTimeout, tm, statistics);
+        UnitOfWork work = createWork(uri, type, statistics);
         boolean javaEE = hostInfo.isJavaEEXAEnabled();
         return new AdaptiveMessageContainer(configuration, receiveTimeout, connectionManager, work, statistics, executorService, javaEE, containerMonitor);
+    }
+
+    private UnitOfWork createWork(URI uri, TransactionType type, ContainerStatistics statistics) {
+        switch (type) {
+            case GLOBAL:
+                return new JtaUnitOfWork(uri, transactionTimeout, tm, statistics);
+            case SESSION:
+                return new LocalTransactionUnitOfWork(statistics);
+            default:
+                return new AutoAckUnitOfWork();
+        }
     }
 }

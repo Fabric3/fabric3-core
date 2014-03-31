@@ -37,20 +37,30 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
-import org.fabric3.api.host.Fabric3Exception;
+import javax.jms.Message;
+import javax.jms.Session;
 
 /**
- *
+ * Implements unit of work boundaries for session auto-acknowledgement mode.
  */
-public class TransactionException extends Fabric3Exception {
-    private static final long serialVersionUID = -5376791778196200639L;
+public class AutoAckUnitOfWork implements UnitOfWork {
 
-    public TransactionException(Throwable cause) {
-        super(cause);
+    /**
+     * Constructor.
+     */
+    public AutoAckUnitOfWork() {
     }
 
-    public TransactionException(String message, Throwable cause) {
-        super(message, cause);
+    public void begin() throws WorkException {
+        // do nothing
+    }
+
+    public void end(Session session, Message message) throws WorkException {
+        // do nothing
+    }
+
+    public void rollback(Session session) throws WorkException {
+        // do nothing
     }
 
 }

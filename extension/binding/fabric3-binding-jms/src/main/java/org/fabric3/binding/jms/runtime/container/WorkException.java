@@ -37,37 +37,20 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
-import javax.jms.Message;
-import javax.jms.Session;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Implements unit of work boundaries for a JMS operation. Implementations support JTA transactions, local transactions, session auto-acknowledge, and client
- * acknowledge.
+ *
  */
-public interface UnitOfWork {
+public class WorkException extends Fabric3Exception {
+    private static final long serialVersionUID = -5376791778196200639L;
 
-    /**
-     * Begins a unit of work.
-     *
-     * @throws WorkException if there is an error beginning a global transaction.
-     */
-    void begin() throws WorkException;
+    public WorkException(Throwable cause) {
+        super(cause);
+    }
 
-    /**
-     * Commits the unit of work.
-     *
-     * @param session the session the work is associated with
-     * @param message the message the work is associated with
-     * @throws WorkException
-     */
-    void end(Session session, Message message) throws WorkException;
-
-    /**
-     * Aborts the unit of work.
-     *
-     * @param session the current JMS session the transaction is associated with
-     * @throws WorkException if there is a rollback error
-     */
-    void rollback(Session session) throws WorkException;
+    public WorkException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

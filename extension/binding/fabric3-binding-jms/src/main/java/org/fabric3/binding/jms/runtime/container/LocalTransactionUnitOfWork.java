@@ -37,37 +37,45 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
 /**
- * Implements unit of work boundaries for a JMS operation. Implementations support JTA transactions, local transactions, session auto-acknowledge, and client
- * acknowledge.
+ * Implements unit of work boundaries for a local transaction.
  */
-public interface UnitOfWork {
+public class LocalTransactionUnitOfWork implements UnitOfWork {
+    private ContainerStatistics statistics;
 
     /**
-     * Begins a unit of work.
+     * Constructor.
      *
-     * @throws WorkException if there is an error beginning a global transaction.
+     * @param statistics the JMS statistics tracker
      */
-    void begin() throws WorkException;
+    public LocalTransactionUnitOfWork(ContainerStatistics statistics) {
+        this.statistics = statistics;
+    }
 
-    /**
-     * Commits the unit of work.
-     *
-     * @param session the session the work is associated with
-     * @param message the message the work is associated with
-     * @throws WorkException
-     */
-    void end(Session session, Message message) throws WorkException;
+    public void begin() throws WorkException {
+        // do nothing
+    }
 
-    /**
-     * Aborts the unit of work.
-     *
-     * @param session the current JMS session the transaction is associated with
-     * @throws WorkException if there is a rollback error
-     */
-    void rollback(Session session) throws WorkException;
+    public void end(Session session, Message message) throws WorkException {
+        try {
+            session.commit();
+        } catch (JMSException e) {
+            throw new WorkException(e);
+        }
+        statistics.incrementTransactions();
+    }
+
+    public void rollback(Session session) throws WorkException {
+        try {
+            session.rollback();
+        } catch (JMSException e) {
+            throw new WorkException(e);
+        }
+        statistics.incrementTransactionsRolledBack();
+    }
 
 }
