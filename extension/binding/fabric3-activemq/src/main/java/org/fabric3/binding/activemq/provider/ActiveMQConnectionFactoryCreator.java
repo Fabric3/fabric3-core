@@ -42,11 +42,14 @@ import java.net.URI;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
-import org.apache.activemq.pool.PooledConnectionFactory;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionMonitor;
+import org.fabric3.binding.jms.spi.runtime.connection.SingletonConnectionFactory;
+import org.fabric3.binding.jms.spi.runtime.connection.XaSingletonConnectionFactory;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -58,15 +61,18 @@ import org.oasisopen.sca.annotation.Reference;
 public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreator {
     private URI brokerUri;
     private HostInfo info;
+    private ConnectionMonitor monitor;
 
-    public ActiveMQConnectionFactoryCreator(@Reference HostInfo info) {
+    public ActiveMQConnectionFactoryCreator(@Reference HostInfo info, @Monitor ConnectionMonitor monitor) {
         this.info = info;
+        this.monitor = monitor;
         String brokerName = info.getRuntimeName().replace(":", ".");
         brokerUri = URI.create("vm://" + brokerName);
     }
 
     public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException {
         ConnectionFactoryType type = configuration.getType();
+        String clientId = configuration.getClientId();
         switch (type) {
 
             case XA:
@@ -74,7 +80,11 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
                 xaFactory.setProperties(configuration.getFactoryProperties());
                 xaFactory.setUserName(configuration.getUsername());
                 xaFactory.setPassword(configuration.getPassword());
-                setClientId(configuration, xaFactory);
+                if (clientId != null) {
+                    // since a client id is specified (possibly for a durable subscription), create a singleton connection so the connection id is unique
+                    setClientId(clientId, xaFactory);
+                    return new XaSingletonConnectionFactory(xaFactory, monitor);
+                }
                 return xaFactory;
             default:
                 // default to local pooled
@@ -82,28 +92,28 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
                 factory.setProperties(configuration.getFactoryProperties());
                 factory.setUserName(configuration.getUsername());
                 factory.setPassword(configuration.getPassword());
-                setClientId(configuration, factory);
-                return new PooledConnectionFactory(factory);
+                if (clientId != null) {
+                    // since a client id is specified (possibly for a durable subscription), create a singleton connection so the connection id is unique
+                    setClientId(clientId, factory);
+                    return new SingletonConnectionFactory(factory, monitor);
+                }
+                return factory;
         }
     }
 
     public void release(ConnectionFactory factory) {
-        if (factory instanceof PooledConnectionFactory) {
-            PooledConnectionFactory pooled = (PooledConnectionFactory) factory;
-            pooled.stop();
+        if (factory instanceof SingletonConnectionFactory) {
+            // if the connection is a singleton, close the proxied connection
+            ((SingletonConnectionFactory) factory).destroy();
         }
-
     }
 
-    private void setClientId(ConnectionFactoryConfiguration configuration, ActiveMQConnectionFactory factory) {
-        String clientId = configuration.getClientId();
-        if (clientId != null) {
-            if (ConnectionFactoryConfiguration.RUNTIME.equals(clientId)) {
-                // client id is set to the runtime name
-                factory.setClientID(info.getRuntimeName().replace(":", "."));
-            } else {
-                factory.setClientID(clientId);
-            }
+    private void setClientId(String clientId, ActiveMQConnectionFactory factory) {
+        if (ConnectionFactoryConfiguration.RUNTIME.equals(clientId)) {
+            // client id is set to the runtime name
+            factory.setClientID(info.getRuntimeName().replace(":", "."));
+        } else {
+            factory.setClientID(clientId);
         }
     }
 
