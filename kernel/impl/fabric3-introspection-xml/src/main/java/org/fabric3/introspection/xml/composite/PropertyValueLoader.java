@@ -43,22 +43,18 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-
+import org.fabric3.api.model.type.component.PropertyMany;
+import org.fabric3.api.model.type.component.PropertyValue;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.InvalidAttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
-import org.fabric3.api.model.type.component.PropertyMany;
-import org.fabric3.api.model.type.component.PropertyValue;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -66,6 +62,10 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /**
  * Loads property values configured on a component.
@@ -148,7 +148,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         PropertyMany many = parseMany(reader);
         String valueAttribute = reader.getAttributeValue(null, "value");
 
-
         PropertyValue propertyValue = new PropertyValue(name, many);
 
         validateAttributes(reader, context, propertyValue);
@@ -156,15 +155,17 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         Document value = helper.loadPropertyValues(reader);
 
         if (valueAttribute != null) {
+            NodeList childNodes = value.getDocumentElement().getChildNodes();
+            if (valueAttribute != null && childNodes.getLength() > 0 && childNodes.item(0).getTextContent().length() > 0) {
+                InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using a value attribute and inline: " + name,
+                                                                      location,
+                                                                      propertyValue);
+                context.addError(error);
+                return propertyValue;
+            }
             value = helper.loadPropertyValue(valueAttribute);
         }
         propertyValue.setValue(value);
-
-        if (valueAttribute != null && value.getDocumentElement().getChildNodes().getLength() > 0) {
-            InvalidPropertyValue error =
-                    new InvalidPropertyValue("Property value configured using a value attribute and inline: " + name, location, propertyValue);
-            context.addError(error);
-        }
 
         QName type = null;
         QName element = null;
