@@ -195,16 +195,21 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     private WebAppContext createWebAppContext(String contextPath, Map<String, List<Injector<?>>> injectors, List<URL> locations, ClassLoader parentClassLoader)
             throws IOException {
 
-        WebAppContext context = new ManagedWebAppContext(null, contextPath);
+        WebAppContext context;
 
-        // add the resource paths
-        String[] paths = new String[locations.size()];
-        for (int i = 0; i < locations.size(); i++) {
-            URL location = locations.get(i);
-            paths[i] = (location.toExternalForm());
+        if (locations.size() == 1) {
+            context = new ManagedWebAppContext(locations.get(0).toExternalForm(), contextPath);
+        } else {
+            context = new ManagedWebAppContext(null, contextPath);
+            // add the resource paths
+            String[] paths = new String[locations.size()];
+            for (int i = 0; i < locations.size(); i++) {
+                URL location = locations.get(i);
+                paths[i] = (location.toExternalForm());
+            }
+            ResourceCollection resources = new ResourceCollection(paths);
+            context.setBaseResource(resources);
         }
-        ResourceCollection resources = new ResourceCollection(paths);
-        context.setBaseResource(resources);
 
         context.setParentLoaderPriority(true);
         InjectingDecorator decorator = new InjectingDecorator(injectors);
