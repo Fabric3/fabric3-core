@@ -19,6 +19,7 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.persistence" version="2.0.0"/>
     <export.java package="org.hibernate.*" version="4.2.2"/>
     <export.java package="javassist.util.proxy" version="3.5.3"/>
+    <f3:provides name="datasource"/>
     <f3:requires.capability name="transaction"/>
     <f3:provides.capability name="jpa"/>
     <f3:provides.capability name="hibernate"/>
