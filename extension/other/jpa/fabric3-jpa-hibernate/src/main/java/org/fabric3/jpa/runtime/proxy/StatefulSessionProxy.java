@@ -57,6 +57,7 @@ import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.SessionEventListener;
 import org.hibernate.SessionFactory;
 import org.hibernate.SharedSessionBuilder;
 import org.hibernate.SimpleNaturalIdLoadAccess;
@@ -64,6 +65,7 @@ import org.hibernate.TypeHelper;
 import org.hibernate.UnknownProfileException;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
+import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -364,6 +366,30 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.createSQLQuery(queryString);
     }
 
+    
+    public ProcedureCall getNamedProcedureCall(String name) {
+        initSession();
+        return session.getNamedProcedureCall(name);
+    }
+
+    
+    public ProcedureCall createStoredProcedureCall(String procedureName) {
+        initSession();
+        return session.createStoredProcedureCall(procedureName);
+    }
+
+    
+    public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
+        initSession();
+        return session.createStoredProcedureCall(procedureName, resultClasses);
+    }
+
+    
+    public ProcedureCall createStoredProcedureCall(String procedureName, String... resultSetMappings) {
+        initSession();
+        return session.createStoredProcedureCall(procedureName, resultSetMappings);
+    }
+
     public org.hibernate.Query createFilter(Object collection, String queryString) throws HibernateException {
         initSession();
         return session.createFilter(collection, queryString);
@@ -517,6 +543,12 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     public LobHelper getLobHelper() {
         initSession();
         return session.getLobHelper();
+    }
+
+    
+    public void addEventListeners(SessionEventListener... listeners) {
+        initSession();
+        session.addEventListeners(listeners);
     }
 
     public void clearEntityManager() {

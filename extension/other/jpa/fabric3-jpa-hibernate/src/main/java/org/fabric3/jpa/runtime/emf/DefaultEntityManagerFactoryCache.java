@@ -37,26 +37,25 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import javax.persistence.EntityManagerFactory;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
-
-import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.hibernate.jmx.StatisticsService;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.jpa.api.JpaResolutionException;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.stat.Statistics;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Creates and caches entity manager factories.
@@ -133,12 +132,10 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
             // management not enabled
             return;
         }
-        StatisticsService statistics = new StatisticsService();
-        // TODO make configurable
         if (!(factory instanceof HibernateEntityManagerFactory)) {
             throw new AssertionError("Expected " + HibernateEntityManagerFactory.class.getName() + " but was " + factory.getClass().getName());
         }
-        statistics.setSessionFactory(((HibernateEntityManagerFactory) factory).getSessionFactory());
+        Statistics statistics = ((HibernateEntityManagerFactory) factory).getSessionFactory().getStatistics();
         statistics.setStatisticsEnabled(true);
         try {
             managementService.export(encodeName(unitName), "Hibernate", "Hibernate session factory MBeans", statistics);

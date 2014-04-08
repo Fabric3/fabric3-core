@@ -39,7 +39,6 @@ package org.fabric3.jpa.runtime.emf;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitInfo;
-import javax.sql.DataSource;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +50,9 @@ import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.hibernate.ejb.Ejb3Configuration;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
+import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -104,17 +105,23 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
                 // This must be done since the overrides may not be loaded for all units
                 continue;
             }
-            Ejb3Configuration cfg = new Ejb3Configuration();
-            DataSource dataSource = info.getJtaDataSource();
-            if (dataSource == null) {
-                dataSource = info.getNonJtaDataSource();
-            }
-            cfg.setDataSource(dataSource);
-            Properties unitProperties = cfg.getProperties();
+            Properties unitProperties = info.getProperties();
+//            Ejb3Configuration cfg = new Ejb3Configuration();
+//            DataSource dataSource = info.getJtaDataSource();
+//            if (dataSource == null) {
+//                dataSource = info.getNonJtaDataSource();
+//            }
+//            cfg.setDataSource(dataSource);
+//            Properties unitProperties = cfg.getProperties();
             unitProperties.setProperty(HIBERNATE_LOOKUP, F3TransactionManagerLookup.class.getName());
             unitProperties.putAll(overrides.getProperties());
-            cfg.configure(info, Collections.emptyMap());
-            return cfg.buildEntityManagerFactory();
+
+            PersistenceUnitInfoDescriptor descriptor = new PersistenceUnitInfoDescriptor(info);
+            EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(descriptor, Collections.emptyMap(), classLoader);
+            return builder.build();
+
+            //cfg.configure(info, Collections.emptyMap());
+            //return cfg.buildEntityManagerFactory();
         }
         throw new JpaResolutionException("Persistence unit not defined for: " + unitName);
     }

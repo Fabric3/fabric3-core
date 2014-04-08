@@ -24,9 +24,9 @@ Public License. See the accompanying license file for details.
 
     <dependencies>
         <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.1.Final</version>
+          <groupId>org.hibernate.javax.persistence</groupId>
+          <artifactId>hibernate-jpa-2.1-api</artifactId>
+          <version>1.0.0.Final</version>
         </dependency>
     </dependencies>
 

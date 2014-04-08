@@ -41,7 +41,7 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import org.hibernate.service.jta.platform.internal.AbstractJtaPlatform;
+import org.hibernate.engine.transaction.jta.platform.internal.AbstractJtaPlatform;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

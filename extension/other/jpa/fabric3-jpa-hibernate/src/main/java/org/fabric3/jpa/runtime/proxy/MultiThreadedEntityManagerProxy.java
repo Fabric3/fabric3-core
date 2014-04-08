@@ -37,29 +37,34 @@
 */
 package org.fabric3.jpa.runtime.proxy;
 
-import java.util.Map;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.metamodel.Metamodel;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import java.util.List;
+import java.util.Map;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * An EntityManager proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread may
- * be accessing the proxy at a time.
+ * An EntityManager proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread may be
+ * accessing the proxy at a time.
  * <p/>
- * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the EntityManager instance associated with
- * the current transaction context from the EntityManagerService.
+ * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the EntityManager instance associated with the
+ * current transaction context from the EntityManagerService.
  */
 public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityManager {
     private String unitName;
@@ -172,6 +177,14 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         return getEntityManager().createQuery(tCriteriaQuery);
     }
 
+    public Query createQuery(CriteriaUpdate updateQuery) {
+        return getEntityManager().createQuery(updateQuery);
+    }
+
+    public Query createQuery(CriteriaDelete deleteQuery) {
+        return getEntityManager().createQuery(deleteQuery);
+    }
+
     public <T> TypedQuery<T> createQuery(String s, Class<T> tClass) {
         return getEntityManager().createQuery(s, tClass);
     }
@@ -196,8 +209,28 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         return getEntityManager().createNativeQuery(sqlString, resultSetMapping);
     }
 
+    public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
+        return getEntityManager().createNamedStoredProcedureQuery(name);
+    }
+
+    public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
+        return getEntityManager().createStoredProcedureQuery(procedureName);
+    }
+
+    public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+        return getEntityManager().createStoredProcedureQuery(procedureName, resultClasses);
+    }
+
+    public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+        return getEntityManager().createStoredProcedureQuery(procedureName, resultSetMappings);
+    }
+
     public void joinTransaction() {
         getEntityManager().joinTransaction();
+    }
+
+    public boolean isJoinedToTransaction() {
+        return getEntityManager().isJoinedToTransaction();
     }
 
     public <T> T unwrap(Class<T> tClass) {
@@ -232,13 +265,29 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         return getEntityManager().getMetamodel();
     }
 
+    public <T> EntityGraph<T> createEntityGraph(Class<T> rootType) {
+        return getEntityManager().createEntityGraph(rootType);
+    }
+
+    public EntityGraph<?> createEntityGraph(String graphName) {
+        return getEntityManager().createEntityGraph(graphName);
+    }
+
+    public EntityGraph<?> getEntityGraph(String graphName) {
+        return getEntityManager().getEntityGraph(graphName);
+    }
+
+    public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
+        return getEntityManager().getEntityGraphs(entityClass);
+    }
+
     public void clearEntityManager() {
         // no-op
     }
 
     /**
-     * Returns the delegated EntityManager. If the persistence context is transaction-scoped, the EntityManager associated with the current
-     * transaction will be used.
+     * Returns the delegated EntityManager. If the persistence context is transaction-scoped, the EntityManager associated with the current transaction will be
+     * used.
      *
      * @return the EntityManager
      */

@@ -57,6 +57,7 @@ import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.SessionEventListener;
 import org.hibernate.SessionFactory;
 import org.hibernate.SharedSessionBuilder;
 import org.hibernate.SimpleNaturalIdLoadAccess;
@@ -64,6 +65,7 @@ import org.hibernate.TypeHelper;
 import org.hibernate.UnknownProfileException;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
+import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -308,6 +310,26 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().createSQLQuery(queryString);
     }
 
+    
+    public ProcedureCall getNamedProcedureCall(String name) {
+        return getSession().getNamedProcedureCall(name);
+    }
+
+    
+    public ProcedureCall createStoredProcedureCall(String procedureName) {
+        return getSession().createStoredProcedureCall(procedureName);
+    }
+
+    
+    public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
+        return getSession().createStoredProcedureCall(procedureName, resultClasses);
+    }
+
+    
+    public ProcedureCall createStoredProcedureCall(String procedureName, String... resultSetMappings) {
+        return getSession().createStoredProcedureCall(procedureName, resultSetMappings);
+    }
+
     public org.hibernate.Query createFilter(Object collection, String queryString) throws HibernateException {
         return getSession().createFilter(collection, queryString);
     }
@@ -430,6 +452,11 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
 
     public LobHelper getLobHelper() {
         return getSession().getLobHelper();
+    }
+
+    
+    public void addEventListeners(SessionEventListener... listeners) {
+        getSession().addEventListeners(listeners);
     }
 
     /**

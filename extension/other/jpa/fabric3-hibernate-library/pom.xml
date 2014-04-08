@@ -27,7 +27,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.2.2.Final</version>
+            <version>4.3.5.Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.fabric3.api</groupId>
@@ -44,7 +44,7 @@ Public License. See the accompanying license file for details.
                 </exclusion>
                 <exclusion>
                     <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
+                    <artifactId>hibernate-jpa-2.1-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
