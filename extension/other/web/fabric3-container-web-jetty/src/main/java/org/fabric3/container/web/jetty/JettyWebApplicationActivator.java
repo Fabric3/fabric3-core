@@ -52,8 +52,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.ResourceCollection;
+import org.eclipse.jetty.webapp.Configuration;
+import org.eclipse.jetty.webapp.FragmentConfiguration;
+import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
+import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebInfConfiguration;
+import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
@@ -214,9 +220,13 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         context.setParentLoaderPriority(true);
         InjectingDecorator decorator = new InjectingDecorator(injectors);
         context.addDecorator(decorator);
-        WebAppClassLoader webAppClassLoader;
-        webAppClassLoader = new WebAppClassLoader(parentClassLoader, context);
+        WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parentClassLoader, context);
         context.setClassLoader(webAppClassLoader);
+
+        // don't extract the war since this has already been done by the WAR classpath processor
+        context.setExtractWAR(false);
+        Configuration[] configurations = createConfigurations();
+        context.setConfigurations(configurations);
         return context;
     }
 
@@ -262,6 +272,22 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
 
     private String encodeName(String name) {
         return name.toLowerCase().replace('\n', ' ');
+    }
+
+    /**
+     * Creates Jetty configurations, overriding the default WebInfConfiguration to not scan library resources and create duplicates (the resources are already
+     * on the classpath).
+     *
+     * @return the configuration
+     */
+    private Configuration[] createConfigurations() {
+        WebInfConfiguration webInfConfiguration = new NonScanningWebInfConfiguration();
+        WebXmlConfiguration webXmlConfiguration = new WebXmlConfiguration();
+        MetaInfConfiguration metaInfConfiguration = new MetaInfConfiguration();
+        FragmentConfiguration fragmentConfiguration = new FragmentConfiguration();
+        JettyWebXmlConfiguration jettyWebXmlConfiguration = new JettyWebXmlConfiguration();
+
+        return new Configuration[]{webInfConfiguration, webXmlConfiguration, metaInfConfiguration, fragmentConfiguration, jettyWebXmlConfiguration};
     }
 
     private static class Holder {
