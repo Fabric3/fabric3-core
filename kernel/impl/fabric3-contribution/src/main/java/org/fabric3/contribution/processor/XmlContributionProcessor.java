@@ -37,17 +37,12 @@
 */
 package org.fabric3.contribution.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
@@ -60,6 +55,10 @@ import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes an XML-based contribution. The implementation dispatches to a specific XmlProcessor based on the QName of the document element.
@@ -119,6 +118,9 @@ public class XmlContributionProcessor implements ContributionProcessor {
             throw new InstallException("Error processing contribution " + uri, e);
         } catch (XMLStreamException e) {
             String uri = contribution.getUri().toString();
+            if (e.getLocation() == null) {
+                throw new InstallException("Error processing contribution " + uri, e);
+            }
             int line = e.getLocation().getLineNumber();
             int col = e.getLocation().getColumnNumber();
             throw new InstallException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
