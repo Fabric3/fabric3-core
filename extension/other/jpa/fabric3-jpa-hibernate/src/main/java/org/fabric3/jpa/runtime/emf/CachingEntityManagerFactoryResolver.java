@@ -106,22 +106,12 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
                 continue;
             }
             Properties unitProperties = info.getProperties();
-//            Ejb3Configuration cfg = new Ejb3Configuration();
-//            DataSource dataSource = info.getJtaDataSource();
-//            if (dataSource == null) {
-//                dataSource = info.getNonJtaDataSource();
-//            }
-//            cfg.setDataSource(dataSource);
-//            Properties unitProperties = cfg.getProperties();
             unitProperties.setProperty(HIBERNATE_LOOKUP, F3TransactionManagerLookup.class.getName());
             unitProperties.putAll(overrides.getProperties());
 
             PersistenceUnitInfoDescriptor descriptor = new PersistenceUnitInfoDescriptor(info);
             EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(descriptor, Collections.emptyMap(), classLoader);
             return builder.build();
-
-            //cfg.configure(info, Collections.emptyMap());
-            //return cfg.buildEntityManagerFactory();
         }
         throw new JpaResolutionException("Persistence unit not defined for: " + unitName);
     }
