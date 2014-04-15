@@ -88,13 +88,17 @@ public class KeyStoreManagerImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
+        System.clearProperty("javax.net.ssl.keyStore");
         baseDir = new File(getClass().getClassLoader().getResource(KEYSTORE).getFile()).getParentFile().getParentFile();
         HostInfo info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.getBaseDir()).andReturn(baseDir).atLeastOnce();
         EasyMock.replay(info);
         manager = new KeyStoreManagerImpl(info);
+    }
 
-
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        System.clearProperty("javax.net.ssl.keyStore");
     }
 }

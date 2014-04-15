@@ -88,6 +88,7 @@ import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -106,11 +107,15 @@ import com.sun.xml.wss.impl.XWSSecurityRuntimeException;
 import com.sun.xml.wss.impl.configuration.DynamicApplicationContext;
 import com.sun.xml.wss.impl.policy.mls.AuthenticationTokenPolicy;
 import com.sun.xml.wss.saml.Assertion;
+import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.AuthenticationToken;
+import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.security.UsernamePasswordToken;
 import org.ietf.jgss.GSSCredential;
@@ -137,10 +142,20 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
     private final SimpleDateFormat calendarFormatter1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     private final SimpleDateFormat calendarFormatter2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'");
 
-    public F3SecurityEnvironment(@Reference AuthenticationService authenticationService,
+    public F3SecurityEnvironment(@Reference(required = false) AuthenticationService authenticationService,
                                  @Reference CertificateValidator certificateValidator,
-                                 @Reference KeyStoreManager keyStoreManager) {
-        this.authenticationService = authenticationService;
+                                 @Reference KeyStoreManager keyStoreManager,
+                                 @Monitor SecurityMonitor monitor) {
+        if (authenticationService == null) {
+            monitor.securityExtensionNotInstalled();
+            this.authenticationService = new AuthenticationService() {
+                public SecuritySubject authenticate(AuthenticationToken<?, ?> token) throws AuthenticationException {
+                    return new BasicSecuritySubject("disabled", "disabled", Collections.<Role>emptySet());
+                }
+            };
+        } else {
+            this.authenticationService = authenticationService;
+        }
         this.certificateValidator = certificateValidator;
         this.keyStoreManager = keyStoreManager;
     }

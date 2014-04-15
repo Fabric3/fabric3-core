@@ -134,7 +134,6 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
         this.certPassword = certPassword;
     }
 
-
     @Property(required = false)
     @Source("$systemConfig/f3:security/f3:keystore.type")
     public void setKeyStoreType(String keyStoreType) {
@@ -149,7 +148,7 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
 
     @Init
     public void init() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
-        initializeKeystore();
+        initializeKeyStore();
         initializeTrustStore();
     }
 
@@ -181,13 +180,19 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
         return certPassword;
     }
 
-    private void initializeKeystore() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+    private void initializeKeyStore() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         keystoreFile = null;
         if (keyStoreLocation == null) {
-            File dir = info.getBaseDir();
-            if (dir != null) {
-                keystoreFile = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
+            String property = System.getProperty(keyStoreLocationProperty);
+            if (property != null) {
+                keystoreFile = new File(property);
                 keyStoreLocation = keystoreFile.getAbsolutePath();
+            } else {
+                File dir = info.getBaseDir();
+                if (dir != null) {
+                    keystoreFile = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
+                    keyStoreLocation = keystoreFile.getAbsolutePath();
+                }
             }
         } else {
             keystoreFile = new File(keyStoreLocation);
@@ -218,8 +223,9 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
         truststoreFile = null;
         if (trustStoreLocation == null) {
             File dir = info.getBaseDir();
-            if (dir != null) {
-                truststoreFile = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
+            File file = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
+            if (dir != null && file.exists()) {
+                truststoreFile = file;
                 trustStoreLocation = truststoreFile.getAbsolutePath();
                 trustStorePassword = keyStorePassword;
             } else if (keyStoreLocation != null) {
