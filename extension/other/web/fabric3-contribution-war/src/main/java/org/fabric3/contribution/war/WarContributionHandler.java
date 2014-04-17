@@ -139,6 +139,10 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     continue;
                 }
 
+                if (exclude(manifest, entry)) {
+                    continue;
+                }
+
                 if (name.endsWith(".class")) {
                     URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
                     ClassLoader classLoader = context.getClassLoader();
@@ -158,9 +162,6 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     callback.onResource(resource);
                 } else {
 
-                    if (exclude(manifest, entry)) {
-                        continue;
-                    }
                     String contentType = contentTypeResolver.getContentType(name);
                     if (contentType == null) {
                         // skip entry if we don't recognize the content type

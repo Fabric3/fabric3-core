@@ -146,6 +146,10 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         continue;
                     }
 
+                    if (exclude(file, root, manifest)) {
+                        continue;
+                    }
+
                     boolean isClass = file.getName().endsWith(".class");
                     if (isClass) {
                         name = getRelativeName(file, root);
@@ -170,9 +174,6 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         String contentType = contentTypeResolver.getContentType(name);
                         // skip entry if we don't recognize the content type
                         if (contentType == null) {
-                            continue;
-                        }
-                        if (exclude(file, root, manifest)) {
                             continue;
                         }
                         URL entryUrl = file.toURI().toURL();
