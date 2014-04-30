@@ -76,8 +76,10 @@ public class TransactionalTimerInvoker implements Runnable {
             throw new InvocationRuntimeException(e);
         }
 
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             tm.begin();
+            Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             ((Runnable) instance).run();
             tm.commit();
         } catch (HeuristicRollbackException | NotSupportedException | HeuristicMixedException | SystemException | RollbackException e) {
@@ -98,6 +100,7 @@ public class TransactionalTimerInvoker implements Runnable {
             } catch (InstanceDestructionException e) {
                 monitor.disposeError(e);
             }
+            Thread.currentThread().setContextClassLoader(old);
             workContext.reset();
         }
 

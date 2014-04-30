@@ -66,7 +66,9 @@ public class NonTransactionalTimerInvoker implements Runnable {
             throw new InvocationRuntimeException(e);
         }
 
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             try {
                 ((Runnable) instance).run();
             } catch (RuntimeException e) {
@@ -81,6 +83,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
                 //noinspection ThrowFromFinallyBlock
                 throw new InvocationRuntimeException(e);
             }
+            Thread.currentThread().setContextClassLoader(old);
             workContext.reset();
         }
 
