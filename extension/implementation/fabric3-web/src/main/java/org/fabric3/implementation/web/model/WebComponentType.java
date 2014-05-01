@@ -52,8 +52,7 @@ public class WebComponentType extends ComponentType {
     private final Map<String, Map<InjectionSite, Injectable>> sites = new HashMap<>();
 
     /**
-     * Returns a mapping from artifact id (e.g. servlet or filter class name, servlet context, session context) to injection site/injectable attribute
-     * pair
+     * Returns a mapping from artifact id (e.g. servlet or filter class name, servlet context, session context) to injection site/injectable attribute pair
      *
      * @return the mapping
      */
@@ -75,5 +74,9 @@ public class WebComponentType extends ComponentType {
             sites.put(artifactId, mapping);
         }
         mapping.put(site, attribute);
+    }
+
+    public boolean isDynamic() {
+        return true;
     }
 }
