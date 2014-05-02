@@ -50,6 +50,7 @@ import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.JavaSymbol;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.introspection.IntrospectionContext;
 import org.junit.runner.RunWith;
 
 /**
@@ -58,7 +59,7 @@ import org.junit.runner.RunWith;
 public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospector {
     private static final QName TEST_COMPOSITE = new QName(Namespaces.F3, "TestComposite");
 
-    public Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader) {
+    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
         try {
             int extensionIndex = name.lastIndexOf('.');
             if (extensionIndex < 1) {
@@ -68,7 +69,7 @@ public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospec
                 return null;
             }
             String className = name.substring(0, extensionIndex).replace(File.separator, ".");
-            Class<?> clazz = loader.loadClass(className);
+            Class<?> clazz = context.getClassLoader().loadClass(className);
             if (clazz.isAnnotationPresent(Component.class) || !clazz.isAnnotationPresent(RunWith.class)) {
                 // not a Junit component or labeled as a component, avoid creating a duplicate
                 return null;

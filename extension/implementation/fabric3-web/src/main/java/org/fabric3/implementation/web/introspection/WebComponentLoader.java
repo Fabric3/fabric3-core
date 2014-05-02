@@ -37,28 +37,27 @@
 */
 package org.fabric3.implementation.web.introspection;
 
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
-import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.implementation.web.model.WebComponentType;
+import org.fabric3.implementation.web.model.WebImplementation;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -67,6 +66,10 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads <code><implementation.web></code> from a composite.
@@ -74,16 +77,12 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 @EagerInit
 public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplementation> {
     private LoaderRegistry registry;
-    private List<WebImplementationIntrospector> introspectors;
+    private MetaDataStore metaDataStore;
 
-    public WebComponentLoader(@Reference LoaderRegistry registry) {
+    public WebComponentLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore metaDataStore) {
         this.registry = registry;
+        this.metaDataStore = metaDataStore;
         addAttributes("uri");
-    }
-
-    @Reference
-    public void setIntrospectors(List<WebImplementationIntrospector> introspectors) {
-        this.introspectors = introspectors;
     }
 
     @Init
@@ -106,13 +105,12 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
 
         validateAttributes(reader, context, impl);
 
-        for (WebImplementationIntrospector introspector : introspectors) {
-            introspector.introspect(impl, context);
-        }
-
         try {
-            ComponentType type = impl.getComponentType();
-            // FIXME we should allow implementation to specify the component type;
+            // find the component type created during indexing of Java artifacts (or create one if necessary)
+            WebComponentType type = getComponentType(context);
+            impl.setComponentType(type);
+
+            // check if an explicit component type file is present (required for backward compatibility)
             ComponentType componentType = loadComponentType(context);
             for (Map.Entry<String, ReferenceDefinition> entry : componentType.getReferences().entrySet()) {
                 type.add(entry.getValue());
@@ -158,7 +156,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
             url = new URL(context.getSourceBase(), "web.componentType");
         } catch (MalformedURLException e) {
             // this should not happen
-            throw new LoaderException(e.getMessage(), e);
+            throw new AssertionError(e);
         }
         Source source = new UrlSource(url);
         IntrospectionContext childContext = new DefaultIntrospectionContext(null, context.getClassLoader(), url);
@@ -171,4 +169,23 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
         }
         return componentType;
     }
+
+    /**
+     * Returns the web component type created during index of Java artifacts or creates one if necessary (i.e. no artifacts generated component type metadata).
+     *
+     * @param context the current context
+     * @return the web component type
+     */
+    private WebComponentType getComponentType(IntrospectionContext context) {
+        Contribution contribution = metaDataStore.find(context.getContributionUri());
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                if (element.getSymbol() instanceof WebComponentTypeSymbol) {
+                    return (WebComponentType) element.getValue();
+                }
+            }
+        }
+        return new WebComponentType();
+    }
+
 }

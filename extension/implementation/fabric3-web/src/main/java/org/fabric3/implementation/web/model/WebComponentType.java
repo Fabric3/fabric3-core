@@ -76,7 +76,4 @@ public class WebComponentType extends ComponentType {
         mapping.put(site, attribute);
     }
 
-    public boolean isDynamic() {
-        return true;
-    }
 }

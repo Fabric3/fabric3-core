@@ -145,11 +145,10 @@ public class WarContributionHandler implements ArchiveContributionHandler {
 
                 if (name.endsWith(".class")) {
                     URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
-                    ClassLoader classLoader = context.getClassLoader();
 
                     Resource resource = null;
                     for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
-                        resource = introspector.inspect(name, entryUrl, contribution, classLoader);
+                        resource = introspector.inspect(name, entryUrl, contribution, context);
                         if (resource != null) {
                             break;
                         }

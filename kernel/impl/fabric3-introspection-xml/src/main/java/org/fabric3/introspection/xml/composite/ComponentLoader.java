@@ -420,7 +420,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 String name = service.getName();
                 IncompatibleContracts error = new IncompatibleContracts(
                         "The component service interface " + name + " is not compatible with the promoted service " + typeService.getName() + ": "
-                        + result.getError(), location, service);
+                        + result.getError(), location, service
+                );
                 context.addError(error);
             } else {
                 matchServiceCallbackContracts(service, typeService, location, context);
@@ -448,7 +449,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 String name = reference.getName();
                 IncompatibleContracts error = new IncompatibleContracts(
                         "The component reference contract " + name + " is not compatible with the promoted reference " + typeReference.getName() + ": "
-                        + result.getError(), location, reference);
+                        + result.getError(), location, reference
+                );
                 context.addError(error);
             } else {
                 matchReferenceCallbackContracts(reference, typeReference, location, context);

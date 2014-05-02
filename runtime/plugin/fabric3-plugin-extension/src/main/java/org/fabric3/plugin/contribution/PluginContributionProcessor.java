@@ -218,7 +218,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
 
                         Resource resource = null;
                         for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
-                            resource = introspector.inspect(name, entryUrl, contribution, context.getClassLoader());
+                            resource = introspector.inspect(name, entryUrl, contribution, context);
                             if (resource != null) {
                                 break;
                             }

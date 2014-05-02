@@ -47,6 +47,7 @@ import org.fabric3.api.annotation.model.Component;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
  *
@@ -55,27 +56,25 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
     private URL url;
     private Contribution contribution;
     private ComponentJavaArtifactIntrospector introspector;
+    private DefaultIntrospectionContext context;
 
     public void testProvider() throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
         String name = TestProvider.class.getName().replace(".", File.separator) + ".class";
-        Resource resource = introspector.inspect(name, url, contribution, classLoader);
+        Resource resource = introspector.inspect(name, url, contribution, context);
 
         assertEquals(Constants.DSL_CONTENT_TYPE, resource.getContentType());
     }
 
     public void testComponent() throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
         String name = TestComponent.class.getName().replace(".", File.separator) + ".class";
-        Resource resource = introspector.inspect(name, url, contribution, classLoader);
+        Resource resource = introspector.inspect(name, url, contribution, context);
 
         assertEquals(Constants.JAVA_COMPONENT_CONTENT_TYPE, resource.getContentType());
     }
 
     public void testNoComponent() throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
         String name = getClass().getName().replace(".", File.separator) + ".class";
-        assertNull(introspector.inspect(name, url, contribution, classLoader));
+        assertNull(introspector.inspect(name, url, contribution, context));
 
     }
 
@@ -84,6 +83,7 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
         introspector = new ComponentJavaArtifactIntrospector();
         url = new URL("file://test");
         contribution = new Contribution(URI.create("test"));
+        context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
     }
 
     @Component(name = "Test", composite = "{foo}bar")

@@ -50,13 +50,14 @@ import org.fabric3.spi.contribution.ProviderSymbol;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.Symbol;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Introspects a class to determine if it is a Java component.
  */
 public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospector {
 
-    public Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader) {
+    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
         try {
             int extensionIndex = name.lastIndexOf('.');
             if (extensionIndex < 1) {
@@ -72,7 +73,7 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
                 resource.addResourceElement(element);
                 return resource;
             } else if (!contribution.getManifest().isExtension()) {
-                Class<?> clazz = loader.loadClass(className);
+                Class<?> clazz = context.getClassLoader().loadClass(className);
                 if (clazz.isAnnotationPresent(Component.class)) {
                     // class is a component
                     UrlSource source = new UrlSource(url);

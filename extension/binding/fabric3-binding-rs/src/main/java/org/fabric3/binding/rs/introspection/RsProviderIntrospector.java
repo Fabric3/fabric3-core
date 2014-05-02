@@ -48,6 +48,7 @@ import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.JavaSymbol;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.introspection.IntrospectionContext;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -57,14 +58,14 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class RsProviderIntrospector implements JavaArtifactIntrospector {
 
-    public Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader) {
+    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
         try {
             int extensionIndex = name.lastIndexOf('.');
             if (extensionIndex < 1) {
                 throw new AssertionError("Not a class: " + name);
             }
             String className = name.substring(0, extensionIndex).replace("/", ".");
-            Class<?> clazz = loader.loadClass(className);
+            Class<?> clazz = context.getClassLoader().loadClass(className);
             if (!clazz.isAnnotationPresent(Provider.class) || clazz.isAnnotationPresent(Component.class)) {
                 // not a provider or already configured as a component
                 return null;

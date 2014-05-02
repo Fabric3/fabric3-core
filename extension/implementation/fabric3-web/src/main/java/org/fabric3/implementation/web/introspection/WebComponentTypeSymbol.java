@@ -35,26 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.implementation.web.introspection;
 
-import java.net.URL;
-
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.contribution.Symbol;
 
 /**
- * Introspects a Java class and determines if it is a contribution resource, e.g. an annotated component or model provider class.
+ * Used to index web component types.
  */
-public interface JavaArtifactIntrospector {
-
-    /**
-     * Introspects the class and determines if it is a contribution resource.
-     *
-     * @param name         the class name
-     * @param url          the URL for the class bytecode
-     * @param contribution the containing contribution
-     * @param context      the introspection context
-     * @return a resource or null if the class is not a resource
-     */
-    Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context);
-
+public class WebComponentTypeSymbol extends Symbol<String> {
+    public WebComponentTypeSymbol() {
+        super("web");
+    }
 }

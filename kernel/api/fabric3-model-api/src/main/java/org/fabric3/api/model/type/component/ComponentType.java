@@ -236,15 +236,6 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
         resourceReferences.put(definition.getName(), definition);
     }
 
-    /**
-     * Returns true if this component type supports dynamic (non-statically defined) references.
-     *
-     * @return true if this component type supports dynamic references
-     */
-    public boolean isDynamic() {
-        return false;
-    }
-
     public Set<String> getRequiredCapabilities() {
         return requiredCapabilities;
     }

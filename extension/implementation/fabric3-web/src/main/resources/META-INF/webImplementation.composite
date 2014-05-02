@@ -20,8 +20,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebComponentLoader"/>
     </component>
 
-    <component name="WebImplementationProcessor">
-        <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebImplementationIntrospectorImpl"/>
+    <component name="WebArtifactIntrospector">
+        <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebArtifactIntrospector"/>
     </component>
 
     <component name="WebXmlIntrospector">
