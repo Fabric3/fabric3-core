@@ -82,6 +82,12 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
     }
 
     public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
+        String sourceUrl = contribution.getLocation().toString();
+        if (!sourceUrl.endsWith(".war")) {
+            // not a WAR file
+            return null;
+        }
+
         try {
             int extensionIndex = name.lastIndexOf('.');
             if (extensionIndex < 1) {

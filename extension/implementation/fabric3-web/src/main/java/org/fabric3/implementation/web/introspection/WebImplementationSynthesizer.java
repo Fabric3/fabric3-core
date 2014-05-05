@@ -35,21 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.web.contribution;
+package org.fabric3.implementation.web.introspection;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
@@ -58,11 +56,10 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Listens for WAR contributions and adds a synthesized web component to allow contributions not to specify a web component in a contribution. A
- * synthesized component is added if the contribution is a WAR and no composites are contained in it.
+ * Synthesizes a web implementation configuration if one is not explicitly defined in a composite for the current contribution.
  */
 @EagerInit
-public class WarContributionListener implements ContributionServiceListener {
+public class WebImplementationSynthesizer implements ContributionServiceListener {
 
     public void onInstall(Contribution contribution) {
         String sourceUrl = contribution.getLocation().toString();
@@ -70,63 +67,75 @@ public class WarContributionListener implements ContributionServiceListener {
             // not a WAR file
             return;
         }
-        ContributionManifest manifest = contribution.getManifest();
-        if (!manifest.getDeployables().isEmpty()) {
-            return;
+
+        if (hasImplementation(contribution)) {
+            return;   // web component was explicitly configured in the contribution
         }
 
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (element.getValue() instanceof Composite) {
-                    // a composite was defined, return;
-                    return;
-                }
-            }
-        }
-        // no composites were defined, synthesize one
-        Composite composite = createComposite(contribution);
+        // synthesize a web implementation
+        URI uri = createWebUri(contribution);
+        WebImplementation implementation = new WebImplementation(uri);
 
-        Source source = contribution.getSource();
-        Resource resource = createResource(contribution, composite, source);
-        contribution.addResource(resource);
+        // retrieve the component type introspected during contribution indexing or create one if no web artifacts resulted in it being generated
+        WebComponentType componentType = getComponentType(contribution);
+        implementation.setComponentType(componentType);
 
-        QName name = composite.getName();
-        Deployable deployable = new Deployable(name);
-        manifest.addDeployable(deployable);
+        // synthesize a deployable composite
+        IndexHelper.indexImplementation(implementation, contribution);
+        Composite composite = createComposite(implementation, contribution);
+        contribution.getManifest().addDeployable(new Deployable(composite.getName()));
+        contribution.addResource(createResource(contribution, composite));
     }
 
     public void onStore(Contribution contribution) {
-        // no-op
+
     }
 
     public void onProcessManifest(Contribution contribution) {
-        // no-op
+
     }
 
     public void onUpdate(Contribution contribution) {
-        // no-op
+
     }
 
     public void onUninstall(Contribution contribution) {
-        // no-op
+
     }
 
     public void onRemove(Contribution contribution) {
-        // no-op
+
     }
 
-    private Composite createComposite(Contribution contribution) {
+    private boolean hasImplementation(Contribution contribution) {
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                if (element.getSymbol() instanceof WebImplementationSymbol) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private WebComponentType getComponentType(Contribution contribution) {
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                if (element.getSymbol() instanceof WebComponentTypeSymbol) {
+                    return (WebComponentType) element.getValue();
+                }
+            }
+        }
+        return new WebComponentType();
+    }
+
+    private Composite createComposite(WebImplementation implementation, Contribution contribution) {
         URI contributionUri = contribution.getUri();
         String localPart = createLocalPart(contributionUri);
         QName compositeName = new QName(HostNamespaces.SYNTHESIZED, localPart);
         Composite composite = new Composite(compositeName);
         composite.setContributionUri(contributionUri);
-
-        WebComponentType componentType = new WebComponentType();
-        WebImplementation impl = new WebImplementation();
-        impl.setComponentType(componentType);
-
-        ComponentDefinition<WebImplementation> component = new ComponentDefinition<>(localPart, impl);
+        ComponentDefinition<WebImplementation> component = new ComponentDefinition<>(localPart, implementation);
         component.setContributionUri(contributionUri);
         composite.add(component);
         return composite;
@@ -142,10 +151,14 @@ public class WarContributionListener implements ContributionServiceListener {
         return localPart;
     }
 
-    private Resource createResource(Contribution contribution, Composite composite, Source source) {
+    private URI createWebUri(Contribution contribution) {
+        return contribution.getUri();
+    }
+
+    private Resource createResource(Contribution contribution, Composite composite) {
         QNameSymbol symbol = new QNameSymbol(composite.getName());
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
-        Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
+        Resource resource = new Resource(contribution, null, Constants.COMPOSITE_CONTENT_TYPE);
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);
         return resource;

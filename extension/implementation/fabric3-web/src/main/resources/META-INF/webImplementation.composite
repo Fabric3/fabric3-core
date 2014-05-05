@@ -39,8 +39,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceWireAttacher"/>
     </component>
 
-    <component name="WarContributionListener">
-        <f3:implementation.system class="org.fabric3.implementation.web.contribution.WarContributionListener"/>
+    <component name="WebImplementationSynthesizer">
+        <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebImplementationSynthesizer"/>
     </component>
 
 </composite>

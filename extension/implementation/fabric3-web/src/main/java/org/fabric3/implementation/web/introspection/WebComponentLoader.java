@@ -100,15 +100,16 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
     public WebImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        URI uri = parseUri(reader, startLocation, context);
-        WebImplementation impl = new WebImplementation(uri);
+        Contribution contribution = metaDataStore.find(context.getContributionUri());
 
-        validateAttributes(reader, context, impl);
+        URI uri = parseUri(reader, startLocation, context);
+        WebImplementation implementation = new WebImplementation(uri);
+        validateAttributes(reader, context, implementation);
 
         try {
             // find the component type created during indexing of Java artifacts (or create one if necessary)
-            WebComponentType type = getComponentType(context);
-            impl.setComponentType(type);
+            WebComponentType type = getComponentType(contribution);
+            implementation.setComponentType(type);
 
             // check if an explicit component type file is present (required for backward compatibility)
             ComponentType componentType = loadComponentType(context);
@@ -128,7 +129,11 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
             }
         }
         LoaderUtil.skipToEndElement(reader);
-        return impl;
+
+        // add an index entry so it can be determined that a web implementation does not need to be synthesized (it was explicitly created by the contribution)
+        IndexHelper.indexImplementation(implementation, contribution);
+
+        return implementation;
     }
 
     private URI parseUri(XMLStreamReader reader, Location location, IntrospectionContext context) {
@@ -173,11 +178,10 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
     /**
      * Returns the web component type created during index of Java artifacts or creates one if necessary (i.e. no artifacts generated component type metadata).
      *
-     * @param context the current context
+     * @param contribution the current contribution
      * @return the web component type
      */
-    private WebComponentType getComponentType(IntrospectionContext context) {
-        Contribution contribution = metaDataStore.find(context.getContributionUri());
+    private WebComponentType getComponentType(Contribution contribution) {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol() instanceof WebComponentTypeSymbol) {
