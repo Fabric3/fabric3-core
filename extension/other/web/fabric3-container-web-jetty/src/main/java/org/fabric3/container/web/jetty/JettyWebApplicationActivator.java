@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.ResourceCollection;
@@ -281,13 +282,14 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
      * @return the configuration
      */
     private Configuration[] createConfigurations() {
-        WebInfConfiguration webInfConfiguration = new NonScanningWebInfConfiguration();
-        WebXmlConfiguration webXmlConfiguration = new WebXmlConfiguration();
-        MetaInfConfiguration metaInfConfiguration = new MetaInfConfiguration();
-        FragmentConfiguration fragmentConfiguration = new FragmentConfiguration();
-        JettyWebXmlConfiguration jettyWebXmlConfiguration = new JettyWebXmlConfiguration();
+        WebInfConfiguration webInfConfig = new NonScanningWebInfConfiguration();
+        WebXmlConfiguration webXmlConfig = new WebXmlConfiguration();
+        MetaInfConfiguration metaInfConfig = new MetaInfConfiguration();
+        FragmentConfiguration fragmentConfig = new FragmentConfiguration();
+        JettyWebXmlConfiguration jettyXmlConfig = new JettyWebXmlConfiguration();
+        AnnotationConfiguration annotationConfig = new AnnotationConfiguration();
 
-        return new Configuration[]{webInfConfiguration, webXmlConfiguration, metaInfConfiguration, fragmentConfiguration, jettyWebXmlConfiguration};
+        return new Configuration[]{webInfConfig, webXmlConfig, metaInfConfig, fragmentConfig, jettyXmlConfig, annotationConfig};
     }
 
     private static class Holder {
