@@ -55,6 +55,7 @@ public class ContributionManifest implements Serializable {
     private static final long serialVersionUID = -4968254313720890686L;
     private String description;
     private boolean extension;
+    private String context;
     private List<Export> exports = new ArrayList<>();
     private List<Import> imports = new ArrayList<>();
     private List<Library> libraries = new ArrayList<>();
@@ -99,6 +100,24 @@ public class ContributionManifest implements Serializable {
      */
     public void setExtension(boolean extension) {
         this.extension = extension;
+    }
+
+    /**
+     * Returns the contribution context path.
+     *
+     * @return the contribution context path
+     */
+    public String getContext() {
+        return context;
+    }
+
+    /**
+     * Sets the contribution context path.
+     *
+     * @param context the contribution context path
+     */
+    public void setContext(String context) {
+        this.context = context;
     }
 
     /**

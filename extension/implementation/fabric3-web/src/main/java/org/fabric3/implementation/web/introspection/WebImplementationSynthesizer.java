@@ -152,6 +152,10 @@ public class WebImplementationSynthesizer implements ContributionServiceListener
     }
 
     private URI createWebUri(Contribution contribution) {
+        String context = contribution.getManifest().getContext();
+        if (context != null) {
+            return URI.create(context);
+        }
         return contribution.getUri();
     }
 

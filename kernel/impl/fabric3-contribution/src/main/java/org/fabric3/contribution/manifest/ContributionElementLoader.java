@@ -99,7 +99,6 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         registry.unregisterLoader(CONTRIBUTION);
     }
 
-
     public ContributionManifest load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         ContributionManifest manifest = new ContributionManifest();
         QName element = reader.getName();
@@ -110,92 +109,94 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         boolean extension = Boolean.valueOf(reader.getAttributeValue(F3, "extension"));
         manifest.setExtension(extension);
 
+        String contextPath = reader.getAttributeValue(F3, "context");
+        manifest.setContext(contextPath);
+
         String description = reader.getAttributeValue(F3, "description");
         manifest.setDescription(description);
 
         while (true) {
             int event = reader.next();
             switch (event) {
-            case START_ELEMENT:
-                element = reader.getName();
-                Location location = reader.getLocation();
+                case START_ELEMENT:
+                    element = reader.getName();
+                    Location location = reader.getLocation();
 
-                if (DEPLOYABLE.equals(element)) {
-                    validateDeployableAttributes(reader, context);
-                    String name = reader.getAttributeValue(null, "composite");
-                    if (name == null) {
-                        MissingManifestAttribute failure =
-                                new MissingManifestAttribute("Composite attribute must be specified", location);
-                        context.addError(failure);
-                        return null;
-                    }
-                    QName qName;
-                    // read qname but only set namespace if it is explicitly declared
-                    int index = name.indexOf(':');
-                    if (index != -1) {
-                        String prefix = name.substring(0, index);
-                        String localPart = name.substring(index + 1);
-                        String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-                        if (ns == null) {
-                            URI uri = context.getContributionUri();
-                            context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the contribution manifest file for "
-                                                                            + uri + " is invalid", location));
+                    if (DEPLOYABLE.equals(element)) {
+                        validateDeployableAttributes(reader, context);
+                        String name = reader.getAttributeValue(null, "composite");
+                        if (name == null) {
+                            MissingManifestAttribute failure = new MissingManifestAttribute("Composite attribute must be specified", location);
+                            context.addError(failure);
                             return null;
                         }
-                        qName = new QName(ns, localPart, prefix);
-                    } else {
-                        qName = new QName(null, name);
-                    }
-                    List<RuntimeMode> runtimeModes = parseRuntimeModes(reader, context);
-                    List<String> environments = parseEnvironments(reader);
-                    Deployable deployable = new Deployable(qName, runtimeModes, environments);
-                    manifest.addDeployable(deployable);
-                } else if (REQUIRES_CAPABILITY.equals(element)) {
-                    parseRequiredCapabilities(manifest, reader, context);
-                } else if (PROVIDES_CAPABILITY.equals(element)) {
-                    parseProvidedCapabilities(manifest, reader, context);
-                } else if (SCAN.equals(element)) {
-                    validateScanAttributes(reader, context);
-                    String excludeAttr = reader.getAttributeValue(null, "exclude");
-                    if (excludeAttr == null) {
-                        MissingAttribute error = new MissingAttribute("The exclude attribute must be set on the scan element", location);
-                        context.addError(error);
-                        continue;
-                    }
-                    String[] excludes = excludeAttr.split(",");
-                    List<Pattern> patterns = new ArrayList<>();
-                    for (String exclude : excludes) {
-                        patterns.add(Pattern.compile(exclude));
-                    }
-                    manifest.setScanExcludes(patterns);
+                        QName qName;
+                        // read qname but only set namespace if it is explicitly declared
+                        int index = name.indexOf(':');
+                        if (index != -1) {
+                            String prefix = name.substring(0, index);
+                            String localPart = name.substring(index + 1);
+                            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
+                            if (ns == null) {
+                                URI uri = context.getContributionUri();
+                                context.addError(new InvalidQNamePrefix(
+                                        "The prefix " + prefix + " specified in the contribution manifest file for " + uri + " is invalid", location));
+                                return null;
+                            }
+                            qName = new QName(ns, localPart, prefix);
+                        } else {
+                            qName = new QName(null, name);
+                        }
+                        List<RuntimeMode> runtimeModes = parseRuntimeModes(reader, context);
+                        List<String> environments = parseEnvironments(reader);
+                        Deployable deployable = new Deployable(qName, runtimeModes, environments);
+                        manifest.addDeployable(deployable);
+                    } else if (REQUIRES_CAPABILITY.equals(element)) {
+                        parseRequiredCapabilities(manifest, reader, context);
+                    } else if (PROVIDES_CAPABILITY.equals(element)) {
+                        parseProvidedCapabilities(manifest, reader, context);
+                    } else if (SCAN.equals(element)) {
+                        validateScanAttributes(reader, context);
+                        String excludeAttr = reader.getAttributeValue(null, "exclude");
+                        if (excludeAttr == null) {
+                            MissingAttribute error = new MissingAttribute("The exclude attribute must be set on the scan element", location);
+                            context.addError(error);
+                            continue;
+                        }
+                        String[] excludes = excludeAttr.split(",");
+                        List<Pattern> patterns = new ArrayList<>();
+                        for (String exclude : excludes) {
+                            patterns.add(Pattern.compile(exclude));
+                        }
+                        manifest.setScanExcludes(patterns);
 
-                } else {
-                    Object object = registry.load(reader, Object.class, context);
-                    if (object instanceof Export) {
-                        manifest.addExport((Export) object);
-                    } else if (object instanceof Import) {
-                        manifest.addImport((Import) object);
-                    } else if (object instanceof ExtendsDeclaration) {
-                        ExtendsDeclaration declaration = (ExtendsDeclaration) object;
-                        manifest.addExtend(declaration.getName());
-                    } else if (object instanceof ProvidesDeclaration) {
-                        ProvidesDeclaration declaration = (ProvidesDeclaration) object;
-                        manifest.addExtensionPoint(declaration.getName());
-                    } else if (object instanceof Library) {
-                        Library library = (Library) object;
-                        manifest.addLibrary(library);
-                    } else if (object != null) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                        context.addError(failure);
-                        return null;
+                    } else {
+                        Object object = registry.load(reader, Object.class, context);
+                        if (object instanceof Export) {
+                            manifest.addExport((Export) object);
+                        } else if (object instanceof Import) {
+                            manifest.addImport((Import) object);
+                        } else if (object instanceof ExtendsDeclaration) {
+                            ExtendsDeclaration declaration = (ExtendsDeclaration) object;
+                            manifest.addExtend(declaration.getName());
+                        } else if (object instanceof ProvidesDeclaration) {
+                            ProvidesDeclaration declaration = (ProvidesDeclaration) object;
+                            manifest.addExtensionPoint(declaration.getName());
+                        } else if (object instanceof Library) {
+                            Library library = (Library) object;
+                            manifest.addLibrary(library);
+                        } else if (object != null) {
+                            UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                            context.addError(failure);
+                            return null;
+                        }
                     }
-                }
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                if (CONTRIBUTION.equals(reader.getName())) {
-                    return manifest;
-                }
-                break;
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (CONTRIBUTION.equals(reader.getName())) {
+                        return manifest;
+                    }
+                    break;
             }
         }
     }
@@ -267,7 +268,8 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"extension".equals(name) && !"description".equals(name) && !"capabilities".equals(name) && !"required-capabilities".equals(name)) {
+            if (!"extension".equals(name) && !"description".equals(name) && !"context".equals(name) && !"capabilities".equals(name)
+                && !"required-capabilities".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, location));
             }
         }
@@ -292,6 +294,5 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             }
         }
     }
-
 
 }
