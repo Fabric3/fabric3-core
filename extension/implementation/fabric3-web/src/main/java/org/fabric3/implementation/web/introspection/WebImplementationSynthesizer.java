@@ -38,7 +38,12 @@
 package org.fabric3.implementation.web.introspection;
 
 import javax.xml.namespace.QName;
+import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.contribution.Deployable;
@@ -62,9 +67,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class WebImplementationSynthesizer implements ContributionServiceListener {
 
     public void onInstall(Contribution contribution) {
-        String sourceUrl = contribution.getLocation().toString();
-        if (!sourceUrl.endsWith(".war")) {
-            // not a WAR file
+        if (!isWar(contribution)) {
             return;
         }
 
@@ -166,6 +169,46 @@ public class WebImplementationSynthesizer implements ContributionServiceListener
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);
         return resource;
+    }
+
+    private boolean isWar(Contribution contribution) {
+        URL location = contribution.getLocation();
+        String sourceUrl = location.toString();
+        if (sourceUrl.endsWith(".jar")) {
+            // short-circuit common case
+            return false;
+        }
+        if (!sourceUrl.endsWith(".war")) {
+            // check if it is an exploded WAR
+            boolean hasWebInf = false;
+            if ("file".equals(location.getProtocol())) {
+                try {
+                    Path path = Paths.get(location.toURI());
+                    File root = path.toFile();
+                    if (!root.isDirectory()) {
+                        return false;
+                    }
+                    File[] files = root.listFiles();
+                    if (files == null) {
+                        return false;
+                    }
+                    for (File file : files) {
+                        if (file.isDirectory() && "WEB-INF".equals(file.getName())) {
+                            hasWebInf = true;
+                            break;
+                        }
+                    }
+                } catch (URISyntaxException e) {
+                    // should not happen
+                    throw new AssertionError(e);
+                }
+            }
+            if (!hasWebInf) {
+                // not a WAR file
+                return false;
+            }
+        }
+        return true;
     }
 
 }
