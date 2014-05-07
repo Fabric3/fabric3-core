@@ -76,11 +76,8 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.JoinDomainCompleted;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.EndpointConstants;
@@ -90,6 +87,9 @@ import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.JoinDomainCompleted;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.threadpool.LongRunnable;
@@ -139,6 +139,7 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     private final Object joinLock = new Object();
     private boolean enableHttps;
+    private boolean redirectHttp;
     private int configuredHttpPort = -1;
     private String configuredHttpHost;
     private Port selectedHttp;
@@ -223,6 +224,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Property(required = false)
     public void setEnableHttps(boolean enableHttps) {
         this.enableHttps = enableHttps;
+    }
+
+    @Property(required = false)
+    public void setRedirectHttp(boolean redirectHttp) {
+        this.redirectHttp = redirectHttp;
     }
 
     @Property(required = false)
@@ -612,14 +618,14 @@ public class JettyServiceImpl implements JettyService, Transport {
                                                      "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
                                                      "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
                                                      "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
-            HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+
+            HttpConfiguration httpsConfig = new HttpConfiguration();
+            httpsConfig.setSendServerVersion(sendServerVersion);
             httpsConfig.addCustomizer(new SecureRequestCustomizer());
             HttpConnectionFactory factory = new HttpConnectionFactory(httpsConfig);
             sslConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, "http/1.1"), factory);
 
             sslConnector.setPort(selectedHttps.getNumber());
-            server.addConnector(sslConnector);
-            sslConnector.setHost(configuredHttpsHost);
             sslConnector.setHost(configuredHttpsHost);
 
             server.setConnectors(new Connector[]{httpConnector, sslConnector});
@@ -711,8 +717,15 @@ public class JettyServiceImpl implements JettyService, Transport {
         } else {
             server.setHandler(statisticsHandler);
         }
+
         ExecutionContextHandler executionHandler = new ExecutionContextHandler();
-        statisticsHandler.setHandler(executionHandler);
+        if (redirectHttp) {
+            SecurityRedirectHandler securityHandler = new SecurityRedirectHandler(selectedHttps.getNumber());
+            statisticsHandler.setHandler(securityHandler);
+            securityHandler.setHandler(executionHandler);
+        } else {
+            statisticsHandler.setHandler(executionHandler);
+        }
 
         rootHandler = new ContextHandlerCollection();
         executionHandler.setHandler(rootHandler);
