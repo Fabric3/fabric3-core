@@ -44,19 +44,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.host.HostNamespaces;
-import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -65,7 +65,6 @@ import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -148,7 +147,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         NonManagedImplementation implementation = new NonManagedImplementation();
         implementation.setComponentType(componentType);
         ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<>("F3Synthetic");
-        componentDefinition.setContributionUri(Names.HOST_CONTRIBUTION);
+        componentDefinition.setContributionUri(ContributionResolver.getContribution(interfaze));
         componentDefinition.setImplementation(implementation);
         LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri,
                                                                                                                      componentDefinition,

@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.host.HostNamespaces;
-import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -53,11 +52,11 @@ import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.Connector;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.domain.instantiator.AutowireResolver;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -104,7 +103,9 @@ public class ServiceResolverImpl implements ServiceResolver {
         LogicalWire wire = createWire(interfaze);
         try {
             boolean remote = !wire.getSource().getParent().getZone().equals(wire.getTarget().getParent().getZone());
+
             PhysicalWireDefinition pwd;
+
             if (remote) {
                 bindingSelector.selectBinding(wire);
                 pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
@@ -112,9 +113,12 @@ public class ServiceResolverImpl implements ServiceResolver {
             } else {
                 pwd = wireGenerator.generateWire(wire);
             }
-            pwd.getTarget().setClassLoaderId(Names.HOST_CONTRIBUTION);
+
             NonManagedPhysicalWireSourceDefinition source = (NonManagedPhysicalWireSourceDefinition) pwd.getSource();
-            source.setClassLoaderId(Names.HOST_CONTRIBUTION);
+            URI uri = ContributionResolver.getContribution(interfaze);
+            pwd.getTarget().setClassLoaderId(uri);
+            source.setClassLoaderId(uri);
+
             connector.connect(pwd);
             return interfaze.cast(source.getProxy());
         } catch (GenerationException | ContainerException e) {

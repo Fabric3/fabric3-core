@@ -35,40 +35,47 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.node.nonmanaged;
+package org.fabric3.node.domain;
 
-import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
-import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+
+import org.fabric3.api.host.Names;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  *
  */
-public class NonManagedConnectionSourceWireAttacher implements SourceConnectionAttacher<NonManagedPhysicalConnectionSourceDefinition> {
-    private ChannelProxyService proxyService;
-    private ClassLoaderRegistry classLoaderRegistry;
+public class ContributionResolver {
 
-    public NonManagedConnectionSourceWireAttacher(@Reference ChannelProxyService proxyService, @Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.proxyService = proxyService;
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    public void attach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
-        try {
-            ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
-            Class<?> interfaze = loader.loadClass(source.getInterface());
-            Object proxy = proxyService.createObjectFactory(interfaze, connection).getInstance();
-            source.setProxy(proxy);
-        } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+    /**
+     * Returns the contribution URI for the type. In non-managed environments, {@link Names#HOST_CONTRIBUTION} will be returned.
+     *
+     * @param type the type
+     * @return the contribution URI.
+     */
+    public static URI getContribution(Class<?> type) {
+        if (Thread.currentThread().getContextClassLoader() instanceof MultiParentClassLoader) {
+            return ((MultiParentClassLoader) Thread.currentThread().getContextClassLoader()).getName();
+        } else if (type.getClassLoader() instanceof MultiParentClassLoader) {
+            return ((MultiParentClassLoader) type.getClassLoader()).getName();
+        } else {
+            return Names.HOST_CONTRIBUTION;
         }
     }
 
-    public void detach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    /**
+     * Returns the contribution URI for the current context. In non-managed environments, {@link Names#HOST_CONTRIBUTION} will be returned.
+     *
+     * @return the contribution URI.
+     */
+    public static URI getContribution() {
+        if (Thread.currentThread().getContextClassLoader() instanceof MultiParentClassLoader) {
+            return ((MultiParentClassLoader) Thread.currentThread().getContextClassLoader()).getName();
+        } else {
+            return Names.HOST_CONTRIBUTION;
+        }
+    }
+
+    private ContributionResolver() {
     }
 }

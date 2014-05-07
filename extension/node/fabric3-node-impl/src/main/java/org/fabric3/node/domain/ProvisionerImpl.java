@@ -38,10 +38,10 @@
 package org.fabric3.node.domain;
 
 import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.HostNamespaces;
-import org.fabric3.api.host.Names;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.builder.JavaComponentDefinitionBuilder;
@@ -58,8 +58,8 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.ComponentProcessor;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -106,7 +106,7 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     public void deploy(Composite composite) throws DeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(ContributionResolver.getContribution(), getClass().getClassLoader());
 
         // enrich the model
         for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
@@ -128,8 +128,9 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     public void deploy(ComponentDefinition<?> definition) throws DeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
-        definition.setContributionUri(Names.HOST_CONTRIBUTION);
+        URI uri = ContributionResolver.getContribution();
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(uri, getClass().getClassLoader());
+        definition.setContributionUri(uri);
 
         componentProcessor.process(definition, context);
         checkErrors(context);
@@ -146,7 +147,8 @@ public class ProvisionerImpl implements Provisioner {
 
     public void deploy(ChannelDefinition definition) throws DeploymentException {
         try {
-            definition.setContributionUri(Names.HOST_CONTRIBUTION);
+            URI uri = ContributionResolver.getContribution();
+            definition.setContributionUri(uri);
             Composite wrapper = createWrapperComposite(definition.getName());
             wrapper.add(definition);
             domain.include(wrapper, false);
@@ -190,7 +192,8 @@ public class ProvisionerImpl implements Provisioner {
     private Composite createWrapperComposite(String name) {
         QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
         Composite wrapper = new Composite(compositeName);
-        wrapper.setContributionUri(Names.HOST_CONTRIBUTION);
+        URI uri = ContributionResolver.getContribution();
+        wrapper.setContributionUri(uri);
 
         addCompositeToContribution(wrapper);
 
@@ -199,7 +202,8 @@ public class ProvisionerImpl implements Provisioner {
 
     private void addCompositeToContribution(Composite wrapper) {
         QName compositeName = wrapper.getName();
-        Contribution contribution = metaDataStore.find(Names.HOST_CONTRIBUTION);
+        URI uri = ContributionResolver.getContribution();
+        Contribution contribution = metaDataStore.find(uri);
         Resource resource = new Resource(contribution, null, Constants.COMPOSITE_CONTENT_TYPE);
         QNameSymbol symbol = new QNameSymbol(compositeName);
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, wrapper);
@@ -209,7 +213,8 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     private void addService(Class<?> interfaze, ComponentDefinition<?> definition) throws ValidationDeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
+        URI uri = ContributionResolver.getContribution();
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(uri, getClass().getClassLoader());
         JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
         ServiceDefinition serviceDefinition = new ServiceDefinition(interfaze.getSimpleName(), contract);
         definition.getComponentType().add(serviceDefinition);
@@ -226,15 +231,16 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     private void setContributionUris(Composite composite) {
-        composite.setContributionUri(Names.HOST_CONTRIBUTION);
+        URI uri = ContributionResolver.getContribution();
+        composite.setContributionUri(uri);
         for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
-            definition.setContributionUri(Names.HOST_CONTRIBUTION);
+            definition.setContributionUri(uri);
             if (definition.getComponentType() instanceof Composite) {
                 setContributionUris((Composite) definition.getComponentType());
             }
         }
         for (ChannelDefinition definition : composite.getChannels().values()) {
-            definition.setContributionUri(Names.HOST_CONTRIBUTION);
+            definition.setContributionUri(uri);
         }
     }
 
