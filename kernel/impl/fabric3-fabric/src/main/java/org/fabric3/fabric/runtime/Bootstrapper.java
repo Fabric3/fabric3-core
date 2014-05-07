@@ -49,19 +49,19 @@ import org.fabric3.api.host.runtime.InitializationException;
  * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime services.
  */
 public interface Bootstrapper {
-    
+
     /**
      * Initializes the domain for the given runtime.
      *
      * @throws InitializationException if there was a problem bootstrapping the runtime
      */
-    public void bootRuntimeDomain() throws InitializationException;
+    void bootRuntimeDomain() throws InitializationException;
 
     /**
      * Initialize the core system components for the supplied runtime.
      *
      * @throws InitializationException if there was a problem bootstrapping the runtime
      */
-    public void bootSystem() throws InitializationException;
+    void bootSystem() throws InitializationException;
 
 }

@@ -56,7 +56,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.runtime.BootConfiguration;
@@ -71,6 +70,7 @@ import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.runtime.weblogic.api.Constants;
 import org.fabric3.runtime.weblogic.monitor.WebLogicDestinationRouter;
 import org.fabric3.runtime.weblogic.work.WebLogicExecutorService;
@@ -227,7 +227,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             BootConfiguration configuration = new BootConfiguration();
 
-            List<ComponentRegistration> registrations = new ArrayList<>();
+            List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
 
             WebLogicExecutorService executorService = new WebLogicExecutorService();
             ComponentRegistration executorRegistration = new ComponentRegistration("WebLogicExecutorService", ExecutorService.class, executorService, true);

@@ -165,6 +165,14 @@ public interface BootstrapService {
     Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration);
 
     /**
+     * Creates default registrations for the runtime.
+     *
+     * @param runtime the runtime
+     * @return default registrations
+     */
+    List<ComponentRegistration> createDefaultRegistrations(Fabric3Runtime runtime);
+
+    /**
      * Instantiates a RuntimeCoordinator.
      *
      * @param configuration the configuration for the coordinator

@@ -68,6 +68,8 @@ public interface Names {
 
     URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
 
+    URI NODE_DOMAIN_URI = URI.create(RUNTIME_NAME + "/Domain");
+
     String LOCAL_ZONE = "LocalZone";
 
     String DEFAULT_ZONE = "default.zone";

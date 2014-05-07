@@ -16,7 +16,7 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
 
-    <component name="NodeDomain">
+    <component name="Domain">
         <f3:implementation.system class="org.fabric3.node.domain.NodeDomain"/>
         <reference name="domain" target="ApplicationDomain"/>
     </component>

@@ -43,23 +43,12 @@
  */
 package org.fabric3.fabric.runtime;
 
-import java.io.IOException;
 import javax.management.MBeanServer;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.contribution.MetaDataStoreImpl;
-import org.fabric3.contribution.ProcessorRegistryImpl;
-import org.fabric3.fabric.container.channel.ChannelManagerImpl;
-import org.fabric3.fabric.classloader.ClassLoaderRegistryImpl;
-import org.fabric3.fabric.container.component.ComponentManagerImpl;
-import org.fabric3.fabric.container.component.scope.CompositeScopeContainer;
-import org.fabric3.fabric.container.component.scope.ScopeContainerMonitor;
-import org.fabric3.fabric.container.component.scope.ScopeRegistryImpl;
-import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
-import org.fabric3.fabric.management.DelegatingManagementService;
-import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorCreationException;
@@ -71,18 +60,29 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.ShutdownException;
+import org.fabric3.contribution.MetaDataStoreImpl;
+import org.fabric3.contribution.ProcessorRegistryImpl;
+import org.fabric3.fabric.classloader.ClassLoaderRegistryImpl;
+import org.fabric3.fabric.container.channel.ChannelManagerImpl;
+import org.fabric3.fabric.container.component.ComponentManagerImpl;
+import org.fabric3.fabric.container.component.scope.CompositeScopeContainer;
+import org.fabric3.fabric.container.component.scope.ScopeContainerMonitor;
+import org.fabric3.fabric.container.component.scope.ScopeRegistryImpl;
+import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
+import org.fabric3.fabric.management.DelegatingManagementService;
+import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.monitor.proxy.JDKMonitorProxyService;
 import org.fabric3.monitor.proxy.MonitorProxyServiceImpl;
-import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.component.ScopedComponent;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 
@@ -104,8 +104,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private ManagementService managementService;
     private MBeanServer mbServer;
     private Repository repository;
-    private MonitorLevel level = MonitorLevel.INFO;
     private DestinationRouter router;
+    private MonitorLevel level = MonitorLevel.INFO;
 
     protected AbstractRuntime(RuntimeConfiguration configuration) {
         hostInfo = configuration.getHostInfo();

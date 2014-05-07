@@ -45,8 +45,11 @@ package org.fabric3.fabric.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.runtime.ComponentRegistration;
+import org.fabric3.api.node.Fabric;
 import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
 import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -130,6 +133,14 @@ public class DefaultBootstrapService implements BootstrapService {
 
     public Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration) {
         return new DefaultRuntime(configuration);
+    }
+
+    public List<ComponentRegistration> createDefaultRegistrations(Fabric3Runtime runtime) {
+        List<ComponentRegistration> registrations = new ArrayList<>();
+        RuntimeFabric fabric = new RuntimeFabric(runtime);
+        ComponentRegistration registration = new ComponentRegistration("Fabric", Fabric.class, fabric, false);
+        registrations.add(registration);
+        return registrations;
     }
 
     public RuntimeCoordinator createCoordinator(BootConfiguration configuration) {

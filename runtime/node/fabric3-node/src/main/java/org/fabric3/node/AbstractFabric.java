@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
@@ -78,8 +79,6 @@ import org.w3c.dom.Document;
  */
 public abstract class AbstractFabric implements Fabric {
     private static final File SYNTHETIC_DIRECTORY = new File("notfound");
-    private static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
-    private static final URI DOMAIN_URI = URI.create("fabric3://runtime/NodeDomain");
     public static final String ASM_PACKAGE = "org.objectweb.asm.";
     private Source configSource;
 
@@ -238,7 +237,7 @@ public abstract class AbstractFabric implements Fabric {
             throw new IllegalStateException("Not in started state: " + state);
         }
         if (domain == null) {
-            domain = runtime.getComponent(Domain.class, DOMAIN_URI);
+            domain = runtime.getComponent(Domain.class, Names.NODE_DOMAIN_URI);
         }
         return domain;
     }

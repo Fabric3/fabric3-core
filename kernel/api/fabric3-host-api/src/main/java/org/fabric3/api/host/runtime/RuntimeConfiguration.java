@@ -106,7 +106,13 @@ public class RuntimeConfiguration {
         return repository;
     }
 
+    /**
+     * Returns the destination router
+     *
+     * @return the router
+     */
     public DestinationRouter getDestinationRouter() {
         return router;
     }
+
 }

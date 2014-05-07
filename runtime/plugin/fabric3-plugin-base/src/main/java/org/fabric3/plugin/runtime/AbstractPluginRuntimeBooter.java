@@ -58,6 +58,7 @@ import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapFactory;
 import org.fabric3.api.host.runtime.BootstrapService;
+import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ShutdownException;
@@ -118,6 +119,9 @@ public abstract class AbstractPluginRuntimeBooter {
         configuration.setSystemConfig(systemConfig);
         configuration.setExtensionContributions(contributions);
         configuration.setExportedPackages(exportedPackages);
+
+        List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
+        configuration.addRegistrations(registrations);
 
         coordinator = bootstrapService.createCoordinator(configuration);
         coordinator.start();

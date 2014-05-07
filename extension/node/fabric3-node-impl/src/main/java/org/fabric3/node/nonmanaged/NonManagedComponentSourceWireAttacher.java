@@ -37,9 +37,7 @@
 */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.api.host.Names;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -55,16 +53,15 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher<NonManagedPhysicalWireSourceDefinition> {
     private WireProxyService proxyService;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public NonManagedComponentSourceWireAttacher(@Reference WireProxyService proxyService, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public NonManagedComponentSourceWireAttacher(@Reference WireProxyService proxyService) {
         this.proxyService = proxyService;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
         try {
-            ClassLoader loader = classLoaderRegistry.getClassLoader(Names.HOST_CONTRIBUTION);
+            // use the classloader
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
             Class<?> interfaze = loader.loadClass(source.getInterface());
             Object proxy = proxyService.createObjectFactory(interfaze, wire, null).getInstance();
             source.setProxy(proxy);

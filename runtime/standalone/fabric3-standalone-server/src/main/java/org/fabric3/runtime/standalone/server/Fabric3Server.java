@@ -55,7 +55,6 @@ import java.util.concurrent.CountDownLatch;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -63,6 +62,7 @@ import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapFactory;
 import org.fabric3.api.host.runtime.BootstrapHelper;
 import org.fabric3.api.host.runtime.BootstrapService;
+import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HiddenPackages;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -71,6 +71,7 @@ import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
 import static org.fabric3.api.host.Names.MONITOR_FACTORY_URI;
 
@@ -149,7 +150,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
                                                                mode,
                                                                domainName,
                                                                environment,
-                                                               runtimeDir, extensionsDir,
+                                                               runtimeDir,
+                                                               extensionsDir,
                                                                deployDirs,
                                                                false);
 
@@ -162,7 +164,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 FileHelper.cleanDirectory(dataDir);
             }
 
-            BootConfiguration configuration = new BootConfiguration();
 
             MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
@@ -172,12 +173,16 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
+            BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(result.getExtensionContributions());
             configuration.setUserContributions(result.getUserContributions());
+
+            List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
+            configuration.addRegistrations(registrations);
 
             // start the runtime
             coordinator = bootstrapService.createCoordinator(configuration);

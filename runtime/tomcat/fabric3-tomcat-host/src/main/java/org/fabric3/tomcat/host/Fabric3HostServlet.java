@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.catalina.ContainerServlet;
@@ -61,7 +60,6 @@ import org.apache.catalina.Service;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.mbeans.MBeanUtils;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -78,6 +76,7 @@ import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
 import static org.fabric3.api.host.Names.MONITOR_FACTORY_URI;
 import static org.fabric3.api.host.runtime.BootstrapHelper.createHostInfo;
@@ -209,9 +208,10 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
-            List<ComponentRegistration> registrations = new ArrayList<>();
-            ComponentRegistration registration = new ComponentRegistration("CatalinaService", Service.class, service, false);
-            registrations.add(registration);
+
+            List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
+            ComponentRegistration catalinaRegistration = new ComponentRegistration("CatalinaService", Service.class, service, false);
+            registrations.add(catalinaRegistration);
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);

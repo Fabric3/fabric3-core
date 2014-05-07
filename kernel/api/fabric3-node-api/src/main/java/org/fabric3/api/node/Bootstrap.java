@@ -45,6 +45,7 @@ import java.net.URL;
  */
 public class Bootstrap {
     private static final String FABRIC_CLASS = "org.fabric3.node.DefaultFabric";
+    private static Fabric CACHED;
 
     /**
      * Bootstraps the fabric interface using the default configuration.
@@ -69,6 +70,9 @@ public class Bootstrap {
     }
 
     private static Fabric boot(URL url) throws FabricException {
+        if (CACHED != null) {
+            return CACHED;
+        }
         try {
             ClassLoader bootstrapClassLoader = Bootstrap.class.getClassLoader();
             // instantiate the Fabric API implementation class
