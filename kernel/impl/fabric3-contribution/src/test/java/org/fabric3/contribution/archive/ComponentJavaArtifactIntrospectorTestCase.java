@@ -37,7 +37,6 @@
 */
 package org.fabric3.contribution.archive;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
@@ -59,21 +58,21 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
     private DefaultIntrospectionContext context;
 
     public void testProvider() throws Exception {
-        String name = TestProvider.class.getName().replace(".", File.separator) + ".class";
+        String name = TestProvider.class.getName().replace(".", "/") + ".class";
         Resource resource = introspector.inspect(name, url, contribution, context);
 
         assertEquals(Constants.DSL_CONTENT_TYPE, resource.getContentType());
     }
 
     public void testComponent() throws Exception {
-        String name = TestComponent.class.getName().replace(".", File.separator) + ".class";
+        String name = TestComponent.class.getName().replace(".", "/") + ".class";
         Resource resource = introspector.inspect(name, url, contribution, context);
 
         assertEquals(Constants.JAVA_COMPONENT_CONTENT_TYPE, resource.getContentType());
     }
 
     public void testNoComponent() throws Exception {
-        String name = getClass().getName().replace(".", File.separator) + ".class";
+        String name = getClass().getName().replace(".", "/") + ".class";
         assertNull(introspector.inspect(name, url, contribution, context));
 
     }
