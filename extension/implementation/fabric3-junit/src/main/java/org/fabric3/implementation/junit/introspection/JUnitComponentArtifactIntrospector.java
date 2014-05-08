@@ -38,7 +38,6 @@
 package org.fabric3.implementation.junit.introspection;
 
 import javax.xml.namespace.QName;
-import java.io.File;
 import java.net.URL;
 
 import org.fabric3.api.Namespaces;
@@ -68,7 +67,7 @@ public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospec
             if (contribution.getManifest().isExtension()) {
                 return null;
             }
-            String className = name.substring(0, extensionIndex).replace(File.separator, ".");
+            String className = name.substring(0, extensionIndex).replace("/", ".");
             Class<?> clazz = context.getClassLoader().loadClass(className);
             if (clazz.isAnnotationPresent(Component.class) || !clazz.isAnnotationPresent(RunWith.class)) {
                 // not a Junit component or labeled as a component, avoid creating a duplicate

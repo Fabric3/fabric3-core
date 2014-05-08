@@ -39,7 +39,6 @@ package org.fabric3.implementation.web.introspection;
 
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-import java.io.File;
 import java.net.URL;
 import java.util.Map;
 
@@ -96,10 +95,13 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
             if (contribution.getManifest().isExtension()) {
                 return null;
             }
+
+            // NB: do not use File.separator as the name will be normalized to '/'
+
             if (!name.startsWith("WEB-INF/classes/")) {
                 return null;
             }
-            String className = name.substring(16).substring(0, extensionIndex - 16).replace(File.separator, ".");   // 16 == WEB-INF/classes
+            String className = name.substring(16).substring(0, extensionIndex - 16).replace("/", ".");   // 16 == WEB-INF/classes
             Class<?> clazz = context.getClassLoader().loadClass(className);
             if (!(Servlet.class.isAssignableFrom(clazz) && !(Filter.class.isAssignableFrom(clazz)))) {
                 // skip classes that are not servlets or filters
