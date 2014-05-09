@@ -80,38 +80,22 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
         this.helper = helper;
     }
 
-    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
+    public Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context) {
         String sourceUrl = contribution.getLocation().toString();
         if (!sourceUrl.endsWith(".war")) {
             // not a WAR file
             return null;
         }
 
-        try {
-            int extensionIndex = name.lastIndexOf('.');
-            if (extensionIndex < 1) {
-                throw new AssertionError("Not a class: " + name);
-            }
-            if (contribution.getManifest().isExtension()) {
-                return null;
-            }
-
-            // NB: do not use File.separator as the name will be normalized to '/'
-
-            if (!name.startsWith("WEB-INF/classes/")) {
-                return null;
-            }
-            String className = name.substring(16).substring(0, extensionIndex - 16).replace("/", ".");   // 16 == WEB-INF/classes
-            Class<?> clazz = context.getClassLoader().loadClass(className);
-            if (!(Servlet.class.isAssignableFrom(clazz) && !(Filter.class.isAssignableFrom(clazz)))) {
-                // skip classes that are not servlets or filters
-                return null;
-            }
-            return introspect(clazz, contribution, context);
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            // should not happen
-            throw new AssertionError(e);
+        if (contribution.getManifest().isExtension()) {
+            return null;
         }
+
+        if (!(Servlet.class.isAssignableFrom(clazz) && !(Filter.class.isAssignableFrom(clazz)))) {
+            // skip classes that are not servlets or filters
+            return null;
+        }
+        return introspect(clazz, contribution, context);
 
     }
 

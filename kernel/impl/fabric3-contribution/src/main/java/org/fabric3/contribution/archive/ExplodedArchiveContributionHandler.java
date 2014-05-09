@@ -152,21 +152,27 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
 
                     boolean isClass = file.getName().endsWith(".class");
                     if (isClass) {
-                        name = getRelativeName(file, root);
-                        URL entryUrl = file.toURI().toURL();
-                        Resource resource = null;
-                        for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
-                            resource = introspector.inspect(name, entryUrl, contribution, context);
-                            if (resource != null) {
-                                break;
-                            }
-                        }
+                        name = getRelativeName(file, root).replace(File.separator, ".").substring(0, file.getName().length() - 6);
+                        try {
+                            Class<?> clazz = context.getClassLoader().loadClass(name);
 
-                        if (resource == null) {
-                            continue;
+                            URL entryUrl = file.toURI().toURL();
+                            Resource resource = null;
+                            for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                                resource = introspector.inspect(clazz, entryUrl, contribution, context);
+                                if (resource != null) {
+                                    break;
+                                }
+                            }
+
+                            if (resource == null) {
+                                continue;
+                            }
+                            contribution.addResource(resource);
+                            callback.onResource(resource);
+                        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                            // ignore since the class may reference another class not present in the contribution
                         }
-                        contribution.addResource(resource);
-                        callback.onResource(resource);
 
                     } else {
 

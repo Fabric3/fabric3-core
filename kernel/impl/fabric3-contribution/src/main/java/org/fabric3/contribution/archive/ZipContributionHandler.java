@@ -179,21 +179,26 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                 }
 
                 if (name.endsWith(".class")) {
-                    URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
-
-                    Resource resource = null;
-                    for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
-                        resource = introspector.inspect(name, entryUrl, contribution, context);
-                        if (resource != null) {
-                            break;
+                    try {
+                        URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
+                        name = name.replace("/", ".").substring(0, name.length() - 6);     // note '/' must be used as archives always use '/' for a separator
+                        Class<?> clazz = context.getClassLoader().loadClass(name);
+                        Resource resource = null;
+                        for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                            resource = introspector.inspect(clazz, entryUrl, contribution, context);
+                            if (resource != null) {
+                                break;
+                            }
                         }
-                    }
 
-                    if (resource == null) {
-                        continue;
+                        if (resource == null) {
+                            continue;
+                        }
+                        contribution.addResource(resource);
+                        callback.onResource(resource);
+                    } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                        // ignore since the class may reference another class not present in the contribution
                     }
-                    contribution.addResource(resource);
-                    callback.onResource(resource);
                 } else {
                     String contentType = contentTypeResolver.getContentType(name);
                     if (contentType == null) {

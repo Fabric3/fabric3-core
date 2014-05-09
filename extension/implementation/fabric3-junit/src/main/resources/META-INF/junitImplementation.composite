@@ -25,8 +25,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitComponentAnnotationMapper"/>
     </component>
 
-    <component name="JUnitComponentArtifactIntrospector">
-        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitComponentArtifactIntrospector"/>
+    <component name="JUnitArtifactIntrospector">
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitArtifactIntrospector"/>
     </component>
 
     <component name="JUnitImplementationProcessor" f3:key="f3:junit">

@@ -55,34 +55,23 @@ import org.junit.runner.RunWith;
 /**
  * Creates a resource for classes that are JUnit components.
  */
-public class JUnitComponentArtifactIntrospector implements JavaArtifactIntrospector {
+public class JUnitArtifactIntrospector implements JavaArtifactIntrospector {
     private static final QName TEST_COMPOSITE = new QName(Namespaces.F3, "TestComposite");
 
-    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
-        try {
-            int extensionIndex = name.lastIndexOf('.');
-            if (extensionIndex < 1) {
-                throw new AssertionError("Not a class: " + name);
-            }
-            if (contribution.getManifest().isExtension()) {
-                return null;
-            }
-            String className = name.substring(0, extensionIndex).replace("/", ".");
-            Class<?> clazz = context.getClassLoader().loadClass(className);
-            if (clazz.isAnnotationPresent(Component.class) || !clazz.isAnnotationPresent(RunWith.class)) {
-                // not a Junit component or labeled as a component, avoid creating a duplicate
-                return null;
-            }
-            UrlSource source = new UrlSource(url);
-            Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
-            JavaSymbol symbol = new JavaSymbol(className);
-            ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
-            resourceElement.setMetadata(TEST_COMPOSITE);
-            resource.addResourceElement(resourceElement);
-            return resource;
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            // ignore since the class may reference another class not present in the contribution
+    public Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context) {
+        if (contribution.getManifest().isExtension()) {
+            return null;
         }
-        return null;
+        if (clazz.isAnnotationPresent(Component.class) || !clazz.isAnnotationPresent(RunWith.class)) {
+            // not a Junit component or labeled as a component, avoid creating a duplicate
+            return null;
+        }
+        UrlSource source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
+        JavaSymbol symbol = new JavaSymbol(clazz.getName());
+        ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
+        resourceElement.setMetadata(TEST_COMPOSITE);
+        resource.addResourceElement(resourceElement);
+        return resource;
     }
 }

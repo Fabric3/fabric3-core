@@ -58,22 +58,19 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
     private DefaultIntrospectionContext context;
 
     public void testProvider() throws Exception {
-        String name = TestProvider.class.getName().replace(".", "/") + ".class";
-        Resource resource = introspector.inspect(name, url, contribution, context);
+        Resource resource = introspector.inspect(TestProvider.class, url, contribution, context);
 
         assertEquals(Constants.DSL_CONTENT_TYPE, resource.getContentType());
     }
 
     public void testComponent() throws Exception {
-        String name = TestComponent.class.getName().replace(".", "/") + ".class";
-        Resource resource = introspector.inspect(name, url, contribution, context);
+        Resource resource = introspector.inspect(TestComponent.class, url, contribution, context);
 
         assertEquals(Constants.JAVA_COMPONENT_CONTENT_TYPE, resource.getContentType());
     }
 
     public void testNoComponent() throws Exception {
-        String name = getClass().getName().replace(".", "/") + ".class";
-        assertNull(introspector.inspect(name, url, contribution, context));
+        assertNull(introspector.inspect(getClass(), url, contribution, context));
 
     }
 

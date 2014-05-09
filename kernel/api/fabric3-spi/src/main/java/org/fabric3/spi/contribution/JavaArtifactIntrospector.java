@@ -49,12 +49,12 @@ public interface JavaArtifactIntrospector {
     /**
      * Introspects the class and determines if it is a contribution resource.
      *
-     * @param name         the class name
+     * @param clazz        the class
      * @param url          the URL for the class bytecode
      * @param contribution the containing contribution
      * @param context      the introspection context
      * @return a resource or null if the class is not a resource
      */
-    Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context);
+    Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context);
 
 }

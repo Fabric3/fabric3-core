@@ -210,25 +210,32 @@ public class PluginContributionProcessor implements ContributionProcessor {
             } else {
                 try {
                     if (file.getName().endsWith(".class")) {
-                        String name = calculateClassName(file);
-                        if (name == null) {
-                            continue; // ignore: not a contribution class or test class
-                        }
-                        URL entryUrl = file.toURI().toURL();
-
-                        Resource resource = null;
-                        for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
-                            resource = introspector.inspect(name, entryUrl, contribution, context);
-                            if (resource != null) {
-                                break;
+                        try {
+                            String name = calculateClassName(file);
+                            if (name == null) {
+                                continue; // ignore: not a contribution class or test class
                             }
-                        }
+                            URL entryUrl = file.toURI().toURL();
 
-                        if (resource == null) {
-                            continue;
+                            name = name.replace(File.separator, ".").substring(0, name.length() - 6);
+                            Class<?> clazz = context.getClassLoader().loadClass(name);
+
+                            Resource resource = null;
+                            for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                                resource = introspector.inspect(clazz, entryUrl, contribution, context);
+                                if (resource != null) {
+                                    break;
+                                }
+                            }
+
+                            if (resource == null) {
+                                continue;
+                            }
+                            contribution.addResource(resource);
+                            callback.onResource(resource);
+                        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                            // ignore since the class may reference another class not present in the contribution
                         }
-                        contribution.addResource(resource);
-                        callback.onResource(resource);
                     } else {
                         String contentType = contentTypeResolver.getContentType(file.getName());
                         // skip entry if we don't recognize the content type

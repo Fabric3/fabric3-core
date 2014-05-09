@@ -56,36 +56,26 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospector {
 
-    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
-        try {
-            int extensionIndex = name.lastIndexOf('.');
-            if (extensionIndex < 1) {
-                throw new AssertionError("Not a class: " + name);
-            }
-            String className = name.substring(0, extensionIndex).replace("/", ".").replace("/", ".");
-            if (isProvider(className)) {
-                // the class is a model provider
+    public Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context) {
+        String name = clazz.getName();
+        if (isProvider(name)) {
+            // the class is a model provider
+            UrlSource source = new UrlSource(url);
+            Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
+            ProviderSymbol symbol = new ProviderSymbol(name);
+            ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
+            resource.addResourceElement(element);
+            return resource;
+        } else if (!contribution.getManifest().isExtension()) {
+            if (clazz.isAnnotationPresent(Component.class)) {
+                // class is a component
                 UrlSource source = new UrlSource(url);
-                Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
-                ProviderSymbol symbol = new ProviderSymbol(className);
-                ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
-                resource.addResourceElement(element);
+                Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
+                JavaSymbol symbol = new JavaSymbol(name);
+                ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
+                resource.addResourceElement(resourceElement);
                 return resource;
-            } else if (!contribution.getManifest().isExtension()) {
-                Class<?> clazz = context.getClassLoader().loadClass(className);
-                if (clazz.isAnnotationPresent(Component.class)) {
-                    // class is a component
-                    UrlSource source = new UrlSource(url);
-                    Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
-                    JavaSymbol symbol = new JavaSymbol(className);
-                    ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
-                    resource.addResourceElement(resourceElement);
-                    return resource;
-                }
             }
-            return null;
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            // ignore since the class may reference another class not present in the contribution
         }
         return null;
     }

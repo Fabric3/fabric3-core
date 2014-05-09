@@ -58,29 +58,18 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class RsProviderIntrospector implements JavaArtifactIntrospector {
 
-    public Resource inspect(String name, URL url, Contribution contribution, IntrospectionContext context) {
-        try {
-            int extensionIndex = name.lastIndexOf('.');
-            if (extensionIndex < 1) {
-                throw new AssertionError("Not a class: " + name);
-            }
-            String className = name.substring(0, extensionIndex).replace("/", ".");
-            Class<?> clazz = context.getClassLoader().loadClass(className);
-            if (!clazz.isAnnotationPresent(Provider.class) || clazz.isAnnotationPresent(Component.class)) {
-                // not a provider or already configured as a component
-                return null;
-            }
-
-            UrlSource source = new UrlSource(url);
-            Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
-            JavaSymbol symbol = new JavaSymbol(className);
-            ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
-            resource.addResourceElement(resourceElement);
-            return resource;
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            // ignore since the class may reference another class not present in the contribution
+    public Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context) {
+        if (!clazz.isAnnotationPresent(Provider.class) || clazz.isAnnotationPresent(Component.class)) {
+            // not a provider or already configured as a component
+            return null;
         }
-        return null;
+
+        UrlSource source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
+        JavaSymbol symbol = new JavaSymbol(clazz.getName());
+        ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
+        resource.addResourceElement(resourceElement);
+        return resource;
     }
 
 }

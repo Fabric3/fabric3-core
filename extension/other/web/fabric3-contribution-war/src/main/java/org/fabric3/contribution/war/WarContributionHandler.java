@@ -71,6 +71,8 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class WarContributionHandler implements ArchiveContributionHandler {
+    private static final int PREFIX = "WEB-INF/classes/".length();
+
     private Loader loader;
     private List<JavaArtifactIntrospector> artifactIntrospectors = Collections.emptyList();
     private ContentTypeResolver contentTypeResolver;
@@ -143,22 +145,28 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     continue;
                 }
 
-                if (name.endsWith(".class")) {
-                    URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
-
-                    Resource resource = null;
-                    for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
-                        resource = introspector.inspect(name, entryUrl, contribution, context);
-                        if (resource != null) {
-                            break;
+                if (name.endsWith(".class") && name.startsWith("WEB-INF/classes/")) {
+                    try {
+                        URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
+                        // note '/' must be used as archives always use '/' for a separator
+                        name = name.substring(PREFIX, name.length() - 6).replace("/", ".");
+                        Class<?> clazz = context.getClassLoader().loadClass(name);
+                        Resource resource = null;
+                        for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                            resource = introspector.inspect(clazz, entryUrl, contribution, context);
+                            if (resource != null) {
+                                break;
+                            }
                         }
-                    }
 
-                    if (resource == null) {
-                        continue;
+                        if (resource == null) {
+                            continue;
+                        }
+                        contribution.addResource(resource);
+                        callback.onResource(resource);
+                    } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                        // ignore since the class may reference another class not present in the contribution
                     }
-                    contribution.addResource(resource);
-                    callback.onResource(resource);
                 } else {
 
                     String contentType = contentTypeResolver.getContentType(name);
