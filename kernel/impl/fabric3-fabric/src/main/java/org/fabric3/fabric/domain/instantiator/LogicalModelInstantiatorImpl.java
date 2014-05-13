@@ -40,7 +40,10 @@ package org.fabric3.fabric.domain.instantiator;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
@@ -301,16 +304,29 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
     /**
      * Synthesizes a composite from a collection of composites using inclusion.
+     * <p/>
+     * A counter is maintained for each include name and used to generate include names in situations where they may clash, e.g. when two composites from
+     * different contributions with the same name are depoyed together.
      *
      * @param composites the composites to synthesize
      * @return the synthesized composite
      */
     private Composite synthesizeComposite(List<Composite> composites) {
         Composite synthesized = new Composite(SYNTHETIC_COMPOSITE);
+        Map<QName, AtomicInteger> counters = new HashMap<>();
         for (Composite composite : composites) {
             Include include = new Include();
-            include.setName(composite.getName());
+            QName name = composite.getName();
+            include.setName(name);
             include.setIncluded(composite);
+            if (synthesized.getIncludes().containsKey(name)) {
+                AtomicInteger counter = counters.get(name);
+                if (counter == null) {
+                    counter = new AtomicInteger();
+                    counters.put(name, counter);
+                }
+                include.setName(new QName(name.getNamespaceURI(), name.getLocalPart() + counter.incrementAndGet()));
+            }
             synthesized.add(include);
 
         }

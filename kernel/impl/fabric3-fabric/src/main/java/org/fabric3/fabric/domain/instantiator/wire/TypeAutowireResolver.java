@@ -109,7 +109,7 @@ public class TypeAutowireResolver implements AutowireResolver {
      * @param logicalReference the logical reference
      * @param target           the target
      * @return true if the reference is not keyed, true if the reference is keyed and the target specifies a key, false if the reference is keyed and the target
-     *         does not specify a key
+     * does not specify a key
      */
     private boolean validKey(LogicalReference logicalReference, LogicalComponent<?> target) {
         return !logicalReference.getDefinition().isKeyed() || target.getDefinition().getKey() != null
