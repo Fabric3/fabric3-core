@@ -51,6 +51,8 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 import org.fabric3.api.annotation.Source;
+import org.fabric3.api.annotation.model.Component;
+import org.fabric3.api.annotation.model.Namespace;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -87,7 +89,7 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
-        processSource(field, property, context);
+        processSource(field,field.getDeclaringClass(), property, context);
         componentType.add(property, site);
     }
 
@@ -106,7 +108,7 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
-        processSource(method, property, context);
+        processSource(method, method.getDeclaringClass(), property, context);
         componentType.add(property, site);
     }
 
@@ -179,11 +181,10 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         return property;
     }
 
-    private void processSource(AccessibleObject accessible, Property property, IntrospectionContext context) {
+    private void processSource(AccessibleObject accessible, Class<?> clazz, Property property, IntrospectionContext context) {
         Source source = accessible.getAnnotation(Source.class);
         if (source != null) {
             if (!source.value().startsWith("$")) {
-                Class<? extends AccessibleObject> clazz = accessible.getClass();
                 InvalidAnnotation error = new InvalidAnnotation("Source attribute must specify an expression starting with '$' on:" + accessible,
                                                                 accessible,
                                                                 source,
@@ -191,6 +192,17 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
                 context.addError(error);
             } else {
                 property.setSource(source.value());
+
+                // handle defined namespaces
+                Component componentAnnotation = clazz.getAnnotation(Component.class);
+                if (componentAnnotation != null) {
+                    Namespace[] namespaces = componentAnnotation.namespaces();
+                    for (Namespace namespace : namespaces) {
+                        String prefix = namespace.prefix();
+                        String uri = namespace.uri();
+                        property.addNamespace(prefix, uri);
+                    }
+                }
             }
         }
     }
