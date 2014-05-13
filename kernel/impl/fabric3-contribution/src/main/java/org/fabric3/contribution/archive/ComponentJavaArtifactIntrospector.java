@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.archive;
 
+import java.lang.reflect.Modifier;
 import java.net.URL;
 
 import org.fabric3.api.annotation.model.Component;
@@ -67,7 +68,9 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
             resource.addResourceElement(element);
             return resource;
         } else if (!contribution.getManifest().isExtension()) {
-            if (clazz.isAnnotationPresent(Component.class)) {
+            // If the class  is not annotated or it is abstract, ignore.
+            // Abstract classes are ignored, since it is convenient to annotate a common superclass for conciseness.
+            if (clazz.isAnnotationPresent(Component.class) && !Modifier.isAbstract(clazz.getModifiers())) {
                 // class is a component
                 UrlSource source = new UrlSource(url);
                 Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
