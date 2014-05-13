@@ -50,8 +50,10 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.ProviderSymbol;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  *
@@ -87,7 +89,12 @@ public class ProviderResourceProcessorTestCase extends TestCase {
         super.setUp();
         ProcessorRegistry registry = EasyMock.createNiceMock(ProcessorRegistry.class);
         HostInfo info = EasyMock.createNiceMock(HostInfo.class);
-        processor = new ProviderResourceProcessor(registry, info);
+        LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
+        LogicalComponentManager lcm = EasyMock.createMock(LogicalComponentManager.class);
+        EasyMock.expect(lcm.getRootComponent()).andReturn(domain);
+        EasyMock.replay(lcm);
+
+        processor = new ProviderResourceProcessor(registry, lcm, info);
 
         Contribution contribution = new Contribution(URI.create("test"));
         resource = new Resource(contribution, null, Constants.DSL_CONTENT_TYPE);

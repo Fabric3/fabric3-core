@@ -49,6 +49,7 @@ import org.fabric3.api.annotation.model.Environment;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -61,6 +62,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -73,9 +75,11 @@ import org.oasisopen.sca.annotation.Reference;
 public class ProviderResourceProcessor implements ResourceProcessor {
     private HostInfo info;
     private Map<QName, ImplementationIntrospector> introspectors = Collections.emptyMap();
+    private Autowire domainAutowire;
 
-    public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference HostInfo info) {
+    public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference LogicalComponentManager lcm, @Reference HostInfo info) {
         this.info = info;
+        this.domainAutowire = lcm.getRootComponent().getAutowire();
         processorRegistry.register(this);
     }
 
@@ -143,9 +147,13 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                     composite = (Composite) method.invoke(null, environmentArg);
                 }
                 if (composite == null) {
-                    InvalidProviderMethod error = new InvalidProviderMethod("Provides method returned null: " + method);
-                    context.addError(error);
+                    // ignore as nothing needs to be produced
                     continue;
+                }
+
+                // set autowire if not explicitly set to the domain value
+                if (composite.getAutowire() == null) {
+                    composite.setAutowire(domainAutowire);
                 }
 
                 URI contributionUri = context.getContributionUri();
