@@ -47,10 +47,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -62,23 +60,20 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Records the current domain state to a journal so it may be replayed when a controller comes back online and resyncs with the domain.
  * <p/>
- * Deployed contributions and composites are written to a file system based journal as the state of the domain changes (i.e. deployments and
- * undeployments are made). On recovery, the journal can be read to reconstitute the current state of the domain.
+ * Deployed contributions and composites are written to a file system based journal as the state of the domain changes (i.e. deployments and undeployments are
+ * made). On recovery, the journal can be read to reconstitute the current state of the domain.
  */
 @EagerInit
 public class FSDeployTracker implements DeployListener {
-    private static final String NO_PLAN = "";
     private File domainLog;
     private XMLOutputFactory outputFactory;
     private DeployTrackerMonitor monitor;
-    private List<URI> contributions;
-    private Map<QName, String> deployables;
+    private Set<URI> contributions;
 
     public FSDeployTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor DeployTrackerMonitor monitor) {
         this.monitor = monitor;
         this.outputFactory = factory.newOutputFactoryInstance();
-        this.contributions = new ArrayList<>();
-        this.deployables = new HashMap<>();
+        this.contributions = new LinkedHashSet<>();
         domainLog = new File(info.getDataDir(), "domain.xml");
     }
 
@@ -92,17 +87,12 @@ public class FSDeployTracker implements DeployListener {
         persist();
     }
 
-    public void onDeploy(QName included, String plan) {
-        if (plan == null) {
-            plan = NO_PLAN;
-        }
-        deployables.put(included, plan);
-        persist();
+    public void onDeploy(QName included) {
+        // no-op
     }
 
     public void onUndeploy(QName undeployed) {
-        deployables.remove(undeployed);
-        persist();
+        // no-op
     }
 
     public void onDeployCompleted(URI uri) {
@@ -113,7 +103,7 @@ public class FSDeployTracker implements DeployListener {
         // no-op
     }
 
-    public void onDeployCompleted(QName deployable, String plan) {
+    public void onDeployCompleted(QName deployable) {
         // no-op
     }
 
@@ -131,7 +121,6 @@ public class FSDeployTracker implements DeployListener {
             writer.writeStartElement("domain");
             writer.writeDefaultNamespace(org.fabric3.api.Namespaces.F3);
             writeContributions(writer);
-            writeDeployables(writer);
             writer.writeEndElement();
             writer.writeEndDocument();
         } catch (FileNotFoundException | XMLStreamException e) {
@@ -152,24 +141,6 @@ public class FSDeployTracker implements DeployListener {
         for (URI uri : contributions) {
             writer.writeStartElement("contribution");
             writer.writeAttribute("uri", uri.toString());
-            writer.writeEndElement();
-        }
-        writer.writeEndElement();
-    }
-
-    private void writeDeployables(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("deployables");
-        for (Map.Entry<QName, String> entry : deployables.entrySet()) {
-            QName deployable = entry.getKey();
-            String plan = entry.getValue();
-            writer.writeStartElement("deployable");
-            writer.writeAttribute("namespace", deployable.getNamespaceURI());
-            writer.writeAttribute("name", deployable.getLocalPart());
-            // Note the equality test below is correct
-            //noinspection StringEquality
-            if (plan != NO_PLAN) {
-                writer.writeAttribute("plan", plan);
-            }
             writer.writeEndElement();
         }
         writer.writeEndElement();

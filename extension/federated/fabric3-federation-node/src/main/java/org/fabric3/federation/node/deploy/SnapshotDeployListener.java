@@ -92,10 +92,10 @@ public class SnapshotDeployListener implements DeployListener {
     public void onDeploy(URI uri) {
     }
 
-    public void onDeploy(QName deployable, String plan) {
+    public void onDeploy(QName deployable) {
     }
 
-    public void onDeployCompleted(QName deployable, String plan) {
+    public void onDeployCompleted(QName deployable) {
         // a component is deployed programmatically via the fabric API
         if (HostNamespaces.SYNTHESIZED.equals(deployable.getNamespaceURI())) {
             broadcastSnapshot(Names.HOST_CONTRIBUTION, LogicalState.NEW);

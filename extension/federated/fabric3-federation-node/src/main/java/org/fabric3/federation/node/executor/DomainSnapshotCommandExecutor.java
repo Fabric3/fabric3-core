@@ -100,10 +100,10 @@ public class DomainSnapshotCommandExecutor implements CommandExecutor<DomainSnap
     public void onUnDeployCompleted(URI uri) {
     }
 
-    public void onDeploy(QName deployable, String plan) {
+    public void onDeploy(QName deployable) {
     }
 
-    public void onDeployCompleted(QName deployable, String plan) {
+    public void onDeployCompleted(QName deployable) {
     }
 
     public void onUndeploy(QName undeployed) {

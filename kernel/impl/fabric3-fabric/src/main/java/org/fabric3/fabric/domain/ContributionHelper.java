@@ -37,10 +37,10 @@
 */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.domain.DeploymentException;
@@ -71,12 +71,12 @@ public interface ContributionHelper {
     Composite findComposite(QName deployable) throws DeploymentException;
 
     /**
-     * Resolves the default plan for a deployable.
+     * Resolves the plan for a deployable.
      *
      * @param deployable the deployable composite
      * @return the default plan or null if none is found
      */
-    DeploymentPlan findDefaultPlan(QName deployable);
+    DeploymentPlan findPlan(QName deployable);
 
     /**
      * Resolves the default plan for a contribution.
@@ -85,15 +85,6 @@ public interface ContributionHelper {
      * @return the default plan of null if none is found
      */
     DeploymentPlan findDefaultPlan(Contribution contribution);
-
-    /**
-     * Resolves a deployment plan by name.
-     *
-     * @param plan the deployment plan name
-     * @return the resolved deployment plan or null if not found
-     * @throws DeploymentException if the plan cannot be resolved
-     */
-    DeploymentPlan findPlan(String plan) throws DeploymentException;
 
     /**
      * Resolves the contributions from the list of URIs.
@@ -107,8 +98,7 @@ public interface ContributionHelper {
      * Locks a set of contributions. The lock owners are the deployables in the contribution.
      *
      * @param contributions the contributions
-     * @throws CompositeAlreadyDeployedException
-     *          if a deployable is already deployed
+     * @throws CompositeAlreadyDeployedException if a deployable is already deployed
      */
     void lock(Set<Contribution> contributions) throws CompositeAlreadyDeployedException;
 

@@ -37,21 +37,19 @@
 */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.domain.DeployableNotFoundException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -59,12 +57,12 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.model.plan.DeploymentPlan;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Utilities used by the Domain for introspecting information from a contribution.
  */
 public class ContributionHelperImpl implements ContributionHelper {
-    private static final String PLAN_NAMESPACE = "urn:fabric3.org:extension:plan";
     private MetaDataStore metadataStore;
     private HostInfo hostInfo;
 
@@ -81,8 +79,7 @@ public class ContributionHelperImpl implements ContributionHelper {
                     if (!(entry.getValue() instanceof Composite)) {
                         continue;
                     }
-                    @SuppressWarnings({"unchecked"})
-                    ResourceElement<QNameSymbol, Composite> element = (ResourceElement<QNameSymbol, Composite>) entry;
+                    @SuppressWarnings({"unchecked"}) ResourceElement<QNameSymbol, Composite> element = (ResourceElement<QNameSymbol, Composite>) entry;
                     QName name = element.getSymbol().getKey();
                     Composite composite = element.getValue();
                     for (Deployable deployable : contribution.getManifest().getDeployables()) {
@@ -115,7 +112,7 @@ public class ContributionHelperImpl implements ContributionHelper {
         return element.getValue();
     }
 
-    public DeploymentPlan findDefaultPlan(QName deployable) {
+    public DeploymentPlan findPlan(QName deployable) {
         // default to first found deployment plan in a contribution if one is not specifed for a distributed deployment
         QNameSymbol symbol = new QNameSymbol(deployable);
         Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
@@ -132,16 +129,6 @@ public class ContributionHelperImpl implements ContributionHelper {
             return null;
         }
         return plan;
-    }
-
-    public DeploymentPlan findPlan(String plan) throws DeploymentException {
-        QName planName = new QName(PLAN_NAMESPACE, plan);
-        QNameSymbol symbol = new QNameSymbol(planName);
-        ResourceElement<QNameSymbol, DeploymentPlan> element = metadataStore.find(DeploymentPlan.class, symbol);
-        if (element == null) {
-            return null;
-        }
-        return element.getValue();
     }
 
     public Set<Contribution> findContributions(List<URI> uris) {
@@ -186,8 +173,7 @@ public class ContributionHelperImpl implements ContributionHelper {
                 if (!(entry.getValue() instanceof DeploymentPlan)) {
                     continue;
                 }
-                @SuppressWarnings({"unchecked"})
-                ResourceElement<QNameSymbol, DeploymentPlan> element = (ResourceElement<QNameSymbol, DeploymentPlan>) entry;
+                @SuppressWarnings({"unchecked"}) ResourceElement<QNameSymbol, DeploymentPlan> element = (ResourceElement<QNameSymbol, DeploymentPlan>) entry;
                 DeploymentPlan plan = element.getValue();
                 plans.add(plan);
             }

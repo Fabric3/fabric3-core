@@ -57,17 +57,8 @@ public interface Domain {
     void include(QName deployable) throws DeploymentException;
 
     /**
-     * Include a deployable composite in the domain using the specified DeploymentPlan.
-     *
-     * @param deployable the name of the deployable composite to include
-     * @param plan       the deployment plan name
-     * @throws DeploymentException if an error is encountered during inclusion
-     */
-    void include(QName deployable, String plan) throws DeploymentException;
-
-    /**
-     * Include all deployables contained in the list of contributions in the domain. If deployment plans are present in the composites, they will be used. This
-     * operation is intended for composites that are synthesized from multiple deployable composites that are associated with individual deployment plans.
+     * Include all deployables contained in the list of contributions in the domain. This operation is intended for composites that are synthesized from
+     * multiple deployable composites that are associated with individual deployment plans.
      *
      * @param uris the contributions to deploy
      * @throws DeploymentException if an error is encountered during inclusion

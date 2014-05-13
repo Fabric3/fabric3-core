@@ -37,6 +37,12 @@
 */
 package org.fabric3.recovery.domain;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,19 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.domain.DeploymentException;
@@ -67,17 +61,19 @@ import org.fabric3.spi.runtime.event.DomainRecover;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Replays the domain journal when the controller synchronizes with the domain.
  * <p/>
- * The domain journal records the state of the domain as composites are included and undeployed. Replaying the journal has the affect of reinstating
- * the logical assembly to its prior state before the controller went offline (either as a result of a normal shutdown or system failure).
+ * The domain journal records the state of the domain as composites are included and undeployed. Replaying the journal has the affect of reinstating the logical
+ * assembly to its prior state before the controller went offline (either as a result of a normal shutdown or system failure).
  */
 @EagerInit
 public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
     private static final QName CONTRIBUTION = new QName(org.fabric3.api.Namespaces.F3, "contribution");
-    private static final QName DEPLOYABLE = new QName(org.fabric3.api.Namespaces.F3, "deployable");
     private EventService eventService;
     private FSDomainReplayMonitor monitor;
     private XMLInputFactory inputFactory;
@@ -126,45 +122,24 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
         BufferedInputStream stream = new BufferedInputStream(fis);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(stream);
         List<URI> contributions = new ArrayList<>();
-        Map<QName, String> deployables = new LinkedHashMap<>();
         try {
             while (true) {
                 switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (DEPLOYABLE.equals(reader.getName())) {
-                        String namespace = reader.getAttributeValue(null, "namespace");
-                        if (namespace == null) {
-                            Location location = reader.getLocation();
-                            int line = location.getLineNumber();
-                            int col = location.getColumnNumber();
-                            monitor.errorMessage("Namespace attribute missing in domain journal [" + line + "," + col + "]");
-                            continue;
+                    case XMLStreamConstants.START_ELEMENT:
+                        if (CONTRIBUTION.equals(reader.getName())) {
+                            String uri = reader.getAttributeValue(null, "uri");
+                            if (uri == null) {
+                                Location location = reader.getLocation();
+                                int line = location.getLineNumber();
+                                int col = location.getColumnNumber();
+                                monitor.errorMessage("URI attribute missing in domain journal [" + line + "," + col + "]");
+                                continue;
+                            }
+                            contributions.add(URI.create(uri));
                         }
-                        String name = reader.getAttributeValue(null, "name");
-                        if (name == null) {
-                            Location location = reader.getLocation();
-                            int line = location.getLineNumber();
-                            int col = location.getColumnNumber();
-                            monitor.errorMessage("Name attribute missing in domain journal [" + line + "," + col + "]");
-                            continue;
-                        }
-                        String plan = reader.getAttributeValue(null, "plan");
-                        QName qName = new QName(namespace, name);
-                        deployables.put(qName, plan);
-                    } else if (CONTRIBUTION.equals(reader.getName())) {
-                        String uri = reader.getAttributeValue(null, "uri");
-                        if (uri == null) {
-                            Location location = reader.getLocation();
-                            int line = location.getLineNumber();
-                            int col = location.getColumnNumber();
-                            monitor.errorMessage("URI attribute missing in domain journal [" + line + "," + col + "]");
-                            continue;
-                        }
-                        contributions.add(URI.create(uri));
-                    }
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    return new DomainJournal(contributions, deployables);
+                        break;
+                    case XMLStreamConstants.END_DOCUMENT:
+                        return new DomainJournal(contributions);
                 }
 
             }

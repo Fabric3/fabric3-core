@@ -37,15 +37,14 @@
 */
 package org.fabric3.fabric.domain;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.domain.DeployListener;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Listener that sends deployment and undeployment events to a monitor on the controller.
@@ -59,13 +58,13 @@ public class DeployMonitorListener implements DeployListener {
         this.monitor = monitor;
     }
 
-    public void onDeploy(QName deployable, String plan) {
+    public void onDeploy(QName deployable) {
         if (enabled) {
             monitor.deploy(deployable);
         }
     }
 
-    public void onDeployCompleted(QName deployable, String plan) {
+    public void onDeployCompleted(QName deployable) {
         if (enabled) {
             monitor.deploymentCompleted(deployable);
         }

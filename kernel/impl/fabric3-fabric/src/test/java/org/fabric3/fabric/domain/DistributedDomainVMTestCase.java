@@ -292,8 +292,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         control.replay();
 
-        Map<QName, String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
-        DomainJournal journal = new DomainJournal(Collections.<URI>emptyList(), deployables);
+        DomainJournal journal = new DomainJournal(Collections.<URI>emptyList());
         domain.recover(journal);
 
         // verify the component contained in the composite was added to the logical model

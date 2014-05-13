@@ -43,18 +43,17 @@
  */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -114,27 +113,6 @@ public class ContributionHelperImplTestCase extends TestCase {
         EasyMock.replay(store);
 
         DeploymentPlan returned = helper.findDefaultPlan(contribution);
-        assertEquals(plan, returned);
-        EasyMock.verify(store);
-    }
-
-    public void testFindPlan() throws Exception {
-        URI uri = URI.create("test");
-        Contribution contribution = new Contribution(uri);
-
-        QName name = new QName("foo", "plan");
-        QNameSymbol symbol = new QNameSymbol(name);
-        DeploymentPlan plan = new DeploymentPlan("plan");
-        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<>(symbol, plan);
-
-        Resource resource = new Resource(contribution, null, "");
-        resource.addResourceElement(element);
-        contribution.addResource(resource);
-
-        EasyMock.expect(store.find(EasyMock.eq(DeploymentPlan.class), EasyMock.isA(QNameSymbol.class))).andReturn(element);
-        EasyMock.replay(store);
-
-        DeploymentPlan returned = helper.findPlan("plan");
         assertEquals(plan, returned);
         EasyMock.verify(store);
     }

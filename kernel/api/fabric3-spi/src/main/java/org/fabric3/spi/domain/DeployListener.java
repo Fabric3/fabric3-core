@@ -37,8 +37,8 @@
 */
 package org.fabric3.spi.domain;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 /**
  * Implementations receive callbacks for events emitted by the application domain.
@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
 public interface DeployListener {
 
     /**
-     * Called when the contents of a contribution are deployed to the domain. This will be called before {@link #onDeploy(QName, String)} if the
+     * Called when the contents of a contribution are deployed to the domain. This will be called before {@link #onDeploy(QName)} if the
      * contribution contains deployables.
      *
      * @param uri the contribution URI
@@ -54,8 +54,7 @@ public interface DeployListener {
     void onDeploy(URI uri);
 
     /**
-     * Called when the contents of a contribution are finished being deployed to the domain. This will be called after {@link #onDeploy(QName,
-     * String)} if the contribution contains deployables.
+     * Called when the contents of a contribution are finished being deployed to the domain. This will be called after {@link #onDeploy(QName)} if the contribution contains deployables.
      *
      * @param uri the contribution URI
      */
@@ -79,19 +78,17 @@ public interface DeployListener {
 
     /**
      * Called when a composite is deployed to the domain.
+     *  @param deployable the composite qualified name
      *
-     * @param deployable the composite qualified name
-     * @param plan       the deployment plan or null if none is specified
      */
-    void onDeploy(QName deployable, String plan);
+    void onDeploy(QName deployable);
 
     /**
      * Called when a composite has been deployed to the domain.
+     *  @param deployable the composite qualified name
      *
-     * @param deployable the composite qualified name
-     * @param plan       the deployment plan or null if none is specified
      */
-    void onDeployCompleted(QName deployable, String plan);
+    void onDeployCompleted(QName deployable);
 
     /**
      * Called when a composite is undeployed from the domain.

@@ -39,26 +39,21 @@ package org.fabric3.api.host.domain;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
 
 /**
- * The state of the domain encompassing the contributions that have been deployed and the deployable composites within those contributions that have
- * been deployed. Used during recovery to reconstitute the current domain state.
+ * The state of the domain encompassing the contributions that have been deployed and the deployable composites within those contributions that have been
+ * deployed. Used during recovery to reconstitute the current domain state.
  */
 public class DomainJournal {
     private List<URI> contributions;
-    private Map<QName, String> deployables;
 
     /**
      * Constructor.
      *
      * @param contributions the contributions deployed to the domain
-     * @param deployables   the deployable composites within the contributions that have been deployed
      */
-    public DomainJournal(List<URI> contributions, Map<QName, String> deployables) {
+    public DomainJournal(List<URI> contributions) {
         this.contributions = contributions;
-        this.deployables = deployables;
     }
 
     /**
@@ -70,12 +65,4 @@ public class DomainJournal {
         return contributions;
     }
 
-    /**
-     * Returns the deployable composites deployed to the domain.
-     *
-     * @return the deployable composites deployed to the domain
-     */
-    public Map<QName, String> getDeployables() {
-        return deployables;
-    }
 }

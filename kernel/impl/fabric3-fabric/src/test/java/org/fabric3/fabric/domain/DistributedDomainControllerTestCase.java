@@ -48,34 +48,33 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
-import org.fabric3.fabric.domain.collector.Collector;
-import org.fabric3.fabric.domain.collector.CollectorImpl;
-import org.fabric3.spi.domain.generator.binding.BindingSelector;
-import org.fabric3.fabric.domain.instantiator.InstantiationContext;
-import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.DomainJournal;
 import org.fabric3.api.host.runtime.DefaultHostInfo;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.definitions.PolicySet;
-import org.fabric3.spi.domain.allocator.Allocator;
+import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.collector.CollectorImpl;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
+import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
+import org.fabric3.spi.domain.allocator.Allocator;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
+import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -240,8 +239,7 @@ public class DistributedDomainControllerTestCase extends TestCase {
         // generation and deployment should not be done
         control.replay();
 
-        Map<QName, String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
-        DomainJournal journal = new DomainJournal(Collections.<URI>emptyList(), deployables);
+        DomainJournal journal = new DomainJournal(Collections.<URI>emptyList());
         domain.recover(journal);
 
         // verify the component contained in the composite was added to the logical model

@@ -63,8 +63,8 @@ public class DeployMonitorListenerTestCase extends TestCase {
         EasyMock.replay(info, monitor);
 
         DeployMonitorListener listener = new DeployMonitorListener(info, monitor);
-        listener.onDeploy(DEPLOYABLE, "plan");
-        listener.onDeployCompleted(DEPLOYABLE, "plan");
+        listener.onDeploy(DEPLOYABLE);
+        listener.onDeployCompleted(DEPLOYABLE);
         listener.onUndeploy(DEPLOYABLE);
         listener.onUndeployCompleted(DEPLOYABLE);
 
@@ -79,8 +79,8 @@ public class DeployMonitorListenerTestCase extends TestCase {
         EasyMock.replay(info, monitor);
 
         DeployMonitorListener listener = new DeployMonitorListener(info, monitor);
-        listener.onDeploy(DEPLOYABLE, "plan");
-        listener.onDeployCompleted(DEPLOYABLE, "plan");
+        listener.onDeploy(DEPLOYABLE);
+        listener.onDeployCompleted(DEPLOYABLE);
         listener.onUndeploy(DEPLOYABLE);
         listener.onUndeployCompleted(DEPLOYABLE);
 
