@@ -37,6 +37,7 @@
 */
 package org.fabric3.api.annotation.model;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -52,5 +53,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE})
 @Retention(RUNTIME)
 @Implementation("{http://docs.oasis-open.org/ns/opencsa/sca/200912}implementation.java")
+@Inherited
 public @interface JavaImplementation {
 }

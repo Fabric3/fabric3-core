@@ -44,10 +44,12 @@
 package org.fabric3.api.model.type.component;
 
 import javax.xml.namespace.QName;
-
-import org.w3c.dom.Document;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.api.model.type.ModelObject;
+import org.w3c.dom.Document;
 
 /**
  * A component type property.
@@ -63,6 +65,7 @@ public class Property extends ModelObject<ComponentType> {
     private QName type;
     private QName element;
     private String source;
+    private Map<String, String> namespaces = Collections.emptyMap();
 
     public Property(String name) {
         this.name = name;
@@ -192,5 +195,22 @@ public class Property extends ModelObject<ComponentType> {
      */
     public void setSource(String source) {
         this.source = source;
+    }
+
+    /**
+     * Adds a namespace used to resolve a property source.
+     *
+     * @param prefix the namespace prefix
+     * @param uri    the namespace uri
+     */
+    public void addNamespace(String prefix, String uri) {
+        if (namespaces.isEmpty()) {
+            namespaces = new HashMap<String, String>();
+        }
+        namespaces.put(prefix, uri);
+    }
+
+    public Map<String, String> getNamespaces() {
+        return namespaces;
     }
 }

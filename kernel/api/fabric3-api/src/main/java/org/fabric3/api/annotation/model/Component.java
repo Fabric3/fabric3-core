@@ -37,6 +37,7 @@
 */
 package org.fabric3.api.annotation.model;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -49,8 +50,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({TYPE})
 @Retention(RUNTIME)
+@Inherited
 public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
+    public static final String DEFAULT_COMPOSITE = Namespaces.F3_PREFIX + "DefaultApplicationComposite";
+
     /**
      * Specifies the composite qualified name
      *
@@ -64,4 +67,11 @@ public @interface Component {
      * @return the component name
      */
     String name() default "";
+
+    /**
+     * Specifies namespaces used by component configuration. Namespaces may be referenced in configuration elements such as properties.
+     *
+     * @return the namespaces
+     */
+    Namespace[] namespaces() default {};
 }
