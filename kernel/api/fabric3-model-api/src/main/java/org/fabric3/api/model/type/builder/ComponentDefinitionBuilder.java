@@ -39,7 +39,7 @@ package org.fabric3.api.model.type.builder;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.model.type.NamespaceContextImpl;
+import org.fabric3.api.model.type.F3NamespaceContext;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -143,7 +143,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
     public T propertyExpression(String name, String xpath) {
         checkState();
         PropertyValue propertyValue = new PropertyValue(name, xpath);
-        propertyValue.setNamespaceContext(new NamespaceContextImpl());
+        propertyValue.setNamespaceContext(new F3NamespaceContext());
         getDefinition().add(propertyValue);
         return builder();
     }

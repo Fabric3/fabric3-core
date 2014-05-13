@@ -38,8 +38,11 @@
 package org.fabric3.api.model.type;
 
 import javax.xml.namespace.NamespaceContext;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.fabric3.api.Namespaces;
 import org.oasisopen.sca.Constants;
@@ -47,29 +50,45 @@ import org.oasisopen.sca.Constants;
 /**
  * Namespace context with built-in support for the f3 and sca namespaces.
  */
-public class NamespaceContextImpl implements NamespaceContext {
+public class F3NamespaceContext implements NamespaceContext {
+    private Map<String, String> prefixesToUris = new HashMap<>();
+    private Map<String, List<String>> urisToPrefixes = new HashMap<>();
+
+    public F3NamespaceContext() {
+        prefixesToUris.put("sca", Constants.SCA_NS);
+        prefixesToUris.put("f3", Namespaces.F3);
+
+        List<String> sca = new ArrayList<>();
+        sca.add("sca");
+        urisToPrefixes.put(Constants.SCA_NS, sca);
+
+        List<String> f3 = new ArrayList<>();
+        f3.add("f3");
+
+        urisToPrefixes.put(Namespaces.F3, f3);
+    }
+
+    public void add(String prefix, String namespace) {
+        prefixesToUris.put(prefix, namespace);
+        List<String> prefixes = urisToPrefixes.get(namespace);
+        if (prefixes == null) {
+            prefixes = new ArrayList<>();
+            urisToPrefixes.put(namespace, prefixes);
+        }
+        prefixes.add(prefix);
+    }
 
     public String getNamespaceURI(String prefix) {
-        if (prefix.equals("sca")) {
-            return Constants.SCA_NS;
-        }
-        return prefix.equals("f3") ? Namespaces.F3 : null;
+        return prefixesToUris.get(prefix);
     }
 
     public String getPrefix(String namespaceURI) {
-        if (namespaceURI.equals(Constants.SCA_NS)) {
-            return "sca";
-        }
-        return namespaceURI.equals(Namespaces.F3) ? "f3" : null;
+        List<String> list = urisToPrefixes.get(namespaceURI);
+        return list == null ? null : list.get(0);
     }
 
     public Iterator getPrefixes(String namespaceURI) {
-        if (namespaceURI.equals(Namespaces.F3)) {
-            return Collections.singletonList("f3").iterator();
-        }
-        if (namespaceURI.equals(Constants.SCA_NS)) {
-            return Collections.singletonList("sca").iterator();
-        }
-        return Collections.emptyList().iterator();
+        List<String> list = urisToPrefixes.get(namespaceURI);
+        return list == null ? null : list.iterator();
     }
 }

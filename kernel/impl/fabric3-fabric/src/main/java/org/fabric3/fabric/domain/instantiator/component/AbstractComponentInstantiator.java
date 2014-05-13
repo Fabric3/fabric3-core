@@ -52,7 +52,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import org.fabric3.api.model.type.NamespaceContextImpl;
+import org.fabric3.api.model.type.F3NamespaceContext;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
@@ -107,7 +107,10 @@ public abstract class AbstractComponentInstantiator {
                     if (source != null) {
                         // get the value by evaluating an XPath against the composite properties
                         try {
-                            NamespaceContext nsContext = new NamespaceContextImpl();
+                            F3NamespaceContext nsContext = new F3NamespaceContext();
+                            for (Map.Entry<String, String> entry : property.getNamespaces().entrySet()) {
+                                nsContext.add(entry.getKey(), entry.getValue());
+                            }
                             propertyValue = new PropertyValue("name", source);
                             value = deriveValueFromXPath(propertyValue, parent, nsContext);
                         } catch (PropertyTypeException e) {
