@@ -47,6 +47,7 @@ import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
 import org.fabric3.spi.container.ContainerException;
@@ -112,8 +113,8 @@ public class ChannelResolverImpl implements ChannelResolver {
             }
             for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
                 PhysicalConnectionSourceDefinition source = physicalDefinition.getSource();
-                if (!(source instanceof  NonManagedPhysicalConnectionSourceDefinition)) {
-                  continue;
+                if (!(source instanceof NonManagedPhysicalConnectionSourceDefinition)) {
+                    continue;
                 }
                 NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
                 return interfaze.cast(sourceDefinition.getProxy());
@@ -131,7 +132,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         URI channelUri = URI.create(domainRoot + "/" + name);
         LogicalChannel logicalChannel = domainComponent.getChannel(channelUri);
         if (logicalChannel == null) {
-            throw new ResolverException("Channel not found: " + name);
+            throw new NotFoundException("Channel not found: " + name);
         }
         return logicalChannel;
     }
@@ -149,9 +150,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<>("F3Synthetic");
         componentDefinition.setContributionUri(ContributionResolver.getContribution(interfaze));
         componentDefinition.setImplementation(implementation);
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri,
-                                                                                                                     componentDefinition,
-                                                                                                                     domainComponent);
+        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, componentDefinition, domainComponent);
 
         ProducerDefinition producerDefinition = new ProducerDefinition("producer", contract);
 

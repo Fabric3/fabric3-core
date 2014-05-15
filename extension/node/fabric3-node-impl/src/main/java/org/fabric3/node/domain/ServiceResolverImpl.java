@@ -48,6 +48,7 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
 import org.fabric3.spi.container.ContainerException;
@@ -64,7 +65,6 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -135,7 +135,7 @@ public class ServiceResolverImpl implements ServiceResolver {
 
         List<LogicalService> services = autowireResolver.resolve(logicalReference, contract, domainComponent);
         if (services.isEmpty()) {
-            throw new ServiceRuntimeException("Service not found for type: " + interfaze.getName());
+            throw new NotFoundException("Service not found for type: " + interfaze.getName());
         }
         LogicalService targetService = services.get(0);
 

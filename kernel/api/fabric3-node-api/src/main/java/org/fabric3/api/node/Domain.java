@@ -54,6 +54,7 @@ public interface Domain {
      *
      * @param interfaze the service interface.
      * @return the service
+     * @throws NotFoundException if the service is not found.
      */
     <T> T getService(Class<T> interfaze);
 
@@ -63,6 +64,7 @@ public interface Domain {
      * @param interfaze the channel interface
      * @param name      the channel name
      * @return the channel
+     * @throws NotFoundException if the channel is not found.
      */
     <T> T getChannel(Class<T> interfaze, String name);
 
