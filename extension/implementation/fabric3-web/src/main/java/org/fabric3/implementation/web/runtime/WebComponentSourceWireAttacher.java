@@ -81,6 +81,6 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
-        component.attachWire(referenceName, objectFactory);
+        component.attach(referenceName, objectFactory);
     }
 }

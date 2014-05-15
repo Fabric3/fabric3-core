@@ -44,6 +44,7 @@ import java.util.Map;
 
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.spi.container.ContainerException;
@@ -58,16 +59,19 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinition, WebComponent> {
+    private WireProxyService wireProxyService;
+    private ChannelProxyService channelProxyService;
     private WebApplicationActivator activator;
     private InjectorFactory injectorFactory;
     private HostInfo info;
-    private WireProxyService proxyService;
 
-    public WebComponentBuilder(@Reference WireProxyService proxyService,
+    public WebComponentBuilder(@Reference WireProxyService wireProxyService,
+                               @Reference ChannelProxyService channelProxyService,
                                @Reference WebApplicationActivator activator,
                                @Reference InjectorFactory injectorFactory,
                                @Reference HostInfo info) {
-        this.proxyService = proxyService;
+        this.wireProxyService = wireProxyService;
+        this.channelProxyService = channelProxyService;
         this.activator = activator;
         this.injectorFactory = injectorFactory;
         this.info = info;
@@ -89,7 +93,8 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
                                 cl,
                                 injectorFactory,
                                 activator,
-                                proxyService,
+                                wireProxyService,
+                                channelProxyService,
                                 propertyFactories,
                                 injectorMappings,
                                 info);

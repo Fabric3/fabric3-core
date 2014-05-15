@@ -39,6 +39,10 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceWireAttacher"/>
     </component>
 
+    <component name="WebSourceConnectionAttacher" f3:key="org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceConnectionAttacher"/>
+    </component>
+
     <component name="WebImplementationSynthesizer">
         <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebImplementationSynthesizer"/>
     </component>

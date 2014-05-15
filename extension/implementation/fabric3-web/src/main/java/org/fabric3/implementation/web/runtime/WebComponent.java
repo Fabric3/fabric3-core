@@ -48,8 +48,10 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -71,13 +73,14 @@ public class WebComponent implements Component {
     private ClassLoader classLoader;
     private InjectorFactory injectorFactory;
     private final WebApplicationActivator activator;
+    private ChannelProxyService channelProxyService;
     // injection site name to <artifact name, injection site>
     private final Map<String, Map<String, InjectionSite>> siteMappings;
     private final WireProxyService proxyService;
     private final QName groupId;
     private final Map<String, ObjectFactory<?>> propertyFactories;
     private HostInfo info;
-    private final Map<String, ObjectFactory<?>> referenceFactories;
+    private final Map<String, ObjectFactory<?>> objectFactories;
     private final URI archiveUri;
     private String contextUrl;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -89,7 +92,8 @@ public class WebComponent implements Component {
                         ClassLoader classLoader,
                         InjectorFactory injectorFactory,
                         WebApplicationActivator activator,
-                        WireProxyService proxyService,
+                        WireProxyService wireProxyService,
+                        ChannelProxyService channelProxyService,
                         Map<String, ObjectFactory<?>> propertyFactories,
                         Map<String, Map<String, InjectionSite>> injectorMappings,
                         HostInfo info) {
@@ -99,12 +103,13 @@ public class WebComponent implements Component {
         this.classLoader = classLoader;
         this.injectorFactory = injectorFactory;
         this.activator = activator;
+        this.channelProxyService = channelProxyService;
         this.siteMappings = injectorMappings;
-        this.proxyService = proxyService;
+        this.proxyService = wireProxyService;
         this.groupId = deployable;
         this.propertyFactories = propertyFactories;
         this.info = info;
-        referenceFactories = new ConcurrentHashMap<>();
+        objectFactories = new ConcurrentHashMap<>();
     }
 
     public URI getUri() {
@@ -134,7 +139,7 @@ public class WebComponent implements Component {
     public void start() throws ComponentException {
         try {
             Map<String, List<Injector<?>>> injectors = new HashMap<>();
-            injectorFactory.createInjectorMappings(injectors, siteMappings, referenceFactories, classLoader);
+            injectorFactory.createInjectorMappings(injectors, siteMappings, objectFactories, classLoader);
             injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
             OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
             Map<String, ObjectFactory<?>> contextFactories = new HashMap<>();
@@ -180,19 +185,26 @@ public class WebComponent implements Component {
             throw new ObjectCreationException("Reference type not found for: " + name, e);
         }
         ObjectFactory<?> factory = createWireFactory(type, wire);
-        attachWire(name, factory);
+        attach(name, factory);
     }
 
-    public void attachWire(String name, ObjectFactory<?> factory) throws ObjectCreationException {
-        referenceFactories.put(name, factory);
+    public void attach(String name, ObjectFactory<?> factory) throws ObjectCreationException {
+        objectFactories.put(name, factory);
     }
 
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws ObjectCreationException {
-        try {
-            return proxyService.createObjectFactory(interfaze, wire, null);
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
+    public void connect(String name, ChannelConnection connection) throws ObjectCreationException {
+        Map<String, InjectionSite> sites = siteMappings.get(name);
+        if (sites == null || sites.isEmpty()) {
+            throw new ObjectCreationException("Injection site not found for: " + name);
         }
+        Class<?> type;
+        try {
+            type = classLoader.loadClass(sites.values().iterator().next().getType());
+        } catch (ClassNotFoundException e) {
+            throw new ObjectCreationException("Producer type not found for: " + name, e);
+        }
+        ObjectFactory<?> factory = createChannelFactory(type, connection);
+        attach(name, factory);
     }
 
     public QName getDeployable() {
@@ -211,6 +223,22 @@ public class WebComponent implements Component {
     @SuppressWarnings({"unchecked"})
     public <B, R extends ServiceReference<B>> R cast(B target) {
         return (R) proxyService.cast(target);
+    }
+
+    private <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws ObjectCreationException {
+        try {
+            return proxyService.createObjectFactory(interfaze, wire, null);
+        } catch (ProxyCreationException e) {
+            throw new ObjectCreationException(e);
+        }
+    }
+
+    private <B> ObjectFactory<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws ObjectCreationException {
+        try {
+            return channelProxyService.createObjectFactory(interfaze, connection);
+        } catch (ProxyCreationException e) {
+            throw new ObjectCreationException(e);
+        }
     }
 
     public String toString() {
