@@ -43,7 +43,9 @@ import java.net.URL;
 import java.util.Map;
 
 import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -91,7 +93,7 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
             return null;
         }
 
-        if (!(Servlet.class.isAssignableFrom(clazz) && !(Filter.class.isAssignableFrom(clazz)))) {
+        if (!Servlet.class.isAssignableFrom(clazz) && !Filter.class.isAssignableFrom(clazz)) {
             // skip classes that are not servlets or filters
             return null;
         }
@@ -160,6 +162,39 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
                 componentType.add(entry.getValue());
             }
         }
+        for (Map.Entry<String, ResourceReferenceDefinition> entry : tempType.getResourceReferences().entrySet()) {
+            String name = entry.getKey();
+            ResourceReferenceDefinition definition = componentType.getResourceReferences().get(name);
+            if (definition != null) {
+                ServiceContract source = definition.getServiceContract();
+                ServiceContract target = entry.getValue().getServiceContract();
+                MatchResult result = matcher.isAssignableFrom(source, target, false);
+                if (!result.isAssignable()) {
+                    IncompatibleReferenceDefinitions failure = new IncompatibleReferenceDefinitions(name);
+                    context.addError(failure);
+                }
+
+            } else {
+                componentType.add(entry.getValue());
+            }
+        }
+        for (Map.Entry<String, ProducerDefinition> entry : tempType.getProducers().entrySet()) {
+            String name = entry.getKey();
+            ProducerDefinition definition = componentType.getProducers().get(name);
+            if (definition != null) {
+                ServiceContract source = definition.getServiceContract();
+                ServiceContract target = entry.getValue().getServiceContract();
+                MatchResult result = matcher.isAssignableFrom(source, target, false);
+                if (!result.isAssignable()) {
+                    IncompatibleReferenceDefinitions failure = new IncompatibleReferenceDefinitions(name);
+                    context.addError(failure);
+                }
+
+            } else {
+                componentType.add(entry.getValue());
+            }
+        }
+
         // apply all injection sites
         for (Map.Entry<InjectionSite, Injectable> entry : tempType.getInjectionSites().entrySet()) {
             componentType.addMapping(tempType.getImplClass(), entry.getKey(), entry.getValue());

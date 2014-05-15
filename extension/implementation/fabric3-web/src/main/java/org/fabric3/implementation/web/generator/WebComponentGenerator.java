@@ -41,6 +41,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -109,6 +110,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     public WebComponentWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         WebComponentWireSourceDefinition sourceDefinition = new WebComponentWireSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
+        sourceDefinition.setOptimizable(true);
         return sourceDefinition;
     }
 
@@ -121,7 +123,9 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     }
 
     public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
-        return null;
+        WebComponentWireSourceDefinition sourceDefinition = new WebComponentWireSourceDefinition();
+        sourceDefinition.setUri(resourceReference.getUri());
+        return sourceDefinition;
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
@@ -136,6 +140,9 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         Map<String, Map<String, InjectionSite>> mappings = new HashMap<>();
         for (AbstractReference definition : type.getReferences().values()) {
             generateReferenceInjectionMapping(definition, type, mappings);
+        }
+        for (ResourceReferenceDefinition definition : type.getResourceReferences().values()) {
+            generateResourceInjectionMapping(definition, type, mappings);
         }
         for (Property property : type.getProperties().values()) {
             generatePropertyInjectionMapping(property, mappings);
@@ -163,8 +170,30 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         WebContextInjectionSite site = new WebContextInjectionSite(interfaceClass, SESSION_CONTEXT);
         mapping.put(SESSION_CONTEXT_SITE, site);
         // also inject the reference into the servlet context
-        WebContextInjectionSite servletContextsite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
-        mapping.put(SERVLET_CONTEXT_SITE, servletContextsite);
+        WebContextInjectionSite servletContextSite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
+        mapping.put(SERVLET_CONTEXT_SITE, servletContextSite);
+    }
+
+    private void generateResourceInjectionMapping(ResourceReferenceDefinition definition,
+                                                  WebComponentType type,
+                                                  Map<String, Map<String, InjectionSite>> mappings) {
+        Map<String, InjectionSite> mapping = mappings.get(definition.getName());
+        if (mapping == null) {
+            mapping = new HashMap<>();
+            mappings.put(definition.getName(), mapping);
+        }
+        for (Map.Entry<String, Map<InjectionSite, Injectable>> entry : type.getInjectionSites().entrySet()) {
+            for (Map.Entry<InjectionSite, Injectable> siteMap : entry.getValue().entrySet()) {
+                if (siteMap.getValue().getName().equals(definition.getName())) {
+                    mapping.put(entry.getKey(), siteMap.getKey());
+                }
+            }
+        }
+        ServiceContract contract = definition.getServiceContract();
+        String interfaceClass = contract.getQualifiedInterfaceName();
+        // also inject the reference into the servlet context
+        WebContextInjectionSite servletContextSite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
+        mapping.put(SERVLET_CONTEXT_SITE, servletContextSite);
     }
 
     private void generatePropertyInjectionMapping(Property property, Map<String, Map<String, InjectionSite>> mappings) {

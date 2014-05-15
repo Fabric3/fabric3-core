@@ -78,7 +78,6 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
-        URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
         if (source == null) {

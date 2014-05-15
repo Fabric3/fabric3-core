@@ -42,15 +42,17 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
+import org.fabric3.spi.monitor.MonitorProxy;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
- * Performs bytecode generation at runtime to create a monitor proxy.
+ *
  */
 public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyService {
 
@@ -71,6 +73,9 @@ public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyServic
         }
 
         JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, monitorable, router, levels, enabled);
+        if (MonitorChannel.class.isAssignableFrom(type) || MonitorProxy.class.isAssignableFrom(type)) {
+            return type.cast(handler);
+        }
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
     }
 
