@@ -47,12 +47,14 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 import org.fabric3.spi.container.component.InstanceDestructionException;
 import org.fabric3.spi.container.component.InstanceInitException;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -98,12 +100,18 @@ public class ImplementationManagerImpl implements ImplementationManager {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
         try {
+            // FABRIC-40: if a component invokes services from a setter, the message content will be over-written. Save so it can be restored after instance
+            // injection.
+            Message message = MessageCache.getMessage();
+            Object content = message.getBody();
             Object instance = constructor.getInstance();
             if (injectors != null) {
                 for (Injector<Object> injector : injectors) {
                     injector.inject(instance);
                 }
             }
+            // restore the original contents
+            message.setBody(content);
             return instance;
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
