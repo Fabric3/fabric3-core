@@ -140,6 +140,9 @@ public class JettyServiceImpl implements JettyService, Transport {
     private final Object joinLock = new Object();
     private boolean enableHttps;
     private boolean redirectHttp;
+    // port to redirect to when redirectHttp is enabled. This may be different than the HTTPS port if port forwarding is used, e.g. 443--->8182
+    private int redirectHttpsPort = -1;
+
     private int configuredHttpPort = -1;
     private String configuredHttpHost;
     private Port selectedHttp;
@@ -229,6 +232,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Property(required = false)
     public void setRedirectHttp(boolean redirectHttp) {
         this.redirectHttp = redirectHttp;
+    }
+
+    @Property(required = false)
+    public void setRedirectHttpsPort(int redirectHttpsPort) {
+        this.redirectHttpsPort = redirectHttpsPort;
     }
 
     @Property(required = false)
@@ -720,7 +728,8 @@ public class JettyServiceImpl implements JettyService, Transport {
 
         ExecutionContextHandler executionHandler = new ExecutionContextHandler();
         if (redirectHttp) {
-            SecurityRedirectHandler securityHandler = new SecurityRedirectHandler(selectedHttps.getNumber());
+            int port = redirectHttpsPort > 0 ? redirectHttpsPort : selectedHttps.getNumber();
+            SecurityRedirectHandler securityHandler = new SecurityRedirectHandler(port);
             statisticsHandler.setHandler(securityHandler);
             securityHandler.setHandler(executionHandler);
         } else {
