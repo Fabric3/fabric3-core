@@ -169,7 +169,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
 
     @ManagementOperation(description = "Sets the monitoring level for a component")
     public void setComponentLevel(String uri, String level) {
-        MonitorLevel parsed = MonitorLevel.valueOf(level);
+        MonitorLevel parsed = MonitorLevel.valueOf(level.toUpperCase());
         List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
         for (Component component : components) {
             component.setLevel(parsed);
@@ -178,7 +178,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
 
     @ManagementOperation(description = "Sets the monitoring level for a deployable composite")
     public void setDeployableLevel(String deployable, String level) {
-        MonitorLevel parsed = MonitorLevel.valueOf(level);
+        MonitorLevel parsed = MonitorLevel.valueOf(level.toUpperCase());
         List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
         for (Component component : components) {
             component.setLevel(parsed);
@@ -187,7 +187,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
 
     @ManagementOperation(description = "Sets the monitoring level for a provider")
     public void setProviderLevel(String key, String level) {
-        MonitorLevel parsed = MonitorLevel.valueOf(level);
+        MonitorLevel parsed = MonitorLevel.valueOf(level.toUpperCase());
         providerLevels.put(key, parsed);
     }
 
@@ -196,8 +196,8 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     }
 
     @ManagementOperation(description = "Sets the monitoring level for a contribution or extension")
-    private void setContributionLevel(String key, String level) {
-        MonitorLevel parsed = MonitorLevel.valueOf(level);
+    public void setContributionLevel(String key, String level) {
+        MonitorLevel parsed = MonitorLevel.valueOf(level.toUpperCase());
         URI uri = URI.create(key);
         contributionLevels.put(uri, parsed);
         for (Component component : manager.getComponents()) {
