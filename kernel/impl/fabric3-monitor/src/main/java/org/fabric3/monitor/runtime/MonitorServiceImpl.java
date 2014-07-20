@@ -88,7 +88,11 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     @Property(required = false)
     @Source("$systemConfig//f3:runtime/@monitor.level")
     public void setDefaultLevel(String defaultLevel) {
-        this.defaultLevel = MonitorLevel.valueOf(defaultLevel);
+        try {
+            this.defaultLevel = MonitorLevel.valueOf(defaultLevel.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid monitor level value: " + defaultLevel);
+        }
     }
 
     /**
