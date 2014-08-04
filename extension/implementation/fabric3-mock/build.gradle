@@ -1,0 +1,8 @@
+dependencies {
+
+    compile group: 'org.easymock', name: 'easymock', version: easyMockVersion
+
+}
+
+
+

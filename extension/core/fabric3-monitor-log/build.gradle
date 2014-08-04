@@ -1,0 +1,15 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+
+    // add the SPI and Util modules to provided so they are not included in the contribution
+    providedCompile project(':kernel:api:fabric3-spi')
+    providedCompile project(':kernel:impl:fabric3-util')
+
+
+}
+
+
+

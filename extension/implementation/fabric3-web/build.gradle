@@ -1,0 +1,11 @@
+dependencies {
+
+    compile project(':kernel:impl:fabric3-pojo')
+
+    compile project(':extension:other:web:fabric3-container-web-spi')
+
+
+}
+
+
+

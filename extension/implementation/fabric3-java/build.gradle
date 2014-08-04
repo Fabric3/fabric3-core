@@ -1,0 +1,8 @@
+dependencies {
+
+    compile project(':kernel:impl:fabric3-pojo')
+
+}
+
+
+

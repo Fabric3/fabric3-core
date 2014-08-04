@@ -1,0 +1,18 @@
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+
+    compile project(':kernel:impl:fabric3-pojo')
+
+    compile project (':extension:implementation:fabric3-java')
+
+    compile project (':extension:implementation:fabric3-timer-api')
+
+    compile project (':extension:other:timer:fabric3-timer-spi')
+
+
+
+}
+
+
+

@@ -10,5 +10,7 @@ idea
 .classpath
 .project
 .settings/
+.gradle
 dependency-reduced-pom.xml
+build/
 

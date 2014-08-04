@@ -1,0 +1,9 @@
+dependencies {
+
+    compile project(':kernel:impl:fabric3-pojo')
+    compile group: 'org.ow2.asm', name: 'asm', version: asmVersion
+
+}
+
+
+

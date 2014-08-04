@@ -1,0 +1,13 @@
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
+
+    compile project(':kernel:impl:fabric3-pojo')
+    compile project(':extension:core:fabric3-resource')
+
+
+}
+
+
+

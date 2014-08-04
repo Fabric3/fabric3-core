@@ -1,0 +1,2 @@
+// This module is to be placed in the WLS domain shared library as WebLogic requires RMI classes to be on the server classpath. There should be no
+// dependencies on Fabric3 API or SPI modules

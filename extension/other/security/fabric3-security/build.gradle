@@ -1,0 +1,8 @@
+dependencies {
+
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
+
+}
+
+
+

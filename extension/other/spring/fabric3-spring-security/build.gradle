@@ -1,0 +1,9 @@
+dependencies {
+
+    compile project(":extension:other:spring:fabric3-spring-spi")
+    compile project(":extension:other:tx:fabric3-datasource")
+
+}
+
+
+

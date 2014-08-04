@@ -1,0 +1,101 @@
+configurations {
+    hostDependencies
+    bootDependencies
+    extensionDependencies
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+    hostDependencies group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
+    hostDependencies group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
+    hostDependencies group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
+    hostDependencies group: 'javax.xml.stream', name: 'stax-api', version: staxApiVersion
+    hostDependencies group: 'org.codehaus.woodstox', name: 'stax2-api', version: stax2ApiVersion
+    hostDependencies group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: woodstoxVersion
+
+    bootDependencies project(':kernel:impl:fabric3-monitor')
+    bootDependencies project(':kernel:impl:fabric3-introspection-java')
+    bootDependencies project(':kernel:impl:fabric3-introspection-xml')
+    bootDependencies project(':kernel:api:fabric3-spi')
+    bootDependencies project(':kernel:impl:fabric3-util')
+    bootDependencies project(':kernel:impl:fabric3-pojo')
+    bootDependencies project(':kernel:impl:fabric3-jdk-reflection')
+    bootDependencies project(':kernel:impl:fabric3-transform')
+    bootDependencies project(':kernel:impl:fabric3-policy')
+    bootDependencies project(':kernel:impl:fabric3-contribution')
+    bootDependencies project(':kernel:impl:fabric3-fabric')
+    bootDependencies project(':kernel:impl:fabric3-system')
+
+    bootDependencies(group: 'jaxen', name: 'jaxen', version: '1.1.1')
+
+    extensionDependencies project(':extension:management:fabric3-management-rest')
+    extensionDependencies project(':extension:other:databinding:fabric3-databinding-json')
+    extensionDependencies project(':extension:management:fabric3-management-jmx')
+    extensionDependencies project(':extension:core:fabric3-jdk-proxy')
+    extensionDependencies project(':extension:core:fabric3-channel-impl')
+    extensionDependencies project(':extension:implementation:fabric3-java')
+    extensionDependencies project(':extension:core:fabric3-async')
+    extensionDependencies project(':extension:core:fabric3-sca-intents')
+    extensionDependencies project(':extension:core:fabric3-contribution-scanner')
+
+    extensionDependencies project(':extension:core:fabric3-resource')
+    extensionDependencies project(':extension:other:security:fabric3-security-impl')
+    extensionDependencies project(':extension:core:fabric3-recovery')
+    extensionDependencies project(':extension:federated:fabric3-federation-provisioning')
+    extensionDependencies project(':extension:federated:fabric3-federation-deployment')
+    extensionDependencies project(':extension:federated:fabric3-federation-node')
+    extensionDependencies project(':extension:node:fabric3-node-impl')
+    extensionDependencies project(':runtime:weblogic:fabric3-weblogic-kernel')
+    extensionDependencies project(':runtime:weblogic:fabric3-weblogic-federation')
+
+    extensionDependencies project(':extension:other:tx:fabric3-tx')
+    extensionDependencies project(':extension:other:tx:fabric3-datasource')
+
+    extensionDependencies project(':extension:other:databinding:fabric3-databinding-jaxb')
+    extensionDependencies project(':extension:other:databinding:fabric3-jaxb')
+    extensionDependencies project(':extension:other:fabric3-jndi')
+    extensionDependencies project(':runtime:weblogic:fabric3-weblogic-jms')
+    extensionDependencies project(':extension:binding:fabric3-binding-jms-api')
+    extensionDependencies project(':extension:binding:fabric3-binding-jms')
+
+    extensionDependencies project(':extension:interface:fabric3-interface-wsdl')
+    extensionDependencies project(':extension:binding:fabric3-binding-ws-api')
+    extensionDependencies project(':extension:binding:fabric3-binding-ws')
+    extensionDependencies project(':extension:binding:fabric3-binding-ws-metro')
+    extensionDependencies project(':extension:binding:fabric3-binding-ws-policy')
+    extensionDependencies group: 'asm', name: 'asm', version: '3.3.1'
+
+
+    configurations.compile.extendsFrom(configurations.hostDependencies)
+    configurations.compile.extendsFrom(configurations.bootDependencies)
+    configurations.compile.extendsFrom(configurations.extensionDependencies)
+
+}
+
+
+task distZip(type: Zip) {
+
+    into('fabric3/host') {
+        from configurations.hostDependencies
+    }
+
+    into('fabric3/boot') {
+        from configurations.bootDependencies - configurations.hostDependencies
+    }
+
+    into('fabric3/extensions') {
+        from configurations.extensionDependencies - configurations.bootDependencies - configurations.hostDependencies
+    }
+
+    into('fabric3/webapp') {
+        from(project(':runtime:weblogic:fabric3-weblogic-host').file('build/libs/fabric3-weblogic-host-' + version + '.war'))
+    }
+
+    into('fabric3/domain_lib') {
+        from(project(':runtime:weblogic:fabric3-weblogic-cluster').file('build/libs/fabric3-weblogic-cluster-' + version + '.jar'))
+    }
+
+    from { 'src/main' }
+}

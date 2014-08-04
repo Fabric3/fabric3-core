@@ -1,0 +1,11 @@
+dependencies {
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jms', version: jmsVersion
+
+    compile project(':extension:binding:fabric3-binding-jms')
+
+    compile project(':runtime:weblogic:fabric3-weblogic-api')
+    compile project(':runtime:weblogic:fabric3-weblogic-mock')
+
+
+}
+

@@ -1,0 +1,9 @@
+dependencies {
+
+    compile project(':kernel:api:fabric3-host-api')
+
+    compile group: 'org.eclipse.aether', name: 'aether-api', version: aetherVersion
+}
+
+
+

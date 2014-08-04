@@ -1,0 +1,10 @@
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.fabric3.runtime.standalone.server.Shutdown'
+    }
+
+}
+
+
+

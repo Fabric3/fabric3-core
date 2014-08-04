@@ -1,0 +1,20 @@
+apply plugin: 'osgi'
+
+dependencies {
+
+    compile project(':kernel:api:fabric3-host-api')
+    compile group: servletGroupId, name: servletArtifactId, version: servletVersion
+    compile group: 'javax.xml.stream', name:'stax-api', version: staxApiVersion
+    compile group: 'org.codehaus.woodstox', name:'woodstox-core-asl', version: woodstoxVersion
+}
+
+jar {
+    manifest {
+        instruction 'Bundle-Description', 'Fabric3 Extension SPI'
+        instruction 'Export-Package', "org.fabric3.spi.*;version=${fabric3ReleaseVersion}"
+        instruction 'Import-Package', '!sun.security.util,*'
+    }
+}
+
+
+

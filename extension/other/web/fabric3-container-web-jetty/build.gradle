@@ -1,0 +1,7 @@
+dependencies {
+
+    compile project(':extension:other:web:fabric3-container-web-spi')
+
+    compile project(':extension:core:fabric3-jetty')
+
+}

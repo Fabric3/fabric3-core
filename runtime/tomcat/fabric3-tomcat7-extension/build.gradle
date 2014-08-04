@@ -1,0 +1,10 @@
+dependencies {
+
+    compile project(':extension:other:web:fabric3-container-web-spi')
+
+    compile group: 'org.apache.tomcat', name: 'tomcat-catalina', version: tomcatVersion
+    compile group: 'org.apache.tomcat', name: 'tomcat-coyote', version: tomcatVersion
+}
+
+
+

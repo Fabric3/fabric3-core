@@ -1,0 +1,150 @@
+/**
+ * Build for the Fabric3 core project.
+ * <p/>
+ * By default, deploy project binaries, Javadoc and sources will be installed in the local Maven repo. To only build binaries and skip generating Javadoc and
+ * source archives, pass the <code>skipSources<code> parameter to Gradle: gradlew -PskipSources
+ * <p/>
+ * To deploy to the CodeHaus Nexus snapshot repository, execute the 'uploadArchives' task. To deploy to the CodeHaus Nexus release staging repository,
+ * change the version and execute the 'uploadArchives' task.
+ * <p/>
+ * Note the 'uploadArchives' tasks requires a gradle.properties file to be present containing private key information and authentication parameters
+ * (codehausUsername and codehausPassword).
+ *
+ */
+project.description 'Fabric3 Core'
+
+defaultTasks 'clean', 'fabric3Contribution', 'assemble', 'install'
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+}
+
+def deployProjects() {
+    // define projects that are deployed to Maven Central, i.e. they contain source files; project parent directories will be ignored
+    return subprojects.findAll { new File(it.projectDir, "src").exists() }
+}
+
+def kernelAndExtensions() {
+    // all kernel implementation and extension projects
+    return subprojects.findAll {
+        (it.path.startsWith(':kernel:impl:') || it.path.startsWith(':extension:')) && new File(it.projectDir,
+                "src").exists() && !it.path.endsWith('-api')
+    }
+}
+
+configure(deployProjects()) {
+    group fabric3Group
+    def releaseBuild = !version.endsWith('SNAPSHOT');
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: junitVersion
+        testCompile group: 'org.easymock', name: 'easymock', version: easyMockVersion
+    }
+
+    buildscript {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+        }
+        dependencies {
+            classpath group: 'org.codehaus.fabric3.gradle', name: 'fabric3-contribution', version: pluginVersion
+        }
+
+    }
+
+    if (project.hasProperty("skipSources")) {
+        return
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task docJar(type: Jar, dependsOn: javadoc) {
+        classifier 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives jar
+        archives sourcesJar
+        archives docJar
+    }
+
+    install.repositories.mavenInstaller.pom.whenConfigured { pom ->
+        pom.project { project ->
+            scm {
+                url 'scm:git@github.com:Fabric3/fabric3-core.git'
+                connection 'scm:git@github.com:Fabric3/fabric3-core.git'
+                developerConnection 'scm:git@github.com:Fabric3/fabric3-core.git'
+            }
+
+            licenses {
+                license {
+                    name 'GNU + Classpath Exception'
+                    url 'http://www.fabric3.org/license.html'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'fabric3'
+                    name 'Fabric3 Project'
+                }
+            }
+        }
+    }
+
+    uploadArchives {
+        repositories {
+            if (releaseBuild) {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    repository(url: "https://nexus.codehaus.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: codehausUsername, password: codehausPassword)
+                    }
+
+                }
+            } else {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    repository(url: "https://nexus.codehaus.org/content/repositories/snapshots/") {
+                        authentication(userName: codehausUsername, password: codehausPassword)
+                    }
+                }
+            }
+        }
+        signing {
+            sign configurations.archives
+        }
+
+    }
+
+
+}
+
+configure(kernelAndExtensions()) {
+    dependencies {
+        compile project(':kernel:api:fabric3-spi')
+        if (!path.startsWith(':kernel:impl:fabric3-util')) {
+            compile project(':kernel:impl:fabric3-util')
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+

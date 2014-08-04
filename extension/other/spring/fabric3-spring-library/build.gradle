@@ -1,0 +1,62 @@
+apply plugin: 'fabric3-contribution'
+
+def framework = 'org.springframework'
+def security = 'org.springframework.security'
+ 
+dependencies {
+
+    compile group: framework, name: 'spring-core', version: springVersion
+    compile group: framework, name: 'spring-expression', version: springVersion
+    compile group: framework, name: 'spring-beans', version: springVersion
+    compile group: framework, name: 'spring-aop', version: springVersion
+    compile group: framework, name: 'spring-context', version: springVersion
+    compile group: framework, name: 'spring-context-support', version: springVersion
+    compile group: framework, name: 'spring-tx', version: springVersion
+    compile group: framework, name: 'spring-jdbc', version: springVersion
+    compile group: framework, name: 'spring-orm', version: springVersion
+    compile group: framework, name: 'spring-oxm', version: springVersion
+    compile group: framework, name: 'spring-web', version: springVersion
+    compile group: framework, name: 'spring-webmvc', version: springVersion
+    compile group: framework, name: 'spring-webmvc-portlet', version: springVersion
+    
+    
+    compile(group: security, name: 'spring-security-core', version: springSecurityVersion) {
+        exclude group: framework, module: 'spring-core'
+        exclude group: framework, module: 'spring-expression'
+        exclude group: framework, module: 'spring-context'
+        exclude group: framework, module: 'spring-tx'
+        exclude group: framework, module: 'spring-aop'
+        exclude group: 'org.aspectj', module: 'aspectjrt'
+        exclude group: 'org.aspectj', module: 'aspectjweaver'
+    }
+
+    compile(group: security, name: 'spring-security-acl', version: springSecurityVersion) {
+        exclude group: framework, module: 'spring-context-support'
+        exclude group: framework, module: 'spring-jdbc'
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+
+    compile(group: security, name: 'spring-security-cas-client', version: springSecurityCasVersion) {
+        exclude group: framework, module: 'spring-tx'
+        exclude group: framework, module: 'spring-web'
+        exclude group: 'javax.servlet', module: 'servlet-api'
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+
+    compile group: security, name: 'spring-security-config', version: springSecurityVersion
+
+    compile group: security, name: 'spring-security-ldap', version: springSecurityVersion
+
+    compile(group: security, name: 'spring-security-openid', version: springSecurityVersion) {
+        exclude group: framework, module: 'spring-web'
+        exclude group: 'xerxes', module: 'xercesImpl'
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+
+    compile group: 'cglib', name: 'cglib-nodep', version: cglibVersion
+
+    // add the SPI and Util modules to provided so they are not included in the contribution
+    providedCompile project(':kernel:api:fabric3-spi')
+    providedCompile project(':kernel:impl:fabric3-util')
+
+}

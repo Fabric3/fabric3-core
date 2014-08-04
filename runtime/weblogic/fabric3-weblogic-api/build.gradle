@@ -1,0 +1,7 @@
+dependencies {
+
+    compile project(':kernel:api:fabric3-host-api')
+    compile group: servletGroupId, name: servletArtifactId, version: servletVersion
+
+}
+

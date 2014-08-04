@@ -1,0 +1,5 @@
+dependencies {
+
+    compile project(':extension:core:fabric3-contribution-scanner')
+
+}

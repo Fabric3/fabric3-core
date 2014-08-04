@@ -1,0 +1,11 @@
+dependencies {
+
+    compile project(':extension:binding:fabric3-binding-rs-api')
+    compile project(':extension:other:databinding:fabric3-databinding-json')
+    compile group: servletGroupId, name: servletArtifactId, version: servletVersion
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
+
+}
+
+
+

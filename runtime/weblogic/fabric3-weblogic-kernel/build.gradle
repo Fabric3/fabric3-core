@@ -1,0 +1,15 @@
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'commonj', version: commonJVersion
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+
+    compile group: servletGroupId, name: servletArtifactId, version: servletVersion
+
+    compile project(':extension:other:tx:fabric3-datasource')
+
+    compile project(':runtime:weblogic:fabric3-weblogic-api')
+    compile project(':runtime:weblogic:fabric3-weblogic-mock')
+
+
+}
+

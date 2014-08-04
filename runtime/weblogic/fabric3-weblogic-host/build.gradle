@@ -1,0 +1,15 @@
+apply plugin: 'war'
+
+dependencies {
+
+    compile project(':kernel:api:fabric3-host-api')
+    compile project(':kernel:api:fabric3-node-api')
+    compile project(':runtime:weblogic:fabric3-weblogic-api')
+
+    providedCompile project(':runtime:weblogic:fabric3-weblogic-mock')
+
+    providedCompile group: servletGroupId, name: servletArtifactId, version: servletVersion
+}
+
+
+

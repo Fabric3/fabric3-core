@@ -1,0 +1,18 @@
+apply plugin: 'osgi'
+
+dependencies {
+
+    compile project(':kernel:api:fabric3-model-api')
+
+
+}
+
+jar {
+    manifest {
+        instruction 'Bundle-Description', 'Fabric3 Node API'
+        instruction 'Export-Package', "org.fabric3.api.node.*;version=${fabric3ReleaseVersion}"
+    }
+}
+
+
+

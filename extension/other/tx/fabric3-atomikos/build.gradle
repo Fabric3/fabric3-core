@@ -1,0 +1,12 @@
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+
+    compile project(':extension:other:tx:fabric3-datasource')
+
+    compile project(':extension:other:tx:fabric3-atomikos-library')
+
+}
+
+
+

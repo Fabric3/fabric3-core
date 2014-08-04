@@ -1,0 +1,14 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: jaxbApiVersion
+
+    providedCompile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
+    providedCompile group: 'javax.activation', name: 'activation', version: '1.1'
+
+    // add the SPI and Util modules to provided so they are not included in the contribution
+    providedCompile project(':kernel:api:fabric3-spi')
+    providedCompile project(':kernel:impl:fabric3-util')
+
+}

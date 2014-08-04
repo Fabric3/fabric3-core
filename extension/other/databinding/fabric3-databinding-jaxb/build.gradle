@@ -1,0 +1,10 @@
+dependencies {
+
+    project(':kernel:impl:fabric3-transform')
+
+    project(':extension:other:databinding:fabric3-jaxb')
+
+    compile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
+
+
+}

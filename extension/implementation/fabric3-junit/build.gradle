@@ -1,0 +1,11 @@
+dependencies {
+
+    compile project(':kernel:impl:fabric3-pojo')
+    compile project(':extension:implementation:fabric3-java')
+    compile project(':extension:implementation:fabric3-junit-api')
+    compile project(':extension:core:fabric3-test-spi')
+
+}
+
+
+

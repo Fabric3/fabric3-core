@@ -1,0 +1,36 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    compile(group: 'com.atomikos', name: 'transactions-jms', version: atomikosVersion) {
+        exclude group: 'org.mockito', module: 'mockito-all'
+    }
+
+    providedCompile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+    providedCompile group: 'org.codehaus.fabric3.api', name: 'javax-jms', version: jmsVersion
+
+
+    providedCompile(group: 'com.atomikos', name: 'transactions-api', version: atomikosVersion) {
+        exclude group: 'org.mockito', module: 'mockito-all'
+    }
+
+    providedCompile(group: 'com.atomikos', name: 'transactions', version: atomikosVersion) {
+        exclude group: 'org.mockito', module: 'mockito-all'
+    }
+
+    providedCompile(group: 'com.atomikos', name: 'atomikos-util', version: atomikosVersion) {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
+    providedCompile(group: 'com.atomikos', name: 'transactions-jta', version: atomikosVersion) {
+        exclude group: 'org.apache.geronimo.specs', module: 'geronimo-jta_1.0.1B_spec'
+        exclude group: 'org.mockito', module: 'mockito-all'
+    }
+
+    providedCompile project(':extension:binding:fabric3-binding-jms')
+
+    // add the SPI and Util modules to provided so they are not included in the contribution
+    providedCompile project(':kernel:api:fabric3-spi')
+    providedCompile project(':kernel:impl:fabric3-util')
+
+}

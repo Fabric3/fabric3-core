@@ -1,0 +1,25 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    providedCompile project(':extension:binding:fabric3-binding-rs-api')
+    providedCompile project(':extension:binding:fabric3-binding-rs')
+    providedCompile project(':extension:other:databinding:fabric3-databinding-json')
+    providedCompile group: servletGroupId, name: servletArtifactId, version: servletVersion
+    providedCompile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
+
+    compile(group: 'org.glassfish.jersey.core', name: 'jersey-server', version: jerseyVersion) {
+        exclude module: 'javax.ws.rs-api'
+    }
+
+    compile(group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jerseyVersion)
+
+    compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version: jerseyVersion)
+
+    compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version: jerseyVersion)
+
+    providedCompile(group: 'asm', name: 'asm', version: '3.3.1')  // Jersey requires ASM 3
+}
+
+
+

@@ -1,0 +1,21 @@
+dependencies {
+
+    compile project (':extension:other:spring:fabric3-spring-library')
+
+    compile project (':extension:other:spring:fabric3-spring-spi')
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+
+    compile project (':extension:other:tx:fabric3-datasource')
+
+    compile project(':kernel:impl:fabric3-pojo')
+
+    compile project (':extension:other:jpa:fabric3-jpa-hibernate')
+
+    compile project (':extension:other:jpa:fabric3-jpa-api')
+
+
+}
+
+
+

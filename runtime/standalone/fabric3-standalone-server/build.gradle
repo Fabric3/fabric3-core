@@ -1,0 +1,37 @@
+dependencies {
+
+    compile project(':kernel:api:fabric3-host-api')
+
+    compile project(':kernel:api:fabric3-node-api')
+
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
+
+    compile group: servletGroupId, name: servletArtifactId, version: servletVersion
+
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.fabric3.runtime.standalone.server.Fabric3Server'
+        def manifestCp = configurations.runtime.files.collect  {
+        File file = it
+        "../lib/${file.name}"
+        }.join(' ')
+
+
+         configurations.runtime.getAllDependencies().withType(ProjectDependency).each {dep->
+
+            def depProj = dep.getDependencyProject()
+            def libFilePaths = project(depProj.path).libsDir.list().collect{ inFile-> "../lib/${inFile}"  }.join(' ')
+            manifestCp += ' ' + libFilePaths
+        }
+
+        attributes 'Class-Path': manifestCp
+
+    }
+
+}
+
+
+

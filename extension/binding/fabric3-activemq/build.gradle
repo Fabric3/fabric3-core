@@ -1,0 +1,60 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    providedCompile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+    providedCompile group: 'org.codehaus.fabric3.api', name: 'javax-jms', version: jmsVersion
+    providedCompile project(':extension:binding:fabric3-binding-jms')
+
+    compile(group: 'org.apache.activemq', name: 'activemq-broker', version: activeMQVersion) {
+        exclude module: 'slf4j-api'
+        exclude module: 'commons-logging'
+        exclude module: 'commons-logging-api'
+        exclude module: 'geronimo-jms_1.1_spec-1.1.1'
+        exclude module: 'geronimo-jms_1.1_spec'
+        exclude module: 'camel-core'
+        exclude module: 'geronimo-jta_1.1_spec'
+        exclude module: 'geronimo-jta_1.0.1B_spec'
+        exclude module: 'servlet-api'
+        exclude module: 'fusemq-leveldb'
+        exclude module: 'mqtt-client'
+        exclude module: 'spring-context'
+    }
+
+    compile(group: 'org.apache.activemq', name: 'activemq-amq-store', version: activeMQVersion) {
+        exclude module: 'slf4j-api'
+        exclude module: 'geronimo-jms_1.1_spec-1.1.1'
+        exclude module: 'geronimo-jms_1.1_spec'
+        exclude module: 'commons-logging'
+        exclude module: 'commons-logging-api'
+    }
+
+    compile(group: 'org.apache.activemq', name: 'activemq-kahadb-store', version: activeMQVersion) {
+        exclude module: 'slf4j-api'
+        exclude module: 'commons-logging'
+        exclude module: 'commons-logging-api'
+        exclude module: 'geronimo-jms_1.1_spec-1.1.1'
+        exclude module: 'geronimo-jms_1.1_spec'
+        exclude module: 'camel-core'
+        exclude module: 'geronimo-jta_1.0.1B_spec'
+        exclude module: 'servlet-api'
+        exclude module: 'fusemq-leveldb'
+        exclude module: 'mqtt-client'
+        exclude module: 'spring-context'
+    }
+
+    compile(group: 'org.apache.activemq', name: 'activemq-pool', version: activeMQVersion) {
+        exclude module: 'spring-beans'
+        exclude module: 'camel-core'
+        exclude module: 'geronimo-jta_1.1_spec'
+        exclude module: 'geronimo-jms_1.1_spec-1.1.1'
+        exclude module: 'geronimo-jms_1.1_spec'
+        exclude module: 'geronimo-jta_1.0.1B_spec'
+    }
+
+    compile project(':extension:core:fabric3-monitor-log')
+
+}
+
+
+

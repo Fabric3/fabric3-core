@@ -1,0 +1,44 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    providedCompile project(':extension:interface:fabric3-interface-wsdl')
+
+    providedCompile group: 'wsdl4j', name: 'wsdl4j', version: wsdl4jVersion
+
+    providedCompile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
+
+    providedCompile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: jaxbApiVersion
+
+    providedCompile group: 'com.sun.istack', name: 'istack-commons-runtime', version: '1.0'
+
+    providedCompile group: servletGroupId, name: servletArtifactId, version: servletVersion
+
+    providedCompile project(':extension:binding:fabric3-binding-ws-api')
+
+    providedCompile project(':extension:binding:fabric3-binding-ws')
+
+    compile group: 'javax.xml', name: 'webservices-api-osgi', version: webServicesVersion
+
+    compile (group: 'com.sun.xml.ws', name: 'webservices-osgi', version: webServicesVersion ){
+        exclude module:'jaxb-osgi'  //  included in the JAXB extension
+        exclude module: 'woodstox-osgi'
+        exclude module: 'stax-api'
+    }
+
+    compile (group: 'org.jvnet.staxex', name: 'stax-ex', version: '1.6'){
+        exclude module: 'stax-api'
+    }
+
+    compile group: 'org.glassfish.gmbal', name: 'gmbal-api-only', version: '3.0.0-b023'
+
+    compile group: 'com.sun.xml.fastinfoset', name: 'FastInfoset', version: '1.2.7'
+
+    compile group: 'javax.security.auth.message', name: 'jmac', version: '1.0-rev-1'
+
+    compile group: 'asm', name: 'asm', version: '3.3.1'
+
+}
+
+
+

@@ -1,0 +1,13 @@
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jms', version: jmsVersion
+
+    compile project(':extension:binding:fabric3-binding-jms-api')
+    compile project(':extension:other:fabric3-jndi')
+    compile project(':extension:other:databinding:fabric3-databinding-jaxb')
+
+}
+
+
+

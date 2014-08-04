@@ -1,0 +1,30 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+//    Include sources and resources from the ZeroMQ binding since they need to be compiled against JeroMQ and not JZMQ do to signature incompatibilities
+
+    sourceSets.main.java.srcDirs = ['src/main/java', '../fabric3-binding-zeromq/src/main/java']
+
+    sourceSets {
+        main {
+            resources {
+                srcDir 'src/main/resources'
+                srcDir  '../fabric3-binding-zeromq/src/main/resources'
+                exclude { FileTreeElement e -> (e.file.path.contains('fabric3-binding-zeromq') && e.name.contains('sca-contribution')) }
+                exclude '**/*.xsd'
+           }
+       }
+    }
+
+    providedCompile project(':kernel:api:fabric3-spi')
+    providedCompile project(':kernel:impl:fabric3-util')
+    providedCompile project(':extension:binding:fabric3-binding-zeromq-api')
+
+    compile(group: 'org.zeromq', name: 'jeromq', version: jeromqVersion)
+
+
+}
+
+
+

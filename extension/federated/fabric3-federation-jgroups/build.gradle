@@ -1,0 +1,12 @@
+
+dependencies {
+    compile  project(':extension:federated:fabric3-federation-deployment')
+    compile  project(':extension:federated:fabric3-jgroups')
+    compile  project(':extension:federated:fabric3-federation-node')
+
+    compile group: 'org.jgroups', name: 'jgroups', version: jgroupsVersion
+
+}
+
+
+

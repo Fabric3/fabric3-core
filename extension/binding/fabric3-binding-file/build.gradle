@@ -1,0 +1,9 @@
+dependencies {
+
+    compile project(':extension:binding:fabric3-binding-file-api')
+
+
+}
+
+
+

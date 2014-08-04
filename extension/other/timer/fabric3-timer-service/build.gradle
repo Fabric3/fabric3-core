@@ -1,0 +1,8 @@
+dependencies {
+
+    compile project(':extension:other:timer:fabric3-timer-spi')
+
+}
+
+
+

@@ -1,0 +1,18 @@
+dependencies {
+
+    compile project(':kernel:api:fabric3-node-api')
+    compile project(':kernel:impl:fabric3-monitor')
+    compile project(':kernel:impl:fabric3-pojo')
+    compile  project(':kernel:impl:fabric3-thread-pool')
+    compile  project(':kernel:impl:fabric3-policy')
+    compile  project(':kernel:impl:fabric3-jdk-reflection')
+    compile  project(':kernel:impl:fabric3-transform')
+    compile  project(':kernel:impl:fabric3-introspection-xml')
+    compile  project(':kernel:impl:fabric3-introspection-java')
+    compile  project(':kernel:impl:fabric3-system')
+    compile  project(':kernel:impl:fabric3-contribution')
+
+}
+
+
+

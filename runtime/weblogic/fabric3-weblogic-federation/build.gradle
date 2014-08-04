@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':runtime:weblogic:fabric3-weblogic-api')
+    compile project(':runtime:weblogic:fabric3-weblogic-cluster')
+    compile project(':extension:federated:fabric3-federation-deployment')
+
+    compile project(':runtime:weblogic:fabric3-weblogic-mock')
+}
+

@@ -1,0 +1,14 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+
+
+    providedCompile project(':extension:other:ftp:fabric3-ftp-spi')
+
+    compile(group: 'commons-net', name: 'commons-net', version: '1.4.1')
+
+}
+
+
+

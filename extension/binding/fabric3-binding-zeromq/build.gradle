@@ -1,0 +1,16 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+
+    providedCompile project(':extension:binding:fabric3-binding-zeromq-api')
+    providedCompile project(':extension:binding:fabric3-binding-zeromq-library')
+
+    testCompile(group: 'org.zeromq', name: 'jeromq', version: jeromqVersion)
+
+
+
+}
+
+
+

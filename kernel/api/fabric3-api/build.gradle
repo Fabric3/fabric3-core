@@ -1,0 +1,18 @@
+apply plugin: 'osgi'
+
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.spec', name: 'sca-api', version: scaApiVersion
+
+
+}
+
+jar {
+    manifest {
+        instruction 'Export-Package', "org.fabric3.*;version=${fabric3ReleaseVersion}"
+        instruction 'Bundle-Description', 'Fabric3 APIs for applications'
+    }
+}
+
+
+

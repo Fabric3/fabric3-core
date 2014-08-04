@@ -1,0 +1,9 @@
+dependencies {
+
+    compile project(':kernel:impl:fabric3-pojo')
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
+
+}
+
+
+
