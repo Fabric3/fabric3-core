@@ -1,0 +1,102 @@
+apply plugin: 'fatjar'
+
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+buildscript {
+
+    dependencies {
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+    }
+}
+
+
+dependencies {
+
+    compile project(':kernel:api:fabric3-model-api')
+
+    compile project(':kernel:api:fabric3-host-api')
+
+    compile project(':kernel:api:fabric3-spi')
+
+    compile project(':kernel:api:fabric3-node-api')
+
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
+    compile group: servletGroupId, name: servletArtifactId, version: servletVersion
+    compile group: 'com.lmax', name: 'disruptor', version: disruptorVersion
+    compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: woodstoxVersion
+
+    compile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
+
+    compile (group: 'jaxen', name: 'jaxen', version: '1.1.1') {
+        exclude group: 'xerces', module: 'xercesImpl'
+        exclude group: 'jdom', module: 'jdom'
+        exclude group: 'dom4j', module: 'dom4j'
+        exclude group: 'xom', module: 'xom'
+        exclude group: 'xml-apis', module: 'xml-apis'
+    }
+
+    compile project(':kernel:impl:fabric3-thread-pool')
+    compile project(':kernel:impl:fabric3-introspection-java')
+    compile project(':kernel:impl:fabric3-introspection-xml')
+    compile project(':kernel:impl:fabric3-fabric')
+    compile project(':kernel:impl:fabric3-policy')
+    compile project(':extension:other:security:fabric3-security-impl')
+    compile project(':extension:core:fabric3-monitor-spi')
+    compile project(':extension:core:fabric3-monitor-impl')
+    compile project(':extension:core:fabric3-monitor-appender')
+
+
+
+
+//    compile project(':kernel:impl:fabric3-monitor')
+//    compile project(':kernel:impl:fabric3-util')
+//    compile project(':kernel:impl:fabric3-pojo')
+//    compile project(':kernel:impl:fabric3-jdk-reflection')
+//    compile project(':kernel:impl:fabric3-transform')
+//    compile project(':kernel:impl:fabric3-contribution')
+//    compile project(':kernel:impl:fabric3-system')
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.fabric3.node.DefaultFabric'
+    }
+
+}
+
+fatJar {
+
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude 'META-INF/*.INF'
+    exclude 'META-INF/*.inf'
+    exclude 'META-INF/lib'
+    exclude 'META-INF/maven'
+
+    exclude '*/*jdom'
+    exclude '*/*dom4j'
+    exclude '*/*ibm'
+    exclude '*/*xom'
+    exclude '*/*apache'
+    exclude 'nu'
+    exclude 'java_cup*'
+    exclude 'org/xml'
+    exclude 'license'
+    exclude 'about*'
+    exclude 'BCEL.*'
+    exclude 'JDOMAbout*'
+    exclude 'plugin.properties'
+    exclude '*.LICENSE.txt'
+    exclude '*.README.txt'
+
+}
+
+
+
