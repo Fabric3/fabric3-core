@@ -1,0 +1,11 @@
+task distZip(type: Zip) {
+    dependsOn(':runtime:node:fabric3-node:fatJar')
+    dependsOn(':runtime:node:fabric3-node-extensions:distZip')
+    into('') {
+        from(project(':runtime:node:fabric3-node').jar)
+    }
+    into('') {
+        from(project(':runtime:node:fabric3-node-extensions').jar)
+    }
+
+}

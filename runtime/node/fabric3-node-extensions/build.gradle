@@ -34,7 +34,8 @@ dependencies {
 
 
 task distZip(type: Zip) {
-
+    archiveName = 'fabric3-node-extensions-' + version + '.jar'
+    destinationDir = file("$buildDir/libs")
     into('extensions') {
         from configurations.compile
     }
