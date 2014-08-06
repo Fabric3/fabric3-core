@@ -81,6 +81,7 @@ dependencies {
 
 
 task distZip(type: Zip) {
+    archiveName = 'runtime-standalone-' + version + '-bin.zip'
     into('bin') {
         from(project(':runtime:standalone:fabric3-standalone-server').jar).rename({ 'server.jar' })
         fileMode = 0755

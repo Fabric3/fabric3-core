@@ -73,7 +73,7 @@ dependencies {
 
 
 task distZip(type: Zip) {
-
+    archiveName = 'runtime-tomcat-' + version + '-bin.zip'
     into('fabric3/host') {
         from configurations.hostDependencies
     }

@@ -76,7 +76,7 @@ dependencies {
 
 
 task distZip(type: Zip) {
-
+    archiveName = 'fabric3-runtime-weblogic-' + version + '-bin.zip'
     into('fabric3/host') {
         from configurations.hostDependencies
     }
