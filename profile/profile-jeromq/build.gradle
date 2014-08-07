@@ -1,0 +1,26 @@
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+
+    compile project(':extension:binding:fabric3-binding-jeromq')
+    compile project(':extension:binding:fabric3-binding-zeromq-api')
+
+}
+
+
+task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
+    into('extensions') {
+        from configurations.compile
+    }
+
+    from { 'src/main/resources' }
+}
+
+
+
+

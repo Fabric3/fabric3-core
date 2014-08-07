@@ -1,0 +1,26 @@
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+
+    compile project(':extension:binding:fabric3-binding-file-api')
+    compile project(':extension:binding:fabric3-binding-file')
+
+}
+
+
+task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
+    into('extensions') {
+        from configurations.compile
+    }
+
+    from { 'src/main/resources' }
+}
+
+
+
+

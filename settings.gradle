@@ -72,3 +72,5 @@ include 'runtime:weblogic:fabric3-weblogic-mock', 'runtime:weblogic:fabric3-webl
         'runtime:weblogic:fabric3-weblogic-host', 'runtime:weblogic:fabric3-runtime-weblogic'
 
 include 'runtime:node:fabric3-node', 'runtime:node:fabric3-node-extensions', 'runtime:node:fabric3-node-distribution'
+
+include 'profile:profile-file', 'profile:profile-ftp', 'profile:profile-jeromq'
