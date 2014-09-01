@@ -6,9 +6,11 @@ configurations {
 
 dependencies {
 
-    compile project(':extension:other:ftp:fabric3-ftp-spi')
-    compile project(':extension:other:ftp:fabric3-ftp-server')
-    compile project(':extension:binding:fabric3-binding-ftp')
+    compile project(':extension:binding:fabric3-binding-rs-api')
+    compile project(':extension:binding:fabric3-binding-rs')
+    compile project(':extension:binding:fabric3-binding-rs-jersey')
+
+    compile project(':extension:other:databinding:fabric3-jaxb')
 
 }
 
@@ -21,7 +23,3 @@ task distZip(type: Zip) {
 
     from { 'src/main' }
 }
-
-
-
-

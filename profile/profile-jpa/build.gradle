@@ -1,0 +1,31 @@
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jms', version: jmsVersion
+
+    compile project(':extension:other:jpa:fabric3-hibernate-library')
+    compile project(':extension:other:jpa:fabric3-jpa-hibernate')
+    compile project(':extension:other:tx:fabric3-datasource')
+    compile project(':extension:other:tx:fabric3-tx')
+    compile project(':extension:other:tx:fabric3-atomikos-library')
+    compile project(':extension:other:tx:fabric3-atomikos')
+    compile project(':extension:other:jpa:fabric3-jpa-api')
+
+}
+
+
+task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
+    into('extensions') {
+        from configurations.compile
+    }
+
+    from { 'src/main' }
+}
+

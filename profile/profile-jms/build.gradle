@@ -1,0 +1,39 @@
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jta', version: jtaVersion
+    compile group: 'org.codehaus.fabric3.api', name: 'javax-jms', version: jmsVersion
+
+    compile project(':extension:binding:fabric3-binding-jms-api')
+    compile project(':extension:binding:fabric3-binding-jms')
+    compile project(':extension:binding:fabric3-activemq')
+    compile project(':extension:other:fabric3-jndi')
+
+    compile project(':extension:other:databinding:fabric3-databinding-jaxb')
+    compile project(':extension:other:databinding:fabric3-jaxb')
+
+    compile project(':extension:other:tx:fabric3-tx')
+    compile project(':extension:other:tx:fabric3-atomikos-library')
+    compile project(':extension:other:tx:fabric3-atomikos')
+
+    compile project(':extension:other:tx:fabric3-atomikos-jms')
+    compile project(':extension:other:tx:fabric3-datasource')
+
+}
+
+
+task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
+    into('extensions') {
+        from configurations.compile
+    }
+
+    from { 'src/main' }
+}
+
+
