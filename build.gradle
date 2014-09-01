@@ -76,6 +76,17 @@ configure(deployProjects()) {
     artifacts {
         if (project.name.contains('tomcat-host') || project.name.contains('weblogic-host')) {
             // avoid POM generation error where WAR and JAR artifacts clash - avoid enabling jar archives for WAR modules
+        } else if (project.name.contains('runtime-standalone')
+                || project.name.contains('fabric3-runtime-weblogic')
+                || project.name.contains('profile-')) {
+            // set distribution to the ZIP file
+            archives file('build/distributions/' + project.name + '-' + version + '-bin.zip')
+        } else if (project.name.contains('fabric3-runtime-tomcat')) {
+            // set distribution to the ZIP file
+            archives file('build/distributions/runtime-tomcat-' + version + '-bin.zip')
+        } else if (project.name.contains('fabric3-node-distribution')) {
+            // set distribution to the ZIP file
+            archives file('build/distributions/' + project.name + '-' + version + '.zip')
         } else {
             archives jar
         }
