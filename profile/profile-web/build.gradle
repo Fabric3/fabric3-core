@@ -1,0 +1,27 @@
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+
+
+    compile project(':extension:other:web:fabric3-contribution-scanner-war')
+    compile project(':extension:other:web:fabric3-container-web-spi')
+    compile project(':extension:other:web:fabric3-container-web-jetty')
+    compile project(':extension:implementation:fabric3-web')
+    compile project(':extension:other:web:fabric3-contribution-war')
+    compile project(':extension:binding:fabric3-binding-web')
+}
+
+
+task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
+    into('extensions') {
+        from configurations.compile
+    }
+
+    from { 'src/main' }
+}
+
