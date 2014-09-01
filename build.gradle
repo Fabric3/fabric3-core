@@ -13,8 +13,7 @@
  */
 project.description 'Fabric3 Core'
 
-defaultTasks 'clean', 'fabric3Contribution', 'assemble', 'install'
-
+defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble'  //, 'install'
 allprojects {
     repositories {
         mavenLocal()
@@ -22,8 +21,6 @@ allprojects {
     }
 
 }
-
-defaultTasks 'jar', 'fabric3Contribution',  'war', 'fatJar', 'distZip'
 
 def deployProjects() {
     // define projects that are deployed to Maven Central, i.e. they contain source files; project parent directories will be ignored
@@ -77,7 +74,11 @@ configure(deployProjects()) {
     }
 
     artifacts {
-        archives jar
+        if (project.name.contains('tomcat-host') || project.name.contains('weblogic-host')) {
+            // avoid POM generation error where WAR and JAR artifacts clash - avoid enabling jar archives for WAR modules
+        } else {
+            archives jar
+        }
         archives sourcesJar
         archives docJar
     }
@@ -103,6 +104,10 @@ configure(deployProjects()) {
                     id 'fabric3'
                     name 'Fabric3 Project'
                 }
+            }
+            if (artifactId.contains('profile-')) {
+                // profile projects use POM packaging
+                packaging 'pom'
             }
         }
     }
