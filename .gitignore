@@ -13,4 +13,5 @@ idea
 .gradle
 dependency-reduced-pom.xml
 build/
+classes/
 

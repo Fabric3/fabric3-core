@@ -1,5 +1,0 @@
-dependencies {
-
-    compile group: 'javax.servlet', name: 'jsp-api', version: jspVersion
-
-}

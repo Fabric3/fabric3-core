@@ -33,6 +33,5 @@
 		<module>fabric3-container-web-spi</module>
 		<module>fabric3-contribution-scanner-war</module>
 		<module>fabric3-contribution-war</module>
-		<module>fabric3-sca-taglib</module>
     </modules>
 </project>

@@ -32,7 +32,7 @@ include 'extension:other:cache:fabric3-cache', 'extension:other:cache:fabric3-ca
         'extension:other:security:fabric3-security', 'extension:other:security:fabric3-security-impl', 'extension:other:spring:fabric3-spring-library',
         'extension:other:spring:fabric3-spring-spi', 'extension:other:spring:fabric3-spring-security', 'extension:other:timer:fabric3-timer-spi',
         'extension:other:timer:fabric3-timer-service', 'extension:other:tx:fabric3-tx', 'extension:other:tx:fabric3-atomikos-library',
-        'extension:other:tx:fabric3-atomikos', 'extension:other:tx:fabric3-atomikos-jms', 'extension:other:web:fabric3-sca-taglib',
+        'extension:other:tx:fabric3-atomikos', 'extension:other:tx:fabric3-atomikos-jms',
         'extension:other:web:fabric3-contribution-war',
         'extension:other:web:fabric3-contribution-scanner-war', 'extension:other:web:fabric3-container-web-spi', 'extension:other:web:fabric3-container-web-jetty'
 
