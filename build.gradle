@@ -6,10 +6,11 @@
  * execute: <code>./gradlew --stacktrace -Pbuild=full</code>.
  * <p/>
  * To deploy to the snapshot repository, execute the 'uploadArchives' task after a full build has been run. To deploy to the Nexus release staging repository,
- * change the version and execute the 'uploadArchives' task after a full build has been run.
+ * change the version and execute: <code>./gradlew -Pbuild=deploy -Dcom.sun.net.ssl.rsaPreMasterSecretFix=true</code> after a full build has
+ * been run. Note the 'rsaPreMasterSecretFix' parameter is required as a workaround for this JDK bug: https://bugs.openjdk.java.net/browse/JDK-8030806
  * <p/>
  * Note the 'uploadArchives' tasks requires a gradle.properties file to be present containing private key information and authentication parameters
- * (codehausUsername and codehausPassword).
+ * (sonatypeUsername and sonatypePassword).
  *
  */
 project.description 'Fabric3 Core'
@@ -22,6 +23,8 @@ if (hasProperty('build')) {
 
 if (ext.build == 'local') {
     defaultTasks 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+} else if (ext.build == 'deploy') {
+    defaultTasks 'uploadArchives'
 } else {
     defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
 }
@@ -54,7 +57,7 @@ configure(deployProjects()) {
     apply plugin: 'java'
     apply plugin: 'maven'
 
-    if (build == 'full') {
+    if (build == 'full' || build == 'deploy') {
         apply plugin: 'signing'
     }
 
@@ -74,7 +77,7 @@ configure(deployProjects()) {
 
     }
 
-    if (build == 'full') {
+    if (build == 'full' || build == 'deploy') {
         task sourcesJar(type: Jar) {
             classifier 'sources'
             from sourceSets.main.allSource
@@ -103,7 +106,7 @@ configure(deployProjects()) {
         } else {
             archives jar
         }
-        if (build == 'full') {
+        if (build == 'full' || build == 'deploy') {
             archives sourcesJar
             archives docJar
         }
@@ -144,8 +147,8 @@ configure(deployProjects()) {
                 mavenDeployer {
                     beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                    repository(url: "https://nexus.codehaus.org/service/local/staging/deploy/maven2/") {
-                        authentication(userName: codehausUsername, password: codehausPassword)
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                        authentication(userName: sonatypeUsername, password: sonatypePassword)
                     }
 
                 }
@@ -153,17 +156,16 @@ configure(deployProjects()) {
                 mavenDeployer {
                     beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                    repository(url: "https://nexus.codehaus.org/content/repositories/snapshots/") {
-                        authentication(userName: codehausUsername, password: codehausPassword)
+                    repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                        authentication(userName: sonatypeUsername, password: sonatypePassword)
                     }
                 }
             }
         }
 
-        if (build == 'full') {
-            signing {
-                sign configurations.archives
-            }
+        signing {
+            required { releaseBuild && (build == 'full' || build == 'deploy') }
+            sign configurations.archives
         }
     }
 
