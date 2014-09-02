@@ -1,4 +1,10 @@
+dependencies {
+    compile project(':runtime:node:fabric3-node')
+    compile project(':runtime:node:fabric3-node-extensions')
+}
+
 task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
     dependsOn(':runtime:node:fabric3-node:fatJar')
     dependsOn(':runtime:node:fabric3-node-extensions:distZip')
     into('') {
@@ -9,3 +15,4 @@ task distZip(type: Zip) {
     }
 
 }
+

@@ -16,6 +16,13 @@ buildscript {
 
 dependencies {
 
+    compile group: 'org.codehaus.fabric3.spec', name: 'sca-api', version: scaApiVersion
+    compile group: 'javax.xml.stream', name:'stax-api', version: staxApiVersion
+    compile group: 'org.codehaus.woodstox', name:'woodstox-core-asl', version: woodstoxVersion
+    compile group: 'org.ow2.asm', name: 'asm', version: asmVersion
+
+    compile project(':kernel:api:fabric3-api')
+
     compile project(':kernel:api:fabric3-model-api')
 
     compile project(':kernel:api:fabric3-host-api')
@@ -40,6 +47,7 @@ dependencies {
         exclude group: 'xml-apis', module: 'xml-apis'
     }
 
+    compile project(':kernel:impl:fabric3-contribution')
     compile project(':kernel:impl:fabric3-thread-pool')
     compile project(':kernel:impl:fabric3-introspection-java')
     compile project(':kernel:impl:fabric3-introspection-xml')
@@ -50,16 +58,12 @@ dependencies {
     compile project(':extension:core:fabric3-monitor-impl')
     compile project(':extension:core:fabric3-monitor-appender')
 
-
-
-
-//    compile project(':kernel:impl:fabric3-monitor')
-//    compile project(':kernel:impl:fabric3-util')
-//    compile project(':kernel:impl:fabric3-pojo')
-//    compile project(':kernel:impl:fabric3-jdk-reflection')
-//    compile project(':kernel:impl:fabric3-transform')
-//    compile project(':kernel:impl:fabric3-contribution')
-//    compile project(':kernel:impl:fabric3-system')
+    compile project(':kernel:impl:fabric3-monitor')
+    compile project(':kernel:impl:fabric3-util')
+    compile project(':kernel:impl:fabric3-pojo')
+    compile project(':kernel:impl:fabric3-jdk-reflection')
+    compile project(':kernel:impl:fabric3-transform')
+    compile project(':kernel:impl:fabric3-system')
 }
 
 

@@ -1,11 +1,12 @@
 /**
  * Build for the Fabric3 core project.
  * <p/>
- * By default, deploy project binaries, Javadoc and sources will be installed in the local Maven repo. To only build binaries and skip generating Javadoc and
- * source archives, pass the <code>skipSources<code> parameter to Gradle: gradlew -PskipSources
+ * The default build cleans, compiles, builds archives and installs the latter in the local Maven repo. To build without running clean, execute:
+ * <code>./gradlew -Pbuild=local</code>. To execute a full build where Javadoc and source archives are generated and installed in the local Maven repo,
+ * execute: <code>./gradlew --stacktrace -Pbuild=full</code>.
  * <p/>
- * To deploy to the CodeHaus Nexus snapshot repository, execute the 'uploadArchives' task. To deploy to the CodeHaus Nexus release staging repository,
- * change the version and execute the 'uploadArchives' task.
+ * To deploy to the snapshot repository, execute the 'uploadArchives' task after a full build has been run. To deploy to the Nexus release staging repository,
+ * change the version and execute the 'uploadArchives' task after a full build has been run.
  * <p/>
  * Note the 'uploadArchives' tasks requires a gradle.properties file to be present containing private key information and authentication parameters
  * (codehausUsername and codehausPassword).
@@ -13,7 +14,18 @@
  */
 project.description 'Fabric3 Core'
 
-defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble'  //, 'install'
+if (hasProperty('build')) {
+    ext.build = project['build']
+} else {
+    ext.build = 'default';
+}
+
+if (ext.build == 'local') {
+    defaultTasks 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+} else {
+    defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+}
+
 allprojects {
     repositories {
         mavenLocal()
@@ -41,7 +53,10 @@ configure(deployProjects()) {
 
     apply plugin: 'java'
     apply plugin: 'maven'
-    apply plugin: 'signing'
+
+    if (build == 'full') {
+        apply plugin: 'signing'
+    }
 
     dependencies {
         testCompile group: 'junit', name: 'junit', version: junitVersion
@@ -59,18 +74,16 @@ configure(deployProjects()) {
 
     }
 
-    if (project.hasProperty("skipSources")) {
-        return
-    }
+    if (build == 'full') {
+        task sourcesJar(type: Jar) {
+            classifier 'sources'
+            from sourceSets.main.allSource
+        }
 
-    task sourcesJar(type: Jar) {
-        classifier 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task docJar(type: Jar, dependsOn: javadoc) {
-        classifier 'javadoc'
-        from javadoc.destinationDir
+        task docJar(type: Jar, dependsOn: javadoc) {
+            classifier 'javadoc'
+            from javadoc.destinationDir
+        }
     }
 
     artifacts {
@@ -86,12 +99,14 @@ configure(deployProjects()) {
             archives file('build/distributions/runtime-tomcat-' + version + '-bin.zip')
         } else if (project.name.contains('fabric3-node-distribution')) {
             // set distribution to the ZIP file
-            archives file('build/distributions/' + project.name + '-' + version + '.zip')
+            archives file('build/distributions/' + project.name + '-' + version + '-bin.zip')
         } else {
             archives jar
         }
-        archives sourcesJar
-        archives docJar
+        if (build == 'full') {
+            archives sourcesJar
+            archives docJar
+        }
     }
 
     install.repositories.mavenInstaller.pom.whenConfigured { pom ->
@@ -144,10 +159,12 @@ configure(deployProjects()) {
                 }
             }
         }
-        signing {
-            sign configurations.archives
-        }
 
+        if (build == 'full') {
+            signing {
+                sign configurations.archives
+            }
+        }
     }
 
 
