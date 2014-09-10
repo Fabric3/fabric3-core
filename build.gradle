@@ -163,10 +163,11 @@ configure(deployProjects()) {
                 }
             }
         }
-
-        signing {
-            required { releaseBuild && (build == 'full' || build == 'deploy') }
-            sign configurations.archives
+        if (build == 'full' || build == 'deploy') {
+            signing {
+                required { releaseBuild && (build == 'full' || build == 'deploy') }
+                sign configurations.archives
+            }
         }
     }
 
