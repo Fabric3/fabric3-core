@@ -12,7 +12,6 @@ dependencies {
     compile project(':extension:other:web:fabric3-container-web-jetty')
     compile project(':extension:implementation:fabric3-web')
     compile project(':extension:other:web:fabric3-contribution-war')
-    compile project(':extension:binding:fabric3-binding-web')
 }
 
 

@@ -2,8 +2,10 @@
  * Build for the Fabric3 core project.
  * <p/>
  * The default build cleans, compiles, builds archives and installs the latter in the local Maven repo. To build without running clean, execute:
- * <code>./gradlew -Pbuild=local</code>. To execute a full build where Javadoc and source archives are generated and installed in the local Maven repo,
- * execute: <code>./gradlew --stacktrace -Pbuild=full</code>.
+ * <code>./gradlew -Pbuild=local</code>.
+ * <p/>
+ * To execute a full build where Javadoc and source archives are generated and installed in the local Maven repo,
+ * execute: <code>./gradlew -Pbuild=full</code>.
  * <p/>
  * To deploy to the Nexus release staging repository, change the version and execute:
  * <code>./gradlew -Pbuild=deploy -Dcom.sun.net.ssl.rsaPreMasterSecretFix=true</code>
