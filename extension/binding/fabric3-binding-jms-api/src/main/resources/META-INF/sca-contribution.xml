@@ -15,6 +15,5 @@ Public License. See the accompanying license file for details.
               f3:description="JMS API extension">
     <import.java package="org.fabric3.api.model.*"/>
     <export.java package="org.fabric3.api.binding.jms.*" version="2.5.0"/>
-    <f3:provides name="jms"/>
 
 </contribution>
