@@ -1,3 +1,5 @@
+apply plugin: 'java'
+
 dependencies {
     compile project(':runtime:node:fabric3-node')
     compile project(':runtime:node:fabric3-node-extensions')
