@@ -1,10 +1,10 @@
                        Fabric3 License
 
 
- Fabric3 software and its included text (“Fabric3”) constitute the
+ Fabric3 software and its included text (Fabric3) constitute the
  proprietary intellectual property of  Metaform Systems Limited,
- a UK corporation (“Metaform”), copyright 2008 as denoted by the
- © symbol on all legal notices.
+ a UK corporation (Metaform), copyright 2008 as denoted by the
+  symbol on all legal notices.
 
  Fabric3 is a trademark of Metaform.  No commercial use of this
  trademark may be made without prior written permission of Metaform.
@@ -26,7 +26,7 @@
  (i) You may perform local modifications and individual patches to
  Fabric3, provided that such changes are only utilized to accomplish
  bug fixes and minor adaptations to allow running the software on
- exiting operating systems (“Patches”). Submission of these Patches
+ exiting operating systems (Patches). Submission of these Patches
  to Metaform for possible inclusion in future Fabric3 versions is
  encouraged, with the understanding that they will be treated as
  the intellectual property of Metaform for purposes of future licensing
@@ -48,19 +48,19 @@
  (iv) no re-distribution of Fabric3 is permitted in any form, except
  copies may be shared internally by you in such limited quantities as
  reasonably necessary to meet your specific needs, consistent with this
- license. For purposes of this license, “you” means an individual or
+ license. For purposes of this license, you means an individual or
  legal entity.
 
  Fabric3 may be used in conjunction with the software bundled in the
  download and zip file, but this license does not in any way serve
  to modify the licenses of those separate software programs, including
- any so-called “open source” licenses such as Apache or GPL,
+ any so-called open source licenses such as Apache or GPL,
  and vice versa.  Accordingly, your permitted uses of such separate
  programs shall be governed by their respective license terms, whether
  or not you utilize such programs individually or in conjunction with
  Fabric3.
 
- This software is made available “as is” and METAFORM DISCLAIMS ALL
+ This software is made available as is and METAFORM DISCLAIMS ALL
  WARRANTIES, EXPRESS OR IMPLIED, WITH REGARD TO THIS SOFTWARE,
  INCLUDING WITHOUT LIMITATION ALL IMPLIED WARRANTIES OF MERCHANTABILITY
  AND FITNESS FOR A PARTICULAR PURPOSE, AND IN NO EVENT SHALL METAFORM

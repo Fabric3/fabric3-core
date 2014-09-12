@@ -209,11 +209,11 @@ public class DependencyResolverImpl implements DependencyResolver {
      * The following OSGi resolution algorithm defined in R4 Section 3.1 is followed:
      * <p/>
      * <p/>
-     * <strong>External</strong> � If the import resolves to an export statement in another bundle, then the overlapping export definition in this
+     * <strong>External</strong> If the import resolves to an export statement in another bundle, then the overlapping export definition in this
      * contribution is discarded.
      * <p/>
      * <p/>
-     * <strong>Internal</strong> � If the import is resolved to an export statement in this module, then the overlapping import definition in this
+     * <strong>Internal</strong>  If the import is resolved to an export statement in this module, then the overlapping import definition in this
      * contribution is discarded.
      * <p/>
      * <p/>

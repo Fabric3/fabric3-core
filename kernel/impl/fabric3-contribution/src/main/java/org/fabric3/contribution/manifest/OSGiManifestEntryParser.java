@@ -40,9 +40,9 @@ package org.fabric3.contribution.manifest;
 /**
  * Parses OSGi headers, which are of the form:
  * <pre>
- *    header ::= clause ( �,� clause )
- *    clause ::= path ( �;� path ) *
- *                 ( �;� parameter ) *
+ *    header ::= clause ( , clause )
+ *    clause ::= path ( ; path )*
+ *              ( ; parameter ) *
  * </pre>
  */
 public class OSGiManifestEntryParser {
@@ -134,7 +134,7 @@ public class OSGiManifestEntryParser {
                     } else {
                         EventType current = state;
                         if (EventType.BEGIN == state) {
-                           current = EventType.PATH;
+                            current = EventType.PATH;
                         }
                         state = EventType.END_CLAUSE;
                         return current;
