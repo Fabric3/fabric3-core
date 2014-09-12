@@ -71,7 +71,7 @@ public interface LoaderRegistry extends Loader {
      * Returns true if the element is registered.
      *
      * @param element the element
-     * @return  true if the element is registered
+     * @return true if the element is registered
      */
     boolean isRegistered(QName element);
 }
