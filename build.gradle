@@ -33,7 +33,7 @@ if (ext.build == 'local') {
 }
 
 if (!hasProperty('sonatypeUsername')) {
-   project.ext.sonatypeUsername = "undefined"
+    project.ext.sonatypeUsername = "undefined"
 }
 
 if (!hasProperty('sonatypePassword')) {
@@ -81,6 +81,9 @@ configure(deployProjects()) {
         repositories {
             mavenLocal()
             mavenCentral()
+            maven {
+                url "https://oss.sonatype.org/content/repositories/snapshots"
+            }
         }
         dependencies {
             classpath group: 'org.fabric3.gradle', name: 'fabric3-contribution', version: pluginVersion
