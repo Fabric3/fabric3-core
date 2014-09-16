@@ -35,6 +35,29 @@ dependencies {
 
 task distZip(type: Zip) {
     archiveName = 'fabric3-node-extensions-' + version + '.jar'
+
+    dependsOn(':extension:node:fabric3-node-impl:jar')
+    dependsOn(':extension:other:security:fabric3-security-impl:jar')
+    dependsOn(':extension:core:fabric3-monitor-spi:jar')
+    dependsOn(':extension:core:fabric3-monitor-impl:jar')
+    dependsOn(':extension:core:fabric3-monitor-appender:jar')
+    dependsOn(':extension:implementation:fabric3-java:jar')
+    dependsOn(':extension:core:fabric3-jdk-proxy:jar')
+    dependsOn(':extension:core:fabric3-channel-impl:jar')
+    dependsOn(':extension:core:fabric3-channel-disruptor:jar')
+    dependsOn(':extension:core:fabric3-async:jar')
+    dependsOn(':extension:core:fabric3-resource:jar')
+    dependsOn(':extension:core:fabric3-execution:jar')
+    dependsOn(':extension:core:fabric3-recovery:jar')
+
+    dependsOn(':extension:federated:fabric3-federation-deployment:jar')
+    dependsOn(':extension:federated:fabric3-federation-node:jar')
+    dependsOn(':extension:federated:fabric3-federation-provisioning:jar')
+    dependsOn(':extension:federated:fabric3-federation-allocation:jar')
+    dependsOn(':extension:federated:fabric3-jgroups:jar')
+    dependsOn(':extension:federated:fabric3-federation-jgroups:jar')
+    dependsOn(':extension:core:fabric3-sca-intents:jar')
+
     destinationDir = file("$buildDir/libs")
     into('extensions') {
         from configurations.compile
