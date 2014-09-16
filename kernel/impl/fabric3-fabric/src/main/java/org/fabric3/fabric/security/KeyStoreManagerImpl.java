@@ -49,6 +49,7 @@ import java.security.cert.CertificateException;
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.security.KeyStoreManager;
+import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -150,6 +151,22 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
     public void init() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         initializeKeyStore();
         initializeTrustStore();
+    }
+
+    @Destroy
+    public void destroy() {
+        if (keyStorePassword != null) {
+            System.clearProperty(keyStorePasswordProperty);
+        }
+        if (keystoreFile != null && keystoreFile.exists()) {
+            System.clearProperty(keyStoreLocationProperty);
+        }
+        if (trustStorePassword != null) {
+            System.clearProperty(trustStorePasswordProperty);
+        }
+        if (truststoreFile != null && truststoreFile.exists()) {
+            System.clearProperty(trustStoreLocationProperty);
+        }
     }
 
     public KeyStore getKeyStore() {
