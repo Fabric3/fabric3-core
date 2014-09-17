@@ -27,7 +27,7 @@ if (hasProperty('build')) {
 if (ext.build == 'local') {
     defaultTasks 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
 } else if (ext.build == 'deploy') {
-    defaultTasks 'uploadArchives'
+    defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install', 'uploadArchives'
 } else {
     defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
 }
