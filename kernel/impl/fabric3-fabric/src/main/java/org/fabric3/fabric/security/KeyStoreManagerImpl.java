@@ -77,6 +77,11 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
     private KeyStore keyStore;
     private KeyStore trustStore;
 
+    private String previousKeyStorePassword;
+    private String previousKeyStoreLocationProperty;
+    private String previousTrustStorePasswordProperty;
+    private String previousTrustStoreLocationProperty;
+
     public KeyStoreManagerImpl(@Reference HostInfo info) {
         this.info = info;
     }
@@ -155,17 +160,17 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
 
     @Destroy
     public void destroy() {
-        if (keyStorePassword != null) {
-            System.clearProperty(keyStorePasswordProperty);
+        if (previousKeyStorePassword != null) {
+            System.setProperty(keyStorePasswordProperty, previousKeyStorePassword);
         }
-        if (keystoreFile != null && keystoreFile.exists()) {
-            System.clearProperty(keyStoreLocationProperty);
+        if (previousKeyStoreLocationProperty != null) {
+            System.setProperty(keyStoreLocationProperty, previousKeyStoreLocationProperty);
         }
-        if (trustStorePassword != null) {
-            System.clearProperty(trustStorePasswordProperty);
+        if (previousTrustStorePasswordProperty != null) {
+            System.setProperty(trustStorePasswordProperty, previousTrustStorePasswordProperty);
         }
-        if (truststoreFile != null && truststoreFile.exists()) {
-            System.clearProperty(trustStoreLocationProperty);
+        if (previousTrustStoreLocationProperty != null) {
+            System.setProperty(trustStoreLocationProperty, previousTrustStoreLocationProperty);
         }
     }
 
@@ -220,10 +225,10 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
             }
         }
         if (keyStorePassword != null) {
-            System.setProperty(keyStorePasswordProperty, keyStorePassword);
+            previousKeyStorePassword = System.setProperty(keyStorePasswordProperty, keyStorePassword);
         }
         if (keystoreFile != null && keystoreFile.exists()) {
-            System.setProperty(keyStoreLocationProperty, keystoreFile.getAbsolutePath());
+            previousKeyStoreLocationProperty = System.setProperty(keyStoreLocationProperty, keystoreFile.getAbsolutePath());
 
             char[] keyStorePasswordChars = null;
             if (keyStorePassword != null) {
@@ -255,10 +260,10 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
             truststoreFile = new File(trustStoreLocation);
         }
         if (trustStorePassword != null) {
-            System.setProperty(trustStorePasswordProperty, trustStorePassword);
+            previousTrustStorePasswordProperty = System.setProperty(trustStorePasswordProperty, trustStorePassword);
         }
         if (truststoreFile != null && truststoreFile.exists()) {
-            System.setProperty(trustStoreLocationProperty, truststoreFile.getAbsolutePath());
+            previousTrustStoreLocationProperty = System.setProperty(trustStoreLocationProperty, truststoreFile.getAbsolutePath());
             trustStore = KeyStore.getInstance(trustStoreType);
             InputStream stream = new FileInputStream(trustStoreLocation);
             char[] trustStorePasswordChars = null;
