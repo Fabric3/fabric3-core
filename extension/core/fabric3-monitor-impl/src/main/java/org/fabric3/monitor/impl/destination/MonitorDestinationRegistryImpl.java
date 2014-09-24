@@ -45,9 +45,12 @@ import org.fabric3.monitor.spi.appender.AppenderCreationException;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
-import org.oasisopen.sca.annotation.Destroy;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.RuntimeDestroyed;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -56,18 +59,17 @@ import org.oasisopen.sca.annotation.Init;
 public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistry {
     private AtomicReference<MonitorDestination[]> destinations;
 
+    private EventService eventService;
+
+    public MonitorDestinationRegistryImpl(@Reference EventService eventService) {
+        this.eventService = eventService;
+    }
+
     @Init
     public void init() throws IOException, AppenderCreationException {
         destinations = new AtomicReference<>();
         destinations.set(new MonitorDestination[0]);
-    }
-
-    @Destroy
-    public void destroy() throws IOException {
-        MonitorDestination[] copy = destinations.get();
-        for (MonitorDestination destination : copy) {
-            destination.stop();
-        }
+        eventService.subscribe(RuntimeDestroyed.class, new MonitorEventListener());
     }
 
     public synchronized void register(MonitorDestination destination) {
@@ -107,6 +109,26 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
     private void checkIndex(int index) {
         if (index < 0 || index >= destinations.get().length) {
             throw new AssertionError("Invalid index: " + index);
+        }
+    }
+
+    private void stop() throws IOException {
+        MonitorDestination[] copy = destinations.get();
+        for (MonitorDestination destination : copy) {
+            destination.stop();
+        }
+    }
+
+    private class MonitorEventListener implements Fabric3EventListener<RuntimeDestroyed> {
+
+        public void onEvent(RuntimeDestroyed event) {
+            try {
+                // Use RuntimeDestroy since destinations must be stopped after all other system components have been stopped during the RuntimeStopped event
+                stop();
+            } catch (IOException e) {
+                // cannot log - send to stdout
+                e.printStackTrace();
+            }
         }
     }
 

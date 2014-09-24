@@ -85,6 +85,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
     private CountDownLatch latch;
+    private String productName;
 
     /**
      * Main method.
@@ -138,7 +139,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             String zoneName = bootstrapService.parseZoneName(systemConfig, mode);
 
-            String productName = bootstrapService.parseProductName(systemConfig);
+            productName = bootstrapService.parseProductName(systemConfig);
 
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, params.name, mode);
 
@@ -201,7 +202,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             try {
                 latch.await();
-                monitor.stopped(productName);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -220,6 +220,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private void shutdown() {
         try {
             if (coordinator != null) {
+                monitor.shutdown(productName);
                 coordinator.shutdown();
             }
         } catch (ShutdownException ex) {
@@ -299,8 +300,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
         @Info("{0} ready [Mode:{1}, Environment: {2}]")
         void started(String mode, String environment, String s);
 
-        @Info("{0} shutdown")
-        void stopped(String productName);
+        @Info("{0} shutting down")
+        void shutdown(String productName);
 
         @Info("Runtime exited abnormally, Caused by")
         void exited(Exception e);
