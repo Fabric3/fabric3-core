@@ -38,7 +38,7 @@
 package org.fabric3.spi.runtime.event;
 
 /**
- * Signals when request processing has stopped and the runtime is being taken offline.
+ * Signals when the runtime instance has been destroyed.
  */
-public class RuntimeStop implements Fabric3Event {
+public class RuntimeDestroyed implements Fabric3Event {
 }

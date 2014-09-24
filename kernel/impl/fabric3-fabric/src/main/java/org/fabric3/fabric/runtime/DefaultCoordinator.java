@@ -137,6 +137,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             EventService eventService = runtime.getComponent(EventService.class);
             eventService.publish(new RuntimeStop());
             runtime.destroy();
+//            eventService.publish(new RuntimeDestroyed());
         }
         state = RuntimeState.SHUTDOWN;
     }
