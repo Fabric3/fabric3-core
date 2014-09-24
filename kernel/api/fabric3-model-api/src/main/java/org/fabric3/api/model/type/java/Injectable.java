@@ -52,13 +52,14 @@ public class Injectable extends ModelObject<InjectingComponentType> {
     private static final long serialVersionUID = -3313258224983902890L;
     public static final Injectable OASIS_COMPONENT_CONTEXT = new Injectable(InjectableType.CONTEXT, "OASISComponentContext");
     public static final Injectable OASIS_REQUEST_CONTEXT = new Injectable(InjectableType.CONTEXT, "RequestContext");
+    public static final Injectable DATA_DIRECTORY_CONTEXT = new Injectable(InjectableType.CONTEXT, "DataDirectoryContext");
 
     private InjectableType type;
 
     private String name;
 
     /**
-     * Constructor used for deserialization.
+     * Constructor used for de-serialization.
      */
     public Injectable() {
     }

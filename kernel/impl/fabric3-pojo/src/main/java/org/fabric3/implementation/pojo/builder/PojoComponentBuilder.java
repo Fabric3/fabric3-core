@@ -62,6 +62,7 @@ import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -152,9 +153,17 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         PojoRequestContext requestContext = new PojoRequestContext();
         SingletonObjectFactory<PojoRequestContext> requestFactory = new SingletonObjectFactory<>(requestContext);
         factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, requestFactory);
+
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext, info);
         SingletonObjectFactory<PojoComponentContext> componentFactory = new SingletonObjectFactory<>(componentContext);
         factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, componentFactory);
+
+        ObjectFactory dirObjectFactory = new ObjectFactory(){
+            public Object getInstance() throws ObjectCreationException {
+                return info.getDataDir();
+            }
+        };
+        factory.setObjectFactory(Injectable.DATA_DIRECTORY_CONTEXT, dirObjectFactory);
     }
 
     @SuppressWarnings({"unchecked"})

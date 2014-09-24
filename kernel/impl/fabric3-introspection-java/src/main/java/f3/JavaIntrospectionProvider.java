@@ -48,6 +48,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.model.Binding;
 import org.fabric3.api.annotation.model.Provides;
+import org.fabric3.api.annotation.runtime.DataDirectory;
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.api.annotation.scope.Stateless;
 import org.fabric3.api.annotation.wire.Key;
@@ -60,6 +61,7 @@ import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.ReferenceProcessorImpl;
 import org.fabric3.introspection.java.annotation.CompositeProcessor;
 import org.fabric3.introspection.java.annotation.ConsumerProcessor;
+import org.fabric3.introspection.java.annotation.DataDirectoryProcessor;
 import org.fabric3.introspection.java.annotation.DomainProcessor;
 import org.fabric3.introspection.java.annotation.ImplicitBindingReferenceProcessor;
 import org.fabric3.introspection.java.annotation.KeyProcessor;
@@ -149,6 +151,8 @@ public class JavaIntrospectionProvider {
         compositeBuilder.component(newBuilder(OrderProcessor.class).key(Order.class.getName()).build());
 
         compositeBuilder.component(newBuilder(ImplicitBindingReferenceProcessor.class).key(Binding.class.getName()).build());
+
+        compositeBuilder.component(newBuilder(DataDirectoryProcessor.class).key(DataDirectory.class.getName()).build());
 
         compositeBuilder.component(componentBuilder.build());
 
