@@ -62,7 +62,6 @@ import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.runtime.event.JoinDomain;
 import org.fabric3.spi.runtime.event.JoinDomainCompleted;
-import org.fabric3.spi.runtime.event.RuntimeDestroyed;
 import org.fabric3.spi.runtime.event.RuntimeRecover;
 import org.fabric3.spi.runtime.event.RuntimeStart;
 import org.fabric3.spi.runtime.event.RuntimeStop;
@@ -137,9 +136,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         if (state == RuntimeState.STARTED) {
             EventService eventService = runtime.getComponent(EventService.class);
             eventService.publish(new RuntimeStop());
-            RuntimeDestroyed destroyed = new RuntimeDestroyed(); // instantiate event before classloaders are disabled with the call to destroy()
             runtime.destroy();
-            eventService.publish(destroyed);
+//            eventService.publish(new RuntimeDestroyed());
         }
         state = RuntimeState.SHUTDOWN;
     }

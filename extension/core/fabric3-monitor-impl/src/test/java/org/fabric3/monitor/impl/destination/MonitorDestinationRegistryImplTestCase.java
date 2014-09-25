@@ -42,7 +42,6 @@ import org.easymock.EasyMock;
 import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
-import org.fabric3.spi.runtime.event.EventService;
 
 /**
  *
@@ -55,7 +54,7 @@ public class MonitorDestinationRegistryImplTestCase extends TestCase {
 
         EasyMock.replay(destination);
 
-        MonitorDestinationRegistryImpl registry = new MonitorDestinationRegistryImpl(EasyMock.createNiceMock(EventService.class));
+        MonitorDestinationRegistryImpl registry = new MonitorDestinationRegistryImpl();
         registry.init();
 
         registry.register(destination);
