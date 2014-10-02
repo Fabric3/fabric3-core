@@ -183,7 +183,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Constructor
-    public JettyServiceImpl(@Reference ExecutorService executorService,
+    public JettyServiceImpl(@Reference (name = "executorService") ExecutorService executorService,
                             @Reference ManagementService managementService,
                             @Reference PortAllocator portAllocator,
                             @Reference EventService eventService,

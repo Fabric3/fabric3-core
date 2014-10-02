@@ -17,6 +17,7 @@ Public License. See the accompanying license file for details.
     <!-- Jetty service -->
     <component name="JettyService" f3:key="http">
         <f3:implementation.system class="org.fabric3.transport.jetty.impl.JettyServiceImpl"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
         <property name="httpPort" source="$systemConfig//f3:web.server/f3:http/@port"/>
         <property name="httpHost" source="$systemConfig/f3:runtime/@host.address"/>
         <property name="enableHttps" source="$systemConfig//f3:web.server/f3:https/@enabled"/>
