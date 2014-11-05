@@ -159,9 +159,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         ComponentReference reference = new ComponentReference("reference", Multiplicity.ONE_ONE);
         componentDefinition.add(reference);
 
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri,
-                                                                                                                     componentDefinition,
-                                                                                                                     domainComponent);
+        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, componentDefinition, domainComponent);
         logicalComponent.setZone(info.getZoneName());
         reference.setServiceContract(contract);
         LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);
