@@ -91,11 +91,17 @@ public class NonReliableSingleThreadPublisher implements Publisher {
     }
 
     public void publish(byte[] message) {
+        if (socket == null) {
+            return;
+        }
         // single frame message
         socket.send(message, 0);
     }
 
     public void publish(byte[][] message) {
+        if (socket == null) {
+            return;
+        }
         int length = message.length;
         for (int i = 0; i < length - 1; i++) {
             byte[] bytes = message[i];
