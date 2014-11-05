@@ -35,16 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Collection;
 
 /**
- * Manages JAX-RS filters.
+ * Manages JAX-RS providers such as filters and context resolver providers.
  */
-public interface FilterRegistry {
+public interface ProviderRegistry {
 
     /**
      * Registers a global filter.
@@ -52,14 +52,14 @@ public interface FilterRegistry {
      * @param uri    a unique filter identifier
      * @param filter the filter
      */
-    void registerGlobalFilter(URI uri, Object filter);
+    void registerGlobalProvider(URI uri, Object filter);
 
     /**
      * Returns registered global filters.
      *
      * @return the global filters
      */
-    Collection<Object> getGlobalFilters();
+    Collection<Object> getGlobalProvider();
 
     /**
      * Registers a name filter.

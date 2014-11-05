@@ -20,7 +20,7 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="FilterRegistry">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.filter.FilterRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.provider.ProviderRegistryImpl"/>
     </component>
 
     <component name="FilterGenerator">
@@ -28,7 +28,7 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="NameBindingFilterProvider">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.filter.NameBindingFilterProviderImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.provider.NameBindingFilterProviderImpl"/>
     </component>
 
     <component name="RsSourceWireAttacher" f3:key="org.fabric3.binding.rs.provision.RsWireSourceDefinition">

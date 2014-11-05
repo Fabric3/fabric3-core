@@ -48,10 +48,9 @@ import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
 import org.fabric3.binding.rs.runtime.container.RsContainer;
-import org.fabric3.binding.rs.runtime.container.RsContainerException;
 import org.fabric3.binding.rs.runtime.container.RsContainerManager;
-import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
-import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
+import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
+import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
@@ -76,7 +75,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     private ServletHost servletHost;
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
-    private FilterRegistry filterRegistry;
+    private ProviderRegistry providerRegistry;
     private NameBindingFilterProvider provider;
     private BasicAuthenticator authenticator;
     private RsWireAttacherMonitor monitor;
@@ -85,14 +84,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     public RsSourceWireAttacher(@Reference ServletHost servletHost,
                                 @Reference ClassLoaderRegistry registry,
                                 @Reference RsContainerManager containerManager,
-                                @Reference FilterRegistry filterRegistry,
+                                @Reference ProviderRegistry providerRegistry,
                                 @Reference NameBindingFilterProvider provider,
                                 @Reference BasicAuthenticator authenticator,
                                 @Monitor RsWireAttacherMonitor monitor) throws NoSuchFieldException, IllegalAccessException {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
-        this.filterRegistry = filterRegistry;
+        this.providerRegistry = providerRegistry;
         this.provider = provider;
         this.authenticator = authenticator;
         this.monitor = monitor;
@@ -109,7 +108,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
             // each resource defined with the same binding URI will be deployed to the same container
-            container = new RsContainer(sourceUri.toString(), filterRegistry, provider);
+            container = new RsContainer(sourceUri.toString(), providerRegistry, provider);
             containerManager.register(sourceUri, container);
             String mapping = creatingMappingUri(sourceUri);
             if (servletHost.isMappingRegistered(mapping)) {
@@ -153,8 +152,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         return servletMapping;
     }
 
-    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container)
-            throws ClassNotFoundException, RsContainerException, ContainerException {
+    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException, ContainerException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {

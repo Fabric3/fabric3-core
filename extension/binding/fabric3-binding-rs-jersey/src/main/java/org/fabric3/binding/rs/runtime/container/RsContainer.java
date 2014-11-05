@@ -63,10 +63,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
-import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
+import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
+import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -80,16 +81,16 @@ public final class RsContainer extends HttpServlet {
     private static final long serialVersionUID = 1954697059021782141L;
 
     private String path;
-    private FilterRegistry filterRegistry;
+    private ProviderRegistry providerRegistry;
     private NameBindingFilterProvider provider;
 
     private ServletContainer servlet;
     private ServletConfig servletConfig;
     private List<Resource> resources;
 
-    public RsContainer(String path, FilterRegistry filterRegistry, NameBindingFilterProvider provider) {
+    public RsContainer(String path, ProviderRegistry providerRegistry, NameBindingFilterProvider provider) {
         this.path = path;
-        this.filterRegistry = filterRegistry;
+        this.providerRegistry = providerRegistry;
         this.provider = provider;
         this.resources = new ArrayList<>();
     }
@@ -130,11 +131,12 @@ public final class RsContainer extends HttpServlet {
         try {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
+            resourceConfig.register(JacksonFeature.class);
 
             // configure filters
-            Collection<Object> globalFilters = filterRegistry.getGlobalFilters();
-            for (Object filter : globalFilters) {
-                resourceConfig.register(filter);
+            Collection<Object> globalProviders = providerRegistry.getGlobalProvider();
+            for (Object globalProvider : globalProviders) {
+                resourceConfig.register(globalProvider);
             }
             resourceConfig.register(provider);
 

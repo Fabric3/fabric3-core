@@ -38,15 +38,22 @@
 package org.fabric3.binding.rs.runtime.builder;
 
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
 import org.fabric3.binding.rs.runtime.bytecode.ProviderGenerator;
-import org.fabric3.binding.rs.runtime.filter.AbstractProxyFilter;
-import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
-import org.fabric3.binding.rs.runtime.filter.ProxyRequestFilter;
-import org.fabric3.binding.rs.runtime.filter.ProxyResponseFilter;
+import org.fabric3.binding.rs.runtime.provider.AbstractProxyProvider;
+import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
+import org.fabric3.binding.rs.runtime.provider.ProxyMessageBodyReader;
+import org.fabric3.binding.rs.runtime.provider.ProxyMessageBodyWriter;
+import org.fabric3.binding.rs.runtime.provider.ProxyObjectMapperContextResolver;
+import org.fabric3.binding.rs.runtime.provider.ProxyRequestFilter;
+import org.fabric3.binding.rs.runtime.provider.ProxyResponseFilter;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
@@ -57,16 +64,16 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResourceDefinition> {
-    private FilterRegistry filterRegistry;
+    private ProviderRegistry providerRegistry;
     private ClassLoaderRegistry classLoaderRegistry;
     private ComponentManager componentManager;
     private ProviderGenerator providerGenerator;
 
-    public ProviderBuilder(@Reference FilterRegistry filterRegistry,
+    public ProviderBuilder(@Reference ProviderRegistry providerRegistry,
                            @Reference ClassLoaderRegistry classLoaderRegistry,
                            @Reference ComponentManager componentManager,
                            @Reference ProviderGenerator providerGenerator) {
-        this.filterRegistry = filterRegistry;
+        this.providerRegistry = providerRegistry;
         this.classLoaderRegistry = classLoaderRegistry;
         this.componentManager = componentManager;
         this.providerGenerator = providerGenerator;
@@ -75,16 +82,16 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     @SuppressWarnings("unchecked")
     public void build(PhysicalProviderResourceDefinition definition) throws ContainerException {
         try {
-            URI filterUri = definition.getProviderUri();
+            URI providerUri = definition.getProviderUri();
 
-            Object filter = createFilter(definition);
+            Object provider = createProvider(definition);
             if (definition.getBindingAnnotation() != null) {
                 String bindingAnnotation = definition.getBindingAnnotation();
                 URI contributionUri = definition.getContributionUri();
                 Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
-                filterRegistry.registerNameFilter(filterUri, annotationClass, filter);
+                providerRegistry.registerNameFilter(providerUri, annotationClass, provider);
             } else {
-                filterRegistry.registerGlobalFilter(filterUri, filter);
+                providerRegistry.registerGlobalProvider(providerUri, provider);
             }
         } catch (ClassNotFoundException e) {
             throw new ContainerException(e);
@@ -99,33 +106,43 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 URI contributionUri = definition.getContributionUri();
                 Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
                 URI filterUri = definition.getProviderUri();
-                filterRegistry.unregisterNameFilter(filterUri, annotationClass);
+                providerRegistry.unregisterNameFilter(filterUri, annotationClass);
             } else {
                 URI filterUri = definition.getProviderUri();
-                filterRegistry.unregisterGlobalFilter(filterUri);
+                providerRegistry.unregisterGlobalFilter(filterUri);
             }
         } catch (ClassNotFoundException e) {
             throw new ContainerException(e);
         }
     }
 
-    private Object createFilter(PhysicalProviderResourceDefinition definition) {
+    private Object createProvider(PhysicalProviderResourceDefinition definition) throws ContainerException {
 
         try {
             URI contributionUri = definition.getContributionUri();
-            Class<?> filterClass = classLoaderRegistry.loadClass(contributionUri, definition.getProviderClass());
+            Class<?> providerClass = classLoaderRegistry.loadClass(contributionUri, definition.getProviderClass());
 
             URI filterUri = definition.getProviderUri();
-            AbstractProxyFilter<?> filter;
-            if (ContainerRequestFilter.class.isAssignableFrom(filterClass)) {
-                filter = providerGenerator.generate(ProxyRequestFilter.class, filterClass).newInstance();
+
+            AbstractProxyProvider<?> provider;
+            if (ContainerRequestFilter.class.isAssignableFrom(providerClass)) {
+                provider = providerGenerator.generate(ProxyRequestFilter.class, providerClass).newInstance();
+            } else if (ContainerResponseFilter.class.isAssignableFrom(providerClass)) {
+                provider = providerGenerator.generate(ProxyResponseFilter.class, providerClass).newInstance();
+            } else if (ContextResolver.class.isAssignableFrom(providerClass)) {
+                provider = providerGenerator.generate(ProxyObjectMapperContextResolver.class, providerClass).newInstance();
+            } else if (MessageBodyReader.class.isAssignableFrom(providerClass)) {
+                provider = providerGenerator.generate(ProxyMessageBodyReader.class, providerClass).newInstance();
+            } else if (MessageBodyWriter.class.isAssignableFrom(providerClass)) {
+                provider = providerGenerator.generate(ProxyMessageBodyWriter.class, providerClass).newInstance();
             } else {
-                filter = providerGenerator.generate(ProxyResponseFilter.class, filterClass).newInstance();
+                throw new ContainerException("Unknown provider type: " + providerClass.getName());
             }
-            filter.init(filterUri, componentManager);
-            return filter;
+
+            provider.init(filterUri, componentManager);
+            return provider;
         } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
-            throw new AssertionError(e);
+            throw new ContainerException(e);
         }
 
     }

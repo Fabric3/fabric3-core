@@ -37,8 +37,10 @@
 */
 package org.fabric3.binding.rs.runtime.bytecode;
 
-import java.io.IOException;
 import javax.annotation.Priority;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+import javax.ws.rs.ext.Provider;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -101,14 +103,39 @@ public class ProviderGeneratorImpl implements ProviderGenerator {
     }
 
     private void writeAnnotations(ClassWriter cw, Class<?> delegateClass) {
+        Provider provider = delegateClass.getAnnotation(Provider.class);
+        if (provider != null) {
+            AnnotationVisitor av = cw.visitAnnotation(getSignature(Provider.class), true);
+            av.visitEnd();
+        }
         Priority priority = delegateClass.getAnnotation(Priority.class);
-        if (priority == null) {
-            return;
+        if (priority != null) {
+            AnnotationVisitor av = cw.visitAnnotation(getSignature(Priority.class), true);
+            av.visit("value", priority.value());
+            av.visitEnd();
         }
 
-        AnnotationVisitor av = cw.visitAnnotation(getSignature(Priority.class), true);
-        av.visit("value", priority.value());
-        av.visitEnd();
+        Produces produces = delegateClass.getAnnotation(Produces.class);
+        if (produces != null) {
+            AnnotationVisitor av = cw.visitAnnotation(getSignature(Produces.class), true);
+            AnnotationVisitor arrayVisitor = av.visitArray("value");
+            for (String entry : produces.value()) {
+                arrayVisitor.visit("value", entry);
+            }
+            arrayVisitor.visitEnd();
+            av.visitEnd();
+        }
+
+        Consumes consumes = delegateClass.getAnnotation(Consumes.class);
+        if (consumes != null) {
+            AnnotationVisitor av = cw.visitAnnotation(getSignature(Consumes.class), true);
+            AnnotationVisitor arrayVisitor = av.visitArray("value");
+            for (String entry : consumes.value()) {
+                arrayVisitor.visit("value", entry);
+            }
+            arrayVisitor.visitEnd();
+            av.visitEnd();
+        }
     }
 
     private void writeConstructor(String handlerName, String handlerDescriptor, ClassWriter cw) {

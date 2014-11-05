@@ -35,23 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.ext.Provider;
-import java.io.IOException;
+import javax.ws.rs.container.DynamicFeature;
 
 /**
- * Dispatches to a component-based filter.
- * <p/>
- * This implementation performs a lazy lookup of the component instance since filters are provisioned with composite resources, which occurs before components
- * are provisioned.
+ * Applies a component filter to a resource based on named binding rules.
  */
-@Provider
-public class ProxyRequestFilter extends AbstractProxyFilter<ContainerRequestFilter> implements ContainerRequestFilter {
-
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        getDelegate().filter(requestContext);
-    }
+public interface NameBindingFilterProvider extends DynamicFeature {
 }

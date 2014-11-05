@@ -14,11 +14,13 @@ dependencies {
 
     compile(group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jerseyVersion)
 
+    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: 2.13)
+
     compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version: jerseyVersion)
 
     compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version: jerseyVersion)
 
-    providedCompile(group: 'asm', name: 'asm', version: '3.3.1')  // Jersey requires ASM 3
+    compile(group: 'asm', name: 'asm', version: '3.3.1')  // Jersey requires ASM 3
 }
 
 

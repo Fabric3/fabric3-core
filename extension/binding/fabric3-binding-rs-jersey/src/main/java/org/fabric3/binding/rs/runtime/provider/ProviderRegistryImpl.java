@@ -35,60 +35,60 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
-import javax.ws.rs.NameBinding;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.Provider;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  */
-@Provider
-public class NameBindingFilterProviderImpl implements NameBindingFilterProvider {
-    private FilterRegistry filterRegistry;
+public class ProviderRegistryImpl implements ProviderRegistry {
+    private Map<URI, Object> globalFilters = new HashMap<>();
+    private Map<Class<? extends Annotation>, Map<URI, Object>> namedFilters = new HashMap<>();
 
-    public NameBindingFilterProviderImpl(@Reference FilterRegistry filterRegistry) {
-        this.filterRegistry = filterRegistry;
+    public void registerGlobalProvider(URI uri, Object filter) {
+        globalFilters.put(uri, filter);
     }
 
-    public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-
-        Set<Class<? extends Annotation>> namedBindings = new HashSet<>();
-
-        Method method = resourceInfo.getResourceMethod();
-
-        Class<?> clazz = method.getDeclaringClass(); // use method class and not resourceInfo.getResourceClass() since the class is F3ResourceHandler
-        addNamedBindings(clazz, namedBindings);
-
-        addNamedBindings(method, namedBindings);
-
-        Set<Object> filters = new HashSet<>();
-        for (Class<? extends Annotation> binding : namedBindings) {
-            Collection<Object> filtersForBinding = filterRegistry.getNameFilters(binding);
-            filters.addAll(filtersForBinding);
-        }
-
-        for (Object provider : filters) {
-            context.register(provider);
-        }
+    public Collection<Object> getGlobalProvider() {
+        return globalFilters.values();
     }
 
-    private void addNamedBindings(AnnotatedElement element, Set<Class<? extends Annotation>> namedBindings) {
-        for (Annotation annotation : element.getAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
-            if (type.isAnnotationPresent(NameBinding.class)) {
-                namedBindings.add(type);
-            }
+    public void registerNameFilter(URI filterUri, Class<? extends Annotation> annotation, Object filter) {
+        Map<URI, Object> map = namedFilters.get(annotation);
+        if (map == null) {
+            map = new HashMap<>();
+            namedFilters.put(annotation, map);
         }
+        map.put(filterUri, filter);
+    }
+
+    public Collection<Object> getNameFilters(Class<? extends Annotation> annotation) {
+        Map<URI, Object> filters = namedFilters.get(annotation);
+        if (filters == null) {
+            return null;
+        }
+        return filters.values();
+    }
+
+    public Object unregisterGlobalFilter(URI filterUri) {
+        return globalFilters.remove(filterUri);
+    }
+
+    public Object unregisterNameFilter(URI filterUri, Class<? extends Annotation> annotation) {
+        Map<URI, Object> filters = namedFilters.get(annotation);
+        if (filters == null) {
+            return null;
+        }
+
+        Object filter = filters.remove(filterUri);
+        if (filters.isEmpty()) {
+            namedFilters.remove(annotation);
+        }
+        return filter;
     }
 }

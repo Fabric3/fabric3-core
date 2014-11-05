@@ -35,60 +35,55 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
-import java.lang.annotation.Annotation;
+import javax.ws.rs.ext.Provider;
 import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.component.ScopedComponent;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  *
  */
-public class FilterRegistryImpl implements FilterRegistry {
-    private Map<URI, Object> globalFilters = new HashMap<>();
-    private Map<Class<? extends Annotation>, Map<URI, Object>> namedFilters = new HashMap<>();
+@Provider
+public class AbstractProxyProvider<T> {
 
-    public void registerGlobalFilter(URI uri, Object filter) {
-        globalFilters.put(uri, filter);
+    private URI filterUri;
+    private ComponentManager componentManager;
+
+    private volatile ScopedComponent delegate;
+
+    public AbstractProxyProvider() {
     }
 
-    public Collection<Object> getGlobalFilters() {
-        return globalFilters.values();
+    public void init(URI filterUri, ComponentManager componentManager) {
+        this.filterUri = filterUri;
+        this.componentManager = componentManager;
     }
 
-    public void registerNameFilter(URI filterUri, Class<? extends Annotation> annotation, Object filter) {
-        Map<URI, Object> map = namedFilters.get(annotation);
-        if (map == null) {
-            map = new HashMap<>();
-            namedFilters.put(annotation, map);
+    @SuppressWarnings("unchecked")
+    public T getDelegate() {
+        if (delegate == null) {
+            synchronized (this) {
+                Component component = componentManager.getComponent(filterUri);
+                if (component == null) {
+                    throw new ServiceUnavailableException("Provider component not found: " + filterUri);
+                }
+                if (!(component instanceof ScopedComponent)) {
+                    throw new ServiceRuntimeException("Provider component must be a scoped component type: " + filterUri);
+                }
+                delegate = (ScopedComponent) component;
+            }
         }
-        map.put(filterUri, filter);
-    }
-
-    public Collection<Object> getNameFilters(Class<? extends Annotation> annotation) {
-        Map<URI, Object> filters = namedFilters.get(annotation);
-        if (filters == null) {
-            return null;
+        try {
+            return ((T) delegate.getInstance());
+        } catch (InstanceLifecycleException e) {
+            throw new ServiceRuntimeException(e);
         }
-        return filters.values();
-    }
-
-    public Object unregisterGlobalFilter(URI filterUri) {
-        return globalFilters.remove(filterUri);
-    }
-
-    public Object unregisterNameFilter(URI filterUri, Class<? extends Annotation> annotation) {
-        Map<URI, Object> filters = namedFilters.get(annotation);
-        if (filters == null) {
-            return null;
-        }
-
-        Object filter = filters.remove(filterUri);
-        if (filters.isEmpty()) {
-            namedFilters.remove(annotation);
-        }
-        return filter;
     }
 }

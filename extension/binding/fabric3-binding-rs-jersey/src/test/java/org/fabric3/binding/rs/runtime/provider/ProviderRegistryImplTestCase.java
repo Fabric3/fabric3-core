@@ -35,82 +35,51 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
 import javax.ws.rs.NameBinding;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.FeatureContext;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
+import java.net.URI;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 /**
  *
  */
-public class NameBindingFilterProviderImplTestCase extends TestCase {
+public class ProviderRegistryImplTestCase extends TestCase {
+    private ProviderRegistryImpl registry = new ProviderRegistryImpl();
 
-    private Method method;
+    public void testRegisterNameFilter() throws Exception {
+        URI uri = URI.create("filter");
+        Object filter = new Object();
+        registry.registerNameFilter(uri, TestNameBinding.class, filter);
 
-    private FilterRegistry filterRegistry;
-    private NameBindingFilterProviderImpl provider;
-    private FeatureContext featureContext;
+        assertEquals(filter, registry.getNameFilters(TestNameBinding.class).iterator().next());
 
-    public void testApplyFilter() throws Exception {
+        assertEquals(filter, registry.unregisterNameFilter(uri, TestNameBinding.class));
+        assertNull(registry.unregisterNameFilter(uri, TestNameBinding.class));
 
-        ResourceInfo info = new ResourceInfo() {
-            public Method getResourceMethod() {
-                return method;
-            }
-
-            public Class<?> getResourceClass() {
-                return TestResource.class;
-            }
-        };
-
-        ContainerRequestFilter filter = EasyMock.createMock(ContainerRequestFilter.class);
-        Collection<Object> filters = Collections.<Object>singletonList(filter);
-        EasyMock.expect(filterRegistry.getNameFilters(EasyMock.eq(TestNameBinding.class))).andReturn(filters);
-
-        EasyMock.expect(featureContext.register(EasyMock.eq(filter))).andReturn(null);
-
-        EasyMock.replay(filterRegistry, featureContext);
-
-        provider.configure(info, featureContext);
-
-        EasyMock.verify(filterRegistry, featureContext);
     }
 
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        filterRegistry = EasyMock.createMock(FilterRegistry.class);
-        provider = new NameBindingFilterProviderImpl(filterRegistry);
+    public void testRegisterGlobalFilter() throws Exception {
+        URI uri = URI.create("filter");
+        Object filter = new Object();
+        registry.registerGlobalProvider(uri, filter);
 
-        featureContext = EasyMock.createMock(FeatureContext.class);
+        assertEquals(filter, registry.getGlobalProvider().iterator().next());
 
-        method = TestResource.class.getMethod("getMessage");
+        assertEquals(filter, registry.unregisterGlobalFilter(uri));
+        assertNull(registry.unregisterGlobalFilter(uri));
+
     }
 
     @NameBinding
     @Target({ElementType.TYPE, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface TestNameBinding {
-    }
-
-    @TestNameBinding
-    public class TestResource {
-
-        public String getMessage() {
-            return "test";
-        }
     }
 
 }

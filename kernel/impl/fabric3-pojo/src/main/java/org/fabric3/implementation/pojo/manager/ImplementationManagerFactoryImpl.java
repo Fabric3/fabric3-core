@@ -169,7 +169,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
             setUpdatableFactory(injectable, objectFactory, attributes);
         } else {
-            // the factory corresponds to a property or context, which will override previous values if reinjected
+            // the factory corresponds to a property or context, which will override previous values if re-injected
             factories.put(injectable, objectFactory);
         }
     }

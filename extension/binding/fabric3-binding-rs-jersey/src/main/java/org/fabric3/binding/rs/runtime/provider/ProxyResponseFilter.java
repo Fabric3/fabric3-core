@@ -35,55 +35,24 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
-import java.net.URI;
-
-import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.spi.container.component.ScopedComponent;
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
+import java.io.IOException;
 
 /**
- *
+ * Dispatches to a component-based filter
+ * <p/>
+ * This implementation performs a lazy lookup of the component instance since filters are provisioned with composite resources, which occurs before components
+ * are provisioned.
  */
 @Provider
-public class AbstractProxyFilter<T> {
+public class ProxyResponseFilter extends AbstractProxyProvider<ContainerResponseFilter> implements ContainerResponseFilter {
 
-    private URI filterUri;
-    private ComponentManager componentManager;
-
-    private volatile ScopedComponent delegate;
-
-    public AbstractProxyFilter() {
-    }
-
-    public void init(URI filterUri, ComponentManager componentManager) {
-        this.filterUri = filterUri;
-        this.componentManager = componentManager;
-    }
-
-    @SuppressWarnings("unchecked")
-    public T getDelegate() {
-        if (delegate == null) {
-            synchronized (this) {
-                Component component = componentManager.getComponent(filterUri);
-                if (component == null) {
-                    throw new ServiceUnavailableException("Filter component not found: " + filterUri);
-                }
-                if (!(component instanceof ScopedComponent)) {
-                    throw new ServiceRuntimeException("Filter component must be a scoped component type: " + filterUri);
-                }
-                delegate = (ScopedComponent) component;
-            }
-        }
-        try {
-            return ((T) delegate.getInstance());
-        } catch (InstanceLifecycleException e) {
-            throw new ServiceRuntimeException(e);
-        }
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        getDelegate().filter(requestContext, responseContext);
     }
 }

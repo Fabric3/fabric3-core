@@ -35,51 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.filter;
+package org.fabric3.binding.rs.runtime.provider;
 
-import javax.ws.rs.NameBinding;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.net.URI;
-
-import junit.framework.TestCase;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.ext.Provider;
+import java.io.IOException;
 
 /**
- *
+ * Dispatches to a component-based filter.
+ * <p/>
+ * This implementation performs a lazy lookup of the component instance since filters are provisioned with composite resources, which occurs before components
+ * are provisioned.
  */
-public class FilterRegistryImplTestCase extends TestCase {
-    private FilterRegistryImpl registry = new FilterRegistryImpl();
+@Provider
+public class ProxyRequestFilter extends AbstractProxyProvider<ContainerRequestFilter> implements ContainerRequestFilter {
 
-    public void testRegisterNameFilter() throws Exception {
-        URI uri = URI.create("filter");
-        Object filter = new Object();
-        registry.registerNameFilter(uri, TestNameBinding.class, filter);
-
-        assertEquals(filter, registry.getNameFilters(TestNameBinding.class).iterator().next());
-
-        assertEquals(filter, registry.unregisterNameFilter(uri, TestNameBinding.class));
-        assertNull(registry.unregisterNameFilter(uri, TestNameBinding.class));
-
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        getDelegate().filter(requestContext);
     }
-
-    public void testRegisterGlobalFilter() throws Exception {
-        URI uri = URI.create("filter");
-        Object filter = new Object();
-        registry.registerGlobalFilter(uri, filter);
-
-        assertEquals(filter, registry.getGlobalFilters().iterator().next());
-
-        assertEquals(filter, registry.unregisterGlobalFilter(uri));
-        assertNull(registry.unregisterGlobalFilter(uri));
-
-    }
-
-    @NameBinding
-    @Target({ElementType.TYPE, ElementType.METHOD})
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface TestNameBinding {
-    }
-
 }

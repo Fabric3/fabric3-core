@@ -40,9 +40,17 @@ package org.fabric3.binding.rs.introspection;
 import javax.ws.rs.NameBinding;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.fabric3.api.MonitorChannel;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.binding.rs.model.ProviderResourceDefinition;
@@ -57,9 +65,11 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class RsJavaResourceProcessorExtension implements JavaResourceProcessorExtension {
     private ClassLoaderRegistry classLoaderRegistry;
+    private MonitorChannel monitor;
 
-    public RsJavaResourceProcessorExtension(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public RsJavaResourceProcessorExtension(@Reference ClassLoaderRegistry classLoaderRegistry, @Monitor MonitorChannel monitor) {
         this.classLoaderRegistry = classLoaderRegistry;
+        this.monitor = monitor;
     }
 
     public void process(ComponentDefinition<JavaImplementation> definition) {
@@ -67,9 +77,30 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
             URI contributionUri = definition.getContributionUri();
             String implClass = definition.getImplementation().getImplementationClass();
             Class<?> clazz = classLoaderRegistry.loadClass(contributionUri, implClass);
-            if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)) {
-                // not a filter
+            if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)
+                && !ContextResolver.class.isAssignableFrom(clazz) && !MessageBodyReader.class.isAssignableFrom(clazz)
+                && !MessageBodyWriter.class.isAssignableFrom(clazz)) {
+                // not a provider type
                 return;
+            }
+            if (ContextResolver.class.isAssignableFrom(clazz)) {
+                // currently only object mappers are supported
+                Type[] interfaces = clazz.getGenericInterfaces();
+                for (Type interfaze : interfaces) {
+                    if (!(interfaze instanceof ParameterizedType)) {
+                        continue;
+                    }
+                    ParameterizedType parameterizedType = (ParameterizedType) interfaze;
+                    if (ContextResolver.class.equals(parameterizedType.getRawType())) {
+                        Type[] arguments = parameterizedType.getActualTypeArguments();
+                        if (arguments.length != 1 || !ObjectMapper.class.equals(arguments[0])) {
+                            monitor.severe("Only ObjectMapper JAX-RS ContextResolver types are supported. The class must implement " +
+                                           "ContextResolver<ObjectMapper>. Ignoring provider: " + implClass);
+                            return;
+                        }
+                    }
+                }
+
             }
             String bindingAnnotation = null;
             for (Annotation annotation : clazz.getAnnotations()) {
@@ -86,4 +117,5 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
             throw new AssertionError(e);   // will not happen
         }
     }
+
 }
