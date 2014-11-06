@@ -37,14 +37,14 @@ public class PolicySetAttachmentLoader extends AbstractExtensibleTypeLoader<QNam
         validateAttributes(reader, context);
         String nameAttribute = reader.getAttributeValue(null, "name");
         if (nameAttribute == null) {
-            MissingAttribute error = new MissingAttribute("Missing name attribute", reader.getLocation(), null);
+            MissingAttribute error = new MissingAttribute("Missing name attribute", reader.getLocation());
             context.addError(error);
             return null;
         }
         try {
             return helper.createQName(nameAttribute, reader);
         } catch (InvalidPrefixException e) {
-            InvalidValue error = new InvalidValue("Invalid policy name", reader.getLocation(), null);
+            InvalidValue error = new InvalidValue("Invalid policy name", reader.getLocation());
             context.addError(error);
             return null;
         }

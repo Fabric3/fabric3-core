@@ -69,7 +69,7 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
         String name = reader.getAttributeValue(null, "name");
         Location location = reader.getLocation();
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Connection factory name not configured", location, null);
+            MissingAttribute error = new MissingAttribute("Connection factory name not configured", location);
             context.addError(error);
         }
         ConnectionFactoryConfiguration configuration = new ConnectionFactoryConfiguration(name, "activemq");
@@ -105,9 +105,7 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
                     if ("factory.properties".equals(localPart)) {
                         parseFactoryProperties(configuration, reader);
                     } else {
-                        UnrecognizedAttribute error = new UnrecognizedAttribute("Unrecognized element " + localPart + " in system configuration",
-                                                                                location,
-                                                                                null);
+                        UnrecognizedAttribute error = new UnrecognizedAttribute("Unrecognized element " + localPart + " in system configuration", location);
                         context.addError(error);
                     }
                     break;
@@ -135,6 +133,5 @@ public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionF
             }
         }
     }
-
 
 }

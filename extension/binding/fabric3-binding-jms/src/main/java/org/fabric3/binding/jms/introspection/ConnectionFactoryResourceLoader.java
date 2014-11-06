@@ -75,7 +75,7 @@ public class ConnectionFactoryResourceLoader implements TypeLoader<ConnectionFac
         } else {
             parser = parsers.get(provider);
             if (parser == null) {
-                UnrecognizedAttribute error = new UnrecognizedAttribute("JMS provider not installed: " + provider, reader.getLocation(), null);
+                UnrecognizedAttribute error = new UnrecognizedAttribute("JMS provider not installed: " + provider, reader.getLocation());
                 context.addError(error);
                 return null;
             }

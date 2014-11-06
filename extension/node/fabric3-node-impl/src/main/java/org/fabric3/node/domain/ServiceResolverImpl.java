@@ -82,8 +82,7 @@ public class ServiceResolverImpl implements ServiceResolver {
     private HostInfo info;
     private AtomicInteger idCounter = new AtomicInteger();
 
-    public ServiceResolverImpl(@Reference Provisioner deployer,
-                               @Reference Introspector introspector,
+    public ServiceResolverImpl(@Reference Introspector introspector,
                                @Reference(name = "lcm") LogicalComponentManager lcm,
                                @Reference AutowireResolver autowireResolver,
                                @Reference BindingSelector bindingSelector,

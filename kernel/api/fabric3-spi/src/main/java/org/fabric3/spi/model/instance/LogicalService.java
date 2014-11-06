@@ -65,6 +65,7 @@ public class LogicalService extends Bindable {
      * @param definition the service definition
      * @param parent     the service parent component
      */
+    @SuppressWarnings("unchecked")
     public LogicalService(URI uri, AbstractService definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
