@@ -15,6 +15,7 @@
 
     <component name="DefaultChannelBuilder" f3:key="default">
         <f3:implementation.system class="org.fabric3.channel.builder.DefaultChannelBuilder"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
     <component name="DefaultChannelTypeLoader" f3:key="default">

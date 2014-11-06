@@ -64,7 +64,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
 
     private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
 
-    public DefaultChannelBuilder(@Reference ExecutorService executorService) {
+    public DefaultChannelBuilder(@Reference(name = "executorService") ExecutorService executorService) {
         this.executorService = executorService;
     }
 
