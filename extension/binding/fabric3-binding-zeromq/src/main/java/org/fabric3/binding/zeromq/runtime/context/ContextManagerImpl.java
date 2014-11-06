@@ -30,7 +30,6 @@
  */
 package org.fabric3.binding.zeromq.runtime.context;
 
-import java.net.URL;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -67,6 +66,7 @@ public class ContextManagerImpl implements ContextManager {
 
     public ZMQ.Socket createControlSocket() {
         ZMQ.Socket controlSocket = context.socket(ZMQ.SUB);
+        controlSocket.setLinger(0);
         controlSocket.subscribe(EMPTY_BYTES);
         controlSocket.connect("inproc://fabric3");
         return controlSocket;
