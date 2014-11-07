@@ -64,7 +64,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class RingBufferChannelBuilder implements ChannelBuilder {
     private ExecutorService executorService;
 
-    public RingBufferChannelBuilder(@Reference ExecutorService executorService) {
+    public RingBufferChannelBuilder(@Reference(name = "executorService") ExecutorService executorService) {
         this.executorService = executorService;
     }
 

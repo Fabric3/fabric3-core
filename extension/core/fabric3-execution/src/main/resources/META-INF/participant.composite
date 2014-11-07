@@ -19,6 +19,7 @@ Public License. See the accompanying license file for details.
 
     <component name="ExecutorServiceWireAttacher" f3:key="org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition">
         <f3:implementation.system class="org.fabric3.execution.runtime.ExecutorServiceWireAttacher"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
 </composite>

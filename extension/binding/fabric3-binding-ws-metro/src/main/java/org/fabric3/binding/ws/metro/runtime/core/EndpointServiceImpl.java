@@ -63,7 +63,7 @@ public class EndpointServiceImpl implements EndpointService {
     private MetroServlet metroServlet;
 
     public EndpointServiceImpl(@Reference SecurityEnvironment securityEnvironment,
-                               @Reference ExecutorService executorService,
+                               @Reference(name = "executorService") ExecutorService executorService,
                                @Reference ServletHost servletHost,
                                @Monitor MetroBindingMonitor monitor) {
         this.securityEnvironment = securityEnvironment;
@@ -104,9 +104,9 @@ public class EndpointServiceImpl implements EndpointService {
             servletHost.unregisterMapping(servicePath + "/mex");
             metroServlet.unregisterService(servicePath);
 
-            URL endpointUrl = new URL(servletHost.getBaseHttpUrl().toString() +  servicePath);
+            URL endpointUrl = new URL(servletHost.getBaseHttpUrl().toString() + servicePath);
             for (Map.Entry<URI, URL> entry : endpointUrls.entrySet()) {
-                if (entry.getValue().equals(endpointUrl)){
+                if (entry.getValue().equals(endpointUrl)) {
                     endpointUrls.remove(entry.getKey());
                     break;
                 }

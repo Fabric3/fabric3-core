@@ -24,10 +24,12 @@ Public License. See the accompanying license file for details.
 
     <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition" name="MetroJavaTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaTargetWireAttacher"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
     <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireTargetDefinition" name="MetroWsdlTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlTargetWireAttacher"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
     <component name="FeatureResolver">
@@ -48,6 +50,7 @@ Public License. See the accompanying license file for details.
 
     <component name="EndpointService">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.core.EndpointServiceImpl"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
 </composite>

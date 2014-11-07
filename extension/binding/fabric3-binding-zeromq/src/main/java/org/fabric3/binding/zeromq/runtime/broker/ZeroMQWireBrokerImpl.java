@@ -116,7 +116,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     public ZeroMQWireBrokerImpl(@Reference ContextManager manager,
                                 @Reference AddressCache addressCache,
                                 @Reference PortAllocator allocator,
-                                @Reference ExecutorService executorService,
+                                @Reference(name = "executorService") ExecutorService executorService,
                                 @Reference ZeroMQManagementService managementService,
                                 @Reference EventService eventService,
                                 @Reference TransformerInterceptorFactory interceptorFactory,

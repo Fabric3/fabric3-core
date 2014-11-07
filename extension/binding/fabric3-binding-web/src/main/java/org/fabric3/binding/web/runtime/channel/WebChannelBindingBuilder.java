@@ -66,8 +66,8 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Attaches a channel to the gateway servlet that accepts incoming comet and websocket connections using Atmosphere. The gateway servlet is
- * responsible for receiving events and routing them to the appropriate channel based on the request path.
+ * Attaches a channel to the gateway servlet that accepts incoming comet and websocket connections using Atmosphere. The gateway servlet is responsible for
+ * receiving events and routing them to the appropriate channel based on the request path.
  */
 @EagerInit
 public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChannelBindingDefinition> {
@@ -83,12 +83,12 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
 
     private ClassLoaderRegistry classLoaderRegistry;
     private ExecutorService threadPool;
-    
+
     public WebChannelBindingBuilder(@Reference BroadcasterManager broadcasterManager,
                                     @Reference PubSubManager pubSubManager,
                                     @Reference ServletHost servletHost,
                                     @Reference ClassLoaderRegistry classLoaderRegistry,
-                                    @Reference ExecutorService threadPool,
+                                    @Reference(name = "executorService") ExecutorService executorService,
                                     @Monitor ChannelMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.pubSubManager = pubSubManager;
@@ -109,35 +109,35 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
     }
 
     /**
-     * Initializes the Atmosphere infrastructure, including the gateway servlet, websocket handler, and channel router. The gateway servlet is
-     * registered with the runtime Servlet host to receive incoming comet and websocket requests.
+     * Initializes the Atmosphere infrastructure, including the gateway servlet, websocket handler, and channel router. The gateway servlet is registered with
+     * the runtime Servlet host to receive incoming comet and websocket requests.
      *
      * @throws ServletException if an error initializing one of the Atmosphere servlets is encountered
      */
     @Init
     public void init() throws ServletException {
-    	GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH, classLoaderRegistry);
+        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH, classLoaderRegistry);
         // TODO support other configuration as specified in AtmosphereServlet init()
         context.setInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "false");
-//        context.setInitParameter(AtmosphereServlet.WEBSOCKET_ATMOSPHEREHANDLER, "false");   // turn the handler off as it is overriden below
-        
+        //        context.setInitParameter(AtmosphereServlet.WEBSOCKET_ATMOSPHEREHANDLER, "false");   // turn the handler off as it is overriden below
+
         context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
         context.setInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
         context.setInitParameter(ApplicationConfig.BROADCASTER_SHARABLE_THREAD_POOLS, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
-        
-        org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false,false);
+
+        org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false, false);
         atmosphereFramework = atmosphereServlet.framework();
-        
+
         // Configure external thread pool
         AtmosphereConfig atmosphereConfig = atmosphereFramework.getAtmosphereConfig();
         atmosphereConfig.properties().put("executorService", threadPool);
         atmosphereConfig.properties().put("asyncWriteService", threadPool);
-        
+
         atmosphereServlet.init(config);
-        
-        ChannelWebSocketHandler webSocketHandler = new ChannelWebSocketHandler( broadcasterManager, pubSubManager, monitor );
+
+        ChannelWebSocketHandler webSocketHandler = new ChannelWebSocketHandler(broadcasterManager, pubSubManager, monitor);
         atmosphereFramework.addAtmosphereHandler("/*", webSocketHandler);
         servletHost.registerMapping(CONTEXT_PATH, atmosphereServlet);
     }
@@ -202,6 +202,6 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
         monitor.removedChannelEndpoint(prefix + path);
 
-    }    
-    
+    }
+
 }

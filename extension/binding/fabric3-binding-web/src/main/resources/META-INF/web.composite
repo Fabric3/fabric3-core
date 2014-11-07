@@ -45,11 +45,13 @@ Public License. See the accompanying license file for details.
 
     <component name="WebBindingSourceWireAttacher" f3:key="org.fabric3.binding.web.provision.WebWireSourceDefinition">
         <f3:implementation.system class="org.fabric3.binding.web.runtime.service.WebSourceWireAttacher"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
         <property name="timeout" source="$systemConfig//f3:web.binding/@timeout" />
     </component>
 
     <component name="WebChannelBindingBuilder" f3:key="org.fabric3.binding.web.provision.WebChannelBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.WebChannelBindingBuilder"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
         <property name="timeout" source="$systemConfig//f3:web.binding/@timeout" />
     </component>
 

@@ -78,7 +78,7 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
     public MetroWsdlTargetWireAttacher(@Reference FeatureResolver resolver,
                                        @Reference EndpointService endpointService,
                                        @Reference SecurityEnvironment securityEnvironment,
-                                       @Reference ExecutorService executorService,
+                                       @Reference(name = "executorService") ExecutorService executorService,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Reference ArtifactCache cache) {
         super(handlerRegistry, endpointService);
@@ -106,9 +106,15 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
         ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
         List<Handler> handlers = createHandlers(target);
 
-        MetroDispatchObjectFactory proxyFactory
-                = new MetroDispatchObjectFactory(endpointDefinition, wsdlLocation, null, securityConfiguration, connectionConfiguration, handlers, features,
-                                                 executorService, securityEnvironment);
+        MetroDispatchObjectFactory proxyFactory = new MetroDispatchObjectFactory(endpointDefinition,
+                                                                                 wsdlLocation,
+                                                                                 null,
+                                                                                 securityConfiguration,
+                                                                                 connectionConfiguration,
+                                                                                 handlers,
+                                                                                 features,
+                                                                                 executorService,
+                                                                                 securityEnvironment);
 
         for (InvocationChain chain : wire.getInvocationChains()) {
             boolean oneWay = chain.getPhysicalOperation().isOneWay();

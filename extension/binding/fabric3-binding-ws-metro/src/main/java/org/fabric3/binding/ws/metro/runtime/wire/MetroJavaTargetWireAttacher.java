@@ -99,7 +99,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                                        @Reference WireAttacherHelper wireAttacherHelper,
                                        @Reference ArtifactCache artifactCache,
                                        @Reference SecurityEnvironment securityEnvironment,
-                                       @Reference ExecutorService executorService,
+                                       @Reference(name = "executorService") ExecutorService executorService,
                                        @Reference XMLFactory xmlFactory,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Monitor InterceptorMonitor monitor) {

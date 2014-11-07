@@ -110,7 +110,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Reference TransformerHandlerFactory handlerFactory,
                                   @Reference ZeroMQManagementService managementService,
                                   @Reference EventService eventService,
-                                  @Reference ExecutorService executorService,
+                                  @Reference(name = "executorService") ExecutorService executorService,
                                   @Reference HostInfo info,
                                   @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;

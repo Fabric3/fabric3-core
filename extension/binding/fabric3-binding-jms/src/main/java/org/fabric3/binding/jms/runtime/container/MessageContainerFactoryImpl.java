@@ -70,7 +70,7 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
         this.transactionTimeout = timeout;
     }
 
-    public MessageContainerFactoryImpl(@Reference ExecutorService executorService,
+    public MessageContainerFactoryImpl(@Reference(name = "executorService") ExecutorService executorService,
                                        @Reference TransactionManager tm,
                                        @Reference HostInfo hostInfo,
                                        @Monitor MessageContainerMonitor containerMonitor) {

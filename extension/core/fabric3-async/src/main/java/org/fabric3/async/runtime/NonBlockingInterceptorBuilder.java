@@ -53,7 +53,7 @@ public class NonBlockingInterceptorBuilder implements InterceptorBuilder<NonBloc
     private ExecutorService executorService;
     private NonBlockingMonitor monitor;
 
-    public NonBlockingInterceptorBuilder(@Reference ExecutorService executorService, @Monitor NonBlockingMonitor monitor) {
+    public NonBlockingInterceptorBuilder(@Reference(name = "executorService") ExecutorService executorService, @Monitor NonBlockingMonitor monitor) {
         this.executorService = executorService;
         this.monitor = monitor;
     }

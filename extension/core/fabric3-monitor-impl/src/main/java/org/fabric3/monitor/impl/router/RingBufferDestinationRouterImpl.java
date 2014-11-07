@@ -65,10 +65,8 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Dispatches monitor events to destinations via a ring buffer.
- * <p/>
- * This implementation also supports synchronous dispatch. This mode should only be used in development to avoid startup time associated with pre-allocating
- * ring buffer entries.
+ * Dispatches monitor events to destinations via a ring buffer. <p/> This implementation also supports synchronous dispatch. This mode should only be used in
+ * development to avoid startup time associated with pre-allocating ring buffer entries.
  */
 public class RingBufferDestinationRouterImpl implements RingBufferDestinationRouter {
     public static final String ASYNCHRONOUS_MODE = "asynchronous";
@@ -89,7 +87,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     private String phasedBlockingType = "lock";
     private boolean enabled = false;  // true if the ring buffer (asynchronous mode) is enabled
 
-    public RingBufferDestinationRouterImpl(@Reference ExecutorService executorService,
+    public RingBufferDestinationRouterImpl(@Reference(name = "executorService") ExecutorService executorService,
                                            @Reference MonitorDestinationRegistry registry,
                                            @Monitor DestinationMonitor monitor) {
         this.executorService = executorService;

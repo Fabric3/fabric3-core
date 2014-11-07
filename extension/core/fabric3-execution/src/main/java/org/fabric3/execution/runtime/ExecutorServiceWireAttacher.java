@@ -54,7 +54,7 @@ import org.fabric3.spi.container.wire.Wire;
 public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceWireTargetDefinition> {
     private SingletonObjectFactory<ExecutorService> factory;
 
-    public ExecutorServiceWireAttacher(@Reference ExecutorService executorService) {
+    public ExecutorServiceWireAttacher(@Reference(name = "executorService") ExecutorService executorService) {
         ExecutorServiceProxy proxy = new ExecutorServiceProxy(executorService);
         this.factory = new SingletonObjectFactory<ExecutorService>(proxy);
     }

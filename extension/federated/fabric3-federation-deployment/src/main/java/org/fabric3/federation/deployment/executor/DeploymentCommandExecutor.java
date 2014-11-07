@@ -69,11 +69,9 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Processes {@link DeploymentCommand}s on a participant. If there is an error processing a command, a rollback to the previous runtime state will be
- * performed.
- * <p/>
- * This implementation queues deployment commands in the order they are received. A single, asynchronously executing message pump dequeues and
- * processes the deployment commands. This guarantees deployment commands are executed in the order they were received by the runtime.
+ * Processes {@link DeploymentCommand}s on a participant. If there is an error processing a command, a rollback to the previous runtime state will be performed.
+ * <p/> This implementation queues deployment commands in the order they are received. A single, asynchronously executing message pump dequeues and processes
+ * the deployment commands. This guarantees deployment commands are executed in the order they were received by the runtime.
  */
 @EagerInit
 public class DeploymentCommandExecutor implements CommandExecutor<DeploymentCommand> {
@@ -92,7 +90,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                                      @Reference DeploymentCache cache,
                                      @Reference SerializationService serializationService,
                                      @Reference RollbackService rollbackService,
-                                     @Reference ExecutorService executorService,
+                                     @Reference(name = "executorService") ExecutorService executorService,
                                      @Monitor DeploymentCommandExecutorMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.cache = cache;
@@ -237,8 +235,6 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
             return false;
         }
 
-
     }
-
 
 }

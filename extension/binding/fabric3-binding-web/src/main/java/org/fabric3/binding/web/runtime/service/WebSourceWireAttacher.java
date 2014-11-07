@@ -65,8 +65,8 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for
- * receiving invocations and routing them to the appropriate service based on the request path.
+ * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for receiving
+ * invocations and routing them to the appropriate service based on the request path.
  */
 @EagerInit
 public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDefinition> {
@@ -86,14 +86,14 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebWireSourceDe
                                  @Reference BroadcasterManager broadcasterManager,
                                  @Reference ServletHost servletHost,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
-                                 @Reference ExecutorService threadPool,
+                                 @Reference(name = "executorService") ExecutorService executorService,
                                  @Monitor ServiceMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.serviceManager = serviceManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
-        this.threadPool = new LongRunningExecutorService(threadPool);
+        this.threadPool = new LongRunningExecutorService(executorService);
     }
 
     /**

@@ -230,7 +230,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
 
             WebLogicExecutorService executorService = new WebLogicExecutorService();
-            ComponentRegistration executorRegistration = new ComponentRegistration("WebLogicExecutorService", ExecutorService.class, executorService, true);
+            ComponentRegistration executorRegistration = new ComponentRegistration("RuntimeThreadPoolExecutor", ExecutorService.class, executorService, true);
             registrations.add(executorRegistration);
 
             configuration.addRegistrations(registrations);
