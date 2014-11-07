@@ -40,7 +40,7 @@ package org.fabric3.binding.rs.runtime.bytecode;
 /**
  * Generates a concrete delegating provider class from the given base class and the delegating class.
  * <p/>
- * This service is used to satisfy the Jersey requirement that filter classes be unique since Fabric3 component providers are proxied by a single class.
+ * This service is used to satisfy the Jersey requirement that provider classes be unique since Fabric3 component providers are proxied by a single class.
  */
 public interface ProviderGenerator {
 
