@@ -165,7 +165,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 FileHelper.cleanDirectory(dataDir);
             }
 
-
             MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, router, null);
@@ -220,11 +219,17 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private void shutdown() {
         try {
             if (coordinator != null) {
-                monitor.shutdown(productName);
+                if (monitor != null) {
+                    monitor.shutdown(productName);
+                }
                 coordinator.shutdown();
             }
         } catch (ShutdownException ex) {
-            monitor.shutdownError(ex);
+            if (monitor != null) {
+                monitor.shutdownError(ex);
+            } else {
+                ex.printStackTrace();
+            }
         }
     }
 
