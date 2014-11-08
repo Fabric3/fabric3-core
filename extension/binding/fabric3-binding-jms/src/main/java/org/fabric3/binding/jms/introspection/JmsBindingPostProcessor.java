@@ -82,7 +82,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {
-        return createDefinition(annotation, annotation.value(), implClass, context);
+        return createDefinition(annotation, annotation.callback(), implClass, context);
     }
 
     protected BindingDefinition processReference(JMS annotation,
@@ -98,7 +98,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
                                                          AccessibleObject object,
                                                          Class<?> implClass,
                                                          IntrospectionContext context) {
-        return createDefinition(annotation, annotation.value(), implClass, context);
+        return createDefinition(annotation, annotation.callback(), implClass, context);
     }
 
     private JmsBindingDefinition createDefinition(JMS annotation, JMSConfiguration configuration, Class<?> implClass, IntrospectionContext context) {
