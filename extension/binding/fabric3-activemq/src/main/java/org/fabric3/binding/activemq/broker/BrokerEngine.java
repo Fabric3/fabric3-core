@@ -78,6 +78,7 @@ public class BrokerEngine {
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
     private MBeanServer mBeanServer;
     private boolean disabled;
+    private String configuredBrokerName;
 
     public BrokerEngine(@Reference PortAllocator portAllocator, @Reference HostInfo info) {
         this.portAllocator = portAllocator;
@@ -86,6 +87,11 @@ public class BrokerEngine {
         File baseDataDir = info.getDataDir();
         dataDir = new File(baseDataDir, "activemq.data");
         this.info = info;
+    }
+
+    @Property(required = false)
+    public void setConfiguredBrokerName(String configuredBrokerName) {
+        this.configuredBrokerName = configuredBrokerName;
     }
 
     @Property(required = false)
@@ -140,7 +146,12 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // set the default broker name
-        String brokerName = info.getRuntimeName().replace(":", ".");
+        String brokerName;
+        if (configuredBrokerName != null) {
+            brokerName = configuredBrokerName;
+        } else {
+            brokerName = info.getRuntimeName().replace(":", ".");
+        }
         broker = new BrokerService();
         broker.setUseJmx(mBeanServer != null);
         broker.setTmpDataDirectory(tempDir);

@@ -23,6 +23,7 @@
 
     <component name="ActiveMQBrokerEngine">
         <f3:implementation.system class="org.fabric3.binding.activemq.broker.BrokerEngine"/>
+        <property name="configuredBrokerName" source="$systemConfig/f3:runtime/@broker.name"/>
         <property name="defaultBindAddress" source="$systemConfig/f3:runtime/@host.address"/>
         <property name="disabled" source="$systemConfig//f3:jms/f3:activemq/@broker.disabled"/>
         <property name="brokerConfig" source="$systemConfig//f3:jms/f3:activemq"/>
