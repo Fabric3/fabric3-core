@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Fabric3
-Copyright (c) 2009-2013 Metaform Systems
-
-Fabric3 is licensed under modified terms of the GNU General
-Public License. See the accompanying license file for details.
-
-
--->
-<!--
 Implements a limited functionality binding for test purposes. The binding only supports invocations between clients and
 providers in the same VM. Other limitations include no support for operator overloading and support for complex types
 only if the client and provider share a common parent classloader.

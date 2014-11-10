@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="ASCII"?>
-<!--
- Fabric3
- Copyright (c) 2009-2013 Metaform Systems
-
-Fabric3 is licensed under modified terms of the GNU General
-Public License. See the accompanying license file for details.
--->
 <definitions
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"

@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- Fabric3
- Copyright (c) 2009-2013 Metaform Systems
-
- Fabric3 is licensed under modified terms of the GNU General
- Public License. See the accompanying license file for details.
- ________________________________________________
- Portions originally based on Apache Tuscany 2007
- licensed under the Apache 2.0 license.
-
--->
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/j2ee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd">

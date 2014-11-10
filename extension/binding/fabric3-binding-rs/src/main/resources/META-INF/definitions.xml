@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
 <!--
- Fabric3
- Copyright (c) 2009-2013 Metaform Systems
-
-Fabric3 is licensed under modified terms of the GNU General
-Public License. See the accompanying license file for details.
-
-
-
-*****************************************************************************
-
 Policy sets are based on policy definitions provided by the WS-* interop
 working group (http://mssoapinterop.org/ilab/) and the document: 
 http://131.107.72.15/ilab/WSPolicy/WS-Policy-Scenarios.doc
