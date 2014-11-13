@@ -7,11 +7,13 @@ This repository hosts the Fabric3 runtime source. Information on Fabric3 can be 
 Building the Source
 ------------------------
 
-Requirements are JDK 7 and Maven 3.1.1+.
+Requirements are JDK 7 and Gradle 1.11+.
 
 To build the source, execute:
 
-mvn clean install
+./gradlew
+
+See build.gradle for additional instructions
 
 
 History
