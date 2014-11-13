@@ -1,3 +1,12 @@
+import org.w3c.dom.Document
+
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
+
 /**
  * Build for the Fabric3 core project.
  * <p/>
@@ -176,11 +185,10 @@ configure(deployProjects()) {
                         MavenDeployment deployment ->
                             if (project.name.contains('profile-')) {
                                 // profile projects use POM packaging - reset so plugins do not overwrite
-                                pom.setPackaging('pom')
+                                setPomPackaging(deployment ,pom)
                             }
 
                             signing.signPom(deployment)
-
                     }
 
                     repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
@@ -241,6 +249,7 @@ configure(deployProjects()) {
 
 }
 
+
 configure(kernelAndExtensions()) {
     dependencies {
         compile project(':kernel:api:fabric3-spi')
@@ -252,5 +261,38 @@ configure(kernelAndExtensions()) {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
+}
+
+/**
+ * Forces setting of the POM packaging as it seems to be over-written before uploading.
+ * @param deployment the current deployment
+ * @param pom the Maven pom
+ */
+private void setPomPackaging(MavenDeployment deployment, MavenPom pom) {
+    pom.setPackaging('pom');
+
+
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    documentBuilderFactory.setNamespaceAware(true);
+    DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+    Document document = builder.parse(new FileInputStream(deployment.pomArtifact.file));
+
+
+    def list = document.getElementsByTagName('packaging')
+    if (list.getLength() == 0) {
+        def child = document.createElement('packaging');
+        child.setTextContent('pom');
+        document.getElementsByTagName("project").item(0).appendChild(child);
+    } else {
+        list.item(0).setTextContent('pom');
+    }
+
+    DOMSource source = new DOMSource(document);
+    javax.xml.transform.Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(deployment.pomArtifact.file), "UTF-8");
+    StreamResult result = new StreamResult(writer);
+    transformer.transform(source, result);
 }
 
