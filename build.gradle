@@ -264,7 +264,7 @@ task wrapper(type: Wrapper) {
 }
 
 /**
- * Forces setting of the POM packaging as it seems to be over-written before uploading.
+ * Forces setting of the POM packaging as may be over-written before uploading.
  * @param deployment the current deployment
  * @param pom the Maven pom
  */
