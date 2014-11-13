@@ -3,9 +3,9 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Monitor appender extension">
-    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
+    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
 
-    <import.java package="org.fabric3.monitor.spi.*" version="2.5.0"/>
+    <import.java package="org.fabric3.monitor.spi.*" version="3.0.0"/>
 
     <deployable composite="f3:MonitorAppendersExtension"/>
 

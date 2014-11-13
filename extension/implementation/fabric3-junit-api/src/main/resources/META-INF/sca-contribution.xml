@@ -3,5 +3,5 @@
               xmlns:f3="urn:fabric3.org"
               f3:description="JUnit implementation API extension"
               f3:extension="true">
-    <export.java package="org.fabric3.api.implementation.junit.*" version="2.5.0"/>
+    <export.java package="org.fabric3.api.implementation.junit.*" version="3.0.0"/>
 </contribution>
