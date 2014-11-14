@@ -15,6 +15,10 @@ To build the source, execute:
 
 See build.gradle for additional instructions
 
+License
+-------------------------
+Licensed under the Apache 2.0 License (http://fabric3.org/license.html)
+
 
 History
 -------------------------
