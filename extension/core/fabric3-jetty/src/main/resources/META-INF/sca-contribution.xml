@@ -3,10 +3,10 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="HTTP extension">
-    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
 
-    <export.java package="org.fabric3.transport.jetty" version="2.5.0"/>
-    <export.java package="org.fabric3.transport.jetty.management" version="2.5.0"/>
+    <export.java package="org.fabric3.transport.jetty" version="2.5.1"/>
+    <export.java package="org.fabric3.transport.jetty.management" version="2.5.1"/>
     <export.java package="org.eclipse.jetty.webapp" version="9.0.0"/>
     <export.java package="org.eclipse.jetty.server" version="9.0.0"/>
     <export.java package="org.eclipse.jetty" version="9.0.0"/>

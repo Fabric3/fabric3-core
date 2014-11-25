@@ -2,10 +2,10 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
-    <import.java package="org.fabric3.spi.federation.*" version="2.5.0"/>
-    <import.java package="org.fabric3.federation.deployment.command" version="2.5.0"/>
-    <import.java package="org.fabric3.federation.deployment.executor" version="2.5.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
+    <import.java package="org.fabric3.spi.federation.*" version="2.5.1"/>
+    <import.java package="org.fabric3.federation.deployment.command" version="2.5.1"/>
+    <import.java package="org.fabric3.federation.deployment.executor" version="2.5.1"/>
     <deployable composite="f3:WebLogicFederationCommonExtension" modes="controller participant"/>
     <deployable composite="f3:WebLogicFederationControllerExtension" modes="controller"/>
     <deployable composite="f3:WebLogicFederationParticipantExtension" modes="participant"/>

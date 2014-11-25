@@ -2,8 +2,8 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
-    <export.java package="org.fabric3.resource.jndi.*" version="2.5.0"/>
-    <export.java package="org.fabric3.resource.spi" version="2.5.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
+    <export.java package="org.fabric3.resource.jndi.*" version="2.5.1"/>
+    <export.java package="org.fabric3.resource.spi" version="2.5.1"/>
     <deployable composite="f3:ResourceExtension"/>
 </contribution>

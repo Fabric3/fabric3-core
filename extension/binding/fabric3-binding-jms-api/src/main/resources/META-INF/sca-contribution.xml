@@ -4,6 +4,6 @@
               f3:extension="true"
               f3:description="JMS API extension">
     <import.java package="org.fabric3.api.model.*"/>
-    <export.java package="org.fabric3.api.binding.jms.*" version="2.5.0"/>
+    <export.java package="org.fabric3.api.binding.jms.*" version="2.5.1"/>
 
 </contribution>

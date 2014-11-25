@@ -5,7 +5,7 @@
               f3:description="ZeroMQ binding extension">
     <import.java package="org.fabric3.spi.*"/>
     <import.java package="org.zeromq" version="2.1.0"/>
-    <import.java package="org.fabric3.api.binding.zeromq.*" version="2.5.0"/>
+    <import.java package="org.fabric3.api.binding.zeromq.*" version="2.5.1"/>
 
     <f3:provides.capability name="zeromq"/>
 
