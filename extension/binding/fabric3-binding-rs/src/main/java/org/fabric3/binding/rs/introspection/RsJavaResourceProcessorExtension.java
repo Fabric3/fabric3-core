@@ -20,6 +20,7 @@ import javax.ws.rs.NameBinding;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.annotation.Annotation;
@@ -58,7 +59,7 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
             Class<?> clazz = classLoaderRegistry.loadClass(contributionUri, implClass);
             if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)
                 && !ContextResolver.class.isAssignableFrom(clazz) && !MessageBodyReader.class.isAssignableFrom(clazz)
-                && !MessageBodyWriter.class.isAssignableFrom(clazz)) {
+                && !MessageBodyWriter.class.isAssignableFrom(clazz) && !ExceptionMapper.class.isAssignableFrom(clazz)) {
                 // not a provider type
                 return;
             }

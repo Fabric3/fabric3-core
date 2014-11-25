@@ -19,6 +19,7 @@ package org.fabric3.binding.rs.runtime.builder;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.annotation.Annotation;
@@ -26,8 +27,10 @@ import java.net.URI;
 
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
 import org.fabric3.binding.rs.runtime.bytecode.ProviderGenerator;
+import org.fabric3.binding.rs.runtime.bytecode.RsReflectionHelper;
 import org.fabric3.binding.rs.runtime.provider.AbstractProxyProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
+import org.fabric3.binding.rs.runtime.provider.ProxyExceptionMapper;
 import org.fabric3.binding.rs.runtime.provider.ProxyMessageBodyReader;
 import org.fabric3.binding.rs.runtime.provider.ProxyMessageBodyWriter;
 import org.fabric3.binding.rs.runtime.provider.ProxyObjectMapperContextResolver;
@@ -38,6 +41,7 @@ import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.Reference;
+import org.objectweb.asm.Type;
 
 /**
  *
@@ -95,6 +99,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Object createProvider(PhysicalProviderResourceDefinition definition) throws ContainerException {
 
         try {
@@ -105,15 +110,18 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
 
             AbstractProxyProvider<?> provider;
             if (ContainerRequestFilter.class.isAssignableFrom(providerClass)) {
-                provider = providerGenerator.generate(ProxyRequestFilter.class, providerClass).newInstance();
+                provider = providerGenerator.generate(ProxyRequestFilter.class, providerClass, null).newInstance();
             } else if (ContainerResponseFilter.class.isAssignableFrom(providerClass)) {
-                provider = providerGenerator.generate(ProxyResponseFilter.class, providerClass).newInstance();
+                provider = providerGenerator.generate(ProxyResponseFilter.class, providerClass, null).newInstance();
             } else if (ContextResolver.class.isAssignableFrom(providerClass)) {
-                provider = providerGenerator.generate(ProxyObjectMapperContextResolver.class, providerClass).newInstance();
+                provider = providerGenerator.generate(ProxyObjectMapperContextResolver.class, providerClass, null).newInstance();
             } else if (MessageBodyReader.class.isAssignableFrom(providerClass)) {
-                provider = providerGenerator.generate(ProxyMessageBodyReader.class, providerClass).newInstance();
+                provider = providerGenerator.generate(ProxyMessageBodyReader.class, providerClass, null).newInstance();
             } else if (MessageBodyWriter.class.isAssignableFrom(providerClass)) {
-                provider = providerGenerator.generate(ProxyMessageBodyWriter.class, providerClass).newInstance();
+                provider = providerGenerator.generate(ProxyMessageBodyWriter.class, providerClass, null).newInstance();
+            } else if (ExceptionMapper.class.isAssignableFrom(providerClass)) {
+                String signature = getGenericExceptionMapperSignature((Class<? extends ExceptionMapper>) providerClass);
+                provider = providerGenerator.generate(ProxyExceptionMapper.class, providerClass, signature).newInstance();
             } else {
                 throw new ContainerException("Unknown provider type: " + providerClass.getName());
             }
@@ -124,6 +132,20 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
             throw new ContainerException(e);
         }
 
+    }
+
+    /**
+     * Creates the exception mapper generic signature according to the JLS.
+     *
+     * @param mapperClass the ExceptionMapper class
+     * @return the signature
+     * @throws ContainerException if there is an error creating the signature
+     */
+    private String getGenericExceptionMapperSignature(Class<? extends ExceptionMapper> mapperClass) throws ContainerException {
+        Class<?> exceptionType = RsReflectionHelper.getExceptionType(mapperClass);
+        String exceptionName = Type.getInternalName(exceptionType);
+        return "<E:L" + exceptionName + ";>L" + Type.getInternalName(ProxyExceptionMapper.class) + "<L" + exceptionName + ";>;L" + Type.getInternalName(
+                ExceptionMapper.class) + "<TE;>;";
     }
 
 }
