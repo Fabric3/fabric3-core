@@ -4,9 +4,9 @@
               xmlns:f3="urn:fabric3.org"
               f3:description="DataSource extension"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
-    <import.java package="org.fabric3.resource.spi" version="2.5.1"/>
-    <export.java package="org.fabric3.datasource.spi" version="2.5.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
+    <import.java package="org.fabric3.resource.spi" version="2.5.2"/>
+    <export.java package="org.fabric3.datasource.spi" version="2.5.2"/>
     <deployable composite="f3:DataSourceRegistryExtension"/>
     <deployable composite="f3:DataSourceControllerExtension" modes="controller node vm"/>
     <deployable composite="f3:DataSourceParticipantExtension" modes="participant node vm"/>

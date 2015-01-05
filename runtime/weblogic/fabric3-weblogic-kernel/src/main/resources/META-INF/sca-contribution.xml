@@ -2,9 +2,9 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
     <import.java package="org.fabric3.datasource.spi"/>
-    <import.java package="org.fabric3.runtime.weblogic.api" version="2.5.1"/>
+    <import.java package="org.fabric3.runtime.weblogic.api" version="2.5.2"/>
     <import.java package="com.bea.core.workmanager" version="1.7.0.0"/>
     <import.java package="com.bea.core.workmanager.internal" version="1.7.0.0"/>
     <import.java package="weblogic.common" version="1.7.0.0"/>

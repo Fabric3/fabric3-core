@@ -7,12 +7,12 @@
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.jms" version="1.1.0"/>
     <import.java package="javax.xml.bind.annotation" version="2.0.0"/>
-    <import.java package="org.fabric3.api.binding.jms.*" version="2.5.1"/>
-    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
-    <import.java package="org.fabric3.jndi.spi" version="2.5.1"/>
+    <import.java package="org.fabric3.api.binding.jms.*" version="2.5.2"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
+    <import.java package="org.fabric3.jndi.spi" version="2.5.2"/>
 
-    <export.java package="org.fabric3.binding.jms.spi.common" version="2.5.1"/>
-    <export.java package="org.fabric3.binding.jms.spi.*" version="2.5.1"/>
+    <export.java package="org.fabric3.binding.jms.spi.common" version="2.5.2"/>
+    <export.java package="org.fabric3.binding.jms.spi.*" version="2.5.2"/>
 
     <deployable composite="f3:JmsControllerExtension" modes="controller node vm"/>
     <deployable composite="f3:JmsRuntimeExtension" modes="participant node vm"/>

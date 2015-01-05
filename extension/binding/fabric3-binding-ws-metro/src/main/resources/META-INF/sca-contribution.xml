@@ -3,17 +3,17 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Web services extension">
-    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
-    <import.java package="org.fabric3.wsdl.model" version="2.5.1"/>
-    <import.java package="org.fabric3.wsdl.contribution" version="2.5.1"/>
-    <import.java package="org.fabric3.wsdl.factory" version="2.5.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
+    <import.java package="org.fabric3.wsdl.model" version="2.5.2"/>
+    <import.java package="org.fabric3.wsdl.contribution" version="2.5.2"/>
+    <import.java package="org.fabric3.wsdl.factory" version="2.5.2"/>
 
     <!--import Woodstox as the Metro WSDL parser assumes it to be visible from the SEI classloader-->
     <import.java package="com.ctc.wstx.*" version="3.2.9"/>;
 
     <import.java package="javax.wsdl" version="1.6.2"/>
-    <import.java package="org.fabric3.binding.ws.provision" version="2.5.1"/>
-    <import.java package="org.fabric3.api.binding.ws.*" version="2.5.1"/>
+    <import.java package="org.fabric3.binding.ws.provision" version="2.5.2"/>
+    <import.java package="org.fabric3.api.binding.ws.*" version="2.5.2"/>
 
     <!-- export SAAJ classes used by application-level WS handlers -->
     <export.java package="javax.xml.soap.*" version="1.3.0"/>

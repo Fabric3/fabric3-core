@@ -3,7 +3,7 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Web binding extension">
-    <import.java package="org.fabric3.spi.*" version="2.5.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
     <f3:provides name="websocket"/>
 
     <deployable composite="f3:WebBindingExtension"/>
