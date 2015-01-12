@@ -41,6 +41,8 @@ dependencies {
     extensionDependencies project(':extension:core:fabric3-channel-impl')
     extensionDependencies project(':extension:core:fabric3-channel-disruptor')
     extensionDependencies project(':extension:implementation:fabric3-java')
+    extensionDependencies project(':extension:implementation:fabric3-web')
+
     extensionDependencies project(':extension:core:fabric3-async')
     extensionDependencies project(':extension:core:fabric3-sca-intents')
     extensionDependencies project(':extension:core:fabric3-contribution-scanner')
