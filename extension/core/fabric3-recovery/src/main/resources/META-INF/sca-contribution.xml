@@ -2,6 +2,6 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
     <deployable composite="f3:RecoveryExtension"/>
 </contribution>

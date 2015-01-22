@@ -3,8 +3,8 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="JNDI extension">
-    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
-    <export.java package="org.fabric3.jndi.spi" version="2.5.2"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
+    <export.java package="org.fabric3.jndi.spi" version="2.5.3"/>
 
     <deployable composite="f3:JndiControllerExtension" modes="controller node vm"/>
     <deployable composite="f3:JndiParticipantExtension" modes="participant node vm"/>

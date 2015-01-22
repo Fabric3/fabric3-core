@@ -3,10 +3,10 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
     <import.java package="javax.jms" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="2.5.2"/>
-    <import.java package="org.fabric3.binding.jms.spi.common" version="2.5.2"/>
-    <import.java package="org.fabric3.api.binding.jms.*" version="2.5.2"/>
-    <import.java package="org.fabric3.binding.jms.spi.*" version="2.5.2"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
+    <import.java package="org.fabric3.binding.jms.spi.common" version="2.5.3"/>
+    <import.java package="org.fabric3.api.binding.jms.*" version="2.5.3"/>
+    <import.java package="org.fabric3.binding.jms.spi.*" version="2.5.3"/>
     <deployable composite="f3:HornetQRuntimeExtension" modes="participant node vm"/>
     <deployable composite="f3:HornetQControllerExtension" modes="controller node vm"/>
     <f3:extends name="jms"/>

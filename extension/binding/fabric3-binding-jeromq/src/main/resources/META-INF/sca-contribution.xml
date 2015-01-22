@@ -6,7 +6,7 @@
 
     <import.java package="org.fabric3.spi.*"/>
     <import.java package="org.zeromq" version="2.1.0"/>
-    <import.java package="org.fabric3.api.binding.zeromq.*" version="2.5.2"/>
+    <import.java package="org.fabric3.api.binding.zeromq.*" version="2.5.3"/>
 
     <export.java package="org.zeromq" version="2.1.0"/>
 
