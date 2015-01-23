@@ -17,17 +17,12 @@
 package org.fabric3.federation.jgroups;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.Zone;
 import org.jgroups.Address;
 import org.jgroups.View;
 import org.jgroups.ViewId;
@@ -263,15 +258,6 @@ public class JGroupsHelperImplTestCase extends TestCase {
         for (Address leader : leaders) {
             assertTrue(leader.equals(address2) || leader.equals(address4));
         }
-    }
-
-    public void testGetZones() throws Exception {
-        Map<String, Map<String, RuntimeInstance>> runtimes = new HashMap<>();
-        runtimes.put("zone1", Collections.singletonMap("runtime1", new RuntimeInstance("runtime1")));
-        runtimes.put("zone2", Collections.singletonMap("runtime2", new RuntimeInstance("runtime2")));
-
-        Set<Zone> zones = helper.getZones(runtimes);
-        assertEquals(2, zones.size());
     }
 
     protected void setUp() throws Exception {

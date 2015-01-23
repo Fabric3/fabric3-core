@@ -34,15 +34,12 @@ import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.merge.DomainMergeService;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.container.command.Response;
-import org.fabric3.spi.container.command.ResponseCommand;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.TopologyListener;
-import org.fabric3.spi.federation.topology.Zone;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.runtime.event.EventService;
@@ -139,35 +136,6 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
 
     }
 
-    @ManagementOperation(description = "The zones in the domain")
-    public Set<Zone> getZones() {
-        return helper.getZones(runtimes);
-    }
-
-    @ManagementOperation(description = "The runtimes in the domain")
-    public List<String> getRuntimeNames() {
-        List<String> runtimes = new ArrayList<>();
-        for (Address member : domainChannel.getView().getMembers()) {
-            String name = UUID.get(member);
-            runtimes.add(name);
-        }
-        return runtimes;
-    }
-
-    public List<RuntimeInstance> getRuntimes() {
-        List<RuntimeInstance> list = new ArrayList<>();
-        for (Map<String, RuntimeInstance> map : runtimes.values()) {
-            for (RuntimeInstance runtime : map.values()) {
-                list.add(runtime);
-            }
-        }
-        return list;
-    }
-
-    public void broadcast(String zoneName, Command command) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
     public void broadcast(Command command) throws MessageException {
         byte[] payload = helper.serialize(command);
         Message message = new Message(null, domainChannel.getAddress(), payload);
@@ -176,14 +144,6 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         } catch (Exception e) {
             throw new MessageException(e);
         }
-    }
-
-    public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
-    public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
     }
 
     @ManagementOperation(description = "True if the runtime is the zone leader")
@@ -216,14 +176,6 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             return null;
         }
         return UUID.get(address);
-    }
-
-    public Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean isChannelOpen(String name) {
-        return channels.containsKey(name);
     }
 
     public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
