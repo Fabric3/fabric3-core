@@ -24,10 +24,10 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 
 /**
  *
@@ -56,7 +56,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testZoneLeaderStart() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
 
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
@@ -77,7 +77,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testNotZoneLeaderNoStart() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(false);
 
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
@@ -94,7 +94,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testZoneLeaderElectedStart() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(false);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
 
@@ -119,7 +119,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testStopContainer() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(false).times(2);
 
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
@@ -140,7 +140,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testStopAllContexts() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
 
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
@@ -163,7 +163,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testStopContext() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
 
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));

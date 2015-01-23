@@ -38,14 +38,14 @@ import org.fabric3.management.rest.spi.DuplicateResourceNameException;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
-import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
+import org.fabric3.spi.federation.topology.ZoneChannelException;
+import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
@@ -71,7 +71,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private BasicAuthenticator authenticator;
     private ManagementMonitor monitor;
 
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
 
     private ManagementSecurity security = ManagementSecurity.DISABLED;
     private Set<Role> roles = new HashSet<>();
@@ -117,7 +117,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Reference(required = false)
-    public void setTopologyService(ParticipantTopologyService topologyService) {
+    public void setTopologyService(NodeTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

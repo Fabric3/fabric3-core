@@ -24,16 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
-import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
+import org.fabric3.spi.federation.topology.TopologyListener;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -50,7 +50,7 @@ import org.oasisopen.sca.annotation.Service;
 @Service({ScopeContainer.class, TopologyListener.class})
 public class DomainScopeContainer extends SingletonScopeContainer implements TopologyListener {
     private HostInfo info;
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
     private final List<QName> deferredContexts = new ArrayList<>();
     boolean activated;
 
@@ -60,7 +60,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     @Reference(required = false)
-    public void setTopologyService(List<ParticipantTopologyService> topologyServices) {
+    public void setTopologyService(List<NodeTopologyService> topologyServices) {
         if (topologyServices.size() > 0) {
             this.topologyService = topologyServices.get(0);
         }

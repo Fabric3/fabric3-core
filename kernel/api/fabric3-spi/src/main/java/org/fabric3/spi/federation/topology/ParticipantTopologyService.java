@@ -22,12 +22,11 @@ import org.fabric3.spi.container.command.Response;
 import org.fabric3.spi.container.command.ResponseCommand;
 
 /**
- * Responsible for participant communications within a domain zone.
- * <p/>
- * This service is present only on participant runtimes in a federated topology and provides low-level communications between a participant and other runtimes
- * (a participant or controller). Higher-level communications semantics can be layered over this service.
+ * Responsible for participant communications within a domain zone. <p/> This service is present only on participant runtimes in a federated topology and
+ * provides low-level communications between a participant and other runtimes (a participant or controller). Higher-level communications semantics can be
+ * layered over this service.
  */
-public interface ParticipantTopologyService extends TopologyService{
+public interface ParticipantTopologyService extends TopologyService {
 
     /**
      * Returns true if the current runtime is the zone leader.
@@ -81,7 +80,7 @@ public interface ParticipantTopologyService extends TopologyService{
      * @param command the command
      * @param timeout the time to wait on a response
      * @return the response
-     * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller
+     * @throws MessageException if an error occurs sending the message.
      */
     Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException;
 

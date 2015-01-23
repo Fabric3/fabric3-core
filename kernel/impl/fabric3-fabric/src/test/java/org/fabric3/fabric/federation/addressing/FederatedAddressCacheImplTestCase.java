@@ -28,6 +28,7 @@ import org.easymock.IAnswer;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressListener;
@@ -65,7 +66,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
     private static final SocketAddress ADDRESS2 = new SocketAddress("runtime2", "zone", "tcp", "10.10.10.2", PORT);
 
     private HostInfo info;
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
     private EventService eventService;
     private Executor executor;
     private AddressMonitor monitor;
@@ -82,7 +83,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         EasyMock.replay(info, topologyService, listener);
 
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setParticipantTopologyService(topologyService);
+        cache.setTopologyService(topologyService);
         cache.subscribe("test", listener);
 
         cache.publish(announcement);
@@ -98,7 +99,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
         EasyMock.replay(info);
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setParticipantTopologyService(topologyService);
+        cache.setTopologyService(topologyService);
         topologyService.sendAsynchronous(EasyMock.eq(CHANNEL), EasyMock.isA(AddressAnnouncement.class));
         EasyMock.replay(topologyService);
 
@@ -114,7 +115,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         EasyMock.replay(info);
 
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setParticipantTopologyService(topologyService);
+        cache.setTopologyService(topologyService);
         EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement2 = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS2);
@@ -130,7 +131,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
         EasyMock.replay(info);
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setParticipantTopologyService(topologyService);
+        cache.setTopologyService(topologyService);
 
         topologyService.sendAsynchronous(EasyMock.eq(CHANNEL), EasyMock.isA(AddressAnnouncement.class));
 
@@ -167,6 +168,6 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         monitor = EasyMock.createNiceMock(AddressMonitor.class);
         info = EasyMock.createNiceMock(HostInfo.class);
         EasyMock.expect(info.getDomain()).andReturn(URI.create("fabric3://domain")).atLeastOnce();
-        topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        topologyService = EasyMock.createMock(NodeTopologyService.class);
     }
 }

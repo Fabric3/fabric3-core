@@ -26,23 +26,23 @@ import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
-import org.fabric3.api.implementation.timer.model.TimerData;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.RuntimeStart;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.TimerService;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -57,7 +57,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     private TimerService timerService;
     private TransactionManager tm;
     private HostInfo info;
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
     private InvokerMonitor monitor;
 
     private List<TimerComponent> scheduleQueue;
@@ -86,7 +86,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     }
 
     @Reference(required = false)
-    public void setTopologyService(ParticipantTopologyService topologyService) {
+    public void setTopologyService(NodeTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

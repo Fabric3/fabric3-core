@@ -37,10 +37,9 @@ import org.fabric3.spi.federation.addressing.AddressMonitor;
 import org.fabric3.spi.federation.addressing.AddressRequest;
 import org.fabric3.spi.federation.addressing.AddressUpdate;
 import org.fabric3.spi.federation.addressing.SocketAddress;
-import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.runtime.event.EventService;
@@ -58,8 +57,7 @@ import org.oasisopen.sca.annotation.Service;
 public class AddressCacheImpl implements AddressCache, TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
     private static final String ADDRESS_CHANNEL = "F3AddressChannel";
 
-    private ParticipantTopologyService participantTopologyService;
-    private ControllerTopologyService controllerTopologyService;
+    private NodeTopologyService topologyService;
 
     private Executor executor;
     private EventService eventService;
@@ -80,28 +78,23 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Reference(required = false)
-    public void setParticipantTopologyService(ParticipantTopologyService participantTopologyService) {
-        this.participantTopologyService = participantTopologyService;
-    }
-
-    @Reference(required = false)
-    public void setControllerTopologyService(ControllerTopologyService controllerTopologyService) {
-        this.controllerTopologyService = controllerTopologyService;
+    public void setTopologyService(NodeTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     @Init
     public void init() {
         eventService.subscribe(JoinDomainCompleted.class, this);
         if (isNode()) {
-            participantTopologyService.register(this);
+            topologyService.register(this);
         }
     }
 
     @Destroy
     public void destroy() throws ZoneChannelException {
         if (isNode()) {
-            participantTopologyService.closeChannel(qualifiedChannelName);
-            participantTopologyService.deregister(this);
+            topologyService.closeChannel(qualifiedChannelName);
+            topologyService.deregister(this);
         }
     }
 
@@ -210,9 +203,9 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     public void onEvent(JoinDomainCompleted event) {
         try {
             if (isNode()) {
-                participantTopologyService.openChannel(qualifiedChannelName, null, this, null);
+                topologyService.openChannel(qualifiedChannelName, null, this, null);
                 AddressRequest request = new AddressRequest(info.getRuntimeName());
-                participantTopologyService.sendAsynchronous(qualifiedChannelName, request);
+                topologyService.sendAsynchronous(qualifiedChannelName, request);
             }
         } catch (MessageException e) {
             monitor.error(e);
@@ -246,7 +239,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
 
             if (propagate && isNode() && event instanceof AddressAnnouncement) {
                 try {
-                    participantTopologyService.sendAsynchronous(qualifiedChannelName, event);
+                    topologyService.sendAsynchronous(qualifiedChannelName, event);
                 } catch (MessageException e) {
                     monitor.error(e);
                 }
@@ -275,7 +268,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 public void run() {
                     try {
                         if (isNode()) {
-                            participantTopologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
+                            topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
                         }
                         // ignore on controller
                     } catch (MessageException e) {

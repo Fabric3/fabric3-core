@@ -29,19 +29,17 @@ import java.util.concurrent.Executor;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.merge.DomainMergeService;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.command.Response;
 import org.fabric3.spi.container.command.ResponseCommand;
-import org.fabric3.spi.federation.topology.ControllerTopologyService;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.Zone;
@@ -69,7 +67,7 @@ import org.oasisopen.sca.annotation.Service;
 import org.w3c.dom.Element;
 
 /**
- * JGroups implementation of the {@link ControllerTopologyService} and the {@link ParticipantTopologyService} for node runtimes.
+ * JGroups implementation of the {@link NodeTopologyService}.
  */
 @EagerInit
 @Management(name = "NodeTopologyService", path = "/runtime/federation/node/view")

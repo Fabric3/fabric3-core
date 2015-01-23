@@ -23,15 +23,14 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.implementation.timer.model.TimerType;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -39,7 +38,7 @@ import org.fabric3.timer.spi.TimerService;
  */
 public class TimerComponentDomainScopeTestCase extends TestCase {
     private TimerComponent component;
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
     private TimerService timerService;
 
     public void testNotLeaderNoSchedule() throws Exception {
@@ -108,7 +107,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
 
         EasyMock.replay(container, monitor, factory, info);
 
-        topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        topologyService = EasyMock.createMock(NodeTopologyService.class);
 
         component = new TimerComponent(null,
                                        null,

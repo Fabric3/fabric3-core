@@ -16,17 +16,12 @@
  */
 package org.fabric3.management.rest.framework.zone;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
@@ -38,14 +33,17 @@ import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
-import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.management.rest.spi.DuplicateResourceNameException;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.management.rest.transformer.TransformerPair;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
@@ -58,7 +56,7 @@ public class ZoneResourceService implements ResourceListener {
     private ResourceHost resourceHost;
     private ZoneResourceMonitor monitor;
     private HostInfo info;
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
 
     private List<ResourceMapping> subresources = new ArrayList<>();
     private List<ResourceMapping> registered = new ArrayList<>();
@@ -71,7 +69,7 @@ public class ZoneResourceService implements ResourceListener {
     }
 
     @Reference(required = false)
-    public void setTopologyService(ParticipantTopologyService topologyService) {
+    public void setTopologyService(NodeTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

@@ -24,15 +24,15 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
 
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.implementation.timer.model.TimerData;
+import org.fabric3.api.model.type.RuntimeMode;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.api.implementation.timer.model.TimerData;
-import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
@@ -45,7 +45,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     private Class<?> implementationClass;
     private TimerService timerService;
     private ScheduledFuture<?> future;
-    private ParticipantTopologyService topologyService;
+    private NodeTopologyService topologyService;
     private InvokerMonitor monitor;
     private boolean scheduleOnStart;
     private Scope scope;
@@ -63,7 +63,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           ScopeContainer scopeContainer,
                           TimerService timerService,
                           TransactionManager tm,
-                          ParticipantTopologyService topologyService,
+                          NodeTopologyService topologyService,
                           HostInfo info,
                           InvokerMonitor monitor,
                           boolean scheduleOnStart) {

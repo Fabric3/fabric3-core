@@ -27,6 +27,7 @@ import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.host.ServletHost;
@@ -58,7 +59,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
     }
 
     public void testReplicateChange() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         topologyService.openChannel(EasyMock.isA(String.class),
                                     (String) EasyMock.isNull(),
                                     EasyMock.isA(MessageReceiver.class),
@@ -86,7 +87,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
     }
 
     public void testReplicateHttpServletRequestChange() throws Exception {
-        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
+        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
         topologyService.openChannel(EasyMock.isA(String.class),
                                     (String) EasyMock.isNull(),
                                     EasyMock.isA(MessageReceiver.class),
