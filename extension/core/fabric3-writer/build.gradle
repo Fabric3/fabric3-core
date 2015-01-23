@@ -1,8 +1,0 @@
-dependencies {
-
-    compile project(':kernel:impl:fabric3-introspection-xml')
-
-}
-
-
-
