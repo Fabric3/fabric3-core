@@ -16,54 +16,43 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.federation.topology;
-
-import java.util.List;
+package org.fabric3.federation.jgroups;
 
 /**
- * A domain zone.
+ * An active runtime in the domain.
  */
-public class Zone {
+public class RuntimeInstance {
     private String name;
-    private List<RuntimeInstance> runtimes;
 
     /**
      * Constructor.
      *
-     * @param name     the zone name
-     * @param runtimes the active runtimes in the zone
+     * @param name the unique runtime name.
      */
-    public Zone(String name, List<RuntimeInstance> runtimes) {
+    public RuntimeInstance(String name) {
         this.name = name;
-        this.runtimes = runtimes;
     }
 
     /**
-     * Returns the zone name.
+     * The unique runtime name. Runtime names are persistent across restarts.
      *
-     * @return the zone name
+     * @return the runtime name
      */
     public String getName() {
         return name;
     }
 
-    /**
-     * Returns the active runtimes in a zone.
-     *
-     * @return the active runtimes in a zone
-     */
-    public List<RuntimeInstance> getRuntimes() {
-        return runtimes;
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        Zone zone = (Zone) o;
+        RuntimeInstance that = (RuntimeInstance) o;
 
-        return !(name != null ? !name.equals(zone.name) : zone.name != null);
+        return !(name != null ? !name.equals(that.name) : that.name != null);
 
     }
 

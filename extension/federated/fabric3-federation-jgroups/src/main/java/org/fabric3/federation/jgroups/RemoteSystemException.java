@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.federation.topology;
+package org.fabric3.federation.jgroups;
+
+import org.fabric3.spi.federation.topology.ErrorResponse;
 
 /**
  * A response to a synchronous message returned when an exception is raised processing the original request.
