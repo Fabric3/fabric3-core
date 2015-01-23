@@ -12,7 +12,7 @@
     <export.java package="com.atomikos.*" version="3.8.0"/>
 
     <!-- Needed for Atomikos logging -->
-    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
 
     <f3:provides name="datasource"/>
     <f3:provides.capability name="transaction"/>

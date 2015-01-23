@@ -16,21 +16,16 @@
  */
 package org.fabric3.binding.rs.runtime.bytecode;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import java.io.IOException;
+
 /**
- * Generates a concrete delegating provider class from the given base class and the delegating class.
  *
- * This service is used to satisfy the Jersey requirement that provider classes be unique since Fabric3 component providers are proxied by a single class.
  */
-public interface ProviderGenerator {
+public class TestMapper implements ExceptionMapper<IOException> {
 
-    /**
-     * Generates the concrete subclass.
-     *
-     * @param baseClass        the superclass
-     * @param delegateClass    the delegate class
-     * @param genericSignature the generic signature; may be null for non-generic types
-     * @return the subclass
-     */
-    <T> Class<? extends T> generate(Class<T> baseClass, Class<?> delegateClass, String genericSignature);
-
+    public Response toResponse(IOException exception) {
+        return Response.ok().build();
+    }
 }

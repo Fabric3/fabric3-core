@@ -3,7 +3,7 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Bytecode proxy extension">
-    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
-    <import.java package="org.fabric3.implementation.pojo.*" version="3.0.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
+    <import.java package="org.fabric3.implementation.pojo.*" version="2.5.3"/>
     <deployable composite="f3:BytecodeReflectionExtension"/>
 </contribution>

@@ -24,8 +24,6 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.spi.classloader.BytecodeClassLoader;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.Init;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -44,37 +42,26 @@ public class ProviderGeneratorImpl implements ProviderGenerator {
     private static final String SUFFIX = "F3Subtype";
     private AtomicInteger counter = new AtomicInteger(1);
 
-    private BytecodeClassLoader bytecodeClassLoader;
-
-    @Init
-    public void init() {
-        bytecodeClassLoader = new BytecodeClassLoader(URI.create("BytecodeClassLoader"), getClass().getClassLoader());
-    }
-
-    @Destroy
-    public void destroy() throws Exception {
-        if (bytecodeClassLoader != null) {
-            bytecodeClassLoader.close();
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    public <T> Class<? extends T> generate(Class<T> baseClass, Class<?> delegateClass) {
+    public <T> Class<? extends T> generate(Class<T> baseClass, Class<?> delegateClass, String genericSignature) {
         ClassWriter cw = new ClassWriter(0);
         int number = counter.getAndIncrement();
 
-        byte[] bytes = writeClass(cw, baseClass, delegateClass, number);
+        byte[] bytes = writeClass(cw, baseClass, delegateClass, genericSignature, number);
 
         String generatedName = baseClass.getName() + SUFFIX + "_" + number;
+        BytecodeClassLoader bytecodeClassLoader = new BytecodeClassLoader(URI.create("BytecodeClassLoader"), getClass().getClassLoader());
+        bytecodeClassLoader.addParent(delegateClass.getClassLoader());
+
         return (Class<? extends T>) bytecodeClassLoader.defineClass(generatedName, bytes);
     }
 
-    private byte[] writeClass(ClassWriter cw, Class<?> baseClass, Class<?> delegateClass, int number) {
+    private byte[] writeClass(ClassWriter cw, Class<?> baseClass, Class<?> delegateClass, String genericSignature, int number) {
         String internalName = Type.getInternalName(baseClass);
         String generatedInternalName = internalName + SUFFIX + "_" + number;
         String descriptor = Type.getDescriptor(baseClass);
 
-        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, generatedInternalName, null, internalName, null);
+        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, generatedInternalName, genericSignature, internalName, null);
         writeAnnotations(cw, delegateClass);
         writeConstructor(internalName, descriptor, cw);
         cw.visitEnd();

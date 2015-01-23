@@ -3,9 +3,9 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="JAX-RS (REST) API extension">
-    <import.java package="org.fabric3.api.model.*" version="3.0.0"/>
+    <import.java package="org.fabric3.api.model.*" version="2.5.3"/>
 
-    <export.java package="org.fabric3.api.binding.rs.*" version="3.0.0"/>
+    <export.java package="org.fabric3.api.binding.rs.*" version="2.5.3"/>
 
     <f3:provides.capability name="rest"/>
 </contribution>

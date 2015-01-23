@@ -2,14 +2,14 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="javax.transaction" version="1.1.0"/>
-    <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.jms" version="1.1.0"/>
     <import.java package="org.fabric3.spi.*" version="2.5.3"/>
+    <import.java package="org.fabric3.binding.jms.spi.common" version="2.5.3"/>
+    <import.java package="org.fabric3.api.binding.jms.*" version="2.5.3"/>
     <import.java package="org.fabric3.binding.jms.spi.*" version="2.5.3"/>
-    <import.java package="com.atomikos.*" version="3.8.0"/>
-    <deployable composite="f3:AtomikosJmsExtension"/>
-    <f3:provides name="jms"/>
+    <deployable composite="f3:HornetQRuntimeExtension" modes="participant node vm"/>
+    <deployable composite="f3:HornetQControllerExtension" modes="controller node vm"/>
+    <f3:extends name="jms"/>
     <f3:requires.capability name="transaction"/>
     <f3:provides.capability name="jms"/>
 </contribution>

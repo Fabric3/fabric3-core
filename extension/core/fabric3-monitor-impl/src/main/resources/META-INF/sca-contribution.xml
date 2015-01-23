@@ -3,8 +3,8 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Monitor extension">
-    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
-    <import.java package="org.fabric3.monitor.spi.*" version="3.0.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
+    <import.java package="org.fabric3.monitor.spi.*" version="2.5.3"/>
     <import.java package="com.lmax.disruptor.*" version="3.1.0"/>
 
     <deployable composite="f3:MonitorImplementationExtension"/>

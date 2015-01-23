@@ -167,7 +167,7 @@ configure(deployProjects()) {
                     name 'Fabric3 Project'
                 }
             }
-            if (artifactId.contains('profile-')) {
+            if (artifactId.contains('profile-') || artifactId.contains('runtime-standalone')) {
                 // profile projects use POM packaging
                 packaging 'pom'
             }
@@ -183,9 +183,9 @@ configure(deployProjects()) {
                     beforeDeployment {
 
                         MavenDeployment deployment ->
-                            if (project.name.contains('profile-')) {
+                            if (project.name.contains('profile-') || project.name.contains('runtime-standalone')) {
                                 // profile projects use POM packaging - reset so plugins do not overwrite
-                                setPomPackaging(deployment ,pom)
+                                setPomPackaging(deployment, pom)
                             }
 
                             signing.signPom(deployment)
@@ -200,7 +200,7 @@ configure(deployProjects()) {
                         name 'Fabric3'
                         description 'Fabric3'
 
-                        if (project.name.contains('profile-')) {
+                        if (project.name.contains('profile-') || project.name.contains('runtime-standalone')) {
                             // profile projects use POM packaging
                             packaging 'pom'
                         }

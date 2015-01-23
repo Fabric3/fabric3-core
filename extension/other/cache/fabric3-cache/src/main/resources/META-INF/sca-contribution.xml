@@ -3,9 +3,9 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Cache extension">
-    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
-    <import.java package="org.fabric3.resource.spi" version="3.0.0"/>
-    <export.java package="org.fabric3.cache.spi" version="3.0.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
+    <import.java package="org.fabric3.resource.spi" version="2.5.3"/>
+    <export.java package="org.fabric3.cache.spi" version="2.5.3"/>
 
     <deployable composite="f3:CacheControllerExtension" modes="controller node vm"/>
     <deployable composite="f3:CacheParticipantExtension" modes="participant node vm"/>
