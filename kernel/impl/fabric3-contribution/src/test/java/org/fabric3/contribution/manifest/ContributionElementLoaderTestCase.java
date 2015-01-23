@@ -80,8 +80,6 @@ public class ContributionElementLoaderTestCase extends TestCase {
         Deployable parsedDeployable = manifest.getDeployables().get(0);
         assertEquals(DEPLOYABLE, parsedDeployable.getName());
         assertTrue(parsedDeployable.getRuntimeModes().contains(RuntimeMode.VM));
-        assertTrue(parsedDeployable.getRuntimeModes().contains(RuntimeMode.CONTROLLER));
-        assertFalse(parsedDeployable.getRuntimeModes().contains(RuntimeMode.PARTICIPANT));
         assertTrue(parsedDeployable.getEnvironments().contains("production"));
         assertTrue(parsedDeployable.getEnvironments().contains("staging"));
         assertTrue(manifest.getImports().contains(javaImport));

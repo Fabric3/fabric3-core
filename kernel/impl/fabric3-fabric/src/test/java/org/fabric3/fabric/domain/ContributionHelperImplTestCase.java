@@ -104,7 +104,7 @@ public class ContributionHelperImplTestCase extends TestCase {
 
         contribution.getManifest().addDeployable(new Deployable(name1, Collections.singletonList(RuntimeMode.VM), Collections.<String>emptyList()));
         contribution.getManifest().addDeployable(new Deployable(name2,
-                                                                Collections.singletonList(RuntimeMode.PARTICIPANT),
+                                                                Collections.singletonList(RuntimeMode.NODE),
                                                                 Collections.<String>emptyList()));
 
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM).atLeastOnce();

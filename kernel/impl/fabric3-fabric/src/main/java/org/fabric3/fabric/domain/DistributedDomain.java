@@ -59,7 +59,6 @@ public class DistributedDomain extends AbstractDomain implements Domain {
                              @Reference ContributionHelper contributionHelper,
                              @Reference HostInfo info) {
         super(metaDataStore, logicalComponentManager, generator, logicalModelInstantiator, policyAttacher, deployer, collector, contributionHelper, info);
-        generateFullDeployment = RuntimeMode.CONTROLLER == info.getRuntimeMode();
         this.bindingSelector = bindingSelector;
     }
 
@@ -114,18 +113,8 @@ public class DistributedDomain extends AbstractDomain implements Domain {
         this.transactional = transactional;
     }
 
-    protected boolean isLocal() {
-        // classloader isolation check needed for webapp runtime
-        return info.supportsClassLoaderIsolation() && RuntimeMode.CONTROLLER != info.getRuntimeMode();
-    }
-
     protected boolean isTransactional() {
-        if (info.getRuntimeMode() == RuntimeMode.CONTROLLER) {
-            return true;
-        } else if (info.getRuntimeMode() == RuntimeMode.VM) {
-            return transactional;
-        }
-        return false;
+        return info.getRuntimeMode() == RuntimeMode.VM && transactional;
     }
 
     protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {

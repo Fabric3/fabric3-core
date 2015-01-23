@@ -22,8 +22,6 @@ package org.fabric3.api.model.type;
  * The different modes a runtime can be started in.
  */
 public enum RuntimeMode {
-    CONTROLLER,
-    PARTICIPANT,
     VM,
     NODE
 }

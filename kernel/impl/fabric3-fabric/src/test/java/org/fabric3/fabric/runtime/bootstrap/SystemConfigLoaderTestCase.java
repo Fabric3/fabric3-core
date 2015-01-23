@@ -45,12 +45,6 @@ public class SystemConfigLoaderTestCase extends TestCase {
                                          "   </web.server>" +
                                          "</config>";
 
-    private static final String ZONE_CONFIG = "<config>" +
-                                              "   <federation>" +
-                                              "      <zoneName>zone1</zoneName>" +
-                                              "   </federation>" +
-                                              "</config>";
-
     private static final String PRODUCT_CONFIG = "<config><runtime product='Foo'/></config>";
 
     private static final String CONFIG_DEFAULT = "<config>" +
@@ -85,7 +79,7 @@ public class SystemConfigLoaderTestCase extends TestCase {
         ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG.getBytes());
         InputStreamSource source = new InputStreamSource("stream", stream);
         Document systemConfig = loader.loadSystemConfig(source);
-        assertEquals(RuntimeMode.CONTROLLER, loader.parseRuntimeMode(systemConfig));
+        assertEquals(RuntimeMode.VM, loader.parseRuntimeMode(systemConfig));
     }
 
     public void testParseDefaultDomainName() throws Exception {
@@ -114,22 +108,6 @@ public class SystemConfigLoaderTestCase extends TestCase {
         Document systemConfig = loader.loadSystemConfig(source);
         String name = loader.parseProductName(systemConfig);
         assertEquals("Fabric3", name);
-    }
-
-    public void testParseZoneName() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(ZONE_CONFIG.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        assertEquals("zone1", loader.parseZoneName(systemConfig, RuntimeMode.NODE));
-    }
-
-    public void testParseDefaultZoneName() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_DEFAULT.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        assertEquals("default.zone", loader.parseZoneName(systemConfig, RuntimeMode.NODE));
     }
 
     public void testParseEnvironment() throws Exception {

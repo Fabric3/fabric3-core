@@ -101,7 +101,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
         EasyMock.expect(container.getScope()).andReturn(Scope.DOMAIN);
 
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE);
 
         ImplementationManagerFactory factory = EasyMock.createMock(ImplementationManagerFactory.class);
         EasyMock.expect(factory.getImplementationClass()).andReturn((Class) TimerInstance.class);

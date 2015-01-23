@@ -23,7 +23,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -130,15 +129,7 @@ public abstract class AbstractDomain implements Domain {
 
     public synchronized void include(QName deployable) throws DeploymentException {
         Composite wrapper = createWrapper(deployable);
-        DeploymentPlan plan;
-        if (RuntimeMode.CONTROLLER == info.getRuntimeMode() && !isLocal()) {
-            plan = contributionHelper.findPlan(deployable);
-            if (plan == null) {
-                plan = SYNTHETIC_PLAN;
-            }
-        } else {
-            plan = SYNTHETIC_PLAN;
-        }
+        DeploymentPlan plan = SYNTHETIC_PLAN;
         for (DeployListener listener : listeners) {
             listener.onDeploy(deployable);
         }
@@ -281,13 +272,6 @@ public abstract class AbstractDomain implements Domain {
     }
 
     /**
-     * Returns true if the domain is contained in a single VM.
-     *
-     * @return true if the domain is contained in a single VM
-     */
-    protected abstract boolean isLocal();
-
-    /**
      * Returns true if the domain is enabled for transactional deployment.
      *
      * @return true if the domain is enabled for transactional deployment
@@ -314,63 +298,26 @@ public abstract class AbstractDomain implements Domain {
     private synchronized void include(List<URI> uris, boolean recover) throws DeploymentException {
         Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
-        if (RuntimeMode.CONTROLLER == info.getRuntimeMode() && !isLocal()) {
-            Map<URI, DeploymentPlan> plans = new HashMap<>();
-            for (Contribution contribution : contributions) {
-                URI uri = contribution.getUri();
-                DeploymentPlan plan = contributionHelper.findDefaultPlan(contribution);
-                if (plan == null) {
-                    plan = SYNTHETIC_PLAN;
-                }
-                plans.put(uri, plan);
+        // notify listeners
+        for (URI uri : uris) {
+            for (DeployListener listener : listeners) {
+                listener.onDeploy(uri);
             }
-            DeploymentPlan merged = merge(plans.values());
-            // notify listeners
-            for (URI uri : uris) {
-                for (DeployListener listener : listeners) {
-                    listener.onDeploy(uri);
-                }
+        }
+        for (Composite deployable : deployables) {
+            for (DeployListener listener : listeners) {
+                listener.onDeploy(deployable.getName());
             }
-            for (Composite deployable : deployables) {
-                QName name = deployable.getName();
-                for (DeployListener listener : listeners) {
-                    listener.onDeploy(name);
-                }
+        }
+        instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, recover);
+        for (Composite deployable : deployables) {
+            for (DeployListener listener : listeners) {
+                listener.onDeployCompleted(deployable.getName());
             }
-            instantiateAndDeploy(deployables, contributions, merged, recover);
-            for (Composite deployable : deployables) {
-                QName name = deployable.getName();
-                for (DeployListener listener : listeners) {
-                    listener.onDeployCompleted(name);
-                }
-            }
-            for (URI uri : uris) {
-                for (DeployListener listener : listeners) {
-                    listener.onDeployCompleted(uri);
-                }
-            }
-        } else {
-            // notify listeners
-            for (URI uri : uris) {
-                for (DeployListener listener : listeners) {
-                    listener.onDeploy(uri);
-                }
-            }
-            for (Composite deployable : deployables) {
-                for (DeployListener listener : listeners) {
-                    listener.onDeploy(deployable.getName());
-                }
-            }
-            instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, recover);
-            for (Composite deployable : deployables) {
-                for (DeployListener listener : listeners) {
-                    listener.onDeployCompleted(deployable.getName());
-                }
-            }
-            for (URI uri : uris) {
-                for (DeployListener listener : listeners) {
-                    listener.onDeployCompleted(uri);
-                }
+        }
+        for (URI uri : uris) {
+            for (DeployListener listener : listeners) {
+                listener.onDeployCompleted(uri);
             }
         }
     }

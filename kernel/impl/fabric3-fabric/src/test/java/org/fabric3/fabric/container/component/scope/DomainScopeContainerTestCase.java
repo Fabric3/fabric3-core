@@ -63,7 +63,7 @@ public class DomainScopeContainerTestCase extends TestCase {
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(component.createInstance()).andReturn(instance);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
@@ -83,7 +83,7 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
         EasyMock.replay(component, info, topologyService);
 
@@ -102,7 +102,7 @@ public class DomainScopeContainerTestCase extends TestCase {
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(component.createInstance()).andReturn(instance);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
@@ -125,7 +125,7 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
         EasyMock.replay(component, info, topologyService);
 
@@ -151,7 +151,7 @@ public class DomainScopeContainerTestCase extends TestCase {
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
 
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
         EasyMock.replay(component, info, topologyService);
 
@@ -174,7 +174,7 @@ public class DomainScopeContainerTestCase extends TestCase {
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
 
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
         EasyMock.replay(component, info, topologyService);
 

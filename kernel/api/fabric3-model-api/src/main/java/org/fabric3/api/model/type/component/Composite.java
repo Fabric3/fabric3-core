@@ -47,7 +47,7 @@ public class Composite extends ComponentType implements PolicyAware {
     private Autowire autowire;
 
     private boolean deployable;
-    private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.CONTROLLER, RuntimeMode.NODE, RuntimeMode.PARTICIPANT);
+    private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.NODE);
     private List<String> environments = Collections.emptyList();
 
     private Set<QName> intents = new LinkedHashSet<>();

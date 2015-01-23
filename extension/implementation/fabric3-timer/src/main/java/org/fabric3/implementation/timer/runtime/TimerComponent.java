@@ -87,7 +87,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
             if (topologyService != null) {
                 topologyService.register(this);
             }
-            if ((RuntimeMode.PARTICIPANT == info.getRuntimeMode() || RuntimeMode.NODE == info.getRuntimeMode()) && !topologyService.isZoneLeader()) {
+            if (RuntimeMode.NODE == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
                 // defer scheduling until this node becomes zone leader
                 return;
             }

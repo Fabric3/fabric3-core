@@ -90,17 +90,7 @@ public class DefaultBootstrapService implements BootstrapService {
     }
 
     public String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode) {
-        String runtimeName;
-        if (RuntimeMode.CONTROLLER == mode) {
-            runtimeName = domainName.getAuthority() + ":controller:" + runtimeId;
-        } else if (RuntimeMode.PARTICIPANT == mode) {
-            runtimeName = domainName.getAuthority() + ":participant:" + zoneName + ":" + runtimeId;
-        } else if (RuntimeMode.NODE == mode) {
-            runtimeName = domainName.getAuthority() + ":node:" + zoneName + ":" + runtimeId;
-        } else {
-            runtimeName = "vm";
-        }
-        return runtimeName;
+        return RuntimeMode.NODE == mode ? domainName.getAuthority() + ":node:" + zoneName + ":" + runtimeId : "vm";
     }
 
     public ScanResult scanRepository(HostInfo info) throws ScanException {

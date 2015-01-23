@@ -42,10 +42,9 @@ import org.oasisopen.sca.annotation.Service;
 
 /**
  * Manages domain-scoped components. A domain scoped component has only one instance active in a domain. The active instance will be hosted by the zone leader.
- * If a zone is clustered and the zone leader fails, clustered instances will be migrated to the newly elected leader and activated.
- * <p/>
- * During deployment, the container checks if the runtime is a zone leader. If it is, contexts will be started. Otherwise, they will be deferred until the
- * existing leader fails and the current host is elected zone leader.
+ * If a zone is clustered and the zone leader fails, clustered instances will be migrated to the newly elected leader and activated. <p/> During deployment, the
+ * container checks if the runtime is a zone leader. If it is, contexts will be started. Otherwise, they will be deferred until the existing leader fails and
+ * the current host is elected zone leader.
  */
 @EagerInit
 @Service({ScopeContainer.class, TopologyListener.class})
@@ -81,9 +80,9 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     public void startContext(QName deployable) throws GroupInitializationException {
-        if ((RuntimeMode.PARTICIPANT == info.getRuntimeMode() || RuntimeMode.NODE == info.getRuntimeMode()) && topologyService == null) {
+        if (RuntimeMode.NODE == info.getRuntimeMode() && topologyService == null) {
             return;
-        } else if ((RuntimeMode.PARTICIPANT == info.getRuntimeMode() || RuntimeMode.NODE == info.getRuntimeMode()) && !topologyService.isZoneLeader()) {
+        } else if (RuntimeMode.NODE == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
             // defer instantiation until this node becomes zone leader
             synchronized (deferredContexts) {
                 deferredContexts.add(deployable);

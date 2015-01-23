@@ -27,24 +27,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.contribution.ContributionResolver;
-import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.host.Names.HOST_CONTRIBUTION;
 
 /**
@@ -78,7 +75,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         this.metaDataStore = metaDataStore;
         this.info = info;
         this.listeners = Collections.emptyList();
-        initializeSysPaths(info, monitor);
+        initializeSysPaths(monitor);
 
     }
 
@@ -218,22 +215,16 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
     /**
      * Performs a workaround to enable specifying the path for native libraries on a per-extension classloader basis.
      *
-     * @param info    the runtime info
      * @param monitor the monitor
      */
-    private void initializeSysPaths(HostInfo info, ClassLoaderBuilderMonitor monitor) {
+    private void initializeSysPaths(ClassLoaderBuilderMonitor monitor) {
         try {
             sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
             sysPathsField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            // fail silently since sys_paths may not be supported on all JVMs, e.g. J9
-            if (RuntimeMode.PARTICIPANT == info.getRuntimeMode()) {
-                // only issue info if on participant since contribution loading will issue a warning as well. In VM mode where the two subsystems
-                // are collocated, this would result in duplicate messages
-                monitor.nativeLibrariesNotSupported();
-            }
+            // log message since sys_paths may not be supported on all JVMs, e.g. J9
+            monitor.nativeLibrariesNotSupported();
         }
     }
-
 
 }

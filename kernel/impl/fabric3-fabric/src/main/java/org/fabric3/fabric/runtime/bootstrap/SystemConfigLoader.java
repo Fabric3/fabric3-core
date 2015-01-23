@@ -218,12 +218,8 @@ public class SystemConfigLoader {
         if (nodes.getLength() == 1) {
             Element node = (Element) nodes.item(0);
             String name = node.getAttribute("mode");
-            if ("controller".equalsIgnoreCase(name)) {
-                return RuntimeMode.CONTROLLER;
-            } else if ("node".equalsIgnoreCase(name)) {
+            if ("node".equalsIgnoreCase(name)) {
                 return RuntimeMode.NODE;
-            } else if ("participant".equalsIgnoreCase(name)) {
-                return RuntimeMode.PARTICIPANT;
             }
         }
         return RuntimeMode.VM;

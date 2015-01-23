@@ -94,7 +94,7 @@ public class BindingSelectorImpl implements BindingSelector {
     }
 
     public void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException {
-        if ((RuntimeMode.CONTROLLER != info.getRuntimeMode() && RuntimeMode.NODE != info.getRuntimeMode()) || disable) {
+        if (RuntimeMode.NODE != info.getRuntimeMode() || disable) {
             // there are no remote wires when the domain is contained withing a single VM (including Participant mode, which has a runtime domain)
             return;
         }

@@ -37,8 +37,6 @@ public class Deployable implements Serializable {
     static {
         DEFAULT_MODES = new ArrayList<>();
         DEFAULT_MODES.add(RuntimeMode.VM);
-        DEFAULT_MODES.add(RuntimeMode.CONTROLLER);
-        DEFAULT_MODES.add(RuntimeMode.PARTICIPANT);
         DEFAULT_MODES.add(RuntimeMode.NODE);
     }
 

@@ -136,19 +136,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             String runtimeId;
             String runtimeDirName;
             String runtimeName;
-            if (RuntimeMode.CONTROLLER == runtimeMode) {
-                runtimeId = "controller";
-                runtimeName = "controller";
-                runtimeDirName = runtimeId;
-            } else if (RuntimeMode.PARTICIPANT == runtimeMode) {
-                runtimeId = getRuntimeId(mBeanServer);
-                runtimeName = runtimeId;
-                runtimeDirName = "participant";
-            } else {
-                runtimeId = getRuntimeId(mBeanServer);
-                runtimeName = runtimeId;
-                runtimeDirName = "vm";
-            }
+            runtimeId = getRuntimeId(mBeanServer);
+            runtimeName = runtimeId;
+            runtimeDirName = "vm";
             File rootRuntimeDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
             File runtimeDir = new File(rootRuntimeDir, runtimeDirName);
 
@@ -185,7 +175,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                                                                runtimeMode,
                                                                domainName,
                                                                environment,
-                                                               runtimeDir, extensionsDir,
+                                                               runtimeDir,
+                                                               extensionsDir,
                                                                deployDirs,
                                                                true);
 
@@ -341,11 +332,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     private static RuntimeMode getRuntimeMode() {
         // TODO implement by introspecting MBeans
         String mode = System.getProperty(FABRIC3_MODE, "vm");
-        if ("controller".equals(mode)) {
-            return RuntimeMode.CONTROLLER;
-        } else if ("participant".equals(mode)) {
-            return RuntimeMode.PARTICIPANT;
-        } else if (!"vm".equals(mode)) {
+        if (!"vm".equals(mode)) {
             throw new IllegalArgumentException("Invalid runtime mode: " + mode + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
         }
         return RuntimeMode.VM;

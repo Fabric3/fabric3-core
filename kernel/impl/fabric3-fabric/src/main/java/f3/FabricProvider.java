@@ -67,7 +67,6 @@ import org.fabric3.fabric.contract.JavaContractMatcherExtension;
 import org.fabric3.fabric.contract.JavaToRemoteContractMatcherExtension;
 import org.fabric3.fabric.contract.RemoteToJavaContractMatcherExtension;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
-import org.fabric3.fabric.domain.DeployMonitorListener;
 import org.fabric3.fabric.domain.DistributedDomain;
 import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
@@ -88,7 +87,6 @@ import org.fabric3.fabric.domain.generator.component.StartComponentCommandGenera
 import org.fabric3.fabric.domain.generator.component.StopComponentCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGeneratorImpl;
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGeneratorImpl;
-import org.fabric3.fabric.domain.generator.extension.ExtensionGeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorRegistryImpl;
 import org.fabric3.fabric.domain.generator.policy.DefaultPolicyRegistry;
@@ -278,8 +276,6 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(ContributionCollatorImpl.class).build());
 
-        compositeBuilder.component(newBuilder(ExtensionGeneratorImpl.class).build());
-
         compositeBuilder.component(newBuilder(ClassLoaderCommandGeneratorImpl.class).build());
 
         compositeBuilder.component(newBuilder(ChannelCommandGeneratorImpl.class).build());
@@ -363,8 +359,6 @@ public class FabricProvider {
         SystemComponentDefinitionBuilder componentBuilder = newBuilder("ApplicationDomain", DistributedDomain.class);
         componentBuilder.reference("logicalComponentManager", "LogicalComponentManager");
         compositeBuilder.component(componentBuilder.build());
-
-        compositeBuilder.component(newBuilder(DeployMonitorListener.class).build());
 
         compositeBuilder.component(newBuilder(ContributionHelperImpl.class).build());
 

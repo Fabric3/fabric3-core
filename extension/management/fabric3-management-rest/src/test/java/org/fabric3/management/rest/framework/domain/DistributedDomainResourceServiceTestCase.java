@@ -16,14 +16,13 @@
  */
 package org.fabric3.management.rest.framework.domain;
 
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.management.rest.model.Resource;
 
 /**
@@ -41,24 +40,6 @@ public class DistributedDomainResourceServiceTestCase extends TestCase {
 
         Resource resource = service.getDomainResource(request);
         Map<String, Object> properties = resource.getProperties();
-        assertNotNull(properties.get("contributions"));
-        assertNotNull(properties.get("deployments"));
-        assertNotNull(properties.get("components"));
-
-        EasyMock.verify(info, request);
-    }
-
-    public void testDistributedGetDomainResource() throws Exception {
-        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://localhost/management/domain")).atLeastOnce();
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER).atLeastOnce();
-        EasyMock.replay(info, request);
-
-        Resource resource = service.getDomainResource(request);
-        Map<String, Object> properties = resource.getProperties();
-
-        assertNotNull(properties.get("zones"));
-        assertNotNull(properties.get("runtimes"));
         assertNotNull(properties.get("contributions"));
         assertNotNull(properties.get("deployments"));
         assertNotNull(properties.get("components"));

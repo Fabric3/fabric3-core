@@ -216,11 +216,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             String[] modes = modeAttr.trim().split(" ");
             runtimeModes = new ArrayList<>();
             for (String mode : modes) {
-                if ("controller".equals(mode)) {
-                    runtimeModes.add(RuntimeMode.CONTROLLER);
-                } else if ("participant".equals(mode)) {
-                    runtimeModes.add(RuntimeMode.PARTICIPANT);
-                } else if ("vm".equals(mode)) {
+                if ("vm".equals(mode)) {
                     runtimeModes.add(RuntimeMode.VM);
                 } else if ("node".equals(mode)) {
                     runtimeModes.add(RuntimeMode.NODE);

@@ -35,10 +35,6 @@
         <f3:implementation.system class="org.fabric3.fabric.domain.generator.collator.ContributionCollatorImpl"/>
     </component>
 
-    <component name="ExtensionGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.domain.generator.extension.ExtensionGeneratorImpl"/>
-    </component>
-
     <component name="ClassLoaderGenerator">
         <f3:implementation.system class="org.fabric3.fabric.domain.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
     </component>

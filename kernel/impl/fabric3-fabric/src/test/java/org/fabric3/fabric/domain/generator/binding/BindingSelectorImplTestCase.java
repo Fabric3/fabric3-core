@@ -25,10 +25,11 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
@@ -40,6 +41,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -52,7 +54,7 @@ public class BindingSelectorImplTestCase extends TestCase {
 
     public void testBindWire() throws Exception {
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER).anyTimes();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).anyTimes();
 
         BindingProvider provider = EasyMock.createMock(BindingProvider.class);
         EasyMock.expect(provider.canBind(EasyMock.isA(LogicalWire.class))).andReturn(MATCH);
@@ -81,7 +83,7 @@ public class BindingSelectorImplTestCase extends TestCase {
 
     public void testSkipLocalWire() throws Exception {
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER).anyTimes();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).anyTimes();
 
         BindingProvider provider = EasyMock.createMock(BindingProvider.class);
         EasyMock.replay(info, provider);
@@ -97,7 +99,7 @@ public class BindingSelectorImplTestCase extends TestCase {
 
     public void testNoProviderForWire() throws Exception {
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER).anyTimes();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).anyTimes();
 
         BindingProvider provider = EasyMock.createMock(BindingProvider.class);
         EasyMock.expect(provider.canBind(EasyMock.isA(LogicalWire.class))).andReturn(NO_MATCH);
@@ -118,7 +120,7 @@ public class BindingSelectorImplTestCase extends TestCase {
 
     public void testBindChannel() throws Exception {
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER).anyTimes();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).anyTimes();
 
         BindingProvider provider = EasyMock.createMock(BindingProvider.class);
         EasyMock.expect(provider.canBind(EasyMock.isA(LogicalChannel.class))).andReturn(MATCH);
@@ -144,7 +146,7 @@ public class BindingSelectorImplTestCase extends TestCase {
 
     public void testNoProviderForChannel() throws Exception {
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER).anyTimes();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).anyTimes();
 
         BindingProvider provider = EasyMock.createMock(BindingProvider.class);
         EasyMock.expect(provider.canBind(EasyMock.isA(LogicalChannel.class))).andReturn(NO_MATCH);
@@ -181,7 +183,10 @@ public class BindingSelectorImplTestCase extends TestCase {
         });
         LogicalComponent target = new LogicalComponent(URI.create("composite/target"), definition, composite);
         target.setZone(targetZone);
-        LogicalService service = new LogicalService(URI.create("composite/source#service"), null, target);
+        ComponentService componentService = new ComponentService("test");
+        componentService.setServiceContract(new JavaServiceContract());
+        LogicalService service = new LogicalService(URI.create("composite/source#service"), componentService, target);
+
         target.addService(service);
         composite.addComponent(target);
 
