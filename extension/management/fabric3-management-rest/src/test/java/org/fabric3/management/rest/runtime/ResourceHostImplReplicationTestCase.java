@@ -28,7 +28,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;

@@ -25,10 +25,6 @@
         <f3:implementation.system class="org.fabric3.management.rest.transformer.TransformerPairServiceImpl"/>
     </component>
 
-    <component name="ZoneResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.zone.ZoneResourceService"/>
-    </component>
-
     <component name="RuntimeResourceService">
         <f3:implementation.system class="org.fabric3.management.rest.framework.runtime.RuntimeResourceService"/>
     </component>

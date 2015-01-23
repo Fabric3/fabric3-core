@@ -16,12 +16,12 @@
  */
 package org.fabric3.federation.jgroups;
 
-import org.fabric3.spi.federation.topology.ErrorResponse;
+import org.fabric3.spi.container.command.Response;
 
 /**
  * A response to a synchronous message returned when an exception is raised processing the original request.
  */
-public class RemoteSystemException implements ErrorResponse {
+public class RemoteSystemException implements Response {
     private static final long serialVersionUID = 3104883810536039817L;
 
     private Exception exception;

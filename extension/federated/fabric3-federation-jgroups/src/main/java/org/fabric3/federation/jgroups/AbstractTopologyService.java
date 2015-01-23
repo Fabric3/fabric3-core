@@ -29,7 +29,6 @@ import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.command.Response;
 import org.fabric3.spi.container.command.ResponseCommand;
 import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.RemoteSystemException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomain;

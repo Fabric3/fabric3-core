@@ -25,15 +25,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.Zone;
 import org.jgroups.Address;
 import org.jgroups.View;
 import org.jgroups.util.UUID;
@@ -45,7 +42,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class JGroupsHelperImpl implements JGroupsHelper {
     private ClassLoaderRegistry classLoaderRegistry;
-    private String runtimeType = "participant";
+    private String runtimeType = "node";
 
     public JGroupsHelperImpl(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
@@ -54,19 +51,6 @@ public class JGroupsHelperImpl implements JGroupsHelper {
     @Property(required = false)
     public void setRuntimeType(String runtimeType) {
         this.runtimeType = runtimeType;
-    }
-
-    // domain:controller:id
-    // domain:participant:zone:id
-
-    public Address getController(View view) {
-        for (Address address : view.getMembers()) {
-            String name = UUID.get(address);
-            if (name != null && name.substring(name.indexOf(":")).startsWith(":controller:")) {
-                return address;
-            }
-        }
-        return null;
     }
 
     public Address getZoneLeader(String zoneName, View view) {
@@ -187,16 +171,6 @@ public class JGroupsHelperImpl implements JGroupsHelper {
             removedRuntimes.removeAll(newView.getMembers());
         }
         return removedRuntimes;
-    }
-
-    public Set<Zone> getZones(Map<String, Map<String, RuntimeInstance>> runtimes) {
-        Set<Zone> zones = new HashSet<>();
-        for (Map.Entry<String, Map<String, RuntimeInstance>> entry : runtimes.entrySet()) {
-            List<RuntimeInstance> instances = new ArrayList<>(entry.getValue().values());
-            Zone zone = new Zone(entry.getKey(), instances);
-            zones.add(zone);
-        }
-        return zones;
     }
 
     public Set<Address> getNewZoneLeaders(View oldView, View newView) {

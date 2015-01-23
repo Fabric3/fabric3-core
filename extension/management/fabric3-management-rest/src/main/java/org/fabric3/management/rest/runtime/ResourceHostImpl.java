@@ -44,7 +44,6 @@ import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.BasicAuthenticator;
@@ -122,7 +121,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Init
-    public void start() throws ZoneChannelException {
+    public void start() throws MessageException {
         servletHost.registerMapping(MANAGEMENT_PATH, this);
         if (topologyService != null) {
             ResourceReplicationHandler handler = new ResourceReplicationHandler(this, monitor);
@@ -137,7 +136,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Destroy()
-    public void stop() throws ZoneChannelException {
+    public void stop() throws MessageException {
         servletHost.unregisterMapping(MANAGEMENT_PATH);
         if (topologyService != null) {
             topologyService.closeChannel(RESOURCE_CHANNEL);
@@ -219,7 +218,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         try {
-            invoke(mapping, params, false, workContext);
+            invoke(mapping, params, false);
         } catch (ResourceException e) {
             monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
         } finally {
@@ -316,7 +315,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             }
 
             Object[] params = marshaller.deserialize(verb, request, mapping);
-            Object value = invoke(mapping, params, true, workContext);
+            Object value = invoke(mapping, params, true);
             respond(value, mapping, request, response);
         } catch (ResourceException e) {
             respondError(e, mapping, response);
@@ -472,11 +471,10 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      * @param mapping     the resource mapping
      * @param params      the deserialized request parameters
      * @param replicate   true if the request should be replicated
-     * @param workContext the current work context
      * @return a return value or null
      * @throws ResourceException if an error invoking the resource occurs
      */
-    private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate, WorkContext workContext) throws ResourceException {
+    private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate) throws ResourceException {
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
@@ -517,7 +515,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      */
     private void replicate(ResourceMapping mapping, Object[] params) throws MessageException {
         if (topologyService != null && mapping.isReplicate() && mapping.getVerb() != Verb.GET) {
-            // only replicate if running on a participant and request is not HTTP GET 
+            // only replicate if running on a node and request is not HTTP GET
             ReplicationEnvelope envelope;
             if (params.length > 0 && params[0] instanceof HttpServletRequest) {
                 HttpServletRequest oldRequest = (HttpServletRequest) params[0];

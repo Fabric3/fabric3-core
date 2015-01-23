@@ -41,7 +41,6 @@ import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
-import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomainCompleted;
@@ -51,7 +50,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 /**
- * Implementation designed to work on controller, participant and node runtimes.
+ *
  */
 @Service(AddressCache.class)
 public class AddressCacheImpl implements AddressCache, TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
@@ -91,7 +90,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Destroy
-    public void destroy() throws ZoneChannelException {
+    public void destroy() throws MessageException {
         if (isNode()) {
             topologyService.closeChannel(qualifiedChannelName);
             topologyService.deregister(this);

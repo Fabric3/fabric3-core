@@ -21,17 +21,9 @@ import java.io.Serializable;
 import org.fabric3.spi.container.command.Command;
 
 /**
- * Responsible for communications across a federated (distributed) domain consisting of node runtimes.
+ * Responsible for communications across a federated (distributed) domain.
  */
 public interface NodeTopologyService {
-
-    /**
-     * Sends a command asynchronously to all runtimes in the domain.
-     *
-     * @param command the command
-     * @throws MessageException if there is an error sending the message
-     */
-    void broadcast(Command command) throws MessageException;
 
     /**
      * Returns true if the current runtime is the zone leader.
@@ -55,11 +47,12 @@ public interface NodeTopologyService {
     void deregister(TopologyListener listener);
 
     /**
-     * Returns the name of the zone leader.
+     * Sends a command asynchronously to all runtimes in the domain.
      *
-     * @return the name of the zone leader or null if the current runtime has not joined the domain
+     * @param command the command
+     * @throws MessageException if there is an error sending the message
      */
-    String getZoneLeaderName();
+    void broadcast(Command command) throws MessageException;
 
     /**
      * Asynchronously sends a message over the given channel to the specified runtime.
@@ -72,31 +65,31 @@ public interface NodeTopologyService {
     void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException;
 
     /**
+     * Asynchronously sends a message over the given channel.
+     *
+     * @param channelName    the channel name
+     * @param message the message
+     * @throws MessageException if there is an error sending the message
+     */
+    void sendAsynchronous(String channelName, Serializable message) throws MessageException;
+
+    /**
      * Opens a channel.
      *
      * @param name          the channel name
      * @param configuration the channel configuration or null to use the default configuration
      * @param receiver      the receiver to callback when a message is received
      * @param listener      an optional topology listener. May be null.
-     * @throws ZoneChannelException if an error occurs opening the channel
+     * @throws MessageException if an error occurs opening the channel
      */
-    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException;
+    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws MessageException;
 
     /**
      * Closes a channel.
      *
      * @param name the channel name
-     * @throws ZoneChannelException if an error occurs closing the channel
+     * @throws MessageException if an error occurs closing the channel
      */
-    void closeChannel(String name) throws ZoneChannelException;
-
-    /**
-     * Asynchronously sends a message over the given channel.
-     *
-     * @param name    the channel name
-     * @param message the message
-     * @throws MessageException if there is an error sending the message
-     */
-    void sendAsynchronous(String name, Serializable message) throws MessageException;
+    void closeChannel(String name) throws MessageException;
 
 }

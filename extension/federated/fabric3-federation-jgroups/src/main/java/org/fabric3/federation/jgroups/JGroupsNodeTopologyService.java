@@ -38,9 +38,7 @@ import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.TopologyListener;
-import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -161,26 +159,9 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         topologyListeners.remove(listener);
     }
 
-    public boolean isControllerAvailable() {
-        return false;
-    }
-
-    @ManagementOperation(description = "The name of the zone leader")
-    public String getZoneLeaderName() {
-        View view = domainChannel.getView();
-        if (view == null) {
-            return null;
-        }
-        Address address = helper.getZoneLeader(zoneName, view);
-        if (address == null) {
-            return null;
-        }
-        return UUID.get(address);
-    }
-
-    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws MessageException {
         if (channels.containsKey(name)) {
-            throw new ZoneChannelException("Channel already open:" + name);
+            throw new MessageException("Channel already open:" + name);
         }
         try {
 
@@ -204,22 +185,22 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             channel.setReceiver(delegatingReceiver);
             channel.connect(info.getDomain().getAuthority() + ":" + name);
         } catch (Exception e) {
-            throw new ZoneChannelException(e);
+            throw new MessageException(e);
         }
     }
 
-    public void closeChannel(String name) throws ZoneChannelException {
+    public void closeChannel(String name) throws MessageException {
         Channel channel = channels.remove(name);
         if (channel == null) {
-            throw new ZoneChannelException("Channel not found: " + name);
+            throw new MessageException("Channel not found: " + name);
         }
         channel.close();
     }
 
-    public void sendAsynchronous(String name, Serializable message) throws MessageException {
-        Channel channel = channels.get(name);
+    public void sendAsynchronous(String channelName, Serializable message) throws MessageException {
+        Channel channel = channels.get(channelName);
         if (channel == null) {
-            throw new MessageException("Channel not found: " + name);
+            throw new MessageException("Channel not found: " + channelName);
         }
         try {
             byte[] payload = helper.serialize(message);
