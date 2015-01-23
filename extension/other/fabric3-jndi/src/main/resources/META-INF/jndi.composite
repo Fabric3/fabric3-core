@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="JndiExtension"
+           autowire="true">
+
+    <component name="JndiContextLoader" f3:key="f3:jndi">
+        <f3:implementation.system class="org.fabric3.jndi.introspection.JndiContextLoader"/>
+    </component>
+
+    <component name="JndiContextGenerator" f3:key="org.fabric3.api.model.type.resource.jndi.JndiContextDefinition">
+        <f3:implementation.system class="org.fabric3.jndi.generator.JndiContextGenerator"/>
+    </component>
+
+    <component name="JndiContextBuilder" f3:key="org.fabric3.jndi.provision.PhysicalJndiContextDefinition">
+        <f3:implementation.system class="org.fabric3.jndi.runtime.JndiContextBuilder"/>
+    </component>
+
+    <component name="JndiContextManager">
+        <f3:implementation.system class="org.fabric3.jndi.impl.JndiContextManagerImpl"/>
+    </component>
+
+
+</composite>

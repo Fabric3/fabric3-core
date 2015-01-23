@@ -12,6 +12,5 @@
     <export.java package="org.fabric3.management.rest.model" version="3.0.0"/>
 
     <deployable composite="f3:ManagementExtension"/>
-    <deployable composite="f3:ManagementControllerExtension" modes="controller node vm"/>
 
 </contribution>

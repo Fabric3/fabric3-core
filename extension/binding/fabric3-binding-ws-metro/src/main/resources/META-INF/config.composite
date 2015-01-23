@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="MetroConfigBinding"
+           autowire="true">
+
+    <component name="BindingIDResolver">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.DefaultBindingIdResolver"/>
+    </component>
+
+    <component name="ClassDefiner">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.ClassDefinerImpl"/>
+    </component>
+
+    <component name="ClassLoaderUpdater">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.ClassLoaderUpdaterImpl"/>
+    </component>
+
+    <component name="MetroBinding">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.MetroBinding"/>
+        <property name="logLevel" source="$systemConfig//f3:web.services/f3:metro/@logging"/>
+    </component>
+
+
+</composite>

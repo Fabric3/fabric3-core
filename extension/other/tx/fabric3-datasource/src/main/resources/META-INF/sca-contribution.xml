@@ -7,7 +7,5 @@
     <import.java package="org.fabric3.spi.*" version="3.0.0"/>
     <import.java package="org.fabric3.resource.spi" version="3.0.0"/>
     <export.java package="org.fabric3.datasource.spi" version="3.0.0"/>
-    <deployable composite="f3:DataSourceRegistryExtension"/>
-    <deployable composite="f3:DataSourceControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:DataSourceParticipantExtension" modes="participant node vm"/>
+    <deployable composite="f3:DataSourceExtension"/>
 </contribution>

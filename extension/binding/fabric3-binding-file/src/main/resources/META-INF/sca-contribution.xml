@@ -8,7 +8,6 @@
 
     <f3:provides.capability name="file.binding"/>
 
-    <deployable composite="f3:FileBindingControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:FileBindingRuntimeExtension" modes="participant node vm"/>
+    <deployable composite="f3:FileBindingExtension"/>
 
 </contribution>

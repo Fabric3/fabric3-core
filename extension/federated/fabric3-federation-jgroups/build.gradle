@@ -1,6 +1,5 @@
 
 dependencies {
-    compile  project(':extension:federated:fabric3-federation-deployment')
     compile  project(':extension:federated:fabric3-jgroups')
     compile  project(':extension:federated:fabric3-federation-node')
 

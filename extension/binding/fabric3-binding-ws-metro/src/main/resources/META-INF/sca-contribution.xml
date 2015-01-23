@@ -20,10 +20,9 @@
     <export.java package="javax.xml.ws.*" version="2.2.0"/>
     <export.java package="com.sun.xml.messaging.saaj.*" version="2.2.0"/>
 
-    <!-- MetroBinding must be the first composite deployed as it configures the Metro extension -->
-    <deployable composite="f3:MetroBinding"/>
-    <deployable composite="f3:MetroControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:MetroParticipantExtension" modes="participant node vm"/>
+    <!-- MetroConfigBinding must be the first composite deployed as it configures the Metro extension -->
+    <deployable composite="f3:MetroConfigBinding"/>
+    <deployable composite="f3:MetroExtension"/>
 
     <f3:extends name="jaxws"/>
     <f3:provides name="jaxb"/>

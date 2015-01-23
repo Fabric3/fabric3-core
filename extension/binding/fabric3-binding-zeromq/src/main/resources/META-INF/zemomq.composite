@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="ZeroMQExtension"
+           autowire="true">
+
+    <component name="ZeroMQChannelBindingBuilder" f3:key="org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.builder.ZeroMQChannelBindingBuilder"/>
+    </component>
+
+    <component name="ZeroMQConnectionTargetAttacher"
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQConnectionTargetAttacher"/>
+    </component>
+
+    <component name="ZeroMQConnectionSourceAttacher"
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQConnectionSourceAttacher"/>
+    </component>
+
+    <component name="ZeroMQSourceAttacher"
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQSourceAttacher"/>
+    </component>
+
+    <component name="ZeroMQTargetAttacher"
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQTargetAttacher"/>
+    </component>
+
+    <component name="ContextManager">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.context.ContextManagerImpl"/>
+    </component>
+
+    <component name="ZeroMQPubSubBroker">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQPubSubBrokerImpl"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
+        <property name="host" source="$systemConfig/f3:runtime/@host.address"/>
+        <property name="pollTimeout" source="$systemConfig//f3:zeromq.binding/@poll.timeout"/>
+    </component>
+
+    <component name="ZeroMQWireBroker">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQWireBrokerImpl"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
+        <property name="host" source="$systemConfig/f3:runtime/@host.address"/>
+        <property name="pollTimeout" source="$systemConfig//f3:zeromq.binding/@poll.timeout"/>
+    </component>
+
+    <component name="ZeroMQTransport" f3:key="zeromq">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQTransport"/>
+    </component>
+
+    <component name="ZeroMQManagementService">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementServiceImpl"/>
+    </component>
+
+    <component name="ZeroMQBindingLoader" f3:key="f3:binding.zeromq">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQBindingLoader"/>
+    </component>
+
+    <component name="ZeroMQPostProcessor">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQPostProcessor"/>
+    </component>
+
+    <component name="ZeroMQWireBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQWireBindingGenerator"/>
+    </component>
+
+    <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator"/>
+    </component>
+
+    <component name="ZeroMQCallbackBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQCallbackBindingGenerator"/>
+    </component>
+    <component name="ZeroMQBindingProvider">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.provider.ZeroMQBindingProvider"/>
+        <property name="enabled" source="$systemConfig//f3:zeromq.binding/@bindingProvider"/>
+        <property name="highWater" source="$systemConfig//f3:zeromq.binding/@high.water"/>
+        <property name="multicastRate" source="$systemConfig//f3:zeromq.binding/@multicast.rate"/>
+        <property name="multicastRecovery" source="$systemConfig//f3:zeromq.binding/@multicast.recovery"/>
+        <property name="sendBuffer" source="$systemConfig//f3:zeromq.binding/@send.buffer"/>
+        <property name="receiveBuffer" source="$systemConfig//f3:zeromq.binding/@receive.buffer"/>
+    </component>
+
+</composite>

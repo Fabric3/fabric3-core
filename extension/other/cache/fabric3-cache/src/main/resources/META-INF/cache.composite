@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="CacheControllerExtension"
+           autowire="true">
+
+    <component name="CacheResourceLoader" f3:key="f3:caches">
+        <f3:implementation.system class="org.fabric3.cache.introspection.CacheResourceLoader"/>
+    </component>
+
+    <component name="CacheResourceTypeHandler" f3:key="java.util.concurrent.ConcurrentMap">
+        <f3:implementation.system class="org.fabric3.cache.introspection.CacheResourceTypeHandler"/>
+    </component>
+
+    <component name="CacheProcessor" f3:key="org.fabric3.api.annotation.Cache">
+        <f3:implementation.system class="org.fabric3.cache.introspection.CacheProcessor"/>
+    </component>
+
+    <component name="CacheReferenceGenerator" f3:key="org.fabric3.cache.model.CacheReferenceDefinition">
+        <f3:implementation.system class="org.fabric3.cache.generator.CacheReferenceGenerator"/>
+    </component>
+
+    <component name="CacheSetResourceGenerator" f3:key="org.fabric3.cache.model.CacheSetResourceDefinition">
+        <f3:implementation.system class="org.fabric3.cache.generator.CacheSetResourceGenerator"/>
+    </component>
+
+    <component name="CacheRegistry">
+        <f3:implementation.system class="org.fabric3.cache.runtime.CacheRegistryImpl"/>
+    </component>
+
+    <component name="CacheTargetWireAttacher" f3:key="org.fabric3.cache.provision.CacheWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.cache.runtime.CacheTargetWireAttacher"/>
+    </component>
+
+    <component name="CacheResourceBuilder" f3:key="org.fabric3.cache.provision.PhysicalCacheSetDefinition">
+        <f3:implementation.system class="org.fabric3.cache.runtime.CacheResourceBuilder"/>
+    </component>
+
+</composite>

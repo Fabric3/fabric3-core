@@ -4,5 +4,5 @@
               f3:extension="true">
     <import.java package="org.fabric3.spi.*" version="3.0.0"/>
     <export.java package="org.fabric3.contribution.scanner.spi" version="3.0.0"/>
-    <deployable composite="f3:ContributionScannerExtension" modes="controller vm node"/>
+    <deployable composite="f3:ContributionScannerExtension"/>
 </contribution>

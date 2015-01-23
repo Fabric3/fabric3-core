@@ -18,6 +18,5 @@
     <export.java package="org.fabric3.implementation.timer.model" version="3.0.0"/>
     <export.java package="org.fabric3.implementation.timer.provision" version="3.0.0"/>
 
-    <deployable composite="f3:TimerControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:TimerParticipantExtension" modes="participant node vm"/>
+    <deployable composite="f3:TimerImplementationExtension"/>
 </contribution>

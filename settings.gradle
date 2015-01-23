@@ -16,8 +16,8 @@ include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy',
         'extension:core:fabric3-recovery', 'extension:core:fabric3-sca-intents', 'extension:core:fabric3-test-spi'
 
 // Federation extensions
-include 'extension:federated:fabric3-federation-allocation', 'extension:federated:fabric3-federation-deployment', 'extension:federated:fabric3-jgroups',
-        'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups', 'extension:federated:fabric3-federation-provisioning'
+include 'extension:federated:fabric3-federation-allocation', 'extension:federated:fabric3-jgroups',
+        'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups'
 
 // Implementation extensions
 include 'extension:implementation:fabric3-java', 'extension:implementation:fabric3-junit-api', 'extension:implementation:fabric3-junit',
@@ -68,7 +68,7 @@ include 'runtime:standalone:fabric3-standalone-server', 'runtime:standalone:fabr
 include 'runtime:tomcat:fabric3-tomcat-host', 'runtime:tomcat:fabric3-tomcat7-extension', 'runtime:tomcat:fabric3-runtime-tomcat'
 
 include 'runtime:weblogic:fabric3-weblogic-mock', 'runtime:weblogic:fabric3-weblogic-api', 'runtime:weblogic:fabric3-weblogic-cluster',
-        'runtime:weblogic:fabric3-weblogic-federation', 'runtime:weblogic:fabric3-weblogic-jms', 'runtime:weblogic:fabric3-weblogic-kernel',
+        'runtime:weblogic:fabric3-weblogic-jms', 'runtime:weblogic:fabric3-weblogic-kernel',
         'runtime:weblogic:fabric3-weblogic-host', 'runtime:weblogic:fabric3-runtime-weblogic'
 
 include 'runtime:node:fabric3-node', 'runtime:node:fabric3-node-extensions', 'runtime:node:fabric3-node-distribution'

@@ -8,6 +8,5 @@
     <import.java package="org.fabric3.binding.jms.spi.common" version="3.0.0"/>
     <import.java package="org.fabric3.api.binding.jms.*" version="3.0.0"/>
     <import.java package="org.fabric3.binding.jms.spi.*" version="3.0.0"/>
-    <deployable composite="f3:WebLogicJmsControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:WebLogicJmsParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:WebLogicJmsExtension"/>
 </contribution>

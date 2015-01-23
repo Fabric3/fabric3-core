@@ -7,8 +7,7 @@
     <import.java package="org.fabric3.binding.jms.spi.common" version="3.0.0"/>
     <import.java package="org.fabric3.api.binding.jms.*" version="3.0.0"/>
     <import.java package="org.fabric3.binding.jms.spi.*" version="3.0.0"/>
-    <deployable composite="f3:ActiveMQRuntimeExtension" modes="participant node vm"/>
-    <deployable composite="f3:ActiveMQControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:ActiveMQExtension"/>
     <f3:extends name="jms"/>
     <f3:requires.capability name="transaction"/>
     <f3:provides.capability name="jms"/>

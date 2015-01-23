@@ -2,11 +2,39 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3="urn:fabric3.org"
            targetNamespace="urn:fabric3.org"
-           name="DataSourceRegistryExtension"
+           name="DataSourceExtension"
            autowire="true">
 
     <component name="DataSourceRegistry">
         <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceRegistryImpl"/>
+    </component>
+
+    <component name="DataSourceTypeHandler" f3:key="javax.sql.DataSource">
+        <f3:implementation.system class="org.fabric3.datasource.introspection.DataSourceTypeHandler"/>
+    </component>
+
+    <component name="JSR250DataSourceTypeHandler" f3:key="javax.sql.DataSource">
+        <f3:implementation.system class="org.fabric3.datasource.introspection.JSR250DataSourceTypeHandler"/>
+    </component>
+
+    <component name="DataSourceGenerator" f3:key="org.fabric3.datasource.model.DataSourceResourceReference">
+        <f3:implementation.system class="org.fabric3.datasource.generator.DataSourceResourceReferenceGenerator"/>
+    </component>
+
+    <component name="DataSourceResourceLoader" f3:key="f3:datasources">
+        <f3:implementation.system class="org.fabric3.datasource.introspection.DataSourceResourceLoader"/>
+    </component>
+
+    <component name="DataSourceResourceGenerator" f3:key="org.fabric3.api.model.type.resource.datasource.DataSourceResource">
+        <f3:implementation.system class="org.fabric3.datasource.generator.DataSourceResourceGenerator"/>
+    </component>
+
+    <component name="DataSourceBuilder" f3:key="org.fabric3.datasource.provision.PhysicalDataSourceResource">
+        <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceBuilder"/>
+    </component>
+
+    <component name="DataSourceWireAttacher" f3:key="org.fabric3.datasource.provision.DataSourceWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceWireAttacher"/>
     </component>
 
 

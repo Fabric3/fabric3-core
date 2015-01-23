@@ -6,8 +6,7 @@
     <import.java package="org.fabric3.spi.*" version="3.0.0"/>
     <export.java package="org.fabric3.jndi.spi" version="3.0.0"/>
 
-    <deployable composite="f3:JndiControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:JndiParticipantExtension" modes="participant node vm"/>
+    <deployable composite="f3:JndiExtension"/>
 
     <f3:provides name="jndi"/>
 </contribution>

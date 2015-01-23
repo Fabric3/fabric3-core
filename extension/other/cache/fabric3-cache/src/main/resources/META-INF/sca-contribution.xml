@@ -7,7 +7,6 @@
     <import.java package="org.fabric3.resource.spi" version="3.0.0"/>
     <export.java package="org.fabric3.cache.spi" version="3.0.0"/>
 
-    <deployable composite="f3:CacheControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:CacheParticipantExtension" modes="participant node vm"/>
+    <deployable composite="f3:CacheExtension"/>
 
 </contribution>

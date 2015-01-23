@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="MetroExtension"
+           autowire="true">
+
+    <component name="WsdlResolver">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.WsdlResolverImpl"/>
+    </component>
+
+    <component name="EndpointResolver">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.EndpointResolverImpl"/>
+    </component>
+
+    <component name="EndpointSynthesizer">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.EndpointSynthesizerImpl"/>
+    </component>
+
+    <component name="WsdlSynthesizer">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlSynthesizerImpl"/>
+    </component>
+
+    <component name="WsdlEndpointValidator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.validator.WsdlEndpointValidatorImpl"/>
+        <property name="enabled" source="$systemConfig/f3:sca/@wsdl.validation"/>
+    </component>
+
+    <component name="TargetUrlResolver">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolverImpl"/>
+    </component>
+
+    <component name="JavaInterfaceGenerator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
+    </component>
+
+    <component name="InterfaceFromWsdlGenerator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceFromWsdlGeneratorImpl"/>
+    </component>
+
+    <component name="JavaWsdlGenerator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGeneratorImpl"/>
+    </component>
+
+    <component name="WsdlPolicyAttacher">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacherImpl"/>
+    </component>
+
+    <component name="MetroWireBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroWireBindingGenerator"/>
+    </component>
+
+    <component name="WsdlGeneratorDelegate" f3:key="org.fabric3.wsdl.model.WsdlServiceContract">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlGeneratorDelegate"/>
+    </component>
+
+    <component name="JavaGeneratorDelegate" f3:key="org.fabric3.spi.model.type.java.JavaServiceContract">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.JavaGeneratorDelegate"/>
+    </component>
+
+    <component name="MetroContributionServiceListener">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.contribution.MetroContributionServiceListener"/>
+    </component>
+
+
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition" name="MetroJavaSourceWireAttacher">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaSourceWireAttacher"/>
+    </component>
+
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireSourceDefinition" name="MetroWsdlSourceWireAttacher">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlSourceWireAttacher"/>
+    </component>
+
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition" name="MetroJavaTargetWireAttacher">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaTargetWireAttacher"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
+    </component>
+
+    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireTargetDefinition" name="MetroWsdlTargetWireAttacher">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlTargetWireAttacher"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
+    </component>
+
+    <component name="FeatureResolver">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.policy.DefaultFeatureResolver"/>
+    </component>
+
+    <component name="WireAttacherHelper">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.WireAttacherHelperImpl"/>
+    </component>
+
+    <component name="F3SecurityEnvironment">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.security.F3SecurityEnvironment"/>
+    </component>
+
+    <component name="CertificateValidator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.security.CertificateValidatorImpl"/>
+    </component>
+
+    <component name="EndpointService">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.core.EndpointServiceImpl"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
+    </component>
+
+</composite>

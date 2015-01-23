@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           targetNamespace="urn:fabric3.org"
+           name="JmsBindingExtension">
+
+    <component name="MessageContainerFactory">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.container.MessageContainerFactoryImpl"/>
+        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
+        <property name="transactionTimeout" source="$systemConfig//f3:jms/@transaction.timeout"/>
+    </component>
+
+    <component name="MessageContainerManager">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.container.MessageContainerManagerImpl"/>
+        <property name="pauseOnStart" source="$systemConfig//f3:jms/@pause.on.start"/>
+    </component>
+
+
+    <component name="JmsSourceWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsSourceWireAttacher"/>
+    </component>
+
+    <component name="JmsTargetWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsTargetWireAttacher"/>
+    </component>
+
+    <component name="JmsConnectionSourceAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionSourceAttacher"/>
+    </component>
+
+    <component name="JmsConnectionTargetAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionTargetAttacher"/>
+    </component>
+
+    <component name="AdministeredObjectResolver">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolverImpl"/>
+    </component>
+
+    <component name="AlwaysCreateDestination" f3:key="ALWAYS">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.AlwaysDestinationStrategy"/>
+    </component>
+
+    <component name="NeverCreateDestination" f3:key="NEVER">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.NeverDestinationStrategy"/>
+    </component>
+
+    <component name="IfNotExistCreateDestination" f3:key="IF_NOT_EXIST">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.IfNotExistDestinationStrategy"/>
+    </component>
+
+    <component name="AlwaysCreateConnectionFactory" f3:key="ALWAYS">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.AlwaysConnectionFactoryStrategy"/>
+    </component>
+
+    <component name="NeverCreateConnectionFactory" f3:key="NEVER">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.NeverConnectionFactoryStrategy"/>
+    </component>
+
+    <component name="IfNotExistCreateConnectionFactory" f3:key="IF_NOT_EXIST">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.IfNotExistConnectionFactoryStrategy"/>
+    </component>
+
+    <component name="JndiConnectionFactoryResolver">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.jndi.JndiAdministeredObjectResolver"/>
+    </component>
+
+    <component name="JndiClassLoaderUpdater">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.jndi.JndiClassLoaderUpdater"/>
+    </component>
+
+    <component name="ConnectionFactoryCreatorRegistry">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.connection.ConnectionFactoryCreatorRegistryImpl"/>
+    </component>
+
+    <component name="ConfigurationBuilder">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.connection.ConfigurationBuilder"/>
+        <property name="defaultProvider" source="$systemConfig//f3:jms/@default.provider"/>
+        <property name="connectionFactories" source="$systemConfig//f3:jms/f3:connection.factories"/>
+    </component>
+
+    <component name="JmsChannelBindingBuilder" f3:key="org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.builder.JmsChannelBindingBuilder"/>
+    </component>
+
+    <component name="ConnectionFactoryBuilder" f3:key="org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource">
+        <f3:implementation.system class="org.fabric3.binding.jms.builder.ConnectionFactoryBuilder"/>
+    </component>
+
+    <component f3:key="sca:binding.jms" name="JMSBindingLoader">
+        <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingLoader"/>
+    </component>
+
+    <component name="JmsWireBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsWireBindingGenerator"/>
+    </component>
+
+    <component name="JmsBindingPostProcessor">
+        <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingPostProcessor"/>
+    </component>
+
+    <component name="JmsConnectionBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsConnectionBindingGenerator"/>
+    </component>
+
+    <component name="MessageTypeIntrospector">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.PayloadTypeIntrospectorImpl"/>
+    </component>
+
+    <component name="ConnectionFactoryResourceGenerator" f3:key="org.fabric3.api.binding.jms.resource.ConnectionFactoryResource">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.ConnectionFactoryResourceGenerator"/>
+    </component>
+
+    <component name="ConnectionFactoryResourceLoader" f3:key="f3:connection.factory">
+        <f3:implementation.system class="org.fabric3.binding.jms.introspection.ConnectionFactoryResourceLoader"/>
+    </component>
+
+
+</composite>

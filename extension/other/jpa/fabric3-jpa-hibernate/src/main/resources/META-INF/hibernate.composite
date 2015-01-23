@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="HibernateExtension"
+           autowire="true">
+
+    <component name="LogSetter">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.LogSetter"/>
+    </component>
+
+    <component name="DefaultEntityManagerFactoryCache">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.emf.DefaultEntityManagerFactoryCache"/>
+    </component>
+
+    <component name="F3TransactionManagerLookup">
+        <f3:implementation.system class="org.fabric3.jpa.api.F3TransactionManagerLookup"/>
+    </component>
+
+    <component name="PersistenceUnitWireAttacher" f3:key="org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.PersistenceUnitWireAttacher"/>
+    </component>
+
+    <component name="PersistenceContextWireAttacher" f3:key="org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.PersistenceContextWireAttacher"/>
+    </component>
+
+    <component name="SessionWireAttacher" f3:key="org.fabric3.jpa.provision.SessionWireTargetDefinition">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.SessionWireAttacher"/>
+    </component>
+
+    <component name="PersistenceContextParser">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.emf.PersistenceContextParserImpl"/>
+    </component>
+
+    <component name="CachingEntityManagerFactoryResolver">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.emf.CachingEntityManagerFactoryResolver"/>
+    </component>
+
+    <component name="EntityManagerService">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.proxy.EntityManagerServiceImpl"/>
+    </component>
+
+    <component name="HibernateContributionListener">
+        <f3:implementation.system class="org.fabric3.jpa.contribution.HibernateContributionListener"/>
+    </component>
+
+    <component name="PersistenceUnitProcessor" f3:key="javax.persistence.PersistenceUnit">
+        <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceUnitProcessor"/>
+    </component>
+
+    <component name="PersistenceContextProcessor" f3:key="javax.persistence.PersistenceContext">
+        <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceContextProcessor"/>
+    </component>
+
+    <component name="PersistenceOverridesElementLoader">
+        <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceOverridesElementLoader"/>
+    </component>
+
+    <component name="PersistenceUnitOverridesElementLoader">
+        <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceUnitOverridesElementLoader"/>
+    </component>
+
+    <component name="SessionResourceGenerator" f3:key="org.fabric3.jpa.model.HibernateSessionResourceReference">
+        <f3:implementation.system class="org.fabric3.jpa.generator.SessionResourceReferenceGenerator"/>
+    </component>
+
+    <component name="PersistenceUnitResourceWireGenerator" f3:key="org.fabric3.jpa.model.PersistenceUnitResourceReference">
+        <f3:implementation.system class="org.fabric3.jpa.generator.PersistenceUnitResourceReferenceGenerator"/>
+    </component>
+
+    <component name="PersistenceContextResourceWireGenerator" f3:key="org.fabric3.jpa.model.PersistenceContextResourceReference">
+        <f3:implementation.system class="org.fabric3.jpa.generator.PersistenceContextResourceReferenceGenerator"/>
+    </component>
+
+    <component name="OverrideRegistry">
+        <f3:implementation.system class="org.fabric3.jpa.override.OverrideRegistryImpl"/>
+    </component>
+
+    <component name="SystemConfigOverrideParser">
+        <f3:implementation.system class="org.fabric3.jpa.override.SystemConfigOverrideParser"/>
+        <property name="overrideConfig" source="$systemConfig/f3:persistence"/>
+    </component>
+
+</composite>

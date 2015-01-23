@@ -16,6 +16,5 @@
     <f3:provides.capability name="jpa"/>
     <f3:provides.capability name="hibernate"/>
 
-    <deployable composite="f3:HibernateControllerExtension" modes = "controller node vm"/>
-    <deployable composite="f3:HibernateParticipantExtension" modes = "participant node vm"/>
+    <deployable composite="f3:HibernateExtension"/>
 </contribution>

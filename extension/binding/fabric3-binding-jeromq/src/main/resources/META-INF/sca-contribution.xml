@@ -12,7 +12,6 @@
 
     <f3:provides.capability name="zeromq"/>
 
-    <deployable composite="f3:ZeroMQControllerExtension" modes="controller vm node"/>
-    <deployable composite="f3:ZeroMQRuntimeExtension" modes="participant vm node"/>
+    <deployable composite="f3:ZeroMQExtension"/>
 
 </contribution>

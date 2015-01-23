@@ -5,15 +5,11 @@
     <import.java package="org.fabric3.spi.*" version="3.0.0"/>
     <import.java package="org.fabric3.util.*" version="3.0.0"/>
     <import.java package="org.fabric3.federation.jgroups.log" version="3.0.0"/>
-    <import.java package="org.fabric3.federation.deployment.command" version="3.0.0"/>
-    <import.java package="org.fabric3.federation.deployment.executor" version="3.0.0"/>
     <import.java package="org.fabric3.federation.node.command" version="3.0.0"/>
     <import.java package="org.fabric3.federation.node.merge" version="3.0.0"/>
 
     <import.java package="org.jgroups.*" version="3.0.0"/>
 
-    <deployable composite="f3:JGroupsFederationCommonExtension" modes="controller participant node"/>
-    <deployable composite="f3:JGroupsFederationControllerExtension" modes="controller"/>
-    <deployable composite="f3:JGroupsFederationParticipantExtension" modes="participant"/>
+    <deployable composite="f3:JGroupsFederationConfigExtension" modes="node"/>
     <deployable composite="f3:JGroupsFederationNodeExtension" modes="node"/>
 </contribution>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           name="TimerImplementationExtension"
+           targetNamespace="urn:fabric3.org"
+           autowire="true">
+
+    <component name="TimerImplementationLoader" f3:key="f3:implementation.timer">
+        <f3:implementation.system class="org.fabric3.implementation.timer.introspection.TimerImplementationLoader"/>
+    </component>
+
+    <component name="TimerComponentGenerator" f3:key="org.fabric3.api.implementation.timer.model.TimerImplementation">
+        <f3:implementation.system class="org.fabric3.implementation.timer.generator.TimerComponentGenerator"/>
+    </component>
+
+    <component name="TimerImplementationProcessor" f3:key="f3:implementation.timer">
+        <f3:implementation.system class="org.fabric3.implementation.timer.introspection.TimerImplementationProcessor"/>
+    </component>
+
+    <component name="TimerComponentBuilder" f3:key="org.fabric3.implementation.timer.provision.TimerComponentDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.timer.runtime.TimerComponentBuilder"/>
+    </component>
+
+
+</composite>

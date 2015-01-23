@@ -13,7 +13,6 @@
     <import.java package="org.fabric3.spring.spi"/>
     <import.java package="org.fabric3.datasource.spi"/>
 
-    <deployable composite="f3:SpringControllerExtension" modes="controller node vm"/>
-    <deployable composite="f3:SpringParticipantExtension" modes="participant node vm"/>
+    <deployable composite="f3:SpringExtension"/>
     <f3:provides name="spring-library"/>
 </contribution>
