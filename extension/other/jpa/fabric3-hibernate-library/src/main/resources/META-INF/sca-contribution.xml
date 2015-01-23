@@ -3,7 +3,7 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="Hibernate library extension">
-    <import.java package="org.fabric3.spi.monitor" version="2.5.3"/>
+    <import.java package="org.fabric3.spi.monitor" version="3.0.0"/>
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.persistence" version="2.0.0"/>

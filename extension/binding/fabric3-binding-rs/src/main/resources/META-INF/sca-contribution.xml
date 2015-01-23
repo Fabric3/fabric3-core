@@ -3,11 +3,11 @@
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
               f3:description="JAX-RS (REST) extension">
-    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.pojo.*" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.model" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.provision" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.generator" version="2.5.3"/>
+    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.pojo.*" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.model" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.provision" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.generator" version="3.0.0"/>
     <import.java package="javax.xml.bind" version="2.2"/>
     <import.java package="javax.xml.bind.annotation" version="2.2"/>
     <import.java package="javax.xml.bind.annotation.adaptors" version="2.2"/>
@@ -19,9 +19,9 @@
     <import.java package="javax.ws.rs.ext" version="1.0"/>
     <import.java package="com.fasterxml.jackson.*" version="2.2.0"/>
 
-    <import.java package="org.fabric3.api.binding.rs.*" version="2.5.3"/>
+    <import.java package="org.fabric3.api.binding.rs.*" version="3.0.0"/>
 
-    <export.java package="org.fabric3.binding.rs.provision" version="2.5.3"/>
+    <export.java package="org.fabric3.binding.rs.provision" version="3.0.0"/>
 
     <!-- provides required for JAXB support. Jersey loads JAXB implementation classes using Class.forName() -->
     <f3:provides name="jaxb"/>

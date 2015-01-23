@@ -2,14 +2,14 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.pojo.*" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.model" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.provision" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.introspection" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.runtime" version="2.5.3"/>
-    <import.java package="org.fabric3.implementation.java.generator" version="2.5.3"/>
-    <import.java package="org.fabric3.test.spi" version="2.5.3"/>
+    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.pojo.*" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.model" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.provision" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.introspection" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.runtime" version="3.0.0"/>
+    <import.java package="org.fabric3.implementation.java.generator" version="3.0.0"/>
+    <import.java package="org.fabric3.test.spi" version="3.0.0"/>
     <import.java package="org.junit" version="4.11"/>
     <deployable composite="f3:JUnitExtension"/>
 </contribution>
