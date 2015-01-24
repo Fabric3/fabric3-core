@@ -14,18 +14,8 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-jmx', version: jettyVersion
     compile group: 'org.eclipse.jetty', name: 'jetty-annotations', version: jettyVersion
 
-    // the JSP API classes need to be shared by applications and the extension since end-user classes may implement them
-    compile(group: 'org.eclipse.jetty', name: 'jetty-jsp-2.1', version: '7.5.4.v20111024') {
-        exclude group: 'org.eclipse.jetty', module: 'jsp-api-2.1'
-    }
-
     compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
 
-    compile(group: 'org.mortbay.jetty', name: 'jsp-2.1-glassfish', version: '2.1.v20100127') {
-        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
-        exclude group: 'org.mortbay.jetty', module: 'jsp-api-2.1-glassfish'
-        exclude group: 'ant', module: 'ant'
-    }
     compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: jettyVersion
 
 }

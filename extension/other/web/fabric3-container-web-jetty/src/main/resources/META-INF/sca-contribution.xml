@@ -7,11 +7,8 @@
     <import.java package="org.fabric3.container.web.spi" version="3.0.0"/>
     <import.java package="org.fabric3.transport.jetty" version="3.0.0"/>
     <import.java package="org.fabric3.transport.jetty.management" version="3.0.0"/>
-    <!-- Jetty, Jasper and EL classes must be visible for as this extension accesses Jetty classes and for JSP compilation -->
     <import.java package="org.eclipse.jetty.webapp" version="9.0.0"/>
     <import.java package="org.eclipse.jetty.server" version="9.0.0"/>
     <import.java package="org.eclipse.jetty" version="9.0.0"/>
-    <import.java package="org.apache.jasper.runtime" version="7.1.4.v20100610"/>
-    <import.java package="com.sun.el" version="7.1.4.v20100610"/>
     <deployable composite="f3:JettyWebContainerExtension"/>
 </contribution>

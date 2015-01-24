@@ -16,10 +16,6 @@ dependencies {
     libDependencies project(':kernel:api:fabric3-model-api')
     libDependencies project(':kernel:api:fabric3-host-api')
 
-    // JSP must be on the host classpath as end-user tags may implement interfaces
-    hostDependencies(group: 'org.mortbay.jetty', name: 'jsp-api-2.1', version: jspApiVersion) {
-        exclude module: 'servlet-api-2.5'
-    }
     hostDependencies group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
     hostDependencies group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
     hostDependencies group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
