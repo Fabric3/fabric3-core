@@ -47,15 +47,12 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.domain.allocator.Allocator;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
-import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  * Verifies the distributed domain when run in Single-VM, transactional mode.
@@ -253,32 +250,6 @@ public class DistributedDomainVMTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testAllocate() throws Exception {
-        Allocator allocator = EasyMock.createMock(Allocator.class);
-        allocator.allocate(EasyMock.isA(LogicalComponent.class), EasyMock.isA(DeploymentPlan.class));
-
-        domain.setAllocator(allocator);
-
-        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
-        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
-        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
-
-        Deployment deployment = new Deployment("1");
-        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
-
-        control.replay();
-
-        domain.include(DEPLOYABLE);
-
-        // verify the component contained in the composite was added to the logical model
-        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
-        assertTrue(contribution.getLockOwners().contains(DEPLOYABLE));
-        control.verify();
-    }
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();

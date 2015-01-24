@@ -36,7 +36,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  *
@@ -71,25 +70,6 @@ public class ContributionHelperImplTestCase extends TestCase {
         Set<Contribution> returned = helper.findContributions(Collections.singletonList(uri));
         assertEquals(contribution, returned.iterator().next());
 
-        EasyMock.verify(store);
-    }
-
-    public void testDefaultPlan() throws Exception {
-        URI uri = URI.create("test");
-        Contribution contribution = new Contribution(uri);
-
-        QName name = new QName("foo", "plan");
-        QNameSymbol symbol = new QNameSymbol(name);
-        DeploymentPlan plan = new DeploymentPlan("plan");
-        ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<>(symbol, plan);
-
-        Resource resource = new Resource(contribution, null, "");
-        resource.addResourceElement(element);
-        contribution.addResource(resource);
-        EasyMock.replay(store);
-
-        DeploymentPlan returned = helper.findDefaultPlan(contribution);
-        assertEquals(plan, returned);
         EasyMock.verify(store);
     }
 
