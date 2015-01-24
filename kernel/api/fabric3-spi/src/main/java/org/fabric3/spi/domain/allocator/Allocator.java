@@ -21,7 +21,6 @@ package org.fabric3.spi.domain.allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  * Allocates components and channels to a zone. If the component is a composite, allocation will be performed recursively.
@@ -32,27 +31,24 @@ public interface Allocator {
      * Allocates a component. Composites are recursed and their children are allocated.
      *
      * @param component the component to allocate
-     * @param plan      the deployment plan containing zone mappings
      * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException;
+    void allocate(LogicalComponent<?> component) throws AllocationException;
 
     /**
      * Allocates a channel. Composites are recursed and their children are allocated.
      *
      * @param channel the channel to allocate
-     * @param plan    the deployment plan containing zone mappings
      * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalChannel channel, DeploymentPlan plan) throws AllocationException;
+    void allocate(LogicalChannel channel) throws AllocationException;
 
     /**
      * Allocates a resource. Composites are recursed and their children are allocated.
      *
      * @param resource the resource to allocate
-     * @param plan     the deployment plan containing zone mappings
      * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalResource<?> resource, DeploymentPlan plan) throws AllocationException;
+    void allocate(LogicalResource<?> resource) throws AllocationException;
 
 }

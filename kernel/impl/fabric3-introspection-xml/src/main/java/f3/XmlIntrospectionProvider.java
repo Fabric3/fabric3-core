@@ -52,8 +52,6 @@ import org.fabric3.introspection.xml.definitions.ExternalAttachmentLoader;
 import org.fabric3.introspection.xml.definitions.ImplementationTypeLoader;
 import org.fabric3.introspection.xml.definitions.IntentLoader;
 import org.fabric3.introspection.xml.definitions.PolicySetLoader;
-import org.fabric3.introspection.xml.plan.DeploymentPlanIndexer;
-import org.fabric3.introspection.xml.plan.DeploymentPlanProcessor;
 import org.fabric3.introspection.xml.template.BindingTemplatePostProcessor;
 import org.fabric3.introspection.xml.template.SystemConfigTemplateParser;
 import org.fabric3.introspection.xml.template.TemplateElementLoader;
@@ -78,7 +76,6 @@ public class XmlIntrospectionProvider {
         addCommon(compositeBuilder);
         addCompositeLoader(compositeBuilder);
         addDefinitionsLoader(compositeBuilder);
-        addPlanLoader(compositeBuilder);
         addTemplateLoader(compositeBuilder);
 
         return compositeBuilder.build();
@@ -97,11 +94,6 @@ public class XmlIntrospectionProvider {
         compositeBuilder.component(newBuilder(TemplatesElementLoader.class).build());
 
         compositeBuilder.component(newBuilder(SystemConfigTemplateParser.class).build());
-    }
-
-    private static void addPlanLoader(CompositeBuilder compositeBuilder) {
-        compositeBuilder.component(newBuilder(DeploymentPlanIndexer.class).build());
-        compositeBuilder.component(newBuilder(DeploymentPlanProcessor.class).build());
     }
 
     private static void addDefinitionsLoader(CompositeBuilder compositeBuilder) {

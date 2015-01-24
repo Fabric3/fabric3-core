@@ -37,7 +37,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -93,25 +92,6 @@ public class ContributionHelperImpl implements ContributionHelper {
         return element.getValue();
     }
 
-    public DeploymentPlan findPlan(QName deployable) {
-        // default to first found deployment plan in a contribution if one is not specifed for a distributed deployment
-        QNameSymbol symbol = new QNameSymbol(deployable);
-        Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
-        return findDefaultPlan(contribution);
-    }
-
-    public DeploymentPlan findDefaultPlan(Contribution contribution) {
-        DeploymentPlan plan;
-        List<DeploymentPlan> plans = new ArrayList<>();
-        getDeploymentPlans(contribution, plans);
-        if (!plans.isEmpty()) {
-            plan = plans.get(0);
-        } else {
-            return null;
-        }
-        return plan;
-    }
-
     public Set<Contribution> findContributions(List<URI> uris) {
         Set<Contribution> contributions = new LinkedHashSet<>(uris.size());
         for (URI uri : uris) {
@@ -144,19 +124,6 @@ public class ContributionHelperImpl implements ContributionHelper {
                 if (contribution.getLockOwners().contains(name)) {
                     contribution.releaseLock(name);
                 }
-            }
-        }
-    }
-
-    private void getDeploymentPlans(Contribution contribution, List<DeploymentPlan> plans) {
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> entry : resource.getResourceElements()) {
-                if (!(entry.getValue() instanceof DeploymentPlan)) {
-                    continue;
-                }
-                @SuppressWarnings({"unchecked"}) ResourceElement<QNameSymbol, DeploymentPlan> element = (ResourceElement<QNameSymbol, DeploymentPlan>) entry;
-                DeploymentPlan plan = element.getValue();
-                plans.add(plan);
             }
         }
     }

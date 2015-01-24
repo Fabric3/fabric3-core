@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.host.contribution.Deployable;
@@ -65,14 +64,11 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  * Base class for a domain.
  */
 public abstract class AbstractDomain implements Domain {
-    private static final String SYNTHETIC_PLAN_NAME = "fabric3.synthetic";
-    private static final DeploymentPlan SYNTHETIC_PLAN = new DeploymentPlan(SYNTHETIC_PLAN_NAME);
 
     protected Deployer deployer;
     protected Generator generator;
@@ -128,11 +124,10 @@ public abstract class AbstractDomain implements Domain {
 
     public synchronized void include(QName deployable) throws DeploymentException {
         Composite wrapper = createWrapper(deployable);
-        DeploymentPlan plan = SYNTHETIC_PLAN;
         for (DeployListener listener : listeners) {
             listener.onDeploy(deployable);
         }
-        instantiateAndDeploy(wrapper, plan, false);
+        instantiateAndDeploy(wrapper, false);
         for (DeployListener listener : listeners) {
             listener.onDeployCompleted(deployable);
         }
@@ -143,7 +138,7 @@ public abstract class AbstractDomain implements Domain {
         for (DeployListener listener : listeners) {
             listener.onDeploy(name);
         }
-        instantiateAndDeploy(composite, SYNTHETIC_PLAN, simulated);
+        instantiateAndDeploy(composite, simulated);
         for (DeployListener listener : listeners) {
             listener.onDeployCompleted(name);
         }
@@ -303,7 +298,7 @@ public abstract class AbstractDomain implements Domain {
                 listener.onDeploy(deployable.getName());
             }
         }
-        instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, recover);
+        instantiateAndDeploy(deployables, contributions, recover);
         for (Composite deployable : deployables) {
             for (DeployListener listener : listeners) {
                 listener.onDeployCompleted(deployable.getName());
@@ -335,16 +330,6 @@ public abstract class AbstractDomain implements Domain {
         return wrapper;
     }
 
-    private DeploymentPlan merge(Collection<DeploymentPlan> plans) {
-        DeploymentPlan merged = new DeploymentPlan(SYNTHETIC_PLAN_NAME);
-        for (DeploymentPlan plan : plans) {
-            for (Map.Entry<QName, String> entry : plan.getDeployableMappings().entrySet()) {
-                merged.addDeployableMapping(entry.getKey(), entry.getValue());
-            }
-        }
-        return merged;
-    }
-
     /**
      * Instantiates and optionally deploys deployables from a set of contributions. Deployment is performed if recovery mode is false or the runtime is
      * operating in single VM mode. When recovering in a distributed domain, the components contained in the deployables will be instantiated but not deployed
@@ -352,12 +337,10 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param deployables   the deployables
      * @param contributions the contributions to deploy
-     * @param plan          the deployment plan
      * @param recover       true if recovery mode is enabled
      * @throws DeploymentException if an error occurs during instantiation or deployment
      */
-    private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, DeploymentPlan plan, boolean recover)
-            throws DeploymentException {
+    private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, boolean recover) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         for (Contribution contribution : contributions) {
@@ -383,9 +366,9 @@ public abstract class AbstractDomain implements Domain {
             policyAttacher.attachPolicies(domain, !recover);
             if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
                 // in single VM mode, recovery includes deployment
-                allocateAndDeploy(domain, plan);
+                allocateAndDeploy(domain);
             } else {
-                allocate(domain, plan);
+                allocate(domain);
                 // Select bindings
                 selectBinding(domain);
                 collector.markAsProvisioned(domain);
@@ -404,11 +387,10 @@ public abstract class AbstractDomain implements Domain {
      * Instantiates and deploys the given composite.
      *
      * @param composite the composite to instantiate and deploy
-     * @param plan      the deployment plan to use or null
      * @param simulated true if the deployment is simulated
      * @throws DeploymentException if a deployment error occurs
      */
-    private void instantiateAndDeploy(Composite composite, DeploymentPlan plan, boolean simulated) throws DeploymentException {
+    private void instantiateAndDeploy(Composite composite, boolean simulated) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         QName name = composite.getName();
@@ -450,7 +432,7 @@ public abstract class AbstractDomain implements Domain {
         }
         if (!simulated) {
             try {
-                allocateAndDeploy(domain, plan);
+                allocateAndDeploy(domain);
             } catch (DeploymentException e) {
                 // release the contribution lock if there was an error
                 if (contribution.getLockOwners().contains(name)) {
@@ -472,12 +454,11 @@ public abstract class AbstractDomain implements Domain {
      * Allocates and deploys new components in the domain.
      *
      * @param domain the domain component
-     * @param plan   the deployment plan
      * @throws DeploymentException if an error is encountered during deployment
      */
-    private void allocateAndDeploy(LogicalCompositeComponent domain, DeploymentPlan plan) throws DeploymentException {
+    private void allocateAndDeploy(LogicalCompositeComponent domain) throws DeploymentException {
         // Allocate the components to runtime nodes
-        allocate(domain, plan);
+        allocate(domain);
         // Select bindings
         selectBinding(domain);
         // generate and provision any new components and new wires
@@ -495,28 +476,27 @@ public abstract class AbstractDomain implements Domain {
      * Delegates to the Allocator to determine which runtimes to deploy the given collection of components to.
      *
      * @param domain the domain component
-     * @param plan   the deployment plan
      * @throws AllocationException if an allocation error occurs
      */
-    private void allocate(LogicalCompositeComponent domain, DeploymentPlan plan) throws AllocationException {
+    private void allocate(LogicalCompositeComponent domain) throws AllocationException {
         if (allocator == null) {
             // allocator is an optional extension
             return;
         }
         for (LogicalResource<?> resource : domain.getResources()) {
             if (resource.getState() == LogicalState.NEW) {
-                allocator.allocate(resource, plan);
+                allocator.allocate(resource);
             }
         }
         for (LogicalChannel channel : domain.getChannels()) {
             if (channel.getState() == LogicalState.NEW) {
-                allocator.allocate(channel, plan);
+                allocator.allocate(channel);
             }
         }
         Collection<LogicalComponent<?>> components = domain.getComponents();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW) {
-                allocator.allocate(component, plan);
+                allocator.allocate(component);
             }
         }
     }

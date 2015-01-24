@@ -6,6 +6,5 @@
     <include name="CommonLoaderComposite" scdlResource="META-INF/loaderCommon.composite"/>
     <include name="CompositeLoaderComposite" scdlResource="META-INF/compositeLoader.composite"/>
     <include name="DefinitionsLoaderComposite" scdlResource="META-INF/definitionsLoader.composite"/>
-    <include name="PlanLoaderComposite" scdlResource="META-INF/planLoader.composite"/>
     <include name="TemplateLoaderComposite" scdlResource="META-INF/templateLoader.composite"/>
 </composite>

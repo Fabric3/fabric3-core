@@ -27,7 +27,6 @@ import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 
 /**
  * Provides utility functions for working with contributions.
@@ -50,22 +49,6 @@ public interface ContributionHelper {
      * @throws DeploymentException if the deployable cannot be resolved
      */
     Composite findComposite(QName deployable) throws DeploymentException;
-
-    /**
-     * Resolves the plan for a deployable.
-     *
-     * @param deployable the deployable composite
-     * @return the default plan or null if none is found
-     */
-    DeploymentPlan findPlan(QName deployable);
-
-    /**
-     * Resolves the default plan for a contribution.
-     *
-     * @param contribution the contribution
-     * @return the default plan of null if none is found
-     */
-    DeploymentPlan findDefaultPlan(Contribution contribution);
 
     /**
      * Resolves the contributions from the list of URIs.

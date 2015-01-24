@@ -34,7 +34,7 @@ public class NodeAllocatorTestCase extends TestCase {
     private LogicalCompositeComponent composite;
 
     public void testAllocate() throws Exception {
-        allocator.allocate(composite, null);
+        allocator.allocate(composite);
 
         assertEquals("zone1", composite.getZone());
         for (LogicalComponent<?> component : composite.getComponents()) {

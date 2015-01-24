@@ -24,7 +24,6 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.plan.DeploymentPlan;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -39,29 +38,29 @@ public class NodeAllocator implements Allocator {
         zoneName = info.getZoneName();
     }
 
-    public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
+    public void allocate(LogicalComponent<?> component) throws AllocationException {
         if (Names.LOCAL_ZONE.equals(component.getZone())) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {
-                    allocate(child, plan);
+                    allocate(child);
                 }
                 for (LogicalResource<?> resource : composite.getResources()) {
-                    allocate(resource, plan);
+                    allocate(resource);
                 }
                 for (LogicalChannel channel : composite.getChannels()) {
-                    allocate(channel, plan);
+                    allocate(channel);
                 }
             }
             component.setZone(zoneName);
         }
     }
 
-    public void allocate(LogicalChannel channel, DeploymentPlan plan) throws AllocationException {
+    public void allocate(LogicalChannel channel) throws AllocationException {
         channel.setZone(zoneName);
     }
 
-    public void allocate(LogicalResource<?> resource, DeploymentPlan plan) throws AllocationException {
+    public void allocate(LogicalResource<?> resource) throws AllocationException {
         resource.setZone(zoneName);
     }
 
