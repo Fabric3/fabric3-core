@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 
@@ -13,11 +12,11 @@ import org.fabric3.spi.container.invocation.WorkContextCache;
  */
 public class PropagatingRunnable implements Runnable {
     private Runnable delegate;
-    private List<CallbackReference> stack;
+    private List<String> stack;
     private Map<String, Object> headers;
     private SecuritySubject subject;
 
-    public PropagatingRunnable(Runnable delegate, List<CallbackReference> stack, Map<String, Object> headers, SecuritySubject subject) {
+    public PropagatingRunnable(Runnable delegate, List<String> stack, Map<String, Object> headers, SecuritySubject subject) {
         this.delegate = delegate;
         this.stack = stack;
         this.headers = headers;

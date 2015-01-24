@@ -36,11 +36,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 import org.zeromq.ZMQ;
@@ -153,7 +152,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
      * @throws IOException if a serialization error is encountered
      */
     private byte[] serialize(WorkContext workContext) throws IOException {
-        List<CallbackReference> stack = workContext.getCallbackReferences();
+        List<String> stack = workContext.getCallbackReferences();
         if (stack == null || stack.isEmpty()) {
             return null;
         }

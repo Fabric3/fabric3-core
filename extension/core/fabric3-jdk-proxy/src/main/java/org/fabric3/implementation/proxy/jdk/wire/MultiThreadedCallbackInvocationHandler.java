@@ -21,7 +21,6 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -52,10 +51,9 @@ public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackI
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
-        CallbackReference callbackReference = workContext.peekCallbackReference();
-        String callbackUri = callbackReference.getServiceUri();
+        String callbackReference = workContext.peekCallbackReference();
 
-        Map<Method, InvocationChain> chains = (singleMapping != null) ? singleMapping : mappings.get(callbackUri);
+        Map<Method, InvocationChain> chains = (singleMapping != null) ? singleMapping : mappings.get(callbackReference);
 
         // find the invocation chain for the invoked operation
         InvocationChain chain = chains.get(method);

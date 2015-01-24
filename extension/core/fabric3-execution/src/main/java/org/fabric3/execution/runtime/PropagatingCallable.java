@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 
@@ -14,11 +13,11 @@ import org.fabric3.spi.container.invocation.WorkContextCache;
  */
 public class PropagatingCallable<T> implements Callable<T> {
     private Callable<T> delegate;
-    private List<CallbackReference> stack;
+    private List<String> stack;
     private Map<String, Object> headers;
     private SecuritySubject subject;
 
-    public PropagatingCallable(Callable<T> delegate, List<CallbackReference> stack, Map<String, Object> headers, SecuritySubject subject) {
+    public PropagatingCallable(Callable<T> delegate, List<String> stack, Map<String, Object> headers, SecuritySubject subject) {
         this.delegate = delegate;
         this.stack = stack;
         this.headers = headers;

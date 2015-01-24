@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -36,14 +35,14 @@ public class AsyncRequest implements Runnable {
     private Interceptor next;
     private Object payload;
     private SecuritySubject subject;
-    private List<CallbackReference> stack;
+    private List<String> stack;
     private Map<String, Object> headers;
     private NonBlockingMonitor monitor;
 
     public AsyncRequest(Interceptor next,
                         Object payload,
                         SecuritySubject subject,
-                        List<CallbackReference> stack,
+                        List<String> stack,
                         Map<String, Object> headers,
                         NonBlockingMonitor monitor) {
         this.next = next;

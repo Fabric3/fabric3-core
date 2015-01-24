@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 
@@ -99,7 +98,7 @@ public class ExecutorServiceProxy implements ExecutorService {
 
     private PropagatingRunnable createRunnable(Runnable runnable) {
         WorkContext context = WorkContextCache.getThreadWorkContext();
-        List<CallbackReference> stack = context.getCallbackReferences();
+        List<String> stack = context.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
             stack = new ArrayList<>(stack);
@@ -115,7 +114,7 @@ public class ExecutorServiceProxy implements ExecutorService {
 
     private <T> PropagatingCallable<T> createCallable(Callable<T> callable) {
         WorkContext context = WorkContextCache.getThreadWorkContext();
-        List<CallbackReference> stack = context.getCallbackReferences();
+        List<String> stack = context.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
             stack = new ArrayList<>(stack);

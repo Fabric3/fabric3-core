@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageImpl;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -63,8 +62,6 @@ public class NonBlockingInterceptorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         workContext = new WorkContext();
-        CallbackReference callbackReference = new CallbackReference(null, null);
-        workContext.addCallbackReference(callbackReference);
         workContext.addHeaders(Collections.<String, Object>singletonMap("key", "value"));
 
         executorService = EasyMock.createMock(ExecutorService.class);

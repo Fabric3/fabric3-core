@@ -25,7 +25,6 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.fabric3.spi.container.component.InstanceInvocationException;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -84,7 +83,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
 
         if (callbackUri != null) {
-            initializeCallbackReference(workContext);
+            workContext.addCallbackReference(callbackUri);
         }
 
         Message message = MessageCache.getAndResetMessage();
@@ -122,11 +121,6 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
 
     public ServiceReference<B> getServiceReference() {
         return this;
-    }
-
-    private void initializeCallbackReference(WorkContext workContext) {
-        CallbackReference callbackReference = new CallbackReference(callbackUri, null);
-        workContext.addCallbackReference(callbackReference);
     }
 
     private Object handleProxyMethod(Method method, Object[] args) throws InstanceInvocationException {

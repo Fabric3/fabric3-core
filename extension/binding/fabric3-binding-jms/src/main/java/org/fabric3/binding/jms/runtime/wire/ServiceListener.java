@@ -39,13 +39,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -302,7 +301,7 @@ public class ServiceListener implements MessageListener {
             if (encoded == null) {
                 return workContext;
             }
-            List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(encoded);
+            List<String> stack = CallbackReferenceSerializer.deserialize(encoded);
             workContext.addCallbackReferences(stack);
             return workContext;
         } catch (JMSException e) {

@@ -19,7 +19,6 @@
 package org.fabric3.implementation.bytecode.proxy.wire;
 
 import org.fabric3.implementation.bytecode.proxy.common.ProxyDispatcher;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -62,7 +61,7 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
 
         if (callbackUri != null) {
-            initializeCallbackReference(workContext);
+            workContext.addCallbackReference(callbackUri);
         }
 
         Message message = MessageCache.getAndResetMessage();
@@ -98,11 +97,6 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
             message.reset();
         }
 
-    }
-
-    private void initializeCallbackReference(WorkContext workContext) {
-        CallbackReference callbackReference = new CallbackReference(callbackUri, null);
-        workContext.addCallbackReference(callbackReference);
     }
 
 }

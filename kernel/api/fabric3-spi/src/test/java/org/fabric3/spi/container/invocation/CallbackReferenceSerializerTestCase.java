@@ -16,7 +16,7 @@
  */
 package org.fabric3.spi.container.invocation;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -27,80 +27,25 @@ import junit.framework.TestCase;
 public class CallbackReferenceSerializerTestCase extends TestCase {
 
     public void testSerializeToString() throws Exception {
-        List<CallbackReference> references = new ArrayList<>();
-        CallbackReference reference1 = new CallbackReference("uri1", "correlation1");
-        CallbackReference reference2 = new CallbackReference("uri2", "correlation2");
-        references.add(reference1);
-        references.add(reference2);
+        List<String> references = Arrays.asList("uri1", "uri2");
         String serialized = CallbackReferenceSerializer.serializeToString(references);
 
-        List<CallbackReference> result = CallbackReferenceSerializer.deserialize(serialized);
+        List<String> result = CallbackReferenceSerializer.deserialize(serialized);
 
         assertEquals(2, result.size());
-        CallbackReference resultReference1 = result.get(0);
-        CallbackReference resultFrame2 = result.get(1);
-        assertEquals("uri1", resultReference1.getServiceUri());
-        assertEquals("correlation1", resultReference1.getCorrelationId());
-        assertEquals("uri2", resultFrame2.getServiceUri());
-        assertEquals("correlation2", resultFrame2.getCorrelationId());
-    }
-
-    public void testSerializeToStringNoCorrelationId() throws Exception {
-        List<CallbackReference> references = new ArrayList<>();
-        CallbackReference reference1 = new CallbackReference("uri1", null);
-        CallbackReference reference2 = new CallbackReference("uri2", null);
-        references.add(reference1);
-        references.add(reference2);
-        String serialized = CallbackReferenceSerializer.serializeToString(references);
-
-        List<CallbackReference> result = CallbackReferenceSerializer.deserialize(serialized);
-
-        assertEquals(2, result.size());
-        CallbackReference resultReference1 = result.get(0);
-        CallbackReference resultFrame2 = result.get(1);
-        assertEquals("uri1", resultReference1.getServiceUri());
-        assertNull(resultReference1.getCorrelationId());
-        assertEquals("uri2", resultFrame2.getServiceUri());
-        assertNull(resultFrame2.getCorrelationId());
+        assertEquals("uri1", result.get(0));
+        assertEquals("uri2", result.get(1));
     }
 
     public void testSerializeToBytes() throws Exception {
-        List<CallbackReference> references = new ArrayList<>();
-        CallbackReference reference1 = new CallbackReference("uri1", "correlation1");
-        CallbackReference reference2 = new CallbackReference("uri2", "correlation2");
-        references.add(reference1);
-        references.add(reference2);
+        List<String> references = Arrays.asList("uri1", "uri2");
         byte[] serialized = CallbackReferenceSerializer.serializeToBytes(references);
 
-        List<CallbackReference> result = CallbackReferenceSerializer.deserialize(serialized);
+        List<String> result = CallbackReferenceSerializer.deserialize(serialized);
 
         assertEquals(2, result.size());
-        CallbackReference resultReference1 = result.get(0);
-        CallbackReference resultFrame2 = result.get(1);
-        assertEquals("uri1", resultReference1.getServiceUri());
-        assertEquals("correlation1", resultReference1.getCorrelationId());
-        assertEquals("uri2", resultFrame2.getServiceUri());
-        assertEquals("correlation2", resultFrame2.getCorrelationId());
-
-    }
-
-    public void testSerializeToBytesNoCorrelationId() throws Exception {
-        List<CallbackReference> references = new ArrayList<>();
-        CallbackReference reference1 = new CallbackReference("uri1", null);
-        CallbackReference reference2 = new CallbackReference("uri2",null);
-        references.add(reference1);
-        references.add(reference2);
-        byte[] serialized = CallbackReferenceSerializer.serializeToBytes(references);
-
-        List<CallbackReference> result = CallbackReferenceSerializer.deserialize(serialized);
-
-        assertEquals(2, result.size());
-        CallbackReference resultReference1 = result.get(0);
-        CallbackReference resultFrame2 = result.get(1);
-        assertEquals("uri1", resultReference1.getServiceUri());
-        assertNull(resultReference1.getCorrelationId());
-        assertEquals("uri2", resultFrame2.getServiceUri());
-        assertNull(resultFrame2.getCorrelationId());
+        assertEquals("uri1", result.get(0));
+        assertEquals("uri2", result.get(1));
 
     }
 

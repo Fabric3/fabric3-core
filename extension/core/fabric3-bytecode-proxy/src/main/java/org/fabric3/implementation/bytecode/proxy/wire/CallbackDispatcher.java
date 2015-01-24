@@ -20,7 +20,6 @@ package org.fabric3.implementation.bytecode.proxy.wire;
 
 import java.util.Map;
 
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -48,11 +47,10 @@ public class CallbackDispatcher extends AbstractCallbackDispatcher {
 
     public Object _f3_invoke(int i, Object args) throws Throwable {
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
-        CallbackReference callbackReference = workContext.peekCallbackReference();
-        String callbackUri = callbackReference.getServiceUri();
+        String callbackReference = workContext.peekCallbackReference();
 
         // find the callback invocation chain for the invoked operation
-        InvocationChain[] chains = mappings.get(callbackUri);
+        InvocationChain[] chains = mappings.get(callbackReference);
         InvocationChain chain = chains[i];
         return super.invoke(chain, args, workContext);
     }

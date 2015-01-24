@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
@@ -47,8 +46,8 @@ public class NonBlockingInterceptor implements Interceptor {
 
     public Message invoke(final Message msg) {
         WorkContext workContext = msg.getWorkContext();
-        List<CallbackReference> newStack = null;
-        List<CallbackReference> stack = workContext.getCallbackReferences();
+        List<String> newStack = null;
+        List<String> stack = workContext.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
             newStack = new ArrayList<>(stack);

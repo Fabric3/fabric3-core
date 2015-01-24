@@ -22,83 +22,63 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Serializes and (De)Serializes a {@link CallbackReference} to a byte array or String.
+ * Serializes and (De)Serializes a callback reference to a byte array or String.
  */
 public class CallbackReferenceSerializer {
 
-    public static String serializeToString(List<CallbackReference> references){
+    public static String serializeToString(List<String> references) {
         StringBuilder builder = new StringBuilder();
-        for (CallbackReference reference : references) {
-            String correlationId = reference.getCorrelationId();
-            if (correlationId == null) {
-                builder.append(",");
+        boolean first = true;
+        for (String reference : references) {
+            if (first) {
+                builder.append(reference);
+                first = false;
             } else {
-                builder.append(correlationId).append(",");
+                builder.append(",").append(reference);
             }
-            String callbackUri = reference.getServiceUri();
-            builder.append(callbackUri).append(",");
         }
         return builder.toString();
     }
 
-    public static byte[] serializeToBytes(List<CallbackReference> references) throws IOException {
+    public static byte[] serializeToBytes(List<String> references) throws IOException {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
         DataOutputStream das = new DataOutputStream(bas);
         das.writeInt(references.size());
-        for (CallbackReference reference : references) {
-            String correlationId = reference.getCorrelationId();
-            if (correlationId == null) {
-                das.writeInt(0);
-            } else {
-                das.writeInt(correlationId.length());
-                das.writeBytes(correlationId);
-            }
-            String callbackUri = reference.getServiceUri();
-            das.writeInt(callbackUri.length());
-            das.writeBytes(callbackUri);
+        for (String reference : references) {
+            das.writeInt(reference.length());
+            das.write(reference.getBytes());
         }
         return bas.toByteArray();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static List<CallbackReference> deserialize(byte[] bytes) throws IOException {
+    public static List<String> deserialize(byte[] bytes) throws IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         DataInputStream dis = new DataInputStream(bis);
         int number = dis.readInt();
-        List<CallbackReference> references = new ArrayList<>(number);
+        List<String> references = new ArrayList<>(number);
         while (number > 0) {
-            String correlationId = null;
-            int correlationSize = dis.readInt();
-            if (correlationSize > 0) {
-                byte[] correlationBytes = new byte[correlationSize];
-                dis.read(correlationBytes);
-                correlationId = new String(correlationBytes);
-            }
-            String callbackUri = null;
+            String callbackReference = null;
             int callbackUriSize = dis.readInt();
             if (callbackUriSize > 0) {
                 byte[] uriBytes = new byte[callbackUriSize];
                 dis.read(uriBytes);
-                callbackUri = new String(uriBytes);
+                callbackReference = new String(uriBytes);
             }
-            references.add(new CallbackReference(callbackUri, correlationId));
+            references.add(callbackReference);
             number--;
         }
         return references;
     }
 
-    public static List<CallbackReference> deserialize(String serialized) {
-        List<CallbackReference> references = new ArrayList<>();
+    public static List<String> deserialize(String serialized) {
+        List<String> references = new ArrayList<>();
         String[] tokens = serialized.split(",");
-        for (int i = 0; i < tokens.length; i = i + 2) {
-            String callbackUri = tokens[i + 1];
-            String correlationId = tokens[i].length() == 0 ? null : tokens[i];
-            references.add(new CallbackReference(callbackUri, correlationId));
-        }
-
+        Collections.addAll(references, tokens);
         return references;
     }
 

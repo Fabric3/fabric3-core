@@ -36,7 +36,7 @@ import org.fabric3.api.SecuritySubject;
 public class WorkContext implements Serializable {
     private static final long serialVersionUID = 9108092492339191639L;
     private transient SecuritySubject subject;
-    private List<CallbackReference> callStack;
+    private List<String> callStack;
     private transient Map<String, Object> headers;
 
     public void setSubject(SecuritySubject subject) {
@@ -53,11 +53,11 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Adds a {@link CallbackReference} to the work context.
+     * Adds a callback reference to the work context.
      *
      * @param callbackReference the callback reference to add
      */
-    public void addCallbackReference(CallbackReference callbackReference) {
+    public void addCallbackReference(String callbackReference) {
         if (callStack == null) {
             callStack = new ArrayList<>();
         }
@@ -65,11 +65,11 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Adds a collection of {@link CallbackReference}s to the work context.
+     * Adds a collection of callback references to the work context.
      *
      * @param callbackReferences the collection of callback references to add
      */
-    public void addCallbackReferences(List<CallbackReference> callbackReferences) {
+    public void addCallbackReferences(List<String> callbackReferences) {
         if (callStack == null) {
             callStack = callbackReferences;
             return;
@@ -78,11 +78,11 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Removes and returns the {@link CallbackReference} associated with the previous request from the internal stack.
+     * Removes and returns the callback reference associated with the previous request from the internal stack.
      *
      * @return the callback reference
      */
-    public CallbackReference popCallbackReference() {
+    public String popCallbackReference() {
         if (callStack == null || callStack.isEmpty()) {
             return null;
         }
@@ -90,11 +90,11 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Returns but does not remove the {@link CallbackReference} associated with the previous request from the internal stack.
+     * Returns but does not remove the callback reference associated with the previous request from the internal stack.
      *
      * @return the callback reference.
      */
-    public CallbackReference peekCallbackReference() {
+    public String peekCallbackReference() {
         if (callStack == null || callStack.isEmpty()) {
             return null;
         }
@@ -106,7 +106,7 @@ public class WorkContext implements Serializable {
      *
      * @return the stack
      */
-    public List<CallbackReference> getCallbackReferences() {
+    public List<String> getCallbackReferences() {
         return callStack;
     }
 

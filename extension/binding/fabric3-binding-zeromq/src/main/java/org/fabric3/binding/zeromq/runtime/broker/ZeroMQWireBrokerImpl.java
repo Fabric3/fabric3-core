@@ -51,7 +51,6 @@ import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InterceptorCreationException;
@@ -271,15 +270,14 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     public void send(byte[] message, int index, WorkContext context, ZeroMQMetadata metadata) {
-        CallbackReference callbackReference = context.peekCallbackReference();
+        String callbackReference = context.peekCallbackReference();
         if (callbackReference == null) {
             monitor.error("Callback reference not found");
             return;
         }
-        String callback = callbackReference.getServiceUri();
-        SenderHolder holder = senders.get(callback);
+        SenderHolder holder = senders.get(callbackReference);
         if (holder == null) {
-            holder = createSender(callback, true, metadata);
+            holder = createSender(callbackReference, true, metadata);
         }
         Sender sender = holder.getSender();
         if (sender instanceof OneWaySender) {

@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.fabric3.spi.container.component.InstanceInvocationException;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -40,7 +39,7 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
         // Pop the call callback reference as we move back in the request stack. When the invocation is made on the callback target,
         // the same call callback reference state will be present as existed when the initial forward request to this proxy's instance was dispatched to.
         // Consequently, CallbackReference#getForwardCorrelaltionId() will return the correlation id for the callback target.
-        CallbackReference callbackReference = workContext.popCallbackReference();
+        String callbackReference = workContext.popCallbackReference();
 
         Interceptor headInterceptor = chain.getHeadInterceptor();
         assert headInterceptor != null;

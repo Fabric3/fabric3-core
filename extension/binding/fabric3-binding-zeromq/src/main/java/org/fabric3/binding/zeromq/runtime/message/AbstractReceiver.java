@@ -26,15 +26,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.host.Port;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.host.Port;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Socket;
@@ -131,7 +130,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                 return workContext;
             }
 
-            List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(header);
+            List<String> stack = CallbackReferenceSerializer.deserialize(header);
             // add the last callback twice as it will be needed when the callback is made back through the binding
             if (!stack.isEmpty()) {
                 stack.add(stack.get(stack.size() - 1));

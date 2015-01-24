@@ -39,13 +39,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
-import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
-import org.fabric3.spi.container.invocation.CallbackReference;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageImpl;
@@ -322,7 +321,7 @@ public class JmsInterceptor implements Interceptor {
      * @throws IOException  if an error occurs serializing the routing information
      */
     private void setRoutingHeaders(Message message, javax.jms.Message jmsMessage) throws JMSException, IOException {
-        List<CallbackReference> stack = message.getWorkContext().getCallbackReferences();
+        List<String> stack = message.getWorkContext().getCallbackReferences();
         if (stack == null || stack.isEmpty()) {
             return;
         }
