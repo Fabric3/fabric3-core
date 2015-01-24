@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.federation.allocator;
+package org.fabric3.fabric.domain;
 
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.domain.allocator.AllocationException;
-import org.fabric3.spi.domain.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -33,12 +33,17 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class NodeAllocator implements Allocator {
     private String zoneName;
+    private boolean enabled;
 
     public NodeAllocator(@Reference HostInfo info) {
         zoneName = info.getZoneName();
+        enabled = RuntimeMode.NODE == info.getRuntimeMode();
     }
 
     public void allocate(LogicalComponent<?> component) throws AllocationException {
+        if (!enabled) {
+            return;
+        }
         if (Names.LOCAL_ZONE.equals(component.getZone())) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
@@ -57,10 +62,16 @@ public class NodeAllocator implements Allocator {
     }
 
     public void allocate(LogicalChannel channel) throws AllocationException {
+        if (!enabled) {
+            return;
+        }
         channel.setZone(zoneName);
     }
 
     public void allocate(LogicalResource<?> resource) throws AllocationException {
+        if (!enabled) {
+            return;
+        }
         resource.setZone(zoneName);
     }
 

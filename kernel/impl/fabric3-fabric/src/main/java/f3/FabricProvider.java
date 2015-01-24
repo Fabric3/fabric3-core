@@ -70,6 +70,7 @@ import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.DistributedDomain;
 import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
+import org.fabric3.fabric.domain.NodeAllocator;
 import org.fabric3.fabric.domain.collector.CollectorImpl;
 import org.fabric3.fabric.domain.generator.binding.BindingSelectorImpl;
 import org.fabric3.fabric.domain.generator.binding.ConfigurableBindingSelectionStrategy;
@@ -359,6 +360,8 @@ public class FabricProvider {
         SystemComponentDefinitionBuilder componentBuilder = newBuilder("ApplicationDomain", DistributedDomain.class);
         componentBuilder.reference("logicalComponentManager", "LogicalComponentManager");
         compositeBuilder.component(componentBuilder.build());
+
+        compositeBuilder.component(newBuilder(NodeAllocator.class).build());
 
         compositeBuilder.component(newBuilder(ContributionHelperImpl.class).build());
 

@@ -52,7 +52,6 @@ import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.allocator.AllocationException;
-import org.fabric3.spi.domain.allocator.Allocator;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.policy.PolicyAttacher;

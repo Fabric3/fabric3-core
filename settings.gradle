@@ -13,11 +13,10 @@ include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy',
         'extension:core:fabric3-channel-impl', 'extension:core:fabric3-contribution-scanner', 'extension:core:fabric3-resource',
         'extension:core:fabric3-execution', 'extension:core:fabric3-jdk-proxy', 'extension:core:fabric3-jetty', 'extension:core:fabric3-monitor-spi',
         'extension:core:fabric3-monitor-appender', 'extension:core:fabric3-monitor-impl', 'extension:core:fabric3-monitor-log',
-         'extension:core:fabric3-sca-intents', 'extension:core:fabric3-test-spi'
+        'extension:core:fabric3-sca-intents', 'extension:core:fabric3-test-spi'
 
 // Federation extensions
-include 'extension:federated:fabric3-federation-allocation', 'extension:federated:fabric3-jgroups',
-        'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups'
+include 'extension:federated:fabric3-jgroups', 'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups'
 
 // Implementation extensions
 include 'extension:implementation:fabric3-java', 'extension:implementation:fabric3-junit-api', 'extension:implementation:fabric3-junit',

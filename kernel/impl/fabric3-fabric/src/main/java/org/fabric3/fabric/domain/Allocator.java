@@ -16,8 +16,9 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.domain.allocator;
+package org.fabric3.fabric.domain;
 
+import org.fabric3.spi.domain.allocator.AllocationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
