@@ -7,7 +7,7 @@ This repository hosts the Fabric3 runtime source. Information on Fabric3 can be 
 Building the Source
 ------------------------
 
-Requirements are JDK 7 and Gradle 1.11+.
+Requirements are JDK 8 and Gradle 1.11+.
 
 To build the source, execute:
 

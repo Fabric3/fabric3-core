@@ -79,8 +79,8 @@ configure(deployProjects()) {
 
     // suppress warnings about JDK 1.7 boot classpath
     [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:-options']
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     if (build == 'full' || build == 'deploy') {
         apply plugin: 'signing'
