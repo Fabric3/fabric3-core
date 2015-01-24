@@ -37,8 +37,6 @@ import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.RuntimeState;
 import org.fabric3.api.host.runtime.ShutdownException;
-import org.fabric3.spi.runtime.event.DomainRecover;
-import org.fabric3.spi.runtime.event.DomainRecovered;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.runtime.event.JoinDomain;
@@ -102,12 +100,6 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
         eventService.publish(new JoinDomain());
         eventService.publish(new JoinDomainCompleted());
-
-        // initiate domain recovery
-        eventService.publish(new DomainRecover());
-
-        // signal domain finished recovery
-        eventService.publish(new DomainRecovered());
 
         // signal runtime start
         eventService.publish(new RuntimeStart());

@@ -91,12 +91,4 @@ public interface Domain {
      */
     void deactivateDefinitions(URI uri) throws DeploymentException;
 
-    /**
-     * Initiates a recovery operation using a journal containing the recorded domain state.
-     *
-     * @param journal the domain journal containing the recorded domain state
-     * @throws DeploymentException if an error is encountered during recovery
-     */
-    void recover(DomainJournal journal) throws DeploymentException;
-
 }

@@ -53,7 +53,6 @@ dependencies {
     extensionDependencies project(':extension:core:fabric3-resource')
     extensionDependencies project(':extension:core:fabric3-execution')
     extensionDependencies project(':extension:other:security:fabric3-security')
-    extensionDependencies project(':extension:core:fabric3-recovery')
     extensionDependencies project(':extension:federated:fabric3-federation-allocation')
     extensionDependencies project(':extension:federated:fabric3-federation-node')
     extensionDependencies project(':extension:federated:fabric3-jgroups')

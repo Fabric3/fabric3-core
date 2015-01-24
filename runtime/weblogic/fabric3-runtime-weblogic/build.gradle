@@ -42,7 +42,6 @@ dependencies {
 
     extensionDependencies project(':extension:core:fabric3-resource')
     extensionDependencies project(':extension:other:security:fabric3-security-impl')
-    extensionDependencies project(':extension:core:fabric3-recovery')
     extensionDependencies project(':extension:federated:fabric3-federation-node')
     extensionDependencies project(':extension:node:fabric3-node-impl')
     extensionDependencies project(':runtime:weblogic:fabric3-weblogic-kernel')

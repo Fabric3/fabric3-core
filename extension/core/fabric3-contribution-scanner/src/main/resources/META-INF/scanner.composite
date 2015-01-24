@@ -12,10 +12,6 @@
         <property name="delay" source="$systemConfig//f3:scanner/@delay"/>
     </component>
 
-    <component name="ContributionTracker">
-        <f3:implementation.system class="org.fabric3.contribution.scanner.impl.ContributionTrackerImpl"/>
-    </component>
-
     <component name="FileSystemResourceFactoryRegistry">
         <f3:implementation.system class="org.fabric3.contribution.scanner.impl.FileSystemResourceFactoryRegistryImpl"/>
     </component>

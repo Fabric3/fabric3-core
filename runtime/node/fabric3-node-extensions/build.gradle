@@ -18,7 +18,6 @@ dependencies {
     compile project(':extension:core:fabric3-async')
     compile project(':extension:core:fabric3-resource')
     compile project(':extension:core:fabric3-execution')
-    compile project(':extension:core:fabric3-recovery')
     compile project(':extension:federated:fabric3-federation-node')
     compile project(':extension:federated:fabric3-federation-allocation')
     compile project(':extension:federated:fabric3-jgroups')
@@ -46,7 +45,6 @@ task distZip(type: Zip) {
     dependsOn(':extension:core:fabric3-async:jar')
     dependsOn(':extension:core:fabric3-resource:jar')
     dependsOn(':extension:core:fabric3-execution:jar')
-    dependsOn(':extension:core:fabric3-recovery:jar')
 
     dependsOn(':extension:federated:fabric3-federation-node:jar')
     dependsOn(':extension:federated:fabric3-federation-allocation:jar')

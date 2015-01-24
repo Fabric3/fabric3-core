@@ -35,7 +35,6 @@ import org.fabric3.api.host.domain.ContributionNotFoundException;
 import org.fabric3.api.host.domain.ContributionNotInstalledException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
-import org.fabric3.api.host.domain.DomainJournal;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
@@ -264,11 +263,6 @@ public abstract class AbstractDomain implements Domain {
         if (!policySets.isEmpty()) {
             undeployPolicySets(policySets);
         }
-    }
-
-    public void recover(DomainJournal journal) throws DeploymentException {
-        List<URI> contributionUris = journal.getContributions();
-        include(contributionUris, true);
     }
 
     /**

@@ -64,8 +64,7 @@ import org.fabric3.spi.runtime.event.RuntimeStart;
 
 /**
  * Scans deployment directories for contributions. In production mode, deployment directories will be scanned once at startup and any contained contributions
- * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions.
- * <p/>
+ * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions. <p/>
  * In dynamic mode, the scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a
  * consistent view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are
  * determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the
@@ -78,7 +77,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private ContributionService contributionService;
     private FileSystemResourceFactoryRegistry registry;
     private EventService eventService;
-    private ContributionTracker tracker;
     private ScannerMonitor monitor;
     private Domain domain;
     private List<File> paths;
@@ -89,19 +87,18 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private Set<File> ignored = new HashSet<>();
     private Map<String, FileSystemResource> cache = new HashMap<>();
     List<URI> notSeen = new ArrayList<>(); // contributions added when the runtime was offline and hence not previously seen by the scanner
+    private Set<String> tracked = new HashSet<>();
 
     public ContributionDirectoryScanner(@Reference ContributionService contributionService,
                                         @Reference(name = "assembly") Domain domain,
                                         @Reference FileSystemResourceFactoryRegistry registry,
                                         @Reference EventService eventService,
-                                        @Reference ContributionTracker tracker,
                                         @Reference HostInfo hostInfo,
                                         @Monitor ScannerMonitor monitor) {
         this.registry = registry;
         this.contributionService = contributionService;
         this.domain = domain;
         this.eventService = eventService;
-        this.tracker = tracker;
         paths = hostInfo.getDeployDirectories();
         this.monitor = monitor;
     }
@@ -354,14 +351,14 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             sources.add(source);
             addedResources.add(resource);
 
-            boolean seen = tracker.isTracked(name);
+            boolean seen = tracked.contains(name);
             if (!seen && recover) {
                 // the contribution was not seen previously, schedule it to be deployed when the domain recovers
                 notSeen.add(uri);
             }
 
             // track the addition
-            tracker.addResource(name);
+            tracked.add(name);
 
         }
         if (!sources.isEmpty()) {
@@ -426,7 +423,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 // artifact was removed
                 try {
                     // track the removal
-                    tracker.removeResource(name);
+                    tracked.remove(name);
                     iterator.remove();
                     // check that the resource was not deleted by another process
                     if (contributionService.exists(uri)) {
