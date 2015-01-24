@@ -57,8 +57,6 @@ include 'extension:binding:fabric3-binding-ws-api', 'extension:binding:fabric3-b
 include 'extension:binding:fabric3-binding-zeromq-api', 'extension:binding:fabric3-binding-zeromq-library', 'extension:binding:fabric3-binding-zeromq',
         'extension:binding:fabric3-binding-jeromq'
 
-include 'extension:binding:fabric3-binding-web'
-
 include 'runtime:plugin:fabric3-plugin-api', 'runtime:plugin:fabric3-plugin-base', 'runtime:plugin:fabric3-plugin-extension',
         'runtime:plugin:fabric3-plugin-runtime'
 
