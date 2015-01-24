@@ -52,11 +52,7 @@ import org.zeromq.ZMQ.Socket;
  * a queue.
  */
 public class NonReliableRequestReplySender implements RequestReplySender, Thread.UncaughtExceptionHandler {
-    private static final Callable<byte[]> CALLABLE = new Callable<byte[]>() {
-        public byte[] call() throws Exception {
-            return null;
-        }
-    };
+    private static final Callable<byte[]> CALLABLE = () -> null;
     private static final Request SHUTDOWN = new Request(null, 0, null);
 
     private String id;
