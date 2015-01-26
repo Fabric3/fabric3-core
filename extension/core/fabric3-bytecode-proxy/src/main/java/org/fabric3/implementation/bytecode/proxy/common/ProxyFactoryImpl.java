@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.oasisopen.sca.annotation.Reference;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -54,7 +54,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 /**
  * Implementation that uses ASM for bytecode generation.
  */
-public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
+public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListener {
     private ClassLoaderRegistry classLoaderRegistry;
 
     private Map<URI, BytecodeClassLoader> classLoaderCache = new HashMap<>();
@@ -72,16 +72,9 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
         }
     }
 
-    public void onDeploy(ClassLoader classLoader) {
-        // no-op
-    }
-
-    public void onUndeploy(ClassLoader classLoader) {
-        if (!(classLoader instanceof MultiParentClassLoader)) {
-            return;
-        }
+    public void onUninstall(Contribution contribution) {
         // remove cached classloader for the contribution on undeploy
-        classLoaderCache.remove(((MultiParentClassLoader) classLoader).getName());
+        classLoaderCache.remove(contribution.getUri());
     }
 
     /**
@@ -526,4 +519,23 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
         return generationClassLoader;
     }
 
+    public void onStore(Contribution contribution) {
+
+    }
+
+    public void onProcessManifest(Contribution contribution) {
+
+    }
+
+    public void onInstall(Contribution contribution) {
+
+    }
+
+    public void onUpdate(Contribution contribution) {
+
+    }
+
+    public void onRemove(Contribution contribution) {
+
+    }
 }

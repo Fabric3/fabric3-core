@@ -28,8 +28,10 @@ import java.util.Set;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.jpa.api.JpaResolutionException;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
@@ -41,11 +43,13 @@ import org.oasisopen.sca.annotation.Service;
 /**
  * Creates and caches entity manager factories.
  */
-@Service({EntityManagerFactoryCache.class, ClassLoaderListener.class})
-public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCache, ClassLoaderListener {
+@Service({EntityManagerFactoryCache.class, ContributionServiceListener.class})
+public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCache, ContributionServiceListener {
+    private ClassLoaderRegistry classLoaderRegistry;
     private CacheMonitor monitor;
 
-    public DefaultEntityManagerFactoryCache(@Monitor CacheMonitor monitor) {
+    public DefaultEntityManagerFactoryCache(@Reference ClassLoaderRegistry classLoaderRegistry, @Monitor CacheMonitor monitor) {
+        this.classLoaderRegistry = classLoaderRegistry;
         this.monitor = monitor;
     }
 
@@ -69,12 +73,10 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         }
     }
 
-    public void onDeploy(ClassLoader loader) {
-        // no-op
-    }
-
-    public void onUndeploy(ClassLoader classLoader) {
+    public void onUninstall(Contribution contribution) {
         URI key;
+        URI uri = contribution.getUri();
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
         if (classLoader instanceof MultiParentClassLoader) {
             key = ((MultiParentClassLoader) classLoader).getName();
         } else {
@@ -141,5 +143,23 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         return "hibernate/sessions/" + name;
     }
 
+    public void onStore(Contribution contribution) {
 
+    }
+
+    public void onProcessManifest(Contribution contribution) {
+
+    }
+
+    public void onInstall(Contribution contribution) {
+
+    }
+
+    public void onUpdate(Contribution contribution) {
+
+    }
+
+    public void onRemove(Contribution contribution) {
+
+    }
 }

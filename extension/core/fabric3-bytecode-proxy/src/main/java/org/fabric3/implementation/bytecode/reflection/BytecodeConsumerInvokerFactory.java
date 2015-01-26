@@ -28,10 +28,11 @@ import org.fabric3.api.host.Names;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.oasisopen.sca.annotation.Reference;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -46,7 +47,7 @@ import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 /**
  *
  */
-public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, ClassLoaderListener {
+public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, ContributionServiceListener {
     private static final String[] TARGET_INVOKER_INTERFACES = new String[]{Type.getInternalName(ConsumerInvoker.class)};
     private static final String[] EXCEPTIONS = new String[]{"java/lang/Exception"};
 
@@ -58,16 +59,9 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void onDeploy(ClassLoader classLoader) {
-        // no-ip
-    }
-
-    public void onUndeploy(ClassLoader classLoader) {
-        if (!(classLoader instanceof MultiParentClassLoader)) {
-            return;
-        }
+    public void onUninstall(Contribution contribution) {
         // remove cached classloader for the contribution on undeploy
-        classLoaderCache.remove(((MultiParentClassLoader) classLoader).getName());
+        classLoaderCache.remove(contribution.getUri());
     }
 
     public boolean isDefault() {
@@ -256,4 +250,23 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
         return generationClassLoader;
     }
 
+    public void onStore(Contribution contribution) {
+
+    }
+
+    public void onProcessManifest(Contribution contribution) {
+
+    }
+
+    public void onInstall(Contribution contribution) {
+
+    }
+
+    public void onUpdate(Contribution contribution) {
+
+    }
+
+    public void onRemove(Contribution contribution) {
+
+    }
 }
