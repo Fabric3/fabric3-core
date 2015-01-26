@@ -20,21 +20,17 @@
 package org.fabric3.fabric.domain;
 
 import java.util.List;
-import java.util.ListIterator;
 
-import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.fabric.container.command.ExecutorNotFoundException;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeployerMonitor;
-import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.component.ScopeRegistry;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.generator.DeploymentUnit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -44,12 +40,10 @@ import org.oasisopen.sca.annotation.Reference;
 public class LocalDeployer implements Deployer {
     private CommandExecutorRegistry executorRegistry;
     private ScopeRegistry scopeRegistry;
-    private DeployerMonitor monitor;
 
-    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry, @Monitor DeployerMonitor monitor) {
+    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
         this.executorRegistry = executorRegistry;
         this.scopeRegistry = scopeRegistry;
-        this.monitor = monitor;
     }
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
@@ -77,42 +71,12 @@ public class LocalDeployer implements Deployer {
      * @throws DeploymentException if a deployment error occurs
      */
     private void execute(List<CompensatableCommand> commands) throws DeploymentException {
-        int marker = 0;
         for (Command command : commands) {
             try {
                 executorRegistry.execute(command);
-                ++marker;
             } catch (ContainerException e) {
-                rollback(commands, marker);
                 throw new DeploymentException(e);
             }
-        }
-    }
-
-    /**
-     * Rolls back the runtime state after a failed deployment by executing a collection of compensating commands.
-     *
-     * @param commands the deployment commands that failed
-     * @param marker   the deployment command index where the failure occurred
-     */
-    private void rollback(List<CompensatableCommand> commands, int marker) {
-        try {
-            monitor.rollback("local");
-            ListIterator<CompensatableCommand> iter = commands.listIterator(marker);
-            while (iter.hasPrevious()) {
-                CompensatableCommand command = iter.previous();
-                Command compensating = command.getCompensatingCommand();
-                executorRegistry.execute(compensating);
-            }
-            if (scopeRegistry != null) {
-                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-            }
-        } catch (ExecutorNotFoundException ex) {
-            // this is thrown when an error occurs during bootstrap: some of the command executors may not have be deployed at this point, which
-            // results in an ExecutorNotFoundException. Log and ignore
-            monitor.rollbackAborted();
-        } catch (ContainerException ex) {
-            monitor.rollbackError("local", ex);
         }
     }
 

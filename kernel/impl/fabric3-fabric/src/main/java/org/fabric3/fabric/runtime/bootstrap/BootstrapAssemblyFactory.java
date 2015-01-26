@@ -135,7 +135,6 @@ import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
@@ -184,13 +183,7 @@ public class BootstrapAssemblyFactory {
                                                                                 componentManager,
                                                                                 managementService,
                                                                                 info);
-        DeployerMonitor monitor;
-        try {
-            monitor = monitorService.createMonitor(DeployerMonitor.class);
-        } catch (MonitorCreationException e) {
-            throw new InitializationException(e);
-        }
-        LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry, monitor);
+        LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry);
 
         PolicyAttacher policyAttacher = new NullPolicyAttacher();
         PolicyResolver policyResolver = new NullPolicyResolver();

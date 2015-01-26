@@ -22,15 +22,14 @@ package org.fabric3.fabric.container.executor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.fabric.container.command.ExecutorNotFoundException;
 import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.container.command.Command;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Default implementation of the CommandExecutorRegistry
+ *
  */
 @EagerInit
 public class CommandExecutorRegistryImpl implements CommandExecutorRegistry {
@@ -45,7 +44,7 @@ public class CommandExecutorRegistryImpl implements CommandExecutorRegistry {
         Class<? extends Command> clazz = command.getClass();
         CommandExecutor<T> executor = (CommandExecutor<T>) executors.get(clazz);
         if (executor == null) {
-            throw new ExecutorNotFoundException("No registered executor for command: " + clazz.getName());
+            throw new AssertionError("No registered executor for command: " + clazz.getName());
         }
         executor.execute(command);
     }
