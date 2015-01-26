@@ -31,8 +31,6 @@ import org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistryImpl;
 import org.fabric3.fabric.container.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.container.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.container.builder.channel.TypeEventFilterBuilder;
-import org.fabric3.fabric.container.builder.classloader.ClassLoaderBuilderImpl;
-import org.fabric3.fabric.container.builder.classloader.ClassLoaderTrackerImpl;
 import org.fabric3.fabric.container.builder.classloader.ClassLoaderWireBuilderImpl;
 import org.fabric3.fabric.container.component.scope.DomainScopeContainer;
 import org.fabric3.fabric.container.component.scope.StatelessScopeContainer;
@@ -51,7 +49,6 @@ import org.fabric3.fabric.container.executor.DetachWireCommandExecutor;
 import org.fabric3.fabric.container.executor.DisposeChannelCommandExecutor;
 import org.fabric3.fabric.container.executor.DisposeComponentCommandExecutor;
 import org.fabric3.fabric.container.executor.DisposeResourcesCommandExecutor;
-import org.fabric3.fabric.container.executor.ProvisionClassloaderCommandExecutor;
 import org.fabric3.fabric.container.executor.ProvisionExtensionsCommandExecutor;
 import org.fabric3.fabric.container.executor.ProvisionedExtensionTrackerImpl;
 import org.fabric3.fabric.container.executor.StartComponentCommandExecutor;
@@ -59,7 +56,6 @@ import org.fabric3.fabric.container.executor.StartContextCommandExecutor;
 import org.fabric3.fabric.container.executor.StopComponentCommandExecutor;
 import org.fabric3.fabric.container.executor.StopContextCommandExecutor;
 import org.fabric3.fabric.container.executor.UnProvisionExtensionsCommandExecutor;
-import org.fabric3.fabric.container.executor.UnprovisionClassloaderCommandExecutor;
 import org.fabric3.fabric.container.handler.TransformerHandlerFactoryImpl;
 import org.fabric3.fabric.container.interceptor.TransformerInterceptorFactoryImpl;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
@@ -80,8 +76,6 @@ import org.fabric3.fabric.domain.generator.channel.ConnectionGeneratorImpl;
 import org.fabric3.fabric.domain.generator.channel.ConsumerCommandGenerator;
 import org.fabric3.fabric.domain.generator.channel.DefaultChannelGeneratorExtensionImpl;
 import org.fabric3.fabric.domain.generator.channel.ProducerCommandGenerator;
-import org.fabric3.fabric.domain.generator.classloader.ClassLoaderCommandGeneratorImpl;
-import org.fabric3.fabric.domain.generator.collator.ContributionCollatorImpl;
 import org.fabric3.fabric.domain.generator.component.BuildComponentCommandGenerator;
 import org.fabric3.fabric.domain.generator.component.DisposeComponentCommandGenerator;
 import org.fabric3.fabric.domain.generator.component.StartComponentCommandGenerator;
@@ -196,10 +190,6 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(ChannelConnectorImpl.class).build());
 
-        compositeBuilder.component(newBuilder(ClassLoaderBuilderImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ClassLoaderTrackerImpl.class).build());
-
         compositeBuilder.component(newBuilder(ClassLoaderWireBuilderImpl.class).build());
 
         compositeBuilder.component(newBuilder(ChannelSourceAttacher.class).key(ChannelSourceDefinition.class.getName()).build());
@@ -216,8 +206,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(CommandExecutorRegistryImpl.class).build());
 
         compositeBuilder.component(newBuilder(ProvisionedExtensionTrackerImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ProvisionClassloaderCommandExecutor.class).build());
 
         compositeBuilder.component(newBuilder(AttachExtensionCommandExecutor.class).build());
 
@@ -251,8 +239,6 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(DisposeResourcesCommandExecutor.class).build());
 
-        compositeBuilder.component(newBuilder(UnprovisionClassloaderCommandExecutor.class).build());
-
         compositeBuilder.component(newBuilder(ConnectionCommandExecutor.class).build());
 
         compositeBuilder.component(newBuilder(ChannelConnectionCommandExecutor.class).build());
@@ -274,10 +260,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(WireGeneratorImpl.class).build());
 
         compositeBuilder.component(newBuilder(ConnectionGeneratorImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ContributionCollatorImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ClassLoaderCommandGeneratorImpl.class).build());
 
         compositeBuilder.component(newBuilder(ChannelCommandGeneratorImpl.class).build());
 

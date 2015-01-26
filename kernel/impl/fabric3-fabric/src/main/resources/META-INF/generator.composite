@@ -31,14 +31,6 @@
         <f3:implementation.system class="org.fabric3.fabric.domain.generator.channel.ConnectionGeneratorImpl"/>
     </component>
 
-    <component name="ContributionCollator">
-        <f3:implementation.system class="org.fabric3.fabric.domain.generator.collator.ContributionCollatorImpl"/>
-    </component>
-
-    <component name="ClassLoaderGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.domain.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
-    </component>
-
     <component name="ChannelCommandGenerator">
         <f3:implementation.system class="org.fabric3.fabric.domain.generator.channel.ChannelCommandGeneratorImpl"/>
     </component>

@@ -13,14 +13,6 @@
         <f3:implementation.system class="org.fabric3.fabric.container.builder.ChannelConnectorImpl"/>
     </component>
 
-    <component name="ClassLoaderBuilder">
-        <f3:implementation.system class="org.fabric3.fabric.container.builder.classloader.ClassLoaderBuilderImpl"/>
-    </component>
-
-    <component name="ClassLoaderTracker">
-        <f3:implementation.system class="org.fabric3.fabric.container.builder.classloader.ClassLoaderTrackerImpl"/>
-    </component>
-
     <component name="ClassLoaderWireBuilder">
         <f3:implementation.system class="org.fabric3.fabric.container.builder.classloader.ClassLoaderWireBuilderImpl"/>
     </component>

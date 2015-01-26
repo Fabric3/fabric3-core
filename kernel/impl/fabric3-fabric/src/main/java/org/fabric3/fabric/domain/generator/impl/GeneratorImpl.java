@@ -27,14 +27,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.fabric3.fabric.domain.generator.CommandGenerator;
-import org.fabric3.fabric.domain.generator.GenerationType;
-import org.fabric3.fabric.domain.generator.classloader.ClassLoaderCommandGenerator;
-import org.fabric3.fabric.domain.generator.collator.ContributionCollator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.resource.DomainResourceCommandGenerator;
 import org.fabric3.spi.container.command.CompensatableCommand;
-import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.Generator;
@@ -51,27 +47,17 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class GeneratorImpl implements Generator {
-    private static final Comparator<LogicalComponent<?>> COMPARATOR = new Comparator<LogicalComponent<?>>() {
-        public int compare(LogicalComponent<?> first, LogicalComponent<?> second) {
-            return first.getUri().compareTo(second.getUri());
-        }
-    };
+    private static final Comparator<LogicalComponent<?>> COMPARATOR = (first, second) -> first.getUri().compareTo(second.getUri());
 
     private List<CommandGenerator> commandGenerators;
-    private ContributionCollator collator;
-    private ClassLoaderCommandGenerator classLoaderCommandGenerator;
     private StartContextCommandGenerator startContextCommandGenerator;
     private StopContextCommandGenerator stopContextCommandGenerator;
     private DomainResourceCommandGenerator resourceGenerator;
 
     @Constructor
     public GeneratorImpl(@Reference List<CommandGenerator> commandGenerators,
-                         @Reference ContributionCollator collator,
-                         @Reference ClassLoaderCommandGenerator classLoaderCommandGenerator,
                          @Reference StartContextCommandGenerator startContextCommandGenerator,
                          @Reference StopContextCommandGenerator stopContextCommandGenerator) {
-        this.collator = collator;
-        this.classLoaderCommandGenerator = classLoaderCommandGenerator;
         this.startContextCommandGenerator = startContextCommandGenerator;
         this.stopContextCommandGenerator = stopContextCommandGenerator;
         // sort the command generators
@@ -95,7 +81,6 @@ public class GeneratorImpl implements Generator {
         String id = UUID.randomUUID().toString();
         Deployment deployment = new Deployment(id);
 
-        Map<String, List<Contribution>> deployingContributions = generateClassLoaders(deployment, sorted, incremental);
         // generate stop context information
         Map<String, List<CompensatableCommand>> stopCommands = stopContextCommandGenerator.generate(sorted);
         for (Map.Entry<String, List<CompensatableCommand>> entry : stopCommands.entrySet()) {
@@ -145,54 +130,7 @@ public class GeneratorImpl implements Generator {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
-        // release classloaders for components being undeployed that are no longer referenced if the deployment is remote
-        generateReleaseClassLoaders(deployment, sorted, deployingContributions, incremental);
         return deployment;
-    }
-
-    /**
-     * Generates classloader provision commands.
-     *
-     * @param deployment  the map of commands for deployment
-     * @param components  the components being deployed
-     * @param incremental the type of generation being performed
-     * @return the contributions being deployed
-     * @throws GenerationException if an error during generation is encountered
-     */
-    private Map<String, List<Contribution>> generateClassLoaders(Deployment deployment, List<LogicalComponent<?>> components, boolean incremental)
-            throws GenerationException {
-        Map<String, List<Contribution>> deployingContributions;
-        if (incremental) {
-            deployingContributions = collator.collateContributions(components, GenerationType.INCREMENTAL);
-        } else {
-            deployingContributions = collator.collateContributions(components, GenerationType.FULL);
-        }
-
-        Map<String, List<CompensatableCommand>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
-        for (Map.Entry<String, List<CompensatableCommand>> entry : commandsPerZone.entrySet()) {
-            deployment.addProvisionCommands(entry.getKey(), entry.getValue());
-        }
-        return deployingContributions;
-    }
-
-    /**
-     * Generates classloader release commands.
-     *
-     * @param deployment    the map of commands for deployment
-     * @param components    the components being deployed
-     * @param contributions the contributions being deployed
-     * @param incremental   the type of generation being performed
-     * @throws GenerationException if an error during generation is encountered
-     */
-    private void generateReleaseClassLoaders(Deployment deployment,
-                                             List<LogicalComponent<?>> components,
-                                             Map<String, List<Contribution>> contributions,
-                                             boolean incremental) throws GenerationException {
-        Map<String, List<Contribution>> undeployingContributions = collator.collateContributions(components, GenerationType.UNDEPLOY);
-        Map<String, List<CompensatableCommand>> releaseCommandsPerZone = classLoaderCommandGenerator.release(undeployingContributions);
-        for (Map.Entry<String, List<CompensatableCommand>> entry : releaseCommandsPerZone.entrySet()) {
-            deployment.addCommands(entry.getKey(), entry.getValue());
-        }
     }
 
     /**

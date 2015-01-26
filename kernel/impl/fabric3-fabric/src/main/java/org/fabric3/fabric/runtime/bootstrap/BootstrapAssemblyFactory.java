@@ -24,27 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.contribution.generator.JavaContributionWireGenerator;
-import org.fabric3.contribution.generator.LocationContributionWireGenerator;
-import org.fabric3.contribution.wire.JavaContributionWire;
-import org.fabric3.contribution.wire.LocationContributionWire;
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
-import org.fabric3.spi.container.builder.Connector;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyService;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.fabric.container.builder.ConnectorImpl;
-import org.fabric3.fabric.domain.collector.Collector;
-import org.fabric3.fabric.domain.collector.CollectorImpl;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.fabric.container.command.StartContextCommand;
-import org.fabric3.fabric.contract.DefaultContractMatcher;
-import org.fabric3.fabric.contract.JavaContractMatcherExtension;
-import org.fabric3.fabric.domain.ContributionHelper;
-import org.fabric3.fabric.domain.ContributionHelperImpl;
-import org.fabric3.fabric.domain.LocalDeployer;
-import org.fabric3.fabric.domain.RuntimeDomain;
 import org.fabric3.fabric.container.executor.AttachWireCommandExecutor;
 import org.fabric3.fabric.container.executor.BuildComponentCommandExecutor;
 import org.fabric3.fabric.container.executor.CommandExecutorRegistryImpl;
@@ -52,12 +42,16 @@ import org.fabric3.fabric.container.executor.ConnectionCommandExecutor;
 import org.fabric3.fabric.container.executor.ContextMonitor;
 import org.fabric3.fabric.container.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.container.executor.StartContextCommandExecutor;
+import org.fabric3.fabric.contract.DefaultContractMatcher;
+import org.fabric3.fabric.contract.JavaContractMatcherExtension;
+import org.fabric3.fabric.domain.ContributionHelper;
+import org.fabric3.fabric.domain.ContributionHelperImpl;
+import org.fabric3.fabric.domain.LocalDeployer;
+import org.fabric3.fabric.domain.RuntimeDomain;
+import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.collector.CollectorImpl;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.fabric.domain.generator.classloader.ClassLoaderCommandGenerator;
-import org.fabric3.fabric.domain.generator.classloader.ClassLoaderCommandGeneratorImpl;
-import org.fabric3.fabric.domain.generator.collator.ContributionCollator;
-import org.fabric3.fabric.domain.generator.collator.ContributionCollatorImpl;
 import org.fabric3.fabric.domain.generator.component.BuildComponentCommandGenerator;
 import org.fabric3.fabric.domain.generator.component.StartComponentCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGenerator;
@@ -74,8 +68,6 @@ import org.fabric3.fabric.domain.generator.wire.PhysicalOperationGenerator;
 import org.fabric3.fabric.domain.generator.wire.PhysicalOperationGeneratorImpl;
 import org.fabric3.fabric.domain.generator.wire.ReferenceCommandGenerator;
 import org.fabric3.fabric.domain.generator.wire.ResourceReferenceCommandGenerator;
-import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
-import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.fabric.domain.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.AutowireInstantiator;
@@ -92,13 +84,9 @@ import org.fabric3.fabric.domain.instantiator.component.CompositeComponentInstan
 import org.fabric3.fabric.domain.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.domain.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.domain.instantiator.wire.AutowireInstantiatorImpl;
+import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
 import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.xml.XMLFactoryImpl;
-import org.fabric3.api.host.domain.Domain;
-import org.fabric3.api.host.monitor.MonitorCreationException;
-import org.fabric3.api.host.monitor.MonitorProxyService;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.implementation.pojo.builder.ArrayBuilder;
 import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
 import org.fabric3.implementation.pojo.builder.CollectionBuilder;
@@ -119,44 +107,46 @@ import org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory;
 import org.fabric3.implementation.reflection.jdk.JDKServiceInvokerFactory;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
-import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
+import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
-import org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition;
 import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
-import org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
+import org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition;
+import org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
 import org.fabric3.monitor.model.MonitorResourceReference;
+import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeRegistry;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.OperationResolver;
-import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.DeployerMonitor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.domain.generator.policy.PolicyResolver;
+import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.xml.XMLFactory;
 import org.fabric3.transform.DefaultTransformerRegistry;
@@ -209,7 +199,7 @@ public class BootstrapAssemblyFactory {
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
 
-        Generator generator = createGenerator(metaDataStore, policyResolver, matcher);
+        Generator generator = createGenerator(policyResolver, matcher);
 
         LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
@@ -362,17 +352,14 @@ public class BootstrapAssemblyFactory {
         return connector;
     }
 
-    private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {
+    private static Generator createGenerator(PolicyResolver resolver, ContractMatcher matcher) {
         GeneratorRegistry generatorRegistry = createGeneratorRegistry();
-        ClassLoaderCommandGenerator classLoaderGenerator = createClassLoaderGenerator();
         List<CommandGenerator> commandGenerators = createCommandGenerators(resolver, matcher, generatorRegistry);
 
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
 
-        ContributionCollator collator = new ContributionCollatorImpl(metaDataStore);
-
-        return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, startContextGenerator, stopContextGenerator);
+        return new GeneratorImpl(commandGenerators, startContextGenerator, stopContextGenerator);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -385,17 +372,6 @@ public class BootstrapAssemblyFactory {
         registry.register(SingletonImplementation.class, singletonComponentGenerator);
         registry.register(MonitorResourceReference.class, new MonitorResourceReferenceGenerator());
         return registry;
-    }
-
-    private static ClassLoaderCommandGenerator createClassLoaderGenerator() {
-        ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGenerator();
-        ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGenerator();
-        Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators
-                = new HashMap<>();
-        generators.put(JavaContributionWire.class, javaGenerator);
-        generators.put(LocationContributionWire.class, locationGenerator);
-
-        return new ClassLoaderCommandGeneratorImpl(generators);
     }
 
     private static List<CommandGenerator> createCommandGenerators(PolicyResolver resolver, ContractMatcher matcher, GeneratorRegistry generatorRegistry) {

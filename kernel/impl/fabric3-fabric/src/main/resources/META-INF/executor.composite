@@ -14,10 +14,6 @@
         <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionedExtensionTrackerImpl"/>
     </component>
 
-    <component name="ClassloaderProvisionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionClassloaderCommandExecutor"/>
-    </component>
-
     <component name="AttachExtensionCommandExecutor">
         <f3:implementation.system class="org.fabric3.fabric.container.executor.AttachExtensionCommandExecutor"/>
     </component>
@@ -80,10 +76,6 @@
 
     <component name="DisposeResourcesCommandExecutor">
         <f3:implementation.system class="org.fabric3.fabric.container.executor.DisposeResourcesCommandExecutor"/>
-    </component>
-
-    <component name="UnprovisionClassloaderCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.UnprovisionClassloaderCommandExecutor"/>
     </component>
 
     <component name="ConnectionCommandExecutor">
