@@ -10,18 +10,6 @@
         <f3:implementation.system class="org.fabric3.fabric.container.executor.CommandExecutorRegistryImpl"/>
     </component>
 
-    <component name="ProvisionedExtensionTracker">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionedExtensionTrackerImpl"/>
-    </component>
-
-    <component name="AttachExtensionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.AttachExtensionCommandExecutor"/>
-    </component>
-
-    <component name="DetachExtensionCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.DetachExtensionCommandExecutor"/>
-    </component>
-
     <component name="BuildComponentCommandExecutor">
         <f3:implementation.system class="org.fabric3.fabric.container.executor.BuildComponentCommandExecutor"/>
     </component>
@@ -84,16 +72,6 @@
 
     <component name="ChannelConnectionCommandExecutor">
         <f3:implementation.system class="org.fabric3.fabric.container.executor.ChannelConnectionCommandExecutor"/>
-    </component>
-
-    <component name="ProvisionExtensionsCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.ProvisionExtensionsCommandExecutor"/>
-        <reference name="domain" target="RuntimeDomain"/>
-    </component>
-
-    <component name="UnProvisionExtensionsCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.container.executor.UnProvisionExtensionsCommandExecutor"/>
-        <reference name="domain" target="RuntimeDomain"/>
     </component>
 
 </composite>
