@@ -35,8 +35,6 @@ include 'extension:other:cache:fabric3-cache', 'extension:other:cache:fabric3-ca
         'extension:other:web:fabric3-contribution-war',
         'extension:other:web:fabric3-contribution-scanner-war', 'extension:other:web:fabric3-container-web-spi', 'extension:other:web:fabric3-container-web-jetty'
 
-include 'extension:interface:fabric3-interface-wsdl'
-
 include 'extension:management:fabric3-management-jmx', 'extension:management:fabric3-management-jmx-agent', 'extension:management:fabric3-management-rest'
 
 include 'extension:node:fabric3-node-impl'

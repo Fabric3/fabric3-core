@@ -56,7 +56,6 @@ dependencies {
     extensionDependencies project(':extension:binding:fabric3-binding-jms-api')
     extensionDependencies project(':extension:binding:fabric3-binding-jms')
 
-    extensionDependencies project(':extension:interface:fabric3-interface-wsdl')
     extensionDependencies project(':extension:binding:fabric3-binding-ws-api')
     extensionDependencies project(':extension:binding:fabric3-binding-ws')
     extensionDependencies project(':extension:binding:fabric3-binding-ws-metro')

@@ -5,25 +5,8 @@
            name="MetroExtension"
            autowire="true">
 
-    <component name="WsdlResolver">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.WsdlResolverImpl"/>
-    </component>
-
-    <component name="EndpointResolver">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.EndpointResolverImpl"/>
-    </component>
-
     <component name="EndpointSynthesizer">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.EndpointSynthesizerImpl"/>
-    </component>
-
-    <component name="WsdlSynthesizer">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlSynthesizerImpl"/>
-    </component>
-
-    <component name="WsdlEndpointValidator">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.validator.WsdlEndpointValidatorImpl"/>
-        <property name="enabled" source="$systemConfig/f3:sca/@wsdl.validation"/>
     </component>
 
     <component name="TargetUrlResolver">
@@ -32,10 +15,6 @@
 
     <component name="JavaInterfaceGenerator">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
-    </component>
-
-    <component name="InterfaceFromWsdlGenerator">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceFromWsdlGeneratorImpl"/>
     </component>
 
     <component name="JavaWsdlGenerator">
@@ -48,10 +27,6 @@
 
     <component name="MetroWireBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroWireBindingGenerator"/>
-    </component>
-
-    <component name="WsdlGeneratorDelegate" f3:key="org.fabric3.wsdl.model.WsdlServiceContract">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlGeneratorDelegate"/>
     </component>
 
     <component name="JavaGeneratorDelegate" f3:key="org.fabric3.spi.model.type.java.JavaServiceContract">

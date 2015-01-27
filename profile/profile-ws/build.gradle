@@ -7,7 +7,6 @@ configurations {
 dependencies {
 
 
-    compile project(':extension:interface:fabric3-interface-wsdl')
     compile project(':extension:other:databinding:fabric3-databinding-jaxb')
     compile project(':extension:other:databinding:fabric3-jaxb')
     compile project(':extension:binding:fabric3-binding-ws-api')

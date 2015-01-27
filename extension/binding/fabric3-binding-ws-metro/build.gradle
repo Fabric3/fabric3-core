@@ -2,10 +2,6 @@ apply plugin: 'fabric3-contribution'
 
 dependencies {
 
-    providedCompile project(':extension:interface:fabric3-interface-wsdl')
-
-    providedCompile group: 'wsdl4j', name: 'wsdl4j', version: wsdl4jVersion
-
     providedCompile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
 
     providedCompile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: jaxbApiVersion
