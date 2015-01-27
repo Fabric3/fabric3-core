@@ -19,17 +19,16 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.fabric.container.command.DisposeComponentCommand;
-import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.fabric.container.command.DisposeComponentCommand;
+import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -41,7 +40,7 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalDispose() throws Exception {
+    public void testDispose() throws Exception {
         ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generate(EasyMock.isA(LogicalComponent.class))).andReturn(new MockDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
@@ -60,7 +59,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoBuild() throws Exception {
+    public void testNoBuild() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
@@ -71,25 +70,6 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
         assertNull(generator.generate(component));
         EasyMock.verify(registry);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIFullBuild() throws Exception {
-        ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
-        EasyMock.expect(componentGenerator.generate(EasyMock.isA(LogicalComponent.class))).andReturn(new MockDefinition());
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getComponentGenerator(EasyMock.eq(MockImplementation.class))).andReturn(componentGenerator);
-        EasyMock.replay(registry, componentGenerator);
-
-        DisposeComponentCommandGenerator generator = new DisposeComponentCommandGenerator(registry);
-
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
-        LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
-        component.setState(LogicalState.MARKED);
- 
-        DisposeComponentCommand command = generator.generate(component);
-        assertNotNull(command.getDefinition());
-        EasyMock.verify(registry, componentGenerator);
     }
 
     private class MockImplementation extends Implementation<ComponentType> {

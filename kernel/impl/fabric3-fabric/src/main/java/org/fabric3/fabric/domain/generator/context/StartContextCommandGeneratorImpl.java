@@ -37,10 +37,10 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class StartContextCommandGeneratorImpl implements StartContextCommandGenerator {
 
-    public List<CompensatableCommand> generate(List<LogicalComponent<?>> components, boolean incremental) throws GenerationException {
+    public List<CompensatableCommand> generate(List<LogicalComponent<?>> components) throws GenerationException {
         List<CompensatableCommand> commands = new ArrayList<>();
         // only log application composite deployments
-        components.stream().filter(component -> component.getState() == LogicalState.NEW || !incremental).forEach(component -> {
+        components.stream().filter(component -> component.getState() == LogicalState.NEW).forEach(component -> {
             QName deployable = component.getDeployable();
             // only log application composite deployments
             boolean log = !component.getUri().toString().startsWith(Names.RUNTIME_NAME);

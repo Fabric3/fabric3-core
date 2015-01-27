@@ -35,7 +35,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalBuild() throws Exception {
+    public void testBuild() throws Exception {
         ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
         EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
@@ -46,13 +46,13 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
         LogicalResource resource = new LogicalResource(new MockDefinition(), null);
 
-        assertNotNull(generator.generateBuild(resource, true));
+        assertNotNull(generator.generateBuild(resource));
 
         EasyMock.verify(registry, resourceGenerator);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoBuild() throws Exception {
+    public void testNoBuild() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
@@ -61,32 +61,13 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
         LogicalResource resource = new LogicalResource(new MockDefinition(), null);
         resource.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generateBuild(resource, true));
+        assertNull(generator.generateBuild(resource));
 
         EasyMock.verify(registry);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testIFullBuild() throws Exception {
-        ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
-        EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
-        EasyMock.replay(registry, resourceGenerator);
-
-        DomainResourceCommandGeneratorImpl generator = new DomainResourceCommandGeneratorImpl(registry);
-
-        LogicalResource resource = new LogicalResource(new MockDefinition(), null);
-        resource.setState(LogicalState.PROVISIONED);
-
-        assertNotNull(generator.generateBuild(resource, false));
-
-        EasyMock.verify(registry, resourceGenerator);
-
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIncrementalDispose() throws Exception {
+    public void testDispose() throws Exception {
         ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
         EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
@@ -97,13 +78,13 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
         LogicalResource resource = new LogicalResource(new MockDefinition(), null);
         resource.setState(LogicalState.MARKED);
-        assertNotNull(generator.generateDispose(resource, true));
+        assertNotNull(generator.generateDispose(resource));
 
         EasyMock.verify(registry, resourceGenerator);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoDispose() throws Exception {
+    public void testNoDispose() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
@@ -112,28 +93,9 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
         LogicalResource resource = new LogicalResource(new MockDefinition(), null);
         resource.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generateDispose(resource, true));
+        assertNull(generator.generateDispose(resource));
 
         EasyMock.verify(registry);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIFullDispose() throws Exception {
-        ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
-        EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
-        EasyMock.replay(registry, resourceGenerator);
-
-        DomainResourceCommandGeneratorImpl generator = new DomainResourceCommandGeneratorImpl(registry);
-
-        LogicalResource resource = new LogicalResource(new MockDefinition(), null);
-        resource.setState(LogicalState.MARKED);
-
-        assertNotNull(generator.generateDispose(resource, true));
-
-        EasyMock.verify(registry, resourceGenerator);
-
     }
 
     private class MockDefinition extends ResourceDefinition {

@@ -38,23 +38,15 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
     private static final QName DEPLOYABLE3 = new QName("component", "3");
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalStart() throws Exception {
+    public void testStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
-       List<CompensatableCommand> commands = generator.generate(createComponents(), true);
+       List<CompensatableCommand> commands = generator.generate(createComponents());
         assertEquals(1, commands.size());
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testFullStart() throws Exception {
-        StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
-
-       List<CompensatableCommand> commands = generator.generate(createComponents(), false);
-        assertEquals(3, commands.size());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoStart() throws Exception {
+    public void testNoStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
         List<LogicalComponent<?>> components = new ArrayList<>();
@@ -64,7 +56,7 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
         component1.setState(LogicalState.PROVISIONED);
         components.add(component1);
 
-       List<CompensatableCommand> commands = generator.generate(components, true);
+       List<CompensatableCommand> commands = generator.generate(components);
 
         assertTrue(commands.isEmpty());
     }

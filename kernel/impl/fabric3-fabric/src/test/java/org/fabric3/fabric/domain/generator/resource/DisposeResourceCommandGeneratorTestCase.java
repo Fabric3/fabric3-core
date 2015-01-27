@@ -39,7 +39,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 public class DisposeResourceCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalBuild() throws Exception {
+    public void testBuild() throws Exception {
         ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
         EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
@@ -60,7 +60,7 @@ public class DisposeResourceCommandGeneratorTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoBuild() throws Exception {
+    public void testNoBuild() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 

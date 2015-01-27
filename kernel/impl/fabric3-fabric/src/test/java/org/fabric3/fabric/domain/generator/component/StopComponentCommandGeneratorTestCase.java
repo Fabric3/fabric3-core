@@ -33,7 +33,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 public class StopComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalStop() throws Exception {
+    public void testStop() throws Exception {
         StopComponentCommandGenerator generator = new StopComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
@@ -45,18 +45,7 @@ public class StopComponentCommandGeneratorTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testFullStop() throws Exception {
-        StopComponentCommandGenerator generator = new StopComponentCommandGenerator();
-        URI uri = URI.create("component");
-        LogicalComponent<?> component = new LogicalComponent(uri, null, null);
-        component.setState(LogicalState.MARKED);
-        StopComponentCommand command = generator.generate(component);
-
-        assertEquals(uri, command.getUri());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoStop() throws Exception {
+    public void testNoStop() throws Exception {
         StopComponentCommandGenerator generator = new StopComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);

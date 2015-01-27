@@ -72,7 +72,7 @@ public class GeneratorImpl implements Generator {
         this.resourceGenerator = generator;
     }
 
-    public Deployment generate(LogicalCompositeComponent domain, boolean incremental) throws GenerationException {
+    public Deployment generate(LogicalCompositeComponent domain) throws GenerationException {
 
         List<LogicalComponent<?>> sorted = topologicalSort(domain);
 
@@ -85,7 +85,7 @@ public class GeneratorImpl implements Generator {
         // generate commands for domain-level resources being deployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                CompensatableCommand command = resourceGenerator.generateBuild(resource, incremental);
+                CompensatableCommand command = resourceGenerator.generateBuild(resource);
                 if (command != null) {
                     deployment.addCommand(command);
                 }
@@ -110,14 +110,14 @@ public class GeneratorImpl implements Generator {
         // generate commands for domain-level resources being undeployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                CompensatableCommand command = resourceGenerator.generateDispose(resource, incremental);
+                CompensatableCommand command = resourceGenerator.generateDispose(resource);
                 if (command != null) {
                     deployment.addCommand(command);
                 }
             }
         }
         // start contexts
-        List<CompensatableCommand> startCommands = startContextCommandGenerator.generate(sorted, incremental);
+        List<CompensatableCommand> startCommands = startContextCommandGenerator.generate(sorted);
         deployment.addCommands(startCommands);
 
         return deployment;

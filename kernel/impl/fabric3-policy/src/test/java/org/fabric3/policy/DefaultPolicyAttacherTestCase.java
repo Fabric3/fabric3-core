@@ -18,13 +18,12 @@
  */
 package org.fabric3.policy;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;
@@ -51,72 +50,44 @@ public class DefaultPolicyAttacherTestCase extends TestCase {
     private LogicalBinding child1ReferenceBinding;
 
     public void testAttachesToComponent() throws Exception {
-        attacher.attach(POLICY_SET, child1, true);
+        attacher.attach(POLICY_SET, child1);
         assertEquals(LogicalState.NEW, child1.getState());
         assertTrue(child1.getPolicySets().contains(POLICY_SET));
     }
 
-    public void testAttachesToComponentIncremental() throws Exception {
+    public void testAttachesToComponentProvisioned() throws Exception {
         // simulate the policy already being attached and the component deployed
         child1.setState(LogicalState.PROVISIONED);
         child1.addPolicySet(POLICY_SET);
-        attacher.attach(POLICY_SET, child1, true);
+        attacher.attach(POLICY_SET, child1);
         assertEquals(LogicalState.PROVISIONED, child1.getState());
     }
 
-    public void testAttachesToComponentNonIncremental() throws Exception {
-        child1.setState(LogicalState.PROVISIONED);
-        attacher.attach(POLICY_SET, child1, false);
-        assertTrue(child1.getPolicySets().contains(POLICY_SET));
-    }
-
-    public void testAttachesToServiceIncremental() throws Exception {
-        attacher.attach(POLICY_SET, child1Service, true);
+    public void testAttachesToService() throws Exception {
+        attacher.attach(POLICY_SET, child1Service);
         for (LogicalBinding<?> binding : child1Service.getBindings()) {
             assertEquals(LogicalState.NEW, binding.getState());
         }
         assertTrue(child1Service.getPolicySets().contains(POLICY_SET));
     }
 
-    public void testAttachesToServiceNonIncremental() throws Exception {
-        for (LogicalBinding<?> binding : child1Service.getBindings()) {
-            binding.setState(LogicalState.PROVISIONED);
-        }
-        attacher.attach(POLICY_SET, child1Service, false);
-        for (LogicalBinding<?> binding : child1Service.getBindings()) {
-            assertEquals(LogicalState.NEW, binding.getState());
-        }
-        assertTrue(child1Service.getPolicySets().contains(POLICY_SET));
-    }
-
-    public void testAttachesToReferenceIncremental() throws Exception {
-        attacher.attach(POLICY_SET, child1Reference, true);
+    public void testAttachesToReference() throws Exception {
+        attacher.attach(POLICY_SET, child1Reference);
         for (LogicalBinding<?> binding : child1Reference.getBindings()) {
             assertEquals(LogicalState.NEW, binding.getState());
         }
         assertTrue(child1Reference.getPolicySets().contains(POLICY_SET));
     }
 
-    public void testAttachesToReferenceNonIncremental() throws Exception {
-        for (LogicalBinding<?> binding : child1Reference.getBindings()) {
-            binding.setState(LogicalState.PROVISIONED);
-        }
-        attacher.attach(POLICY_SET, child1Reference, false);
-        for (LogicalBinding<?> binding : child1Reference.getBindings()) {
-            assertEquals(LogicalState.NEW, binding.getState());
-        }
-        assertTrue(child1Reference.getPolicySets().contains(POLICY_SET));
-    }
-
-    public void testAttachesToBindingIncremental() throws Exception {
-        attacher.attach(POLICY_SET, child1ReferenceBinding, true);
+    public void testAttachesToBinding() throws Exception {
+        attacher.attach(POLICY_SET, child1ReferenceBinding);
         assertEquals(LogicalState.NEW, child1ReferenceBinding.getState());
         assertTrue(child1ReferenceBinding.getPolicySets().contains(POLICY_SET));
     }
 
-    public void testAttachesToBindingNonIncremental() throws Exception {
+    public void testAttachesToBindingNon() throws Exception {
         child1ReferenceBinding.setState(LogicalState.PROVISIONED);
-        attacher.attach(POLICY_SET, child1ReferenceBinding, true);
+        attacher.attach(POLICY_SET, child1ReferenceBinding);
         assertEquals(LogicalState.NEW, child1ReferenceBinding.getState());
         assertTrue(child1ReferenceBinding.getPolicySets().contains(POLICY_SET));
     }

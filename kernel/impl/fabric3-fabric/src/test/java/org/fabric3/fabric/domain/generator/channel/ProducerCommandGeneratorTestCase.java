@@ -76,7 +76,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(connectionGenerator, channelGenerator);
     }
 
-    public void testGenerateIncrementalAttach() throws Exception {
+    public void testGenerateAttach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
         List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(null, null, null));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
@@ -97,7 +97,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(connectionGenerator, channelGenerator);
     }
 
-    public void testGenerateIncrementalDetach() throws Exception {
+    public void testGenerateDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
         List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(null, null, null));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
@@ -141,7 +141,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(connectionGenerator, channelGenerator);
     }
 
-    public void testGenerateNothingIncremental() throws Exception {
+    public void testGenerateNothing() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.replay(connectionGenerator, channelGenerator);

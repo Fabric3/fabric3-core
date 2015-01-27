@@ -181,7 +181,7 @@ public abstract class AbstractDomain implements Domain {
         for (QName deployable : names) {
             collector.markForCollection(deployable, domain);
         }
-        Deployment deployment = generator.generate(domain, true);
+        Deployment deployment = generator.generate(domain);
         collector.collect(domain);
         try {
             deployer.deploy(deployment);
@@ -217,7 +217,7 @@ public abstract class AbstractDomain implements Domain {
         }
         collector.markForCollection(deployable, domain);
         if (!simulated) {
-            Deployment deployment = generator.generate(domain, true);
+            Deployment deployment = generator.generate(domain);
             collector.collect(domain);
             deployer.deploy(deployment);
         } else {
@@ -350,7 +350,7 @@ public abstract class AbstractDomain implements Domain {
                 contributionHelper.releaseLocks(contributions);
                 throw new AssemblyException(context.getErrors());
             }
-            policyAttacher.attachPolicies(domain, !recover);
+            policyAttacher.attachPolicies(domain);
             if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
                 // in single VM mode, recovery includes deployment
                 allocateAndDeploy(domain);
@@ -409,7 +409,7 @@ public abstract class AbstractDomain implements Domain {
             }
         }
         try {
-            policyAttacher.attachPolicies(domain, true);
+            policyAttacher.attachPolicies(domain);
         } catch (PolicyResolutionException e) {
             // release the contribution lock if there was an error
             if (contribution.getLockOwners().contains(name)) {
@@ -449,7 +449,7 @@ public abstract class AbstractDomain implements Domain {
         // Select bindings
         selectBinding(domain);
         // generate and provision any new components and new wires
-        Deployment deployment = generator.generate(domain, true);
+        Deployment deployment = generator.generate(domain);
         collector.markAsProvisioned(domain);
         deployer.deploy(deployment);
     }
@@ -526,9 +526,9 @@ public abstract class AbstractDomain implements Domain {
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);
         }
-        policyAttacher.attachPolicies(policySets, domain, true);
+        policyAttacher.attachPolicies(policySets, domain);
         // generate and provision any new components and new wires
-        Deployment deployment = generator.generate(domain, true);
+        Deployment deployment = generator.generate(domain);
         deployer.deploy(deployment);
         logicalComponentManager.replaceRootComponent(domain);
     }
@@ -540,7 +540,7 @@ public abstract class AbstractDomain implements Domain {
         }
         policyAttacher.detachPolicies(policySets, domain);
         // generate and provision any new components and new wires
-        Deployment deployment = generator.generate(domain, true);
+        Deployment deployment = generator.generate(domain);
         deployer.deploy(deployment);
         logicalComponentManager.replaceRootComponent(domain);
     }

@@ -53,7 +53,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
         this.policyRegistry = policyRegistry;
     }
 
-    public void attachPolicies(LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
+    public void attachPolicies(LogicalComponent<?> component) throws PolicyEvaluationException {
         Collection<ExternalAttachment> externalAttachments = policyRegistry.getAllDefinitions(ExternalAttachment.class);
         if (!externalAttachments.isEmpty()) {
 
@@ -63,7 +63,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
                     if (policySet == null) {
                         throw new PolicyEvaluationException("Policy set referenced in external attachment not found: " + name);
                     }
-                    attachPolicy(component, policySet, externalAttachment.getAttachTo(), incremental);
+                    attachPolicy(component, policySet, externalAttachment.getAttachTo());
                 }
                 for (QName name : externalAttachment.getIntents()) {
                     Intent intent = policyRegistry.getDefinition(name, Intent.class);
@@ -76,12 +76,12 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
 
         }
         Set<PolicySet> policySets = policyRegistry.getExternalAttachmentPolicies();
-        attachPolicies(policySets, component, incremental);
+        attachPolicies(policySets, component);
     }
 
-    public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
+    public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component) throws PolicyEvaluationException {
         for (PolicySet policySet : policySets) {
-            attachPolicy(component, policySet, policySet.getAttachTo(), incremental);
+            attachPolicy(component, policySet, policySet.getAttachTo());
         }
     }
 
@@ -109,36 +109,35 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
      *
      * @param policySet   the PolicySet to attach
      * @param target      the target to attach to
-     * @param incremental if the attachment is being performed as part of an incremental deployment. If true, the state of the target is set to NEW.
      * @throws PolicyEvaluationException if an error occurs performing the attachment
      */
-    void attach(QName policySet, LogicalScaArtifact<?> target, boolean incremental) throws PolicyEvaluationException {
+    void attach(QName policySet, LogicalScaArtifact<?> target) throws PolicyEvaluationException {
         if (target instanceof LogicalComponent) {
             LogicalComponent<?> component = (LogicalComponent<?>) target;
             if (component.getPolicySets().contains(policySet)) {
                 return;
             }
-            if (incremental && !component.getPolicySets().contains(policySet)) {
+            if (!component.getPolicySets().contains(policySet)) {
                 component.addPolicySet(policySet);
-                processComponent(component, policySet, incremental);
-            } else if (!incremental) {
+                processComponent(component, policySet);
+            } else {
                 component.addPolicySet(policySet);
             }
         } else if (target instanceof LogicalService) {
             LogicalService service = (LogicalService) target;
             // add the policy to the service but mark bindings as NEW for (re)provisioning
-            if (service.getPolicySets().contains(policySet) && incremental) {
+            if (service.getPolicySets().contains(policySet)) {
                 return;
             }
             service.addPolicySet(policySet);
-            processService(service, policySet, incremental);
+            processService(service, policySet);
         } else if (target instanceof LogicalReference) {
             LogicalReference reference = (LogicalReference) target;
             if (reference.getPolicySets().contains(policySet)) {
                 return;
             }
             reference.addPolicySet(policySet);
-            processReference(reference, policySet, incremental);
+            processReference(reference, policySet);
 
         } else if (target instanceof LogicalOperation) {
             LogicalOperation operation = (LogicalOperation) target;
@@ -148,9 +147,9 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
             operation.addPolicySet(policySet);
             LogicalAttachPoint attachPoint = operation.getParent();
             if (attachPoint instanceof LogicalReference) {
-                processReference((LogicalReference) attachPoint, policySet, incremental);
+                processReference((LogicalReference) attachPoint, policySet);
             } else if (attachPoint instanceof LogicalService) {
-                processService((LogicalService) attachPoint, policySet, incremental);
+                processService((LogicalService) attachPoint, policySet);
             } else {
                 throw new PolicyEvaluationException("Invalid policy attachment type: " + target.getClass());
             }
@@ -181,7 +180,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
             }
             if (component.getPolicySets().contains(policySet)) {
                 component.removePolicySet(policySet);
-                processDetachComponent(component, policySet, true);
+                processDetachComponent(component, policySet);
             }
         } else if (target instanceof LogicalService) {
             LogicalService service = (LogicalService) target;
@@ -190,14 +189,14 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
                 return;
             }
             service.removePolicySet(policySet);
-            processDetachService(service, policySet, true);
+            processDetachService(service, policySet);
         } else if (target instanceof LogicalReference) {
             LogicalReference reference = (LogicalReference) target;
             if (!reference.getPolicySets().contains(policySet)) {
                 return;
             }
             reference.removePolicySet(policySet);
-            processDetachReference(reference, policySet, true);
+            processDetachReference(reference, policySet);
 
         } else if (target instanceof LogicalOperation) {
             LogicalOperation operation = (LogicalOperation) target;
@@ -207,9 +206,9 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
             operation.removePolicySet(policySet);
             LogicalAttachPoint attachPoint = operation.getParent();
             if (attachPoint instanceof LogicalReference) {
-                processDetachReference((LogicalReference) attachPoint, policySet, true);
+                processDetachReference((LogicalReference) attachPoint, policySet);
             } else if (attachPoint instanceof LogicalService) {
-                processDetachService((LogicalService) attachPoint, policySet, true);
+                processDetachService((LogicalService) attachPoint, policySet);
             } else {
                 throw new PolicyEvaluationException("Invalid policy attachment type: " + target.getClass());
             }
@@ -225,7 +224,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
         }
     }
 
-    private void attachPolicy(LogicalComponent<?> component, PolicySet policySet, String attachTo, boolean incremental) throws PolicyEvaluationException {
+    private void attachPolicy(LogicalComponent<?> component, PolicySet policySet, String attachTo) throws PolicyEvaluationException {
         Collection<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(attachTo, component);
 
         for (Iterator<LogicalScaArtifact<?>> iterator = results.iterator(); iterator.hasNext(); ) {
@@ -238,23 +237,23 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
 
         // attach policy sets
         for (LogicalScaArtifact<?> result : results) {
-            attach(policySet.getName(), result, incremental);
+            attach(policySet.getName(), result);
         }
     }
 
-    private void processComponent(LogicalComponent<?> component, QName policySet, boolean incremental) {
+    private void processComponent(LogicalComponent<?> component, QName policySet) {
         // do not mark the component as new, just the wires since the implementation does not need to be reprovisioned
         for (LogicalReference reference : component.getReferences()) {
-            processReference(reference, policySet, incremental);
+            processReference(reference, policySet);
         }
         for (LogicalService service : component.getServices()) {
-            processService(service, policySet, incremental);
+            processService(service, policySet);
         }
     }
 
-    private void processService(LogicalService service, QName policySet, boolean incremental) {
+    private void processService(LogicalService service, QName policySet) {
         for (LogicalBinding<?> binding : service.getBindings()) {
-            if (incremental && binding.getPolicySets().contains(policySet)) {
+            if (binding.getPolicySets().contains(policySet)) {
                 continue;
             }
             binding.setState(LogicalState.NEW);
@@ -262,31 +261,31 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
         // TODO check collocated wires, i.e. references attached directly to the service so they can be reprovisioned
     }
 
-    private void processReference(LogicalReference reference, QName policySet, boolean incremental) {
+    private void processReference(LogicalReference reference, QName policySet) {
         for (LogicalWire wire : reference.getWires()) {
             wire.setState(LogicalState.NEW);
         }
         for (LogicalBinding<?> binding : reference.getBindings()) {
-            if (incremental && binding.getPolicySets().contains(policySet)) {
+            if (binding.getPolicySets().contains(policySet)) {
                 continue;
             }
             binding.setState(LogicalState.NEW);
         }
     }
 
-    private void processDetachComponent(LogicalComponent<?> component, QName policySet, boolean incremental) {
+    private void processDetachComponent(LogicalComponent<?> component, QName policySet) {
         // do not mark the component as new, just the wires since the implementation does not need to be reprovisioned
         for (LogicalReference reference : component.getReferences()) {
-            processDetachReference(reference, policySet, incremental);
+            processDetachReference(reference, policySet);
         }
         for (LogicalService service : component.getServices()) {
-            processDetachService(service, policySet, incremental);
+            processDetachService(service, policySet);
         }
     }
 
-    private void processDetachService(LogicalService service, QName policySet, boolean incremental) {
+    private void processDetachService(LogicalService service, QName policySet) {
         for (LogicalBinding<?> binding : service.getBindings()) {
-            if (incremental && !binding.getPolicySets().contains(policySet)) {
+            if (!binding.getPolicySets().contains(policySet)) {
                 continue;
             }
             binding.setState(LogicalState.NEW);
@@ -294,12 +293,12 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
         // TODO check collocated wires, i.e. references attached directly to the service so they can be reprovisioned
     }
 
-    private void processDetachReference(LogicalReference reference, QName policySet, boolean incremental) {
+    private void processDetachReference(LogicalReference reference, QName policySet) {
         for (LogicalWire wire : reference.getWires()) {
             wire.setState(LogicalState.NEW);
         }
         for (LogicalBinding<?> binding : reference.getBindings()) {
-            if (incremental && !binding.getPolicySets().contains(policySet)) {
+            if (!binding.getPolicySets().contains(policySet)) {
                 continue;
             }
             binding.setState(LogicalState.NEW);

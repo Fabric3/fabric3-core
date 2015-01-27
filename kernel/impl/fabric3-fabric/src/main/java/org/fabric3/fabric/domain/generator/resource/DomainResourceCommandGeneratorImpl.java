@@ -42,8 +42,8 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         this.generatorRegistry = generatorRegistry;
     }
 
-    public CompensatableCommand generateBuild(LogicalResource resource, boolean incremental) throws GenerationException {
-        if (resource.getState() != LogicalState.NEW && incremental) {
+    public CompensatableCommand generateBuild(LogicalResource resource) throws GenerationException {
+        if (resource.getState() != LogicalState.NEW) {
             return null;
         }
 
@@ -54,7 +54,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         return new BuildResourcesCommand(definitions);
     }
 
-    public CompensatableCommand generateDispose(LogicalResource resource, boolean incremental) throws GenerationException {
+    public CompensatableCommand generateDispose(LogicalResource resource) throws GenerationException {
         if (resource.getState() != LogicalState.MARKED) {
             return null;
         }

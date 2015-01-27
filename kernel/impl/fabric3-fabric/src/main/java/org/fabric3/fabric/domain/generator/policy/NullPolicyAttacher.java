@@ -31,11 +31,11 @@ import org.fabric3.spi.model.instance.LogicalComponent;
  */
 public class NullPolicyAttacher implements PolicyAttacher {
 
-    public void attachPolicies(LogicalComponent<?> component, boolean incremental) {
+    public void attachPolicies(LogicalComponent<?> component) {
         // no-op
     }
 
-    public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException {
+    public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException {
         // no-op
     }
 

@@ -30,11 +30,9 @@ public interface Generator {
      * Performs the generation.
      *
      * @param domain      the logical domain composite
-     * @param incremental true if generation should be incremental, i.e. commands are generated only for new components, channels, wires, and event
-     *                    streams as opposed to all components (new and existing ones)
      * @return the deployment
      * @throws GenerationException If unable to generate the deployment
      */
-    Deployment generate(LogicalCompositeComponent domain, boolean incremental) throws GenerationException;
+    Deployment generate(LogicalCompositeComponent domain) throws GenerationException;
 
 }

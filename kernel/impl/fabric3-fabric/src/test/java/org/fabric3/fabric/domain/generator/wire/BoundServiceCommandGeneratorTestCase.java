@@ -43,7 +43,7 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 public class BoundServiceCommandGeneratorTestCase extends TestCase {
     private WireGenerator wireGenerator;
 
-    public void testGenerateIncremental() throws Exception {
+    public void testGenerate() throws Exception {
         MockWireDefinition wireDefinition = new MockWireDefinition();
         EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), (URI) EasyMock.isNull())).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
@@ -56,7 +56,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
-    public void testNoGenerateIncremental() throws Exception {
+    public void testNoGenerate() throws Exception {
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.PROVISIONED);
@@ -66,7 +66,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
-    public void testGenerateNoBindingIncremental() throws Exception {
+    public void testGenerateNoBinding() throws Exception {
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
 
         EasyMock.replay(wireGenerator);
@@ -87,7 +87,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
-    public void testGenerateDetachIncremental() throws Exception {
+    public void testGenerateDetach() throws Exception {
         MockWireDefinition wireDefinition = new MockWireDefinition();
         EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), (URI) EasyMock.isNull())).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
@@ -101,7 +101,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
-    public void testGenerateCallbackIncremental() throws Exception {
+    public void testGenerateCallback() throws Exception {
         MockWireDefinition wireDefinition = new MockWireDefinition();
         EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
         EasyMock.expect(wireGenerator.generateBoundServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
@@ -124,7 +124,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
-    public void testGenerateDetachCallbackIncremental() throws Exception {
+    public void testGenerateDetachCallback() throws Exception {
         MockWireDefinition wireDefinition = new MockWireDefinition();
         EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
         EasyMock.expect(wireGenerator.generateBoundServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
