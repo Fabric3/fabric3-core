@@ -43,7 +43,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
@@ -58,7 +57,6 @@ public class RuntimeDomainTestCase extends TestCase {
     private IMocksControl control;
     private AbstractDomain domain;
     private LogicalModelInstantiator instantiator;
-    private PolicyAttacher policyAttacher;
     private Generator generator;
     private Deployer deployer;
     private LogicalComponentManagerImpl lcm;
@@ -70,8 +68,6 @@ public class RuntimeDomainTestCase extends TestCase {
     public void testInclude() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class));
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment);
@@ -92,8 +88,6 @@ public class RuntimeDomainTestCase extends TestCase {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
-        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class));
-
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment);
         deployer.deploy(EasyMock.isA(Deployment.class));
@@ -110,8 +104,6 @@ public class RuntimeDomainTestCase extends TestCase {
     public void testIncludeAndRemove() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class));
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment).times(2);
@@ -132,8 +124,6 @@ public class RuntimeDomainTestCase extends TestCase {
     public void testUndeployComposite() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class));
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment).times(2);
@@ -166,10 +156,9 @@ public class RuntimeDomainTestCase extends TestCase {
 
         generator = control.createMock(Generator.class);
         instantiator = control.createMock(LogicalModelInstantiator.class);
-        policyAttacher = control.createMock(PolicyAttacher.class);
         deployer = control.createMock(Deployer.class);
         Collector collector = new CollectorImpl();
-        domain = new RuntimeDomain(store, generator, instantiator, policyAttacher, lcm, deployer, collector, helper, info);
+        domain = new RuntimeDomain(store, generator, instantiator, lcm, deployer, collector, helper, info);
 
         contribution = DomainTestCaseHelper.createContribution(store);
         componentDefinition = new ComponentDefinition("component");

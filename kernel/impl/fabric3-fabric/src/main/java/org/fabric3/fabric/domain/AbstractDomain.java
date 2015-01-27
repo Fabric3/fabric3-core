@@ -53,10 +53,7 @@ import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.allocator.AllocationException;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
-import org.fabric3.spi.domain.generator.policy.PolicyResolutionException;
-import org.fabric3.spi.model.instance.CopyUtil;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -77,7 +74,6 @@ public abstract class AbstractDomain implements Domain {
     protected MetaDataStore metadataStore;
     protected LogicalComponentManager logicalComponentManager;
     protected LogicalModelInstantiator logicalModelInstantiator;
-    protected PolicyAttacher policyAttacher;
     protected Collector collector;
     protected ContributionHelper contributionHelper;
     protected HostInfo info;
@@ -92,7 +88,6 @@ public abstract class AbstractDomain implements Domain {
      * @param lcm                the manager for logical components
      * @param generator          the physical model generator
      * @param instantiator       the logical model instantiator
-     * @param policyAttacher     the attacher for applying external attachment policies
      * @param deployer           the service for sending deployment commands
      * @param collector          the collector for undeploying components
      * @param contributionHelper the contribution helper
@@ -102,7 +97,6 @@ public abstract class AbstractDomain implements Domain {
                           LogicalComponentManager lcm,
                           Generator generator,
                           LogicalModelInstantiator instantiator,
-                          PolicyAttacher policyAttacher,
                           Deployer deployer,
                           Collector collector,
                           ContributionHelper contributionHelper,
@@ -111,7 +105,6 @@ public abstract class AbstractDomain implements Domain {
         this.generator = generator;
         this.logicalModelInstantiator = instantiator;
         this.logicalComponentManager = lcm;
-        this.policyAttacher = policyAttacher;
         this.deployer = deployer;
         this.collector = collector;
         this.contributionHelper = contributionHelper;
@@ -175,9 +168,6 @@ public abstract class AbstractDomain implements Domain {
             listener.onUnDeploy(uri);
         }
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        if (isTransactional()) {
-            domain = CopyUtil.copy(domain);
-        }
         for (QName deployable : names) {
             collector.markForCollection(deployable, domain);
         }
@@ -212,9 +202,6 @@ public abstract class AbstractDomain implements Domain {
         }
 
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        if (isTransactional()) {
-            domain = CopyUtil.copy(domain);
-        }
         collector.markForCollection(deployable, domain);
         if (!simulated) {
             Deployment deployment = generator.generate(domain);
@@ -246,13 +233,6 @@ public abstract class AbstractDomain implements Domain {
             undeployPolicySets(policySets);
         }
     }
-
-    /**
-     * Returns true if the domain is enabled for transactional deployment.
-     *
-     * @return true if the domain is enabled for transactional deployment
-     */
-    protected abstract boolean isTransactional();
 
     /**
      * Selects bindings for references targeted to remote services for a set of components being deployed by delegating to a BindingSelector.
@@ -339,9 +319,6 @@ public abstract class AbstractDomain implements Domain {
         // lock the contributions
         contributionHelper.lock(contributions);
         try {
-            if (isTransactional()) {
-                domain = CopyUtil.copy(domain);
-            }
             for (Contribution contribution : contributions) {
                 activateDefinitions(contribution);
             }
@@ -350,7 +327,6 @@ public abstract class AbstractDomain implements Domain {
                 contributionHelper.releaseLocks(contributions);
                 throw new AssemblyException(context.getErrors());
             }
-            policyAttacher.attachPolicies(domain);
             if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
                 // in single VM mode, recovery includes deployment
                 allocateAndDeploy(domain);
@@ -397,9 +373,6 @@ public abstract class AbstractDomain implements Domain {
         }
         // lock the contribution
         contribution.acquireLock(name);
-        if (isTransactional()) {
-            domain = CopyUtil.copy(domain);
-        }
         activateDefinitions(contribution);
         InstantiationContext context = logicalModelInstantiator.include(composite, domain);
         if (context.hasErrors()) {
@@ -407,15 +380,6 @@ public abstract class AbstractDomain implements Domain {
                 contribution.releaseLock(name);
                 throw new AssemblyException(context.getErrors());
             }
-        }
-        try {
-            policyAttacher.attachPolicies(domain);
-        } catch (PolicyResolutionException e) {
-            // release the contribution lock if there was an error
-            if (contribution.getLockOwners().contains(name)) {
-                contribution.releaseLock(name);
-            }
-            throw new DeploymentException(e);
         }
         if (!simulated) {
             try {
@@ -523,10 +487,6 @@ public abstract class AbstractDomain implements Domain {
 
     private void deployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        if (isTransactional()) {
-            domain = CopyUtil.copy(domain);
-        }
-        policyAttacher.attachPolicies(policySets, domain);
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain);
         deployer.deploy(deployment);
@@ -535,10 +495,6 @@ public abstract class AbstractDomain implements Domain {
 
     private void undeployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        if (isTransactional()) {
-            domain = CopyUtil.copy(domain);
-        }
-        policyAttacher.detachPolicies(policySets, domain);
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain);
         deployer.deploy(deployment);

@@ -60,7 +60,6 @@ import org.fabric3.fabric.domain.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorRegistryImpl;
-import org.fabric3.fabric.domain.generator.policy.NullPolicyAttacher;
 import org.fabric3.fabric.domain.generator.policy.NullPolicyResolver;
 import org.fabric3.fabric.domain.generator.wire.BoundServiceCommandGenerator;
 import org.fabric3.fabric.domain.generator.wire.OperationResolverImpl;
@@ -138,7 +137,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.domain.generator.policy.PolicyResolver;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -185,7 +183,6 @@ public class BootstrapAssemblyFactory {
                                                                                 info);
         LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry);
 
-        PolicyAttacher policyAttacher = new NullPolicyAttacher();
         PolicyResolver policyResolver = new NullPolicyResolver();
 
         DefaultContractMatcher matcher = new DefaultContractMatcher();
@@ -201,7 +198,6 @@ public class BootstrapAssemblyFactory {
         return new RuntimeDomain(metaDataStore,
                                  generator,
                                  logicalModelInstantiator,
-                                 policyAttacher,
                                  logicalComponentManager,
                                  deployer,
                                  collector,

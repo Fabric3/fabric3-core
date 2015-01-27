@@ -34,7 +34,6 @@ import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.binding.BindingSelectionException;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
-import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
 import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.oasisopen.sca.annotation.Property;
@@ -51,13 +50,12 @@ public class DistributedDomain extends AbstractDomain implements Domain {
                              @Reference(name = "logicalComponentManager") LogicalComponentManager logicalComponentManager,
                              @Reference Generator generator,
                              @Reference LogicalModelInstantiator logicalModelInstantiator,
-                             @Reference PolicyAttacher policyAttacher,
                              @Reference BindingSelector bindingSelector,
                              @Reference Deployer deployer,
                              @Reference Collector collector,
                              @Reference ContributionHelper contributionHelper,
                              @Reference HostInfo info) {
-        super(metaDataStore, logicalComponentManager, generator, logicalModelInstantiator, policyAttacher, deployer, collector, contributionHelper, info);
+        super(metaDataStore, logicalComponentManager, generator, logicalModelInstantiator, deployer, collector, contributionHelper, info);
         this.bindingSelector = bindingSelector;
     }
 
@@ -99,21 +97,6 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     @Reference(required = false)
     public void setPolicyRegistry(PolicyRegistry policyRegistry) {
         this.policyRegistry = policyRegistry;
-    }
-
-    /**
-     * Optionally used to override default non-transactional deployment behavior in the single-VM runtime.
-     *
-     * @param transactional used to override default non-transactional deployment behavior in the single-VM runtime
-     */
-    @Property(required = false)
-    @Source("$systemConfig//f3:deployment/@transactional")
-    public void setTransactional(boolean transactional) {
-        this.transactional = transactional;
-    }
-
-    protected boolean isTransactional() {
-        return info.getRuntimeMode() == RuntimeMode.VM && transactional;
     }
 
     protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {

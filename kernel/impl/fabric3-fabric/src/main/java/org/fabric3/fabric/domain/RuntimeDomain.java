@@ -18,17 +18,15 @@
  */
 package org.fabric3.fabric.domain;
 
-import org.fabric3.fabric.domain.collector.Collector;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.spi.domain.generator.Generator;
+import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implements a domain for system components in a runtime. Fabric3 runtimes are constituted using SCA components and the runtime domain manages
@@ -40,7 +38,6 @@ public class RuntimeDomain extends AbstractDomain {
     public RuntimeDomain(@Reference MetaDataStore metadataStore,
                          @Reference Generator generator,
                          @Reference LogicalModelInstantiator logicalModelInstantiator,
-                         @Reference PolicyAttacher policyAttacher,
                          @Reference LogicalComponentManager logicalComponentManager,
                          @Reference Deployer deployer,
                          @Reference Collector collector,
@@ -50,7 +47,6 @@ public class RuntimeDomain extends AbstractDomain {
               logicalComponentManager,
               generator,
               logicalModelInstantiator,
-              policyAttacher,
               deployer,
               collector,
               contributionHelper,
@@ -90,10 +86,6 @@ public class RuntimeDomain extends AbstractDomain {
     protected boolean isLocal() {
         // classloader isolation check needed for webapp runtime
         return info.supportsClassLoaderIsolation();
-    }
-
-    protected boolean isTransactional() {
-        return false;
     }
 
 }

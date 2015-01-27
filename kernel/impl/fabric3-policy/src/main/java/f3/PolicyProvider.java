@@ -22,7 +22,6 @@ import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.policy.DefaultPolicyAttacher;
 import org.fabric3.policy.DefaultPolicyResolver;
 import org.fabric3.policy.infoset.PolicyEvaluatorImpl;
 import org.fabric3.policy.interceptor.simple.SimpleInterceptorBuilder;
@@ -48,7 +47,6 @@ public class PolicyProvider {
         compositeBuilder.component(newBuilder(InteractionPolicyResolverImpl.class).build());
         compositeBuilder.component(newBuilder(ImplementationPolicyResolverImpl.class).build());
         compositeBuilder.component(newBuilder(DefaultPolicyResolver.class).build());
-        compositeBuilder.component(newBuilder(DefaultPolicyAttacher.class).build());
 
         compositeBuilder.component(newBuilder(SimpleInterceptorBuilder.class).key(SimpleInterceptorDefinition.class.getName()).build());
         SystemComponentDefinitionBuilder componentBuilder = newBuilder("SimpleInterceptorGenerator", SimpleInterceptorGenerator.class);

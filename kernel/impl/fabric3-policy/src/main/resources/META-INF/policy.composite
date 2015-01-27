@@ -21,10 +21,6 @@
         <f3:implementation.system class="org.fabric3.policy.DefaultPolicyResolver"/>
     </component>
 
-    <component name="DefaultPolicyAttacher">
-        <f3:implementation.system class="org.fabric3.policy.DefaultPolicyAttacher"/>
-    </component>
-
     <component name="SimpleInterceptorBuilder" f3:key="org.fabric3.policy.interceptor.simple.SimpleInterceptorDefinition">
         <f3:implementation.system class="org.fabric3.policy.interceptor.simple.SimpleInterceptorBuilder"/>
     </component>
