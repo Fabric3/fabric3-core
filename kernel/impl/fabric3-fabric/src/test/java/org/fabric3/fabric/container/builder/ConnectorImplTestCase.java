@@ -23,44 +23,32 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-
-import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
-import org.fabric3.spi.model.type.xsd.XSDSimpleType;
-import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  *
  */
 public class ConnectorImplTestCase extends TestCase {
-    private static final DataType DATA_TYPE = new XSDSimpleType(Document.class, new QName(XSDType.XSD_NS, "string"));
     private ConnectorImpl connector;
     private PhysicalWireDefinition definition;
     private PhysicalOperationDefinition operation;
     private PhysicalOperationDefinition callback;
     private Map<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>> builders;
-    private TransformerInterceptorFactory transformerFactory;
 
     @SuppressWarnings({"unchecked"})
     public void testConnect() throws Exception {
@@ -137,43 +125,9 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(builder);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public void testTransformerConnect() throws Exception {
-        SourceWireAttacher sourceAttacher = EasyMock.createMock(SourceWireAttacher.class);
-        TargetWireAttacher targetAttacher = EasyMock.createMock(TargetWireAttacher.class);
-        Map sourceAttachers = Collections.singletonMap(MockWireSourceDefinition.class, sourceAttacher);
-        Map targetAttachers = Collections.singletonMap(MockWireTargetDefinition.class, targetAttacher);
-        sourceAttacher.attach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class), EasyMock.isA(Wire.class));
-        targetAttacher.attach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class), EasyMock.isA(Wire.class));
-
-        definition.getTarget().getDataTypes().clear();
-        definition.getTarget().getDataTypes().add(DATA_TYPE);
-        Interceptor interceptor = EasyMock.createMock(Interceptor.class);
-
-        transformerFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
-                                             EasyMock.isA(List.class),
-                                             EasyMock.isA(List.class),
-                                             EasyMock.isA(ClassLoader.class),
-                                             EasyMock.isA(ClassLoader.class));
-        EasyMock.expectLastCall().andReturn(interceptor).times(2);
-        EasyMock.replay(sourceAttacher, targetAttacher, transformerFactory, interceptor);
-        connector.setSourceAttachers(sourceAttachers);
-        connector.setTargetAttachers(targetAttachers);
-        connector.setTransform(true);
-
-        connector.connect(definition);
-        EasyMock.verify(sourceAttacher, targetAttacher, transformerFactory, interceptor);
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
-        ClassLoaderRegistry classLoaderRegistry = EasyMock.createMock((ClassLoaderRegistry.class));
-        EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.isA(URI.class))).andReturn(getClass().getClassLoader()).anyTimes();
-        EasyMock.replay(classLoaderRegistry);
-
-        transformerFactory = EasyMock.createMock(TransformerInterceptorFactory.class);
-
-        connector = new ConnectorImpl(classLoaderRegistry, transformerFactory);
+        connector = new ConnectorImpl();
         builders = new HashMap<>();
         connector.setInterceptorBuilders(builders);
 

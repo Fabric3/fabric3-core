@@ -27,7 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.PolicySet;
@@ -38,13 +37,10 @@ import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.domain.generator.policy.PolicyResult;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
-import org.fabric3.spi.model.instance.LogicalAttachPoint;
-import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -52,23 +48,12 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerator {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName ALLOWS_BY_REFERENCE = new QName(org.fabric3.api.Namespaces.F3, "allowsPassByReference");
     private OperationResolver operationResolver;
     private GeneratorRegistry generatorRegistry;
-
-    // Disables pass by value semantics by default. If this is disabled, pass-by-reference will be used for in-process invocations for
-    // remotable services.
-    private boolean passByValueEnabled = false;
 
     public PhysicalOperationGeneratorImpl(@Reference OperationResolver operationResolver, @Reference GeneratorRegistry generatorRegistry) {
         this.operationResolver = operationResolver;
         this.generatorRegistry = generatorRegistry;
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig//f3:sca/@enableByValue")
-    public void setPassByValueEnabled(boolean passByValueEnabled) {
-        this.passByValueEnabled = passByValueEnabled;
     }
 
     public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations, boolean remote, PolicyResult policyResult)
@@ -83,7 +68,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         }
 
         for (LogicalOperation operation : operations) {
-            PhysicalOperationDefinition physicalOperation = generate(operation, remote);
+            PhysicalOperationDefinition physicalOperation = generate(operation);
             if (policyResult != null) {
                 List<PolicySet> policies = policyResult.getInterceptedPolicySets(operation);
                 List<PolicySet> allPolicies = new ArrayList<>(endpointPolicySets);
@@ -121,7 +106,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
             } catch (OperationNotFoundException e) {
                 throw new GenerationException(e);
             }
-            PhysicalOperationDefinition physicalOperation = generate(source, target, remote);
+            PhysicalOperationDefinition physicalOperation = generate(source, target);
             if (result != null) {
                 List<PolicySet> policies = result.getInterceptedPolicySets(source);
                 List<PolicySet> allPolicies = new ArrayList<>(endpointPolicySets);
@@ -172,21 +157,17 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * Generates a PhysicalOperationDefinition when the source reference and target service contracts are the same.
      *
      * @param source the logical operation to generate from
-     * @param remote true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process wire.
      * @return the PhysicalOperationDefinition
      */
-    private PhysicalOperationDefinition generate(LogicalOperation source, boolean remote) {
+    private PhysicalOperationDefinition generate(LogicalOperation source) {
         Operation o = source.getDefinition();
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName(o.getName());
         if (o.getIntents().contains(OASIS_ONEWAY)) {
             operation.setOneWay(true);
         }
-        boolean remotable = o.isRemotable();
-        operation.setRemotable(remotable);
-        if (remotable && !useByReference(source, remote)) {
-            operation.setAllowsPassByReference(false);
-        }
+        operation.setRemotable(o.isRemotable());
+
         // the source and target in-, out- and fault types are the same since the source and target contracts are the same
         Class<?> returnType = o.getOutputType().getType();
         String returnName = returnType.getName();
@@ -216,18 +197,14 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      *
      * @param source the source logical operation to generate from
      * @param target the target logical operations to generate from
-     * @param remote true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process wire.
      * @return the PhysicalOperationDefinition
      */
-    private PhysicalOperationDefinition generate(LogicalOperation source, LogicalOperation target, boolean remote) {
+    private PhysicalOperationDefinition generate(LogicalOperation source, LogicalOperation target) {
         Operation o = source.getDefinition();
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName(o.getName());
-        boolean remotable = o.isRemotable();
-        operation.setRemotable(remotable);
-        if (remotable && (!useByReference(source, remote) || !useByReference(target, remote))) {
-            operation.setAllowsPassByReference(false);
-        }
+
+        operation.setRemotable(o.isRemotable());
 
         if (o.getIntents().contains(OASIS_ONEWAY)) {
             operation.setOneWay(true);
@@ -264,16 +241,4 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         return operation;
     }
 
-    private boolean useByReference(LogicalOperation operation, boolean remote) {
-        if (!passByValueEnabled || remote) {
-            // Pass-by-value is disabled or the invocation chain is remote. Pass-by-reference semantics should be used for remote invocation chains
-            // since the binding will enforce pass-by-value implicitly through serialization
-            return true;
-        }
-        LogicalAttachPoint logicalAttachPoint = operation.getParent();
-        LogicalComponent<?> component = logicalAttachPoint.getParent();
-        return operation.getIntents().contains(ALLOWS_BY_REFERENCE) || logicalAttachPoint.getIntents().contains(ALLOWS_BY_REFERENCE)
-               || component.getIntents().contains(ALLOWS_BY_REFERENCE) || component.getDefinition().getImplementation().getIntents().contains(
-                ALLOWS_BY_REFERENCE) || component.getDefinition().getImplementation().getComponentType().getIntents().contains(ALLOWS_BY_REFERENCE);
-    }
 }

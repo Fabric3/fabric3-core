@@ -260,24 +260,6 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
     }
 
     /**
-     * Return true if the operation allows pass-by-reference
-     *
-     * @return true if the operation allows pass-by-reference
-     */
-    public boolean isAllowsPassByReference() {
-        return allowsPassByReference;
-    }
-
-    /**
-     * Sets if the operation allows pass-by-reference
-     *
-     * @param allowsPassByReference true if the operation allows pass-by-reference
-     */
-    public void setAllowsPassByReference(boolean allowsPassByReference) {
-        this.allowsPassByReference = allowsPassByReference;
-    }
-
-    /**
      * Implementation that relies on comparing a string representation of the operation name and input parameters.
      *
      * @param o the operation to compare against

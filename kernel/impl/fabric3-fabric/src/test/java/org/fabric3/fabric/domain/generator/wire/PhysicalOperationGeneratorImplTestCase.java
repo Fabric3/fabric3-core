@@ -53,7 +53,6 @@ import org.w3c.dom.Element;
  */
 public class PhysicalOperationGeneratorImplTestCase extends TestCase {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName ALLOWS_BY_REFERENCE = new QName(org.fabric3.api.Namespaces.F3, "allowsPassByReference");
 
     private static final URI CONTRIBUTION_URI = URI.create("contribution");
     private static final URI POLICY_URI = URI.create("policy");
@@ -111,7 +110,6 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         EasyMock.replay(resolver, registry);
 
         PhysicalOperationGeneratorImpl generator = new PhysicalOperationGeneratorImpl(resolver, registry);
-        generator.setPassByValueEnabled(true);
         LogicalOperation operation = createOperation();
         operation.getDefinition().setRemotable(true);
         List<LogicalOperation> list = Collections.singletonList(operation);
@@ -130,44 +128,7 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         EasyMock.verify(resolver, registry);
     }
 
-    public void testGenerateAllowsByReferenceRemoteOperation() throws Exception {
-        OperationResolver resolver = EasyMock.createMock(OperationResolver.class);
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.replay(resolver, registry);
 
-        PhysicalOperationGeneratorImpl generator = new PhysicalOperationGeneratorImpl(resolver, registry);
-        generator.setPassByValueEnabled(true);
-        LogicalOperation operation = createOperation();
-        operation.getDefinition().setRemotable(true);
-        operation.getIntents().contains(ALLOWS_BY_REFERENCE);
-        List<LogicalOperation> list = Collections.singletonList(operation);
-
-        Set<PhysicalOperationDefinition> definitions = generator.generateOperations(list, true, null);
-
-        PhysicalOperationDefinition definition = definitions.iterator().next();
-        assertTrue(definition.isRemotable());
-        assertTrue(definition.isAllowsPassByReference());
-        EasyMock.verify(resolver, registry);
-    }
-
-    public void testGeneratePassByValueRemoteOperation() throws Exception {
-        OperationResolver resolver = EasyMock.createMock(OperationResolver.class);
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.replay(resolver, registry);
-
-        PhysicalOperationGeneratorImpl generator = new PhysicalOperationGeneratorImpl(resolver, registry);
-        generator.setPassByValueEnabled(true);
-        LogicalOperation operation = createOperation();
-        operation.getDefinition().setRemotable(true);
-        List<LogicalOperation> list = Collections.singletonList(operation);
-
-        Set<PhysicalOperationDefinition> definitions = generator.generateOperations(list, false, null);
-
-        PhysicalOperationDefinition definition = definitions.iterator().next();
-        assertTrue(definition.isRemotable());
-        assertFalse(definition.isAllowsPassByReference());
-        EasyMock.verify(resolver, registry);
-    }
 
     public void testGenerateOneWayOperation() throws Exception {
         OperationResolver resolver = EasyMock.createMock(OperationResolver.class);
@@ -247,35 +208,6 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         assertEquals(1, definitions.size());
         PhysicalOperationDefinition definition = definitions.iterator().next();
         assertTrue(definition.isOneWay());
-
-        EasyMock.verify(resolver, registry, expression, interceptorGenerator);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testGeneratePolicySourceTargetPassByValueOperations() throws Exception {
-        LogicalOperation source = createOperation();
-        source.getDefinition().setRemotable(true);
-        List<LogicalOperation> sources = Collections.singletonList(source);
-        LogicalOperation target = createTargetOperation();
-        List<LogicalOperation> targets = Collections.singletonList(target);
-        target.getDefinition().setRemotable(true);
-
-        OperationResolver resolver = EasyMock.createMock(OperationResolver.class);
-        EasyMock.expect(resolver.resolve(EasyMock.isA(LogicalOperation.class), EasyMock.isA(List.class))).andReturn(target);
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        InterceptorGenerator interceptorGenerator = createInterceptorGenerator(registry);
-        Element expression = createElement();
-        EasyMock.replay(resolver, registry, expression, interceptorGenerator);
-
-        MockPolicyResult result = createPolicyResult(source, expression);
-
-        PhysicalOperationGeneratorImpl generator = new PhysicalOperationGeneratorImpl(resolver, registry);
-        generator.setPassByValueEnabled(true);
-        Set<PhysicalOperationDefinition> definitions = generator.generateOperations(sources, targets, false, result);
-
-        assertEquals(1, definitions.size());
-        PhysicalOperationDefinition definition = definitions.iterator().next();
-        assertFalse(definition.isAllowsPassByReference());
 
         EasyMock.verify(resolver, registry, expression, interceptorGenerator);
     }
