@@ -42,6 +42,7 @@ public interface PhysicalDataTypes {
     /**
      * Denotes a JAXB type
      */
-    DataType JAXB = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
+    DataType JAXB = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"), "JAXB");
+
 
 }

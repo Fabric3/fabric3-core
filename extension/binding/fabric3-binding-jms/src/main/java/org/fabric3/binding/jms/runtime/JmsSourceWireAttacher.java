@@ -36,7 +36,7 @@ import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.provision.SessionType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
@@ -48,15 +48,19 @@ import org.fabric3.binding.jms.runtime.wire.ServiceListener;
 import org.fabric3.binding.jms.runtime.wire.WireHolder;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.xml.XMLFactory;
@@ -75,6 +79,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
     private ClassLoaderRegistry classLoaderRegistry;
     private MessageContainerFactory containerFactory;
     private MessageContainerManager containerManager;
+    private TransformerInterceptorFactory interceptorFactory;
     private ListenerMonitor monitor;
     private XMLFactory xmlFactory;
     private BindingHandlerRegistry handlerRegistry;
@@ -85,12 +90,14 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
                                  @Reference MessageContainerManager containerManager,
                                  @Reference XMLFactory xmlFactory,
                                  @Reference BindingHandlerRegistry handlerRegistry,
+                                 @Reference TransformerInterceptorFactory interceptorFactory,
                                  @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
         this.containerFactory = containerFactory;
         this.containerManager = containerManager;
         this.xmlFactory = xmlFactory;
+        this.interceptorFactory = interceptorFactory;
         this.monitor = monitor;
         this.handlerRegistry = handlerRegistry;
     }
@@ -99,7 +106,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         URI serviceUri = target.getUri();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         SessionType trxType = source.getSessionType();
-        WireHolder wireHolder = createWireHolder(wire, source, trxType);
+        WireHolder wireHolder = createWireHolder(wire, source, target);
 
         ResolvedObjects objects = resolveAdministeredObjects(source);
 
@@ -210,7 +217,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         }
     }
 
-    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, SessionType sessionType) throws ContainerException {
+    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
@@ -221,6 +228,11 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             if (payloadType == null) {
                 throw new ContainerException("Payload type not found for operation: " + definition.getName());
             }
+
+            if (source.getDataTypes().contains(PhysicalDataTypes.JAXB)) {
+                addJAXBInterceptor(source, target, definition, chain);
+            }
+
             chainHolders.add(new InvocationChainHolder(chain, payloadType));
         }
         return new WireHolder(chainHolders, correlationScheme);
@@ -279,6 +291,15 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             handlers.add(handler);
         }
         return handlers;
+    }
+
+    private void addJAXBInterceptor(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, PhysicalOperationDefinition op, InvocationChain chain)
+            throws ContainerException {
+        ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+        List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
+        Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, DataTypeHelper.STRING_TYPES, jaxTypes, targetClassLoader, sourceClassLoader);
+        chain.addInterceptor(jaxbInterceptor);
     }
 
 }

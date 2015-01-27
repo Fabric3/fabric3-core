@@ -18,16 +18,14 @@
  */
 package org.fabric3.fabric.domain.instantiator.promotion;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -39,6 +37,7 @@ import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.definitions.Intent;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -49,7 +48,6 @@ import org.fabric3.spi.model.instance.LogicalWire;
 
 public class PromotionNormalizerImplTestCase extends TestCase {
     private static final QName PROMOTED_INTENT = new QName("test", "intent");
-    private static final QName PROMOTED_POLICY = new QName("test", "intent");
 
     private PolicyRegistry registry;
     private InstantiationContext context;
@@ -69,7 +67,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         assertFalse(context.hasErrors());
         assertTrue(service.getBindings().get(0).getDefinition() instanceof MockPromotedBinding);
         assertTrue(service.getIntents().contains(PROMOTED_INTENT));
-        assertTrue(service.getIntents().contains(PROMOTED_POLICY));
         EasyMock.verify(registry);
     }
 
@@ -116,7 +113,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         assertFalse(context.hasErrors());
         assertTrue(reference.getBindings().get(0).getDefinition() instanceof MockPromotedBinding);
         assertTrue(reference.getIntents().contains(PROMOTED_INTENT));
-        assertTrue(reference.getIntents().contains(PROMOTED_POLICY));
         EasyMock.verify(registry);
     }
 
@@ -217,7 +213,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         LogicalBinding parentBinding = new LogicalBinding(binding, parentService);
         parentService.addBinding(parentBinding);
         parentService.addIntent(PROMOTED_INTENT);
-        parentService.addPolicySet(PROMOTED_POLICY);
         parent.addService(parentService);
 
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), null, parent);
@@ -243,7 +238,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         LogicalBinding parentBinding = new LogicalBinding(binding, parentReference);
         parentReference.addBinding(parentBinding);
         parentReference.addIntent(PROMOTED_INTENT);
-        parentReference.addPolicySet(PROMOTED_POLICY);
         parent.addReference(parentReference);
 
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), null, parent);

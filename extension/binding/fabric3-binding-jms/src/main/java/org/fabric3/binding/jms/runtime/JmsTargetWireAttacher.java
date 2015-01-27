@@ -38,6 +38,7 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.OperationPropertiesDefinition;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.runtime.wire.InterceptorConfiguration;
 import org.fabric3.binding.jms.runtime.wire.JmsInterceptor;
@@ -51,9 +52,12 @@ import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -66,15 +70,18 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
     private TransactionManager tm;
     private ClassLoaderRegistry classLoaderRegistry;
     private BindingHandlerRegistry handlerRegistry;
+    private TransformerInterceptorFactory interceptorFactory;
 
     public JmsTargetWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference TransactionManager tm,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
-                                 @Reference BindingHandlerRegistry handlerRegistry) {
+                                 @Reference BindingHandlerRegistry handlerRegistry,
+                                 @Reference TransformerInterceptorFactory interceptorFactory) {
         this.resolver = resolver;
         this.tm = tm;
         this.classLoaderRegistry = classLoaderRegistry;
         this.handlerRegistry = handlerRegistry;
+        this.interceptorFactory = interceptorFactory;
     }
 
     public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws ContainerException {
@@ -108,8 +115,10 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
             processJmsHeaders(configuration, metadata);
             OperationPayloadTypes payloadTypes = resolveOperation(operationName, types);
             configuration.setPayloadType(payloadTypes);
+            if (target.getDataTypes().contains(PhysicalDataTypes.JAXB)) {
+                addJAXBInterceptor(source, op, chain, targetClassLoader);
+            }
             JmsInterceptor interceptor = new JmsInterceptor(configuration, handlers);
-            target.getMetadata().getDestination().getName();
             chain.addInterceptor(interceptor);
         }
 
@@ -215,6 +224,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         } else if ("nonpersistent".equalsIgnoreCase(value)) {
             configuration.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
         }
+    }
+
+    private void addJAXBInterceptor(PhysicalWireSourceDefinition source, PhysicalOperationDefinition op, InvocationChain chain, ClassLoader targetClassLoader)
+            throws ContainerException {
+        ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
+        Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, jaxTypes, DataTypeHelper.STRING_TYPES, targetClassLoader, sourceClassLoader);
+        chain.addInterceptor(jaxbInterceptor);
     }
 
     private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws ContainerException {

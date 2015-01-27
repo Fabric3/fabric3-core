@@ -34,4 +34,8 @@ public class XSDType extends DataType {
         super(type, xsdType);
     }
 
+    public XSDType(Class<String> type, QName xsdType, String databinding) {
+        super(type, xsdType);
+        setDatabinding(databinding);
+    }
 }

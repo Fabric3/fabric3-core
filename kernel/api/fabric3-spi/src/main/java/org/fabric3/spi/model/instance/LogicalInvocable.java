@@ -28,11 +28,13 @@ import org.fabric3.api.model.type.contract.ServiceContract;
 /**
  * A contract-based artifact that flows data such as a service, reference, consumer, producer, resource or binding.
  */
-public class LogicalInvocable extends LogicalAttachPoint {
+public class LogicalInvocable extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = 4182922230894994435L;
     protected ServiceContract serviceContract;
     protected List<LogicalOperation> operations;
     protected List<LogicalOperation> callbackOperations;
+
+    private URI uri;
 
     /**
      * Constructor.
@@ -42,9 +44,19 @@ public class LogicalInvocable extends LogicalAttachPoint {
      * @param parent   Parent of the SCA artifact.
      */
     protected LogicalInvocable(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
-        super(uri, parent);
+        super(parent);
+        this.uri = uri;
         createOperations(contract);
         this.serviceContract = contract;
+    }
+
+    /**
+     * Returns the artifact uri.
+     *
+     * @return the artifact uri
+     */
+    public URI getUri() {
+        return uri;
     }
 
     public List<LogicalOperation> getOperations() {
@@ -72,15 +84,6 @@ public class LogicalInvocable extends LogicalAttachPoint {
     public void setServiceContract(ServiceContract serviceContract) {
         this.serviceContract = serviceContract;
         createOperations(serviceContract);
-    }
-
-    /**
-     * Used to replace operations during a copy.
-     *
-     * @param operations the new operations
-     */
-    void overrideOperations(List<LogicalOperation> operations) {
-        this.operations = operations;
     }
 
     /**

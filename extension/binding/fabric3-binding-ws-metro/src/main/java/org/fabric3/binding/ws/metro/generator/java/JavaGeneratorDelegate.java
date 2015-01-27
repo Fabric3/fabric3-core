@@ -126,7 +126,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);
 
-        ServiceEndpointDefinition endpointDefinition = createServiceEndpointDefinition(binding, contract, serviceClass, wsdlLocation);
+        ServiceEndpointDefinition endpointDefinition = createServiceEndpointDefinition(binding, contract, serviceClass);
 
         String interfaze = contract.getQualifiedInterfaceName();
 
@@ -414,11 +414,10 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
     private ServiceEndpointDefinition createServiceEndpointDefinition(LogicalBinding<WsBindingDefinition> binding,
                                                                       JavaServiceContract contract,
-                                                                      Class<?> serviceClass,
-                                                                      URL wsdlLocation) throws GenerationException {
+                                                                      Class<?> serviceClass) throws GenerationException {
         URI targetUri = binding.getDefinition().getTargetUri();
         if (targetUri == null) {
-            throw new GenerationException("WSDL interfaces no longer supported");
+            targetUri = URI.create(binding.getParent().getUri().getFragment());  // use the service URI fragment
         }
         return synthesizer.synthesizeServiceEndpoint(contract, serviceClass, targetUri);
     }

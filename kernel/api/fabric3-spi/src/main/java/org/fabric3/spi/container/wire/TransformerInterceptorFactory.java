@@ -30,7 +30,7 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 public interface TransformerInterceptorFactory {
 
     /**
-     * Creates a transforming interceptor for a service operation. The interceptor converts input parameters from a source to a target type and ouput
+     * Creates a transforming interceptor for a service operation. The interceptor converts input parameters from a source to a target type and output
      * parameters from a target to a source type. The source and target types are selected from the list of supported source and target types based on
      * order of preference (the source and target types are sorted in descending order) and the availability of a transformer.
      *

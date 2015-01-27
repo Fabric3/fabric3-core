@@ -23,7 +23,7 @@ import org.fabric3.api.model.type.contract.Operation;
 /**
  * An operation on a service, reference or resource of an instantiated component.
  */
-public class LogicalOperation extends LogicalScaArtifact<LogicalAttachPoint> {
+public class LogicalOperation extends LogicalScaArtifact<LogicalInvocable> {
     private static final long serialVersionUID = -3846488579836419406L;
     private Operation definition;
 
@@ -33,7 +33,7 @@ public class LogicalOperation extends LogicalScaArtifact<LogicalAttachPoint> {
      * @param definition the operation definition
      * @param parent     Parent of the SCA artifact
      */
-    public LogicalOperation(Operation definition, LogicalAttachPoint parent) {
+    public LogicalOperation(Operation definition, LogicalInvocable parent) {
         super(parent);
         this.definition = definition;
         addIntents(definition.getIntents());
