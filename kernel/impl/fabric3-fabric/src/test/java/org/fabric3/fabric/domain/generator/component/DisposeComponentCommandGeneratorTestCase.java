@@ -54,7 +54,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.MARKED);
 
-        DisposeComponentCommand command = generator.generate(component, true);
+        DisposeComponentCommand command = generator.generate(component);
         assertNotNull(command.getDefinition());
         EasyMock.verify(registry, componentGenerator);
     }
@@ -69,7 +69,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
         ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
-        assertNull(generator.generate(component, true));
+        assertNull(generator.generate(component));
         EasyMock.verify(registry);
     }
 
@@ -87,7 +87,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.MARKED);
  
-        DisposeComponentCommand command = generator.generate(component, false);
+        DisposeComponentCommand command = generator.generate(component);
         assertNotNull(command.getDefinition());
         EasyMock.verify(registry, componentGenerator);
     }

@@ -41,7 +41,7 @@ public class DisposeComponentCommandGenerator extends AbstractBuildComponentComm
         return DISPOSE_COMPONENTS;
     }
 
-    public DisposeComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public DisposeComponentCommand generate(LogicalComponent<?> component) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
             PhysicalComponentDefinition definition = generateDefinition(component);
             return new DisposeComponentCommand(definition);

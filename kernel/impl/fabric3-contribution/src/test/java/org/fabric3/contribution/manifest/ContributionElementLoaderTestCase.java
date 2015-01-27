@@ -50,7 +50,7 @@ public class ContributionElementLoaderTestCase extends TestCase {
             "              f3:description='JMS extension'>" +
             "    <import.java package='javax.transaction' version='1.1.0'/>" +
             "    <export.java package='org.fabric3.binding.jms.spi.common' version='1.8'/>" +
-            "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='controller node vm'/>" +
+            "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='node vm'/>" +
             "    <f3:provides name='some-extension'/>" +
             "    <f3:requires.capability name='some-required-capability'/>" +
             "    <f3:provides.capability name='some-provided-capability'/>" +

@@ -51,8 +51,8 @@ public class BuildResourceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public BuildResourcesCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.NEW && incremental)) {
+    public BuildResourcesCommand generate(LogicalComponent<?> component) throws GenerationException {
+        if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.NEW)) {
             return null;
         }
         LogicalCompositeComponent composite = (LogicalCompositeComponent) component;

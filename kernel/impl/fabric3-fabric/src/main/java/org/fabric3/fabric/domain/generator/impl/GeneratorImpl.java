@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGenerator;
@@ -98,7 +97,7 @@ public class GeneratorImpl implements Generator {
                 if (component.getDefinition().getImplementation() instanceof RemoteImplementation) {
                     continue;
                 }
-                CompensatableCommand command = generator.generate(component, incremental);
+                CompensatableCommand command = generator.generate(component);
                 if (command != null) {
                     if (deployment.getCommands().contains(command)) {
                         continue;

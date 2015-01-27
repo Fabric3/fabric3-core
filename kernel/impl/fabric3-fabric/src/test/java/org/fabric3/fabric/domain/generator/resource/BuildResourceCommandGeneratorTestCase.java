@@ -39,7 +39,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 public class BuildResourceCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalBuild() throws Exception {
+    public void testBuild() throws Exception {
         ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
         EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
@@ -52,14 +52,14 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
         LogicalResource resource = new LogicalResource(new MockDefinition(), composite);
         composite.addResource(resource);
 
-        BuildResourcesCommand command = generator.generate(composite, true);
+        BuildResourcesCommand command = generator.generate(composite);
         assertFalse(command.getDefinitions().isEmpty());
 
         EasyMock.verify(registry, resourceGenerator);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoBuild() throws Exception {
+    public void testNoBuild() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
@@ -70,31 +70,9 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
         composite.setState(LogicalState.PROVISIONED);
         composite.addResource(resource);
 
-        assertNull(generator.generate(composite, true));
+        assertNull(generator.generate(composite));
 
         EasyMock.verify(registry);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIFullBuild() throws Exception {
-        ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
-        EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
-        EasyMock.replay(registry, resourceGenerator);
-
-        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry);
-
-        LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("component"), null, null);
-        composite.setState(LogicalState.PROVISIONED);
-        LogicalResource resource = new LogicalResource(new MockDefinition(), composite);
-        composite.addResource(resource);
-
-        BuildResourcesCommand command = generator.generate(composite, false);
-        assertFalse(command.getDefinitions().isEmpty());
-
-        EasyMock.verify(registry, resourceGenerator);
-
     }
 
     private class MockDefinition extends ResourceDefinition {

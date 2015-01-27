@@ -41,8 +41,8 @@ public class BuildComponentCommandGenerator extends AbstractBuildComponentComman
         return BUILD_COMPONENTS;
     }
 
-    public BuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW || !incremental)) {
+    public BuildComponentCommand generate(LogicalComponent<?> component) throws GenerationException {
+        if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW)) {
             PhysicalComponentDefinition definition = generateDefinition(component);
             return new BuildComponentCommand(definition);
         }

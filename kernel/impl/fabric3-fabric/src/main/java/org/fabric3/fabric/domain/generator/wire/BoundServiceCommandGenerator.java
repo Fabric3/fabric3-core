@@ -63,7 +63,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         this.generators = generators;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws GenerationException {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -78,19 +78,19 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
                 }
             }
         }
-        if (LogicalState.PROVISIONED == component.getState() && incremental && !bindingChange) {
+        if (LogicalState.PROVISIONED == component.getState() && !bindingChange) {
             return null;
         }
 
         ConnectionCommand command = new ConnectionCommand(component.getUri());
-        generatePhysicalWires(component, command, incremental);
+        generatePhysicalWires(component, command);
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
             return null;
         }
         return command;
     }
 
-    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command, boolean incremental) throws GenerationException {
+    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command) throws GenerationException {
         for (LogicalService service : component.getServices()) {
             if (service.getBindings().isEmpty()) {
                 continue;
@@ -119,7 +119,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
                 if (binding.getDefinition() instanceof SCABinding) {
                     continue;
                 }
-                if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED || !incremental) {
+                if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED) {
                     PhysicalWireDefinition pwd = wireGenerator.generateBoundService(binding, callbackUri);
                     if (LogicalState.MARKED == binding.getState()) {
                         DetachWireCommand detachWireCommand = new DetachWireCommand();
@@ -135,8 +135,8 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             }
             // generate the callback command set
             if (callbackBinding != null && !(callbackBinding.getDefinition() instanceof SCABinding) && ((callbackBinding.getState() == LogicalState.NEW
-                                                                                                         || callbackBinding.getState() == LogicalState.MARKED
-                                                                                                         || !incremental))) {
+                                                                                                         || callbackBinding.getState()
+                                                                                                            == LogicalState.MARKED))) {
                 PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundServiceCallback(callbackBinding);
                 if (LogicalState.MARKED == callbackBinding.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();

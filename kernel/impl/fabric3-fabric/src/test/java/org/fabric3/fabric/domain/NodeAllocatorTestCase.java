@@ -21,6 +21,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -52,6 +53,7 @@ public class NodeAllocatorTestCase extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE);
         EasyMock.expect(info.getZoneName()).andReturn("zone1");
         EasyMock.replay(info);
 

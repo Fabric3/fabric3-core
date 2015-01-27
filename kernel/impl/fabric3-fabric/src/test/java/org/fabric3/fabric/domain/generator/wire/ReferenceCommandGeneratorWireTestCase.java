@@ -18,20 +18,19 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ServiceDefinition;
-import org.fabric3.spi.domain.generator.wire.WireGenerator;
+import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -51,7 +50,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     private LogicalComponentManager lcm;
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalAttach() throws Exception {
+    public void testAttach() throws Exception {
         URI root = URI.create("root");
         ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
@@ -82,49 +81,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
         EasyMock.replay(lcm, wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
-
-        EasyMock.verify(lcm, wireGenerator);
-        assertEquals(1, command.getAttachCommands().size());
-        assertEquals(0, command.getDetachCommands().size());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testRegeneration() throws Exception {
-        URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
-        LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
-
-        URI targetUri = URI.create("target");
-        ComponentDefinition<?> targetDefinition = new ComponentDefinition(null);
-        LogicalComponent<?> target = new LogicalComponent(targetUri, targetDefinition, composite);
-        target.setState(LogicalState.PROVISIONED);
-        JavaServiceContract contract = new JavaServiceContract();
-        ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
-        LogicalService service = new LogicalService(URI.create("target#service"), serviceDefinition, target);
-        target.addService(service);
-        composite.addComponent(target);
-
-        URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
-        LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        source.setState(LogicalState.PROVISIONED);
-        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
-        referenceDefinition.setServiceContract(contract);
-        LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
-        source.addReference(reference);
-        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
-        wire.setState(LogicalState.PROVISIONED);
-        composite.addWire(reference, wire);
-        composite.addComponent(source);
-
-
-        wireGenerator.generateWire(wire);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
-
-        EasyMock.replay(lcm, wireGenerator);
-
-        ConnectionCommand command = generator.generate(source, false);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(lcm, wireGenerator);
         assertEquals(1, command.getAttachCommands().size());
@@ -167,7 +124,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
         EasyMock.replay(lcm, wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(lcm, wireGenerator);
         assertEquals(0, command.getAttachCommands().size());
@@ -224,7 +181,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
         EasyMock.replay(lcm, wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(lcm, wireGenerator);
         // The generator should create:

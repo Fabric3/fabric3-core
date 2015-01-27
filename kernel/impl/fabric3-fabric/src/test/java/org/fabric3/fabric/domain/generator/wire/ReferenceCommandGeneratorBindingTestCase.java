@@ -45,7 +45,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     private WireGenerator wireGenerator;
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalAttach() throws Exception {
+    public void testAttach() throws Exception {
         URI root = URI.create("root");
         ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
@@ -67,7 +67,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(wireGenerator);
         assertEquals(1, command.getAttachCommands().size());
@@ -98,7 +98,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(wireGenerator);
         assertEquals(0, command.getAttachCommands().size());
@@ -135,7 +135,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(wireGenerator);
         assertEquals(1, command.getAttachCommands().size());
@@ -163,37 +163,8 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
         assertNull(command);
-        EasyMock.verify(wireGenerator);
-
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testRegeneration() throws Exception {
-        URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
-        LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
-
-        JavaServiceContract contract = new JavaServiceContract();
-
-        URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
-        LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
-        LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
-        source.addReference(reference);
-        source.setState(LogicalState.PROVISIONED);
-        LogicalBinding<?> binding = new LogicalBinding(null, reference, null);
-        binding.setState(LogicalState.PROVISIONED);
-        reference.addBinding(binding);
-
-        wireGenerator.generateBoundReference(binding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
-        EasyMock.replay(wireGenerator);
-
-        ConnectionCommand command = generator.generate(source, false);
-        assertEquals(1, command.getAttachCommands().size());
         EasyMock.verify(wireGenerator);
 
     }
@@ -226,7 +197,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source, true);
+        ConnectionCommand command = generator.generate(source);
 
         EasyMock.verify(wireGenerator);
         assertEquals(2, command.getAttachCommands().size());

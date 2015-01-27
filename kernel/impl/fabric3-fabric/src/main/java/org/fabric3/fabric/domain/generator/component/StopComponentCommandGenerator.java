@@ -35,7 +35,7 @@ public class StopComponentCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public StopComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public StopComponentCommand generate(LogicalComponent<?> component) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
             return new StopComponentCommand(component.getUri());
         }

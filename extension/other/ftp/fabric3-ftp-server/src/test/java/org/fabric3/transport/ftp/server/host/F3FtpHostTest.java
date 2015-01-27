@@ -23,10 +23,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 import org.apache.commons.net.ftp.FTPClient;
 
+import org.easymock.EasyMock;
 import org.fabric3.transport.ftp.server.codec.CodecFactory;
 import org.fabric3.transport.ftp.server.ftplet.DefaultFtpLetContainer;
 import org.fabric3.transport.ftp.server.handler.PassRequestHandler;
@@ -84,6 +86,8 @@ public class F3FtpHostTest extends TestCase {
         ftpHandler.setRequestHandlers(requestHandlers);
         ftpHandler.setFtpMonitor(ftpMonitor);
 
+        ftpHost.setWorkScheduler(Executors.newSingleThreadExecutor());
+        ftpHost.setMonitor(EasyMock.createNiceMock(FtpHostMonitor.class));
         ftpHost.setFtpHandler(ftpHandler);
         ftpHost.setCommandPort(1234);
         ftpHost.setCodecFactory(new CodecFactory());

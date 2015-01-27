@@ -38,45 +38,29 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
     private WireGenerator wireGenerator;
 
     @SuppressWarnings({"unchecked"})
-    public void testGenerateIncremental() throws Exception {
+    public void testGenerate() throws Exception {
         MockWireDefinition wireDefinition = new MockWireDefinition();
         EasyMock.expect(wireGenerator.generateResource(EasyMock.isA(LogicalResourceReference.class))).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
 
         ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator);
-        ConnectionCommand command = generator.generate(component, true);
+        ConnectionCommand command = generator.generate(component);
         assertEquals(1, command.getAttachCommands().size());
 
         EasyMock.verify(wireGenerator);
     }
 
-    public void testNoGenerateIncremental() throws Exception {
+    public void testNoGenerate() throws Exception {
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
 
         ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator);
-        assertNull(generator.generate(component, true));
+        assertNull(generator.generate(component));
 
         EasyMock.verify(wireGenerator);
     }
-
-    @SuppressWarnings({"unchecked"})
-    public void testGenerateFull() throws Exception {
-        MockWireDefinition wireDefinition = new MockWireDefinition();
-        EasyMock.expect(wireGenerator.generateResource(EasyMock.isA(LogicalResourceReference.class))).andReturn(wireDefinition);
-        EasyMock.replay(wireGenerator);
-        LogicalComponent<?> component = createComponent();
-        component.setState(LogicalState.PROVISIONED);
-
-        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator);
-        ConnectionCommand command = generator.generate(component, false);
-        assertEquals(1, command.getAttachCommands().size());
-
-        EasyMock.verify(wireGenerator);
-    }
-
 
     @SuppressWarnings({"unchecked"})
     private LogicalComponent<?> createComponent() {

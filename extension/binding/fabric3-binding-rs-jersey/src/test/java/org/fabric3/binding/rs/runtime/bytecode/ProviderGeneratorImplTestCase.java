@@ -20,6 +20,7 @@ import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.ext.ExceptionMapper;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 
 import junit.framework.TestCase;
 import org.fabric3.binding.rs.runtime.provider.ProxyExceptionMapper;
@@ -44,7 +45,7 @@ public class ProviderGeneratorImplTestCase extends TestCase {
 
         Class clazz = generator.generate(TestMapper.class, TestMapper.class, signature);
         TestMapper instance = (TestMapper) clazz.newInstance();
-        assertEquals(ProxyExceptionMapper.class, instance.getClass().getGenericSuperclass());
+        assertEquals(ProxyExceptionMapper.class, ((ParameterizedType)instance.getClass().getGenericSuperclass()).getRawType());
     }
 
     public void testAnnotationCopied() throws Exception {

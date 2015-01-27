@@ -60,7 +60,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public ChannelConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public ChannelConnectionCommand generate(LogicalComponent<?> component) throws GenerationException {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -68,7 +68,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
         ChannelConnectionCommand command = new ChannelConnectionCommand();
 
         for (LogicalConsumer consumer : component.getConsumers()) {
-            generateCommand(consumer, command, incremental);
+            generateCommand(consumer, command);
         }
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
             return null;
@@ -76,7 +76,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command, boolean incremental) throws GenerationException {
+    private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command) throws GenerationException {
         LogicalComponent<?> component = consumer.getParent();
         QName deployable = consumer.getParent().getDeployable();
         if (LogicalState.MARKED == component.getState()) {
@@ -92,7 +92,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
                 DetachChannelConnectionCommand connectionCommand = new DetachChannelConnectionCommand(definition);
                 command.add(connectionCommand);
             }
-        } else if (LogicalState.NEW == component.getState() || !incremental) {
+        } else if (LogicalState.NEW == component.getState()) {
             Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);

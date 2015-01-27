@@ -44,9 +44,8 @@ public class ResourceReferenceCommandGenerator implements CommandGenerator {
         return ATTACH;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (component instanceof LogicalCompositeComponent || component.getResourceReferences().isEmpty() || (component.getState() != LogicalState.NEW
-                                                                                                              && incremental)) {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws GenerationException {
+        if (component instanceof LogicalCompositeComponent || component.getResourceReferences().isEmpty() || (component.getState() != LogicalState.NEW)) {
             return null;
         }
         ConnectionCommand command = new ConnectionCommand(component.getUri());

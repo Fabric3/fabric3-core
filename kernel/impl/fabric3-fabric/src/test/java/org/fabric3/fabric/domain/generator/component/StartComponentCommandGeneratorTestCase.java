@@ -33,35 +33,24 @@ import org.fabric3.spi.model.instance.LogicalState;
 public class StartComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
-    public void testIncrementalStart() throws Exception {
+    public void testStart() throws Exception {
         StartComponentCommandGenerator generator = new StartComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
 
-        StartComponentCommand command = generator.generate(component, true);
+        StartComponentCommand command = generator.generate(component);
 
         assertEquals(uri, command.getUri());
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testFullStart() throws Exception {
-        StartComponentCommandGenerator generator = new StartComponentCommandGenerator();
-        URI uri = URI.create("component");
-        LogicalComponent<?> component = new LogicalComponent(uri, null, null);
-        component.setState(LogicalState.PROVISIONED);
-        StartComponentCommand command = generator.generate(component, false);
-
-        assertEquals(uri, command.getUri());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testIncrementalNoStart() throws Exception {
+    public void testNoStart() throws Exception {
         StartComponentCommandGenerator generator = new StartComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generate(component, true));
+        assertNull(generator.generate(component));
     }
 
 

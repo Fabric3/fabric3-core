@@ -51,7 +51,7 @@ public class DisposeResourceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public DisposeResourcesCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public DisposeResourcesCommand generate(LogicalComponent<?> component) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.MARKED)) {
             return null;
         }
