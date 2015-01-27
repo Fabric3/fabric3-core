@@ -68,20 +68,12 @@ public class DefaultPolicyResolver implements PolicyResolver {
     /**
      * Closure for filtering intercepted policies.
      */
-    private static final Closure<PolicySet, Boolean> INTERCEPTION = new Closure<PolicySet, Boolean>() {
-        public Boolean execute(PolicySet policySet) {
-            return policySet.getPhase() == PolicyPhase.INTERCEPTION;
-        }
-    };
+    private static final Closure<PolicySet, Boolean> INTERCEPTION = policySet -> policySet.getPhase() == PolicyPhase.INTERCEPTION;
 
     /**
      * Closure for filtering provided policies by bindings or implementations.
      */
-    private static final Closure<PolicySet, Boolean> PROVIDED = new Closure<PolicySet, Boolean>() {
-        public Boolean execute(PolicySet policySet) {
-            return policySet.getPhase() == PolicyPhase.PROVIDED;
-        }
-    };
+    private static final Closure<PolicySet, Boolean> PROVIDED = policySet -> policySet.getPhase() == PolicyPhase.PROVIDED;
 
     private InteractionPolicyResolver interactionResolver;
     private ImplementationPolicyResolver implementationResolver;
