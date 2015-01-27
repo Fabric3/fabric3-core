@@ -46,8 +46,6 @@ public class LocalDeployer implements Deployer {
     }
 
     public void deploy(Deployment deployment) throws DeploymentException {
-
-        // ignore extension commands since extensions will already be loaded locally
         List<CompensatableCommand> commands = deployment.getCommands();
         execute(commands);
         try {
