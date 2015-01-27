@@ -46,7 +46,6 @@ import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
@@ -85,7 +84,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
 
         control.replay();
 
@@ -107,7 +106,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
 
         control.replay();
 
@@ -127,7 +126,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment).times(2);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
         EasyMock.expectLastCall().times(2);
         control.replay();
 
@@ -171,7 +170,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
         // simulate a deployment exception
         EasyMock.expectLastCall().andThrow(new DeploymentException());
 
@@ -196,7 +195,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment).times(2);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
         EasyMock.expectLastCall().times(2);
 
         PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
@@ -224,7 +223,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
         // simulate a deployment exception
         EasyMock.expectLastCall().andThrow(new DeploymentException());
 

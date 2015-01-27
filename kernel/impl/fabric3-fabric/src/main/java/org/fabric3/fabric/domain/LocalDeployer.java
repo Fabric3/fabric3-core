@@ -30,7 +30,7 @@ import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeploymentPackage;
+import org.fabric3.spi.domain.generator.Deployment;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -45,10 +45,10 @@ public class LocalDeployer implements Deployer {
         this.scopeRegistry = scopeRegistry;
     }
 
-    public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
+    public void deploy(Deployment deployment) throws DeploymentException {
 
         // ignore extension commands since extensions will already be loaded locally
-        List<CompensatableCommand> commands = deploymentPackage.getCurrentDeployment().getCommands();
+        List<CompensatableCommand> commands = deployment.getCommands();
         execute(commands);
         try {
             if (scopeRegistry != null) {

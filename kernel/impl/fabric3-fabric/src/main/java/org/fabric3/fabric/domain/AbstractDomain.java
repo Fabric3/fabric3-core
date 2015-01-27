@@ -49,7 +49,6 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.allocator.AllocationException;
 import org.fabric3.spi.domain.generator.Deployment;
@@ -72,7 +71,6 @@ public abstract class AbstractDomain implements Domain {
     protected Deployer deployer;
     protected Generator generator;
     protected PolicyRegistry policyRegistry;
-    protected boolean generateFullDeployment;
 
     protected List<DeployListener> listeners;
 
@@ -185,13 +183,8 @@ public abstract class AbstractDomain implements Domain {
         }
         Deployment deployment = generator.generate(domain, true);
         collector.collect(domain);
-        Deployment fullDeployment = null;
-        if (generateFullDeployment) {
-            fullDeployment = generator.generate(domain, false);
-        }
-        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
         try {
-            deployer.deploy(deploymentPackage);
+            deployer.deploy(deployment);
         } catch (DeploymentException e) {
             if (!force) {
                 throw e;
@@ -226,12 +219,7 @@ public abstract class AbstractDomain implements Domain {
         if (!simulated) {
             Deployment deployment = generator.generate(domain, true);
             collector.collect(domain);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false);
-            }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
+            deployer.deploy(deployment);
         } else {
             collector.collect(domain);
         }
@@ -463,12 +451,7 @@ public abstract class AbstractDomain implements Domain {
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain, true);
         collector.markAsProvisioned(domain);
-        Deployment fullDeployment = null;
-        if (generateFullDeployment) {
-            fullDeployment = generator.generate(domain, false);
-        }
-        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-        deployer.deploy(deploymentPackage);
+        deployer.deploy(deployment);
     }
 
     /**
@@ -546,12 +529,7 @@ public abstract class AbstractDomain implements Domain {
         policyAttacher.attachPolicies(policySets, domain, true);
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain, true);
-        Deployment fullDeployment = null;
-        if (generateFullDeployment) {
-            fullDeployment = generator.generate(domain, false);
-        }
-        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-        deployer.deploy(deploymentPackage);
+        deployer.deploy(deployment);
         logicalComponentManager.replaceRootComponent(domain);
     }
 
@@ -563,12 +541,7 @@ public abstract class AbstractDomain implements Domain {
         policyAttacher.detachPolicies(policySets, domain);
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain, true);
-        Deployment fullDeployment = null;
-        if (generateFullDeployment) {
-            fullDeployment = generator.generate(domain, false);
-        }
-        DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-        deployer.deploy(deploymentPackage);
+        deployer.deploy(deployment);
         logicalComponentManager.replaceRootComponent(domain);
     }
 

@@ -20,18 +20,19 @@
 package org.fabric3.spi.domain;
 
 import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.spi.domain.generator.Deployment;
 
 /**
- * Processes a {@link DeploymentPackage}.
+ * Processes a {@link Deployment}.
  */
 public interface Deployer {
 
     /**
      * Synchronously sends the contents of a DeploymentPackage to zones in a domain.
      *
-     * @param deploymentPackage the deployment package to route
+     * @param deployment the deployment to process
      * @throws DeploymentException if an exception occurs during deployment
      */
-    void deploy(DeploymentPackage deploymentPackage) throws DeploymentException;
+    void deploy(Deployment deployment) throws DeploymentException;
 
 }

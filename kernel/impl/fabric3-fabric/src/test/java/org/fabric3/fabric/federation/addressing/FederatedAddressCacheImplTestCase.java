@@ -35,7 +35,6 @@ import org.fabric3.spi.federation.addressing.AddressListener;
 import org.fabric3.spi.federation.addressing.AddressMonitor;
 import org.fabric3.spi.federation.addressing.AddressRequest;
 import org.fabric3.spi.federation.addressing.AddressUpdate;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.host.Port;
 
 /**

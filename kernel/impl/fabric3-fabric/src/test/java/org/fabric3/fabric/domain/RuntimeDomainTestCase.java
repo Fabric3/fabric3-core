@@ -28,20 +28,19 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.runtime.DefaultHostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.domain.collector.Collector;
 import org.fabric3.fabric.domain.collector.CollectorImpl;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
-import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.api.host.runtime.DefaultHostInfo;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.policy.PolicyAttacher;
@@ -76,7 +75,7 @@ public class RuntimeDomainTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
 
         control.replay();
 
@@ -97,11 +96,11 @@ public class RuntimeDomainTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
 
         control.replay();
 
-        domain.include(Collections.<URI>singletonList(CONTRIBUTION_URI));
+        domain.include(Collections.singletonList(CONTRIBUTION_URI));
 
         // verify the component contained in the composite was added to the logical model
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
@@ -116,7 +115,7 @@ public class RuntimeDomainTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment).times(2);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
         EasyMock.expectLastCall().times(2);
         control.replay();
 
@@ -138,7 +137,7 @@ public class RuntimeDomainTestCase extends TestCase {
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment).times(2);
-        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        deployer.deploy(EasyMock.isA(Deployment.class));
         EasyMock.expectLastCall().times(2);
         control.replay();
 
@@ -159,20 +158,7 @@ public class RuntimeDomainTestCase extends TestCase {
         MetaDataStore store = control.createMock(MetaDataStore.class);
 
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime",
-                                            Names.DEFAULT_ZONE,
-                                            RuntimeMode.VM,
-                                            null,
-                                            uri,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            false);
+        HostInfo info = new DefaultHostInfo("runtime", Names.DEFAULT_ZONE, RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, false);
         ContributionHelperImpl helper = new ContributionHelperImpl(store, info);
 
         lcm = new LogicalComponentManagerImpl(info);
