@@ -42,17 +42,8 @@
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaSourceWireAttacher"/>
     </component>
 
-    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireSourceDefinition" name="MetroWsdlSourceWireAttacher">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlSourceWireAttacher"/>
-    </component>
-
     <component f3:key="org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition" name="MetroJavaTargetWireAttacher">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaTargetWireAttacher"/>
-        <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
-    </component>
-
-    <component f3:key="org.fabric3.binding.ws.metro.provision.MetroWsdlWireTargetDefinition" name="MetroWsdlTargetWireAttacher">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlTargetWireAttacher"/>
         <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 

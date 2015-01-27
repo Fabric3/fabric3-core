@@ -49,13 +49,4 @@ public interface EndpointSynthesizer {
      */
     ServiceEndpointDefinition synthesizeServiceEndpoint(JavaServiceContract contract, Class<?> serviceClass, URI servicePath);
 
-    /**
-     * Synthesize service endpoint information using the given port type name.
-     *
-     * @param contract     the service contract
-     * @param serviceClass the service endpoint implementation
-     * @param portTypeName the port type
-     * @return the     endpoint information
-     */
-    ReferenceEndpointDefinition synthesizeReferenceEndpoint(JavaServiceContract contract, Class<?> serviceClass, QName portTypeName, URL targetUrl);
 }

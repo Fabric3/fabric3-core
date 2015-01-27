@@ -39,15 +39,6 @@ public class EndpointSynthesizerImpl implements EndpointSynthesizer {
         }
     }
 
-    public ReferenceEndpointDefinition synthesizeReferenceEndpoint(JavaServiceContract contract, Class<?> serviceClass, QName portTypeName, URL url) {
-        WebService annotation = serviceClass.getAnnotation(WebService.class);
-        if (annotation != null) {
-            return createDefinition(annotation, serviceClass, url, portTypeName);
-        } else {
-            return createDefaultDefinition(serviceClass, url, portTypeName);
-        }
-    }
-
     public ServiceEndpointDefinition synthesizeServiceEndpoint(JavaServiceContract contract, Class<?> serviceClass, URI uri) {
         WebService annotation = serviceClass.getAnnotation(WebService.class);
         if (annotation != null) {
