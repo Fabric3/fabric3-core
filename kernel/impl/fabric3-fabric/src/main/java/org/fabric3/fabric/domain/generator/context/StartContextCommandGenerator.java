@@ -19,7 +19,6 @@
 package org.fabric3.fabric.domain.generator.context;
 
 import java.util.List;
-import java.util.Map;
 
 import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -35,10 +34,9 @@ public interface StartContextCommandGenerator {
      *
      * @param components  the set of component being deployed
      * @param incremental true if the deployment is incremental
-     * @return return the map of generated commands keyed by deployment zone. The commands are ordered according to their deployable composite and the
-     *         order it is deployed.
+     * @return the commands ordered according to their deployable composite and the order it is deployed.
      * @throws GenerationException if a generation exception occurs
      */
-    Map<String, List<CompensatableCommand>> generate(List<LogicalComponent<?>> components, boolean incremental) throws GenerationException;
+    List<CompensatableCommand> generate(List<LogicalComponent<?>> components, boolean incremental) throws GenerationException;
 
 }

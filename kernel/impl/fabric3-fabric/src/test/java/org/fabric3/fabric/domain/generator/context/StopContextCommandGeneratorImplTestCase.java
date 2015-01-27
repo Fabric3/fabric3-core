@@ -19,14 +19,12 @@
  */
 package org.fabric3.fabric.domain.generator.context;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.fabric.container.command.StopContextCommand;
 import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -44,11 +42,9 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
     public void testStop() throws Exception {
         StopContextCommandGeneratorImpl generator = new StopContextCommandGeneratorImpl();
 
-        Map<String, List<CompensatableCommand>> commands = generator.generate(createComponents());
+        List<CompensatableCommand> commands = generator.generate(createComponents());
         assertEquals(1, commands.size());
-        List<CompensatableCommand> zone1 = commands.get("zone1");
-        assertEquals(1, zone1.size());
-        StopContextCommand command = (StopContextCommand) zone1.get(0);
+        StopContextCommand command = (StopContextCommand) commands.get(0);
         assertEquals(DEPLOYABLE1, command.getDeployable());
     }
 
@@ -63,7 +59,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
         component1.setState(LogicalState.PROVISIONED);
         components.add(component1);
 
-        Map<String, List<CompensatableCommand>> commands = generator.generate(components);
+        List<CompensatableCommand> commands = generator.generate(components);
 
         assertTrue(commands.isEmpty());
     }
@@ -86,7 +82,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
         component2.setState(LogicalState.MARKED);
         components.add(component2);
 
-        Map<String, List<CompensatableCommand>> commands = generator.generate(components);
+        List<CompensatableCommand> commands = generator.generate(components);
 
         assertEquals(2, commands.size());
     }

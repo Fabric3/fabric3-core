@@ -18,14 +18,12 @@
  */
 package org.fabric3.fabric.domain.generator.context;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.fabric3.fabric.container.command.StopContextCommand;
 import org.fabric3.api.host.Names;
+import org.fabric3.fabric.container.command.StopContextCommand;
 import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -36,29 +34,19 @@ import org.fabric3.spi.model.instance.LogicalState;
  */
 public class StopContextCommandGeneratorImpl implements StopContextCommandGenerator {
 
-    public Map<String, List<CompensatableCommand>> generate(List<LogicalComponent<?>> components) throws GenerationException {
-        Map<String, List<CompensatableCommand>> commands = new HashMap<>();
-        for (LogicalComponent<?> component : components) {
-            if (component.getState() == LogicalState.MARKED) {
-                List<CompensatableCommand> list = getCommands(component.getZone(), commands);
-                QName deployable = component.getDeployable();
-                // only log application composite deployments
-                boolean log = !component.getUri().toString().startsWith(Names.RUNTIME_NAME);
-                StopContextCommand command = new StopContextCommand(deployable, log);
-                if (!list.contains(command)) {
-                    list.add(command);
-                }
+    public List<CompensatableCommand> generate(List<LogicalComponent<?>> components) throws GenerationException {
+        List<CompensatableCommand> commands = new ArrayList<>();
+        // only log application composite deployments
+        components.stream().filter(component -> component.getState() == LogicalState.MARKED).forEach(component -> {
+            QName deployable = component.getDeployable();
+            // only log application composite deployments
+            boolean log = !component.getUri().toString().startsWith(Names.RUNTIME_NAME);
+            StopContextCommand command = new StopContextCommand(deployable, log);
+            if (!commands.contains(command)) {
+                commands.add(command);
             }
-        }
+        });
         return commands;
     }
 
-    private List<CompensatableCommand> getCommands(String zone, Map<String, List<CompensatableCommand>> commands) {
-        List<CompensatableCommand> list = commands.get(zone);
-        if (list == null) {
-            list = new ArrayList<>();
-            commands.put(zone, list);
-        }
-        return list;
-    }
 }

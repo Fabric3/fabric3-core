@@ -19,15 +19,12 @@
  */
 package org.fabric3.fabric.domain.generator.context;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
-import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -44,26 +41,16 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
     public void testIncrementalStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
-        Map<String, List<CompensatableCommand>> commands = generator.generate(createComponents(), true);
+       List<CompensatableCommand> commands = generator.generate(createComponents(), true);
         assertEquals(1, commands.size());
-        List<CompensatableCommand> zone1 = commands.get("zone1");
-        assertEquals(1, zone1.size());
-        StartContextCommand command = (StartContextCommand) zone1.get(0);
-        assertEquals(DEPLOYABLE1, command.getDeployable());
     }
 
     @SuppressWarnings({"unchecked"})
     public void testFullStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
-        Map<String, List<CompensatableCommand>> commands = generator.generate(createComponents(), false);
+       List<CompensatableCommand> commands = generator.generate(createComponents(), false);
         assertEquals(3, commands.size());
-        List<CompensatableCommand> zone1 = commands.get("zone1");
-        assertEquals(1, zone1.size());
-        for (CompensatableCommand entry : zone1) {
-            StartContextCommand command = (StartContextCommand) entry;
-            assertTrue(DEPLOYABLE1.equals(command.getDeployable()) || DEPLOYABLE2.equals(command.getDeployable()));
-        }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -77,30 +64,9 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
         component1.setState(LogicalState.PROVISIONED);
         components.add(component1);
 
-        Map<String, List<CompensatableCommand>> commands = generator.generate(components, true);
+       List<CompensatableCommand> commands = generator.generate(components, true);
 
         assertTrue(commands.isEmpty());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testTwoZoneIncrementalStart() throws Exception {
-        StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
-
-        List<LogicalComponent<?>> components = new ArrayList<>();
-
-        LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
-        component1.setZone("zone1");
-        component1.setDeployable(DEPLOYABLE1);
-        components.add(component1);
-
-        LogicalComponent<?> component2 = new LogicalComponent(URI.create("component2"), null, null);
-        component2.setZone("zone2");
-        component2.setDeployable(DEPLOYABLE2);
-        components.add(component2);
-
-        Map<String, List<CompensatableCommand>> commands = generator.generate(components, true);
-
-        assertEquals(2, commands.size());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -113,11 +79,11 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
         LogicalComponent<?> component2 = new LogicalComponent(URI.create("component2"), null, null);
         component2.setState(LogicalState.PROVISIONED);
         component2.setDeployable(DEPLOYABLE2);
-        component2.setZone("zone3");
+        component2.setZone("zone1");
         LogicalComponent<?> component3 = new LogicalComponent(URI.create("component3"), null, null);
         component3.setState(LogicalState.MARKED);
         component3.setDeployable(DEPLOYABLE3);
-        component3.setZone("zone2");
+        component3.setZone("zone1");
 
         components.add(component1);
         components.add(component2);

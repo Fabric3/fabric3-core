@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGenerator;
@@ -78,22 +77,18 @@ public class GeneratorImpl implements Generator {
 
         List<LogicalComponent<?>> sorted = topologicalSort(domain);
 
-        String id = UUID.randomUUID().toString();
-        Deployment deployment = new Deployment(id);
+        Deployment deployment = new Deployment();
 
         // generate stop context information
-        Map<String, List<CompensatableCommand>> stopCommands = stopContextCommandGenerator.generate(sorted);
-        for (Map.Entry<String, List<CompensatableCommand>> entry : stopCommands.entrySet()) {
-            deployment.addCommands(entry.getKey(), entry.getValue());
-        }
+        List<CompensatableCommand> stopCommands = stopContextCommandGenerator.generate(sorted);
+        deployment.addCommands(stopCommands);
 
         // generate commands for domain-level resources being deployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                String zone = resource.getZone();
                 CompensatableCommand command = resourceGenerator.generateBuild(resource, incremental);
                 if (command != null) {
-                    deployment.addCommand(zone, command);
+                    deployment.addCommand(command);
                 }
             }
         }
@@ -105,11 +100,10 @@ public class GeneratorImpl implements Generator {
                 }
                 CompensatableCommand command = generator.generate(component, incremental);
                 if (command != null) {
-                    String zone = component.getZone();
-                    if (deployment.getDeploymentUnit(zone).getCommands().contains(command)) {
+                    if (deployment.getCommands().contains(command)) {
                         continue;
                     }
-                    deployment.addCommand(zone, command);
+                    deployment.addCommand(command);
                 }
             }
         }
@@ -117,18 +111,15 @@ public class GeneratorImpl implements Generator {
         // generate commands for domain-level resources being undeployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                String zone = resource.getZone();
                 CompensatableCommand command = resourceGenerator.generateDispose(resource, incremental);
                 if (command != null) {
-                    deployment.addCommand(zone, command);
+                    deployment.addCommand(command);
                 }
             }
         }
         // start contexts
-        Map<String, List<CompensatableCommand>> startCommands = startContextCommandGenerator.generate(sorted, incremental);
-        for (Map.Entry<String, List<CompensatableCommand>> entry : startCommands.entrySet()) {
-            deployment.addCommands(entry.getKey(), entry.getValue());
-        }
+        List<CompensatableCommand> startCommands = startContextCommandGenerator.generate(sorted, incremental);
+        deployment.addCommands(startCommands);
 
         return deployment;
     }

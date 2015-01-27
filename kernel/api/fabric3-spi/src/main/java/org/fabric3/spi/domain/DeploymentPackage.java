@@ -26,7 +26,6 @@ import org.fabric3.spi.domain.generator.Deployment;
  */
 public class DeploymentPackage {
     private Deployment currentDeployment;
-    private Deployment fullDeployment;
 
     /**
      * Constructor.
@@ -36,7 +35,6 @@ public class DeploymentPackage {
      */
     public DeploymentPackage(Deployment currentDeployment, Deployment fullDeployment) {
         this.currentDeployment = currentDeployment;
-        this.fullDeployment = fullDeployment;
     }
 
     /**
@@ -48,12 +46,4 @@ public class DeploymentPackage {
         return currentDeployment;
     }
 
-    /**
-     * Returns the full deployment.
-     *
-     * @return the full deployment
-     */
-    public Deployment getFullDeployment() {
-        return fullDeployment;
-    }
 }
