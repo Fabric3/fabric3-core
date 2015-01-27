@@ -133,17 +133,6 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         assertEquals("back", back.getName());
     }
 
-    public void testMappedWsdlName() throws Exception {
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        TypeMapping mapping = new TypeMapping();
-        context.addTypeMapping(FooWsdl.class, mapping);
-
-        ServiceContract contract = impl.introspect(FooWsdl.class, context);
-
-        assertEquals(1, contract.getOperations().size());
-        assertEquals("operation", contract.getOperations().get(0).getWsdlName());
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         IntrospectionHelper helper = new DefaultIntrospectionHelper();

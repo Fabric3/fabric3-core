@@ -63,16 +63,6 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
     }
 
     /**
-     * Returns the WSDL name of the operation. Service contracts may be defined by Java interfaces where <code>@WebMethod</code> is used to map a
-     * method to a WSDL operation name.  By default, the WSDL name will be the same as the operation name.
-     *
-     * @return the WSDL name.
-     */
-    public String getWsdlName() {
-        return wsdlName;
-    }
-
-    /**
      * Sets the WSDL name.
      *
      * @param wsdlName the WSDL name

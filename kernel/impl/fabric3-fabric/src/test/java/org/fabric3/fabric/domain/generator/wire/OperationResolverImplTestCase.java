@@ -70,19 +70,6 @@ public class OperationResolverImplTestCase extends TestCase {
         }
     }
 
-    public void testResolveJavaToXsdOperation() throws Exception {
-        OperationResolverImpl resolver = new OperationResolverImpl();
-
-        LogicalOperation operation1 = createOperation("op", String.class);
-        ((JavaType) operation1.getDefinition().getInputTypes().get(0)).setXsdType(STRING_QNAME);
-        LogicalOperation operation1b = createXsdOperation("op");
-
-        List<LogicalOperation> targets = new ArrayList<>();
-        targets.add(operation1b);
-
-        assertSame(operation1b, resolver.resolve(operation1, targets));
-    }
-
     private <T> LogicalOperation createOperation(String name, Class<T> inputType) {
         List<DataType> input = new ArrayList<>();
         JavaType type = new JavaType(inputType);
