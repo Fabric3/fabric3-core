@@ -47,7 +47,7 @@ import org.fabric3.management.rest.transformer.TransformerPairService;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
-import org.fabric3.spi.model.type.json.JsonType;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.TransformationException;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -61,8 +61,8 @@ import org.oasisopen.sca.annotation.Reference;
  * resource is later exported, any previously generated dynamic resource will be overriden.
  */
 public class RestfulManagementExtension implements ManagementExtension {
-    private static final JsonType JSON_INPUT_TYPE = new JsonType(InputStream.class);
-    private static final JsonType JSON_OUTPUT_TYPE = new JsonType(byte[].class);
+    private static final JavaType JSON_INPUT_TYPE = new JavaType(InputStream.class, "JSON");
+    private static final JavaType JSON_OUTPUT_TYPE = new JavaType(byte[].class,"JSON");
 
     private static final String EMPTY_PATH = "";
     private static final String ROOT_PATH = "/";

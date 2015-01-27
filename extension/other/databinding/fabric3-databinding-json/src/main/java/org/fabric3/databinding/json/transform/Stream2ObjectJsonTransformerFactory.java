@@ -24,7 +24,6 @@ import com.fasterxml.jackson.jaxrs.cfg.Annotations;
 import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.TransformerFactory;
 
 /**
@@ -43,7 +42,7 @@ public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return source instanceof JsonType && InputStream.class.isAssignableFrom(source.getType()) && target instanceof JavaType;
+        return "JSON".equals(source.getDatabinding()) && InputStream.class.isAssignableFrom(source.getType()) && target instanceof JavaType;
     }
 
     public Stream2ObjectJsonTransformer create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {

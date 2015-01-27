@@ -23,7 +23,6 @@ import com.fasterxml.jackson.jaxrs.cfg.Annotations;
 import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.TransformerFactory;
 
 /**
@@ -42,7 +41,7 @@ public class Object2StringJsonTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return target instanceof JsonType && String.class.equals(target.getType()) && source instanceof JavaType;
+        return "JSON".equals(target.getDatabinding()) && String.class.equals(target.getType()) && source instanceof JavaType;
     }
 
     public Object2StringJsonTransformer create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
