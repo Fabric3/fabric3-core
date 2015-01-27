@@ -34,11 +34,11 @@ if (hasProperty('build')) {
 }
 
 if (ext.build == 'local') {
-    defaultTasks 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+    defaultTasks 'jar', 'fabric3Contribution', 'test', 'war', 'fatJar', 'distZip', 'assemble', 'install'
 } else if (ext.build == 'deploy') {
-    defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install', 'uploadArchives'
+    defaultTasks 'clean', 'test', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install', 'uploadArchives'
 } else {
-    defaultTasks 'clean', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+    defaultTasks 'clean', 'test', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
 }
 
 if (!hasProperty('sonatypeUsername')) {
