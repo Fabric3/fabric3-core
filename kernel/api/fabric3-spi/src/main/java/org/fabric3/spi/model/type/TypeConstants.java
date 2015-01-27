@@ -13,20 +13,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.model.type.xsd;
+package org.fabric3.spi.model.type;
 
-import javax.xml.namespace.QName;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.w3c.dom.Node;
 
 /**
- * Specialization of DataType for Elements from the XML Schema type system.
+ * Defines type constants
  */
-public class XSDElement extends XSDType {
-    private static final long serialVersionUID = -2602951884349165087L;
+public interface TypeConstants {
 
-    public XSDElement(Class<?> physical, QName logical) {
-        super(physical, logical);
-    }
+    /**
+     * Defines a component property.
+     */
+    DataType PROPERTY_TYPE = new JavaType(Node.class);
+
+    DataType STRING_TYPE = new JavaType(String.class);
+
 }

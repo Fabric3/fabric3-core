@@ -19,7 +19,6 @@
  */
 package org.fabric3.binding.jms.runtime;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,15 +28,14 @@ import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
  *
  */
 public class DataTypeHelper {
-    public static XSDType STRING_TYPE = new XSDType(String.class, QName.valueOf("String"));
 
-    public static List<DataType> STRING_TYPES = Arrays.asList(STRING_TYPE);
+    public static final DataType JAXB_TYPE = new JavaType(String.class, "JAXB");
+    public static List<DataType> JAXB_TYPES = Arrays.asList(JAXB_TYPE);
 
     public static List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws ContainerException {
         try {

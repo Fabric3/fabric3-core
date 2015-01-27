@@ -42,17 +42,17 @@ public class TransformerInterceptorFactoryImplTestCase extends TestCase {
         List<DataType> sourceTypes = new ArrayList<>();
         sourceTypes.add(PhysicalDataTypes.JAVA_TYPE);
         List<DataType> targetTypes = new ArrayList<>();
-        targetTypes.add(PhysicalDataTypes.DOM);
+        targetTypes.add(PhysicalDataTypes.JAXB);
 
         Transformer in = EasyMock.createMock(Transformer.class);
         Transformer out = EasyMock.createMock(Transformer.class);
 
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
         EasyMock.expect(registry.getTransformer(EasyMock.eq(PhysicalDataTypes.JAVA_TYPE),
-                                                EasyMock.eq(PhysicalDataTypes.DOM),
+                                                EasyMock.eq(PhysicalDataTypes.JAXB),
                                                 EasyMock.isA(List.class),
                                                 EasyMock.isA(List.class))).andReturn(in);
-        EasyMock.expect(registry.getTransformer(EasyMock.eq(PhysicalDataTypes.DOM),
+        EasyMock.expect(registry.getTransformer(EasyMock.eq(PhysicalDataTypes.JAXB),
                                                 EasyMock.eq(PhysicalDataTypes.JAVA_TYPE),
                                                 EasyMock.isA(List.class),
                                                 EasyMock.isA(List.class))).andReturn(out);

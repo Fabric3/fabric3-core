@@ -16,23 +16,22 @@
  */
 package org.fabric3.databinding.jaxb.transform;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Node;
-
-import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Node;
 
 /**
  * Creates transformers to convert from a DOM Node to a JAXB object.
@@ -79,7 +78,7 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
 
     private Transformer<Node, Object> createTransformer(DataType source, Class<?> type, JAXBContext jaxbContext) {
         if (type.isAnnotationPresent(XmlRootElement.class)) {
-            if (XSDConstants.PROPERTY_TYPE.equals(source)) {
+            if (TypeConstants.PROPERTY_TYPE.equals(source)) {
                 // the value is a property
                 return new PropertyValue2JAXBTransformer(jaxbContext);
             } else {

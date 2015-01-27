@@ -28,7 +28,6 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
@@ -51,7 +50,7 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType source, DataType target) {
-        return target.getType().equals(String.class) && target instanceof XSDType && source instanceof JavaType;
+        return target.getType().equals(String.class) && "JAXB".equals(target.getDatabinding()) && source instanceof JavaType;
     }
 
     public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws TransformationException {

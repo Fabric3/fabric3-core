@@ -230,7 +230,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
             throws ContainerException {
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
-        Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, jaxTypes, DataTypeHelper.STRING_TYPES, targetClassLoader, sourceClassLoader);
+        Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, jaxTypes, DataTypeHelper.JAXB_TYPES, targetClassLoader, sourceClassLoader);
         chain.addInterceptor(jaxbInterceptor);
     }
 

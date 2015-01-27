@@ -30,7 +30,6 @@ import org.fabric3.api.model.type.AbstractPolicyAware;
 public class Operation extends AbstractPolicyAware<ServiceContract> {
     private static final long serialVersionUID = 5279880534105654066L;
     private String name;
-    private String wsdlName;
     private boolean remotable;
     private DataType outputType;
     private List<DataType> inputTypes;
@@ -50,7 +49,6 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
         this.inputTypes = inputTypes;
         this.outputType = outputType;
         this.faultTypes = (faultTypes == null) ? types : faultTypes;
-        wsdlName = name;
     }
 
     /**
@@ -60,15 +58,6 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Sets the WSDL name.
-     *
-     * @param wsdlName the WSDL name
-     */
-    public void setWsdlName(String wsdlName) {
-        this.wsdlName = wsdlName;
     }
 
     /**

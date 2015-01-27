@@ -16,13 +16,10 @@
  */
 package org.fabric3.transform.string2java;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDSimpleType;
-import org.fabric3.spi.model.type.xsd.XSDType;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 import org.oasisopen.sca.annotation.Reference;
@@ -31,7 +28,6 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class String2ClassTransformer implements SingleTypeTransformer<String, Class<?>> {
-    private static final XSDSimpleType SOURCE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));
     private static final JavaType TARGET = new JavaType(Class.class);
     private ClassLoaderRegistry classLoaderRegistry;
 
@@ -40,7 +36,7 @@ public class String2ClassTransformer implements SingleTypeTransformer<String, Cl
     }
 
     public DataType getSourceType() {
-        return SOURCE;
+        return TypeConstants.STRING_TYPE;
     }
 
     public DataType getTargetType() {

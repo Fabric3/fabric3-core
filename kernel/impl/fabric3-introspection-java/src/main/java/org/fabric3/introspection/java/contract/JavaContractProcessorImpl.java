@@ -19,7 +19,6 @@
  */
 package org.fabric3.introspection.java.contract;
 
-import javax.jws.WebMethod;
 import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -145,11 +144,6 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
 
             if (method.isAnnotationPresent(org.oasisopen.sca.annotation.OneWay.class) || method.isAnnotationPresent(OneWay.class)) {
                 operation.addIntent(ONEWAY_INTENT);
-            }
-
-            WebMethod webMethod = method.getAnnotation(WebMethod.class);
-            if (webMethod != null && webMethod.operationName().length() > 0) {
-                operation.setWsdlName(webMethod.operationName());
             }
 
             for (TypeIntrospector introspector : typeIntrospectors) {

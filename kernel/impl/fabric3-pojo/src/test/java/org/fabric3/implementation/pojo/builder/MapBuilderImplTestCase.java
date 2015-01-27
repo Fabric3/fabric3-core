@@ -31,7 +31,7 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
@@ -60,7 +60,7 @@ public class MapBuilderImplTestCase extends TestCase {
 
         List list = Collections.singletonList(String.class);
 
-        registry.getTransformer(XSDConstants.PROPERTY_TYPE, JAVA_CLASS, list, list);
+        registry.getTransformer(TypeConstants.PROPERTY_TYPE, JAVA_CLASS, list, list);
         EasyMock.expectLastCall().andReturn(new MockTransformer()).times(2);
         EasyMock.replay(registry);
 
@@ -92,7 +92,7 @@ public class MapBuilderImplTestCase extends TestCase {
 
         List list = Collections.singletonList(String.class);
 
-        registry.getTransformer(XSDConstants.PROPERTY_TYPE, JAVA_CLASS, list, list);
+        registry.getTransformer(TypeConstants.PROPERTY_TYPE, JAVA_CLASS, list, list);
         EasyMock.expectLastCall().andReturn(new MockTransformer()).times(2);
         EasyMock.replay(registry);
 

@@ -24,7 +24,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
@@ -42,7 +42,7 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
         JavaType target = new JavaType(Integer.class);
         List<Class<?>> targets = new ArrayList<>();
         targets.add(Integer.class);
-        assertNotNull(registry.getTransformer(XSDConstants.PROPERTY_TYPE, target, targets, targets));
+        assertNotNull(registry.getTransformer(TypeConstants.PROPERTY_TYPE, target, targets, targets));
     }
 
     private class MockFactory implements TransformerFactory {

@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
+import static org.fabric3.spi.model.type.TypeConstants.PROPERTY_TYPE;
 
 /**
  *

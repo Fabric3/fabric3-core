@@ -25,7 +25,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.xml.XMLFactory;
@@ -41,7 +41,7 @@ public class Property2StreamTransformer implements SingleTypeTransformer<Node, X
     private final XMLInputFactory xmlFactory;
 
     public DataType getSourceType() {
-        return XSDConstants.PROPERTY_TYPE;
+        return TypeConstants.PROPERTY_TYPE;
     }
 
     public DataType getTargetType() {

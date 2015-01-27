@@ -18,9 +18,7 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -29,15 +27,11 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDSimpleType;
-import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
  *
  */
 public class OperationResolverImplTestCase extends TestCase {
-    private static final QName STRING_QNAME = new QName(XSDType.XSD_NS, "string");
-
 
     public void testResolveOperation() throws Exception {
         OperationResolverImpl resolver = new OperationResolverImpl();
@@ -81,11 +75,4 @@ public class OperationResolverImplTestCase extends TestCase {
         return new LogicalOperation(definition, null);
     }
 
-    private <T> LogicalOperation createXsdOperation(String name) {
-        DataType stringType = new XSDSimpleType(String.class, STRING_QNAME);
-        List<DataType> input = new ArrayList<>();
-        input.add(stringType);
-        Operation definition = new Operation(name, input, stringType, Collections.<DataType>emptyList());
-        return new LogicalOperation(definition, null);
-    }
 }

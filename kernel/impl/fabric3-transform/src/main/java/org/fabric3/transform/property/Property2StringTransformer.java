@@ -20,7 +20,7 @@ package org.fabric3.transform.property;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
@@ -32,7 +32,7 @@ public class Property2StringTransformer implements SingleTypeTransformer<Node, S
     private static final JavaType TARGET = new JavaType(String.class);
 
     public DataType getSourceType() {
-        return XSDConstants.PROPERTY_TYPE;
+        return TypeConstants.PROPERTY_TYPE;
     }
 
     public DataType getTargetType() {

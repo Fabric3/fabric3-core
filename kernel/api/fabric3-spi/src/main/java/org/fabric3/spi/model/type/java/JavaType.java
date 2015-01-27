@@ -28,6 +28,11 @@ public class JavaType extends DataType {
         super(type);
     }
 
+    public JavaType(Class<?> type, String databinding) {
+        super(type);
+        setDatabinding(databinding);
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;

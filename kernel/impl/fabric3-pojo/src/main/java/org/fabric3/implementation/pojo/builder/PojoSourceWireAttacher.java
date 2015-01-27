@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.pojo.builder;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +28,7 @@ import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDSimpleType;
-import org.fabric3.spi.model.type.xsd.XSDType;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
@@ -39,7 +37,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * Contains functionality common to Java-based SourceWireAttachers.
  */
 public abstract class PojoSourceWireAttacher {
-    private static final XSDSimpleType STRING_TYPE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));
 
     protected TransformerRegistry transformerRegistry;
     protected ClassLoaderRegistry classLoaderRegistry;
@@ -95,7 +92,7 @@ public abstract class PojoSourceWireAttacher {
             Class<?> type = targetType.getType();
             List<Class<?>> types = new ArrayList<>();
             types.add(type);
-            Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(STRING_TYPE, targetType, types, types);
+            Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(TypeConstants.STRING_TYPE, targetType, types, types);
             if (transformer == null) {
                 throw new KeyInstantiationException("No transformer for : " + targetType);
             }

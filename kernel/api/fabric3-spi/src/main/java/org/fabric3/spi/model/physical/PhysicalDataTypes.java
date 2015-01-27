@@ -16,12 +16,8 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.xsd.XSDType;
-import org.w3c.dom.Document;
 
 /**
  * Defines well-known physical data types. Binding and component extensions may declare the data types they support for service operation parameters on {@link
@@ -35,14 +31,9 @@ public interface PhysicalDataTypes {
     DataType JAVA_TYPE = new JavaType(Object.class);
 
     /**
-     * Denotes an XML DOM
-     */
-    DataType DOM = new XSDType(Document.class, new QName(XSDType.XSD_NS, "anyType"));
-
-    /**
      * Denotes a JAXB type
      */
-    DataType JAXB = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"), "JAXB");
+    DataType JAXB = new JavaType(String.class, "JAXB");
 
 
 }

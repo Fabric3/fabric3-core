@@ -32,7 +32,7 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
-import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
+import static org.fabric3.spi.model.type.TypeConstants.PROPERTY_TYPE;
 
 /**
  *

@@ -123,25 +123,12 @@ public class JAXBTypeIntrospector implements TypeIntrospector {
 
     public void introspect(DataType dataType) {
         Class<?> type = dataType.getType();
-        // not an explicit JAXB type, but it can potentially be mapped
-        QName xsdName = JAXB_MAPPING.get(type);
-        if (xsdName != null) {
-            dataType.setXsdType(xsdName);
-            return;
-        }
         XmlRootElement annotation = type.getAnnotation(XmlRootElement.class);
         if (annotation != null) {
             String namespace = annotation.namespace();
             if (DEFAULT.equals(namespace)) {
                 namespace = getDefaultNamespace(type);
             }
-            String name = annotation.name();
-            if (DEFAULT.equals(namespace)) {
-                // as per the JAXB specification
-                name = Introspector.decapitalize(type.getSimpleName());
-            }
-            xsdName = new QName(namespace, name);
-            dataType.setXsdType(xsdName);
             dataType.setDatabinding(JAXB);
             return;
         }
@@ -156,14 +143,8 @@ public class JAXBTypeIntrospector implements TypeIntrospector {
                 // as per the JAXB specification
                 name = Introspector.decapitalize(type.getSimpleName());
             }
-            xsdName = new QName(namespace, name);
-            dataType.setXsdType(xsdName);
             dataType.setDatabinding(JAXB);
-            return;
         }
-        // the type is an unannotated Java class, heuristically determine a schema mapping
-        xsdName = mapper.deriveQName(type);
-        dataType.setXsdType(xsdName);
     }
 
     private String getDefaultNamespace(Class clazz) {
