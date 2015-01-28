@@ -73,7 +73,6 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
     private XMLInputFactory xmlInputFactory;
     private Object proxy;
     private URL endpointUrl;
-    private CallbackAddressResolver addressResolver;
 
     /**
      * Constructor.
@@ -88,7 +87,6 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @param handlers                messages handlers or null
      * @param executorService         the executor service used for dispatching invocations
      * @param securityEnvironment     the Metro host runtime security SPI implementation
-     * @param addressResolver         the callback address resolver or null if the target is not a callback service
      * @param xmlInputFactory         the StAX XML factory to use for WSDL parsing
      */
     public MetroProxyObjectFactory(ReferenceEndpointDefinition endpointDefinition,
@@ -101,10 +99,8 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
                                    List<Handler> handlers,
                                    ExecutorService executorService,
                                    SecurityEnvironment securityEnvironment,
-                                   CallbackAddressResolver addressResolver,
                                    XMLInputFactory xmlInputFactory) {
         super(securityConfiguration, connectionConfiguration, handlers);
-        this.addressResolver = addressResolver;
         this.serviceName = endpointDefinition.getServiceName();
         this.serviceNameDefault = endpointDefinition.isDefaultServiceName();
         this.portTypeName = endpointDefinition.getPortTypeName();
@@ -135,10 +131,6 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @throws ObjectCreationException if there was an error creating the proxy
      */
     private Object createProxy() throws ObjectCreationException {
-        if (addressResolver != null) {
-            // if this is a callback, use the address resolver to dynamically resolve the endpoint address from the request context
-            endpointUrl = addressResolver.resolveUrl();
-        }
 
         if (wsdlLocation == null) {
             wsdlLocation = calculateDefaultWsdlLocation();
@@ -213,13 +205,12 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * specified. Since WCF uses different defaulting rules, it is not possible to calculate the service name according to JAX-WS rules. When the JAX-WS API is
      * used directly, this is not a problem as the service proxy is created by using a generated service client class marked with the
      * <code>WebServiceClient</code> annotation which explicitly declares the service name. However, in SCA, the portType interface is provided, not the
-     * generated service client class.
-     * <p/>
-     * Rather than requiring users to explicitly declare the service in this case, the target WSDL is introspected for a service name. This will only be done
-     * if: the original service name is not valid (i.e. the web service exception triggering this procedure resulted from an invalid service name during proxy
-     * generation); and if the original provided service name is only a default and may be overriden. Also note this procedure will only return a service name
-     * if the target WSDL contains only one service which uses the portType (otherwise it would be impossible to select the correct service). Barring this, a
-     * user would need to explicitly declare the service name via a JAX-WS annotation or the wsdlElement attribute on binding.ws.
+     * generated service client class. <p/> Rather than requiring users to explicitly declare the service in this case, the target WSDL is introspected for a
+     * service name. This will only be done if: the original service name is not valid (i.e. the web service exception triggering this procedure resulted from
+     * an invalid service name during proxy generation); and if the original provided service name is only a default and may be overriden. Also note this
+     * procedure will only return a service name if the target WSDL contains only one service which uses the portType (otherwise it would be impossible to
+     * select the correct service). Barring this, a user would need to explicitly declare the service name via a JAX-WS annotation or the wsdlElement attribute
+     * on binding.ws.
      *
      * @param e      the WebServiceException  triggering this operation
      * @param params any initialization parameters to use when attempting to create a proxy using an introspected service name

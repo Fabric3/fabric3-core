@@ -37,8 +37,6 @@ import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.binding.ws.metro.runtime.core.CallbackAddressResolver;
-import org.fabric3.binding.ws.metro.runtime.core.CallbackAddressResolverImpl;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
@@ -60,8 +58,6 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaWireTargetDefinition> {
 
-    public static final CallbackAddressResolverImpl ADDRESS_RESOLVER = new CallbackAddressResolverImpl();
-
     private ClassLoaderRegistry registry;
     private FeatureResolver resolver;
     private WireAttacherHelper wireAttacherHelper;
@@ -80,7 +76,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                                        @Reference(name = "executorService") ExecutorService executorService,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Monitor InterceptorMonitor monitor) {
-        super(handlerRegistry, endpointService);
+        super(handlerRegistry);
         this.registry = registry;
         this.resolver = resolver;
         this.wireAttacherHelper = wireAttacherHelper;
@@ -133,8 +129,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 List<Handler> handlers = createHandlers(target);
 
                 // if the target service is a callback, add the resolver
-                CallbackAddressResolver addressResolver = target.isCallback() ? ADDRESS_RESOLVER : null;
-
                 ObjectFactory<?> proxyFactory = new MetroProxyObjectFactory(endpointDefinition,
                                                                             wsdlLocation,
                                                                             generatedWsdl,
@@ -145,7 +139,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                                                                             handlers,
                                                                             executorService,
                                                                             securityEnvironment,
-                                                                            addressResolver,
                                                                             xmlInputFactory);
 
                 attachInterceptors(seiClass, target, wire, proxyFactory);

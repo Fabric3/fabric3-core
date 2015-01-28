@@ -24,13 +24,12 @@ import java.util.List;
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
-import org.fabric3.binding.ws.metro.runtime.core.ServiceCallbackAddressHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Base source wire attacher that provisions web service endpoints.
@@ -56,11 +55,6 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroWireSourceD
             return null;
         }
         List<Handler> handlers = new ArrayList<>();
-
-        if (source.isBidirectional()) {
-            ServiceCallbackAddressHandler callbackHandler = new ServiceCallbackAddressHandler();
-            handlers.add(callbackHandler);
-        }
 
         for (PhysicalBindingHandlerDefinition handlerDefinition : source.getHandlers()) {
             BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, handlerDefinition);

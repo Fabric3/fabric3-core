@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
-import org.fabric3.binding.ws.metro.runtime.core.CallbackTargetHandler;
-import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
-import org.fabric3.binding.ws.metro.runtime.core.ReferenceCallbackAddressHandler;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
@@ -37,11 +34,9 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  */
 public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalWireTargetDefinition> implements TargetWireAttacher<T> {
     private BindingHandlerRegistry handlerRegistry;
-    private EndpointService endpointService;
 
-    public AbstractMetroTargetWireAttacher(BindingHandlerRegistry handlerRegistry, EndpointService endpointService) {
+    public AbstractMetroTargetWireAttacher(BindingHandlerRegistry handlerRegistry) {
         this.handlerRegistry = handlerRegistry;
-        this.endpointService = endpointService;
     }
 
     protected List<Handler> createHandlers(MetroWireTargetDefinition target) {
@@ -49,14 +44,6 @@ public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalWireTarg
             return null;
         }
         List<Handler> handlers = new ArrayList<>();
-
-        if (target.isBidirectional()) {
-            ReferenceCallbackAddressHandler callbackHandler = new ReferenceCallbackAddressHandler(target.getCallbackUri(), endpointService);
-            handlers.add(callbackHandler);
-        }  else if (target.isCallback()) {
-            CallbackTargetHandler handler = new CallbackTargetHandler();
-            handlers.add(handler);
-        }
 
         for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
             BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, handlerDefinition);
