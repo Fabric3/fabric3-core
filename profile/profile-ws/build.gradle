@@ -11,8 +11,6 @@ dependencies {
     compile project(':extension:other:databinding:fabric3-jaxb')
     compile project(':extension:binding:fabric3-binding-ws-api')
     compile project(':extension:binding:fabric3-binding-ws')
-    compile project(':extension:binding:fabric3-binding-ws-metro')
-    compile project(':extension:binding:fabric3-binding-ws-policy')
 }
 
 

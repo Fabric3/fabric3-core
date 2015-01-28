@@ -19,34 +19,5 @@
                                                 sca:atMostOnce
                                                 sca:exactlyOnce"/>
 
-    <intent name="f3:messageOptimization" constrains="binding">
-        <description>
-            Optimise transfer of binary files.
-        </description>
-    </intent>
-
-    <intent name="f3:protocolBinding" constrains="binding">
-        <description>
-            Unqualified intent for using Metro specific bindings.
-        </description>
-    </intent>
-
-    <intent name="f3:xsoap12" constrains="binding">
-        <description>
-            Unqualified intent for using SOAP 1.2 and WSDL generation with Metro.
-        </description>
-    </intent>
-
-    <intent name="f3:metroRest" constrains="binding">
-        <description>
-            Unqualified intent for using HTTP.
-        </description>
-    </intent>
-
-    <intent name="f3:validateSchema">
-        <description>
-            Intent for requesting schema validation.
-        </description>
-    </intent>
 
 </definitions>

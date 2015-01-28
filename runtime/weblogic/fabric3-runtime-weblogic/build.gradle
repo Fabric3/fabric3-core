@@ -55,8 +55,6 @@ dependencies {
 
     extensionDependencies project(':extension:binding:fabric3-binding-ws-api')
     extensionDependencies project(':extension:binding:fabric3-binding-ws')
-    extensionDependencies project(':extension:binding:fabric3-binding-ws-metro')
-    extensionDependencies project(':extension:binding:fabric3-binding-ws-policy')
     extensionDependencies group: 'asm', name: 'asm', version: '3.3.1'
 
 

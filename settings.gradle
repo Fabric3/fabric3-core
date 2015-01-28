@@ -49,8 +49,7 @@ include 'extension:binding:fabric3-binding-rs-api', 'extension:binding:fabric3-b
 
 include 'extension:binding:fabric3-binding-test'
 
-include 'extension:binding:fabric3-binding-ws-api', 'extension:binding:fabric3-binding-ws', 'extension:binding:fabric3-binding-ws-policy',
-        'extension:binding:fabric3-binding-ws-metro'
+include 'extension:binding:fabric3-binding-ws-api', 'extension:binding:fabric3-binding-ws'
 
 include 'extension:binding:fabric3-binding-zeromq-api', 'extension:binding:fabric3-binding-zeromq-library', 'extension:binding:fabric3-binding-zeromq',
         'extension:binding:fabric3-binding-jeromq'
