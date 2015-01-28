@@ -18,7 +18,6 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
@@ -31,17 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import com.sun.xml.wss.SecurityEnvironment;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
-import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
@@ -59,29 +55,23 @@ import org.oasisopen.sca.annotation.Reference;
 public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaWireTargetDefinition> {
 
     private ClassLoaderRegistry registry;
-    private FeatureResolver resolver;
     private WireAttacherHelper wireAttacherHelper;
     private ArtifactCache artifactCache;
-    private SecurityEnvironment securityEnvironment;
     private ExecutorService executorService;
     private XMLInputFactory xmlInputFactory;
     private InterceptorMonitor monitor;
 
     public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
-                                       @Reference FeatureResolver resolver,
                                        @Reference EndpointService endpointService,
                                        @Reference WireAttacherHelper wireAttacherHelper,
                                        @Reference ArtifactCache artifactCache,
-                                       @Reference SecurityEnvironment securityEnvironment,
                                        @Reference(name = "executorService") ExecutorService executorService,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Monitor InterceptorMonitor monitor) {
         super(handlerRegistry);
         this.registry = registry;
-        this.resolver = resolver;
         this.wireAttacherHelper = wireAttacherHelper;
         this.artifactCache = artifactCache;
-        this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
         this.xmlInputFactory = XMLInputFactory.newFactory();
         this.monitor = monitor;
@@ -121,9 +111,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                     cacheSchemas(servicePath, target);
                 }
 
-                WebServiceFeature[] features = resolver.getFeatures(requestedIntents);
-
-                SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
                 ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
 
                 List<Handler> handlers = createHandlers(target);
@@ -132,13 +119,9 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 ObjectFactory<?> proxyFactory = new MetroProxyObjectFactory(endpointDefinition,
                                                                             wsdlLocation,
                                                                             generatedWsdl,
-                                                                            seiClass,
-                                                                            features,
-                                                                            securityConfiguration,
-                                                                            connectionConfiguration,
+                                                                            seiClass, connectionConfiguration,
                                                                             handlers,
                                                                             executorService,
-                                                                            securityEnvironment,
                                                                             xmlInputFactory);
 
                 attachInterceptors(seiClass, target, wire, proxyFactory);

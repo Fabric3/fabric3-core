@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import com.sun.xml.wss.SecurityEnvironment;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
 import org.fabric3.spi.host.ServletHost;
@@ -34,18 +33,15 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class EndpointServiceImpl implements EndpointService {
-    private SecurityEnvironment securityEnvironment;
     private ExecutorService executorService;
     private ServletHost servletHost;
     private MetroBindingMonitor monitor;
     private Map<URI, URL> endpointUrls;
     private MetroServlet metroServlet;
 
-    public EndpointServiceImpl(@Reference SecurityEnvironment securityEnvironment,
-                               @Reference(name = "executorService") ExecutorService executorService,
+    public EndpointServiceImpl(@Reference(name = "executorService") ExecutorService executorService,
                                @Reference ServletHost servletHost,
                                @Monitor MetroBindingMonitor monitor) {
-        this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
         this.monitor = monitor;
         this.servletHost = servletHost;
@@ -54,7 +50,7 @@ public class EndpointServiceImpl implements EndpointService {
 
     @Init
     public void init() {
-        metroServlet = new MetroServlet(executorService, securityEnvironment);
+        metroServlet = new MetroServlet(executorService);
     }
 
     public void registerService(EndpointConfiguration configuration) throws EndpointException {

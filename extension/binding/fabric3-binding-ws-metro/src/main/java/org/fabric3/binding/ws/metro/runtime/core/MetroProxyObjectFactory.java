@@ -24,7 +24,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,10 +41,8 @@ import com.sun.xml.ws.api.model.wsdl.WSDLService;
 import com.sun.xml.ws.resources.ClientMessages;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import com.sun.xml.ws.wsdl.parser.RuntimeWSDLParser;
-import com.sun.xml.wss.SecurityEnvironment;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.xml.sax.EntityResolver;
@@ -66,10 +63,8 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
     private QName portName;
     private QName portTypeName;
     private Class<?> seiClass;
-    private WebServiceFeature[] features;
     private URL wsitConfiguration;
     private ExecutorService executorService;
-    private SecurityEnvironment securityEnvironment;
     private XMLInputFactory xmlInputFactory;
     private Object proxy;
     private URL endpointUrl;
@@ -81,26 +76,20 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @param wsdlLocation            the location of the target service WSDL
      * @param wsitConfiguration       WSIT policy configuration for the proxy, or null if policy is not configured
      * @param seiClass                the target SEI
-     * @param features                web services features to enable on the generated proxy
-     * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
      * @param handlers                messages handlers or null
      * @param executorService         the executor service used for dispatching invocations
-     * @param securityEnvironment     the Metro host runtime security SPI implementation
      * @param xmlInputFactory         the StAX XML factory to use for WSDL parsing
      */
     public MetroProxyObjectFactory(ReferenceEndpointDefinition endpointDefinition,
                                    URL wsdlLocation,
                                    URL wsitConfiguration,
                                    Class<?> seiClass,
-                                   WebServiceFeature[] features,
-                                   SecurityConfiguration securityConfiguration,
                                    ConnectionConfiguration connectionConfiguration,
                                    List<Handler> handlers,
                                    ExecutorService executorService,
-                                   SecurityEnvironment securityEnvironment,
                                    XMLInputFactory xmlInputFactory) {
-        super(securityConfiguration, connectionConfiguration, handlers);
+        super(connectionConfiguration, handlers);
         this.serviceName = endpointDefinition.getServiceName();
         this.serviceNameDefault = endpointDefinition.isDefaultServiceName();
         this.portTypeName = endpointDefinition.getPortTypeName();
@@ -108,10 +97,8 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
         this.endpointUrl = endpointDefinition.getUrl();
         this.wsdlLocation = wsdlLocation;
         this.seiClass = seiClass;
-        this.features = features;
         this.wsitConfiguration = wsitConfiguration;
         this.executorService = executorService;
-        this.securityEnvironment = securityEnvironment;
         this.xmlInputFactory = xmlInputFactory;
     }
 
@@ -155,10 +142,10 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             WsitClientConfigurationContainer container;
             if (wsitConfiguration != null) {
                 // Policy configured
-                container = new WsitClientConfigurationContainer(wsitConfiguration, securityEnvironment);
+                container = new WsitClientConfigurationContainer(wsitConfiguration);
             } else {
                 // No policy
-                container = new WsitClientConfigurationContainer(securityEnvironment);
+                container = new WsitClientConfigurationContainer();
             }
             params.setContainer(container);
             try {
@@ -176,19 +163,18 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             }
 
             try {
-                port = (BindingProvider) service.getPort(portName, seiClass, features);
+                port = (BindingProvider) service.getPort(portName, seiClass);
             } catch (WebServiceException e) {
                 if (e.getMessage().contains("not a valid port")) {
                     // can happen if port names do not follow JAX-WS Java--> WSDL mapping conventions
                     portName = service.getPorts().next();
-                    port = (BindingProvider) service.getPort(portName, seiClass, features);
+                    port = (BindingProvider) service.getPort(portName, seiClass);
                 } else {
                     throw e;
                 }
 
             }
             configureConnection(port);
-            configureSecurity(port);
             configureHandlers(port);
             return port;
         } catch (InaccessibleWSDLException | MalformedURLException e) {

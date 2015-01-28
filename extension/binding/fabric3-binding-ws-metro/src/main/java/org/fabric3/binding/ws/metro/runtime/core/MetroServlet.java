@@ -25,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Binding;
 import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ import com.sun.xml.ws.mex.server.MEXEndpoint;
 import com.sun.xml.ws.transport.http.servlet.ServletAdapter;
 import com.sun.xml.ws.transport.http.servlet.WSServlet;
 import com.sun.xml.ws.transport.http.servlet.WSServletDelegate;
-import com.sun.xml.wss.SecurityEnvironment;
 
 /**
  * Handles incoming HTTP requests and dispatches them to the Metro stack. Extends the Metro servlet and overrides the <code>getDelegate</code> method.
@@ -55,7 +53,6 @@ public class MetroServlet extends WSServlet {
     private static final String MEX_SUFFIX = "/mex";
 
     private ExecutorService executorService;
-    private SecurityEnvironment securityEnvironment;
 
     private List<EndpointConfiguration> configurations = new ArrayList<>();
     private ServletAdapterFactory servletAdapterFactory = new ServletAdapterFactory();
@@ -66,12 +63,10 @@ public class MetroServlet extends WSServlet {
     /**
      * Constructor
      *
-     * @param executorService     the executor service for dispatching invocations
-     * @param securityEnvironment the Fabric3 implementation of the Metro SecurityEnvironment SPI
+     * @param executorService the executor service for dispatching invocations
      */
-    public MetroServlet(ExecutorService executorService, SecurityEnvironment securityEnvironment) {
+    public MetroServlet(ExecutorService executorService) {
         this.executorService = executorService;
-        this.securityEnvironment = securityEnvironment;
     }
 
     public synchronized void init(ServletConfig servletConfig) throws ServletException {
@@ -85,7 +80,7 @@ public class MetroServlet extends WSServlet {
         ClassLoader seiClassLoader = MEXEndpoint.class.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(seiClassLoader);
-            container = new F3Container(servletContext, securityEnvironment);
+            container = new F3Container(servletContext);
 
             WSBinding binding = BindingImpl.create(BindingID.SOAP12_HTTP);
             mexEndpoint = WSEndpoint.create(MEXEndpoint.class, false, null, null, null, container, binding, null, null, null, true);
@@ -115,9 +110,7 @@ public class MetroServlet extends WSServlet {
                 // WSDL may not be defined for a Java-based endpoint, in which case it will be introspected from the SEI class
                 primaryWsdl = SDDocumentSource.create(wsdlLocation);
             }
-            BindingID bindingId = configuration.getBindingId();
-            WebServiceFeature[] features = configuration.getFeatures();
-            WSBinding binding = BindingImpl.create(bindingId, features);
+            WSBinding binding = BindingImpl.create(BindingID.SOAP11_HTTP);
             Container endpointContainer = container;
             List<SDDocumentSource> metadata = null;
             URL generatedWsdl = configuration.getGeneratedWsdl();

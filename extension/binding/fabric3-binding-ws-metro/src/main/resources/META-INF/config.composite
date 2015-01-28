@@ -5,10 +5,6 @@
            name="MetroConfigBinding"
            autowire="true">
 
-    <component name="BindingIDResolver">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.DefaultBindingIdResolver"/>
-    </component>
-
     <component name="ClassDefiner">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.util.ClassDefinerImpl"/>
     </component>

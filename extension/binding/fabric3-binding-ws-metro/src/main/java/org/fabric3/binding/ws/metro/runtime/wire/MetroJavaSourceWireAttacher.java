@@ -17,7 +17,6 @@
 package org.fabric3.binding.ws.metro.runtime.wire;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -27,14 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.xml.ws.api.BindingID;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.JaxbInvoker;
-import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
@@ -50,22 +46,16 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroJavaWireSourceDefinition> {
     private ClassLoaderRegistry classLoaderRegistry;
-    private FeatureResolver featureResolver;
-    private BindingIdResolver bindingIdResolver;
     private WireAttacherHelper wireAttacherHelper;
     private ArtifactCache artifactCache;
 
     public MetroJavaSourceWireAttacher(@Reference ClassLoaderRegistry classLoaderRegistry,
-                                       @Reference FeatureResolver featureResolver,
-                                       @Reference BindingIdResolver bindingIdResolver,
                                        @Reference WireAttacherHelper wireAttacherHelper,
                                        @Reference ArtifactCache artifactCache,
                                        @Reference EndpointService endpointService,
                                        @Reference BindingHandlerRegistry handlerRegistry) {
         super(endpointService, handlerRegistry);
         this.classLoaderRegistry = classLoaderRegistry;
-        this.featureResolver = featureResolver;
-        this.bindingIdResolver = bindingIdResolver;
         this.wireAttacherHelper = wireAttacherHelper;
         this.artifactCache = artifactCache;
     }
@@ -79,7 +69,6 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             List<InvocationChain> invocationChains = wire.getInvocationChains();
             URI classLoaderId = source.getSEIClassLoaderUri();
             URL wsdlLocation = source.getWsdlLocation();
-            List<QName> requestedIntents = source.getIntents();
 
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
 
@@ -96,9 +85,6 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             try {
                 // SAAJ classes are needed from the TCCL
                 Thread.currentThread().setContextClassLoader(classLoader);
-
-                BindingID bindingId = bindingIdResolver.resolveBindingId(requestedIntents);
-                WebServiceFeature[] features = featureResolver.getFeatures(requestedIntents);
 
                 // cache the WSDL and schemas
                 URL generatedWsdl = null;
@@ -127,8 +113,6 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                                 path,
                                                                                 wsdlLocation,
                                                                                 invoker,
-                                                                                features,
-                                                                                bindingId,
                                                                                 generatedWsdl,
                                                                                 generatedSchemas,
                                                                                 handlers);

@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -47,7 +46,6 @@ public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
      * @param classLoaderUri     the classloader for SEI types
      * @param wsdl               the generated WSDL containing merged policy or null if no policy applies to the endpoint
      * @param schemas            the schemas imported by the generated WSDL or null
-     * @param providedIntents    intents configured at the endpoint level that are provided natively by the Metro
      * @param wsdlLocation       optional URL to the WSDL location
      * @param bidirectional      true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers           optional binding handlers
@@ -59,11 +57,10 @@ public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
                                          URI classLoaderUri,
                                          String wsdl,
                                          Map<String, String> schemas,
-                                         List<QName> providedIntents,
                                          URL wsdlLocation,
                                          boolean bidirectional,
                                          List<PhysicalBindingHandlerDefinition> handlers) {
-        super(serviceUri, endpointDefinition, wsdl, providedIntents, bidirectional, handlers);
+        super(serviceUri, endpointDefinition, wsdl, bidirectional, handlers);
         this.interfaze = interfaze;
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;

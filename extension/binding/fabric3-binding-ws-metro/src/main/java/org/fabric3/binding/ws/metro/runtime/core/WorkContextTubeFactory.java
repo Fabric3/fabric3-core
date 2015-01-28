@@ -28,7 +28,7 @@ import com.sun.xml.ws.assembler.TubeFactory;
  */
 public class WorkContextTubeFactory implements TubeFactory {
     public Tube createTube(ClientTubelineAssemblyContext context) throws WebServiceException {
-        throw new UnsupportedOperationException("Tube not supported in client tublines");
+        throw new UnsupportedOperationException("Tube not supported in client tubelines");
     }
 
     public Tube createTube(ServerTubelineAssemblyContext context) throws WebServiceException {

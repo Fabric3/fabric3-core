@@ -16,12 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.ws.BindingProvider;
@@ -29,14 +23,17 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
-import com.sun.xml.wss.SecurityEnvironment;
-
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
@@ -48,7 +45,6 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
     private WebServiceFeature[] features;
     private File wsitConfiguration;
     private ExecutorService executorService;
-    private SecurityEnvironment securityEnvironment;
     private Dispatch<Source> dispatch;
     private URL wsdlLocation;
 
@@ -58,30 +54,25 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
      * @param endpointDefinition      the target endpoint definition
      * @param wsdlLocation            the WSDL defining the target service contract
      * @param wsitConfiguration       WSIT policy configuration for the proxy, or null if policy is not configured
-     * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
      * @param handlers                messages handlers or null
      * @param features                web services features to enable on the generated proxy
      * @param executorService         the executor service used for dispatching invocations
-     * @param securityEnvironment     the Metro host runtime security SPI implementation
      */
     public MetroDispatchObjectFactory(ReferenceEndpointDefinition endpointDefinition,
                                       URL wsdlLocation,
                                       File wsitConfiguration,
-                                      SecurityConfiguration securityConfiguration,
                                       ConnectionConfiguration connectionConfiguration,
                                       List<Handler> handlers,
                                       WebServiceFeature[] features,
-                                      ExecutorService executorService,
-                                      SecurityEnvironment securityEnvironment) {
-        super(securityConfiguration, connectionConfiguration, handlers);
+                                      ExecutorService executorService) {
+        super(connectionConfiguration, handlers);
         this.wsdlLocation = wsdlLocation;
         this.serviceName = endpointDefinition.getServiceName();
         this.portName = endpointDefinition.getPortName();
         this.features = features;
         this.wsitConfiguration = wsitConfiguration;
         this.executorService = executorService;
-        this.securityEnvironment = securityEnvironment;
     }
 
     public Dispatch<Source> getInstance() throws ObjectCreationException {
@@ -93,8 +84,8 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
     }
 
     /**
-     * Lazily creates the service proxy. Proxy creation is done during the first invocation as the target service may not be available when the client
-     * that the proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
+     * Lazily creates the service proxy. Proxy creation is done during the first invocation as the target service may not be available when the client that the
+     * proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
      *
      * @return the web service proxy
      * @throws ObjectCreationException if there was an error creating the proxy
@@ -105,12 +96,10 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
             WSService.InitParams params = new WSService.InitParams();
             WsitClientConfigurationContainer container;
             if (wsitConfiguration != null) {
-                // Policy configured
-                // FIXME
-                container = new WsitClientConfigurationContainer(wsitConfiguration.toURI().toURL(), securityEnvironment);
+                container = new WsitClientConfigurationContainer(wsitConfiguration.toURI().toURL());
             } else {
                 // No policy
-                container = new WsitClientConfigurationContainer(securityEnvironment);
+                container = new WsitClientConfigurationContainer();
             }
             params.setContainer(container);
             service = WSService.create(wsdlLocation, serviceName, params);
@@ -118,7 +107,6 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
             service.setExecutor(executorService);
             Dispatch<Source> dispatch = service.createDispatch(portName, Source.class, Service.Mode.PAYLOAD, features);
             configureConnection(dispatch);
-            configureSecurity(dispatch);
             configureHandlers(dispatch);
             setSOAPAction(dispatch);
             return dispatch;

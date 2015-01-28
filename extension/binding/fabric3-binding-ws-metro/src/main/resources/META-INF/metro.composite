@@ -17,14 +17,6 @@
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
     </component>
 
-    <component name="JavaWsdlGenerator">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGeneratorImpl"/>
-    </component>
-
-    <component name="WsdlPolicyAttacher">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacherImpl"/>
-    </component>
-
     <component name="MetroWireBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroWireBindingGenerator"/>
     </component>
@@ -47,20 +39,8 @@
         <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
-    <component name="FeatureResolver">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.policy.DefaultFeatureResolver"/>
-    </component>
-
     <component name="WireAttacherHelper">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.WireAttacherHelperImpl"/>
-    </component>
-
-    <component name="F3SecurityEnvironment">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.security.F3SecurityEnvironment"/>
-    </component>
-
-    <component name="CertificateValidator">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.security.CertificateValidatorImpl"/>
     </component>
 
     <component name="EndpointService">

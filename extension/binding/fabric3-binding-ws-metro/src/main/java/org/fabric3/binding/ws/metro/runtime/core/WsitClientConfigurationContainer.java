@@ -21,26 +21,21 @@ import java.net.URL;
 
 import com.sun.xml.ws.api.ResourceLoader;
 import com.sun.xml.ws.api.server.Container;
-import com.sun.xml.wss.SecurityEnvironment;
 
 /**
- * Implements the Metro Container SPI to return a custom SecurityEnvironment and resolve dynamically generated WSDL containing policy configuration
- * for a client (reference).
+ * Implements the Metro Container SPI to return a custom SecurityEnvironment and resolve dynamically generated WSDL containing policy configuration for a client
+ * (reference).
  */
 public class WsitClientConfigurationContainer extends Container {
     private static final String CLIENT_CONFIG = "wsit-client.xml";
     private static final String METRO_CONFIG = "metro-default.xml";
     private URL wsitConfiguration;
-    private SecurityEnvironment securityEnvironment;
 
-
-    public WsitClientConfigurationContainer(URL wsitConfiguration, SecurityEnvironment securityEnvironment) throws MalformedURLException {
-        this.securityEnvironment = securityEnvironment;
+    public WsitClientConfigurationContainer(URL wsitConfiguration) throws MalformedURLException {
         this.wsitConfiguration = wsitConfiguration;
     }
 
-    public WsitClientConfigurationContainer(SecurityEnvironment securityEnvironment) throws MalformedURLException {
-        this.securityEnvironment = securityEnvironment;
+    public WsitClientConfigurationContainer() throws MalformedURLException {
     }
 
     private final ResourceLoader loader = new ResourceLoader() {
@@ -59,11 +54,8 @@ public class WsitClientConfigurationContainer extends Container {
     public <T> T getSPI(Class<T> spiType) {
         if (spiType == ResourceLoader.class) {
             return spiType.cast(loader);
-        } else if (spiType.isAssignableFrom(SecurityEnvironment.class)) {
-            return spiType.cast(securityEnvironment);
         }
         return null;
     }
-
 
 }

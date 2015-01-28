@@ -49,7 +49,6 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
      * @param schemas                 the generated schemas or null
      * @param wsdlLocation            optional URL to the WSDL location
      * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
-     * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt in the event the service is unavailable when an invocation is made
      * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
@@ -63,12 +62,11 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
                                          Map<String, String> schemas,
                                          URL wsdlLocation,
                                          List<QName> intents,
-                                         SecurityConfiguration securityConfiguration,
                                          ConnectionConfiguration connectionConfiguration,
                                          int retries,
                                          boolean bidirectional,
                                          List<PhysicalBindingHandlerDefinition> handlers) {
-        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration, bidirectional, handlers);
+        super(endpointDefinition, wsdl, intents, connectionConfiguration, bidirectional, handlers);
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;

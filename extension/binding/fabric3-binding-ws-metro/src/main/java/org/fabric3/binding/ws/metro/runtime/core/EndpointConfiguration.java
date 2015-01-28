@@ -17,13 +17,11 @@
 package org.fabric3.binding.ws.metro.runtime.core;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.server.Invoker;
 
 /**
@@ -36,8 +34,6 @@ public class EndpointConfiguration {
     private QName portName;
     private String servicePath;
     private Invoker invoker;
-    private WebServiceFeature[] features;
-    private BindingID bindingId;
     private URL generatedWsdl;
     private List<URL> generatedSchemas;
     private URL wsdlLocation;
@@ -53,8 +49,6 @@ public class EndpointConfiguration {
      * @param servicePath      Relative path on which the service is provisioned.
      * @param wsdlLocation     URL to the WSDL document.
      * @param invoker          Invoker for receiving the web service request.
-     * @param features         Web service features to enable.
-     * @param bindingId        Binding ID to use.
      * @param generatedWsdl    the generated WSDL used for WSIT configuration or null if no policy is configured
      * @param generatedSchemas the handles to schemas (XSDs) imported by the WSDL or null if none exist
      * @param handlers         the binding handlers, may be null
@@ -66,8 +60,6 @@ public class EndpointConfiguration {
                                  String servicePath,
                                  URL wsdlLocation,
                                  Invoker invoker,
-                                 WebServiceFeature[] features,
-                                 BindingID bindingId,
                                  URL generatedWsdl,
                                  List<URL> generatedSchemas,
                                  List<Handler> handlers) {
@@ -78,8 +70,6 @@ public class EndpointConfiguration {
         this.servicePath = servicePath;
         this.wsdlLocation = wsdlLocation;
         this.invoker = invoker;
-        this.features = features;
-        this.bindingId = bindingId;
         this.generatedWsdl = generatedWsdl;
         this.generatedSchemas = generatedSchemas;
         this.handlers = handlers;
@@ -103,14 +93,6 @@ public class EndpointConfiguration {
 
     public Invoker getInvoker() {
         return invoker;
-    }
-
-    public WebServiceFeature[] getFeatures() {
-        return features;
-    }
-
-    public BindingID getBindingId() {
-        return bindingId;
     }
 
     public URL getGeneratedWsdl() {

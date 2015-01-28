@@ -18,11 +18,9 @@
 package org.fabric3.binding.ws.metro.generator;
 
 import javax.jws.WebMethod;
-import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,15 +28,8 @@ import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.spi.domain.generator.GenerationException;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
-import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -49,71 +40,6 @@ public class GenerationHelper {
     private GenerationHelper() {
     }
 
-    /**
-     * Maps policy expressions to the operations they are attached to for a service contract defined by a JAX-WS interface.
-     *
-     * @param policy       the policy for the wire
-     * @param serviceClass the service endpoint class
-     * @return the policy expression mappings
-     * @throws GenerationException if the policy expression is invalid
-     */
-    public static List<PolicyExpressionMapping> createMappings(EffectivePolicy policy, Class<?> serviceClass) throws GenerationException {
-        // temporarily store mappings keyed by policy expression id
-        Map<String, PolicyExpressionMapping> mappings = new HashMap<>();
-        for (Map.Entry<LogicalOperation, List<PolicySet>> entry : policy.getOperationPolicySets().entrySet()) {
-            Operation definition = entry.getKey().getDefinition();
-            for (PolicySet policySet : entry.getValue()) {
-                Element expression = policySet.getExpression();
-                if (expression == null) {
-                    // empty policy set, ignore
-                    continue;
-                }
-                Node node = expression.getAttributes().getNamedItemNS(WS_SECURITY_UTILITY_NS, "Id");
-                if (node == null) {
-                    URI uri = policySet.getContributionUri();
-                    QName expressionName = policySet.getExpressionName();
-                    throw new GenerationException("Invalid policy in contribution " + uri + ". No id specified: " + expressionName);
-                }
-                String id = node.getNodeValue();
-
-                PolicyExpressionMapping mapping = mappings.get(id);
-                if (mapping == null) {
-                    mapping = new PolicyExpressionMapping(id, expression);
-                    mappings.put(id, mapping);
-                }
-                String operationName;
-                if (serviceClass == null) {
-                    operationName = getWsdlName(definition, serviceClass);
-                } else {
-                    operationName = definition.getName();
-                }
-                mapping.addOperationName(operationName);
-            }
-        }
-        return new ArrayList<>(mappings.values());
-    }
-
-    /**
-     * Parses security information and creates a security configuration.
-     *
-     * @param definition the binding definition
-     * @return the security configuration
-     */
-    public static SecurityConfiguration createSecurityConfiguration(WsBindingDefinition definition) {
-        SecurityConfiguration configuration = null;
-        Map<String, String> configProperties = definition.getConfiguration();
-        if (configProperties != null) {
-            String alias = configProperties.get("alias");
-            if (alias != null) {
-                configuration = new SecurityConfiguration(alias);
-            } else {
-                String username = configProperties.get("username");
-                String password = configProperties.get("password");
-                configuration = new SecurityConfiguration(username, password);
-            }
-        }
-        return configuration;
-    }
 
     /**
      * Parses HTTP connection information and creates a connection configuration.

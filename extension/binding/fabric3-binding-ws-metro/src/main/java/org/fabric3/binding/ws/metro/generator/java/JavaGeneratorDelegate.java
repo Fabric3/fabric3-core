@@ -19,18 +19,7 @@ package org.fabric3.binding.ws.metro.generator.java;
 
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,28 +30,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.xml.ws.api.BindingID;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.binding.ws.metro.generator.GenerationHelper;
 import org.fabric3.binding.ws.metro.generator.MetroGeneratorDelegate;
-import org.fabric3.binding.ws.metro.generator.PolicyExpressionMapping;
 import org.fabric3.binding.ws.metro.generator.java.codegen.GeneratedInterface;
 import org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGenerator;
-import org.fabric3.binding.ws.metro.generator.java.wsdl.GeneratedArtifacts;
-import org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGenerator;
-import org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacher;
 import org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolver;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
-import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -74,48 +55,31 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * Generates source and target definitions for an endpoint defined by a Java-based service contract.
  */
 public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaServiceContract> {
-    private static final String REPLACEABLE_ADDRESS = "REPLACE_WITH_ACTUAL_URL";
 
     private EndpointSynthesizer synthesizer;
-    private JavaWsdlGenerator wsdlGenerator;
     private InterfaceGenerator interfaceGenerator;
-    private BindingIdResolver bindingIdResolver;
-    private WsdlPolicyAttacher policyAttacher;
     private ClassLoaderRegistry classLoaderRegistry;
     private ClassLoaderUpdater classLoaderUpdater;
     private TargetUrlResolver targetUrlResolver;
     private HostInfo info;
-    private DocumentBuilder documentBuilder;
-    private TransformerFactory transformerFactory;
 
     public JavaGeneratorDelegate(@Reference EndpointSynthesizer synthesizer,
-                                 @Reference JavaWsdlGenerator wsdlGenerator,
                                  @Reference InterfaceGenerator interfaceGenerator,
-                                 @Reference BindingIdResolver bindingIdResolver,
-                                 @Reference WsdlPolicyAttacher policyAttacher,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference ClassLoaderUpdater classLoaderUpdater,
                                  @Reference TargetUrlResolver targetUrlResolver,
                                  @Reference HostInfo info) throws ParserConfigurationException {
         this.synthesizer = synthesizer;
-        this.wsdlGenerator = wsdlGenerator;
         this.interfaceGenerator = interfaceGenerator;
-        this.bindingIdResolver = bindingIdResolver;
-        this.policyAttacher = policyAttacher;
         this.classLoaderRegistry = classLoaderRegistry;
         this.classLoaderUpdater = classLoaderUpdater;
         this.targetUrlResolver = targetUrlResolver;
         this.info = info;
-        documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        transformerFactory = TransformerFactory.newInstance();
     }
 
     public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
@@ -129,27 +93,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         ServiceEndpointDefinition endpointDefinition = createServiceEndpointDefinition(binding, contract, serviceClass);
 
         String interfaze = contract.getQualifiedInterfaceName();
-
-        // handle endpoint-level intents provided by Metro
-        List<QName> intentNames = new ArrayList<>();
-        Set<Intent> endpointIntents = policy.getProvidedEndpointIntents();
-        for (Intent intent : endpointIntents) {
-            intentNames.add(intent.getName());
-        }
-
-        // handle endpoint-level policies
-        List<Element> policyExpressions = new ArrayList<>();
-        for (PolicySet policySet : policy.getEndpointPolicySets()) {
-            Element expression = policySet.getExpression();
-            if (expression == null) {
-                // empty policy set
-                continue;
-            }
-            policyExpressions.add(expression);
-        }
-
-        // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.
-        List<PolicyExpressionMapping> mappings = GenerationHelper.createMappings(policy, serviceClass);
 
         // create handler definitions
         List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
@@ -172,15 +115,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 serviceClass = generatedInterface.getGeneratedClass();
                 interfaze = serviceClass.getName();
             }
-            if (!policyExpressions.isEmpty() || !mappings.isEmpty()) {
-                // if policy is configured for the endpoint, generate a WSDL with the policy attachments
-                BindingID bindingId = bindingIdResolver.resolveBindingId(intentNames);
-                QName name = endpointDefinition.getServiceName();
-                GeneratedArtifacts artifacts = wsdlGenerator.generate(serviceClass, name, REPLACEABLE_ADDRESS, bindingId);
-                wsdl = artifacts.getWsdl();
-                schemas = artifacts.getSchemas();
-                wsdl = mergePolicy(wsdl, policyExpressions, mappings);
-            } else if (endpointDefinition.getWsdl() != null) {
+            if (endpointDefinition.getWsdl() != null) {
                 // No policy specified, use the WSDL specified via wsdlElement or wsdlLocation. If one is not specified, wsdl will be generated from
                 // introspecting the Java provider class. If the WSDL is specified, it will be used instead when the endpoint is created.
                 wsdl = endpointDefinition.getWsdl();
@@ -215,7 +150,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                                      classLoaderUri,
                                                      wsdl,
                                                      schemas,
-                                                     intentNames,
                                                      wsdlLocation,
                                                      bidirectional,
                                                      handlers);
@@ -277,21 +211,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             intentNames.add(intent.getName());
         }
 
-        // handle endpoint-level policies
-        List<Element> policyExpressions = new ArrayList<>();
-        for (PolicySet policySet : policy.getEndpointPolicySets()) {
-            Element expression = policySet.getExpression();
-            if (expression == null) {
-                // empty policy set
-                continue;
-            }
-            policyExpressions.add(expression);
-        }
-
         // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.
-
-        // map operation-level policies
-        List<PolicyExpressionMapping> mappings = GenerationHelper.createMappings(policy, serviceClass);
 
         List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
 
@@ -313,18 +233,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 serviceClass = generatedInterface.getGeneratedClass();
                 interfaze = serviceClass.getName();
             }
-            if (!policyExpressions.isEmpty() || !mappings.isEmpty()) {
-                // if policy is configured for the endpoint, generate a WSDL with the policy attachments
-                BindingID bindingId = bindingIdResolver.resolveBindingId(intentNames);
-                QName name = endpointDefinition.getServiceName();
-                String address = endpointDefinition.getUrl().toString();
-                GeneratedArtifacts artifacts = wsdlGenerator.generate(serviceClass, name, address, bindingId);
-                wsdl = artifacts.getWsdl();
-                schemas = artifacts.getSchemas();
-                // use the WSDL merged with policy and not a WSDL specified via wsdlElement or wsdlLocation
-                wsdl = mergePolicy(wsdl, policyExpressions, mappings);
-            } else if (endpointDefinition.getWsdl() != null) {
-                // No policy specified, use the WSDL specified via wsdlElement or wsdlLocation. If one is not specified, wsdl will be null and
+            if (endpointDefinition.getWsdl() != null) {
+                // Wsdl will be null and
                 // one will be downloaded from the endpoint address (?wsdl) when the reference proxy is created on a runtime and cached. If the
                 // WSDL is specified, it will be used instead when the reference proxy is created.
                 wsdl = endpointDefinition.getWsdl();
@@ -332,9 +242,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
-
-        // obtain security information
-        SecurityConfiguration securityConfiguration = GenerationHelper.createSecurityConfiguration(definition);
 
         // obtain connection information
         ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(definition);
@@ -355,7 +262,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                                                                            schemas,
                                                                                            wsdlLocation,
                                                                                            intentNames,
-                                                                                           securityConfiguration,
                                                                                            connectionConfiguration,
                                                                                            retries,
                                                                                            bidirectional,
@@ -420,31 +326,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             targetUri = URI.create(binding.getParent().getUri().getFragment());  // use the service URI fragment
         }
         return synthesizer.synthesizeServiceEndpoint(contract, serviceClass, targetUri);
-    }
-
-    /**
-     * Merges policy sets into the given WSDL document.
-     *
-     * @param wsdl              the WSDL
-     * @param policyExpressions the policy set expressions
-     * @param mappings          policy set to operation mappings
-     * @return the merged WSDL
-     * @throws GenerationException if the merge is unsuccessful
-     */
-    private String mergePolicy(String wsdl, List<Element> policyExpressions, List<PolicyExpressionMapping> mappings) throws GenerationException {
-        try {
-            Document wsdlDocument = documentBuilder.parse(new ByteArrayInputStream(wsdl.getBytes()));
-            policyAttacher.attach(wsdlDocument, policyExpressions, mappings);
-            // Write the DOM representing the abstract WSDL back to the file
-            Source source = new DOMSource(wsdlDocument);
-            StringWriter writer = new StringWriter();
-            StreamResult result = new StreamResult(writer);
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.transform(source, result);
-            return writer.toString();
-        } catch (IOException | TransformerException | SAXException e) {
-            throw new GenerationException(e);
-        }
     }
 
     private ReferenceEndpointDefinition createReferenceEndpointDefinition(LogicalBinding<WsBindingDefinition> binding,
