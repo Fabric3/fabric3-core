@@ -31,10 +31,6 @@ public class BuildComponentCommand extends AbstractComponentCommand {
         super(definition);
     }
 
-    public DisposeComponentCommand getCompensatingCommand() {
-        return new DisposeComponentCommand(definition);
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

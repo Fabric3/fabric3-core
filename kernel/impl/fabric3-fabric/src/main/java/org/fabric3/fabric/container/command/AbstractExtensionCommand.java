@@ -20,12 +20,12 @@ package org.fabric3.fabric.container.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  * Base class for extension commands.
  */
-public abstract class AbstractExtensionCommand implements CompensatableCommand {
+public abstract class AbstractExtensionCommand implements Command {
     private static final long serialVersionUID = 8299761365600303716L;
     private URI contribution;
     private URI provider;

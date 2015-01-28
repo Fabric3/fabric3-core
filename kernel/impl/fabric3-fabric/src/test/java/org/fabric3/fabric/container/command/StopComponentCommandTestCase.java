@@ -26,11 +26,6 @@ public class StopComponentCommandTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("component");
     private StopComponentCommand command;
 
-    public void testCompensatingCommand() throws Exception {
-        StartComponentCommand compensating = command.getCompensatingCommand();
-        assertEquals(command.getUri(), compensating.getUri());
-    }
-
     public void testEquals() throws Exception {
         StopComponentCommand command2 = new StopComponentCommand(COMPONENT_URI);
         assertEquals(command2, command);

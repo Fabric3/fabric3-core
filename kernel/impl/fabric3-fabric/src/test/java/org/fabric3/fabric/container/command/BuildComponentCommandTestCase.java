@@ -28,11 +28,6 @@ public class BuildComponentCommandTestCase extends TestCase {
     private PhysicalComponentDefinition definition;
     private BuildComponentCommand command;
 
-    public void testCompensatingCommand() throws Exception {
-        DisposeComponentCommand compensating = command.getCompensatingCommand();
-        assertEquals(definition, compensating.getDefinition());
-    }
-
     public void testEquals() throws Exception {
         BuildComponentCommand command2 = new BuildComponentCommand(definition);
         assertEquals(command2, command);

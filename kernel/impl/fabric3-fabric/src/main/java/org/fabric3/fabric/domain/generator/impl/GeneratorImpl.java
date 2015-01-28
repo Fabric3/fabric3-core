@@ -28,7 +28,7 @@ import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.resource.DomainResourceCommandGenerator;
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.Generator;
@@ -79,13 +79,13 @@ public class GeneratorImpl implements Generator {
         Deployment deployment = new Deployment();
 
         // generate stop context information
-        List<CompensatableCommand> stopCommands = stopContextCommandGenerator.generate(sorted);
+        List<Command> stopCommands = stopContextCommandGenerator.generate(sorted);
         deployment.addCommands(stopCommands);
 
         // generate commands for domain-level resources being deployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                CompensatableCommand command = resourceGenerator.generateBuild(resource);
+                Command command = resourceGenerator.generateBuild(resource);
                 if (command != null) {
                     deployment.addCommand(command);
                 }
@@ -97,7 +97,7 @@ public class GeneratorImpl implements Generator {
                 if (component.getDefinition().getImplementation() instanceof RemoteImplementation) {
                     continue;
                 }
-                CompensatableCommand command = generator.generate(component);
+                Command command = generator.generate(component);
                 if (command != null) {
                     if (deployment.getCommands().contains(command)) {
                         continue;
@@ -110,14 +110,14 @@ public class GeneratorImpl implements Generator {
         // generate commands for domain-level resources being undeployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                CompensatableCommand command = resourceGenerator.generateDispose(resource);
+                Command command = resourceGenerator.generateDispose(resource);
                 if (command != null) {
                     deployment.addCommand(command);
                 }
             }
         }
         // start contexts
-        List<CompensatableCommand> startCommands = startContextCommandGenerator.generate(sorted);
+        List<Command> startCommands = startContextCommandGenerator.generate(sorted);
         deployment.addCommands(startCommands);
 
         return deployment;

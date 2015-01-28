@@ -19,22 +19,18 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * Removes a channel on a runtime.
  */
-public class DisposeChannelCommand implements CompensatableCommand {
+public class DisposeChannelCommand implements Command {
     private static final long serialVersionUID = -8414719811868296492L;
     private PhysicalChannelDefinition definition;
 
     public DisposeChannelCommand(PhysicalChannelDefinition definition) {
         this.definition = definition;
-    }
-
-    public BuildChannelCommand getCompensatingCommand() {
-        return new BuildChannelCommand(definition);
     }
 
     public PhysicalChannelDefinition getDefinition() {

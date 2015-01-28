@@ -33,9 +33,4 @@ public class AttachChannelConnectionCommandTestCase extends TestCase {
         assertFalse(command1.equals(command3));
     }
 
-    public void testCompensatingCommand() throws Exception {
-        QName deployable = new QName("test", "composite");
-        StopContextCommand command = new StopContextCommand(deployable, true);
-        assertEquals(deployable, command.getCompensatingCommand().getDeployable());
-    }
 }

@@ -28,11 +28,6 @@ public class DisposeResourcesCommandTestCase extends TestCase {
     private DisposeResourcesCommand command;
     private List<PhysicalResourceDefinition> definitions;
 
-    public void testCompensatingCommand() throws Exception {
-        BuildResourcesCommand compensating = command.getCompensatingCommand();
-        assertEquals(command.getDefinitions(), compensating.getDefinitions());
-    }
-
     public void testEquals() throws Exception {
         DisposeResourcesCommand command2 = new DisposeResourcesCommand(definitions);
         assertEquals(command2, command);

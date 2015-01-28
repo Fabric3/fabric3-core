@@ -21,22 +21,18 @@ package org.fabric3.fabric.container.command;
 
 import java.util.List;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Builds resources defined in a composite on a runtime.
  */
-public class BuildResourcesCommand implements CompensatableCommand {
+public class BuildResourcesCommand implements Command {
     private static final long serialVersionUID = -2232794954042041583L;
     private List<PhysicalResourceDefinition> definitions;
 
     public BuildResourcesCommand(List<PhysicalResourceDefinition> definitions) {
         this.definitions = definitions;
-    }
-
-    public DisposeResourcesCommand getCompensatingCommand() {
-        return new DisposeResourcesCommand(definitions);
     }
 
     public List<PhysicalResourceDefinition> getDefinitions() {

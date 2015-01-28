@@ -19,13 +19,13 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  *
  */
-public abstract class AbstractComponentCommand implements CompensatableCommand {
+public abstract class AbstractComponentCommand implements Command {
     private static final long serialVersionUID = -5673514688303766858L;
     protected PhysicalComponentDefinition definition;
 

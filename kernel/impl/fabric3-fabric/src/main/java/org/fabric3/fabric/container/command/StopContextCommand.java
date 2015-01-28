@@ -20,9 +20,9 @@ package org.fabric3.fabric.container.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
-public class StopContextCommand implements CompensatableCommand {
+public class StopContextCommand implements Command {
     private static final long serialVersionUID = 6161772793715132968L;
 
     private QName deployable;
@@ -41,11 +41,6 @@ public class StopContextCommand implements CompensatableCommand {
         return log;
     }
 
-    public StartContextCommand getCompensatingCommand() {
-        return new StartContextCommand(deployable, log);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

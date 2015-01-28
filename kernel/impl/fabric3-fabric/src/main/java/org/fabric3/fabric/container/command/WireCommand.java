@@ -19,13 +19,13 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Base class for wire commands.
  */
-public abstract class WireCommand implements CompensatableCommand {
+public abstract class WireCommand implements Command {
     private static final long serialVersionUID = -1691568679691192110L;
 
     protected PhysicalWireDefinition definition;

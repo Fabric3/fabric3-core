@@ -20,7 +20,7 @@ package org.fabric3.fabric.domain.generator.context;
 
 import java.util.List;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
@@ -36,6 +36,6 @@ public interface StartContextCommandGenerator {
      * @return the commands ordered according to their deployable composite and the order it is deployed.
      * @throws GenerationException if a generation exception occurs
      */
-    List<CompensatableCommand> generate(List<LogicalComponent<?>> components) throws GenerationException;
+    List<Command> generate(List<LogicalComponent<?>> components) throws GenerationException;
 
 }

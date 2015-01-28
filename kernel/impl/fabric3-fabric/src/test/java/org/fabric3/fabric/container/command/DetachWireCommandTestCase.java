@@ -23,14 +23,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 public class DetachWireCommandTestCase extends TestCase {
 
-    public void testCompensatingCommand() throws Exception {
-        DetachWireCommand command = new DetachWireCommand();
-        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
-        command.setPhysicalWireDefinition(definition);
-        AttachWireCommand compensating = command.getCompensatingCommand();
-        assertEquals(definition, compensating.getPhysicalWireDefinition());
-    }
-
     public void testEquals() throws Exception {
         DetachWireCommand command1 = new DetachWireCommand();
         PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);

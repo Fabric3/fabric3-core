@@ -21,12 +21,12 @@ package org.fabric3.fabric.container.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  * Starts a composite context on a runtime.
  */
-public class StartContextCommand implements CompensatableCommand {
+public class StartContextCommand implements Command {
     private static final long serialVersionUID = -2132991925467598257L;
 
     private QName deployable;
@@ -43,10 +43,6 @@ public class StartContextCommand implements CompensatableCommand {
 
     public boolean isLog() {
         return log;
-    }
-
-    public StopContextCommand getCompensatingCommand() {
-        return new StopContextCommand(deployable, log);
     }
 
     public boolean equals(Object o) {

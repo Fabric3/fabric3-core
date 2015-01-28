@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
@@ -41,7 +41,7 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
     public void testStart() throws Exception {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
-       List<CompensatableCommand> commands = generator.generate(createComponents());
+       List<Command> commands = generator.generate(createComponents());
         assertEquals(1, commands.size());
     }
 
@@ -56,7 +56,7 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
         component1.setState(LogicalState.PROVISIONED);
         components.add(component1);
 
-       List<CompensatableCommand> commands = generator.generate(components);
+       List<Command> commands = generator.generate(components);
 
         assertTrue(commands.isEmpty());
     }

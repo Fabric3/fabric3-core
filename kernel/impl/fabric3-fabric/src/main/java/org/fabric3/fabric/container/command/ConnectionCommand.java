@@ -21,14 +21,13 @@ package org.fabric3.fabric.container.command;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  * Contains commands for attaching and detaching wires for a component.
  */
-public class ConnectionCommand implements CompensatableCommand {
+public class ConnectionCommand implements Command {
     private static final long serialVersionUID = -2313380946362271104L;
     private URI componentUri;
     private List<AttachWireCommand> attachCommands;
@@ -42,28 +41,6 @@ public class ConnectionCommand implements CompensatableCommand {
     protected ConnectionCommand() {
         attachCommands = new ArrayList<>();
         detachCommands = new ArrayList<>();
-    }
-
-    public ConnectionCommand getCompensatingCommand() {
-        ConnectionCommand compensating = new ConnectionCommand(componentUri);
-        if (!attachCommands.isEmpty()){
-            ListIterator<AttachWireCommand> iter = attachCommands.listIterator(attachCommands.size());
-            while(iter.hasPrevious()){
-                AttachWireCommand command = iter.previous();
-                DetachWireCommand compensatingWireCommand = command.getCompensatingCommand();
-                compensating.add(compensatingWireCommand);
-            }
-        }
-        if (!detachCommands.isEmpty()){
-            ListIterator<DetachWireCommand> iter = detachCommands.listIterator(detachCommands.size());
-            while(iter.hasPrevious()){
-                DetachWireCommand command = iter.previous();
-                AttachWireCommand compensatingWireCommand = command.getCompensatingCommand();
-                compensating.add(compensatingWireCommand);
-            }
-        }
-
-        return compensating;
     }
 
     public URI getComponentUri() {

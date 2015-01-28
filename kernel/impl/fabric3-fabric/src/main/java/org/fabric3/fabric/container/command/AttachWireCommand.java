@@ -26,9 +26,4 @@ package org.fabric3.fabric.container.command;
 public class AttachWireCommand extends WireCommand {
     private static final long serialVersionUID = -5157427289507028318L;
 
-    public DetachWireCommand getCompensatingCommand() {
-        DetachWireCommand compensating = new DetachWireCommand();
-        compensating.setPhysicalWireDefinition(getPhysicalWireDefinition());
-        return compensating;
-    }
 }

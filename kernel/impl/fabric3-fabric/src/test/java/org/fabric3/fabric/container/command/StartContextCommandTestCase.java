@@ -26,11 +26,6 @@ public class StartContextCommandTestCase extends TestCase {
     private static final QName DEPLOYABLE = new QName("test", "component");
     private StartContextCommand command;
 
-    public void testCompensatingCommand() throws Exception {
-        StopContextCommand compensating = command.getCompensatingCommand();
-        assertEquals(command.getDeployable(), compensating.getDeployable());
-    }
-
     public void testEquals() throws Exception {
         StartContextCommand command2 = new StartContextCommand(DEPLOYABLE, true);
         assertEquals(command2, command);

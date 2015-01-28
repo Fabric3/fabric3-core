@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.domain.generator.resource;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResource;
 
@@ -33,7 +33,7 @@ public interface DomainResourceCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    CompensatableCommand generateBuild(LogicalResource resource) throws GenerationException;
+    Command generateBuild(LogicalResource resource) throws GenerationException;
 
     /**
      * Generates an un-build command.
@@ -42,6 +42,6 @@ public interface DomainResourceCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    CompensatableCommand generateDispose(LogicalResource resource) throws GenerationException;
+    Command generateDispose(LogicalResource resource) throws GenerationException;
 
 }

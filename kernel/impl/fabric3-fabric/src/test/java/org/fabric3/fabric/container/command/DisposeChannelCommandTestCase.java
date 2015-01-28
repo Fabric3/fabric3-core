@@ -27,12 +27,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public class DisposeChannelCommandTestCase extends TestCase {
     private PhysicalChannelDefinition definition;
 
-    public void testCompensatingCommand() throws Exception {
-        DisposeChannelCommand command = new DisposeChannelCommand(definition);
-        BuildChannelCommand compensating = command.getCompensatingCommand();
-        assertEquals(definition, compensating.getDefinition());
-    }
-
     public void testEquals() throws Exception {
         DisposeChannelCommand command1 = new DisposeChannelCommand(definition);
         DisposeChannelCommand command2 = new DisposeChannelCommand(definition);

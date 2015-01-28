@@ -25,7 +25,6 @@ import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.container.command.CompensatableCommand;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
@@ -46,7 +45,7 @@ public class LocalDeployer implements Deployer {
     }
 
     public void deploy(Deployment deployment) throws DeploymentException {
-        List<CompensatableCommand> commands = deployment.getCommands();
+        List<Command> commands = deployment.getCommands();
         execute(commands);
         try {
             if (scopeRegistry != null) {
@@ -63,7 +62,7 @@ public class LocalDeployer implements Deployer {
      * @param commands the commands
      * @throws DeploymentException if a deployment error occurs
      */
-    private void execute(List<CompensatableCommand> commands) throws DeploymentException {
+    private void execute(List<Command> commands) throws DeploymentException {
         for (Command command : commands) {
             try {
                 executorRegistry.execute(command);

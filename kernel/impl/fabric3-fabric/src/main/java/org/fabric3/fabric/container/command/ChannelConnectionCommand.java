@@ -18,15 +18,14 @@ package org.fabric3.fabric.container.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  * Used to establish or dispose a channel connection. This may include provisioning the channel (or disposing it) to a runtime where the producer or consumer is
  * hosted.
  */
-public class ChannelConnectionCommand implements CompensatableCommand {
+public class ChannelConnectionCommand implements Command {
     private static final long serialVersionUID = 8746788639966402901L;
 
     private List<BuildChannelCommand> buildCommands;
@@ -40,35 +39,6 @@ public class ChannelConnectionCommand implements CompensatableCommand {
         detachCommands = new ArrayList<>();
         buildCommands = new ArrayList<>();
         disposeCommands = new ArrayList<>();
-    }
-
-    public ChannelConnectionCommand getCompensatingCommand() {
-        // return the commands in reverse order
-        ChannelConnectionCommand compensating = new ChannelConnectionCommand();
-
-        for (BuildChannelCommand command : buildCommands) {
-            compensating.addDisposeChannelCommand(command.getCompensatingCommand());
-        }
-        for (DisposeChannelCommand command : disposeCommands) {
-            compensating.addBuildChannelCommand(command.getCompensatingCommand());
-        }
-        if (!attachCommands.isEmpty()) {
-            ListIterator<AttachChannelConnectionCommand> iterator = attachCommands.listIterator(attachCommands.size());
-            while (iterator.hasPrevious()) {
-                AttachChannelConnectionCommand command = iterator.previous();
-                DetachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
-                compensating.add(compensatingCommand);
-            }
-        }
-        if (!detachCommands.isEmpty()) {
-            ListIterator<DetachChannelConnectionCommand> iterator = detachCommands.listIterator(detachCommands.size());
-            while (iterator.hasPrevious()) {
-                DetachChannelConnectionCommand command = iterator.previous();
-                AttachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
-                compensating.add(compensatingCommand);
-            }
-        }
-        return compensating;
     }
 
     public List<BuildChannelCommand> getBuildChannelCommands() {

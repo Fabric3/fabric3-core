@@ -16,23 +16,19 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Used to remove an event channel connection.
  */
-public class DetachChannelConnectionCommand implements CompensatableCommand {
+public class DetachChannelConnectionCommand implements Command {
     private static final long serialVersionUID = 2653032608929449643L;
 
     private PhysicalChannelConnectionDefinition definition;
 
     public DetachChannelConnectionCommand(PhysicalChannelConnectionDefinition definition) {
         this.definition = definition;
-    }
-
-    public AttachChannelConnectionCommand getCompensatingCommand() {
-        return new AttachChannelConnectionCommand(definition);
     }
 
     public PhysicalChannelConnectionDefinition getDefinition() {

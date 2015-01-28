@@ -21,12 +21,12 @@ package org.fabric3.fabric.container.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  * A command to start a component on a runtime.
  */
-public class StartComponentCommand implements CompensatableCommand {
+public class StartComponentCommand implements Command {
     private static final long serialVersionUID = -6106317903755129824L;
 
     private final URI uri;
@@ -39,10 +39,6 @@ public class StartComponentCommand implements CompensatableCommand {
         return uri;
     }
 
-    public StopComponentCommand getCompensatingCommand() {
-        return new StopComponentCommand(uri);
-    }
-    
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) {

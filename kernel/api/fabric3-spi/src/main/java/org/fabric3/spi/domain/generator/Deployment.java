@@ -22,23 +22,23 @@ package org.fabric3.spi.domain.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  *
  */
 public class Deployment {
-    private List<CompensatableCommand> commands = new ArrayList<>();
+    private List<Command> commands = new ArrayList<>();
 
-    public List<CompensatableCommand> getCommands() {
+    public List<Command> getCommands() {
         return commands;
     }
 
-    public void addCommand(CompensatableCommand command) {
+    public void addCommand(Command command) {
         commands.add(command);
     }
 
-    public void addCommands(List<CompensatableCommand> list) {
+    public void addCommands(List<Command> list) {
         commands.addAll(list);
     }
 

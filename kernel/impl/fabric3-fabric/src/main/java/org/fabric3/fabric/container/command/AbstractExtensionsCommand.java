@@ -22,12 +22,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 
 /**
  *
  */
-public abstract class AbstractExtensionsCommand implements CompensatableCommand {
+public abstract class AbstractExtensionsCommand implements Command {
     private static final long serialVersionUID = -4757212674286772185L;
 
     protected List<URI> extensionUris = new ArrayList<>();

@@ -26,7 +26,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.fabric3.fabric.container.command.StopContextCommand;
-import org.fabric3.spi.container.command.CompensatableCommand;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
@@ -42,7 +42,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
     public void testStop() throws Exception {
         StopContextCommandGeneratorImpl generator = new StopContextCommandGeneratorImpl();
 
-        List<CompensatableCommand> commands = generator.generate(createComponents());
+        List<Command> commands = generator.generate(createComponents());
         assertEquals(1, commands.size());
         StopContextCommand command = (StopContextCommand) commands.get(0);
         assertEquals(DEPLOYABLE1, command.getDeployable());
@@ -59,7 +59,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
         component1.setState(LogicalState.PROVISIONED);
         components.add(component1);
 
-        List<CompensatableCommand> commands = generator.generate(components);
+        List<Command> commands = generator.generate(components);
 
         assertTrue(commands.isEmpty());
     }
@@ -82,7 +82,7 @@ public class StopContextCommandGeneratorImplTestCase extends TestCase {
         component2.setState(LogicalState.MARKED);
         components.add(component2);
 
-        List<CompensatableCommand> commands = generator.generate(components);
+        List<Command> commands = generator.generate(components);
 
         assertEquals(2, commands.size());
     }
