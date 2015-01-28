@@ -36,7 +36,6 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -49,8 +48,8 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     private Map<QName, TypeLoader<?>> mappedLoaders = new HashMap<>();
     private final Map<QName, TypeLoader<?>> loaders = new HashMap<>();
 
-    public LoaderRegistryImpl(@Reference XMLFactory factory) {
-        this.xmlFactory = factory.newInputFactoryInstance();
+    public LoaderRegistryImpl() {
+        this.xmlFactory = XMLInputFactory.newFactory();
     }
 
     @Reference(required = false)

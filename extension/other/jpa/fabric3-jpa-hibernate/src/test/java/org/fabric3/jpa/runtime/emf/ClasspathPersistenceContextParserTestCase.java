@@ -18,19 +18,18 @@
  */
 package org.fabric3.jpa.runtime.emf;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.List;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
@@ -95,8 +94,7 @@ public class ClasspathPersistenceContextParserTestCase extends TestCase {
         DataSourceRegistry registry = EasyMock.createMock(DataSourceRegistry.class);
         EasyMock.expect(registry.getDataSource("EmployeeDS2")).andReturn(EasyMock.createNiceMock(DataSource.class));
         EasyMock.replay(registry);
-        MockXMLFactory factory = new MockXMLFactory();
-        parser = new PersistenceContextParserImpl(registry, factory);
+        parser = new PersistenceContextParserImpl(registry);
     }
 
 }

@@ -4,8 +4,6 @@ dependencies {
 
     compile project(':kernel:api:fabric3-host-api')
     compile group: servletGroupId, name: servletArtifactId, version: servletVersion
-    compile group: 'javax.xml.stream', name:'stax-api', version: staxApiVersion
-    compile group: 'org.codehaus.woodstox', name:'woodstox-core-asl', version: woodstoxVersion
 }
 
 jar {

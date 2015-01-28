@@ -1,13 +1,12 @@
 package org.fabric3.introspection.xml.binding;
 
-import java.io.ByteArrayInputStream;
-import java.net.URI;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
 
 import junit.framework.TestCase;
-
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -23,8 +22,6 @@ public class BindingHandlerLoaderTestCase extends TestCase {
 
     private DefaultIntrospectionContext context;
     private BindingHandlerLoader loader;
-    private MockXMLFactory factory;
-
 
     public void testLoad() throws Exception {
         XMLStreamReader reader = createReader(XML_VALID);
@@ -53,13 +50,11 @@ public class BindingHandlerLoaderTestCase extends TestCase {
         super.setUp();
         context = new DefaultIntrospectionContext();
         loader = new BindingHandlerLoader();
-
-        factory = new MockXMLFactory();
     }
 
     private XMLStreamReader createReader(String xml) throws XMLStreamException {
         ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes());
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(stream);
         reader.nextTag();
         return reader;
     }

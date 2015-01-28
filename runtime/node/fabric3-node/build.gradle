@@ -17,8 +17,6 @@ buildscript {
 dependencies {
 
     compile group: 'org.codehaus.fabric3.spec', name: 'sca-api', version: scaApiVersion
-    compile group: 'javax.xml.stream', name:'stax-api', version: staxApiVersion
-    compile group: 'org.codehaus.woodstox', name:'woodstox-core-asl', version: woodstoxVersion
     compile group: 'org.ow2.asm', name: 'asm', version: asmVersion
 
     compile project(':kernel:api:fabric3-api')
@@ -34,7 +32,6 @@ dependencies {
     compile group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
     compile group: servletGroupId, name: servletArtifactId, version: servletVersion
     compile group: 'com.lmax', name: 'disruptor', version: disruptorVersion
-    compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: woodstoxVersion
 
     compile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion

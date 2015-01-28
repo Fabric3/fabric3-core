@@ -63,7 +63,6 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
@@ -81,14 +80,12 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
     private MessageContainerManager containerManager;
     private TransformerInterceptorFactory interceptorFactory;
     private ListenerMonitor monitor;
-    private XMLFactory xmlFactory;
     private BindingHandlerRegistry handlerRegistry;
 
     public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference MessageContainerFactory containerFactory,
                                  @Reference MessageContainerManager containerManager,
-                                 @Reference XMLFactory xmlFactory,
                                  @Reference BindingHandlerRegistry handlerRegistry,
                                  @Reference TransformerInterceptorFactory interceptorFactory,
                                  @Monitor ListenerMonitor monitor) {
@@ -96,7 +93,6 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         this.classLoaderRegistry = classLoaderRegistry;
         this.containerFactory = containerFactory;
         this.containerManager = containerManager;
-        this.xmlFactory = xmlFactory;
         this.interceptorFactory = interceptorFactory;
         this.monitor = monitor;
         this.handlerRegistry = handlerRegistry;
@@ -118,7 +114,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             Destination responseDestination = objects.getResponseDestination();
 
             List<BindingHandler<Message>> handlers = createHandlers(source);
-            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, handlers, monitor);
+            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, handlers, monitor);
 
             configuration.setDestination(requestDestination);
             configuration.setFactory(requestFactory);

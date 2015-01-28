@@ -19,25 +19,23 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.List;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
-import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.introspection.xml.LoaderRegistryImpl;
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.Comment;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.Namespace;
 import org.fabric3.api.model.type.Text;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  *
@@ -68,13 +66,12 @@ public class CompositeLoaderRoundTripTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+        LoaderRegistry registry = new LoaderRegistryImpl();
         final DefaultLoaderHelper helper = new DefaultLoaderHelper();
 
         loader = new CompositeLoader(registry, null, helper);
 
-        XMLFactory factory = new MockXMLFactory();
-        reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
         ctx = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
     }

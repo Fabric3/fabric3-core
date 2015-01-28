@@ -5,8 +5,6 @@
               f3:description="Web services extension">
     <import.java package="org.fabric3.spi.*" version="3.0.0"/>
 
-    <!--import Woodstox as the Metro WSDL parser assumes it to be visible from the SEI classloader-->
-    <import.java package="com.ctc.wstx.*" version="3.2.9"/>;
 
     <import.java package="org.fabric3.binding.ws.provision" version="3.0.0"/>
     <import.java package="org.fabric3.api.binding.ws.*" version="3.0.0"/>

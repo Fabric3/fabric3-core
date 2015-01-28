@@ -59,7 +59,6 @@ public class SpringImplementationProcessorImplTestCase extends TestCase {
         JavaContractProcessor contractProcessor = EasyMock.createNiceMock(JavaContractProcessor.class);
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class))).andReturn(null).anyTimes();
         EasyMock.replay(contractProcessor);
-        MockXMLFactory xmlFactory = new MockXMLFactory();
-        processor = new SpringImplementationProcessorImpl(contractProcessor, xmlFactory);
+        processor = new SpringImplementationProcessorImpl(contractProcessor);
     }
 }

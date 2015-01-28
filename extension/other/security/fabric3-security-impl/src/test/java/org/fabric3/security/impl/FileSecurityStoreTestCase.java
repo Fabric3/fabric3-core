@@ -16,17 +16,15 @@
  */
 package org.fabric3.security.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.security.BasicSecuritySubject;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  *
@@ -58,11 +56,9 @@ public class FileSecurityStoreTestCase extends TestCase {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
         reader.nextTag();
 
-        XMLFactory factory = EasyMock.createNiceMock(XMLFactory.class);
-        EasyMock.replay(factory);
         HostInfo info = EasyMock.createNiceMock(HostInfo.class);
 
-        FileSecurityStore store = new FileSecurityStore(factory, info);
+        FileSecurityStore store = new FileSecurityStore(info);
         store.setSecurityConfiguration(reader);
 
         BasicSecuritySubject foo = store.find("foo");

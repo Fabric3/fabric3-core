@@ -18,21 +18,20 @@
  */
 package org.fabric3.introspection.xml.template;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -48,13 +47,12 @@ public class TemplateElementLoaderTestCase extends TestCase {
     private TemplateRegistry templateRegistry;
     private TemplateElementLoader loader;
     private IntrospectionContext context;
-    private MockXMLFactory factory;
     private LoaderRegistry loaderRegistry;
 
 
     @SuppressWarnings({"serial"})
     public void testLoad() throws Exception {
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
         ModelObject modelObject = new ModelObject() {
         };
@@ -69,7 +67,7 @@ public class TemplateElementLoaderTestCase extends TestCase {
     }
 
     public void testNoName() throws Exception {
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML_NO_NAME.getBytes()));
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_NO_NAME.getBytes()));
         reader.nextTag();
 
         EasyMock.replay(templateRegistry, loaderRegistry);
@@ -81,7 +79,7 @@ public class TemplateElementLoaderTestCase extends TestCase {
     }
 
     public void testNoBody() throws Exception {
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML_NO_BODY.getBytes()));
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_NO_BODY.getBytes()));
         reader.nextTag();
 
         EasyMock.replay(templateRegistry, loaderRegistry);
@@ -98,7 +96,6 @@ public class TemplateElementLoaderTestCase extends TestCase {
         loaderRegistry = EasyMock.createMock(LoaderRegistry.class);
 
         loader = new TemplateElementLoader(loaderRegistry, templateRegistry);
-        factory = new MockXMLFactory();
         context = new DefaultIntrospectionContext(CONTRIBUTION_URI, null, null, null);
     }
 

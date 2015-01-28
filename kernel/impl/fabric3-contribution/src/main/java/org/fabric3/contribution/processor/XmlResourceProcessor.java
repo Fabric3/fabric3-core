@@ -18,18 +18,13 @@
  */
 package org.fabric3.contribution.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
@@ -41,7 +36,10 @@ import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.xml.LocationAwareXMLStreamReader;
-import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes an XML-based resource in a contribution, delegating to a an XMLIndexer to index the resource and a Loader to load it based on the root
@@ -56,12 +54,11 @@ public class XmlResourceProcessor implements ResourceProcessor {
 
     public XmlResourceProcessor(@Reference ProcessorRegistry processorRegistry,
                                 @Reference XmlIndexerRegistry indexerRegistry,
-                                @Reference XmlResourceElementLoaderRegistry elementLoaderRegistry,
-                                @Reference XMLFactory xmlFactory) {
+                                @Reference XmlResourceElementLoaderRegistry elementLoaderRegistry) {
         this.processorRegistry = processorRegistry;
         this.elementLoaderRegistry = elementLoaderRegistry;
         this.indexerRegistry = indexerRegistry;
-        this.xmlFactory = xmlFactory.newInputFactoryInstance();
+        this.xmlFactory = XMLInputFactory.newFactory();
     }
 
     @Init

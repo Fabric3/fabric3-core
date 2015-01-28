@@ -44,7 +44,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
@@ -76,9 +75,9 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         strictValidation = validation;
     }
 
-    public SpringImplementationProcessorImpl(@Reference JavaContractProcessor contractProcessor, @Reference XMLFactory factory) {
+    public SpringImplementationProcessorImpl(@Reference JavaContractProcessor contractProcessor) {
         this.contractProcessor = contractProcessor;
-        xmlInputFactory = factory.newInputFactoryInstance();
+        xmlInputFactory = XMLInputFactory.newFactory();
     }
 
     public SpringComponentType introspect(Source source, IntrospectionContext context) throws XMLStreamException {

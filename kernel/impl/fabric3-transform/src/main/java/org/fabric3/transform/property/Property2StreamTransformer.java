@@ -24,12 +24,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
-import org.fabric3.spi.xml.XMLFactory;
-import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Node;
 
 /**
@@ -48,8 +46,8 @@ public class Property2StreamTransformer implements SingleTypeTransformer<Node, X
         return TARGET;
     }
 
-    public Property2StreamTransformer(@Reference XMLFactory xmlFactory) {
-        this.xmlFactory = xmlFactory.newInputFactoryInstance();
+    public Property2StreamTransformer() {
+        this.xmlFactory = XMLInputFactory.newFactory();
     }
 
 

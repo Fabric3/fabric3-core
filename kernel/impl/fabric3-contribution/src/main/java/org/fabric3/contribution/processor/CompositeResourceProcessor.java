@@ -44,7 +44,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -57,10 +56,10 @@ public class CompositeResourceProcessor implements ResourceProcessor {
     private Loader loader;
     private final XMLInputFactory xmlFactory;
 
-    public CompositeResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference Loader loader, @Reference XMLFactory xmlFactory) {
+    public CompositeResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference Loader loader) {
         processorRegistry.register(this);
         this.loader = loader;
-        this.xmlFactory = xmlFactory.newInputFactoryInstance();
+        this.xmlFactory = XMLInputFactory.newFactory();
     }
 
     public String getContentType() {

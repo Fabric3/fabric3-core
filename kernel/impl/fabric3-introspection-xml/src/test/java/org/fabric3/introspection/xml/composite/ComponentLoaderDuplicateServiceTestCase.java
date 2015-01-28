@@ -19,22 +19,20 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
-import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  *
@@ -64,7 +62,7 @@ public class ComponentLoaderDuplicateServiceTestCase extends TestCase {
 
      protected void setUp() throws Exception {
          super.setUp();
-         LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+         LoaderRegistry registry = new LoaderRegistryImpl();
          LoaderHelper helper = new DefaultLoaderHelper();
          ComponentServiceLoader referenceLoader = new ComponentServiceLoader(registry, helper);
          referenceLoader.init();
@@ -74,8 +72,7 @@ public class ComponentLoaderDuplicateServiceTestCase extends TestCase {
          registry.registerLoader(MockImplementation.TYPE, implLoader);
          loader = new ComponentLoader(registry, helper);
 
-         XMLFactory factory = new MockXMLFactory();
-         reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+         reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
          reader.nextTag();
          ctx = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
      }

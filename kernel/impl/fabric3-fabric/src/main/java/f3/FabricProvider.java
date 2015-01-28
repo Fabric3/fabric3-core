@@ -112,7 +112,6 @@ import org.fabric3.fabric.security.KeyStoreManagerImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.fabric.transport.TransportService;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
-import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
 import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
 
@@ -151,11 +150,6 @@ public class FabricProvider {
     }
 
     private static void addServicesSubsystem(CompositeBuilder compositeBuilder) {
-
-        SystemComponentDefinitionBuilder builder = newBuilder(XMLFactoryImpl.class);
-        builder.property("input", "com.ctc.wstx.stax.WstxInputFactory");
-        builder.property("output", "com.ctc.wstx.stax.WstxOutputFactory");
-        compositeBuilder.component(builder.build());
 
         compositeBuilder.component(newBuilder(EventServiceImpl.class).build());
 

@@ -18,15 +18,13 @@
  */
 package org.fabric3.contribution.processor;
 
+import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.contribution.util.MockXMLFactory;
 import org.fabric3.api.host.stream.InputStreamSource;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Composite;
@@ -45,7 +43,6 @@ import org.fabric3.spi.introspection.xml.Loader;
 public class CompositeResourceProcessorTestCase extends TestCase {
     private static final String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' targetNamespace='test' name='composite'/>";
     
-    private MockXMLFactory factory;
     private ProcessorRegistry registry;
     private Loader loader;
     private QName compositeName;
@@ -56,7 +53,7 @@ public class CompositeResourceProcessorTestCase extends TestCase {
     public void testIndex() throws Exception {
         EasyMock.replay(loader, registry);
 
-        CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader, factory);
+        CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader);
 
         processor.index(resource, context);
         assertFalse(context.hasErrors());
@@ -70,7 +67,7 @@ public class CompositeResourceProcessorTestCase extends TestCase {
 
         EasyMock.replay(loader, registry);
 
-        CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader, factory);
+        CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader);
 
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(new QNameSymbol(compositeName));
         resource.addResourceElement(element);
@@ -88,7 +85,7 @@ public class CompositeResourceProcessorTestCase extends TestCase {
         otherResource.addResourceElement(element);
         contribution.addResource(otherResource);
 
-        CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader, factory);
+        CompositeResourceProcessor processor = new CompositeResourceProcessor(registry, loader);
 
         processor.index(resource, context);
         assertTrue(context.hasErrors());
@@ -98,7 +95,6 @@ public class CompositeResourceProcessorTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new MockXMLFactory();
         registry = EasyMock.createNiceMock(ProcessorRegistry.class);
         loader = EasyMock.createMock(Loader.class);
         context = new DefaultIntrospectionContext();

@@ -38,7 +38,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.persistence.spi.PersistenceUnitTransactionType.JTA;
 import static javax.persistence.spi.PersistenceUnitTransactionType.RESOURCE_LOCAL;
@@ -52,9 +51,9 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
     private XMLInputFactory factory;
     private DataSourceRegistry registry;
 
-    public PersistenceContextParserImpl(@Reference DataSourceRegistry registry, @Reference XMLFactory xmlFactory) {
+    public PersistenceContextParserImpl(@Reference DataSourceRegistry registry) {
         this.registry = registry;
-        factory = xmlFactory.newInputFactoryInstance();
+        factory = XMLInputFactory.newFactory();
     }
 
     public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException {

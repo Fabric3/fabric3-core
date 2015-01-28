@@ -50,7 +50,6 @@ import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.Interceptor;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Listens for requests sent to a destination and dispatches them to a service, returning a response to the response destination.
@@ -64,7 +63,6 @@ public class ServiceListener implements MessageListener {
     private SessionType sessionType;
     private ClassLoader classLoader;
     private ListenerMonitor monitor;
-    private XMLFactory xmlFactory;
     private XMLInputFactory xmlInputFactory;
     private List<BindingHandler<Message>> handlers;
 
@@ -73,7 +71,6 @@ public class ServiceListener implements MessageListener {
                            ConnectionFactory responseFactory,
                            SessionType sessionType,
                            ClassLoader classLoader,
-                           XMLFactory xmlFactory,
                            List<BindingHandler<Message>> handlers,
                            ListenerMonitor monitor) {
         this.wireHolder = wireHolder;
@@ -81,7 +78,6 @@ public class ServiceListener implements MessageListener {
         this.responseFactory = responseFactory;
         this.sessionType = sessionType;
         this.classLoader = classLoader;
-        this.xmlFactory = xmlFactory;
         this.handlers = handlers;
         this.monitor = monitor;
         invocationChainMap = new HashMap<>();
@@ -134,12 +130,8 @@ public class ServiceListener implements MessageListener {
         }
     }
 
-    private void invoke(Message request,
-                        Interceptor interceptor,
-                        Object payload,
-                        OperationPayloadTypes payloadTypes,
-                        boolean oneWay,
-                        SessionType sessionType) throws JMSException, JmsBadMessageException {
+    private void invoke(Message request, Interceptor interceptor, Object payload, OperationPayloadTypes payloadTypes, boolean oneWay, SessionType sessionType)
+            throws JMSException, JmsBadMessageException {
         WorkContext workContext = setWorkContext(request);
         org.fabric3.spi.container.invocation.Message inMessage = MessageCache.getAndResetMessage();
         inMessage.setWorkContext(workContext);
@@ -269,7 +261,7 @@ public class ServiceListener implements MessageListener {
 
     private InvocationChainHolder getHolderBasedOnElementName(byte[] payload) throws JmsBadMessageException {
         if (xmlInputFactory == null) {
-            xmlInputFactory = xmlFactory.newInputFactoryInstance();
+            xmlInputFactory = XMLInputFactory.newFactory();
         }
         try {
             XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(payload));
@@ -288,8 +280,7 @@ public class ServiceListener implements MessageListener {
     /**
      * Sets the WorkContext for the request.
      *
-     *
-     * @param request     the message received from the JMS transport
+     * @param request the message received from the JMS transport
      * @return the work context
      * @throws JmsBadMessageException if an error is encountered setting the work context
      */

@@ -18,13 +18,12 @@
  */
 package org.fabric3.contribution.manifest;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.util.regex.Pattern;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
-import org.fabric3.contribution.util.MockXMLFactory;
 import org.fabric3.spi.contribution.ContributionManifest;
 
 /**
@@ -35,11 +34,10 @@ public class ContributionElementLoaderExcludesTestCase extends TestCase {
             "<f3:scan exclude='foo,bar'/>" +
             "</contribution>";
     private ContributionElementLoader loader;
-    private MockXMLFactory factory;
 
     public void testExcludes() throws Exception {
         ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(stream);
         reader.next();
         ContributionManifest manifest = loader.load(reader, null);
         assertEquals(2, manifest.getScanExcludes().size());
@@ -52,7 +50,6 @@ public class ContributionElementLoaderExcludesTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         loader = new ContributionElementLoader(null);
-        factory = new MockXMLFactory();
     }
 
 

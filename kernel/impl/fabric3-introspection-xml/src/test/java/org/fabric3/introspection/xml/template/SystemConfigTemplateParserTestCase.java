@@ -18,18 +18,17 @@
  */
 package org.fabric3.introspection.xml.template;
 
-import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.runtime.event.ExtensionsInitialized;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -38,7 +37,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 public class SystemConfigTemplateParserTestCase extends TestCase {
     private static final String XML = "<value><templates><template name='template'><binding/></template></templates></value>";
 
-    private MockXMLFactory factory;
     private LoaderRegistry loaderRegistry;
     private TemplateParserMonitor monitor;
     private SystemConfigTemplateParser parser;
@@ -46,7 +44,7 @@ public class SystemConfigTemplateParserTestCase extends TestCase {
 
     public void testLoad() throws Exception {
         ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(stream);
         reader.nextTag();
 
         EasyMock.expect(loaderRegistry.load(EasyMock.isA(XMLStreamReader.class),
@@ -67,7 +65,6 @@ public class SystemConfigTemplateParserTestCase extends TestCase {
         loaderRegistry = EasyMock.createMock(LoaderRegistry.class);
         monitor = EasyMock.createMock(TemplateParserMonitor.class);
         parser = new SystemConfigTemplateParser(loaderRegistry, null, monitor);
-        factory = new MockXMLFactory();
     }
 
 }

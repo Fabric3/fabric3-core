@@ -16,6 +16,11 @@
  */
 package org.fabric3.security.impl;
 
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,21 +29,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.security.BasicSecuritySubject;
-import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Reads security information from a system property or the <code>security.xml</code> file in the runtime config directory.
@@ -48,8 +46,8 @@ public class FileSecurityStore implements SecurityStore {
     private HostInfo info;
     private Map<String, BasicSecuritySubject> cache;
 
-    public FileSecurityStore(@Reference XMLFactory xmlFactory, @Reference HostInfo info) {
-        this.xmlFactory = xmlFactory.newInputFactoryInstance();
+    public FileSecurityStore(@Reference HostInfo info) {
+        this.xmlFactory = XMLInputFactory.newFactory();
         this.info = info;
     }
 

@@ -35,7 +35,6 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.xml.XMLFactory;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -55,12 +54,11 @@ public class XmlContributionProcessor implements ContributionProcessor {
 
     public XmlContributionProcessor(@Reference ProcessorRegistry processorRegistry,
                                     @Reference XmlProcessorRegistry xmlProcessorRegistry,
-                                    @Reference XmlIndexerRegistry xmlIndexerRegistry,
-                                    @Reference XMLFactory xmlFactory) {
+                                    @Reference XmlIndexerRegistry xmlIndexerRegistry) {
         this.processorRegistry = processorRegistry;
         this.xmlProcessorRegistry = xmlProcessorRegistry;
         this.xmlIndexerRegistry = xmlIndexerRegistry;
-        this.xmlFactory = xmlFactory.newInputFactoryInstance();
+        this.xmlFactory = XMLInputFactory.newFactory();
     }
 
     @Init

@@ -1,15 +1,14 @@
 package org.fabric3.introspection.xml.common;
 
-import java.io.ByteArrayInputStream;
-import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.util.Map;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.Constants;
-
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.oasisopen.sca.Constants;
 
 /**
  *
@@ -20,8 +19,6 @@ public class ConfigurationLoaderTestCase extends TestCase {
 
     private DefaultIntrospectionContext context;
     private ConfigurationLoader loader;
-    private MockXMLFactory factory;
-
 
     public void testLoad() throws Exception {
         XMLStreamReader reader = createReader(XML);
@@ -36,13 +33,11 @@ public class ConfigurationLoaderTestCase extends TestCase {
         super.setUp();
         context = new DefaultIntrospectionContext();
         loader = new ConfigurationLoader();
-
-        factory = new MockXMLFactory();
     }
 
     private XMLStreamReader createReader(String xml) throws XMLStreamException {
         ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes());
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(stream);
         reader.nextTag();
         return reader;
     }

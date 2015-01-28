@@ -85,7 +85,6 @@ import org.fabric3.fabric.domain.instantiator.promotion.PromotionResolutionServi
 import org.fabric3.fabric.domain.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
 import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
-import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.implementation.pojo.builder.ArrayBuilder;
 import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
 import org.fabric3.implementation.pojo.builder.CollectionBuilder;
@@ -145,7 +144,6 @@ import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.xml.XMLFactory;
 import org.fabric3.transform.DefaultTransformerRegistry;
 import org.fabric3.transform.property.Property2BooleanTransformer;
 import org.fabric3.transform.property.Property2ElementTransformer;
@@ -161,7 +159,6 @@ import org.fabric3.transform.string2java.String2QNameTransformer;
  * Bootstraps services required for instantiation, generation, and deployment.
  */
 public class BootstrapAssemblyFactory {
-    private static final XMLFactory XML_FACTORY = new XMLFactoryImpl();
 
     private BootstrapAssemblyFactory() {
     }
@@ -311,7 +308,7 @@ public class BootstrapAssemblyFactory {
         transformers.add(new Property2BooleanTransformer());
         transformers.add(new Property2ElementTransformer());
         transformers.add(new Property2QNameTransformer());
-        transformers.add(new Property2StreamTransformer(XML_FACTORY));
+        transformers.add(new Property2StreamTransformer());
         transformers.add(new String2ClassTransformer(classLoaderRegistry));
         transformers.add(new String2QNameTransformer());
         transformers.add(new String2IntegerTransformer());

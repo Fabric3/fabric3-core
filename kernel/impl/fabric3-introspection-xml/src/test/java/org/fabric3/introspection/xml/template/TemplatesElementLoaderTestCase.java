@@ -18,19 +18,18 @@
  */
 package org.fabric3.introspection.xml.template;
 
-import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -40,14 +39,13 @@ public class TemplatesElementLoaderTestCase extends TestCase {
     private static final String XML = "<templates><template name='template'><binding/></template></templates>";
 
     private IntrospectionContext context;
-    private MockXMLFactory factory;
     private LoaderRegistry loaderRegistry;
     private TemplatesElementLoader loader;
 
 
     @SuppressWarnings({"serial"})
     public void testLoad() throws Exception {
-        final XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        final XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
         final ModelObject modelObject = new ModelObject() {
         };
@@ -72,7 +70,6 @@ public class TemplatesElementLoaderTestCase extends TestCase {
         loaderRegistry = EasyMock.createMock(LoaderRegistry.class);
 
         loader = new TemplatesElementLoader(loaderRegistry);
-        factory = new MockXMLFactory();
         context = new DefaultIntrospectionContext();
     }
 

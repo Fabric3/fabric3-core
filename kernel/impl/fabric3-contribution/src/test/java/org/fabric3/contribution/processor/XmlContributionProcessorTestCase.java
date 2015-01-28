@@ -18,15 +18,12 @@
  */
 package org.fabric3.contribution.processor;
 
+import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.stream.XMLStreamReader;
-
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.contribution.util.MockXMLFactory;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -93,8 +90,7 @@ public class XmlContributionProcessorTestCase extends TestCase {
         registry = EasyMock.createMock(ProcessorRegistry.class);
         xmlProcessorRegistry =    EasyMock.createMock(XmlProcessorRegistry.class);
         xmlIndexerRegistry = EasyMock.createMock(XmlIndexerRegistry.class);
-        MockXMLFactory factory = new MockXMLFactory();
-        processor = new XmlContributionProcessor(registry, xmlProcessorRegistry, xmlIndexerRegistry, factory);
+        processor = new XmlContributionProcessor(registry, xmlProcessorRegistry, xmlIndexerRegistry);
         URL file = getClass().getResource("test.composite");
         contribution = new Contribution(URI.create("contribution"), new UrlSource(file), file, -1, "application/xml", false);
         context = new DefaultIntrospectionContext();

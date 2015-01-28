@@ -19,20 +19,18 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  *
@@ -61,7 +59,7 @@ public class ComponentLoaderNoServiceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+        LoaderRegistry registry = new LoaderRegistryImpl();
         LoaderHelper helper = new DefaultLoaderHelper();
         ComponentServiceLoader serviceLoader = new ComponentServiceLoader(registry, helper);
         serviceLoader.init();
@@ -70,8 +68,7 @@ public class ComponentLoaderNoServiceTestCase extends TestCase {
         registry.registerLoader(MockImplementation.TYPE, implLoader);
         loader = new ComponentLoader(registry, helper);
 
-        XMLFactory factory = new MockXMLFactory();
-        reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
         ctx = new DefaultIntrospectionContext();
     }

@@ -19,6 +19,7 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -26,17 +27,15 @@ import java.util.Collections;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.introspection.xml.LoaderRegistryImpl;
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.Property;
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  *
@@ -64,7 +63,7 @@ public class ChannelLoaderTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+        LoaderRegistry registry = new LoaderRegistryImpl();
         LoaderHelper helper = new DefaultLoaderHelper();
         PropertyValueLoader pvLoader = new PropertyValueLoader(registry, helper);
         pvLoader.init();
@@ -76,8 +75,7 @@ public class ChannelLoaderTestCase extends TestCase {
         Map map = Collections.singletonMap(ChannelDefinition.DEFAULT_TYPE, new MockChannelTypeLoader());
         loader.setChannelTypeLoaders(map);
 
-        XMLFactory factory = new MockXMLFactory();
-        reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
         ctx = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
     }

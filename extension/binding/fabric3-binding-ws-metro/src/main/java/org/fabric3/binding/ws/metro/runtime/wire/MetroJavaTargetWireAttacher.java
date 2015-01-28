@@ -44,16 +44,15 @@ import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.repository.ArtifactCache;
-import org.fabric3.spi.repository.CacheException;
-import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.xml.XMLFactory;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.repository.ArtifactCache;
+import org.fabric3.spi.repository.CacheException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -79,7 +78,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                                        @Reference ArtifactCache artifactCache,
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference(name = "executorService") ExecutorService executorService,
-                                       @Reference XMLFactory xmlFactory,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Monitor InterceptorMonitor monitor) {
         super(handlerRegistry, endpointService);
@@ -89,7 +87,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.artifactCache = artifactCache;
         this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
-        this.xmlInputFactory = xmlFactory.newInputFactoryInstance();
+        this.xmlInputFactory = XMLInputFactory.newFactory();
         this.monitor = monitor;
     }
 

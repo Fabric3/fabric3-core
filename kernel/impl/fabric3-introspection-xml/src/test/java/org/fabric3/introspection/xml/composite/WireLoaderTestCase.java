@@ -19,24 +19,21 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.Constants;
-
-import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.introspection.xml.LoaderRegistryImpl;
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-
+import org.oasisopen.sca.Constants;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
@@ -80,7 +77,7 @@ public class WireLoaderTestCase extends TestCase {
         context = new DefaultIntrospectionContext();
         LoaderHelper loaderHelper = new DefaultLoaderHelper();
         WireLoader wireLoader = new WireLoader(loaderHelper);
-        LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+        LoaderRegistry registry = new LoaderRegistryImpl();
         registry.registerLoader(new QName(Constants.SCA_NS, "wire"), wireLoader);
         loader = new CompositeLoader(registry, null, null, null, null, loaderHelper);
     }

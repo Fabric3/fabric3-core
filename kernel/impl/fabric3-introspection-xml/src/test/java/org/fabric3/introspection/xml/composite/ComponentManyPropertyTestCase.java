@@ -19,18 +19,17 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
-import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.introspection.xml.LoaderRegistryImpl;
-import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyMany;
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -60,7 +59,6 @@ public class ComponentManyPropertyTestCase extends TestCase {
 
     private ComponentLoader loader;
     private IntrospectionContext context;
-    private MockXMLFactory factory;
     private MockImplementationLoader implLoader;
 
     public void testManyInheritence() throws Exception {
@@ -68,7 +66,7 @@ public class ComponentManyPropertyTestCase extends TestCase {
         property.setMany(true);
         implLoader.setProperties(property);
 
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML_NONE.getBytes()));
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_NONE.getBytes()));
         reader.nextTag();
         ComponentDefinition<?> definition = loader.load(reader, context);
         assertEquals(PropertyMany.MANY, definition.getPropertyValues().get("prop").getMany());
@@ -79,7 +77,7 @@ public class ComponentManyPropertyTestCase extends TestCase {
         property.setMany(true);
         implLoader.setProperties(property);
 
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML_SINGLE.getBytes()));
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_SINGLE.getBytes()));
         reader.nextTag();
         ComponentDefinition<?> definition = loader.load(reader, context);
         assertEquals(PropertyMany.SINGLE, definition.getPropertyValues().get("prop").getMany());
@@ -90,7 +88,7 @@ public class ComponentManyPropertyTestCase extends TestCase {
         property.setMany(false);
         implLoader.setProperties(property);
 
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML_MANY.getBytes()));
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_MANY.getBytes()));
         reader.nextTag();
         loader.load(reader, context);
         assertTrue(context.getErrors().get(0) instanceof InvalidPropertyConfiguration);
@@ -98,7 +96,7 @@ public class ComponentManyPropertyTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+        LoaderRegistry registry = new LoaderRegistryImpl();
         LoaderHelper helper = new DefaultLoaderHelper();
         PropertyValueLoader pvLoader = new PropertyValueLoader(registry, helper);
         pvLoader.init();
@@ -107,7 +105,6 @@ public class ComponentManyPropertyTestCase extends TestCase {
         registry.registerLoader(MockImplementation.TYPE, implLoader);
         loader = new ComponentLoader(registry, helper);
 
-        factory = new MockXMLFactory();
         context = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
     }
 
