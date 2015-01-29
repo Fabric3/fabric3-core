@@ -22,7 +22,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -45,7 +44,6 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -59,13 +57,6 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
     private AtomicComponentInstantiator atomicInstantiator;
     private WireInstantiator wireInstantiator;
     private ChannelInstantiator channelInstantiator;
-    private boolean componentTypeOverride;
-
-    @Property(required = false)
-    @Source("$systemConfig//f3:sca/@componentTypeOverride")
-    public void setComponentTypeOverride(boolean componentTypeOverride) {
-        this.componentTypeOverride = componentTypeOverride;
-    }
 
     @Constructor
     public CompositeComponentInstantiatorImpl(@Reference AtomicComponentInstantiator atomicInstantiator,

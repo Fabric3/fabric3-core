@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class LogicalComponentManagerImpl implements LogicalComponentManager {
     private URI domainUri;
     private String autowireValue;
-    private Autowire autowire = Autowire.OFF;
+    private Autowire autowire = Autowire.ON;
     private LogicalCompositeComponent domain;
     private LCMMonitor monitor;
 

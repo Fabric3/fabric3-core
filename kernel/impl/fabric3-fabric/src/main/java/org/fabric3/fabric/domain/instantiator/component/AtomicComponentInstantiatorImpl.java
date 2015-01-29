@@ -20,7 +20,6 @@ package org.fabric3.fabric.domain.instantiator.component;
 
 import java.net.URI;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
@@ -44,19 +43,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.oasisopen.sca.annotation.Property;
 
 /**
  *
  */
 public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiator implements AtomicComponentInstantiator {
-    private boolean componentTypeOverride;
-
-    @Property(required = false)
-    @Source("$systemConfig//f3:sca/@componentTypeOverride")
-    public void setComponentTypeOverride(boolean componentTypeOverride) {
-        this.componentTypeOverride = componentTypeOverride;
-    }
 
     @SuppressWarnings({"unchecked"})
     public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
@@ -155,7 +146,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             // producer is configured in the component definition
             ComponentConsumer componentConsumer = definition.getConsumers().get(name);
             if (componentConsumer != null) {
-                // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentConsumer.getSources()) {
                     addSource(logicalConsumer, uri, component);
                 }
@@ -177,7 +167,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             // producer is configured in the component definition
             ComponentProducer componentProducer = definition.getProducers().get(name);
             if (componentProducer != null) {
-                // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentProducer.getTargets()) {
                     addTarget(logicalProducer, uri, component);
                 }
