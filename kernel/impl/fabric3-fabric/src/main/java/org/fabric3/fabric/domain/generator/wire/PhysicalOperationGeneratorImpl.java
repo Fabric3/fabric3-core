@@ -18,36 +18,28 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.domain.generator.GenerationException;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
-import org.fabric3.spi.domain.generator.policy.PolicyResult;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerator {
-    private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
     private OperationResolver operationResolver;
     private GeneratorRegistry generatorRegistry;
 
@@ -56,49 +48,19 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations, boolean remote, PolicyResult policyResult)
-            throws GenerationException {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws GenerationException {
 
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(operations.size());
-        Set<PolicySet> endpointPolicySets;
-        if (policyResult != null) {
-            endpointPolicySets = policyResult.getInterceptedEndpointPolicySets();
-        } else {
-            endpointPolicySets = Collections.emptySet();
-        }
 
         for (LogicalOperation operation : operations) {
             PhysicalOperationDefinition physicalOperation = generate(operation);
-            if (policyResult != null) {
-                List<PolicySet> policies = policyResult.getInterceptedPolicySets(operation);
-                List<PolicySet> allPolicies = new ArrayList<>(endpointPolicySets);
-                for (PolicySet policy : policies) {
-                    // strip duplicates from endpoint and operation policies 
-                    if (!allPolicies.contains(policy)) {
-                        allPolicies.add(policy);
-                    }
-                }
-                PolicyMetadata metadata = policyResult.getMetadata(operation);
-                Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(operation, allPolicies, metadata);
-                physicalOperation.setInterceptors(interceptors);
-            }
             physicalOperations.add(physicalOperation);
         }
         return physicalOperations;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources,
-                                                               List<LogicalOperation> targets,
-                                                               boolean remote,
-                                                               PolicyResult result) throws GenerationException {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) throws GenerationException {
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(sources.size());
-        Set<PolicySet> endpointPolicySets;
-        if (result != null) {
-            endpointPolicySets = result.getInterceptedEndpointPolicySets();
-        } else {
-            endpointPolicySets = Collections.emptySet();
-        }
-
         for (LogicalOperation source : sources) {
             LogicalOperation target;
             try {
@@ -107,15 +69,11 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
                 throw new GenerationException(e);
             }
             PhysicalOperationDefinition physicalOperation = generate(source, target);
-            if (result != null) {
-                List<PolicySet> policies = result.getInterceptedPolicySets(source);
-                List<PolicySet> allPolicies = new ArrayList<>(endpointPolicySets);
-                allPolicies.addAll(policies);
-                PolicyMetadata metadata = result.getMetadata(source);
-                Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(source, allPolicies, metadata);
+            physicalOperations.add(physicalOperation);
+            if (!remote) {
+                Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(source, target);
                 physicalOperation.setInterceptors(interceptors);
             }
-            physicalOperations.add(physicalOperation);
         }
         return physicalOperations;
     }
@@ -123,32 +81,16 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
     /**
      * Generates interceptor definitions for the operation based on a set of resolved policies.
      *
-     * @param operation the operation
-     * @param policies  the policies
-     * @param metadata  policy metadata
+     * @param source the operation
+     * @param target the target operation
      * @return the interceptor definitions
      * @throws GenerationException if a generation error occurs
      */
-    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation operation, List<PolicySet> policies, PolicyMetadata metadata)
-            throws GenerationException {
-        if (policies == null) {
-            return Collections.emptySet();
-        }
+    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) throws GenerationException {
         Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<>();
-        for (PolicySet policy : policies) {
-            if (policy.getExpression() == null) {
-                // empty policy
-                continue;
-            }
-            QName expressionName = policy.getExpressionName();
-            InterceptorGenerator generator = generatorRegistry.getInterceptorGenerator(expressionName);
-            PhysicalInterceptorDefinition pid = generator.generate(policy.getExpression(), metadata, operation);
-            if (pid != null) {
-                URI contributionClassLoaderId = operation.getParent().getParent().getDefinition().getContributionUri();
-                pid.setWireClassLoaderId(contributionClassLoaderId);
-                pid.setPolicyClassLoaderId(policy.getContributionUri());
-                interceptors.add(pid);
-            }
+        for (InterceptorGenerator interceptorGenerator : generatorRegistry.getInterceptorGenerators()) {
+            Optional<PhysicalInterceptorDefinition> optional = interceptorGenerator.generate(source, target);
+            optional.ifPresent(interceptors::add);
         }
         return interceptors;
     }
@@ -163,9 +105,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         Operation o = source.getDefinition();
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName(o.getName());
-        if (o.getIntents().contains(OASIS_ONEWAY)) {
-            operation.setOneWay(true);
-        }
+        operation.setOneWay(o.isOneWay());
         operation.setRemotable(o.isRemotable());
 
         // the source and target in-, out- and fault types are the same since the source and target contracts are the same
@@ -205,10 +145,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         operation.setName(o.getName());
 
         operation.setRemotable(o.isRemotable());
-
-        if (o.getIntents().contains(OASIS_ONEWAY)) {
-            operation.setOneWay(true);
-        }
+        operation.setOneWay(o.isOneWay());
         Class<?> returnType = o.getOutputType().getType();
         operation.setSourceReturnType(returnType.getName());
 

@@ -36,8 +36,6 @@ public class LogicalOperation extends LogicalScaArtifact<LogicalInvocable> {
     public LogicalOperation(Operation definition, LogicalInvocable parent) {
         super(parent);
         this.definition = definition;
-        addIntents(definition.getIntents());
-        addPolicySets(definition.getPolicySets());
     }
 
     public Operation getDefinition() {

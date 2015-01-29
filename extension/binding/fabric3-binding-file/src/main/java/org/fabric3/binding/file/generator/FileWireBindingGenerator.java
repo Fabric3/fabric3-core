@@ -33,7 +33,6 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -63,9 +62,8 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
     }
 
     public FileBindingWireSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
-                                                      ServiceContract contract,
-                                                      List<LogicalOperation> operations,
-                                                      EffectivePolicy policy) throws GenerationException {
+                                                          ServiceContract contract,
+                                                          List<LogicalOperation> operations) throws GenerationException {
         validateServiceContract(contract);
         boolean dataHandler = isDataHandler(contract);
         FileBindingDefinition definition = binding.getDefinition();
@@ -92,9 +90,8 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
     }
 
     public FileBindingWireTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
-                                                      ServiceContract contract,
-                                                      List<LogicalOperation> operations,
-                                                      EffectivePolicy policy) throws GenerationException {
+                                                          ServiceContract contract,
+                                                          List<LogicalOperation> operations) throws GenerationException {
         validateReferenceContract(contract);
         FileBindingDefinition definition = binding.getDefinition();
         String location = definition.getLocation();
@@ -104,9 +101,8 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBindingDefinition> binding,
-                                                                 ServiceContract contract,
-                                                                 List<LogicalOperation> operations,
-                                                                 EffectivePolicy policy) throws GenerationException {
+                                                                     ServiceContract contract,
+                                                                     List<LogicalOperation> operations) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

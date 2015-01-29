@@ -16,7 +16,6 @@
  */
 package org.fabric3.api.binding.jms.builder;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.binding.jms.model.CacheLevel;
@@ -59,18 +58,6 @@ public class JmsBindingDefinitionBuilder extends AbstractBuilder {
         URI bindingUri = URI.create("jms://" + target);
         binding.setGeneratedTargetUri(bindingUri);
         return binding;
-    }
-
-    public JmsBindingDefinitionBuilder policySet(QName policy) {
-        checkState();
-        binding.addPolicySet(policy);
-        return this;
-    }
-
-    public JmsBindingDefinitionBuilder intent(QName intent) {
-        checkState();
-        binding.addIntent(intent);
-        return this;
     }
 
     public JmsBindingDefinitionBuilder cacheLevel(CacheLevel level) {
@@ -167,6 +154,12 @@ public class JmsBindingDefinitionBuilder extends AbstractBuilder {
     public JmsBindingDefinitionBuilder minReceivers(int min) {
         checkState();
         binding.getJmsMetadata().setMinReceivers(min);
+        return this;
+    }
+
+    public JmsBindingDefinitionBuilder clientAcknowledge(boolean ack) {
+        checkState();
+        binding.getJmsMetadata().setClientAcknowledge(ack);
         return this;
     }
 

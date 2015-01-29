@@ -20,16 +20,17 @@ package org.fabric3.tx;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates a TxInterceptor for a wire invocation chain.
  */
+@Key("org.fabric3.tx.TxInterceptorDefinition")
 public class TxInterceptorBuilder implements InterceptorBuilder<TxInterceptorDefinition> {
     private TransactionManager transactionManager;
     private TxMonitor monitor;

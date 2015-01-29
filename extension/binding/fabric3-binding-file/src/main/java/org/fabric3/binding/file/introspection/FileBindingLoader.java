@@ -20,26 +20,22 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Loads a <code>binding.file</code> element in a composite.
  */
 @EagerInit
 public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingDefinition> {
-    private final LoaderHelper loaderHelper;
 
-    public FileBindingLoader(@Reference LoaderHelper loaderHelper) {
+    public FileBindingLoader() {
         addAttributes("requires",
                       "location",
                       "archive.location",
@@ -51,7 +47,6 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
                       "adapter.component",
                       "policySets",
                       "delay");
-        this.loaderHelper = loaderHelper;
     }
 
     public FileBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -81,10 +76,15 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
         String pattern = reader.getAttributeValue(null, "pattern");
 
         long delay = parseDelay(reader, context);
-        FileBindingDefinition definition =
-                new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adapterUri, delay);
-
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+        FileBindingDefinition definition = new FileBindingDefinition(bindingName,
+                                                                     pattern,
+                                                                     location,
+                                                                     strategy,
+                                                                     archiveLocation,
+                                                                     errorLocation,
+                                                                     adapterClass,
+                                                                     adapterUri,
+                                                                     delay);
 
         validateAttributes(reader, context, definition);
 

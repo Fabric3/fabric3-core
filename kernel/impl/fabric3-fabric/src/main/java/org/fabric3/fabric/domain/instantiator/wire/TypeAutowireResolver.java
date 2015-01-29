@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.domain.instantiator.wire;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,14 +58,9 @@ public class TypeAutowireResolver implements AutowireResolver {
                     }
                     MatchResult result = matcher.isAssignableFrom(contract, targetContract, false);
                     if (result.isAssignable()) {
-                        boolean intentsMatch = true;
-                        for (QName intent : logicalReference.getIntents()) {
-                            if (!service.getIntents().contains(intent)) {
-                                intentsMatch = false;
-                                break;
-                            }
-                        }
-                        if (intentsMatch) {
+                        boolean qualifiersMatch = true;
+                        // TODO implement qualified matching
+                        if (qualifiersMatch) {
                             candidates.add(service);
                             break;
                         }

@@ -46,7 +46,6 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
     private boolean callback;
     private boolean oneWay;
     private boolean remotable;
-    private boolean allowsPassByReference = true;
     private String compareString;
 
     // Interceptors defined against the operation

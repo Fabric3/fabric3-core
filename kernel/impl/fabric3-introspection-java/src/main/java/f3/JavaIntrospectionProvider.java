@@ -17,8 +17,6 @@
 package f3;
 
 import javax.xml.namespace.QName;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.Consumer;
@@ -61,7 +59,6 @@ import org.fabric3.introspection.java.annotation.StatelessProcessor;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.introspection.java.policy.DefaultOperationPolicyIntrospector;
 import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
-import org.oasisopen.sca.annotation.AllowsPassByReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Destroy;
@@ -114,10 +111,7 @@ public class JavaIntrospectionProvider {
 
         compositeBuilder.component(newBuilder(ConsumerProcessor.class).key(Consumer.class.getName()).build());
 
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder(PolicyAnnotationProcessorImpl.class);
-        Map<String, QName> intents = new HashMap<>();
-        intents.put(AllowsPassByReference.class.getName(), QName.valueOf(Namespaces.F3_PREFIX + "allowsPassByReference"));
-        componentBuilder.property("intentsToQualifiers", intents);
+        compositeBuilder.component(newBuilder(PolicyAnnotationProcessorImpl.class).build());
 
         compositeBuilder.component(newBuilder(ManagementProcessor.class).key(Management.class.getName()).build());
 
@@ -128,8 +122,6 @@ public class JavaIntrospectionProvider {
         compositeBuilder.component(newBuilder(OrderProcessor.class).key(Order.class.getName()).build());
 
         compositeBuilder.component(newBuilder(ImplicitBindingReferenceProcessor.class).key(Binding.class.getName()).build());
-
-        compositeBuilder.component(componentBuilder.build());
 
     }
 

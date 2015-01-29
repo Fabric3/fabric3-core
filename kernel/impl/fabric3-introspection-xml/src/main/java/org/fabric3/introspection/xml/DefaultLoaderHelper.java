@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -36,22 +35,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.fabric3.api.annotation.Source;
-import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
-import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
-import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
-import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
-import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,28 +59,14 @@ import static org.fabric3.api.model.type.component.Multiplicity.ONE_ONE;
 import static org.fabric3.api.model.type.component.Multiplicity.ZERO_ONE;
 
 /**
- * Default implementation of the loader helper.
+ *
  */
 public class DefaultLoaderHelper implements LoaderHelper {
     private DocumentBuilderFactory documentBuilderFactory;
-    private PolicyRegistry policyRegistry;
-    private boolean strictValidation;
 
     public DefaultLoaderHelper() {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
-    }
-
-    @Constructor
-    public DefaultLoaderHelper(@Reference PolicyRegistry policyRegistry) {
-        this();
-        this.policyRegistry = policyRegistry;
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig//f3:sca/@strictValidation")
-    public void setStrictValidation(boolean strictValidation) {
-        this.strictValidation = strictValidation;
     }
 
     public String loadKey(XMLStreamReader reader) {
@@ -109,22 +84,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
             key = "{" + ns + "}" + localPart;
         }
         return key;
-    }
-
-    public void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context) {
-        try {
-            Set<QName> intentNames = parseListOfQNames(reader, "requires");
-            validateIntents(intentNames, reader, context);
-            policyAware.setIntents(intentNames);
-            policyAware.setPolicySets(policySets(reader));
-
-        } catch (InvalidPrefixException e) {
-            String prefix = e.getPrefix();
-            URI uri = context.getContributionUri();
-            Location location = reader.getLocation();
-            InvalidQNamePrefix failure = new InvalidQNamePrefix("The prefix " + prefix + " specified in contribution " + uri + " is invalid", location);
-            context.addError(failure);
-        }
     }
 
     public Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException {
@@ -364,32 +323,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
                     break;
             }
         }
-    }
-
-    private void validateIntents(Set<QName> intentNames, XMLStreamReader reader, IntrospectionContext context) {
-        if (!strictValidation || policyRegistry == null) {
-            return;
-        }
-        Set<QName> excluded = new HashSet<>();
-        // check for mutually exclusive intents
-        for (QName name : intentNames) {
-            Intent intent = policyRegistry.getDefinition(name, Intent.class);
-            if (!intent.getExcludes().isEmpty()) {
-                for (QName exclude : intent.getExcludes()) {
-                    if (excluded.contains(exclude) || intentNames.contains(exclude)) {
-                        Location location = reader.getLocation();
-                        InvalidValue error = new InvalidValue("Mutually exclusive intents configured: " + exclude, location);
-                        context.addError(error);
-                    } else {
-                        excluded.add(exclude);
-                    }
-                }
-            }
-        }
-    }
-
-    private Set<QName> policySets(XMLStreamReader reader) throws InvalidPrefixException {
-        return parseListOfQNames(reader, "policySets");
     }
 
     private void populateNamespaces(XMLStreamReader reader, Element element) {

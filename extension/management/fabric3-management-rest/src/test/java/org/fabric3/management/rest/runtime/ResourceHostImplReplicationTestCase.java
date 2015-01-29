@@ -30,7 +30,6 @@ import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.security.BasicAuthenticator;
 
 /**
  *

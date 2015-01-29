@@ -19,12 +19,9 @@
  */
 package org.fabric3.spi.model.instance;
 
-import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Base class for all logical artifacts.
@@ -33,8 +30,6 @@ import java.util.Set;
 public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implements Serializable {
     private static final long serialVersionUID = 3937960041374196627L;
     private P parent;
-    private Set<QName> intents = new LinkedHashSet<>();
-    private Set<QName> policySets = new LinkedHashSet<>();
     private Map<String, Object> metadata;
 
     /**
@@ -51,26 +46,6 @@ public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implem
      */
     public final P getParent() {
         return parent;
-    }
-
-    public Set<QName> getIntents() {
-        return intents;
-    }
-
-    public Set<QName> getPolicySets() {
-        return policySets;
-    }
-
-    public void addIntent(QName intent) {
-        intents.add(intent);
-    }
-
-    public void addIntents(Set<QName> intents) {
-        this.intents.addAll(intents);
-    }
-
-    public void addPolicySets(Set<QName> policySets) {
-        this.policySets.addAll(policySets);
     }
 
     public void addMetadata(String key, Object data) {

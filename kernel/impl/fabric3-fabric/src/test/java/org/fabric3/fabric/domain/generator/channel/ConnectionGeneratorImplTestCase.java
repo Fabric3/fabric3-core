@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -34,17 +33,11 @@ import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.api.model.type.definitions.IntentMap;
-import org.fabric3.api.model.type.definitions.PolicyPhase;
-import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.domain.generator.channel.EventStreamHandlerGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
-import org.fabric3.spi.domain.generator.policy.PolicyResolver;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -56,9 +49,7 @@ import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -71,22 +62,12 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         MockPhysicalConnectionTargetDefinition targetDefinition = new MockPhysicalConnectionTargetDefinition();
         EasyMock.expect(componentGenerator.generateConnectionTarget(EasyMock.isA(LogicalConsumer.class))).andReturn(targetDefinition);
 
-        EventStreamHandlerGenerator handlerGenerator = EasyMock.createMock(EventStreamHandlerGenerator.class);
-        PhysicalHandlerDefinition handlerDefinition = new PhysicalHandlerDefinition();
-        EasyMock.expect(handlerGenerator.generate(EasyMock.isA(Element.class), EasyMock.isA(PolicyMetadata.class))).andReturn(handlerDefinition);
-
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
-        EasyMock.expect(generatorRegistry.getEventStreamHandlerGenerator(EasyMock.isA(QName.class))).andReturn(handlerGenerator);
 
-        MockPolicyResult result = createMockPolicy();
+        EasyMock.replay(componentGenerator, generatorRegistry);
 
-        PolicyResolver resolver = EasyMock.createMock(PolicyResolver.class);
-        EasyMock.expect(resolver.resolvePolicies(EasyMock.isA(LogicalConsumer.class))).andReturn(result);
-
-        EasyMock.replay(componentGenerator, handlerGenerator, generatorRegistry, resolver);
-
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
@@ -103,7 +84,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertTrue(definition.getSource() instanceof ChannelSourceDefinition);
         assertNotNull(definition.getEventStream());
 
-        EasyMock.verify(componentGenerator, handlerGenerator, generatorRegistry, resolver);
+        EasyMock.verify(componentGenerator, generatorRegistry);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -111,10 +92,6 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         MockPhysicalConnectionTargetDefinition targetDefinition = new MockPhysicalConnectionTargetDefinition();
         EasyMock.expect(componentGenerator.generateConnectionTarget(EasyMock.isA(LogicalConsumer.class))).andReturn(targetDefinition);
-
-        EventStreamHandlerGenerator handlerGenerator = EasyMock.createMock(EventStreamHandlerGenerator.class);
-        PhysicalHandlerDefinition handlerDefinition = new PhysicalHandlerDefinition();
-        EasyMock.expect(handlerGenerator.generate(EasyMock.isA(Element.class), EasyMock.isA(PolicyMetadata.class))).andReturn(handlerDefinition);
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         PhysicalConnectionSourceDefinition sourceDefinition = new PhysicalConnectionSourceDefinition();
@@ -124,18 +101,12 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
-        EasyMock.expect(generatorRegistry.getEventStreamHandlerGenerator(EasyMock.isA(QName.class))).andReturn(handlerGenerator);
         generatorRegistry.getConnectionBindingGenerator(EasyMock.eq(MockBinding.class));
         EasyMock.expectLastCall().andReturn(bindingGenerator);
 
-        MockPolicyResult result = createMockPolicy();
+        EasyMock.replay(componentGenerator, bindingGenerator, generatorRegistry);
 
-        PolicyResolver resolver = EasyMock.createMock(PolicyResolver.class);
-        EasyMock.expect(resolver.resolvePolicies(EasyMock.isA(LogicalConsumer.class))).andReturn(result);
-
-        EasyMock.replay(componentGenerator, handlerGenerator, bindingGenerator, generatorRegistry, resolver);
-
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
@@ -150,7 +121,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertNotNull(definition.getSource());
         assertNotNull(definition.getEventStream());
 
-        EasyMock.verify(componentGenerator, handlerGenerator, bindingGenerator, generatorRegistry, resolver);
+        EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -163,11 +134,9 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
 
-        PolicyResolver resolver = EasyMock.createMock(PolicyResolver.class);
+        EasyMock.replay(componentGenerator, generatorRegistry);
 
-        EasyMock.replay(componentGenerator, generatorRegistry, resolver);
-
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
@@ -183,7 +152,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertTrue(definition.getTarget() instanceof ChannelTargetDefinition);
         assertNotNull(definition.getEventStream());
 
-        EasyMock.verify(componentGenerator, generatorRegistry, resolver);
+        EasyMock.verify(componentGenerator, generatorRegistry);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -204,11 +173,9 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         generatorRegistry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
 
-        PolicyResolver resolver = EasyMock.createMock(PolicyResolver.class);
+        EasyMock.replay(componentGenerator, bindingGenerator, generatorRegistry);
 
-        EasyMock.replay(componentGenerator, bindingGenerator, generatorRegistry, resolver);
-
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
         Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
@@ -222,7 +189,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertNotNull(definition.getSource());
         assertNotNull(definition.getEventStream());
 
-        EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry, resolver);
+        EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -273,28 +240,6 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         LogicalComponent<?> component = new LogicalComponent<>(URI.create("composite/component"), definition, parent);
         parent.addComponent(component);
         return component;
-    }
-
-    private MockPolicyResult createMockPolicy() {
-        MockPolicyResult result = new MockPolicyResult();
-        LogicalOperation operation = new LogicalOperation(new Operation(null, null, null, null), null);
-        result.addMetadata(operation, new PolicyMetadata());
-        QName setName = new QName("test", "setName");
-        Set<QName> provided = Collections.singleton(new QName("test", "testPolicy"));
-        Element expression = EasyMock.createMock(Element.class);
-        EasyMock.expect(expression.getNamespaceURI()).andReturn("test");
-        EasyMock.expect(expression.getLocalName()).andReturn("test");
-        EasyMock.replay(expression);
-        PolicySet policySet = new PolicySet(setName,
-                                            provided,
-                                            null,
-                                            null,
-                                            expression,
-                                            PolicyPhase.INTERCEPTION,
-                                            Collections.<IntentMap>emptySet(),
-                                            URI.create("contribution"));
-        result.addInterceptedPolicySets(operation, Collections.<PolicySet>singletonList(policySet));
-        return result;
     }
 
     private class MockImplementation extends Implementation<ComponentType> {

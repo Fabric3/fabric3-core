@@ -24,7 +24,6 @@ import java.net.URI;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -50,7 +49,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
         SingletonWireSourceDefinition wireDefinition = new SingletonWireSourceDefinition();
         URI uri = reference.getUri();
         wireDefinition.setOptimizable(true);
@@ -60,7 +59,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         return wireDefinition;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
         SingletonWireTargetDefinition wireDefinition = new SingletonWireTargetDefinition();
         URI uri = service.getUri();
         wireDefinition.setUri(uri);
@@ -85,7 +84,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

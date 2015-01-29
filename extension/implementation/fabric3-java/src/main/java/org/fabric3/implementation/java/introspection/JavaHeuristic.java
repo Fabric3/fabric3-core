@@ -27,14 +27,17 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -43,16 +46,11 @@ import org.fabric3.spi.introspection.java.MultiplicityType;
 import org.fabric3.spi.introspection.java.NoConstructorFound;
 import org.fabric3.spi.introspection.java.UnknownInjectionType;
 import org.fabric3.spi.introspection.java.annotation.AmbiguousConstructor;
-import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.api.model.type.java.Signature;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -62,7 +60,6 @@ public class JavaHeuristic implements HeuristicProcessor {
     private JavaContractProcessor contractProcessor;
 
     private final HeuristicProcessor serviceHeuristic;
-    private PolicyAnnotationProcessor policyProcessor;
 
     public JavaHeuristic(@Reference IntrospectionHelper helper,
                          @Reference JavaContractProcessor contractProcessor,
@@ -70,11 +67,6 @@ public class JavaHeuristic implements HeuristicProcessor {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
         this.serviceHeuristic = serviceHeuristic;
-    }
-
-    @Reference
-    public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
-        this.policyProcessor = processor;
     }
 
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
@@ -264,11 +256,6 @@ public class JavaHeuristic implements HeuristicProcessor {
         ServiceContract contract = contractProcessor.introspect(parameterType, context, componentType);
         ReferenceDefinition reference = new ReferenceDefinition(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
-        if (policyProcessor != null) {
-            for (Annotation annotation : annotations) {
-                policyProcessor.process(annotation, reference, context);
-            }
-        }
         componentType.add(reference, site);
     }
 }

@@ -20,85 +20,38 @@ package org.fabric3.binding.rs.generator;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
-import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.binding.rs.model.RsBindingDefinition;
-import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
+import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
+import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Implementation of the REST binding generator.
  */
 @EagerInit
 public class RsWireBindingGenerator implements WireBindingGenerator<RsBindingDefinition> {
-    private static final QName F3_AUTHORIZATION = new QName(org.fabric3.api.Namespaces.F3, "authorization");
-    private static final QName SCA_AUTHORIZATION = new QName(Constants.SCA_NS, "authorization");
-    private static final QName SCA_AUTHENTICATION = new QName(Constants.SCA_NS, "clientAuthentication");
-    private static final QName F3_BASIC_AUTHENTICATION = new QName(org.fabric3.api.Namespaces.F3, "clientAuthentication");
-    private static final QName F3_DIGEST_AUTHENTICATION = null;
-
-    public RsWireSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,
-                                             ServiceContract contract,
-                                             List<LogicalOperation> operations,
-                                             EffectivePolicy policy) throws GenerationException {
+    public RsWireSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = binding.getDefinition().getTargetUri();
 
-        AuthenticationType type = calculateAuthenticationType(binding, operations);
-        return new RsWireSourceDefinition(interfaze, uri, type);
+        return new RsWireSourceDefinition(interfaze, uri);
     }
 
-    public RsWireTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding,
-                                             ServiceContract contract,
-                                             List<LogicalOperation> operations,
-                                             EffectivePolicy policy) throws GenerationException {
+    public RsWireTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
         return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
-                                                                 ServiceContract contract,
-                                                                 List<LogicalOperation> operations,
-                                                                 EffectivePolicy policy) throws GenerationException {
-        return generateTarget(binding, contract, operations, policy);
-    }
-
-    private AuthenticationType calculateAuthenticationType(LogicalBinding<RsBindingDefinition> binding, List<LogicalOperation> operations) {
-        if (binding.getIntents().contains(SCA_AUTHENTICATION)) {
-            return AuthenticationType.BASIC;
-        } else if (binding.getIntents().contains(F3_BASIC_AUTHENTICATION)) {
-            return AuthenticationType.BASIC;
-        } else if (binding.getIntents().contains(F3_DIGEST_AUTHENTICATION)) {
-            return AuthenticationType.BASIC;
-        }
-        Set<QName> intents = binding.getParent().getIntents();
-        if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
-            return AuthenticationType.BASIC;
-        }
-        intents = binding.getParent().getParent().getDefinition().getImplementation().getIntents();
-        if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
-            return AuthenticationType.BASIC;
-        }
-        for (LogicalOperation operation : operations) {
-            intents = operation.getIntents();
-            if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
-                // default to basic authentication
-                return AuthenticationType.BASIC;
-            }
-        }
-
-        return AuthenticationType.NONE;
+                                                                     ServiceContract contract,
+                                                                     List<LogicalOperation> operations) throws GenerationException {
+        return generateTarget(binding, contract, operations);
     }
 
 }

@@ -60,7 +60,6 @@ import org.fabric3.fabric.domain.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorRegistryImpl;
-import org.fabric3.fabric.domain.generator.policy.NullPolicyResolver;
 import org.fabric3.fabric.domain.generator.wire.BoundServiceCommandGenerator;
 import org.fabric3.fabric.domain.generator.wire.OperationResolverImpl;
 import org.fabric3.fabric.domain.generator.wire.PhysicalOperationGenerator;
@@ -136,7 +135,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyResolver;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -180,13 +178,11 @@ public class BootstrapAssemblyFactory {
                                                                                 info);
         LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry);
 
-        PolicyResolver policyResolver = new NullPolicyResolver();
-
         DefaultContractMatcher matcher = new DefaultContractMatcher();
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
 
-        Generator generator = createGenerator(policyResolver, matcher);
+        Generator generator = createGenerator(matcher);
 
         LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
@@ -338,9 +334,9 @@ public class BootstrapAssemblyFactory {
         return connector;
     }
 
-    private static Generator createGenerator(PolicyResolver resolver, ContractMatcher matcher) {
+    private static Generator createGenerator(ContractMatcher matcher) {
         GeneratorRegistry generatorRegistry = createGeneratorRegistry();
-        List<CommandGenerator> commandGenerators = createCommandGenerators(resolver, matcher, generatorRegistry);
+        List<CommandGenerator> commandGenerators = createCommandGenerators(matcher, generatorRegistry);
 
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
@@ -360,7 +356,7 @@ public class BootstrapAssemblyFactory {
         return registry;
     }
 
-    private static List<CommandGenerator> createCommandGenerators(PolicyResolver resolver, ContractMatcher matcher, GeneratorRegistry generatorRegistry) {
+    private static List<CommandGenerator> createCommandGenerators(ContractMatcher matcher, GeneratorRegistry generatorRegistry) {
 
         List<CommandGenerator> commandGenerators = new ArrayList<>();
 
@@ -369,7 +365,7 @@ public class BootstrapAssemblyFactory {
         // command generators for wires
         OperationResolver operationResolver = new OperationResolverImpl();
         PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
-        WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, resolver, operationGenerator);
+        WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, operationGenerator);
         commandGenerators.add(new ReferenceCommandGenerator(wireGenerator));
         commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator));
         commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator));

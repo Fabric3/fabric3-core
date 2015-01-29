@@ -16,11 +16,13 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.security;
+package org.fabric3.management.rest.runtime;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.security.AuthenticationException;
+import org.fabric3.spi.security.NoCredentialsException;
 
 /**
  * Handles HTTP basic auth.

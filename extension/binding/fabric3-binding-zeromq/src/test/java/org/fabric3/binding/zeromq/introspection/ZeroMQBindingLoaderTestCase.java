@@ -71,9 +71,7 @@ public class ZeroMQBindingLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        EasyMock.replay(helper);
-        loader = new ZeroMQBindingLoader(helper);
+        loader = new ZeroMQBindingLoader();
     }
 
     private XMLStreamReader createReader(String xml) throws XMLStreamException {

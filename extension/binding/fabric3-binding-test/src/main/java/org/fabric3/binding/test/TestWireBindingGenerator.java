@@ -25,7 +25,6 @@ import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -38,18 +37,16 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public class TestWireBindingGenerator implements WireBindingGenerator<TestBindingDefinition> {
 
     public TestBindingWireSourceDefinition generateSource(LogicalBinding<TestBindingDefinition> logicalBinding,
-                                                      ServiceContract contract,
-                                                      List<LogicalOperation> operations,
-                                                      EffectivePolicy policy) throws GenerationException {
+                                                          ServiceContract contract,
+                                                          List<LogicalOperation> operations) throws GenerationException {
         TestBindingWireSourceDefinition definition = new TestBindingWireSourceDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
         return definition;
     }
 
     public TestBindingWireTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> logicalBinding,
-                                                      ServiceContract contract,
-                                                      List<LogicalOperation> operations,
-                                                      EffectivePolicy policy) throws GenerationException {
+                                                          ServiceContract contract,
+                                                          List<LogicalOperation> operations) throws GenerationException {
 
         TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
@@ -57,9 +54,8 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBindingDefinition> serviceBinding,
-                                                                 ServiceContract contract,
-                                                                 List<LogicalOperation> operations,
-                                                                 EffectivePolicy policy) throws GenerationException {
+                                                                     ServiceContract contract,
+                                                                     List<LogicalOperation> operations) throws GenerationException {
 
         TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
 

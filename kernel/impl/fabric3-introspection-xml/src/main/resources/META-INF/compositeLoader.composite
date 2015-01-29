@@ -68,11 +68,6 @@
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.ImplementationCompositeLoader"/>
     </component>
 
-    <component name="ComponentTypeLoader">
-        <f3:implementation.system class="org.fabric3.introspection.xml.componentType.ComponentTypeLoader"/>
-        <reference name="property" target="PropertyLoader"/>
-    </component>
-
     <component name="SCABindingLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.binding.SCABindingLoader"/>
     </component>
@@ -83,10 +78,6 @@
 
     <component name="ConfigurationLoader" f3:key="sca:configuration">
         <f3:implementation.system class="org.fabric3.introspection.xml.common.ConfigurationLoader"/>
-    </component>
-
-    <component name="PolicySetAttachmentLoader">
-        <f3:implementation.system class="org.fabric3.introspection.xml.composite.PolicySetAttachmentLoader"/>
     </component>
 
 

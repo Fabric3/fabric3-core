@@ -29,7 +29,6 @@ import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
-import org.fabric3.spi.container.builder.channel.EventStreamHandlerBuilder;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
@@ -42,7 +41,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -52,7 +50,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
     private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers;
     private Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers;
     private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders;
-    private Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>> handlerBuilders;
 
     private ClassLoaderRegistry classLoaderRegistry;
     private TransformerHandlerFactory transformerHandlerFactory;
@@ -81,12 +78,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
     public void setFilterBuilders(Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
                                               filterBuilders) {
         this.filterBuilders = filterBuilders;
-    }
-
-    @Reference(required = false)
-    public void setHandlerBuilders(Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>>
-                                               handlerBuilders) {
-        this.handlerBuilders = handlerBuilders;
     }
 
     @Reference(required = false)
@@ -143,7 +134,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
         EventStream stream = new EventStreamImpl(streamDefinition);
         addTypeTransformer(definition, stream, loader);
         addFilters(streamDefinition, stream);
-        addHandlers(streamDefinition, stream);
         int sequence = definition.getSource().getSequence();
 
         return new ChannelConnectionImpl(stream, sequence);
@@ -193,22 +183,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
             EventFilterBuilder builder = filterBuilders.get(definition.getClass());
             EventFilter filter = builder.build(definition);
             FilterHandler handler = new FilterHandler(filter);
-            stream.addHandler(handler);
-        }
-    }
-
-    /**
-     * Adds event stream handlers if they are defined for the stream.
-     *
-     * @param streamDefinition the stream definition
-     * @param stream           the stream being created
-     * @throws ContainerException if there is an error adding a handler
-     */
-    @SuppressWarnings({"unchecked"})
-    private void addHandlers(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws ContainerException {
-        for (PhysicalHandlerDefinition definition : streamDefinition.getHandlers()) {
-            EventStreamHandlerBuilder builder = handlerBuilders.get(definition.getClass());
-            EventStreamHandler handler = builder.build(definition);
             stream.addHandler(handler);
         }
     }

@@ -26,19 +26,17 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 public class FileBindingLoaderTestCase extends TestCase {
-    private static final String REFERENCE_BINDING_CONFIG =
-            "<binding.file name='file' pattern='trans***' location='/dir/subdir' error.location='/dir/error' delay='333'/>";
-    private static final String STRATEGY_BINDING_CONFIG =
-            "<binding.file name='file' location='/dir/subdir' strategy='archive' archive.location='/dir/output' error.location='/dir/error'/>";
+    private static final String REFERENCE_BINDING_CONFIG
+            = "<binding.file name='file' pattern='trans***' location='/dir/subdir' error.location='/dir/error' delay='333'/>";
+    private static final String STRATEGY_BINDING_CONFIG
+            = "<binding.file name='file' location='/dir/subdir' strategy='archive' archive.location='/dir/output' error.location='/dir/error'/>";
 
     private static final String NO_ARCHIVE_BINDING_CONFIG = "<binding.file name='file' location='/dir/subdir' strategy='archive'/>";
 
@@ -79,13 +77,10 @@ public class FileBindingLoaderTestCase extends TestCase {
 
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        EasyMock.replay(helper);
-        loader = new FileBindingLoader(helper);
+        loader = new FileBindingLoader();
     }
 
     private XMLStreamReader createReader(String xml) throws XMLStreamException {

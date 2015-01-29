@@ -19,22 +19,30 @@
  */
 package org.fabric3.api.model.type.contract;
 
+import javax.xml.namespace.QName;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.fabric3.api.model.type.AbstractPolicyAware;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.PolicyAware;
 
 /**
  * An operation on a service contract.
  */
-public class Operation extends AbstractPolicyAware<ServiceContract> {
+public class Operation extends ModelObject<ServiceContract> implements PolicyAware{
     private static final long serialVersionUID = 5279880534105654066L;
     private String name;
     private boolean remotable;
+    private boolean oneWay;
     private DataType outputType;
     private List<DataType> inputTypes;
     private List<DataType> faultTypes;
-
+    private List<String> policies;
+    private Map<QName, Serializable> metadata = new HashMap<>();
     /**
      * Constructor.
      *
@@ -61,9 +69,8 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
     }
 
     /**
-     * Returns the data types of the parameters passed to the operation.
-     * <p/>
-     * The inputType's logical type is a list of DataTypes which describes the parameter types
+     * Returns the data types of the parameters passed to the operation. <p/> The inputType's logical type is a list of DataTypes which describes the parameter
+     * types
      *
      * @return the data types of the parameters passed to the operation
      */
@@ -93,6 +100,35 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
     }
 
     /**
+     * Returns true if this operation is oneway.
+     *
+     * @return true if this operation is oneway.
+     */
+    public boolean isOneWay() {
+        return oneWay;
+    }
+
+    /**
+     * Sets if this operation is oneway.
+     *
+     * @param oneWay true if this operation is oneway
+     */
+    public void setOneWay(boolean oneWay) {
+        this.oneWay = oneWay;
+    }
+
+    public void addPolicy(String policy) {
+        if (policies == null) {
+            policies = new ArrayList<>();
+        }
+        policies.add(policy);
+    }
+
+    public List<String> getPolicies() {
+        return policies == null ? Collections.emptyList() : policies;
+    }
+
+    /**
      * Returns true if the operation is part of a remotable interface.
      *
      * @return true if the operation is part of a remotable interface
@@ -108,6 +144,18 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
      */
     public void setRemotable(boolean remotable) {
         this.remotable = remotable;
+    }
+
+    public void addMetadata(QName name, Serializable data) {
+        metadata.put(name, data);
+    }
+
+    public <T> T getMetadata(QName name, Class<T> type) {
+        return type.cast(metadata.get(name));
+    }
+
+    public Map<QName, Serializable> getMetadata() {
+        return metadata;
     }
 
     public String toString() {
@@ -130,10 +178,7 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
 
         if (faultTypes == null && operation.faultTypes != null) {
             return false;
-        } else if (faultTypes != null
-                && operation.faultTypes != null
-                && faultTypes.size() != 0
-                && operation.faultTypes.size() != 0) {
+        } else if (faultTypes != null && operation.faultTypes != null && faultTypes.size() != 0 && operation.faultTypes.size() != 0) {
             if (faultTypes.size() < operation.faultTypes.size()) {
                 return false;
             } else {

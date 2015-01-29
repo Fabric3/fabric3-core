@@ -14,6 +14,10 @@
         <f3:implementation.system class="org.fabric3.management.rest.runtime.MarshallerImpl"/>
     </component>
 
+    <component name="BasicAuthenticatorImpl">
+        <f3:implementation.system class="org.fabric3.management.rest.runtime.BasicAuthenticatorImpl"/>
+    </component>
+
     <component name="ResourceHost">
         <f3:implementation.system class="org.fabric3.management.rest.runtime.ResourceHostImpl"/>
         <property name="security" source="$systemConfig//f3:runtime/@management.security"/>

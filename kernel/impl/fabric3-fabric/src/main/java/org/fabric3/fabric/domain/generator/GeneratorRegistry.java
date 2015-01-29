@@ -19,19 +19,18 @@
  */
 package org.fabric3.fabric.domain.generator;
 
-import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.domain.generator.channel.EventStreamHandlerGenerator;
-import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
@@ -86,21 +85,10 @@ public interface GeneratorRegistry {
     <T extends ResourceDefinition> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns the {@link InterceptorGenerator} for the qualified name.
+     * Returns registered {@link InterceptorGenerator}s.
      *
-     * @param extensionName qualified name of the policy extension
-     * @return interceptor generator
-     * @throws GeneratorNotFoundException if no generator is registered for the policy extension type
+     * @return interceptor generators
      */
-    InterceptorGenerator getInterceptorGenerator(QName extensionName) throws GeneratorNotFoundException;
-
-    /**
-     * Returns the {@link EventStreamHandlerGenerator} for the qualified name.
-     *
-     * @param extensionName qualified name of the generator
-     * @return the generator
-     * @throws GeneratorNotFoundException if no generator is registered for qualified name
-     */
-    EventStreamHandlerGenerator getEventStreamHandlerGenerator(QName extensionName) throws GeneratorNotFoundException;
+    List<InterceptorGenerator> getInterceptorGenerators();
 
 }

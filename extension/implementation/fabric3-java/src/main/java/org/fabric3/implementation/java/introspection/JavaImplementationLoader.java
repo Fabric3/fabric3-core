@@ -39,12 +39,10 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 @EagerInit
 public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaImplementation> {
     private JavaImplementationIntrospector introspector;
-    private LoaderHelper loaderHelper;
 
 
     public JavaImplementationLoader(@Reference JavaImplementationIntrospector introspector, @Reference LoaderHelper loaderHelper) {
         this.introspector = introspector;
-        this.loaderHelper = loaderHelper;
         addAttributes("class", "requires", "policySets");
     }
 
@@ -62,8 +60,6 @@ public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaI
             LoaderUtil.skipToEndElement(reader);
             return implementation;
         }
-        loaderHelper.loadPolicySetsAndIntents(implementation, reader, introspectionContext);
-
         LoaderUtil.skipToEndElement(reader);
 
         implementation.setImplementationClass(implClass);

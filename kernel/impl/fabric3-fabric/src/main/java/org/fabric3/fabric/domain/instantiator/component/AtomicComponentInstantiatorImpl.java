@@ -73,10 +73,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             return component;
         }
         ComponentType componentType = impl.getComponentType();
-        if (componentTypeOverride) {
-            // SCA policy conformance: override policy sets configured on the component type
-            component.getPolicySets().removeAll(definition.getPolicySets());
-        }
         initializeProperties(component, definition, context);
         createServices(definition, component, componentType);
         createReferences(definition, component, componentType);
@@ -105,7 +101,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             // service is configured in the component definition
             ComponentService componentService = definition.getServices().get(name);
             if (componentService != null) {
-                logicalService.addIntents(componentService.getIntents());
                 for (BindingDefinition binding : componentService.getBindings()) {
                     LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
                     logicalService.addBinding(logicalBinding);
@@ -128,7 +123,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             ComponentReference componentReference = definition.getReferences().get(name);
             if (componentReference != null) {
                 // reference is configured in the component definition
-                logicalReference.addIntents(componentReference.getIntents());
                 for (BindingDefinition binding : componentReference.getBindings()) {
                     LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addBinding(logicalBinding);
@@ -161,7 +155,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             // producer is configured in the component definition
             ComponentConsumer componentConsumer = definition.getConsumers().get(name);
             if (componentConsumer != null) {
-                logicalConsumer.addIntents(componentConsumer.getIntents());
                 // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentConsumer.getSources()) {
                     addSource(logicalConsumer, uri, component);
@@ -184,7 +177,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             // producer is configured in the component definition
             ComponentProducer componentProducer = definition.getProducers().get(name);
             if (componentProducer != null) {
-                logicalProducer.addIntents(componentProducer.getIntents());
                 // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentProducer.getTargets()) {
                     addTarget(logicalProducer, uri, component);

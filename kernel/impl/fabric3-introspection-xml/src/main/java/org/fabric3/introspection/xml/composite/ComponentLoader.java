@@ -142,8 +142,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         definition.setKey(key);
         definition.setOrder(order);
 
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
-
         validateAttributes(reader, context, definition);
 
         if (roundTrip) {

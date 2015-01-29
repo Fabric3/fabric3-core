@@ -18,14 +18,13 @@
  */
 package org.fabric3.async.generator;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.w3c.dom.Element;
+import java.util.Optional;
 
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Creates {@link NonBlockingInterceptorDefinition}s for one-way operations.
@@ -33,7 +32,7 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 @EagerInit
 public class NonBlockingGenerator implements InterceptorGenerator {
 
-    public PhysicalInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) {
-        return new NonBlockingInterceptorDefinition();
+    public Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) {
+        return source.getDefinition().isOneWay() ? Optional.of(new NonBlockingInterceptorDefinition()) : Optional.empty();
     }
 }

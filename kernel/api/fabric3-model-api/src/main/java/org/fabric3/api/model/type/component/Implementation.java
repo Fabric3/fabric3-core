@@ -19,21 +19,17 @@
  */
 package org.fabric3.api.model.type.component;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.model.type.AbstractPolicyAware;
-import org.fabric3.api.model.type.CapabilityAware;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A base component implementation.
  */
-public abstract class Implementation<T extends ComponentType> extends AbstractPolicyAware<ComponentDefinition> implements CapabilityAware {
+public abstract class Implementation<T extends ComponentType> extends ModelObject<ComponentDefinition> {
     private static final long serialVersionUID = -6060603636927660850L;
 
     private T componentType;
-    private final Set<String> requiredCapabilities = new HashSet<>();
 
     protected Implementation() {
     }
@@ -59,24 +55,6 @@ public abstract class Implementation<T extends ComponentType> extends AbstractPo
     public void setComponentType(T componentType) {
         componentType.setParent(this);
         this.componentType = componentType;
-    }
-
-    /**
-     * Returns true if this implementation corresponds to the supplied XML element.
-     *
-     * @param type the QName of the implementation element
-     * @return true if this instance is of the supplied type
-     */
-    public boolean isType(QName type) {
-        return getType().equals(type);
-    }
-
-    public Set<String> getRequiredCapabilities() {
-        return requiredCapabilities;
-    }
-
-    public void addRequiredCapability(String capability) {
-        requiredCapabilities.add(capability);
     }
 
     /**

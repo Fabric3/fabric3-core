@@ -201,8 +201,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.setContributionUri(context.getContributionUri());
         type.setLocal(local);
 
-        loaderHelper.loadPolicySetsAndIntents(type, reader, childContext);
-
         validateAttributes(reader, context, type);
 
         while (true) {

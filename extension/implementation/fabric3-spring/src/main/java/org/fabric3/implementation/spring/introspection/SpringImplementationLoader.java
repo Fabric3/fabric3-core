@@ -22,7 +22,6 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -42,7 +41,6 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -54,11 +52,9 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class SpringImplementationLoader extends AbstractValidatingTypeLoader<SpringImplementation> {
     private SpringImplementationProcessor processor;
-    private LoaderHelper loaderHelper;
 
-    public SpringImplementationLoader(@Reference SpringImplementationProcessor processor, @Reference LoaderHelper loaderHelper) {
+    public SpringImplementationLoader(@Reference SpringImplementationProcessor processor) {
         this.processor = processor;
-        this.loaderHelper = loaderHelper;
         addAttributes("location", "requires", "policySets");
     }
 
@@ -78,8 +74,6 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
             return implementation;
         }
         implementation.setLocation(locationAttr);
-
-        loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
 
         LoaderUtil.skipToEndElement(reader);
 
@@ -119,11 +113,7 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
         } else if (new File(resource.getPath()).isDirectory()) {
             // location is a directory
             File directory = new File(resource.getPath());
-            File[] files = directory.listFiles(new FileFilter() {
-                public boolean accept(File pathname) {
-                    return (pathname.getName().endsWith(".xml"));
-                }
-            });
+            File[] files = directory.listFiles(pathname -> (pathname.getName().endsWith(".xml")));
             if (files == null || files.length == 0) {
                 InvalidValue error = new InvalidValue("Invalid file location: no application contexts found", startLocation, implementation);
                 context.addError(error);

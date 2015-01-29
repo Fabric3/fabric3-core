@@ -16,8 +16,12 @@
  */
 package org.fabric3.api.model.type.component;
 
+import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A channel configuration in a composite.
@@ -31,6 +35,8 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     private URI contributionUri;
     private String type = DEFAULT_TYPE;
     private boolean local;
+
+    private Map<QName, Serializable> metadata = new HashMap<>();
 
     public ChannelDefinition(String name) {
         this.name = name;
@@ -109,5 +115,17 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
      */
     public void setLocal(boolean local) {
         this.local = local;
+    }
+
+    public void addMetadata(QName name, Serializable data) {
+        metadata.put(name, data);
+    }
+
+    public <T> T getMetadata(QName name, Class<T> type) {
+        return type.cast(metadata.get(name));
+    }
+
+    public Map<QName, Serializable> getMetadata() {
+        return metadata;
     }
 }

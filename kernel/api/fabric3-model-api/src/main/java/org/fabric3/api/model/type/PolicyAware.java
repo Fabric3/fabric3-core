@@ -19,80 +19,24 @@
  */
 package org.fabric3.api.model.type;
 
-import javax.xml.namespace.QName;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 /**
- * Indicates intents or policySet definitions may be associated with a type.
+ * A type which policies apply to.
  */
 public interface PolicyAware {
 
     /**
-     * Add an intent to the definition.
+     * Returns the list of configured policies.
      *
-     * @param intent the intent
+     * @return the list of configured policies.
      */
-    public void addIntent(QName intent);
+    List<String> getPolicies();
 
     /**
-     * Returns the intents this definition references.
+     * Adds a policy.
      *
-     * @return the intents this definition references
+     * @param policy the policy
      */
-    Set<QName> getIntents();
-
-    /**
-     * Add a policy set to the definition.
-     *
-     * @param policySet the policy set
-     */
-    public void addPolicySet(QName policySet);
-
-    /**
-     * Returns the policySets this definition references.
-     *
-     * @return the policySets this definition references
-     */
-    Set<QName> getPolicySets();
-
-    /**
-     * Sets the intents this definition references.
-     *
-     * @param intents the intents this definition references
-     */
-    void setIntents(Set<QName> intents);
-
-    /**
-     * Returns the policySets this definition references.
-     *
-     * @param policySets the policySets this definition references
-     */
-    void setPolicySets(Set<QName> policySets);
-
-    /**
-     * Adds intent or policy metadata.
-     *
-     * @param name qualified name of the intent or policy
-     * @param data the metadata
-     */
-    void addMetadata(QName name, Serializable data);
-
-    /**
-     * Adds intent or policy metadata.
-     *
-     * @param name qualified name of the intent or policy
-     * @param type the metadata type
-     * @return the metadata or null if not found
-     */
-    <T> T getMetadata(QName name, Class<T> type);
-
-    /**
-     * Returns all policy-related metadata defined for the model object.
-     *
-     * @return all policy-related metadata
-     */
-    public Map<QName, Serializable> getMetadata();
-
+    void addPolicy(String policy);
 }

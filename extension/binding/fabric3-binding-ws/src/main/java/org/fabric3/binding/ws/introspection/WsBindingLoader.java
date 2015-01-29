@@ -29,13 +29,12 @@ import java.util.Map;
 
 import org.fabric3.api.binding.ws.model.EndpointReference;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -49,17 +48,14 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
     private static final String WSDL_NS = "http://www.w3.org/ns/wsdl-instance";
     private static final String WSDL_2004_NS = "http://www.w3.org/2004/08/wsdl-instance";
 
-    private final LoaderHelper loaderHelper;
     private final LoaderRegistry registry;
 
     /**
      * Constructor.
      *
-     * @param loaderHelper the policy helper
-     * @param registry     the loader registry
+     * @param registry the loader registry
      */
-    public WsBindingLoader(@Reference LoaderHelper loaderHelper, @Reference LoaderRegistry registry) {
-        this.loaderHelper = loaderHelper;
+    public WsBindingLoader(@Reference LoaderRegistry registry) {
         this.registry = registry;
         addAttributes("uri", "impl", "wsdlElement", "wsdlLocation", "requires", "policySets", "name", "retries");
     }
@@ -80,8 +76,6 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
         URI targetUri = parseTargetUri(reader, context);
 
         WsBindingDefinition binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
-
-        loaderHelper.loadPolicySetsAndIntents(binding, reader, context);
 
         validateAttributes(reader, context, binding);
 
@@ -104,8 +98,8 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
                         EndpointReference endpointReference = (EndpointReference) elementValue;
                         if (targetUri != null) {
                             InvalidValue error = new InvalidValue("Cannot specify both a target URI and endpoint reference on a web services binding",
-                                                     startAttribute,
-                                                     binding);
+                                                                  startAttribute,
+                                                                  binding);
                             context.addError(error);
                         } else {
                             binding.setTargetUri(endpointReference.getAddress());

@@ -170,4 +170,11 @@ public @interface JMSConfiguration {
      */
     public String subscriptionId() default "";
 
+    /**
+     * Specifies if the connection should use client acknowledgement.
+     *
+     * @return if the connection should use client acknowledgement
+     */
+    public boolean clientAcknowledge() default false;
+
 }

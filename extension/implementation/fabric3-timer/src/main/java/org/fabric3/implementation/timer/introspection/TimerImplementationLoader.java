@@ -24,18 +24,17 @@ import javax.xml.stream.XMLStreamReader;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+import org.fabric3.api.implementation.timer.model.TimerData;
+import org.fabric3.api.implementation.timer.model.TimerImplementation;
+import org.fabric3.api.implementation.timer.model.TimerType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
 import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
-import org.fabric3.api.implementation.timer.model.TimerImplementation;
-import org.fabric3.api.implementation.timer.model.TimerData;
-import org.fabric3.api.implementation.timer.model.TimerType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.implementation.timer.model.TimerData.UNSPECIFIED;
 
@@ -44,11 +43,9 @@ import static org.fabric3.api.implementation.timer.model.TimerData.UNSPECIFIED;
  */
 public class TimerImplementationLoader extends AbstractValidatingTypeLoader<TimerImplementation> {
     private final JavaImplementationIntrospector introspector;
-    private final LoaderHelper loaderHelper;
 
-    public TimerImplementationLoader(@Reference JavaImplementationIntrospector introspector, @Reference LoaderHelper loaderHelper) {
+    public TimerImplementationLoader(@Reference JavaImplementationIntrospector introspector) {
         this.introspector = introspector;
-        this.loaderHelper = loaderHelper;
         addAttributes("class", "intervalClass", "fixedRate", "repeatInterval", "fireOnce", "initialDelay", "unit", "requires", "policySets", "poolName");
     }
 
@@ -80,8 +77,6 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
         processFireOnce(reader, startLocation, context, implementation);
         processIntervalMethod(context, implementation);
         validateData(startLocation, context, data);
-
-        loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
 
         String implClass = implementation.getImplementationClass();
         InjectingComponentType componentType = new InjectingComponentType(implClass);

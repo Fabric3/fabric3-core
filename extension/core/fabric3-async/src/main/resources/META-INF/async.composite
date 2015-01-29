@@ -21,7 +21,7 @@
            name="AsyncExtension"
            autowire="true">
 
-    <component name="NonBlockingGenerator" f3:key="{urn:fabric3.org}oneWayPolicy">
+    <component name="NonBlockingGenerator">
         <f3:implementation.system class="org.fabric3.async.generator.NonBlockingGenerator"/>
     </component>
 

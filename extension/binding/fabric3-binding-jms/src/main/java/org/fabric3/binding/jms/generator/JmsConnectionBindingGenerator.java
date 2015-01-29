@@ -19,11 +19,9 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
@@ -36,7 +34,6 @@ import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
@@ -46,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.spi.model.physical.ChannelConstants.DURABLE_INTENT;
-import static org.fabric3.spi.model.physical.ChannelConstants.NON_PERSISTENT_INTENT;
 
 /**
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.
@@ -56,10 +51,6 @@ import static org.fabric3.spi.model.physical.ChannelConstants.NON_PERSISTENT_INT
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
     private static final String JAXB = "JAXB";
 
-    /**
-     * Indicates consumers on a channel will receive messages using CLIENT_ACKNOWLEDGE mode
-     */
-    private static final QName CLIENT_ACKNOWLEDGE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "clientAcknowledge");
 
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
@@ -74,7 +65,6 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
                                                                        ChannelDeliveryType deliveryType) throws GenerationException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
-        generateIntents(binding, metadata);
         SessionType sessionType = getSessionType(binding);
 
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), sessionType);
@@ -97,7 +87,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
     }
 
     private SessionType getSessionType(LogicalBinding<JmsBindingDefinition> binding) {
-        return binding.getDefinition().getIntents().contains(CLIENT_ACKNOWLEDGE_INTENT) ? SessionType.CLIENT_ACKNOWLEDGE : SessionType.AUTO_ACKNOWLEDGE;
+        return binding.getDefinition().getJmsMetadata().isClientAcknowledge() ? SessionType.CLIENT_ACKNOWLEDGE : SessionType.AUTO_ACKNOWLEDGE;
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
@@ -105,8 +95,6 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
                                                                        ChannelDeliveryType deliveryType) throws GenerationException {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
-
-        generateIntents(binding, metadata);
 
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), SessionType.AUTO_ACKNOWLEDGE);
 
@@ -123,23 +111,6 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
             throws GenerationException {
         // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
         return new JmsChannelBindingDefinition();
-    }
-
-    /**
-     * Generates intent metadata
-     *
-     * @param binding  the binding
-     * @param metadata the JSM metadata
-     */
-    private void generateIntents(LogicalBinding<JmsBindingDefinition> binding, JmsBindingMetadata metadata) {
-        LogicalChannel parent = (LogicalChannel) binding.getParent();
-        if (binding.getDefinition().getIntents().contains(DURABLE_INTENT) || parent.getDefinition().getIntents().contains(DURABLE_INTENT)) {
-            metadata.setDurable(true);
-        }
-        if (binding.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT) || parent.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT)) {
-            metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        }
-
     }
 
     private boolean isJAXB(List<DataType> eventTypes) {

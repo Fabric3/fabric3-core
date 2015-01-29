@@ -16,8 +16,6 @@
  */
 package org.fabric3.api.model.type.builder;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.F3NamespaceContext;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -148,30 +146,6 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
     public T order(int order) {
         checkState();
         getDefinition().setOrder(order);
-        return builder();
-    }
-
-    /**
-     * Adds an intent to the implementation.
-     *
-     * @param intent the intent
-     * @return the builder
-     */
-    public T implementationIntent(QName intent) {
-        checkState();
-        getDefinition().getImplementation().addIntent(intent);
-        return builder();
-    }
-
-    /**
-     * Adds an intent to the component.
-     *
-     * @param intent the intent
-     * @return the builder
-     */
-    public T componentIntent(QName intent) {
-        checkState();
-        getDefinition().addIntent(intent);
         return builder();
     }
 

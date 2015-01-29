@@ -26,13 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.model.type.AbstractPolicyAware;
-import org.fabric3.api.model.type.CapabilityAware;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Base binding representation.
  */
-public abstract class BindingDefinition extends AbstractPolicyAware<BindableDefinition> implements CapabilityAware {
+public abstract class BindingDefinition extends ModelObject<BindableDefinition> {
     private static final long serialVersionUID = 8780407747984243865L;
 
     protected URI targetUri;

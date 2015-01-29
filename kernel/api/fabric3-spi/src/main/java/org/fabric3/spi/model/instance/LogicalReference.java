@@ -51,11 +51,6 @@ public class LogicalReference extends Bindable {
         this.definition = definition;
         promotedUris = new ArrayList<>();
         leafReference = this;
-        if (definition != null) {
-            // null check for testing so full model does not need to be instantiated
-            addIntents(definition.getIntents());
-            addPolicySets(definition.getPolicySets());
-        }
     }
 
     /**

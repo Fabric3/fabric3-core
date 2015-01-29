@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
@@ -82,7 +81,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
             URI classLoaderId = target.getSEIClassLoaderUri();
-            List<QName> requestedIntents = target.getIntents();
 
             ClassLoader classLoader = registry.getClassLoader(classLoaderId);
 

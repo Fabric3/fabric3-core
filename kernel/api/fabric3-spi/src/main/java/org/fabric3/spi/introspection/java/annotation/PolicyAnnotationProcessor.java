@@ -25,8 +25,8 @@ import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Parses intent and policy set annotations (i.e. annotations marked with @Intent, @Requires and @PolicySet) and updates the model object they are
- * attached to. Implementations must also support the Fabric3 annotation {@link IntentMetaData}.
+ * Parses intent and policy set annotations (i.e. annotations marked with @Intent) and updates the model object they are attached to. Implementations must also
+ * support the Fabric3 annotation {@link IntentMetaData}.
  */
 public interface PolicyAnnotationProcessor {
 

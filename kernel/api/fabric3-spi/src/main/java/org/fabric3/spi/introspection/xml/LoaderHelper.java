@@ -19,20 +19,17 @@
  */
 package org.fabric3.spi.introspection.xml;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.w3c.dom.Document;
-
-import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.w3c.dom.Document;
 
 /**
  * Helper service for handling XML.
@@ -66,16 +63,6 @@ public interface LoaderHelper {
      * @throws XMLStreamException if there was a problem reading the stream
      */
     Document loadPropertyValue(String content) throws XMLStreamException;
-
-    /**
-     * Loads policy sets and intents. Errors will be collated in the IntrospectionContext.
-     *
-     * @param policyAware Element against which policy sets and intents are declared.
-     * @param reader      XML stream reader from where the attributes are read.
-     * @param context     the introspection context.
-     */
-    void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context);
-
 
     /**
      * Convert a URI from a String form of <code>component/service</code> to a URI form of <code>component/service</code>.

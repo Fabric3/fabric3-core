@@ -21,78 +21,22 @@ package org.fabric3.databinding.jaxb.introspection;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
-import java.awt.Image;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.TypeIntrospector;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.oasisopen.sca.annotation.Reference;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 /**
- * Introspects operations for the presence of JAXB types. If a parameter is a JAXB type, the JAXB intent is added to the operation.
+ * Introspects operations for the presence of JAXB types.
  */
 public class JAXBTypeIntrospector implements TypeIntrospector {
     private static final String JAXB = "JAXB";
     private static final String DEFAULT = "##default";
-    private static final Map<Class, QName> JAXB_MAPPING;
-
-    static {
-        JAXB_MAPPING = new IdentityHashMap<>();
-        JAXB_MAPPING.put(Boolean.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "boolean"));
-        JAXB_MAPPING.put(Byte.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "byte"));
-        JAXB_MAPPING.put(Short.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "short"));
-        JAXB_MAPPING.put(Integer.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "int"));
-        JAXB_MAPPING.put(Long.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "long"));
-        JAXB_MAPPING.put(Float.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "float"));
-        JAXB_MAPPING.put(Double.TYPE, new QName(W3C_XML_SCHEMA_NS_URI, "double"));
-        JAXB_MAPPING.put(Boolean.class, new QName(W3C_XML_SCHEMA_NS_URI, "boolean"));
-        JAXB_MAPPING.put(Byte.class, new QName(W3C_XML_SCHEMA_NS_URI, "byte"));
-        JAXB_MAPPING.put(Short.class, new QName(W3C_XML_SCHEMA_NS_URI, "short"));
-        JAXB_MAPPING.put(Integer.class, new QName(W3C_XML_SCHEMA_NS_URI, "int"));
-        JAXB_MAPPING.put(Long.class, new QName(W3C_XML_SCHEMA_NS_URI, "long"));
-        JAXB_MAPPING.put(Float.class, new QName(W3C_XML_SCHEMA_NS_URI, "float"));
-        JAXB_MAPPING.put(Double.class, new QName(W3C_XML_SCHEMA_NS_URI, "double"));
-        JAXB_MAPPING.put(String.class, new QName(W3C_XML_SCHEMA_NS_URI, "string"));
-        JAXB_MAPPING.put(BigInteger.class, new QName(W3C_XML_SCHEMA_NS_URI, "integer"));
-        JAXB_MAPPING.put(BigDecimal.class, new QName(W3C_XML_SCHEMA_NS_URI, "decimal"));
-        JAXB_MAPPING.put(Calendar.class, new QName(W3C_XML_SCHEMA_NS_URI, "dateTime"));
-        JAXB_MAPPING.put(Date.class, new QName(W3C_XML_SCHEMA_NS_URI, "dateTime"));
-        JAXB_MAPPING.put(QName.class, new QName(W3C_XML_SCHEMA_NS_URI, "QName"));
-        JAXB_MAPPING.put(URI.class, new QName(W3C_XML_SCHEMA_NS_URI, "string"));
-        JAXB_MAPPING.put(XMLGregorianCalendar.class, new QName(W3C_XML_SCHEMA_NS_URI, "anySimpleType"));
-        JAXB_MAPPING.put(Duration.class, new QName(W3C_XML_SCHEMA_NS_URI, "duration"));
-        JAXB_MAPPING.put(Object.class, new QName(W3C_XML_SCHEMA_NS_URI, "anyType"));
-        JAXB_MAPPING.put(Image.class, new QName(W3C_XML_SCHEMA_NS_URI, "base64Binary"));
-        JAXB_MAPPING.put(javax.activation.DataHandler.class, new QName(W3C_XML_SCHEMA_NS_URI, "base64Binary"));
-        JAXB_MAPPING.put(Source.class, new QName(W3C_XML_SCHEMA_NS_URI, "base64Binary"));
-        JAXB_MAPPING.put(UUID.class, new QName(W3C_XML_SCHEMA_NS_URI, "string"));
-        JAXB_MAPPING.put(byte[].class, new QName(W3C_XML_SCHEMA_NS_URI, "base64Binary"));
-    }
-
-    private JAXBQNameMapper mapper;
-
-    public JAXBTypeIntrospector(@Reference JAXBQNameMapper mapper) {
-        this.mapper = mapper;
-    }
 
     public void introspect(Operation operation, Method method, IntrospectionContext context) {
         // TODO perform error checking, e.g. mixing of databindings

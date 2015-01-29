@@ -3,14 +3,13 @@ package org.fabric3.api.model.type.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.model.type.AbstractPolicyAware;
 import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A model object which can be configured with a binding.
  */
 
-public abstract class BindableDefinition<P extends ModelObject> extends AbstractPolicyAware<P> {
+public abstract class BindableDefinition<P extends ModelObject> extends ModelObject<P> {
     private static final long serialVersionUID = -7495919678050678596L;
 
     protected List<BindingDefinition> bindings = new ArrayList<>();

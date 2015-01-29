@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -32,8 +31,6 @@ public class PhysicalWireDefinition implements Serializable {
 
     private PhysicalWireSourceDefinition source;
     private PhysicalWireTargetDefinition target;
-    private QName sourceDeployable;
-    private QName targetDeployable;
 
     private final Set<PhysicalOperationDefinition> operations;
     private boolean optimizable;
@@ -42,26 +39,6 @@ public class PhysicalWireDefinition implements Serializable {
         this.source = source;
         this.target = target;
         this.operations = operations;
-    }
-
-    public PhysicalWireDefinition(PhysicalWireSourceDefinition source,
-                                  QName sourceDeployable,
-                                  PhysicalWireTargetDefinition target,
-                                  QName targetDeployable,
-                                  Set<PhysicalOperationDefinition> operations) {
-        this.source = source;
-        this.sourceDeployable = sourceDeployable;
-        this.target = target;
-        this.operations = operations;
-        this.targetDeployable = targetDeployable;
-    }
-
-    public QName getSourceDeployable() {
-        return sourceDeployable;
-    }
-
-    public QName getTargetDeployable() {
-        return targetDeployable;
     }
 
     /**

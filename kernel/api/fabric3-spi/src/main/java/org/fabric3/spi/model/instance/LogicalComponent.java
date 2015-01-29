@@ -58,11 +58,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
         super(parent);
         this.uri = uri;
         this.definition = definition;
-        if (definition != null) {
-            // null check for testing so full model does not need to be instantiated
-            addIntents(definition.getIntents());
-            addPolicySets(definition.getPolicySets());
-        }
     }
 
     /**

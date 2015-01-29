@@ -30,6 +30,11 @@ import java.util.Set;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -38,16 +43,10 @@ import org.fabric3.spi.introspection.java.MultiplicityType;
 import org.fabric3.spi.introspection.java.NoConstructorFound;
 import org.fabric3.spi.introspection.java.UnknownInjectionType;
 import org.fabric3.spi.introspection.java.annotation.AmbiguousConstructor;
-import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.junit.After;
 import org.junit.Before;
 import org.oasisopen.sca.annotation.Reference;
@@ -60,7 +59,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
     private JavaContractProcessor contractProcessor;
 
     private HeuristicProcessor serviceHeuristic;
-    private PolicyAnnotationProcessor policyProcessor;
 
     public JUnitHeuristic(@Reference IntrospectionHelper helper,
                           @Reference JavaContractProcessor contractProcessor,
@@ -68,11 +66,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
         this.serviceHeuristic = serviceHeuristic;
-    }
-
-    @Reference
-    public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
-        this.policyProcessor = processor;
     }
 
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
@@ -179,7 +172,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             Type parameterType = parameterTypes[i];
             String name = helper.getSiteName(constructor, i, null);
             Annotation[] annotations = constructor.getParameterAnnotations()[i];
-            processSite(componentType, typeMapping, name, constructor, parameterType, site, annotations, context);
+            processSite(componentType, typeMapping, name, constructor, parameterType, site, context);
         }
     }
 
@@ -198,7 +191,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             String name = helper.getSiteName(setter, null);
             Type parameterType = setter.getGenericParameterTypes()[0];
             Annotation[] annotations = setter.getAnnotations();
-            processSite(componentType, typeMapping, name, setter, parameterType, site, annotations, context);
+            processSite(componentType, typeMapping, name, setter, parameterType, site, context);
         }
     }
 
@@ -217,7 +210,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             String name = helper.getSiteName(field, null);
             Type parameterType = field.getGenericType();
             Annotation[] annotations = field.getAnnotations();
-            processSite(componentType, typeMapping, name, field, parameterType, site, annotations, context);
+            processSite(componentType, typeMapping, name, field, parameterType, site, context);
         }
     }
 
@@ -227,7 +220,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
                              Member member,
                              Type parameterType,
                              InjectionSite site,
-                             Annotation[] annotations,
                              IntrospectionContext context) {
         InjectableType type = helper.inferType(parameterType, typeMapping);
         switch (type) {
@@ -235,7 +227,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
                 addProperty(componentType, typeMapping, name, parameterType, site);
                 break;
             case REFERENCE:
-                addReference(componentType, typeMapping, name, parameterType, site, annotations, context);
+                addReference(componentType, typeMapping, name, parameterType, site, context);
                 break;
             case CALLBACK:
                 // ignore
@@ -258,17 +250,11 @@ public class JUnitHeuristic implements HeuristicProcessor {
                               String name,
                               Type parameterType,
                               InjectionSite site,
-                              Annotation[] annotations,
                               IntrospectionContext context) {
         Class<?> type = helper.getBaseType(parameterType, typeMapping);
         ServiceContract contract = contractProcessor.introspect(type, context, componentType);
         ReferenceDefinition reference = new ReferenceDefinition(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
-        if (policyProcessor != null) {
-            for (Annotation annotation : annotations) {
-                policyProcessor.process(annotation, reference, context);
-            }
-        }
         componentType.add(reference, site);
     }
 }

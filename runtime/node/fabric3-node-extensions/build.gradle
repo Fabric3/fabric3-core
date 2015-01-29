@@ -21,7 +21,6 @@ dependencies {
     compile project(':extension:federated:fabric3-federation-node')
     compile project(':extension:federated:fabric3-jgroups')
     compile project(':extension:federated:fabric3-federation-jgroups')
-    compile project(':extension:core:fabric3-sca-intents')
 
     compile group: 'com.lmax', name: 'disruptor', version: disruptorVersion
 
@@ -48,7 +47,6 @@ task distZip(type: Zip) {
     dependsOn(':extension:federated:fabric3-federation-node:jar')
     dependsOn(':extension:federated:fabric3-jgroups:jar')
     dependsOn(':extension:federated:fabric3-federation-jgroups:jar')
-    dependsOn(':extension:core:fabric3-sca-intents:jar')
 
     destinationDir = file("$buildDir/libs")
     into('extensions') {

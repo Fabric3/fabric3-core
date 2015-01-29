@@ -88,10 +88,6 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         Composite composite = definition.getImplementation().getComponentType();
 
         LogicalCompositeComponent component = new LogicalCompositeComponent(uri, definition, parent);
-        if (componentTypeOverride) {
-            // SCA policy conformance: override policy sets configured on the component type
-            component.getPolicySets().removeAll(definition.getPolicySets());
-        }
         initializeProperties(component, definition, context);
         instantiateChildComponents(component, composite, context);
         instantiateCompositeServices(component, composite);
@@ -177,7 +173,6 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                     logicalService.overrideCallbackBindings(callbackBindings);
 
                 }
-                logicalService.addIntents(componentService.getIntents());
             }
             component.addService(logicalService);
         }
@@ -225,7 +220,6 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                     }
                     logicalReference.overrideBindings(bindings);
                 }
-                logicalReference.addIntents(componentReference.getIntents());
             }
             component.addReference(logicalReference);
         }

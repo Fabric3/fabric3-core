@@ -33,7 +33,6 @@ public class PhysicalEventStreamDefinition implements Serializable {
     private String name;
     private List<String> eventTypes = new ArrayList<>();
     private List<PhysicalEventFilterDefinition> filters = new ArrayList<>();
-    private List<PhysicalHandlerDefinition> handlers = new ArrayList<>();
     private boolean channelEvent;
 
     public PhysicalEventStreamDefinition(String name) {
@@ -92,24 +91,6 @@ public class PhysicalEventStreamDefinition implements Serializable {
      */
     public void addFilterDefinition(PhysicalEventFilterDefinition definition) {
         filters.add(definition);
-    }
-
-    /**
-     * Returns the {@link PhysicalHandlerDefinition}s for the stream.
-     *
-     * @return handler definitions for the stream
-     */
-    public List<PhysicalHandlerDefinition> getHandlers() {
-        return handlers;
-    }
-
-    /**
-     * Adds a {@link PhysicalHandlerDefinition} to the stream.
-     *
-     * @param definition the definition
-     */
-    public void addHandlerDefinition(PhysicalHandlerDefinition definition) {
-        handlers.add(definition);
     }
 
     /**

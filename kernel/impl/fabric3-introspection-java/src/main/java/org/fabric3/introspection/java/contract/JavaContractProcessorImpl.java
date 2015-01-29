@@ -19,7 +19,6 @@
  */
 package org.fabric3.introspection.java.contract;
 
-import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Reference;
@@ -48,8 +46,6 @@ import org.oasisopen.sca.annotation.Remotable;
  * Default implementation of a ContractProcessor for Java interfaces.
  */
 public class JavaContractProcessorImpl implements JavaContractProcessor {
-    public static final QName ONEWAY_INTENT = new QName(Constants.SCA_NS, "oneWay");
-
     private final IntrospectionHelper helper;
     private List<InterfaceIntrospector> interfaceIntrospectors;
     private List<TypeIntrospector> typeIntrospectors;
@@ -142,8 +138,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             Operation operation = new Operation(name, paramTypes, returnType, faultTypes);
             operation.setRemotable(remotable);
 
-            if (method.isAnnotationPresent(org.oasisopen.sca.annotation.OneWay.class) || method.isAnnotationPresent(OneWay.class)) {
-                operation.addIntent(ONEWAY_INTENT);
+            if (method.isAnnotationPresent(OneWay.class)) {
+                operation.setOneWay(true);
             }
 
             for (TypeIntrospector introspector : typeIntrospectors) {

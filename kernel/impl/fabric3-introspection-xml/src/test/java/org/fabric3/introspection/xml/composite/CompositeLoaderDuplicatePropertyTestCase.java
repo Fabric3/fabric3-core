@@ -19,12 +19,11 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
@@ -37,12 +36,8 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
  *
  */
 public class CompositeLoaderDuplicatePropertyTestCase extends TestCase {
-    public static final String PROP_NAME = "notThere";
-    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' "
-            + "targetNamespace='http://example.com' name='composite'>"
-            + "<property name='prop'/>"
-            + "<property name='prop'/>"
-            + "</composite>";
+    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' " + "targetNamespace='http://example.com' name='composite'>"
+                         + "<property name='prop'/>" + "<property name='prop'/>" + "</composite>";
 
     private CompositeLoader loader;
     private XMLStreamReader reader;

@@ -40,7 +40,7 @@ public interface BindingProvider {
     QName getType();
 
     /**
-     * Determines if this binding provider can be used as a remote transport for a wire. Implementations must take into account required intents.
+     * Determines if this binding provider can be used as a remote transport for a wire.
      *
      * @param wire the wire
      * @return if the binding provider can wire from the source to target
@@ -48,7 +48,7 @@ public interface BindingProvider {
     BindingMatchResult canBind(LogicalWire wire);
 
     /**
-     * Determines if this binding provider can be used as a remote transport for a service. Implementations must take into account required intents.
+     * Determines if this binding provider can be used as a remote transport for a service.
      *
      * @param service the service
      * @return if the binding provider can bind the service

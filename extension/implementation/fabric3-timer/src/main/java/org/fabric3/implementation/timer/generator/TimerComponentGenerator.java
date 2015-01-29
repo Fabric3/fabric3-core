@@ -18,23 +18,17 @@
  */
 package org.fabric3.implementation.timer.generator;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.java.generator.JavaGenerationHelper;
-import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.api.implementation.timer.model.TimerImplementation;
-import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.api.implementation.timer.model.TimerData;
+import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.JavaImplementation;
+import org.fabric3.implementation.java.generator.JavaGenerationHelper;
+import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -46,14 +40,16 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates physical metadata for a Timer component deployment.
  */
 @EagerInit
 public class TimerComponentGenerator implements ComponentGenerator<LogicalComponent<TimerImplementation>> {
-    private static final QName MANAGED_TRANSACTION = new QName(Constants.SCA_NS, "managedTransaction");
+    private static final String MANAGED_TRANSACTION = "managedTransaction";
+
     private JavaGenerationHelper generationHelper;
 
     public TimerComponentGenerator(@Reference JavaGenerationHelper generationHelper) {
@@ -65,25 +61,24 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         generationHelper.generate(definition, component);
         TimerImplementation implementation = component.getDefinition().getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
-        definition.setTransactional(implementation.getIntents().contains(MANAGED_TRANSACTION)
-                                            || componentType.getIntents().contains(MANAGED_TRANSACTION));
+        definition.setTransactional(componentType.getPolicies().contains(MANAGED_TRANSACTION));
         TimerData data = implementation.getTimerData();
         definition.setTriggerData(data);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        generationHelper.generateWireSource(definition, reference, policy);
+        generationHelper.generateWireSource(definition, reference);
         return definition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
-        generationHelper.generateCallbackWireSource(definition, source, callbackContract, policy);
+        generationHelper.generateCallbackWireSource(definition, source, callbackContract);
         return definition;
     }
 
@@ -103,7 +98,7 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         throw new UnsupportedOperationException("Timer components cannot be configured as event consumers");
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
         throw new UnsupportedOperationException("Cannot wire to timer components");
     }
 }

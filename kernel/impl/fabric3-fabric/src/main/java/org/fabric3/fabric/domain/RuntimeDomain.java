@@ -25,13 +25,12 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Implements a domain for system components in a runtime. Fabric3 runtimes are constituted using SCA components and the runtime domain manages
- * deployment of those system components. When a runtime is booted, the runtime domain is provided with a set of primordial services for deploying
- * system components. After bootstrap, the runtime domain is reinjected with a new set of fully-configured deployment services.
+ * Implements a domain for system components in a runtime. Fabric3 runtimes are constituted using SCA components and the runtime domain manages deployment of
+ * those system components. When a runtime is booted, the runtime domain is provided with a set of primordial services for deploying system components. After
+ * bootstrap, the runtime domain is reinjected with a new set of fully-configured deployment services.
  */
 public class RuntimeDomain extends AbstractDomain {
 
@@ -43,14 +42,7 @@ public class RuntimeDomain extends AbstractDomain {
                          @Reference Collector collector,
                          @Reference ContributionHelper contributionHelper,
                          @Reference HostInfo info) {
-        super(metadataStore,
-              logicalComponentManager,
-              generator,
-              logicalModelInstantiator,
-              deployer,
-              collector,
-              contributionHelper,
-              info);
+        super(metadataStore, logicalComponentManager, generator, logicalModelInstantiator, deployer, collector, contributionHelper, info);
     }
 
     /**
@@ -71,21 +63,6 @@ public class RuntimeDomain extends AbstractDomain {
     @Reference
     public void setDeployer(Deployer deployer) {
         this.deployer = deployer;
-    }
-
-    /**
-     * Used to inject the PolicyRegistry after bootstrap.
-     *
-     * @param policyRegistry the registry
-     */
-    @Reference(required = false)
-    public void setPolicyRegistry(PolicyRegistry policyRegistry) {
-        this.policyRegistry = policyRegistry;
-    }
-
-    protected boolean isLocal() {
-        // classloader isolation check needed for webapp runtime
-        return info.supportsClassLoaderIsolation();
     }
 
 }

@@ -19,8 +19,6 @@
  */
 package org.fabric3.fabric.domain.generator;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
@@ -33,8 +31,8 @@ public class GeneratorNotFoundException extends GenerationException {
         super("Generator not registered for type: " + type.getName());
     }
 
-    public GeneratorNotFoundException(QName type) {
-        super("Generator not registered for type: " + type.toString());
+    public GeneratorNotFoundException(String type) {
+        super("Generator not registered for type: " + type);
     }
 
 }

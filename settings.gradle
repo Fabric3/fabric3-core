@@ -5,7 +5,7 @@ include 'kernel:api:fabric3-api', 'kernel:api:fabric3-model-api', 'kernel:api:fa
 
 // Kernel implementation projects
 include 'kernel:impl:fabric3-util', 'kernel:impl:fabric3-contribution', 'kernel:impl:fabric3-introspection-java', 'kernel:impl:fabric3-introspection-xml',
-        'kernel:impl:fabric3-monitor', 'kernel:impl:fabric3-pojo', 'kernel:impl:fabric3-policy', 'kernel:impl:fabric3-system',
+        'kernel:impl:fabric3-monitor', 'kernel:impl:fabric3-pojo', 'kernel:impl:fabric3-system',
         'kernel:impl:fabric3-thread-pool', 'kernel:impl:fabric3-transform', 'kernel:impl:fabric3-jdk-reflection', 'kernel:impl:fabric3-fabric'
 
 // Core extensions
@@ -13,7 +13,7 @@ include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy',
         'extension:core:fabric3-channel-impl', 'extension:core:fabric3-contribution-scanner', 'extension:core:fabric3-resource',
         'extension:core:fabric3-execution', 'extension:core:fabric3-jdk-proxy', 'extension:core:fabric3-jetty', 'extension:core:fabric3-monitor-spi',
         'extension:core:fabric3-monitor-appender', 'extension:core:fabric3-monitor-impl', 'extension:core:fabric3-monitor-log',
-        'extension:core:fabric3-sca-intents', 'extension:core:fabric3-test-spi'
+        'extension:core:fabric3-test-spi'
 
 // Federation extensions
 include 'extension:federated:fabric3-jgroups', 'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups'
@@ -26,8 +26,7 @@ include 'extension:implementation:fabric3-java', 'extension:implementation:fabri
 // Other extensions
 include 'extension:other:cache:fabric3-cache', 'extension:other:cache:fabric3-cache-ehcache', 'extension:other:databinding:fabric3-jaxb',
         'extension:other:databinding:fabric3-databinding-jaxb', 'extension:other:databinding:fabric3-databinding-json', 'extension:other:fabric3-jndi',
-        'extension:other:ftp:fabric3-ftp-spi', 'extension:other:ftp:fabric3-ftp-server', 'extension:other:tx:fabric3-datasource',
-        'extension:other:jpa:fabric3-hibernate-library', 'extension:other:jpa:fabric3-jpa-api', 'extension:other:jpa:fabric3-jpa-hibernate',
+        'extension:other:tx:fabric3-datasource', 'extension:other:jpa:fabric3-hibernate-library', 'extension:other:jpa:fabric3-jpa-api', 'extension:other:jpa:fabric3-jpa-hibernate',
         'extension:other:security:fabric3-security', 'extension:other:security:fabric3-security-impl', 'extension:other:spring:fabric3-spring-library',
         'extension:other:spring:fabric3-spring-spi', 'extension:other:spring:fabric3-spring-security', 'extension:other:timer:fabric3-timer-spi',
         'extension:other:timer:fabric3-timer-service', 'extension:other:tx:fabric3-tx', 'extension:other:tx:fabric3-atomikos-library',
@@ -42,8 +41,6 @@ include 'extension:node:fabric3-node-impl'
 include 'extension:binding:fabric3-binding-jms-api', 'extension:binding:fabric3-binding-jms', 'extension:binding:fabric3-activemq'
 
 include 'extension:binding:fabric3-binding-file-api', 'extension:binding:fabric3-binding-file'
-
-include 'extension:binding:fabric3-binding-ftp'
 
 include 'extension:binding:fabric3-binding-rs-api', 'extension:binding:fabric3-binding-rs', 'extension:binding:fabric3-binding-rs-jersey'
 
@@ -67,5 +64,5 @@ include 'runtime:weblogic:fabric3-weblogic-mock', 'runtime:weblogic:fabric3-webl
 
 include 'runtime:node:fabric3-node', 'runtime:node:fabric3-node-extensions', 'runtime:node:fabric3-node-distribution'
 
-include 'profile:profile-file', 'profile:profile-ftp', 'profile:profile-jms', 'profile:profile-jpa', 'profile:profile-rs',
+include 'profile:profile-file', 'profile:profile-jms', 'profile:profile-jpa', 'profile:profile-rs',
         'profile:profile-spring', 'profile:profile-timer', 'profile:profile-web', 'profile:profile-ws', 'profile:profile-zeromq', 'profile:profile-jeromq'

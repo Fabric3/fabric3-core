@@ -43,7 +43,6 @@ import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 public class JMSBindingLoaderTestCase extends TestCase {
@@ -183,30 +182,28 @@ public class JMSBindingLoaderTestCase extends TestCase {
         XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(BINDING_HANDLER.getBytes()));
         reader.nextTag();
 
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         LoaderRegistry registry = EasyMock.createStrictMock(LoaderRegistry.class);
 
         URI uri = URI.create("TestHandler");
         EasyMock.expect(registry.load(reader, BindingHandlerDefinition.class, context)).andReturn(new BindingHandlerDefinition(uri));
-        EasyMock.replay(helper, handlerRegistry, registry);
+        EasyMock.replay(handlerRegistry, registry);
 
-        JmsBindingLoader loader = new JmsBindingLoader(helper, registry);
+        JmsBindingLoader loader = new JmsBindingLoader(registry);
 
         loader.load(reader, context);
 
-        EasyMock.verify(helper, handlerRegistry, registry);
+        EasyMock.verify(handlerRegistry, registry);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         factory = XMLInputFactory.newInstance();
 
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);
         handlerRegistry = EasyMock.createNiceMock(BindingHandlerRegistry.class);
-        EasyMock.replay(helper, registry);
+        EasyMock.replay(registry);
 
-        loader = new JmsBindingLoader(helper, registry);
+        loader = new JmsBindingLoader(registry);
         context = new DefaultIntrospectionContext();
     }
 }

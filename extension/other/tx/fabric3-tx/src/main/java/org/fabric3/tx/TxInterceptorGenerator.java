@@ -18,21 +18,32 @@
  */
 package org.fabric3.tx;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.w3c.dom.Element;
+import java.util.List;
+import java.util.Optional;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Generates metadata for creating a TxInterceptor on a wire invocation chain.
  */
 @EagerInit
 public class TxInterceptorGenerator implements InterceptorGenerator {
+    private static final Optional<PhysicalInterceptorDefinition> PHYSICAL_INTERCEPTOR_DEFINITION = Optional.of(new TxInterceptorDefinition(TxAction.BEGIN));
 
-    public TxInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) {
-        String action = policy.getAttribute("action");
-        return new TxInterceptorDefinition(TxAction.valueOf(action));
+    public Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) {
+        ComponentType componentType = target.getParent().getParent().getDefinition().getImplementation().getComponentType();
+        List<String> policies = componentType.getPolicies();
+        if (!policies.isEmpty() && containsPolicy(policies)) {
+            return PHYSICAL_INTERCEPTOR_DEFINITION;
+        }
+        return Optional.empty();
+    }
+
+    private boolean containsPolicy(List<String> policies) {
+        return policies.contains("managedTransaction") || policies.contains("managedTransaction.local") || policies.contains("managedTransaction.global");
     }
 }

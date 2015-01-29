@@ -16,20 +16,19 @@
  */
 package org.fabric3.management.rest.framework.domain.deployment;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.Response;
@@ -71,7 +70,6 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
 
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
 
-        domain.activateDefinitions(contributionUri);
         domain.include(COMPOSITE_NAME);
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/thecontribution").atLeastOnce();
@@ -92,8 +90,6 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/thecontribution").atLeastOnce();
-
-        domain.activateDefinitions(contributionUri);
 
         List<AssemblyFailure> errors = new ArrayList<>();
         errors.add(new MockFailure());

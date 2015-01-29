@@ -21,21 +21,16 @@ package org.fabric3.fabric.domain.instantiator.promotion;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.fabric3.fabric.domain.instantiator.InstantiationContext;
-import org.fabric3.fabric.domain.instantiator.PromotionNormalizer;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
-import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
+import org.fabric3.fabric.domain.instantiator.PromotionNormalizer;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -43,43 +38,24 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.util.UriHelper;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Default implementation of the PromotionNormalizer.
- * <p/>
- * The service promotion normalization algorithm works as follows: <li>A reverse-ordered list of services is constructed by walking the service
- * promotion hierarchy from a leaf component to the domain component. The leaf service is added as the last list entry.
- * <p/>
- * <li>The list is iterated in order, starting with the service nearest the domain level.
- * <p/>
- * <li>For each entry, bindings are added or replaced (according to the override setting for the service), policies added, a service contract set if
- * not defined, and the leaf component set as the leaf parent. <li>
- * <p/>
- * </ul> The reference promotion algorithm works as follows: <li> A reverse-ordered list of references is constructed by walking the reference
- * promotion hierarchy from a leaf component to the domain component. The leaf reference is added as the last list entry.
- * <p/>
- * <li>The list is iterated in order, starting with the reference nearest the domain level.
- * <p/>
- * <li>For each entry, bindings are added or replaced (according to the override setting for the reference), policies added and a service contract set
- * if not defined
- * <p/>
- * <li>The list is iterated a second time and wires for references are examined with their targets pushed down to the next (child) level in the
- * hierarchy.
+ * Default implementation of the PromotionNormalizer. <p/> The service promotion normalization algorithm works as follows: <li>A reverse-ordered list of
+ * services is constructed by walking the service promotion hierarchy from a leaf component to the domain component. The leaf service is added as the last list
+ * entry. <p/> <li>The list is iterated in order, starting with the service nearest the domain level. <p/> <li>For each entry, bindings are added or replaced
+ * (according to the override setting for the service), policies added, a service contract set if not defined, and the leaf component set as the leaf parent.
+ * <li> <p/> </ul> The reference promotion algorithm works as follows: <li> A reverse-ordered list of references is constructed by walking the reference
+ * promotion hierarchy from a leaf component to the domain component. The leaf reference is added as the last list entry. <p/> <li>The list is iterated in
+ * order, starting with the reference nearest the domain level. <p/> <li>For each entry, bindings are added or replaced (according to the override setting for
+ * the reference), policies added and a service contract set if not defined <p/> <li>The list is iterated a second time and wires for references are examined
+ * with their targets pushed down to the next (child) level in the hierarchy.
  */
 public class PromotionNormalizerImpl implements PromotionNormalizer {
-    private PolicyRegistry registry;
 
     /**
      * Bootstrap constructor.
      */
     public PromotionNormalizerImpl() {
-    }
-
-    @Constructor
-    public PromotionNormalizerImpl(@Reference PolicyRegistry registry) {
-        this.registry = registry;
     }
 
     public void normalize(LogicalComponent<?> component, InstantiationContext context) {
@@ -129,8 +105,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         LogicalComponent<?> leafComponent = leafService.getParent();
         List<LogicalBinding<?>> bindings = new ArrayList<>();
         List<LogicalBinding<?>> callbackBindings = new ArrayList<>();
-        Set<QName> intents = new HashSet<>();
-        Set<QName> policySets = new HashSet<>();
 
         for (LogicalService service : services) {
             // TODO determine if bindings should be overriden - for now, override
@@ -143,19 +117,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 callbackBindings = new ArrayList<>();
                 callbackBindings.addAll(service.getCallbackBindings());
             }
-            if (service.getIntents().isEmpty()) {
-                service.addIntents(intents);
-            } else {
-                intents = new HashSet<>();
-                intents.addAll(service.getIntents());
-            }
-            if (service.getPolicySets().isEmpty()) {
-                service.addPolicySets(policySets);
-            } else {
-                policySets = new HashSet<>();
-                policySets.addAll(service.getPolicySets());
-            }
-            validateIntents(service, context);
             service.setLeafComponent(leafComponent);
             service.setLeafService(leafService);
         }
@@ -176,8 +137,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
         LogicalReference leafReference = references.getLast();
         List<LogicalBinding<?>> bindings = new ArrayList<>();
-        Set<QName> intents = new HashSet<>();
-        Set<QName> policySets = new HashSet<>();
         Autowire autowire = Autowire.INHERITED;
 
         for (LogicalReference reference : references) {
@@ -203,45 +162,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 bindings = new ArrayList<>();
                 bindings.addAll(reference.getBindings());
             }
-            if (reference.getIntents().isEmpty()) {
-                reference.addIntents(intents);
-            } else {
-                intents = new HashSet<>();
-                intents.addAll(reference.getIntents());
-            }
-            if (reference.getPolicySets().isEmpty()) {
-                reference.addPolicySets(policySets);
-            } else {
-                policySets = new HashSet<>();
-                policySets.addAll(reference.getPolicySets());
-            }
             reference.setLeafReference(leafReference);
-        }
-        validateIntents(leafReference, context);
-    }
-
-    private void validateIntents(Bindable bindable, InstantiationContext context) {
-        if (registry == null) {
-            // don't validate intents during bootstrap
-            return;
-        }
-        Set<QName> intents = bindable.getIntents();
-        if (intents.isEmpty()) {
-            return;
-        }
-        Set<Intent> resolved = registry.getDefinitions(intents, Intent.class);
-
-        // check for mutually exclusive intents
-        for (Intent intent : resolved) {
-            for (QName exclude : intent.getExcludes()) {
-                if (intents.contains(exclude)) {
-                    String prefix = bindable instanceof LogicalReference ? "Reference " : "Service ";
-                    MutuallyExclusiveIntents error = new MutuallyExclusiveIntents(prefix + bindable.getUri()
-                                                                                          + " is configured with mutually exclusive intents: "
-                                                                                          + intent.getName() + "," + exclude, bindable);
-                    context.addError(error);
-                }
-            }
         }
     }
 
@@ -275,7 +196,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 }
                 composite.overrideWires(reference, newWires);
                 // TODO if override, new targets should be erased
-//                newTargets = new ArrayList<LogicalService>();
+                //                newTargets = new ArrayList<LogicalService>();
             }
             if (!validateMultiplicity(reference, newTargets, context)) {
                 return;
@@ -293,61 +214,57 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * @return true if the validation was successful
      */
     private boolean validateMultiplicity(LogicalReference reference, List<LogicalService> targets, InstantiationContext context) {
-        if (reference.getParent().getAutowire() == Autowire.ON
-                || !reference.getBindings().isEmpty()
-                || reference.getAutowire() == Autowire.ON
-                || reference.getComponentReference() != null) {     // Reference should not be configured in the component.
+        if (reference.getParent().getAutowire() == Autowire.ON || !reference.getBindings().isEmpty() || reference.getAutowire() == Autowire.ON
+            || reference.getComponentReference() != null) {     // Reference should not be configured in the component.
             // If it is (i.e. getComponentReference() != null, avoid check and return true.
             return true;
         }
         Multiplicity multiplicity = reference.getDefinition().getMultiplicity();
         switch (multiplicity) {
-        case ONE_N:
-            if (targets.size() < 1) {
-                URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error =
-                        new InvalidNumberOfTargets("At least one target must be configured for reference: " + referenceName, reference);
-                context.addError(error);
-                return false;
-            }
-            return true;
-        case ONE_ONE:
-            if (targets.size() < 1) {
-                URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference "
-                                                                                  + "(no targets configured): " + referenceName, reference);
-                context.addError(error);
-                return false;
-            } else if (targets.size() > 1) {
-                URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("Only one target must be configured for reference "
-                                                                                  + "(multiple targets configured via promotions): "
-                                                                                  + referenceName, reference);
-                context.addError(error);
-                return false;
-            }
-            return true;
+            case ONE_N:
+                if (targets.size() < 1) {
+                    URI referenceName = reference.getUri();
+                    InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference: " + referenceName,
+                                                                              reference);
+                    context.addError(error);
+                    return false;
+                }
+                return true;
+            case ONE_ONE:
+                if (targets.size() < 1) {
+                    URI referenceName = reference.getUri();
+                    InvalidNumberOfTargets error = new InvalidNumberOfTargets(
+                            "At least one target must be configured for reference " + "(no targets configured): " + referenceName, reference);
+                    context.addError(error);
+                    return false;
+                } else if (targets.size() > 1) {
+                    URI referenceName = reference.getUri();
+                    InvalidNumberOfTargets error = new InvalidNumberOfTargets(
+                            "Only one target must be configured for reference " + "(multiple targets configured via promotions): " + referenceName, reference);
+                    context.addError(error);
+                    return false;
+                }
+                return true;
 
-        case ZERO_N:
-            return true;
-        case ZERO_ONE:
-            if (targets.size() > 1) {
-                URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At most one target must be configured for reference "
-                                                                                  + "(multiple targets configured via promotions): "
-                                                                                  + referenceName, reference);
-                context.addError(error);
-                return false;
-            }
-            return true;
+            case ZERO_N:
+                return true;
+            case ZERO_ONE:
+                if (targets.size() > 1) {
+                    URI referenceName = reference.getUri();
+                    InvalidNumberOfTargets error = new InvalidNumberOfTargets(
+                            "At most one target must be configured for reference " + "(multiple targets configured via promotions): " + referenceName,
+                            reference);
+                    context.addError(error);
+                    return false;
+                }
+                return true;
         }
         return true;
     }
 
-
     /**
-     * Updates the list of services with the promotion hierarchy for the given service. The list is populated in reverse order so that the leaf
-     * (promoted) service is stored last.
+     * Updates the list of services with the promotion hierarchy for the given service. The list is populated in reverse order so that the leaf (promoted)
+     * service is stored last.
      *
      * @param service  the current service to ascend from
      * @param services the list
@@ -378,8 +295,8 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
     }
 
     /**
-     * Updates the list of references with the promotion hierarchy for the given reference. The list is populated in reverse order so that the leaf
-     * (promoted) reference is stored last.
+     * Updates the list of references with the promotion hierarchy for the given reference. The list is populated in reverse order so that the leaf (promoted)
+     * reference is stored last.
      *
      * @param reference  the current service to ascend from
      * @param references the list

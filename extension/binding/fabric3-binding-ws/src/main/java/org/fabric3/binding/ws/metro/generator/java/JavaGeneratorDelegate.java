@@ -18,21 +18,17 @@
 package org.fabric3.binding.ws.metro.generator.java;
 
 import javax.jws.WebService;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.binding.ws.metro.generator.GenerationHelper;
 import org.fabric3.binding.ws.metro.generator.MetroGeneratorDelegate;
 import org.fabric3.binding.ws.metro.generator.java.codegen.GeneratedInterface;
@@ -48,7 +44,6 @@ import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.domain.generator.GenerationException;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -82,7 +77,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         this.info = info;
     }
 
-    public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
+    public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract)
             throws GenerationException {
 
         URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
@@ -159,7 +154,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         //        }
     }
 
-    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
+    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract)
             throws GenerationException {
         URL targetUrl = null;
         WsBindingDefinition definition = binding.getDefinition();
@@ -182,20 +177,17 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             throw new GenerationException("A web service binding URI must be specified: " + binding.getParent().getUri());
         }
 
-        return generateTarget(binding, targetUrl, contract, policy);
+        return generateTarget(binding, targetUrl, contract);
     }
 
-    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
-                                                                  JavaServiceContract contract,
-                                                                  EffectivePolicy policy) throws GenerationException {
-        URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding, policy);
-        return generateTarget(serviceBinding, targetUrl, contract, policy);
+    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding, JavaServiceContract contract)
+            throws GenerationException {
+        URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding);
+        return generateTarget(serviceBinding, targetUrl, contract);
     }
 
-    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
-                                                     URL targetUrl,
-                                                     JavaServiceContract contract,
-                                                     EffectivePolicy policy) throws GenerationException {
+    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, URL targetUrl, JavaServiceContract contract)
+            throws GenerationException {
         URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
         Class<?> serviceClass = loadServiceClass(contract, contributionUri);
         WsBindingDefinition definition = binding.getDefinition();
@@ -204,14 +196,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         ReferenceEndpointDefinition endpointDefinition = createReferenceEndpointDefinition(binding, contract, serviceClass, targetUrl);
 
         String interfaze = contract.getQualifiedInterfaceName();
-
-        Set<Intent> endpointIntents = policy.getProvidedEndpointIntents();
-        List<QName> intentNames = new ArrayList<>();
-        for (Intent intent : endpointIntents) {
-            intentNames.add(intent.getName());
-        }
-
-        // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.
 
         List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
 
@@ -261,7 +245,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                                                                            wsdl,
                                                                                            schemas,
                                                                                            wsdlLocation,
-                                                                                           intentNames,
                                                                                            connectionConfiguration,
                                                                                            retries,
                                                                                            bidirectional,

@@ -28,13 +28,10 @@ dependencies {
     bootDependencies project(':kernel:impl:fabric3-pojo')
     bootDependencies project(':kernel:impl:fabric3-jdk-reflection')
     bootDependencies project(':kernel:impl:fabric3-transform')
-    bootDependencies project(':kernel:impl:fabric3-policy')
     bootDependencies project(':kernel:impl:fabric3-contribution')
     bootDependencies project(':kernel:impl:fabric3-fabric')
     bootDependencies project(':kernel:impl:fabric3-system')
     bootDependencies project(':kernel:impl:fabric3-thread-pool')
-
-    bootDependencies(group: 'jaxen', name: 'jaxen', version: '1.1.1')
 
     extensionDependencies(group: 'com.lmax', name: 'disruptor', version: disruptorVersion)
 
@@ -47,7 +44,6 @@ dependencies {
     extensionDependencies project(':extension:core:fabric3-channel-disruptor')
     extensionDependencies project(':extension:implementation:fabric3-java')
     extensionDependencies project(':extension:core:fabric3-async')
-    extensionDependencies project(':extension:core:fabric3-sca-intents')
     extensionDependencies project(':extension:core:fabric3-jetty')
     extensionDependencies project(':extension:core:fabric3-contribution-scanner')
     extensionDependencies project(':extension:core:fabric3-resource')

@@ -64,7 +64,6 @@ public class JmsBindingDefinition extends BindingDefinition {
     public JmsBindingDefinition(String bindingName, URI targetURI, JmsBindingMetadata metadata) {
         super(bindingName, targetURI, BINDING_QNAME);
         this.metadata = metadata;
-        addRequiredCapability("jms");
     }
 
     public JmsBindingMetadata getJmsMetadata() {

@@ -57,6 +57,7 @@ public class JmsBindingMetadata extends ModelObject {
     private boolean durable = false;
     private boolean localDelivery;
     private String subscriptionId;
+    private boolean clientAcknowledge;
 
     public ConnectionFactoryDefinition getConnectionFactory() {
         return connectionFactory;
@@ -244,6 +245,14 @@ public class JmsBindingMetadata extends ModelObject {
         this.subscriptionId = id;
     }
 
+    public boolean isClientAcknowledge() {
+        return clientAcknowledge;
+    }
+
+    public void setClientAcknowledge(boolean clientAcknowledge) {
+        this.clientAcknowledge = clientAcknowledge;
+    }
+
     public JmsBindingMetadata snapshot() {
         JmsBindingMetadata copy = new JmsBindingMetadata();
         copy.correlationScheme = this.correlationScheme;
@@ -284,6 +293,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.localDelivery = this.localDelivery;
         copy.subscriptionId = this.subscriptionId;
         copy.activationSpec = this.activationSpec;
+        copy.clientAcknowledge = this.clientAcknowledge;
         return copy;
     }
 

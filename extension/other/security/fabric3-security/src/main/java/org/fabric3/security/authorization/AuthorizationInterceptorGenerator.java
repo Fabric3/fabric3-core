@@ -18,17 +18,18 @@
  */
 package org.fabric3.security.authorization;
 
-import java.util.Arrays;
 import javax.xml.namespace.QName;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.w3c.dom.Element;
-
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Generates interceptors that perform role-based authorization checks for a service invocation.
@@ -37,14 +38,24 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 public class AuthorizationInterceptorGenerator implements InterceptorGenerator {
     private static final QName AUTHORIZATION = new QName("urn:fabric3.org", "authorization");
 
-    public AuthorizationInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation)
-            throws GenerationException {
-        String[] roles = metadata.get(AUTHORIZATION, String[].class);
-        if (roles == null) {
-            LogicalComponent component = operation.getParent().getParent();
-            throw new GenerationException("No roles specified for authorization intent on component: " + component.getUri());
+    public Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws GenerationException {
+        List<String> operationPolicies = target.getDefinition().getPolicies();
+        ComponentType componentType = target.getParent().getParent().getDefinition().getComponentType();
+        List<String> targetPolicies = componentType.getPolicies();
+        if ((operationPolicies.isEmpty() || !operationPolicies.contains("authorization")) && (targetPolicies.isEmpty() || !operationPolicies.contains(
+                "authorization"))) {
+            return Optional.empty();
         }
-        return new AuthorizationInterceptorDefinition(Arrays.asList(roles));
+
+        String[] roles = target.getDefinition().getMetadata(AUTHORIZATION, String[].class);
+        if (roles == null) {
+            roles = target.getDefinition().getMetadata(AUTHORIZATION, String[].class);
+            if (roles == null) {
+                LogicalComponent component = source.getParent().getParent();
+                throw new GenerationException("No roles specified for authorization annotation on component: " + component.getUri());
+            }
+        }
+        return Optional.of(new AuthorizationInterceptorDefinition(Arrays.asList(roles)));
     }
 
 }

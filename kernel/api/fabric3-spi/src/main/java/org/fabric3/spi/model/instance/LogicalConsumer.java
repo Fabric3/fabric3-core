@@ -44,11 +44,6 @@ public class LogicalConsumer extends LogicalInvocable {
         super(uri, null, parent);
         this.definition = definition;
         sources = new ArrayList<>();
-        if (definition != null) {
-            // null check for testing so full model does not need to be instantiated
-            addIntents(definition.getIntents());
-            addPolicySets(definition.getPolicySets());
-        }
     }
 
     /**

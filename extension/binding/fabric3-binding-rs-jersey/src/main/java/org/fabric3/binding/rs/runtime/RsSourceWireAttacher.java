@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
 import org.fabric3.binding.rs.runtime.container.RsContainer;
@@ -41,7 +40,6 @@ import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.security.BasicAuthenticator;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -58,7 +56,6 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     private RsContainerManager containerManager;
     private ProviderRegistry providerRegistry;
     private NameBindingFilterProvider provider;
-    private BasicAuthenticator authenticator;
     private RsWireAttacherMonitor monitor;
     private Level logLevel = Level.WARNING;
 
@@ -67,14 +64,12 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
                                 @Reference RsContainerManager containerManager,
                                 @Reference ProviderRegistry providerRegistry,
                                 @Reference NameBindingFilterProvider provider,
-                                @Reference BasicAuthenticator authenticator,
                                 @Monitor RsWireAttacherMonitor monitor) throws NoSuchFieldException, IllegalAccessException {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
         this.providerRegistry = providerRegistry;
         this.provider = provider;
-        this.authenticator = authenticator;
         this.monitor = monitor;
         setDebugLevel();
     }
@@ -142,8 +137,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         }
 
         Class<?> interfaze = classLoader.loadClass(sourceDefinition.getRsClass());
-        boolean authenticate = authenticate(sourceDefinition);
-        F3ResourceHandler handler = new F3ResourceHandler(interfaze, invocationChains, authenticate, authenticator);
+        F3ResourceHandler handler = new F3ResourceHandler(interfaze, invocationChains);
 
         // Set the class loader to the runtime one so Jersey loads the Resource config properly
         ClassLoader old = Thread.currentThread().getContextClassLoader();
@@ -180,17 +174,6 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         methodBuilder.consumes(template.getConsumedTypes());
         methodBuilder.produces(template.getProducedTypes());
         methodBuilder.handledBy(handler, template.getInvocable().getHandlingMethod());
-    }
-
-    private boolean authenticate(RsWireSourceDefinition sourceDefinition) {
-        if (AuthenticationType.BASIC == sourceDefinition.getAuthenticationType()) {
-            return true;
-        } else if (AuthenticationType.STATEFUL_FORM == sourceDefinition.getAuthenticationType()) {
-            throw new UnsupportedOperationException();
-        } else if (AuthenticationType.DIGEST == sourceDefinition.getAuthenticationType()) {
-            throw new UnsupportedOperationException();
-        }
-        return false;
     }
 
     private void setDebugLevel() {

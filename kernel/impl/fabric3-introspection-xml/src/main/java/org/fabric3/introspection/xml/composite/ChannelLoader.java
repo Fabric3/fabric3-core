@@ -28,15 +28,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.fabric3.api.annotation.Source;
-import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
-import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
+import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
@@ -55,15 +54,13 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
     private static final QName CHANNEL = new QName(SCA_NS, "channel");
 
-    private LoaderHelper loaderHelper;
     private boolean roundTrip;
 
     private Map<String, ChannelTypeLoader> channelTypeLoaders = Collections.emptyMap();
 
-    public ChannelLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
+    public ChannelLoader(@Reference LoaderRegistry registry) {
         super(registry);
         addAttributes("name", "requires", "type", "local");
-        this.loaderHelper = loaderHelper;
     }
 
     @Property(required = false)
@@ -112,8 +109,6 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
         } else {
             channelTypeLoader.load(definition, reader, context);
         }
-
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         while (true) {
             switch (reader.next()) {

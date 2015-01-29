@@ -19,10 +19,9 @@
  */
 package org.fabric3.spi.domain.generator.wire;
 
-import org.fabric3.spi.domain.generator.GenerationException;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
-import org.w3c.dom.Element;
+import java.util.Optional;
 
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
@@ -32,15 +31,13 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 public interface InterceptorGenerator {
 
     /**
-     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a
-     * wire.
+     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a wire.
      *
-     * @param policy    policy set definition
-     * @param metadata  intent or policy metadata keyed by policy/intent qualified name
-     * @param operation operation the interceptor is generated for
+     * @param source the source operation
+     * @param target the target operation
      * @return the definition
      * @throws GenerationException if an exception occurs during generation
      */
-    PhysicalInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) throws GenerationException;
+    Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws GenerationException;
 
 }

@@ -38,22 +38,12 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
     public LogicalBinding(BD definition, Bindable parent) {
         super(parent);
         this.definition = definition;
-        if (definition != null) {
-            // null check for testing so full model does not need to be instantiated
-            addIntents(definition.getIntents());
-            addPolicySets(definition.getPolicySets());
-        }
     }
 
     public LogicalBinding(BD definition, Bindable parent, QName deployable) {
         super(parent);
         this.definition = definition;
         this.deployable = deployable;
-        if (definition != null) {
-            // null check for testing so full model does not need to be instantiated
-            addIntents(definition.getIntents());
-            addPolicySets(definition.getPolicySets());
-        }
     }
 
     /**

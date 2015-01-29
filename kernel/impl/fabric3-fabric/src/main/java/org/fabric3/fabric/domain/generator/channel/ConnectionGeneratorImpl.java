@@ -16,31 +16,25 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.ChannelEvent;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
-import org.fabric3.spi.domain.generator.channel.EventStreamHandlerGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
-import org.fabric3.spi.domain.generator.policy.PolicyResolver;
-import org.fabric3.spi.domain.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -52,7 +46,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -61,11 +54,9 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private GeneratorRegistry generatorRegistry;
-    private PolicyResolver resolver;
 
-    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry, @Reference PolicyResolver resolver) {
+    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
         this.generatorRegistry = generatorRegistry;
-        this.resolver = resolver;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -115,7 +106,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         PhysicalEventStreamDefinition eventStream = generateEventStream(consumer);
 
-        generatePolicy(consumer, eventStream);
         for (Map.Entry<LogicalChannel, ChannelDeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
@@ -200,24 +190,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         ChannelSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri(), ChannelSide.PRODUCER);
         sourceDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
-    }
-
-    private void generatePolicy(LogicalConsumer consumer, PhysicalEventStreamDefinition eventStream) throws GenerationException {
-        PolicyResult result = resolver.resolvePolicies(consumer);
-        if (result.getInterceptedPolicySets().isEmpty()) {
-            return;
-        }
-        List<PolicySet> policies = result.getInterceptedPolicySets().values().iterator().next();
-        PolicyMetadata metadata = result.getMetadata().values().iterator().next();
-        for (PolicySet set : policies) {
-            QName expressionName = set.getExpressionName();
-            EventStreamHandlerGenerator handlerGenerator = generatorRegistry.getEventStreamHandlerGenerator(expressionName);
-            PhysicalHandlerDefinition definition = handlerGenerator.generate(set.getExpression(), metadata);
-            if (definition != null) {
-                definition.setPolicyClassLoaderId(set.getContributionUri());
-                eventStream.addHandlerDefinition(definition);
-            }
-        }
     }
 
     private PhysicalEventStreamDefinition generateEventStream(LogicalProducer producer) throws GenerationException {

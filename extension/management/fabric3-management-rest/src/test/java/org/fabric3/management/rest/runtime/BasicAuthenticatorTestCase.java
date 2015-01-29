@@ -16,15 +16,14 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.security;
+package org.fabric3.management.rest.runtime;
 
-import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.container.invocation.WorkContext;

@@ -9,7 +9,7 @@
         <f3:implementation.system class="org.fabric3.security.authorization.AuthorizationInterceptorBuilder"/>
     </component>
 
-    <component name="AuthorizationInterceptorDefinitionGenerator" f3:key="{urn:fabric3.org}authorization">
+    <component name="AuthorizationInterceptorDefinitionGenerator">
         <f3:implementation.system class="org.fabric3.security.authorization.AuthorizationInterceptorGenerator"/>
     </component>
 

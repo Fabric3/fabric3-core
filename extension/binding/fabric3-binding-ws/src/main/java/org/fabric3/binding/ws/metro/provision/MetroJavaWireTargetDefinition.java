@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -48,7 +47,6 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
      *                                wsdlLocation
      * @param schemas                 the generated schemas or null
      * @param wsdlLocation            optional URL to the WSDL location
-     * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt in the event the service is unavailable when an invocation is made
      * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
@@ -61,12 +59,11 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
                                          String wsdl,
                                          Map<String, String> schemas,
                                          URL wsdlLocation,
-                                         List<QName> intents,
                                          ConnectionConfiguration connectionConfiguration,
                                          int retries,
                                          boolean bidirectional,
                                          List<PhysicalBindingHandlerDefinition> handlers) {
-        super(endpointDefinition, wsdl, intents, connectionConfiguration, bidirectional, handlers);
+        super(endpointDefinition, wsdl, connectionConfiguration, bidirectional, handlers);
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;

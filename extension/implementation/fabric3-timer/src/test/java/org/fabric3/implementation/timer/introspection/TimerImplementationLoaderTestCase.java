@@ -28,11 +28,10 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
-import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
@@ -146,8 +145,7 @@ public class TimerImplementationLoaderTestCase extends TestCase {
         JavaImplementationIntrospector processor = EasyMock.createMock(JavaImplementationIntrospector.class);
         processor.introspect(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(context));
         EasyMock.replay(processor);
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        loader = new TimerImplementationLoader(processor, helper);
+        loader = new TimerImplementationLoader(processor);
     }
 
     private XMLStreamReader createReader(String xml) throws XMLStreamException {

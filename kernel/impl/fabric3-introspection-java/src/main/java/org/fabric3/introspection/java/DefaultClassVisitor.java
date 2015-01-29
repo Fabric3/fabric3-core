@@ -175,7 +175,7 @@ public class DefaultClassVisitor implements ClassVisitor {
         if (processor != null) {
             processor.visitType(annotation, clazz, componentType, context);
         } else {
-            // check if the annotation is a policy set or intent
+            // check if the annotation is a policy
             if (policyProcessor != null) {
                 policyProcessor.process(annotation, componentType, context);
             }
@@ -201,6 +201,11 @@ public class DefaultClassVisitor implements ClassVisitor {
         AnnotationProcessor<A> processor = getProcessor(annotation);
         if (processor != null) {
             processor.visitMethod(annotation, method, implClass, componentType, context);
+        } else {
+            // check if the annotation is a policy
+            if (policyProcessor != null) {
+                policyProcessor.process(annotation, componentType, context);
+            }
         }
     }
 

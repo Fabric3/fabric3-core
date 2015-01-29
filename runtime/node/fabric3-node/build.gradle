@@ -36,20 +36,11 @@ dependencies {
     compile group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
 
-    compile (group: 'jaxen', name: 'jaxen', version: '1.1.1') {
-        exclude group: 'xerces', module: 'xercesImpl'
-        exclude group: 'jdom', module: 'jdom'
-        exclude group: 'dom4j', module: 'dom4j'
-        exclude group: 'xom', module: 'xom'
-        exclude group: 'xml-apis', module: 'xml-apis'
-    }
-
     compile project(':kernel:impl:fabric3-contribution')
     compile project(':kernel:impl:fabric3-thread-pool')
     compile project(':kernel:impl:fabric3-introspection-java')
     compile project(':kernel:impl:fabric3-introspection-xml')
     compile project(':kernel:impl:fabric3-fabric')
-    compile project(':kernel:impl:fabric3-policy')
     compile project(':extension:other:security:fabric3-security-impl')
     compile project(':extension:core:fabric3-monitor-spi')
     compile project(':extension:core:fabric3-monitor-impl')

@@ -46,7 +46,6 @@ import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationException;
-import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;

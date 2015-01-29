@@ -72,7 +72,6 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
         }
         String name = reader.getAttributeValue(null, "name");
         SCABinding binding = new SCABinding(name, target);
-        helper.loadPolicySetsAndIntents(binding, reader, context);
 
         validateAttributes(reader, context, binding);
 

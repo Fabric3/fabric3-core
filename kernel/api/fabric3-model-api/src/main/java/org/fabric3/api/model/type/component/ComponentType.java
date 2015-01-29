@@ -19,18 +19,19 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.fabric3.api.model.type.AbstractPolicyAware;
-import org.fabric3.api.model.type.CapabilityAware;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.PolicyAware;
 
 /**
  * A base component type.
  */
-public class ComponentType extends AbstractPolicyAware<Implementation> implements CapabilityAware {
+public class ComponentType extends ModelObject<Implementation> implements PolicyAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
     private String key;
@@ -42,7 +43,8 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
     private Map<String, ProducerDefinition> producers = new HashMap<>();
     private Map<String, Property> properties = new HashMap<>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<>();
-    private Set<String> requiredCapabilities = new HashSet<>();
+
+    private List<String> policies;
 
     /**
      * Returns the key value for map-based wires or null.
@@ -212,11 +214,16 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
         resourceReferences.put(definition.getName(), definition);
     }
 
-    public Set<String> getRequiredCapabilities() {
-        return requiredCapabilities;
+    public void addPolicy(String policy) {
+        if (policies == null) {
+            policies = new ArrayList<>();
+        }
+        policies.add(policy);
     }
 
-    public void addRequiredCapability(String capability) {
-        requiredCapabilities.add(capability);
+    public List<String> getPolicies() {
+        return policies == null ? Collections.emptyList() : policies;
     }
+
+
 }

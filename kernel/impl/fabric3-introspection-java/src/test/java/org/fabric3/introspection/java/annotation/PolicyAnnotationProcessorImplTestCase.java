@@ -18,19 +18,13 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.Confidentiality;
-import org.oasisopen.sca.annotation.PolicySets;
-import org.oasisopen.sca.annotation.Requires;
-
 import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-
-import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY;
+import org.oasisopen.sca.annotation.Confidentiality;
+import org.oasisopen.sca.annotation.Requires;
 import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY_MESSAGE;
 
 /**
@@ -39,42 +33,11 @@ import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY_MESSA
 public class PolicyAnnotationProcessorImplTestCase extends TestCase {
     private PolicyAnnotationProcessorImpl processor = new PolicyAnnotationProcessorImpl();
 
-    public void testRequires() throws Exception {
-        Requires annotation = TestClass.class.getAnnotation(Requires.class);
-        IntrospectionContext ctx = new DefaultIntrospectionContext();
-
-        QName qname = new QName("namespace", "foo");
-        PolicyAware modelObject = EasyMock.createMock(PolicyAware.class);
-        modelObject.addIntent(qname);
-        EasyMock.expectLastCall();
-        EasyMock.replay(modelObject);
-
-        processor.process(annotation, modelObject, ctx);
-        EasyMock.verify(modelObject);
-    }
-
-    public void testPolicySets() throws Exception {
-        PolicySets annotation = TestPolicySet.class.getAnnotation(PolicySets.class);
-        IntrospectionContext ctx = new DefaultIntrospectionContext();
-
-        QName qname = new QName("namespace", "foo");
-        PolicyAware modelObject = EasyMock.createMock(PolicyAware.class);
-        modelObject.addPolicySet(qname);
-        EasyMock.expectLastCall();
-        EasyMock.replay(modelObject);
-
-        processor.process(annotation, modelObject, ctx);
-        EasyMock.verify(modelObject);
-    }
-
     public void testUnQualified() throws Exception {
         Confidentiality annotation = TestClass.class.getAnnotation(Confidentiality.class);
         IntrospectionContext ctx = new DefaultIntrospectionContext();
 
-        QName qname = QName.valueOf(CONFIDENTIALITY);
         PolicyAware modelObject = EasyMock.createMock(PolicyAware.class);
-        modelObject.addIntent(qname);
-        EasyMock.expectLastCall();
         EasyMock.replay(modelObject);
 
         processor.process(annotation, modelObject, ctx);
@@ -85,10 +48,7 @@ public class PolicyAnnotationProcessorImplTestCase extends TestCase {
         Confidentiality annotation = TestQualifiedClass.class.getAnnotation(Confidentiality.class);
         IntrospectionContext ctx = new DefaultIntrospectionContext();
 
-        QName qname = QName.valueOf(CONFIDENTIALITY_MESSAGE);
         PolicyAware modelObject = EasyMock.createMock(PolicyAware.class);
-        modelObject.addIntent(qname);
-        EasyMock.expectLastCall();
         EasyMock.replay(modelObject);
 
         processor.process(annotation, modelObject, ctx);
@@ -99,17 +59,11 @@ public class PolicyAnnotationProcessorImplTestCase extends TestCase {
     @Requires("{namespace}foo")
     private class TestClass {
 
-
     }
-
 
     @Confidentiality(CONFIDENTIALITY_MESSAGE)
     private class TestQualifiedClass {
 
     }
 
-    @PolicySets("{namespace}foo")
-    private class TestPolicySet {
-
-    }
 }

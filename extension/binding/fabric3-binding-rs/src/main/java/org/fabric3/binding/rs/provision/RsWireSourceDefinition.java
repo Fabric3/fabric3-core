@@ -29,26 +29,20 @@ public class RsWireSourceDefinition extends PhysicalWireSourceDefinition {
     private static final long serialVersionUID = 2180952036516977449L;
 
     private String rsClass;
-    private AuthenticationType authenticationType;
 
     /**
      * Constructor.
      *
      * @param rsClass the class or interface containing JAX-RS annotations to use for mapping Java operations to REST resources.
      * @param uri     the source URI.
-     * @param type    the authentication type
      */
-    public RsWireSourceDefinition(String rsClass, URI uri, AuthenticationType type) {
+    public RsWireSourceDefinition(String rsClass, URI uri) {
         this.rsClass = rsClass;
         setUri(uri);
-        this.authenticationType = type;
     }
 
     public String getRsClass() {
         return rsClass;
     }
 
-    public AuthenticationType getAuthenticationType() {
-        return authenticationType;
-    }
 }

@@ -30,7 +30,6 @@ import f3.JDKReflectionProvider;
 import f3.JavaIntrospectionProvider;
 import f3.MonitorProvider;
 import f3.PojoProvider;
-import f3.PolicyProvider;
 import f3.SystemImplementationProvider;
 import f3.ThreadPoolProvider;
 import f3.TransformerProvider;
@@ -92,7 +91,6 @@ public class BootstrapCompositeFactory {
         builder.include(JDKReflectionProvider.getComposite());
         builder.include(MonitorProvider.getComposite());
         builder.include(PojoProvider.getComposite());
-        builder.include(PolicyProvider.getComposite());
         builder.include(SystemImplementationProvider.getComposite());
         builder.include(ThreadPoolProvider.getComposite());
         builder.include(SystemImplementationProvider.getComposite());

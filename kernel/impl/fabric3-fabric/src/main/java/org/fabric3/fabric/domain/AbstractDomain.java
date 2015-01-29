@@ -38,7 +38,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
-import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.fabric.domain.collector.Collector;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
@@ -53,7 +52,6 @@ import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.allocator.AllocationException;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -67,7 +65,6 @@ public abstract class AbstractDomain implements Domain {
 
     protected Deployer deployer;
     protected Generator generator;
-    protected PolicyRegistry policyRegistry;
 
     protected List<DeployListener> listeners;
 
@@ -219,18 +216,10 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void activateDefinitions(URI uri) throws DeploymentException {
-        activateAndDeployDefinitions(uri, false);
-    }
-
     public synchronized void deactivateDefinitions(URI uri) throws DeploymentException {
         Contribution contribution = metadataStore.find(uri);
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
-        }
-        Set<PolicySet> policySets = policyRegistry.deactivateDefinitions(uri);
-        if (!policySets.isEmpty()) {
-            undeployPolicySets(policySets);
         }
     }
 
@@ -319,9 +308,6 @@ public abstract class AbstractDomain implements Domain {
         // lock the contributions
         contributionHelper.lock(contributions);
         try {
-            for (Contribution contribution : contributions) {
-                activateDefinitions(contribution);
-            }
             InstantiationContext context = logicalModelInstantiator.include(deployables, domain);
             if (context.hasErrors()) {
                 contributionHelper.releaseLocks(contributions);
@@ -373,7 +359,6 @@ public abstract class AbstractDomain implements Domain {
         }
         // lock the contribution
         contribution.acquireLock(name);
-        activateDefinitions(contribution);
         InstantiationContext context = logicalModelInstantiator.include(composite, domain);
         if (context.hasErrors()) {
             if (!simulated) {
@@ -447,58 +432,5 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    /**
-     * Activates and optionally deploys definitions to a domain.
-     *
-     * @param uri     the URI of the contribution containing the definitions to activate
-     * @param recover true if recovery is being performed. If true and the runtime is in distributed (controller) mode, definitions will only be activated.
-     * @throws DeploymentException if there is an error activating definitions
-     */
-    private synchronized void activateAndDeployDefinitions(URI uri, boolean recover) throws DeploymentException {
-        Contribution contribution = metadataStore.find(uri);
-        if (contribution == null) {
-            throw new DeploymentException("Contribution not installed: " + uri);
-        }
-        if (ContributionState.INSTALLED != contribution.getState()) {
-            throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
-        }
-        Set<PolicySet> policySets = activateDefinitions(contribution);
-        if (!policySets.isEmpty()) {
-            if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
-                deployPolicySets(policySets);
-            }
-        }
-    }
-
-    /**
-     * Activates policy definitions contained in the contribution.
-     *
-     * @param contribution the contribution
-     * @return the policy sets activated
-     * @throws DeploymentException if an exception occurs when the definitions are activated
-     */
-    private Set<PolicySet> activateDefinitions(Contribution contribution) throws DeploymentException {
-        if (policyRegistry == null) {
-            // registry not available until after bootstrap
-            return Collections.emptySet();
-        }
-        return policyRegistry.activateDefinitions(contribution.getUri());
-    }
-
-    private void deployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        // generate and provision any new components and new wires
-        Deployment deployment = generator.generate(domain);
-        deployer.deploy(deployment);
-        logicalComponentManager.replaceRootComponent(domain);
-    }
-
-    private void undeployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        // generate and provision any new components and new wires
-        Deployment deployment = generator.generate(domain);
-        deployer.deploy(deployment);
-        logicalComponentManager.replaceRootComponent(domain);
-    }
 
 }

@@ -20,12 +20,8 @@ package org.fabric3.fabric.domain.instantiator.promotion;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -36,9 +32,7 @@ import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -47,17 +41,12 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 public class PromotionNormalizerImplTestCase extends TestCase {
-    private static final QName PROMOTED_INTENT = new QName("test", "intent");
 
-    private PolicyRegistry registry;
     private InstantiationContext context;
 
-    public void testServiceBindingAndPolicyNormalization() throws Exception {
-        registry.getDefinitions(Collections.singleton(PROMOTED_INTENT), Intent.class);
-        EasyMock.expectLastCall().andReturn(Collections.<Intent>emptySet()).times(2);
-        EasyMock.replay(registry);
+    public void testServiceBindingNormalization() throws Exception {
 
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalService service = createServiceHierarchy();
         LogicalComponent<?> component = service.getParent();
@@ -66,44 +55,11 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         assertFalse(context.hasErrors());
         assertTrue(service.getBindings().get(0).getDefinition() instanceof MockPromotedBinding);
-        assertTrue(service.getIntents().contains(PROMOTED_INTENT));
-        EasyMock.verify(registry);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testValidateMutuallyExclusiveServiceIntents() throws Exception {
-        QName intent1Name = new QName("test", "intent1");
-        QName intent2Name = new QName("test", "intent2");
-        Intent intent1 = new Intent(intent1Name, null, null, null, true, Collections.singleton(intent2Name), null, false);
-        Intent intent2 = new Intent(intent1Name, null, null, null, true, Collections.singleton(intent1Name), null, false);
-        Set<Intent> intents = new HashSet<>();
-        intents.add(intent1);
-        intents.add(intent2);
-        EasyMock.expect(registry.getDefinitions(EasyMock.isA(Set.class), EasyMock.eq(Intent.class))).andReturn(intents);
-        EasyMock.expect(registry.getDefinitions(EasyMock.isA(Set.class), EasyMock.eq(Intent.class))).andReturn(Collections.<Intent>emptySet());
-        EasyMock.replay(registry);
-
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
-
-        LogicalService service = createServiceHierarchy();
-        LogicalComponent<?> component = service.getParent();
-        LogicalService parentService = service.getParent().getParent().getService("promotedService");
-        parentService.addIntent(intent1Name);
-        parentService.addIntent(intent2Name);
-
-        normalizer.normalize(component, context);
-
-        assertTrue(context.hasErrors());
-        assertTrue(context.getErrors().get(0) instanceof MutuallyExclusiveIntents);
-        EasyMock.verify(registry);
-    }
-
-    public void testReferenceBindingAndPolicyNormalization() throws Exception {
-        registry.getDefinitions(Collections.singleton(PROMOTED_INTENT), Intent.class);
-        EasyMock.expectLastCall().andReturn(Collections.<Intent>emptySet());
-        EasyMock.replay(registry);
-
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+    public void testReferenceBinding() throws Exception {
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createReferenceHierarchy();
         LogicalComponent<?> component = reference.getParent();
@@ -112,14 +68,11 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         assertFalse(context.hasErrors());
         assertTrue(reference.getBindings().get(0).getDefinition() instanceof MockPromotedBinding);
-        assertTrue(reference.getIntents().contains(PROMOTED_INTENT));
-        EasyMock.verify(registry);
     }
 
     public void testWireNormalization() throws Exception {
-        EasyMock.replay(registry);
 
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createWiredReferenceHierarchy();
         LogicalComponent<?> component = reference.getParent();
@@ -127,13 +80,10 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         normalizer.normalize(component, context);
 
         assertFalse(context.hasErrors());
-        EasyMock.verify(registry);
     }
 
     public void testMultiplicityOneToOneWireNormalization() throws Exception {
-        EasyMock.replay(registry);
-
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createMultiplicityReferenceHierarchy(Multiplicity.ONE_ONE);
         LogicalComponent<?> component = reference.getParent();
@@ -142,13 +92,11 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof InvalidNumberOfTargets);
-        EasyMock.verify(registry);
     }
 
     public void testMultiplicityZeroToNWireNormalization() throws Exception {
-        EasyMock.replay(registry);
 
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createMultiplicityReferenceHierarchy(Multiplicity.ZERO_N);
         LogicalComponent<?> component = reference.getParent();
@@ -156,13 +104,11 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         normalizer.normalize(component, context);
 
         assertFalse(context.hasErrors());
-        EasyMock.verify(registry);
     }
 
     public void testMultiplicityZeroToOneWireNormalization() throws Exception {
-        EasyMock.replay(registry);
 
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createMultiplicityReferenceHierarchy(Multiplicity.ZERO_ONE);
         LogicalComponent<?> component = reference.getParent();
@@ -171,13 +117,11 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof InvalidNumberOfTargets);
-        EasyMock.verify(registry);
     }
 
     public void testMultiplicityOneToOneNoWireNormalization() throws Exception {
-        EasyMock.replay(registry);
 
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createNonWireMultiplicityReferenceHierarchy(Multiplicity.ONE_ONE);
         LogicalComponent<?> component = reference.getParent();
@@ -186,13 +130,11 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof InvalidNumberOfTargets);
-        EasyMock.verify(registry);
     }
 
     public void testMultiplicityOneToNNoWireNormalization() throws Exception {
-        EasyMock.replay(registry);
 
-        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl(registry);
+        PromotionNormalizerImpl normalizer = new PromotionNormalizerImpl();
 
         LogicalReference reference = createNonWireMultiplicityReferenceHierarchy(Multiplicity.ONE_N);
         LogicalComponent<?> component = reference.getParent();
@@ -201,7 +143,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
 
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof InvalidNumberOfTargets);
-        EasyMock.verify(registry);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -212,7 +153,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         MockPromotedBinding binding = new MockPromotedBinding();
         LogicalBinding parentBinding = new LogicalBinding(binding, parentService);
         parentService.addBinding(parentBinding);
-        parentService.addIntent(PROMOTED_INTENT);
         parent.addService(parentService);
 
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), null, parent);
@@ -237,7 +177,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         MockPromotedBinding binding = new MockPromotedBinding();
         LogicalBinding parentBinding = new LogicalBinding(binding, parentReference);
         parentReference.addBinding(parentBinding);
-        parentReference.addIntent(PROMOTED_INTENT);
         parent.addReference(parentReference);
 
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), null, parent);
@@ -286,7 +225,7 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         domain.addWire(parentReference, wire2);
 
         ReferenceDefinition definition = new ReferenceDefinition("reference", multiplicity);
-        LogicalReference reference =  new LogicalReference(URI.create("parent/component#reference"), definition, component);
+        LogicalReference reference = new LogicalReference(URI.create("parent/component#reference"), definition, component);
         reference.setServiceContract(new MockContract());
         component.addReference(reference);
         return reference;
@@ -302,9 +241,8 @@ public class PromotionNormalizerImplTestCase extends TestCase {
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), componentDefinition, parent);
         parent.addComponent(component);
 
-
         ReferenceDefinition definition = new ReferenceDefinition("reference", multiplicity);
-        LogicalReference reference =  new LogicalReference(URI.create("parent/component#reference"), definition, component);
+        LogicalReference reference = new LogicalReference(URI.create("parent/component#reference"), definition, component);
         reference.setServiceContract(new MockContract());
         component.addReference(reference);
         return reference;
@@ -345,7 +283,6 @@ public class PromotionNormalizerImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        registry = EasyMock.createMock(PolicyRegistry.class);
         context = new InstantiationContext();
     }
 

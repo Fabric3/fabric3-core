@@ -18,7 +18,6 @@
  */
 package org.fabric3.implementation.junit.introspection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -52,16 +50,10 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
 
     private IntrospectionHelper helper;
     private JavaContractProcessor contractProcessor;
-    private PolicyAnnotationProcessor policyProcessor;
 
     public JUnitServiceHeuristic(@Reference IntrospectionHelper helper, @Reference JavaContractProcessor contractProcessor) {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
-    }
-
-    @Reference
-    public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
-        this.policyProcessor = processor;
     }
 
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
@@ -85,14 +77,7 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
     @SuppressWarnings({"unchecked"})
     private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
-        ServiceDefinition definition = new ServiceDefinition(contract.getInterfaceName(), contract);
-        Annotation[] annotations = serviceInterface.getAnnotations();
-        if (policyProcessor != null) {
-            for (Annotation annotation : annotations) {
-                policyProcessor.process(annotation, definition, context);
-            }
-        }
-        return definition;
+        return new ServiceDefinition(contract.getInterfaceName(), contract);
     }
 
     private JavaServiceContract generateTestContract(Class<?> implClass) {

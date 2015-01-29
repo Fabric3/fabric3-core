@@ -19,36 +19,31 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.fabric3.api.binding.jms.model.ActivationSpec;
 import org.fabric3.api.binding.jms.model.CreateOption;
-import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.domain.generator.GenerationException;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
-import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -59,10 +54,9 @@ import org.oasisopen.sca.annotation.Reference;
 public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingDefinition> {
     private static final String JAXB = "JAXB";
 
-    private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
-    private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
-    private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName NON_PERSISTENT = new QName(org.fabric3.api.Namespaces.F3, "nonPersistent");
+    private static final String MANAGED_TRANSACTION = "managedTransaction";
+    private static final String MANAGED_TRANSACTION_GLOBAL = "managedTransaction.global";
+    private static final String MANAGED_TRANSACTION_LOCAL = "managedTransaction.local";
 
     private PayloadTypeIntrospector introspector;
     private HostInfo info;
@@ -80,12 +74,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         this.provisioner = provisioner;
     }
 
-    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
 
-        SessionType sessionType = getSessionType(operations, policy);
+        SessionType sessionType = getSessionType(binding.getParent().getParent());
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), sessionType);
@@ -93,8 +84,6 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getResponseConnectionFactory(), sessionType);
         }
         processServiceResponse(metadata, contract);
-
-        generateIntents(binding, metadata);
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
         URI uri = binding.getDefinition().getTargetUri();
@@ -115,12 +104,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         return definition;
     }
 
-    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
 
-        SessionType sessionType = getSessionType(operations, policy);
+        SessionType sessionType = getSessionType(binding.getParent().getParent());
 
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
@@ -161,9 +147,8 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
 
     public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> binding,
                                                                 ServiceContract contract,
-                                                                List<LogicalOperation> operations,
-                                                                EffectivePolicy policy) throws GenerationException {
-        return generateTarget(binding, contract, operations, policy);
+                                                                List<LogicalOperation> operations) throws GenerationException {
+        return generateTarget(binding, contract, operations);
     }
 
     private boolean isJAXB(ServiceContract contract) {
@@ -187,7 +172,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             return;
         }
         for (Operation operation : contract.getOperations()) {
-            if (!operation.getIntents().contains(ONEWAY)) {
+            if (!operation.isOneWay()) {
                 ResponseDefinition responseDefinition = new ResponseDefinition();
                 responseDefinition.setConnectionFactory(metadata.getConnectionFactory());
                 DestinationDefinition destinationDefinition = new DestinationDefinition();
@@ -202,9 +187,8 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
 
     /**
      * Verifies a response connection factory destination is provided on a service for request-response MEP.  If not, the request connection factory is used.
-     * <p/>
-     * Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of the
-     * message request.
+     * <p/> Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of
+     * the message request.
      *
      * @param metadata the JMS metadata
      * @param contract the service contract
@@ -218,7 +202,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             return;
         }
         for (Operation operation : contract.getOperations()) {
-            if (!operation.getIntents().contains(ONEWAY)) {
+            if (!operation.isOneWay()) {
                 ResponseDefinition responseDefinition = new ResponseDefinition();
                 responseDefinition.setConnectionFactory(metadata.getConnectionFactory());
                 metadata.setResponse(responseDefinition);
@@ -228,47 +212,16 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
     }
 
     /**
-     * Generates intent metadata
-     *
-     * @param binding  the binding
-     * @param metadata the JSM metadata
-     */
-    private void generateIntents(LogicalBinding<JmsBindingDefinition> binding, JmsBindingMetadata metadata) {
-        Set<QName> intents = binding.getDefinition().getIntents();
-        if (intents.contains(NON_PERSISTENT)) {
-            metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        }
-    }
-
-    /**
      * Determines the service transaction type.
      *
-     * @param operations the operations defined by the service contract
-     * @param policy     the applicable policy
+     * @param component the component
      * @return the transaction type
      */
-    private SessionType getSessionType(List<LogicalOperation> operations, EffectivePolicy policy) {
-
-        // If any operation has the intent, return that
-        for (LogicalOperation operation : operations) {
-            for (Intent intent : policy.getIntents(operation)) {
-                QName name = intent.getName();
-                if (TRANSACTED_ONEWAY.equals(name)) {
-                    return SessionType.GLOBAL_TRANSACTED;
-                } else if (IMMEDIATE_ONEWAY.equals(name)) {
-                    return SessionType.AUTO_ACKNOWLEDGE;
-                }
-            }
+    private SessionType getSessionType(LogicalComponent<?> component) {
+        List<String> policies = component.getDefinition().getImplementation().getComponentType().getPolicies();
+        if (policies.contains(MANAGED_TRANSACTION) || policies.contains(MANAGED_TRANSACTION_GLOBAL) || policies.contains(MANAGED_TRANSACTION_LOCAL)) {
+            return SessionType.GLOBAL_TRANSACTED;
         }
-        for (Intent intent : policy.getProvidedEndpointIntents()) {
-            QName name = intent.getName();
-            if (TRANSACTED_ONEWAY.equals(name)) {
-                return SessionType.GLOBAL_TRANSACTED;
-            } else if (IMMEDIATE_ONEWAY.equals(name)) {
-                return SessionType.AUTO_ACKNOWLEDGE;
-            }
-        }
-        //no transaction policy specified, use auto-acknowledge
         return SessionType.AUTO_ACKNOWLEDGE;
     }
 

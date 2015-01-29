@@ -37,7 +37,6 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -89,7 +88,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         helper.processPropertyValues(component, definition);
     }
 
-    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws GenerationException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -134,8 +133,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
     public void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                            LogicalComponent<? extends JavaImplementation> component,
-                                           ServiceContract serviceContract,
-                                           EffectivePolicy policy) throws GenerationException {
+                                           ServiceContract serviceContract) throws GenerationException {
         String interfaceName = serviceContract.getQualifiedInterfaceName();
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         String name = null;

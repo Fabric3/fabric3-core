@@ -20,15 +20,15 @@ package org.fabric3.binding.activemq.binding;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
 import org.fabric3.api.model.type.contract.Operation;
@@ -39,32 +39,25 @@ import org.fabric3.spi.domain.generator.binding.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
-import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 
 /**
- * Implements binding.sca using ActiveMQ.
- * <p/>
- * <p/>
- * By default, this provider uses an embedded broker, which forwards messages to peer brokers in a zone. To configure the provider to use a remote broker, the
- * <code>brokerUrl</code> property may be set to the appropriate broker location.
- * <p/>
- * <p/>
- * Also, the provider uses default connection factory configurations; to use specific connection factories, set the <code>connectionFactory</code> and
+ * Implements binding.sca using ActiveMQ. <p/> <p/> By default, this provider uses an embedded broker, which forwards messages to peer brokers in a zone. To
+ * configure the provider to use a remote broker, the <code>brokerUrl</code> property may be set to the appropriate broker location. <p/> <p/> Also, the
+ * provider uses default connection factory configurations; to use specific connection factories, set the <code>connectionFactory</code> and
  * <code>xaConnectionFactory</code> properties.
  */
 @EagerInit
 public class ActiveMQBindingProvider implements BindingProvider {
     private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, JmsBindingDefinition.BINDING_QNAME);
-
-    private static final QName OASIS_TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
-    private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
+    public static final String MANAGED_TRANSACTION = "managedTransaction";
+    public static final String MANAGED_TRANSACTION_GLOBAL = "managedTransaction.global";
+    public static final String MANAGED_TRANSACTION_LOCAL = "managedTransaction.local";
 
     private String connectionFactory;
     private String xaConnectionFactory;
@@ -113,7 +106,6 @@ public class ActiveMQBindingProvider implements BindingProvider {
         if (!enabled) {
             return NO_MATCH;
         }
-        // TODO handle must provide intents
         return new BindingMatchResult(true, getType());
     }
 
@@ -121,7 +113,6 @@ public class ActiveMQBindingProvider implements BindingProvider {
         if (!enabled) {
             return NO_MATCH;
         }
-        // TODO handle must provide intents
         return new BindingMatchResult(true, getType());
     }
 
@@ -129,7 +120,6 @@ public class ActiveMQBindingProvider implements BindingProvider {
         if (!enabled) {
             return NO_MATCH;
         }
-        // TODO handle must provide intents
         return new BindingMatchResult(true, getType());
     }
 
@@ -153,7 +143,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         boolean bindTarget = bindTarget(target);
 
         if (bindTarget) {
-            boolean xa = isXA(target, false);
+            boolean xa = isXA(target);
             JmsBindingDefinition serviceDefinition = createBindingDefinition(forwardQueue, response, xa);
             LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, target, deployable);
             serviceBinding.setAssigned(true);
@@ -165,12 +155,10 @@ public class ActiveMQBindingProvider implements BindingProvider {
             // setup callback bindings
             // derive the callback queue name from the reference name since multiple clients can connect to a service
             String callbackQueue = target.getUri().toString() + "Callback";
-            boolean callbackXa = isXA(target, true);
+            boolean callbackXa = isXA(target);
 
             JmsBindingDefinition callbackReferenceDefinition = createBindingDefinition(callbackQueue, false, callbackXa);
-            LogicalBinding<JmsBindingDefinition> callbackReferenceBinding = new LogicalBinding<>(callbackReferenceDefinition,
-                                                                                                                     source,
-                                                                                                                     deployable);
+            LogicalBinding<JmsBindingDefinition> callbackReferenceBinding = new LogicalBinding<>(callbackReferenceDefinition, source, deployable);
             callbackReferenceBinding.setAssigned(true);
             source.addCallbackBinding(callbackReferenceBinding);
             callbackReferenceDefinition.setGeneratedTargetUri(createCallbackUri(target));
@@ -179,9 +167,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
                 JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue,
                                                                                          false,
                                                                                          false); // XA not enabled on service side callback
-                LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition,
-                                                                                                                       target,
-                                                                                                                       deployable);
+                LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition, target, deployable);
                 callbackServiceBinding.setAssigned(true);
                 target.addCallbackBinding(callbackServiceBinding);
                 callbackServiceDefinition.setGeneratedTargetUri(createCallbackUri(target));
@@ -195,7 +181,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         ServiceContract targetContract = service.getDefinition().getServiceContract();
         boolean response = isRequestResponse(targetContract);
 
-        boolean xa = isXA(service, false);
+        boolean xa = isXA(service);
         JmsBindingDefinition serviceDefinition = createBindingDefinition(forwardQueue, response, xa);
         LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, service, deployable);
         serviceBinding.setAssigned(true);
@@ -205,9 +191,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         if (targetContract.getCallbackContract() != null) {
             String callbackQueue = service.getUri().toString() + "Callback";
             JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue, false, false); // XA not enabled on service side callback
-            LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition,
-                                                                                                                   service,
-                                                                                                                   deployable);
+            LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition, service, deployable);
             callbackServiceBinding.setAssigned(true);
             service.addCallbackBinding(callbackServiceBinding);
             callbackServiceDefinition.setGeneratedTargetUri(createCallbackUri(service));
@@ -231,7 +215,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
     private boolean isRequestResponse(ServiceContract targetContract) {
         for (Operation operation : targetContract.getOperations()) {
-            if (!operation.getIntents().contains(OASIS_ONEWAY)) {
+            if (!operation.isOneWay()) {
                 return true;
             }
         }
@@ -300,35 +284,17 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
     /**
      * Recurses the component hierarchy to determine if XA transacted messaging is required.
-     * <p/>
-     * TODO this should be refactored to normalize intents
      *
-     * @param service  the service or reference
-     * @param callback true if callback operations should be evaluated
+     * @param service the service or reference
      * @return true if XA is required
      */
-    private boolean isXA(LogicalService service, boolean callback) {
-        // check operations
-        if (callback) {
-            for (LogicalOperation operation : service.getCallbackOperations()) {
-                if (containsTransactionIntent(operation.getIntents())) {
-                    return true;
-                }
-            }
-        } else {
-            for (LogicalOperation operation : service.getOperations()) {
-                if (containsTransactionIntent(operation.getIntents())) {
-                    return true;
-                }
-            }
-        }
-        // recurse the parents
+    private boolean isXA(LogicalService service) {
         LogicalComponent<?> parent = service.getParent();
         while (parent != null) {
-            if (containsTransactionIntent(parent.getIntents())) {
+            if (isTransactional(parent)) {
                 return true;
             }
-            if (containsTransactionIntent(parent.getDefinition().getImplementation().getIntents())) {
+            if (isTransactional(parent)) {
                 return true;
             }
             parent = parent.getParent();
@@ -337,8 +303,9 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
     }
 
-    private boolean containsTransactionIntent(Set<QName> intents) {
-        return intents.contains(OASIS_TRANSACTED_ONEWAY);
+    private boolean isTransactional(LogicalComponent<?> component) {
+        List<String> policies = component.getDefinition().getComponentType().getPolicies();
+        return policies.contains(MANAGED_TRANSACTION) || policies.contains(MANAGED_TRANSACTION_GLOBAL) || policies.contains(MANAGED_TRANSACTION_LOCAL);
     }
 
     /**

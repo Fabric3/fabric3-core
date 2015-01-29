@@ -20,25 +20,21 @@
 package org.fabric3.api.model.type.component;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.fabric3.api.model.type.Namespace;
-import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.api.model.type.RuntimeMode;
 
 /**
  * A composite component type.
  */
-public class Composite extends ComponentType implements PolicyAware {
+public class Composite extends ComponentType {
     private static final long serialVersionUID = -3126069884608566611L;
 
     private QName name;
@@ -49,9 +45,6 @@ public class Composite extends ComponentType implements PolicyAware {
     private boolean deployable;
     private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.NODE);
     private List<String> environments = Collections.emptyList();
-
-    private Set<QName> intents = new LinkedHashSet<>();
-    private Set<QName> policySets = new LinkedHashSet<>();
 
     private Map<String, ComponentDefinition<? extends Implementation<?>>> components = new HashMap<>();
     private Map<QName, Include> includes = new HashMap<>();
@@ -68,7 +61,6 @@ public class Composite extends ComponentType implements PolicyAware {
     private List<WireDefinition> wiresView = new ArrayList<>();
     private List<ResourceDefinition> resourcesView = new ArrayList<>();
 
-    private Map<QName, Serializable> metadata = new HashMap<>();
     private List<Namespace> namespaces;
 
     // determines if this composite is a pointer. Pointers are references to composites that do not yet exist or have been deleted such
@@ -390,42 +382,6 @@ public class Composite extends ComponentType implements PolicyAware {
         wiresView.addAll(include.getIncluded().getWires());
         channelsView.putAll(include.getIncluded().getChannels());
         resourcesView.addAll(include.getIncluded().getResources());
-    }
-
-    public void addIntent(QName intent) {
-        intents.add(intent);
-    }
-
-    public Set<QName> getIntents() {
-        return intents;
-    }
-
-    public void addPolicySet(QName policySet) {
-        policySets.add(policySet);
-    }
-
-    public void setIntents(Set<QName> intents) {
-        this.intents = intents;
-    }
-
-    public Set<QName> getPolicySets() {
-        return policySets;
-    }
-
-    public void setPolicySets(Set<QName> policySets) {
-        this.policySets = policySets;
-    }
-
-    public void addMetadata(QName name, Serializable data) {
-        metadata.put(name, data);
-    }
-
-    public <T> T getMetadata(QName name, Class<T> type) {
-        return type.cast(metadata.get(name));
-    }
-
-    public Map<QName, Serializable> getMetadata() {
-        return metadata;
     }
 
     /**

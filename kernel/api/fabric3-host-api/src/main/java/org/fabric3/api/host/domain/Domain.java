@@ -75,20 +75,5 @@ public interface Domain {
      */
     void undeploy(Composite composite, boolean simulated) throws DeploymentException;
 
-    /**
-     * Activates a set of definitions contained in the contribution.
-     *
-     * @param uri the contribution URI
-     * @throws DeploymentException if an error is encountered during activation
-     */
-    void activateDefinitions(URI uri) throws DeploymentException;
-
-    /**
-     * Deactivates a set of definitions contained in the contribution.
-     *
-     * @param uri the contribution URI
-     * @throws DeploymentException if an error is encountered during activation
-     */
-    void deactivateDefinitions(URI uri) throws DeploymentException;
 
 }

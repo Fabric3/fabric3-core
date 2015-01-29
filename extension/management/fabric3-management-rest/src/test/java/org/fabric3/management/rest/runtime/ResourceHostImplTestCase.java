@@ -30,7 +30,6 @@ import org.fabric3.management.rest.spi.DuplicateResourceNameException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.security.BasicAuthenticator;
 
 /**
  *

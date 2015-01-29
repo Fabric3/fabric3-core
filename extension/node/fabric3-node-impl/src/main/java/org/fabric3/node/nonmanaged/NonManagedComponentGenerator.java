@@ -17,7 +17,6 @@
 package org.fabric3.node.nonmanaged;
 
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -36,7 +35,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  */
 public class NonManagedComponentGenerator implements ComponentGenerator<LogicalComponent<NonManagedImplementation>> {
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
         String interfaze = reference.getServiceContract().getQualifiedInterfaceName();
         return new NonManagedPhysicalWireSourceDefinition(interfaze);
     }
@@ -45,11 +44,11 @@ public class NonManagedComponentGenerator implements ComponentGenerator<LogicalC
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

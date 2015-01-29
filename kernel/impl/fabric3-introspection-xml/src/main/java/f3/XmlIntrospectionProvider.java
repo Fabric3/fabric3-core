@@ -34,7 +34,6 @@ import org.fabric3.introspection.xml.common.ComponentServiceLoader;
 import org.fabric3.introspection.xml.common.ConfigurationLoader;
 import org.fabric3.introspection.xml.common.JavaInterfaceLoader;
 import org.fabric3.introspection.xml.common.PropertyLoader;
-import org.fabric3.introspection.xml.componentType.ComponentTypeLoader;
 import org.fabric3.introspection.xml.composite.ChannelLoader;
 import org.fabric3.introspection.xml.composite.ComponentLoader;
 import org.fabric3.introspection.xml.composite.CompositeLoader;
@@ -42,16 +41,8 @@ import org.fabric3.introspection.xml.composite.CompositeReferenceLoader;
 import org.fabric3.introspection.xml.composite.CompositeServiceLoader;
 import org.fabric3.introspection.xml.composite.ImplementationCompositeLoader;
 import org.fabric3.introspection.xml.composite.IncludeLoader;
-import org.fabric3.introspection.xml.composite.PolicySetAttachmentLoader;
 import org.fabric3.introspection.xml.composite.PropertyValueLoader;
 import org.fabric3.introspection.xml.composite.WireLoader;
-import org.fabric3.introspection.xml.definitions.BindingTypeLoader;
-import org.fabric3.introspection.xml.definitions.DefinitionsIndexer;
-import org.fabric3.introspection.xml.definitions.DefinitionsLoader;
-import org.fabric3.introspection.xml.definitions.ExternalAttachmentLoader;
-import org.fabric3.introspection.xml.definitions.ImplementationTypeLoader;
-import org.fabric3.introspection.xml.definitions.IntentLoader;
-import org.fabric3.introspection.xml.definitions.PolicySetLoader;
 import org.fabric3.introspection.xml.template.BindingTemplatePostProcessor;
 import org.fabric3.introspection.xml.template.SystemConfigTemplateParser;
 import org.fabric3.introspection.xml.template.TemplateElementLoader;
@@ -75,7 +66,6 @@ public class XmlIntrospectionProvider {
 
         addCommon(compositeBuilder);
         addCompositeLoader(compositeBuilder);
-        addDefinitionsLoader(compositeBuilder);
         addTemplateLoader(compositeBuilder);
 
         return compositeBuilder.build();
@@ -94,16 +84,6 @@ public class XmlIntrospectionProvider {
         compositeBuilder.component(newBuilder(TemplatesElementLoader.class).build());
 
         compositeBuilder.component(newBuilder(SystemConfigTemplateParser.class).build());
-    }
-
-    private static void addDefinitionsLoader(CompositeBuilder compositeBuilder) {
-        compositeBuilder.component(newBuilder(DefinitionsLoader.class).build());
-        compositeBuilder.component(newBuilder(DefinitionsIndexer.class).build());
-        compositeBuilder.component(newBuilder(IntentLoader.class).key(Constants.SCA_PREFIX + "intent").build());
-        compositeBuilder.component(newBuilder(PolicySetLoader.class).key(Constants.SCA_PREFIX + "policySet").build());
-        compositeBuilder.component(newBuilder(BindingTypeLoader.class).key(Constants.SCA_PREFIX + "bindingType").build());
-        compositeBuilder.component(newBuilder(ExternalAttachmentLoader.class).key(Constants.SCA_PREFIX + "externalAttachment").build());
-        compositeBuilder.component(newBuilder(ImplementationTypeLoader.class).build());
     }
 
     private static void addCompositeLoader(CompositeBuilder compositeBuilder) {
@@ -128,11 +108,9 @@ public class XmlIntrospectionProvider {
         compositeBuilder.component(componentBuilder.build());
 
         compositeBuilder.component(newBuilder(ImplementationCompositeLoader.class).build());
-        compositeBuilder.component(newBuilder(ComponentTypeLoader.class).property("property", "PropertyLoader").build());
         compositeBuilder.component(newBuilder(SCABindingLoader.class).build());
         compositeBuilder.component(newBuilder(BindingHandlerLoader.class).key(Namespaces.F3_PREFIX + "handler").build());
         compositeBuilder.component(newBuilder(ConfigurationLoader.class).key(Constants.SCA_PREFIX + "configuration").build());
-        compositeBuilder.component(newBuilder(PolicySetAttachmentLoader.class).build());
 
     }
 

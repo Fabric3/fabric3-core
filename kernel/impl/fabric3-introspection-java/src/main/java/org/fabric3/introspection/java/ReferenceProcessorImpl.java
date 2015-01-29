@@ -35,7 +35,6 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.ReferenceProcessor;
-import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -49,12 +48,6 @@ import org.oasisopen.sca.annotation.Reference;
 public class ReferenceProcessorImpl implements ReferenceProcessor {
     private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
-    private PolicyAnnotationProcessor policyProcessor;
-
-    @Reference
-    public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
-        this.policyProcessor = processor;
-    }
 
     public ReferenceProcessorImpl(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
         this.contractProcessor = contractProcessor;
@@ -71,7 +64,11 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         addTargets(field, field, context, definition);
     }
 
-    public void addDefinition(Method method, String name, boolean required, Class<?> clazz, InjectingComponentType componentType,
+    public void addDefinition(Method method,
+                              String name,
+                              boolean required,
+                              Class<?> clazz,
+                              InjectingComponentType componentType,
                               IntrospectionContext context) {
         name = helper.getSiteName(method, name);
         Type type = helper.getGenericType(method);
@@ -111,11 +108,6 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
         ReferenceDefinition definition = new ReferenceDefinition(name, contract);
         helper.processMultiplicity(definition, required, type, typeMapping);
-        if (policyProcessor != null) {
-            for (Annotation annotation : annotations) {
-                policyProcessor.process(annotation, definition, context);
-            }
-        }
         return definition;
     }
 

@@ -20,10 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.definitions.Intent;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -47,14 +45,14 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
         this.hostInfo = hostInfo;
     }
 
-    public URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding, EffectivePolicy policy) throws GenerationException {
+    public URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding) throws GenerationException {
         try {
             URL targetUrl;
             String path = serviceBinding.getDefinition().getTargetUri().toString();
             if (path == null) {
                 path = serviceBinding.getParent().getUri().getFragment();
             }
-            boolean https = requiresHttps(policy);
+            boolean https = false;
             if (RuntimeMode.VM == hostInfo.getRuntimeMode()) {
                 // single VM
                 if (https) {
@@ -71,18 +69,6 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
             throw new GenerationException(e);
         }
 
-    }
-
-    private boolean requiresHttps(EffectivePolicy policy) {
-        for (Intent intent : policy.getProvidedEndpointIntents()) {
-            String localPart = intent.getName().getLocalPart();
-            if (localPart.startsWith("authorization") || localPart.equals("integrity") || localPart.startsWith("confidentiality") || localPart.startsWith(
-                    "mutualAuthentication") || localPart.equals("authentication") || localPart.startsWith("clientAuthentication") || localPart.startsWith(
-                    "serverAuthentication")) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

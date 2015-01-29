@@ -36,7 +36,6 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -85,7 +84,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
         ServiceContract contract = reference.getLeafReference().getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring reference contracts are always defined by Java interfaces
@@ -97,7 +96,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return new SpringWireSourceDefinition(referenceName, interfaze, uri);
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
         if (!(service.getLeafService().getDefinition() instanceof SpringService)) {
             // programming error
             throw new GenerationException("Expected service type: " + service.getDefinition().getClass().getName());
@@ -133,7 +132,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return new SpringConnectionTargetDefinition(beanName, methodName, type, uri);
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

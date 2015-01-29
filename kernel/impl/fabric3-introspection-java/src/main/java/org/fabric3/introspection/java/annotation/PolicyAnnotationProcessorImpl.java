@@ -23,17 +23,16 @@ import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.fabric3.api.annotation.IntentMetaData;
 import org.fabric3.api.model.type.PolicyAware;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.oasisopen.sca.annotation.Intent;
 import org.oasisopen.sca.annotation.PolicySets;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
 
@@ -41,60 +40,10 @@ import org.oasisopen.sca.annotation.Requires;
  *
  */
 public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor {
-    private Map<String, QName> intentsToQualifiers = new HashMap<>();
-
-    @Property(required = false)
-    public void setIntentsToQualifiers(Map<String, QName> intentsToQualifiers) {
-        this.intentsToQualifiers = intentsToQualifiers;
-    }
 
     public void process(Annotation annotation, PolicyAware modelObject, IntrospectionContext context) {
-        if (annotation instanceof Requires) {
-            processRequires((Requires) annotation, modelObject, context);
-        } else if (annotation instanceof PolicySets) {
-            processPolicySets((PolicySets) annotation, modelObject, context);
-        } else {
+        if (!(annotation instanceof Requires) && !(annotation instanceof PolicySets)) {
             processIntentAnnotation(annotation, modelObject, context);
-        }
-    }
-
-    /**
-     * Evaluates an requires annotation.
-     *
-     * @param annotation  the requires annotation
-     * @param modelObject the model object the requires annotation is associated with
-     * @param context     the current introspection context
-     */
-    private void processRequires(Requires annotation, PolicyAware modelObject, IntrospectionContext context) {
-        String[] intents = annotation.value();
-        for (String intent : intents) {
-            try {
-                QName qName = QName.valueOf(intent);
-                modelObject.addIntent(qName);
-            } catch (IllegalArgumentException e) {
-                InvalidIntentName error = new InvalidIntentName(intent, annotation.getClass(), e);
-                context.addError(error);
-            }
-        }
-    }
-
-    /**
-     * Evaluates a policy set annotation.
-     *
-     * @param annotation  the policy set annotation
-     * @param modelObject the model object the policy set is associated with
-     * @param context     the current introspection context
-     */
-    private void processPolicySets(PolicySets annotation, PolicyAware modelObject, IntrospectionContext context) {
-        String[] policySets = annotation.value();
-        for (String set : policySets) {
-            try {
-                QName qName = QName.valueOf(set);
-                modelObject.addPolicySet(qName);
-            } catch (IllegalArgumentException e) {
-                InvalidIntentName error = new InvalidIntentName(set, null, e);
-                context.addError(error);
-            }
         }
     }
 
@@ -107,10 +56,10 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
      */
     private void processIntentAnnotation(Annotation annotation, PolicyAware modelObject, IntrospectionContext context) {
         Class<? extends Annotation> annotClass = annotation.annotationType();
-        if (annotClass.isAnnotationPresent(Intent.class)) {
-            Intent intent = annotClass.getAnnotation(Intent.class);
-            String val = intent.value();
-            try {
+        try {
+            if (annotClass.isAnnotationPresent(Intent.class)) {
+                Intent intent = annotClass.getAnnotation(Intent.class);
+                String val = intent.value();
                 String[] qualifiers = getMetadataValue(annotation, Qualifier.class, context);
                 QName name = null;
                 if (qualifiers == null || qualifiers.length < 1 || qualifiers[0].length() < 1) {
@@ -121,24 +70,23 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                         name = QName.valueOf(qualifier);
                     }
                 }
-                modelObject.addIntent(name);
-                String[] metadata = getMetadataValue(annotation, IntentMetaData.class, context);
-                if (metadata != null && metadata.length >= 1 && metadata[0].length() >= 1) {
-                    modelObject.addMetadata(name, metadata);
+                if (modelObject instanceof ComponentType) {
+                    modelObject.addPolicy(name.getLocalPart());
+                } else if (modelObject instanceof Operation) {
+                    Operation operation = (Operation) modelObject;
+                    operation.addPolicy(name.getLocalPart());
+                    String[] metadata = getMetadataValue(annotation, IntentMetaData.class, context);
+                    if (metadata != null && metadata.length >= 1 && metadata[0].length() >= 1) {
+                        operation.addMetadata(name, metadata);
+                    }
                 }
-            } catch (IllegalArgumentException e) {
-                context.addError(new InvalidIntentName(val, annotClass, e));
-            } catch (IllegalAccessException e) {
-                context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), annotClass, annotation, annotClass, e));
-            } catch (InvocationTargetException e) {
-                context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), annotClass, annotation, annotClass, e));
             }
-        } else {
-            // check if the annotation is an intent annotation but not marked with the @Intent annotation
-            QName qualifier = intentsToQualifiers.get(annotation.annotationType().getName());
-            if (qualifier != null) {
-                modelObject.addIntent(qualifier);
-            }
+        } catch (IllegalArgumentException e) {
+            context.addError(new InvalidAnnotation("Error reading annotation value ", annotClass, annotation, annotClass, e));
+        } catch (IllegalAccessException e) {
+            context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), annotClass, annotation, annotClass, e));
+        } catch (InvocationTargetException e) {
+            context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), annotClass, annotation, annotClass, e));
         }
     }
 

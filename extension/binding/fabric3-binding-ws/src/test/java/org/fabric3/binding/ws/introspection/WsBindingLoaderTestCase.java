@@ -9,10 +9,9 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 /**
@@ -28,16 +27,15 @@ public class WsBindingLoaderTestCase extends TestCase {
 
     private DefaultIntrospectionContext context;
     private WsBindingLoader loader;
-    private LoaderHelper helper;
     private LoaderRegistry loaderRegistry;
 
 
     public void testLoad() throws Exception {
         XMLStreamReader reader = createReader(XML_VALID);
-        EasyMock.replay(helper, loaderRegistry);
+        EasyMock.replay(loaderRegistry);
         WsBindingDefinition definition = loader.load(reader, context);
         assertEquals("http://fabric3.org/TestService", definition.getTargetUri().toString());
-        EasyMock.verify(helper, loaderRegistry);
+        EasyMock.verify(loaderRegistry);
     }
 
     public void testLoadConfigurationAndHandlers() throws Exception {
@@ -45,23 +43,22 @@ public class WsBindingLoaderTestCase extends TestCase {
         EasyMock.expect(loaderRegistry.load(reader, Object.class, context)).andReturn(Collections.singletonMap("key1", "value1"));
         EasyMock.expect(loaderRegistry.load(reader, Object.class, context)).andReturn(new BindingHandlerDefinition(URI.create("test"))).times(2);
 
-        EasyMock.replay(helper, loaderRegistry);
+        EasyMock.replay(loaderRegistry);
 
         WsBindingDefinition definition = loader.load(reader, context);
         assertEquals("http://fabric3.org/TestService", definition.getTargetUri().toString());
         assertTrue(definition.getConfiguration().containsKey("key1"));
         assertEquals(2, definition.getHandlers().size());
-        EasyMock.verify(helper, loaderRegistry);
+        EasyMock.verify(loaderRegistry);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         context = new DefaultIntrospectionContext();
 
-        helper = EasyMock.createNiceMock(LoaderHelper.class);
         loaderRegistry = EasyMock.createMock(LoaderRegistry.class);
 
-        loader = new WsBindingLoader(helper, loaderRegistry);
+        loader = new WsBindingLoader(loaderRegistry);
 
     }
 

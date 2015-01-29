@@ -19,24 +19,24 @@
  */
 package org.fabric3.fabric.domain.generator.impl;
 
-import javax.xml.namespace.QName;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
-import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.domain.generator.channel.EventStreamHandlerGenerator;
-import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -47,8 +47,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<>();
     private Map<Class<?>, WireBindingGenerator<?>> bindingGenerators = new HashMap<>();
     private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new ConcurrentHashMap<>();
-    private Map<QName, InterceptorGenerator> interceptorGenerators = new HashMap<>();
-    private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new HashMap<>();
+    private List<InterceptorGenerator> interceptorGenerators = Collections.emptyList();
     private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<>();
     private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<>();
 
@@ -73,18 +72,13 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @Reference(required = false)
-    public void setInterceptorGenerators(Map<QName, InterceptorGenerator> interceptorGenerators) {
+    public void setInterceptorGenerators(List<InterceptorGenerator> interceptorGenerators) {
         this.interceptorGenerators = interceptorGenerators;
     }
 
     @Reference(required = false)
     public void setResourceGenerators(Map<Class<?>, ResourceGenerator<?>> resourceGenerators) {
         this.resourceGenerators = resourceGenerators;
-    }
-
-    @Reference(required = false)
-    public void setHandlerGenerators(Map<QName, EventStreamHandlerGenerator> handlerGenerators) {
-        this.handlerGenerators = handlerGenerators;
     }
 
     public <T extends Implementation<?>> void register(Class<T> clazz, ComponentGenerator<LogicalComponent<T>> generator) {
@@ -136,20 +130,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         return generator;
     }
 
-    public InterceptorGenerator getInterceptorGenerator(QName extensionName) throws GeneratorNotFoundException {
-        InterceptorGenerator generator = interceptorGenerators.get(extensionName);
-        if (generator == null) {
-            throw new GeneratorNotFoundException(extensionName);
-        }
-        return generator;
-    }
-
-    public EventStreamHandlerGenerator getEventStreamHandlerGenerator(QName extensionName) throws GeneratorNotFoundException {
-        EventStreamHandlerGenerator generator = handlerGenerators.get(extensionName);
-        if (generator == null) {
-            throw new GeneratorNotFoundException(extensionName);
-        }
-        return generator;
+    public List<InterceptorGenerator> getInterceptorGenerators() {
+        return interceptorGenerators;
     }
 
     @SuppressWarnings({"unchecked"})

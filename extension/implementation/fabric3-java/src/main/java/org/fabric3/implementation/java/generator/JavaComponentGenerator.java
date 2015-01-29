@@ -30,7 +30,6 @@ import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -70,22 +69,22 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        generationHelper.generateWireSource(definition, reference, policy);
+        generationHelper.generateWireSource(definition, reference);
         return definition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
-        generationHelper.generateCallbackWireSource(definition, source, callbackContract, policy);
+        generationHelper.generateCallbackWireSource(definition, source, callbackContract);
         return definition;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
         JavaWireTargetDefinition definition = new JavaWireTargetDefinition();
         generationHelper.generateWireTarget(definition, service);
         return definition;

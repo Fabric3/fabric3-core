@@ -5,21 +5,12 @@
            name="TxExtension"
            autowire="true">
 
-    <component name="TxInterceptorBuilder" f3:key="org.fabric3.tx.TxInterceptorDefinition">
+    <component name="TxInterceptorBuilder">
         <f3:implementation.system class="org.fabric3.tx.TxInterceptorBuilder"/>
     </component>
 
-    <component name="TxInterceptorGenerator" f3:key="{urn:fabric3.org}transaction">
+    <component name="TxInterceptorGenerator">
         <f3:implementation.system class="org.fabric3.tx.TxInterceptorGenerator"/>
-    </component>
-
-
-    <component name="TxHandlerBuilder" f3:key="org.fabric3.tx.TxHandlerDefinition">
-        <f3:implementation.system class="org.fabric3.tx.TxHandlerBuilder"/>
-    </component>
-
-    <component name="TxHandlerGenerator" f3:key="{urn:fabric3.org}transaction">
-        <f3:implementation.system class="org.fabric3.tx.TxHandlerGenerator"/>
     </component>
 
 </composite>

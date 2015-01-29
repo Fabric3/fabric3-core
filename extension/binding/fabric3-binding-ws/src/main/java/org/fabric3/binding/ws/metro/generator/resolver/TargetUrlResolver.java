@@ -19,13 +19,12 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.URL;
 
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
- * Determines the endpoint of a URL based on the service binding metadata. This is used when determining a URL for a reference targeted using the SCA
- * service URL.
+ * Determines the endpoint of a URL based on the service binding metadata. This is used when determining a URL for a reference targeted using the SCA service
+ * URL.
  */
 public interface TargetUrlResolver {
 
@@ -33,10 +32,9 @@ public interface TargetUrlResolver {
      * Calculate the URL from the service binding metadata.
      *
      * @param serviceBinding the service binding
-     * @param policy         effective policy for the wire. Used in determining whether to use a secure protocol (HTTPS).
      * @return the URL
      * @throws GenerationException if the URL cannot be created
      */
-    URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding, EffectivePolicy policy) throws GenerationException;
+    URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding) throws GenerationException;
 
 }

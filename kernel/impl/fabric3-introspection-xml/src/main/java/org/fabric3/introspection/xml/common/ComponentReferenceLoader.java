@@ -101,8 +101,6 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         if (nonOverridable != null) {
             reference.setNonOverridable(Boolean.parseBoolean(nonOverridable));
         }
-        loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
-
         validateAttributes(reader, context, reference);
 
         if (roundTrip) {

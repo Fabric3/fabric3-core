@@ -44,8 +44,7 @@ public class JAXBTypeIntrospectorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        JAXBQNameMapper mapper = new JAXBQNameMapperImpl();
-        introspector = new JAXBTypeIntrospector(mapper);
+        introspector = new JAXBTypeIntrospector();
     }
 
     @SuppressWarnings({"unchecked"})

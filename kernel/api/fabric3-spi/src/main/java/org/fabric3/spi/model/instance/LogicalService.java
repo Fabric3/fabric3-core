@@ -45,11 +45,6 @@ public class LogicalService extends Bindable {
     public LogicalService(URI uri, AbstractService definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
-        if (definition != null) {
-            // null check for testing so full model does not need to be instantiated
-            addIntents(definition.getIntents());
-            addPolicySets(definition.getPolicySets());
-        }
         leafComponent = parent;
         leafService = this;
     }

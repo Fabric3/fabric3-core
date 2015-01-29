@@ -23,12 +23,12 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.model.type.AbstractPolicyAware;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A component configuration in a composite file.
  */
-public class ComponentDefinition<I extends Implementation<?>> extends AbstractPolicyAware<Composite> {
+public class ComponentDefinition<I extends Implementation<?>> extends ModelObject<Composite> {
     private static final long serialVersionUID = 4909969579651563484L;
 
     private String name;

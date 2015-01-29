@@ -48,7 +48,6 @@ import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -59,14 +58,11 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
- * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite.
- * <p/>
- * request/responseConnection are specified per the SCA JMS spec
+ * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite. <p/> request/responseConnection are specified per the SCA JMS spec
  */
 @EagerInit
 public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDefinition> {
     private LoaderRegistry registry;
-    private LoaderHelper loaderHelper;
     private int defaultResponseTimeout = 600000;  // set the default response wait to 10 minutes
     private int defaultTransactionTimeout = 30; // in seconds
     private int defaultReceiveTimeout = (defaultTransactionTimeout / 2) * 1000;  // set the timeout in milliseconds to half that of the trx timeout
@@ -84,8 +80,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         defaultReceiveTimeout = (defaultTransactionTimeout / 2) * 1000;
     }
 
-    public JmsBindingLoader(@Reference LoaderHelper loaderHelper, @Reference LoaderRegistry registry) {
-        this.loaderHelper = loaderHelper;
+    public JmsBindingLoader(@Reference LoaderRegistry registry) {
         this.registry = registry;
         addAttributes("uri",
                       "activationSpec",
@@ -114,7 +109,8 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                       "max.messages",
                       "recovery.interval",
                       "max.receivers",
-                      "min.receivers");
+                      "min.receivers",
+                      "clientAcknowledge");
     }
 
     public JmsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -143,7 +139,6 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         parseCorrelationScheme(metadata, namespace, targetNamespace, reader, context);
 
         metadata.setJndiUrl(reader.getAttributeValue(null, "jndiURL"));
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         loadFabric3Attributes(metadata, reader, context);
 
@@ -325,6 +320,9 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 context.addError(error);
             }
         }
+
+        String ack = reader.getAttributeValue(null, "clientAcknowledge");
+        metadata.setClientAcknowledge(Boolean.valueOf(ack));
     }
 
     private ActivationSpec loadActivationSpec(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {

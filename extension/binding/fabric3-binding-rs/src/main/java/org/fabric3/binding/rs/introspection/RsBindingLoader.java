@@ -16,14 +16,11 @@
  */
 package org.fabric3.binding.rs.introspection;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.api.binding.rs.model.RsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -32,6 +29,8 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -39,10 +38,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 @EagerInit
 public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefinition> {
 
-    private final LoaderHelper loaderHelper;
-
-    public RsBindingLoader(@Reference LoaderHelper loaderHelper) {
-        this.loaderHelper = loaderHelper;
+    public RsBindingLoader() {
         addAttributes("requires", "name", "policySets", "uri");
     }
 
@@ -66,7 +62,6 @@ public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefin
             return null;
         }
         RsBindingDefinition definition = new RsBindingDefinition(bindingName, uri);
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         validateAttributes(reader, context, definition);
 

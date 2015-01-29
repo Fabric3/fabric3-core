@@ -96,8 +96,6 @@ public class SnapshotHelper {
         boolean local = definition.isLocal();
         ChannelDefinition definitionCopy = new ChannelDefinition(name, contributionUri, type, local);
         definitionCopy.setParent(composite);
-        definitionCopy.setIntents(definition.getIntents());
-        definitionCopy.setPolicySets(definition.getPolicySets());
         definitionCopy.setLocal(definition.isLocal());
         LogicalChannel channelCopy = new LogicalChannel(channel.getUri(), definitionCopy, domain);
         channelCopy.getBindings().addAll(channel.getBindings());
@@ -124,8 +122,6 @@ public class SnapshotHelper {
         Composite composite = (Composite) parent.getDefinition().getComponentType();
         definitionCopy.setParent(composite);
         definitionCopy.setContributionUri(definition.getContributionUri());
-        definitionCopy.setIntents(definition.getIntents());
-        definitionCopy.setPolicySets(definition.getPolicySets());
 
         URI uri = component.getUri();
         LogicalComponent<RemoteImplementation> componentCopy = new LogicalComponent<>(uri, definitionCopy, parent);

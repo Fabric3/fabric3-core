@@ -26,7 +26,6 @@ import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -51,7 +50,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         return componentDefinition;
     }
 
-    public MockWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public MockWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
         MockWireTargetDefinition definition = new MockWireTargetDefinition();
         definition.setUri(service.getUri());
         ServiceContract serviceContract = service.getDefinition().getServiceContract();
@@ -63,7 +62,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         throw new UnsupportedOperationException("Mock objects cannot have resources");
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
         throw new UnsupportedOperationException("Mock objects cannot be the source of a wire");
     }
 
@@ -75,7 +74,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
         return new MockWireSourceDefinition();
     }
 

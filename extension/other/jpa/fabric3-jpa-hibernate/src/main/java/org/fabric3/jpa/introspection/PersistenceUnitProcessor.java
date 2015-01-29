@@ -18,23 +18,22 @@
  */
 package org.fabric3.jpa.introspection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.jpa.model.PersistenceUnitResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.jpa.model.PersistenceUnitResourceReference;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -59,8 +58,6 @@ public class PersistenceUnitProcessor extends AbstractAnnotationProcessor<Persis
         FieldInjectionSite site = new FieldInjectionSite(field);
         PersistenceUnitResourceReference definition = createDefinition(annotation);
         componentType.add(definition, site);
-        // record that the implementation requires JPA
-        componentType.addRequiredCapability("jpa");
     }
 
     public void visitMethod(PersistenceUnit annotation,
@@ -71,8 +68,6 @@ public class PersistenceUnitProcessor extends AbstractAnnotationProcessor<Persis
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         PersistenceUnitResourceReference definition = createDefinition(annotation);
         componentType.add(definition, site);
-        // record that the implementation requires JPA
-        componentType.addRequiredCapability("jpa");
     }
 
     PersistenceUnitResourceReference createDefinition(PersistenceUnit annotation) {

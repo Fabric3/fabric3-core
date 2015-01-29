@@ -16,21 +16,19 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.security;
+package org.fabric3.management.rest.runtime;
 
-import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.io.UnsupportedEncodingException;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
-import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.security.UsernamePasswordToken;
 import org.fabric3.spi.util.Base64;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Performs HTTP basic auth and populates the current work context with the authenticated subject.

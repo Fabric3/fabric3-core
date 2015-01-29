@@ -20,11 +20,9 @@ package org.fabric3.fabric.domain;
 
 import java.util.List;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.fabric.domain.collector.Collector;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -34,9 +32,7 @@ import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.binding.BindingSelectionException;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
-import org.fabric3.spi.domain.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -87,16 +83,6 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     @Reference(required = false)
     public void setListeners(List<DeployListener> listeners) {
         this.listeners = listeners;
-    }
-
-    /**
-     * Used to inject the PolicyRegistry after bootstrap.
-     *
-     * @param policyRegistry the registry
-     */
-    @Reference(required = false)
-    public void setPolicyRegistry(PolicyRegistry policyRegistry) {
-        this.policyRegistry = policyRegistry;
     }
 
     protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {

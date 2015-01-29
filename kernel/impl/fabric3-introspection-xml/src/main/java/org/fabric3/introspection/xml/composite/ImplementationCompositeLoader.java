@@ -29,9 +29,9 @@ import java.net.URL;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
-import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
@@ -39,7 +39,6 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
 import org.fabric3.spi.introspection.xml.LoaderException;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -55,11 +54,9 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
     private static final QName IMPL = new QName(Constants.SCA_NS, "implementation.composite");
 
     private MetaDataStore store;
-    private LoaderHelper loaderHelper;
 
-    public ImplementationCompositeLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore store, @Reference LoaderHelper loaderHelper) {
+    public ImplementationCompositeLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore store) {
         super(registry);
-        this.loaderHelper = loaderHelper;
         addAttributes("name", "scdlResource", "requires", "policySets");
         this.store = store;
     }
@@ -81,9 +78,6 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         }
 
         validateAttributes(reader, context, implementation);
-
-        loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
-
 
         LoaderUtil.skipToEndElement(reader);
         return implementation;

@@ -18,28 +18,27 @@
  */
 package org.fabric3.jpa.introspection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.jpa.model.HibernateSessionResourceReference;
-import org.fabric3.jpa.model.PersistenceContextResourceReference;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.jpa.model.HibernateSessionResourceReference;
+import org.fabric3.jpa.model.PersistenceContextResourceReference;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes @PersistenceContext annotations.
@@ -71,8 +70,6 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
             HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
             componentType.add(definition, site);
         }
-        // record that the implementation requires JPA
-        componentType.addRequiredCapability("jpa");
     }
 
     public void visitMethod(PersistenceContext annotation,
@@ -89,8 +86,6 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
             HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
             componentType.add(definition, site);
         }
-        // record that the implementation requires JPA
-        componentType.addRequiredCapability("jpa");
     }
 
     private PersistenceContextResourceReference createDefinition(String name,

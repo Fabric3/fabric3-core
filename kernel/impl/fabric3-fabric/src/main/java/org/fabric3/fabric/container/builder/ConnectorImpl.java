@@ -53,7 +53,7 @@ public class ConnectorImpl implements Connector {
     public ConnectorImpl() {
     }
 
-    @Reference
+    @Reference(required = false)
     public void setInterceptorBuilders(Map<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>> interceptorBuilders) {
         this.interceptorBuilders = interceptorBuilders;
     }

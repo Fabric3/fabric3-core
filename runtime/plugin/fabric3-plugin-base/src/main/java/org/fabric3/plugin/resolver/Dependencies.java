@@ -54,8 +54,6 @@ public class Dependencies {
         artifact = new DefaultArtifact(F3_GROUP_ID, "fabric3-async", "jar", runtimeVersion);
         extensions.add(artifact);
 
-        artifact = new DefaultArtifact(F3_GROUP_ID, "fabric3-sca-intents", "jar", runtimeVersion);
-        extensions.add(artifact);
 
         artifact = new DefaultArtifact(F3_GROUP_ID, "fabric3-resource", "jar", runtimeVersion);
         extensions.add(artifact);

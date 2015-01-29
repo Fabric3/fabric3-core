@@ -79,11 +79,9 @@ import org.fabric3.fabric.domain.generator.context.StartContextCommandGeneratorI
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorImpl;
 import org.fabric3.fabric.domain.generator.impl.GeneratorRegistryImpl;
-import org.fabric3.fabric.domain.generator.policy.DefaultPolicyRegistry;
 import org.fabric3.fabric.domain.generator.resource.BuildResourceCommandGenerator;
 import org.fabric3.fabric.domain.generator.resource.DisposeResourceCommandGenerator;
 import org.fabric3.fabric.domain.generator.resource.DomainResourceCommandGeneratorImpl;
-import org.fabric3.fabric.domain.generator.utility.NullInterceptorGenerator;
 import org.fabric3.fabric.domain.generator.wire.BoundServiceCommandGenerator;
 import org.fabric3.fabric.domain.generator.wire.OperationResolverImpl;
 import org.fabric3.fabric.domain.generator.wire.PhysicalOperationGeneratorImpl;
@@ -107,7 +105,6 @@ import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.fabric.repository.FSArtifactCache;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
-import org.fabric3.fabric.security.BasicAuthenticatorImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.fabric.transport.TransportService;
@@ -156,8 +153,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(SerializationServiceImpl.class).build());
 
         compositeBuilder.component(newBuilder(TransportService.class).build());
-
-        compositeBuilder.component(newBuilder(BasicAuthenticatorImpl.class).build());
 
         compositeBuilder.component(newBuilder(PortAllocatorImpl.class).build());
 
@@ -277,10 +272,6 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(StopContextCommandGeneratorImpl.class).build());
 
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("NullInterceptorGenerator", NullInterceptorGenerator.class);
-        componentBuilder.key(Namespaces.F3_PREFIX + "allowsPassByReferencePolicy");
-        compositeBuilder.component(componentBuilder.build());
-
         compositeBuilder.component(newBuilder(DefaultChannelGeneratorExtensionImpl.class).key("default").build());
 
         // the wire forces a reinjection of the generator into the RuntimeDomain
@@ -333,12 +324,7 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(SingletonComponentSynthesizer.class).build());
 
-        compositeBuilder.component(newBuilder("PolicyRegistry", DefaultPolicyRegistry.class).build());
-
         compositeBuilder.wire(WireDefinitionBuilder.newBuilder().source("RuntimeDomain/deployer").target("LocalDeployer").build());
 
-        compositeBuilder.wire(WireDefinitionBuilder.newBuilder().source("RuntimeDomain/policyRegistry").target("PolicyRegistry").build());
-
-        compositeBuilder.wire(WireDefinitionBuilder.newBuilder().source("ApplicationDomain/policyRegistry").target("PolicyRegistry").build());
     }
 }

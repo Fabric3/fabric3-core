@@ -19,13 +19,9 @@
 package org.fabric3.async.generator;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.w3c.dom.Element;
-
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.spi.domain.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -35,13 +31,10 @@ public class NonBlockingGeneratorTestCase extends TestCase {
 
     public void testGenerate() throws Exception {
 
-        Element policy = EasyMock.createMock(Element.class);
         Operation definition = new Operation("name", null, null, null);
         LogicalOperation operation = new LogicalOperation(definition, null);
-        PolicyMetadata metadata = new PolicyMetadata();
-        EasyMock.replay(policy);
 
         NonBlockingGenerator generator = new NonBlockingGenerator();
-        assertNotNull(generator.generate(policy, metadata, operation));
+        assertNotNull(generator.generate(operation, operation));
     }
 }

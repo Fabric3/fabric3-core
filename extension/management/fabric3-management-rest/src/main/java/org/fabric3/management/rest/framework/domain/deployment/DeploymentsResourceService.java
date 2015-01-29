@@ -16,16 +16,13 @@
  */
 package org.fabric3.management.rest.framework.domain.deployment;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -33,12 +30,12 @@ import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.domain.ContributionNotFoundException;
 import org.fabric3.api.host.domain.DeployableNotFoundException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.HttpHeaders;
 import org.fabric3.management.rest.model.HttpStatus;
@@ -48,6 +45,8 @@ import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles the /domain/deployments resource and its sub-resources:
@@ -106,12 +105,6 @@ public class DeploymentsResourceService {
             Contribution contribution = store.find(uri);
             if (contribution == null) {
                 throw new ResourceException(HttpStatus.NOT_FOUND, "Contribution not found: " + uri);
-            }
-            try {
-                domain.activateDefinitions(uri);
-            } catch (DeploymentException e) {
-                monitor.error("Error activating definitions: " + uri, e);
-                return new Response(HttpStatus.BAD_REQUEST, "Error activating definitions " + uri + ": " + e.getMessage());
             }
             for (Deployable deployable : contribution.getManifest().getDeployables()) {
                 QName deployableName = deployable.getName();

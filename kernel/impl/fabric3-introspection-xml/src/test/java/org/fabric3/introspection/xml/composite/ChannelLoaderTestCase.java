@@ -71,7 +71,7 @@ public class ChannelLoaderTestCase extends TestCase {
         MockImplementationLoader implLoader = new MockImplementationLoader();
         implLoader.setProperties(new Property("prop"));
         registry.registerLoader(MockImplementation.TYPE, implLoader);
-        loader = new ChannelLoader(registry, helper);
+        loader = new ChannelLoader(registry);
         Map map = Collections.singletonMap(ChannelDefinition.DEFAULT_TYPE, new MockChannelTypeLoader());
         loader.setChannelTypeLoaders(map);
 

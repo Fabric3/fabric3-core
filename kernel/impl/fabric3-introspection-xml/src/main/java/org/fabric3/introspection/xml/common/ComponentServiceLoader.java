@@ -80,8 +80,6 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             definition.enableRoundTrip();
         }
 
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
-
         validateAttributes(reader, context, definition);
 
         boolean callback = false;
@@ -121,9 +119,6 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                                 definition.addBinding(binding);
                             }
                         }
-                    } else if (type instanceof QName) {
-                        // external attachment
-                        definition.getPolicySets().add((QName) type);
                     } else if (type == null) {
                         // error loading, the element, ignore as an error will have been reported
                         LoaderUtil.skipToEndElement(reader);

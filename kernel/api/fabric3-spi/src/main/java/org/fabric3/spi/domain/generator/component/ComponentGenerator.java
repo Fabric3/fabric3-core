@@ -21,7 +21,6 @@ package org.fabric3.spi.domain.generator.component;
 
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -55,33 +54,30 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      * is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param reference the source logical reference
-     * @param policy    the provided intents and policy sets
      * @return the metadata used to attach the wire to its source on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException;
+    PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException;
 
     /**
      * Generates a {@link PhysicalWireTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
      * is specific to the component implementation type and used when the wire is attached to its target on a runtime.
      *
      * @param service the target logical service
-     * @param policy  the provided intents and policy sets
      * @return the metadata used to attach the wire to its target on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalWireTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException;
+    PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException;
 
     /**
      * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param service the forward service the callback is being generated for
-     * @param policy  the provided intents and policy sets
      * @return the metadata used to attach the wire to its source on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException;
+    PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException;
 
     /**
      * Generates a {@link PhysicalConnectionSourceDefinition} used to attach an event connection to its source producer.

@@ -25,25 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
-import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads a <code>binding.zeromq</code> element in a composite.
  */
 @EagerInit
 public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBindingDefinition> {
-    private final LoaderHelper loaderHelper;
 
-    public ZeroMQBindingLoader(@Reference LoaderHelper loaderHelper) {
-        this.loaderHelper = loaderHelper;
+    public ZeroMQBindingLoader() {
         addAttributes("name",
                       "requires",
                       "policySets",
@@ -122,8 +118,6 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         metadata.setSendBuffer(sendBuffer);
         metadata.setReceiveBuffer(receiveBuffer);
         metadata.setWireFormat(wireFormat);
-
-        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         validateAttributes(reader, context, definition);
 

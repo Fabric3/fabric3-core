@@ -19,27 +19,22 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import java.lang.annotation.Annotation;
-
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-
-import org.fabric3.api.model.type.component.ServiceDefinition;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  * Processes the @Service annotation on a component implementation class.
  */
 public class OASISServiceProcessor extends AbstractAnnotationProcessor<Service> {
     private final JavaContractProcessor contractProcessor;
-    private PolicyAnnotationProcessor policyProcessor;
     private OperationPolicyIntrospector policyIntrospector;
 
     public OASISServiceProcessor(JavaContractProcessor contractProcessor) {
@@ -54,15 +49,10 @@ public class OASISServiceProcessor extends AbstractAnnotationProcessor<Service> 
         this.policyIntrospector = policyIntrospector;
     }
 
-    @Reference
-    public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
-        this.policyProcessor = processor;
-    }
-
     public void visitType(Service annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         Class<?>[] services = annotation.value();
         String[] names = annotation.names();
-        for (int i=0; i<services.length; i++) {
+        for (int i = 0; i < services.length; i++) {
             Class<?> service = services[i];
             componentType.add(createDefinition(service, names.length == 0 ? service.getSimpleName() : names[i], type, componentType, context));
         }
@@ -76,11 +66,7 @@ public class OASISServiceProcessor extends AbstractAnnotationProcessor<Service> 
                                                IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(service, implClass, context, componentType);
         ServiceDefinition definition = new ServiceDefinition(name, serviceContract);
-        Annotation[] annotations = service.getAnnotations();
-        if (policyProcessor != null) {
-            for (Annotation annotation : annotations) {
-                policyProcessor.process(annotation, definition, context);
-            }
+        if (policyIntrospector != null) {
             policyIntrospector.introspectPolicyOnOperations(serviceContract, implClass, context);
         }
         return definition;

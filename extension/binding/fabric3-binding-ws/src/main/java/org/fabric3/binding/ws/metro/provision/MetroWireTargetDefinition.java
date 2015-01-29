@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import javax.xml.namespace.QName;
 import java.util.List;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -29,7 +28,6 @@ public abstract class MetroWireTargetDefinition extends PhysicalWireTargetDefini
     private static final long serialVersionUID = 5758003268658918242L;
 
     private ReferenceEndpointDefinition endpointDefinition;
-    private List<QName> intents;
     private ConnectionConfiguration connectionConfiguration;
     private String wsdl;
     private List<PhysicalBindingHandlerDefinition> handlers;
@@ -40,20 +38,17 @@ public abstract class MetroWireTargetDefinition extends PhysicalWireTargetDefini
      *
      * @param endpointDefinition      endpoint metadata
      * @param wsdl                    the endpoint WSDL or null if the WSDL can be derived from the SEI without the need to merge policy
-     * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
      * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers                optional binding handlers
      */
     public MetroWireTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
                                      String wsdl,
-                                     List<QName> intents,
                                      ConnectionConfiguration connectionConfiguration,
                                      boolean bidirectional,
                                      List<PhysicalBindingHandlerDefinition> handlers) {
         this.endpointDefinition = endpointDefinition;
         this.wsdl = wsdl;
-        this.intents = intents;
         this.connectionConfiguration = connectionConfiguration;
         this.bidirectional = bidirectional;
         this.handlers = handlers;
@@ -75,15 +70,6 @@ public abstract class MetroWireTargetDefinition extends PhysicalWireTargetDefini
      */
     public String getWsdl() {
         return wsdl;
-    }
-
-    /**
-     * Returns the configured endpoint intents provided by the Metro.
-     *
-     * @return the intents
-     */
-    public List<QName> getIntents() {
-        return intents;
     }
 
     /**

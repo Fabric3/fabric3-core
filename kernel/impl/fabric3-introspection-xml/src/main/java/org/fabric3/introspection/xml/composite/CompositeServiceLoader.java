@@ -19,22 +19,19 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.api.annotation.Source;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.CompositeService;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -42,7 +39,8 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -85,8 +83,6 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
             service.enableRoundTrip();
         }
 
-
-        loaderHelper.loadPolicySetsAndIntents(service, reader, context);
 
         validateAttributes(reader, context, service);
 

@@ -55,8 +55,6 @@ import org.fabric3.contribution.processor.CompositeContributionProcessor;
 import org.fabric3.contribution.processor.CompositeResourceProcessor;
 import org.fabric3.contribution.processor.ConfigIndexer;
 import org.fabric3.contribution.processor.ConfigProcessor;
-import org.fabric3.contribution.processor.DefinitionsProcessor;
-import org.fabric3.contribution.processor.DeploymentPlanXmlProcessor;
 import org.fabric3.contribution.processor.JavaResourceProcessor;
 import org.fabric3.contribution.processor.ProviderResourceProcessor;
 import org.fabric3.contribution.processor.SymLinkContributionProcessor;
@@ -128,13 +126,9 @@ public class ContributionServiceProvider {
 
         compositeBuilder.component(newBuilder(XmlResourceElementLoaderRegistryImpl.class).build());
 
-        compositeBuilder.component(newBuilder(DefinitionsProcessor.class).build());
-
         compositeBuilder.component(newBuilder(ConfigIndexer.class).build());
 
         compositeBuilder.component(newBuilder(ConfigProcessor.class).build());
-
-        compositeBuilder.component(newBuilder(DeploymentPlanXmlProcessor.class).build());
 
         compositeBuilder.component(newBuilder(ContributionElementLoader.class).build());
 

@@ -18,20 +18,18 @@
  */
 package org.fabric3.binding.zeromq.generator;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
-import org.fabric3.spi.domain.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -39,7 +37,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.util.UriHelper;
-import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -47,13 +44,11 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBindingDefinition> {
-    private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
     private static final String TARGET_URI = "targetUri";
 
     public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                 ServiceContract contract,
-                                                 List<LogicalOperation> operations,
-                                                 EffectivePolicy policy) throws GenerationException {
+                                                     ServiceContract contract,
+                                                     List<LogicalOperation> operations) throws GenerationException {
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         if (binding.isCallback()) {
             URI uri = URI.create("zmq://" + contract.getInterfaceName());
@@ -64,9 +59,8 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
     }
 
     public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                 ServiceContract contract,
-                                                 List<LogicalOperation> operations,
-                                                 EffectivePolicy policy) throws GenerationException {
+                                                     ServiceContract contract,
+                                                     List<LogicalOperation> operations) throws GenerationException {
         validateServiceContract(contract);
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
 
@@ -89,9 +83,8 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
     }
 
     public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                               ServiceContract contract,
-                                                               List<LogicalOperation> operations,
-                                                               EffectivePolicy policy) throws GenerationException {
+                                                                   ServiceContract contract,
+                                                                   List<LogicalOperation> operations) throws GenerationException {
         URI targetUri = binding.getParent().getUri();
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         return generateTarget(contract, targetUri, metadata);
@@ -172,11 +165,10 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         boolean first = true;
         for (Operation operation : contract.getOperations()) {
             if (first) {
-                oneway = operation.getIntents().contains(ONEWAY);
+                oneway = operation.isOneWay();
                 first = false;
             } else {
-                boolean oneWayIntent = operation.getIntents().contains(ONEWAY);
-                if ((!oneway && oneWayIntent) || (oneway && !oneWayIntent)) {
+                if ((!oneway && operation.isOneWay()) || (oneway && !operation.isOneWay())) {
                     String name = contract.getInterfaceName();
                     throw new InvalidContractException("The ZeroMQ binding does not support mixing one-way and request-response operations: " + name);
                 }
