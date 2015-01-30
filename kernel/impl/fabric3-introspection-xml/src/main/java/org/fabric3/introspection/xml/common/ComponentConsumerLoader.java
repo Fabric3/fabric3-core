@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -38,7 +37,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -50,17 +48,9 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<ConsumerDefinition<ComponentDefinition>> {
     private static final QName CONSUMER = new QName(SCA_NS, "consumer");
 
-    private boolean roundTrip;
-
     public ComponentConsumerLoader(@Reference LoaderRegistry registry) {
         super(registry);
         addAttributes("name", "source");
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
     }
 
     public QName getXMLType() {
@@ -100,14 +90,6 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Consum
         consumer.setSources(sources);
 
         validateAttributes(reader, context, consumer);
-
-        if (roundTrip) {
-            consumer.enableRoundTrip();
-            //noinspection VariableNotUsedInsideIf
-            if (targetAttribute != null) {
-                consumer.attributeSpecified("source");
-            }
-        }
 
         while (true) {
             switch (reader.next()) {

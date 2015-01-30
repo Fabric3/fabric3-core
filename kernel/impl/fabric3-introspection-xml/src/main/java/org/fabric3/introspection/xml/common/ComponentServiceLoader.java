@@ -25,7 +25,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
@@ -35,7 +34,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -47,17 +45,9 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Service
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
 
-    private boolean roundTrip;
-
     public ComponentServiceLoader(@Reference LoaderRegistry registry) {
         super(registry);
         addAttributes("name", "requires", "policySets");
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
     }
 
     public QName getXMLType() {
@@ -74,9 +64,6 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Service
             return null;
         }
         ServiceDefinition<ComponentDefinition> definition = new ServiceDefinition<>(name);
-        if (roundTrip) {
-            definition.enableRoundTrip();
-        }
 
         validateAttributes(reader, context, definition);
 

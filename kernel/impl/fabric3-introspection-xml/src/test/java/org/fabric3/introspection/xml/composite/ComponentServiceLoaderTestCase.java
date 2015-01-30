@@ -48,13 +48,6 @@ public class ComponentServiceLoaderTestCase extends TestCase {
         assertFalse(ctx.hasErrors());
     }
 
-    public void testRoundTrip() throws Exception {
-        loader.setRoundTrip(true);
-        ServiceDefinition service = loader.load(reader, ctx);
-        assertEquals("service", service.getName());
-        assertFalse(ctx.hasErrors());
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         LoaderRegistry registry = new LoaderRegistryImpl();

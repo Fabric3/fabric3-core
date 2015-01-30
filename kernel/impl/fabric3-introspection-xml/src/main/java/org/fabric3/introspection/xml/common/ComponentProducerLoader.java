@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -39,7 +38,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -51,17 +49,9 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<ProducerDefinition<ComponentDefinition>> {
     private static final QName PRODUCER = new QName(SCA_NS, "producer");
 
-    private boolean roundTrip;
-
     public ComponentProducerLoader(@Reference LoaderRegistry registry) {
         super(registry);
         addAttributes("name", "target");
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
     }
 
     public QName getXMLType() {
@@ -103,15 +93,6 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Produc
         producer.setTargets(targets);
 
         validateAttributes(reader, context, producer);
-
-        if (roundTrip) {
-            producer.enableRoundTrip();
-            //noinspection VariableNotUsedInsideIf
-            if (targetAttribute != null) {
-                producer.attributeSpecified("target");
-
-            }
-        }
 
         while (true) {
             switch (reader.next()) {

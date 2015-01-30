@@ -51,15 +51,6 @@ public class ComponentConsumerLoaderTestCase extends TestCase {
         assertFalse(ctx.hasErrors());
     }
 
-    public void testRoundTripLoadChannel() throws Exception {
-        loader.setRoundTrip(true);
-        ConsumerDefinition<ComponentDefinition> consumer = loader.load(reader, ctx);
-        assertEquals("consumer", consumer.getName());
-        assertEquals("source", consumer.getSources().get(0).toString());
-        assertEquals("source", consumer.getSpecifiedAttributes().iterator().next());
-        assertFalse(ctx.hasErrors());
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         LoaderRegistry registry = new LoaderRegistryImpl();

@@ -24,15 +24,13 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.annotation.Source;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 /**
  * Loads a property declaration in a composite or on a component.
@@ -47,17 +45,10 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
     private static final String VALUE = "value";
 
     private LoaderHelper helper;
-    private boolean roundTrip;
 
     public PropertyLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
         addAttributes(NAME, MANY, MUST_SUPPLY, TYPE, SOURCE, ELEMENT, VALUE);
-    }
-
-    @org.oasisopen.sca.annotation.Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
     }
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
@@ -107,25 +98,6 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
             InvalidPropertyValue error =
                     new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, startLocation, property);
             context.addError(error);
-        }
-        if (roundTrip) {
-            property.enableRoundTrip();
-            if (manyAttr != null) {
-                property.attributeSpecified(MANY);
-            }
-            if (mustSupplyAttr != null) {
-                property.attributeSpecified(MUST_SUPPLY);
-            }
-            if (typeAttribute != null) {
-                property.attributeSpecified(TYPE);
-            }
-            if (elementAttribute != null) {
-                property.attributeSpecified(ELEMENT);
-            }
-            if (valueAttribute != null) {
-                property.attributeSpecified(VALUE);
-            }
-
         }
 
         property.setRequired(mustSupply);

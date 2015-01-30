@@ -53,13 +53,6 @@ public class ChannelLoaderTestCase extends TestCase {
         assertFalse(ctx.hasErrors());
     }
 
-    public void testRoundTripLoadChannel() throws Exception {
-        loader.setRoundTrip(true);
-        ChannelDefinition channel = loader.load(reader, ctx);
-        assertEquals("channel", channel.getName());
-        assertFalse(ctx.hasErrors());
-    }
-
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();

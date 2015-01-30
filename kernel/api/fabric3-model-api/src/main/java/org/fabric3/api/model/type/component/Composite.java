@@ -209,9 +209,6 @@ public class Composite extends ComponentType {
      */
     public void add(ComponentDefinition<? extends Implementation<?>> component) {
         component.setParent(this);
-        if (roundTrip) {
-            pushElement(component);
-        }
         componentsView.put(component.getName(), component);
         components.put(component.getName(), component);
     }
@@ -232,9 +229,6 @@ public class Composite extends ComponentType {
      */
     public void add(WireDefinition wire) {
         wire.setParent(this);
-        if (roundTrip) {
-            pushElement(wire);
-        }
         wires.add(wire);
         wiresView.add(wire);
     }
@@ -255,9 +249,6 @@ public class Composite extends ComponentType {
      */
     public void add(ChannelDefinition channel) {
         channel.setParent(this);
-        if (roundTrip) {
-            pushElement(channel);
-        }
         channelsView.put(channel.getName(), channel);
         channels.put(channel.getName(), channel);
     }
@@ -278,9 +269,6 @@ public class Composite extends ComponentType {
      */
     public void add(ResourceDefinition resource) {
         resource.setParent(this);
-        if (roundTrip) {
-            pushElement(resource);
-        }
         resourcesView.add(resource);
         resources.add(resource);
     }

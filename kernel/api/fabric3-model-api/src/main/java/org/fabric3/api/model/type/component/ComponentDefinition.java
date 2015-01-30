@@ -70,9 +70,6 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void setImplementation(I implementation) {
         implementation.setParent(this);
-        if (roundTrip) {
-            pushElement(implementation);
-        }
         this.implementation = implementation;
     }
 
@@ -119,19 +116,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void add(ReferenceDefinition<ComponentDefinition> reference) {
         reference.setParent(this);
-        pushElement(reference);
         references.put(reference.getName(), reference);
-    }
-
-    /**
-     * Removes a reference.
-     *
-     * @param reference the reference to remove
-     */
-    public void remove(ReferenceDefinition<ComponentDefinition> reference) {
-        reference.setParent(null);
-        removeElement(reference);
-        references.remove(reference.getName());
     }
 
     /**
@@ -150,19 +135,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void add(ServiceDefinition<ComponentDefinition> service) {
         service.setParent(this);
-        pushElement(service);
         services.put(service.getName(), service);
-    }
-
-    /**
-     * Removes a service.
-     *
-     * @param service the service to remove
-     */
-    public void remove(ServiceDefinition<ComponentDefinition> service) {
-        service.setParent(null);
-        removeElement(service);
-        services.remove(service.getName());
     }
 
     /**
@@ -172,19 +145,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void add(ProducerDefinition<ComponentDefinition> producer) {
         producer.setParent(this);
-        pushElement(producer);
         producers.put(producer.getName(), producer);
-    }
-
-    /**
-     * Removes a producer.
-     *
-     * @param producer the producer to remove
-     */
-    public void remove(ProducerDefinition<ComponentDefinition> producer) {
-        producer.setParent(null);
-        removeElement(producer);
-        producers.remove(producer.getName());
     }
 
     /**
@@ -203,19 +164,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void add(ConsumerDefinition<ComponentDefinition> consumer) {
         consumer.setParent(this);
-        pushElement(consumer);
         consumers.put(consumer.getName(), consumer);
-    }
-
-    /**
-     * Removes a consumer.
-     *
-     * @param consumer the consumer to remove
-     */
-    public void remove(ConsumerDefinition<ComponentDefinition> consumer) {
-        consumer.setParent(null);
-        removeElement(consumer);
-        consumers.remove(consumer.getName());
     }
 
     /**
@@ -243,19 +192,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void add(PropertyValue value) {
         value.setParent(this);
-        pushElement(value);
         propertyValues.put(value.getName(), value);
-    }
-
-    /**
-     * Removes a property value.
-     *
-     * @param value the value to remove
-     */
-    public void remove(PropertyValue value) {
-        value.setValue(null);
-        removeElement(value);
-        propertyValues.remove(value.getName());
     }
 
     /**

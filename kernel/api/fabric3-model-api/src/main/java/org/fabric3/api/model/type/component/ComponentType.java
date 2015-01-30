@@ -98,9 +98,6 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      */
     public void add(ServiceDefinition<ComponentType> service) {
         service.setParent(this);
-        if (roundTrip) {
-            pushElement(service);
-        }
         services.put(service.getName(), service);
     }
 
@@ -120,9 +117,6 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      */
     public void add(ConsumerDefinition<ComponentType> consumer) {
         consumer.setParent(this);
-        if (roundTrip) {
-            pushElement(consumer);
-        }
         consumers.put(consumer.getName(), consumer);
     }
 
@@ -142,9 +136,6 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      */
     public void add(ReferenceDefinition<ComponentType> reference) {
         reference.setParent(this);
-        if (roundTrip) {
-            pushElement(reference);
-        }
         references.put(reference.getName(), reference);
     }
 
@@ -164,9 +155,6 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      */
     public void add(ProducerDefinition<ComponentType> producer) {
         producer.setParent(this);
-        if (roundTrip) {
-            pushElement(producer);
-        }
         producers.put(producer.getName(), producer);
     }
 
@@ -186,9 +174,6 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      */
     public void add(Property property) {
         property.setParent(this);
-        if (roundTrip) {
-            pushElement(property);
-        }
         properties.put(property.getName(), property);
     }
 
@@ -208,9 +193,6 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      */
     public void add(ResourceReferenceDefinition definition) {
         definition.setParent(this);
-        if (roundTrip) {
-            pushElement(definition);
-        }
         resourceReferences.put(definition.getName(), definition);
     }
 

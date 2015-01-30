@@ -23,11 +23,6 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.annotation.Source;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.component.WireDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -36,6 +31,8 @@ import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -43,17 +40,10 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 @EagerInit
 public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
     private LoaderHelper helper;
-    private boolean roundTrip;
 
     public WireLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
         addAttributes("source", "target", "requires", "replace");
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
     }
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
@@ -75,18 +65,6 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
             context.addError(failure);
         }
         WireDefinition definition = new WireDefinition(referenceTarget, serviceTarget, replace);
-        if (roundTrip) {
-            definition.enableRoundTrip();
-            if (referenceAttribute != null) {
-                definition.attributeSpecified("source");
-            }
-            if (serviceAttribute != null) {
-                definition.attributeSpecified("target");
-            }
-            if (replaceAttribute != null) {
-                definition.attributeSpecified("replace");
-            }
-        }
         validateAttributes(reader, context, definition);
         LoaderUtil.skipToEndElement(reader);
         return definition;
