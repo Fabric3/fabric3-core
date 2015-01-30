@@ -29,7 +29,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class BindingNameNotConfigured extends XmlValidationFailure {
 
     public BindingNameNotConfigured(BindingDefinition binding, Location location) {
-        super("A binding name must be configured for bindings on " + binding.getType().toString(), location, binding);
+        super("A binding name must be configured for bindings on " + binding.getType(), location, binding);
     }
 
 }

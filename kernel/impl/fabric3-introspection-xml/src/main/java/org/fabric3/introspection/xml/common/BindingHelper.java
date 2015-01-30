@@ -16,8 +16,8 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import java.util.List;
 import javax.xml.stream.Location;
+import java.util.List;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -39,7 +39,7 @@ public class BindingHelper {
                                      List<BindingDefinition> bindings,
                                      Location location,
                                      IntrospectionContext context) {
-        String name = binding.getType().getLocalPart();
+        String name = binding.getType();
         if (searchName(name, bindings)) {
             binding.setName(name);
             BindingNameNotConfigured error = new BindingNameNotConfigured(binding, location);

@@ -43,6 +43,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 
@@ -54,7 +55,9 @@ import org.oasisopen.sca.annotation.Property;
  */
 @EagerInit
 public class ActiveMQBindingProvider implements BindingProvider {
-    private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, JmsBindingDefinition.BINDING_QNAME);
+    private static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.jms");
+
+    private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, BINDING_QNAME);
     public static final String MANAGED_TRANSACTION = "managedTransaction";
     public static final String MANAGED_TRANSACTION_GLOBAL = "managedTransaction.global";
     public static final String MANAGED_TRANSACTION_LOCAL = "managedTransaction.local";
@@ -99,7 +102,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
     }
 
     public QName getType() {
-        return JmsBindingDefinition.BINDING_QNAME;
+        return BINDING_QNAME;
     }
 
     public BindingMatchResult canBind(LogicalWire wire) {

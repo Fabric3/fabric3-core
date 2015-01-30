@@ -27,9 +27,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 public class RsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 7344870455465600359L;
 
-    public static final QName BINDING_RS = new QName(org.fabric3.api.Namespaces.F3, "binding.rs");
-
     public RsBindingDefinition(String name, URI serviceUri) {
-        super(name, serviceUri, BINDING_RS);
+        super(name, serviceUri, "rs");
     }
 }

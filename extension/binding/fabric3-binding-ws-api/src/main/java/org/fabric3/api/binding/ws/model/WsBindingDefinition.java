@@ -19,20 +19,17 @@
  */
 package org.fabric3.api.binding.ws.model;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.oasisopen.sca.Constants;
 
 /**
  * Logical binding definition for web services.
  */
 public class WsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -2097314069798596206L;
-    public static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.ws");
 
     private String wsdlLocation;
     private String wsdlElement;
@@ -49,7 +46,7 @@ public class WsBindingDefinition extends BindingDefinition {
      * @param retries      the number of retries in the event the target service is unavailable during an invocation
      */
     public WsBindingDefinition(String name, URI targetUri, String wsdlLocation, String wsdlElement, int retries) {
-        super(name, targetUri, BINDING_QNAME);
+        super(name, targetUri, "ws");
         this.wsdlElement = wsdlElement;
         this.wsdlLocation = wsdlLocation;
         this.retries = retries;

@@ -18,17 +18,14 @@
  */
 package org.fabric3.implementation.junit.model;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.implementation.junit.common.ContextConfiguration;
 
 /**
  *
  */
 public class JUnitBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -1306543849900003084L;
-    private static final QName BINDING_QNAME = new QName(org.fabric3.api.Namespaces.F3, "binding.junit");
     private ContextConfiguration configuration;
 
     /**
@@ -37,7 +34,7 @@ public class JUnitBindingDefinition extends BindingDefinition {
      * @param configuration the context configuration or null if not set
      */
     public JUnitBindingDefinition(ContextConfiguration configuration) {
-        super(null, BINDING_QNAME);
+        super(null, "junit");
         this.configuration = configuration;
     }
 

@@ -16,17 +16,15 @@
  */
 package org.fabric3.api.binding.file.model;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.binding.file.annotation.Strategy;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
  * A file binding configuration set on a reference.
  */
 public class FileBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -8904535030035183877L;
-    public static final QName BINDING_FILE = new QName(org.fabric3.api.Namespaces.F3, "binding.file");
+    private static final String BINDING_FILE = "file";
 
     private String pattern;
     private String location;

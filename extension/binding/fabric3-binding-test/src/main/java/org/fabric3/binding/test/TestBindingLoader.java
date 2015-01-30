@@ -18,27 +18,23 @@
  */
 package org.fabric3.binding.test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Parses <code>binding.test</code> for services and references. A uri to bind the service to or target a reference must be provided as an attribute.
  */
 @EagerInit
 public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
-
-    public static final QName BINDING_QNAME = new QName(org.fabric3.api.Namespaces.F3, "binding.test");
 
     public TestBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();

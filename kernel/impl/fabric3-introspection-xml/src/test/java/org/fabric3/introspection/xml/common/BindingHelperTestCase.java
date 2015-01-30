@@ -16,15 +16,13 @@
  */
 package org.fabric3.introspection.xml.common;
 
+import javax.xml.stream.Location;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -33,18 +31,17 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  *
  */
 public class BindingHelperTestCase extends TestCase {
-    public static final QName QNAME = new QName("foo", "bar");
 
     private Location location;
 
     @SuppressWarnings({"serial"})
     public void testBinding() throws Exception {
-        BindingDefinition existingBinding = new BindingDefinition("someBinding", URI.create("target"), QNAME) {
+        BindingDefinition existingBinding = new BindingDefinition("someBinding", URI.create("target"), "bar") {
         };
         List<BindingDefinition> bindings = new ArrayList<>();
         bindings.add(existingBinding);
 
-        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), QNAME) {
+        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), "bar") {
         };
 
         IntrospectionContext context = new DefaultIntrospectionContext();
@@ -61,17 +58,17 @@ public class BindingHelperTestCase extends TestCase {
      */
     @SuppressWarnings({"serial"})
     public void testBindingError() throws Exception {
-        BindingDefinition existingBinding1 = new BindingDefinition("name", URI.create("target"), QNAME) {
+        BindingDefinition existingBinding1 = new BindingDefinition("name", URI.create("target"), "bar") {
         };
 
-        BindingDefinition existingBinding2 = new BindingDefinition(QNAME.getLocalPart(), URI.create("target"), QNAME) {
+        BindingDefinition existingBinding2 = new BindingDefinition("bar", URI.create("target"), "bar") {
         };
 
         List<BindingDefinition> bindings = new ArrayList<>();
         bindings.add(existingBinding1);
         bindings.add(existingBinding2);
 
-        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), QNAME) {
+        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), "bar") {
         };
 
         IntrospectionContext context = new DefaultIntrospectionContext();
@@ -83,12 +80,12 @@ public class BindingHelperTestCase extends TestCase {
 
     @SuppressWarnings({"serial"})
     public void testSyntheticBindingName() throws Exception {
-        BindingDefinition existingBinding = new BindingDefinition("service", URI.create("target"), QNAME) {
+        BindingDefinition existingBinding = new BindingDefinition("service", URI.create("target"), "bar") {
         };
         List<BindingDefinition> bindings = new ArrayList<>();
         bindings.add(existingBinding);
 
-        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), QNAME) {
+        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), "bar") {
         };
 
         IntrospectionContext context = new DefaultIntrospectionContext();

@@ -19,11 +19,9 @@
  */
 package org.fabric3.api.binding.jms.model;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.oasisopen.sca.Constants;
 
 /**
  * Encapsulates JMS binding configuration specified in a composite.
@@ -31,7 +29,6 @@ import org.oasisopen.sca.Constants;
 public class JmsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -1888120511695824132L;
 
-    public static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.jms");
     private URI generatedTargetUri;
     private JmsBindingMetadata metadata;
 
@@ -62,7 +59,7 @@ public class JmsBindingDefinition extends BindingDefinition {
      * @param metadata    the JMS metadata to be initialized
      */
     public JmsBindingDefinition(String bindingName, URI targetURI, JmsBindingMetadata metadata) {
-        super(bindingName, targetURI, BINDING_QNAME);
+        super(bindingName, targetURI, "jms");
         this.metadata = metadata;
     }
 

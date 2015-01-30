@@ -19,7 +19,6 @@
  */
 package org.fabric3.api.model.type.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public abstract class BindingDefinition extends ModelObject<BindableDefinition> 
     private static final long serialVersionUID = 8780407747984243865L;
 
     protected URI targetUri;
-    protected QName type;
+    protected String type;
     protected String name;
 
     private List<BindingHandlerDefinition> handlers = new ArrayList<>();
@@ -44,7 +43,7 @@ public abstract class BindingDefinition extends ModelObject<BindableDefinition> 
      * @param targetUri the target URI which may be null if not specified
      * @param type      the binding type
      */
-    public BindingDefinition(URI targetUri, QName type) {
+    public BindingDefinition(URI targetUri, String type) {
         this.targetUri = targetUri;
         this.type = type;
     }
@@ -56,7 +55,7 @@ public abstract class BindingDefinition extends ModelObject<BindableDefinition> 
      * @param targetUri the target URI which may be null if not specified
      * @param type      the binding type
      */
-    public BindingDefinition(String name, URI targetUri, QName type) {
+    public BindingDefinition(String name, URI targetUri, String type) {
         this.name = name;
         this.targetUri = targetUri;
         this.type = type;
@@ -74,7 +73,7 @@ public abstract class BindingDefinition extends ModelObject<BindableDefinition> 
         return targetUri;
     }
 
-    public QName getType() {
+    public String getType() {
         return type;
     }
 

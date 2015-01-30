@@ -29,6 +29,6 @@ public class TestBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 2529090404017606258L;
 
     public TestBindingDefinition(String name, URI targetUri) {
-        super(name, targetUri, TestBindingLoader.BINDING_QNAME);
+        super(name, targetUri, "test");
     }
 }
