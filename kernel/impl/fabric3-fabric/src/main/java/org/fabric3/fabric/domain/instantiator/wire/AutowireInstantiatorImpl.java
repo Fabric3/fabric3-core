@@ -154,7 +154,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 }
             }
             if (!skip) {
-                LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable, true);
+                LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable);
                 parentComposite.addWire(leafReference, wire);
                 for (LogicalWire existingWire : existingWires) {
                     // existing wires must be marked as new so they can be reinjected 

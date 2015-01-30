@@ -29,12 +29,10 @@ public class Wire extends ModelObject<Composite> {
 
     private Target reference;
     private Target service;
-    private boolean replace;
 
-    public Wire(Target reference, Target service, boolean replace) {
+    public Wire(Target reference, Target service) {
         this.reference = reference;
         this.service = service;
-        this.replace = replace;
     }
 
     /**
@@ -55,7 +53,4 @@ public class Wire extends ModelObject<Composite> {
         return service;
     }
 
-    public boolean isReplace() {
-        return replace;
-    }
 }

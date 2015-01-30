@@ -52,8 +52,6 @@ public class WireLoader extends AbstractValidatingTypeLoader<Wire> {
 
         String referenceAttribute = reader.getAttributeValue(null, "source");
         String serviceAttribute = reader.getAttributeValue(null, "target");
-        String replaceAttribute = reader.getAttributeValue(null, "replace");
-        boolean replace = Boolean.parseBoolean(replaceAttribute);
 
         Target referenceTarget = null;
         Target serviceTarget = null;
@@ -64,7 +62,7 @@ public class WireLoader extends AbstractValidatingTypeLoader<Wire> {
             InvalidValue failure = new InvalidValue("Invalid wire attribute", startLocation, e);
             context.addError(failure);
         }
-        Wire definition = new Wire(referenceTarget, serviceTarget, replace);
+        Wire definition = new Wire(referenceTarget, serviceTarget);
         validateAttributes(reader, context, definition);
         LoaderUtil.skipToEndElement(reader);
         return definition;

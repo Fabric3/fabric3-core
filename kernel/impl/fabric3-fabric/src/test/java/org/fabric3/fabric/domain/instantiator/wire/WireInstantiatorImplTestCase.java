@@ -283,7 +283,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
     private Wire createWire() {
         Target referenceTarget = new Target("foo");
         Target serviceTarget = new Target("bar");
-        return new Wire(referenceTarget, serviceTarget, false);
+        return new Wire(referenceTarget, serviceTarget);
     }
 
     @Override

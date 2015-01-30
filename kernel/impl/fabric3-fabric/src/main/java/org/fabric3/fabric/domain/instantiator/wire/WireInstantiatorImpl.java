@@ -45,7 +45,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * Default implementation of the WireInstantiator.
+ *
  */
 public class WireInstantiatorImpl implements WireInstantiator {
     private ContractMatcher matcher;
@@ -76,7 +76,6 @@ public class WireInstantiatorImpl implements WireInstantiator {
             // create the wire
             QName deployable = parent.getDeployable();
             LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
-            wire.setReplaces(definition.isReplace());
             String referenceBindingName = referenceTarget.getBinding();
             String serviceBindingName = serviceTarget.getBinding();
             resolveBindings(reference, referenceBindingName, service, wire, serviceBindingName, context);
@@ -106,16 +105,6 @@ public class WireInstantiatorImpl implements WireInstantiator {
         if (serviceTargets.isEmpty()) {
             // no targets are specified
             return;
-        }
-
-        // Check if any composite level wires with @replace=true exist. If so, ignore wires specified using the @target attribute on the reference
-        // since they are overridden by the existing composite level wires.
-        List<LogicalWire> existingWires = reference.getWires();
-        for (LogicalWire wire : existingWires) {
-            if (wire.isReplaces()) {
-                reference.setResolved(true);
-                return;
-            }
         }
 
         List<LogicalWire> wires = new ArrayList<>();
@@ -153,7 +142,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
             return null;
         }
         QName deployable = service.getParent().getDeployable();
-        LogicalWire wire = new LogicalWire(parent, reference, service, deployable, true);
+        LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
         String serviceBindingName = target.getBinding();
         resolveBindings(reference, bindingName, service, wire, serviceBindingName, context);
         return wire;

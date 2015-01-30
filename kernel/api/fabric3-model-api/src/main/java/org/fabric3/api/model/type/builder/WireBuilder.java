@@ -67,7 +67,7 @@ public class WireBuilder extends AbstractBuilder {
     public Wire build() {
         checkState();
         freeze();
-        return new Wire(reference, service, true);
+        return new Wire(reference, service);
     }
 
     protected WireBuilder() {

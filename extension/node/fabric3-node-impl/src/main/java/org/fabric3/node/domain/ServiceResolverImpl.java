@@ -117,7 +117,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         }
         LogicalService targetService = services.get(0);
 
-        return new LogicalWire(domainComponent, logicalReference, targetService, SYNTHETIC_DEPLOYABLE, true);
+        return new LogicalWire(domainComponent, logicalReference, targetService, SYNTHETIC_DEPLOYABLE);
     }
 
     private LogicalReference createReference(JavaServiceContract contract) {
