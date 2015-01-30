@@ -44,7 +44,6 @@ import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;
-import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -101,9 +100,9 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                                    final URI uri,
                                    URI parentClassLoaderId,
                                    final Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws WebApplicationActivationException {
+                                   ComponentContext componentContext) throws ContainerException {
         if (mappings.containsKey(uri)) {
-            throw new WebApplicationActivationException("Mapping already exists: " + uri.toString());
+            throw new ContainerException("Mapping already exists: " + uri.toString());
         }
         try {
             // resolve the url to a local artifact
@@ -146,14 +145,14 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             monitor.activated(holder.getContextPath());
             return servletContext;
         } catch (Exception e) {
-            throw new WebApplicationActivationException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void deactivate(URI uri) throws WebApplicationActivationException {
+    public void deactivate(URI uri) throws ContainerException {
         Holder holder = mappings.remove(uri);
         if (holder == null) {
-            throw new WebApplicationActivationException("Mapping does not exist: " + uri.toString());
+            throw new ContainerException("Mapping does not exist: " + uri.toString());
         }
         WebAppContext context = holder.getContext();
         jettyService.getServer().removeBean(context);
@@ -163,7 +162,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             // unregister them from the MBean server
             context.stop();
         } catch (Exception e) {
-            throw new WebApplicationActivationException(e);
+            throw new ContainerException(e);
         }
         context.setClassLoader(null);
         jettyService.removeHandler(context);

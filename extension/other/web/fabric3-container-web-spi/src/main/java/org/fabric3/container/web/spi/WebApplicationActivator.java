@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.oasisopen.sca.ComponentContext;
 
@@ -45,27 +46,25 @@ public interface WebApplicationActivator {
     /**
      * Perform the activation, which will result in making the web application available for incoming requests to the runtime.
      *
-     * @param contextPath         the context path the web application will be available at. The context path is relative to the absolute address of
-     *                            the embedded servlet container.
+     * @param contextPath         the context path the web application will be available at. The context path is relative to the absolute address of the
+     *                            embedded servlet container.
      * @param uri                 the URI of the contribution containing the web application assets
      * @param parentClassLoaderId the id for parent classloader to use for the web application
      * @param injectors           the map of artifact ids to injectors. An artifact id identifies an artifact type such as a servlet class name or
      *                            ServletContext.
      * @param context             the component context for the web component
      * @return the servlet context associated with the activated web application
-     * @throws WebApplicationActivationException
-     *          if an error occurs activating the web application
+     * @throws ContainerException if an error occurs activating the web application
      */
     ServletContext activate(String contextPath, URI uri, URI parentClassLoaderId, Map<String, List<Injector<?>>> injectors, ComponentContext context)
-            throws WebApplicationActivationException;
+            throws ContainerException;
 
     /**
      * Removes an activated web application
      *
      * @param uri the URI the web application was activated with
-     * @throws WebApplicationActivationException
-     *          if an error occurs activating the web application
+     * @throws ContainerException if an error occurs activating the web application
      */
-    void deactivate(URI uri) throws WebApplicationActivationException;
+    void deactivate(URI uri) throws ContainerException;
 
 }

@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
@@ -81,11 +81,11 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws ParseException {
+    public void setSecurity(String level) throws InitializationException {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid management security setting:" + level);
+            throw new InitializationException("Invalid management security setting:" + level);
         }
     }
 

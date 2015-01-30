@@ -30,7 +30,7 @@ import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
 import org.fabric3.api.host.contribution.SyntheticContributionSource;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.ScanException;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.ScanResult;
 
 /**
@@ -43,9 +43,9 @@ public class RepositoryScanner {
      *
      * @param info the host info
      * @return the contributions grouped by user and extension contributions
-     * @throws ScanException if there is an error scanning teh directory
+     * @throws InitializationException if there is an error scanning teh directory
      */
-    public ScanResult scan(HostInfo info) throws ScanException {
+    public ScanResult scan(HostInfo info) throws InitializationException {
         List<ContributionSource> extensionSources = scan(info.getExtensionsRepositoryDirectory(), true);
         List<ContributionSource> runtimeSources = scan(info.getRuntimeRepositoryDirectory(), true);
         extensionSources.addAll(runtimeSources);
@@ -53,7 +53,7 @@ public class RepositoryScanner {
         return new ScanResult(extensionSources, userSource);
     }
 
-    private List<ContributionSource> scan(File directory, boolean extension) throws ScanException {
+    private List<ContributionSource> scan(File directory, boolean extension) throws InitializationException {
         List<ContributionSource> sources = new ArrayList<>();
         if (directory == null) {
             return sources;
@@ -80,7 +80,7 @@ public class RepositoryScanner {
                     }
                     sources.add(source);
                 } catch (MalformedURLException e) {
-                    throw new ScanException("Error loading contribution:" + file.getName(), e);
+                    throw new InitializationException("Error loading contribution:" + file.getName(), e);
                 }
             }
         }

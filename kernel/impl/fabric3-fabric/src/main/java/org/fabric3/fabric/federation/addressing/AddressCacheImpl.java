@@ -29,6 +29,7 @@ import java.util.concurrent.Executor;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.AddressEvent;
@@ -37,7 +38,6 @@ import org.fabric3.spi.federation.addressing.AddressMonitor;
 import org.fabric3.spi.federation.addressing.AddressRequest;
 import org.fabric3.spi.federation.addressing.AddressUpdate;
 import org.fabric3.spi.federation.addressing.SocketAddress;
-import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
@@ -90,7 +90,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Destroy
-    public void destroy() throws MessageException {
+    public void destroy() throws ContainerException {
         if (isNode()) {
             topologyService.closeChannel(qualifiedChannelName);
             topologyService.deregister(this);
@@ -206,7 +206,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 AddressRequest request = new AddressRequest(info.getRuntimeName());
                 topologyService.sendAsynchronous(qualifiedChannelName, request);
             }
-        } catch (MessageException e) {
+        } catch (ContainerException e) {
             monitor.error(e);
         }
     }
@@ -239,7 +239,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
             if (propagate && isNode() && event instanceof AddressAnnouncement) {
                 try {
                     topologyService.sendAsynchronous(qualifiedChannelName, event);
-                } catch (MessageException e) {
+                } catch (ContainerException e) {
                     monitor.error(e);
                 }
             }
@@ -270,7 +270,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                             topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
                         }
                         // ignore on controller
-                    } catch (MessageException e) {
+                    } catch (ContainerException e) {
                         monitor.error(e);
                     }
                 }

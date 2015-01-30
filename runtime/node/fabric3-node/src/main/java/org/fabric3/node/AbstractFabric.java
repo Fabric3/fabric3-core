@@ -40,9 +40,9 @@ import org.fabric3.api.host.runtime.DefaultHostInfo;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HiddenPackages;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.ScanException;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
@@ -319,15 +319,15 @@ public abstract class AbstractFabric implements Fabric {
      *
      * @param onlyCore if true, only scan for core extensions; ignore all others as they will be explicitly configured
      * @return the sources
-     * @throws ScanException if there is a scan error
+     * @throws InitializationException if there is a scan error
      */
-    private List<ContributionSource> scanExtensions(final boolean onlyCore) throws ScanException {
+    private List<ContributionSource> scanExtensions(final boolean onlyCore) throws InitializationException {
         try {
 
             List<File> archives = scanClasspathForProfileArchives();
 
             if (archives.size() == 0) {
-                throw new ScanException("Core extension archive not found");
+                throw new InitializationException("Core extension archive not found");
             }
 
             List<ContributionSource> sources = new ArrayList<>();
@@ -345,7 +345,7 @@ public abstract class AbstractFabric implements Fabric {
             addSources(extensionsFiles, sources);
             return sources;
         } catch (IOException e) {
-            throw new ScanException("Error scanning extensions", e);
+            throw new InitializationException("Error scanning extensions", e);
         }
     }
 

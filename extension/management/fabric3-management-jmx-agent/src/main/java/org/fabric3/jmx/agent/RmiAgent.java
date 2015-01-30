@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
@@ -71,11 +71,11 @@ public class RmiAgent {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws ParseException {
+    public void setSecurity(String level) throws InitializationException {
         try {
             security = JmxSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid JMX security setting:" + level);
+            throw new InitializationException("Invalid JMX security setting:" + level);
         }
     }
 

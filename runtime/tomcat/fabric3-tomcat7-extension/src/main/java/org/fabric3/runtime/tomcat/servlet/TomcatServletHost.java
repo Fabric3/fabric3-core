@@ -61,7 +61,7 @@ public class TomcatServletHost implements ServletHost {
     }
 
     @Init
-    public void init() throws ServletHostException {
+    public void init() {
         Connector connector = connectorService.getConnector();
         dispatchingServlet = new Fabric3DispatchingServlet();
         Fabric3ServletWrapper wrapper = new Fabric3ServletWrapper(dispatchingServlet);

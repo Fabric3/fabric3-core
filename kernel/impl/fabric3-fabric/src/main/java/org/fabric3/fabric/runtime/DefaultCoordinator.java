@@ -145,7 +145,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             throw new InitializationException(e);
         } catch (DeploymentException e) {
             state = RuntimeState.ERROR;
-            throw new ExtensionInitializationException("Error deploying extensions", e);
+            throw new InitializationException("Error deploying extensions", e);
         }
     }
 
@@ -185,7 +185,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             return contributionService.install(stored);
         } catch (ContributionException e) {
             state = RuntimeState.ERROR;
-            throw new ExtensionInitializationException("Error contributing extensions", e);
+            throw new InitializationException("Error contributing extensions", e);
         }
     }
 }

@@ -20,6 +20,7 @@ import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
 
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;
@@ -63,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService, JMXAuth
                 throw new InvalidAuthenticationException("Invalid authentication information");
             }
             return subject;
-        } catch (SecurityStoreException e) {
+        } catch (ContainerException e) {
             throw new AuthenticationException(e);
         }
     }

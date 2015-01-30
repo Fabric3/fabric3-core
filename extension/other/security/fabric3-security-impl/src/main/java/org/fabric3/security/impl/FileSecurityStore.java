@@ -79,7 +79,7 @@ public class FileSecurityStore implements SecurityStore {
         parse(reader);
     }
 
-    public BasicSecuritySubject find(String username) throws SecurityStoreException {
+    public BasicSecuritySubject find(String username) {
         return cache.get(username);
     }
 

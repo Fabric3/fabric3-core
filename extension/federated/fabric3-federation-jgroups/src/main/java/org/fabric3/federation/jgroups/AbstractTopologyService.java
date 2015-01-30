@@ -28,7 +28,6 @@ import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.command.Response;
 import org.fabric3.spi.container.command.ResponseCommand;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomain;
@@ -187,7 +186,7 @@ public abstract class AbstractTopologyService {
                 monitor.receiveMessage(runtimeName);
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
-            } catch (MessageException | ContainerException e) {
+            } catch (ContainerException e) {
                 monitor.error("Error receiving message from: " + runtimeName, e);
             }
         }
@@ -215,13 +214,13 @@ public abstract class AbstractTopologyService {
                 Response response = command.getResponse();
                 response.setRuntimeName(runtimeName);
                 return helper.serialize(response);
-            } catch (MessageException | ContainerException e) {
+            } catch (ContainerException e) {
                 monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
                 ex.setRuntimeName(runtimeName);
                 try {
                     return helper.serialize(ex);
-                } catch (MessageException e1) {
+                } catch (ContainerException e1) {
                     monitor.error("Error handling message from: " + runtimeName, e);
                 }
             }

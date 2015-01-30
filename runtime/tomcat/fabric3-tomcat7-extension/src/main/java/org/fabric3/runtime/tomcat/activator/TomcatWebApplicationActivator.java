@@ -33,10 +33,8 @@ import org.apache.catalina.startup.ContextConfig;
 import org.apache.tomcat.InstanceManager;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;
-import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.runtime.tomcat.connector.ConnectorService;
-import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.ContainerException;
@@ -71,7 +69,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     }
 
     @Init
-    public void init() throws ServletHostException {
+    public void init() {
         connector = connectorService.getConnector();
     }
 
@@ -81,7 +79,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         for (URI webApp : webApps) {
             try {
                 deactivate(webApp);
-            } catch (WebApplicationActivationException e) {
+            } catch (ContainerException e) {
                 monitor.error(webApp.toString(), e);
             }
         }
@@ -96,9 +94,9 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
                                    URI uri,
                                    URI parentClassLoaderId,
                                    Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws WebApplicationActivationException {
+                                   ComponentContext componentContext) throws ContainerException {
         if (mappings.containsKey(uri)) {
-            throw new WebApplicationActivationException("Mapping already exists: " + uri.toString());
+            throw new ContainerException("Mapping already exists: " + uri.toString());
         }
         contextPath = "/" + contextPath;
         try {
@@ -130,15 +128,15 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
             monitor.activated(contextPath);
             return servletContext;
         } catch (Exception e) {
-            throw new WebApplicationActivationException(e);
+            throw new ContainerException(e);
         }
 
     }
 
-    public void deactivate(URI uri) throws WebApplicationActivationException {
+    public void deactivate(URI uri) throws ContainerException {
         String contextPath = mappings.remove(uri);
         if (contextPath == null) {
-            throw new WebApplicationActivationException("Context not registered for component: " + uri);
+            throw new ContainerException("Context not registered for component: " + uri);
         }
         for (Container container : connector.getService().getContainer().findChildren()) {
             if (container instanceof StandardHost) {

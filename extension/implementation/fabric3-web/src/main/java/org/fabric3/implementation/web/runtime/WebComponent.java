@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
@@ -116,32 +115,23 @@ public class WebComponent implements Component {
     }
 
     public void start() throws ContainerException {
-        try {
-            Map<String, List<Injector<?>>> injectors = new HashMap<>();
-            injectorFactory.createInjectorMappings(injectors, siteMappings, objectFactories, classLoader);
-            injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
-            OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
-            Map<String, ObjectFactory<?>> contextFactories = new HashMap<>();
+        Map<String, List<Injector<?>>> injectors = new HashMap<>();
+        injectorFactory.createInjectorMappings(injectors, siteMappings, objectFactories, classLoader);
+        injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
+        OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
+        Map<String, ObjectFactory<?>> contextFactories = new HashMap<>();
 
-            SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory
-                    = new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);
-            contextFactories.put(OASIS_CONTEXT_ATTRIBUTE, oasisComponentContextFactory);
+        SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory
+                = new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);
+        contextFactories.put(OASIS_CONTEXT_ATTRIBUTE, oasisComponentContextFactory);
 
-            injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
-            // activate the web application
-            activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
-        } catch (WebApplicationActivationException e) {
-            throw new ContainerException("Error starting web component: " + uri.toString(), e);
-        }
-
+        injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
+        // activate the web application
+        activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
     }
 
     public void stop() throws ContainerException {
-        try {
-            activator.deactivate(archiveUri);
-        } catch (WebApplicationActivationException e) {
-            throw new ContainerException("Error stopping web component: " + uri.toString(), e);
-        }
+        activator.deactivate(archiveUri);
     }
 
     public void startUpdate() {

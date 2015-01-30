@@ -25,9 +25,9 @@ import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.LogicalComponentManager;
-import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -101,7 +101,7 @@ public class SnapshotDeployListener implements DeployListener {
             String runtimeName = info.getRuntimeName();
             DeploymentSnapshotCommand command = new DeploymentSnapshotCommand(runtimeName, snapshot);
             topologyService.broadcast(command);
-        } catch (MessageException e) {
+        } catch (ContainerException e) {
             monitor.error(e);
         }
     }

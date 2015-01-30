@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
@@ -41,7 +41,6 @@ import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationException;
@@ -91,11 +90,11 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws ParseException {
+    public void setSecurity(String level) throws InitializationException {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid management security setting:" + level);
+            throw new InitializationException("Invalid management security setting:" + level);
         }
     }
 
@@ -118,7 +117,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Init
-    public void start() throws MessageException {
+    public void start() throws ContainerException {
         servletHost.registerMapping(MANAGEMENT_PATH, this);
         if (topologyService != null) {
             ResourceReplicationHandler handler = new ResourceReplicationHandler(this, monitor);
@@ -133,7 +132,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Destroy()
-    public void stop() throws MessageException {
+    public void stop() throws ContainerException {
         servletHost.unregisterMapping(MANAGEMENT_PATH);
         if (topologyService != null) {
             topologyService.closeChannel(RESOURCE_CHANNEL);
@@ -495,9 +494,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             }
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (MessageException e) {
-            monitor.error("Error replicating operation: " + mapping.getMethod(), e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
             Thread.currentThread().setContextClassLoader(oldLoader);
         }
@@ -508,9 +504,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      *
      * @param mapping the request mapping
      * @param params  the request parameters
-     * @throws MessageException if there is a replication error
+     * @throws ContainerException if there is a replication error
      */
-    private void replicate(ResourceMapping mapping, Object[] params) throws MessageException {
+    private void replicate(ResourceMapping mapping, Object[] params) throws ContainerException {
         if (topologyService != null && mapping.isReplicate() && mapping.getVerb() != Verb.GET) {
             // only replicate if running on a node and request is not HTTP GET
             ReplicationEnvelope envelope;

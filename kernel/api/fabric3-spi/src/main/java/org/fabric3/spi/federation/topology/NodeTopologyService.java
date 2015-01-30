@@ -18,6 +18,7 @@ package org.fabric3.spi.federation.topology;
 
 import java.io.Serializable;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.command.Command;
 
 /**
@@ -50,9 +51,9 @@ public interface NodeTopologyService {
      * Sends a command asynchronously to all runtimes in the domain.
      *
      * @param command the command
-     * @throws MessageException if there is an error sending the message
+     * @throws ContainerException if there is an error sending the message
      */
-    void broadcast(Command command) throws MessageException;
+    void broadcast(Command command) throws ContainerException;
 
     /**
      * Asynchronously sends a message over the given channel to the specified runtime.
@@ -60,18 +61,18 @@ public interface NodeTopologyService {
      * @param runtimeName the runtime
      * @param name        the channel name
      * @param message     the message
-     * @throws MessageException if there is an error sending the message
+     * @throws ContainerException if there is an error sending the message
      */
-    void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException;
+    void sendAsynchronous(String runtimeName, String name, Serializable message) throws ContainerException;
 
     /**
      * Asynchronously sends a message over the given channel.
      *
      * @param channelName    the channel name
      * @param message the message
-     * @throws MessageException if there is an error sending the message
+     * @throws ContainerException if there is an error sending the message
      */
-    void sendAsynchronous(String channelName, Serializable message) throws MessageException;
+    void sendAsynchronous(String channelName, Serializable message) throws ContainerException;
 
     /**
      * Opens a channel.
@@ -80,16 +81,16 @@ public interface NodeTopologyService {
      * @param configuration the channel configuration or null to use the default configuration
      * @param receiver      the receiver to callback when a message is received
      * @param listener      an optional topology listener. May be null.
-     * @throws MessageException if an error occurs opening the channel
+     * @throws ContainerException if an error occurs opening the channel
      */
-    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws MessageException;
+    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ContainerException;
 
     /**
      * Closes a channel.
      *
      * @param name the channel name
-     * @throws MessageException if an error occurs closing the channel
+     * @throws ContainerException if an error occurs closing the channel
      */
-    void closeChannel(String name) throws MessageException;
+    void closeChannel(String name) throws ContainerException;
 
 }

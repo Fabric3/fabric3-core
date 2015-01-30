@@ -20,20 +20,19 @@
 package org.fabric3.api.host;
 
 /**
- * The root unchecked exception for the Fabric3 runtime. Unchecked exceptions should only be thrown when the runtime cannot be expected to recover
- * from an exception and would be placed in an unstable state or when a third-party API does not accommodate throwing a checked exception.
+ * The root unchecked exception for the Fabric3 runtime. Unchecked exceptions should only be thrown when the runtime cannot be expected to recover from an
+ * exception and would be placed in an unstable state or when a third-party API does not accommodate throwing a checked exception.
  */
 
-public abstract class Fabric3RuntimeException extends RuntimeException {
+public class Fabric3RuntimeException extends RuntimeException {
     private static final long serialVersionUID = -759677431966121786L;
 
     /**
      * Override constructor from RuntimeException.
      *
      * @param message passed to RuntimeException
-     * @see RuntimeException
      */
-    protected Fabric3RuntimeException(String message) {
+    public Fabric3RuntimeException(String message) {
         super(message);
     }
 
@@ -42,9 +41,8 @@ public abstract class Fabric3RuntimeException extends RuntimeException {
      *
      * @param message passed to RuntimeException
      * @param cause   passed to RuntimeException
-     * @see RuntimeException
      */
-    protected Fabric3RuntimeException(String message, Throwable cause) {
+    public Fabric3RuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -52,9 +50,8 @@ public abstract class Fabric3RuntimeException extends RuntimeException {
      * Override constructor from RuntimeException.
      *
      * @param cause passed to RuntimeException
-     * @see RuntimeException
      */
-    protected Fabric3RuntimeException(Throwable cause) {
+    public Fabric3RuntimeException(Throwable cause) {
         super(cause);
     }
 

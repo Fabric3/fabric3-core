@@ -19,7 +19,7 @@ package org.fabric3.federation.jgroups;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.jgroups.Address;
 import org.jgroups.Channel;
@@ -51,7 +51,7 @@ public class DelegatingReceiver implements Receiver {
             try {
                 Object payload = helper.deserialize(message.getBuffer());
                 receiver.onMessage(payload);
-            } catch (MessageException e) {
+            } catch (ContainerException e) {
                 monitor.error("Error deserializing message payload", e);
             }
         }
