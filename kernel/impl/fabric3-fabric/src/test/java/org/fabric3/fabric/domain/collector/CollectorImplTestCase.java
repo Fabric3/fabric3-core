@@ -27,9 +27,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
-import org.fabric3.fabric.domain.collector.Collector;
-import org.fabric3.fabric.domain.collector.CollectorImpl;
-import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.spi.model.instance.LogicalBindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -413,14 +411,14 @@ public class CollectorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void createBinding(Bindable bindable, QName deployable, LogicalState state) {
+    private void createBinding(LogicalBindable bindable, QName deployable, LogicalState state) {
         LogicalBinding binding = new LogicalBinding(null, bindable, deployable);
         binding.setState(state);
         bindable.addBinding(binding);
     }
 
     @SuppressWarnings({"unchecked"})
-    private void createCallbackBinding(Bindable bindable, QName deployable, LogicalState state) {
+    private void createCallbackBinding(LogicalBindable bindable, QName deployable, LogicalState state) {
         LogicalBinding binding = new LogicalBinding(null, bindable, deployable);
         binding.setCallback(true);
         binding.setState(state);

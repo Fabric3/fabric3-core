@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 /**
  * An instantiated binding.
  */
-public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArtifact<Bindable> {
+public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArtifact<LogicalBindable> {
     private static final long serialVersionUID = 8153501808553226042L;
 
     private BD definition;
@@ -35,12 +35,12 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
     private boolean assigned;
     private boolean callback;
 
-    public LogicalBinding(BD definition, Bindable parent) {
+    public LogicalBinding(BD definition, LogicalBindable parent) {
         super(parent);
         this.definition = definition;
     }
 
-    public LogicalBinding(BD definition, Bindable parent, QName deployable) {
+    public LogicalBinding(BD definition, LogicalBindable parent, QName deployable) {
         super(parent);
         this.definition = definition;
         this.deployable = deployable;

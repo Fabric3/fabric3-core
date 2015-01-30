@@ -29,7 +29,7 @@ import org.fabric3.api.model.type.component.ReferenceDefinition;
 /**
  * A reference on an instantiated component in the domain.
  */
-public class LogicalReference extends Bindable {
+public class LogicalReference extends LogicalBindable {
     private static final long serialVersionUID = 2308698868251298609L;
 
     private AbstractReference definition;

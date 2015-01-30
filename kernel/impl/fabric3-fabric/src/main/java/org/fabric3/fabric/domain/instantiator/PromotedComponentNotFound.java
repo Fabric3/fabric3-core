@@ -22,13 +22,13 @@ import java.net.URI;
 import java.util.Collections;
 
 import org.fabric3.api.host.failure.AssemblyFailure;
-import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.spi.model.instance.LogicalBindable;
 
 public class PromotedComponentNotFound extends AssemblyFailure {
     private URI promotedComponentUri;
     private URI bindableUri;
 
-    public PromotedComponentNotFound(Bindable bindable, URI promotedComponentUri) {
+    public PromotedComponentNotFound(LogicalBindable bindable, URI promotedComponentUri) {
         super(bindable.getParent().getUri(), bindable.getParent().getDefinition().getContributionUri(), Collections.singletonList(bindable));
         this.bindableUri = bindable.getUri();
         this.promotedComponentUri = promotedComponentUri;

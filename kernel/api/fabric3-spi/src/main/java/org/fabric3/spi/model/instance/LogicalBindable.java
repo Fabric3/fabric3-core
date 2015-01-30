@@ -29,7 +29,7 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 /**
  * An artifact which can be bound to a remote transport.
  */
-public abstract class Bindable extends LogicalInvocable {
+public abstract class LogicalBindable extends LogicalInvocable {
     private static final long serialVersionUID = 570403036597601956L;
     private List<LogicalBinding<?>> bindings;
     private List<LogicalBinding<?>> callbackBindings;
@@ -41,7 +41,7 @@ public abstract class Bindable extends LogicalInvocable {
      * @param contract the service contract
      * @param parent   Parent of the service or the reference.
      */
-    protected Bindable(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
+    protected LogicalBindable(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
         super(uri, contract, parent);
         bindings = new ArrayList<>();
         callbackBindings = new ArrayList<>();

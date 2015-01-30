@@ -21,12 +21,12 @@ package org.fabric3.fabric.domain.instantiator;
 import java.util.Collections;
 
 import org.fabric3.api.host.failure.AssemblyFailure;
-import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.spi.model.instance.LogicalBindable;
 
 public class ServiceNotFound extends AssemblyFailure {
     private String message;
 
-    public ServiceNotFound(String message, Bindable bindable) {
+    public ServiceNotFound(String message, LogicalBindable bindable) {
         super(bindable.getParent().getUri(), bindable.getParent().getDefinition().getContributionUri(), Collections.singletonList(bindable));
         this.message = message;
     }

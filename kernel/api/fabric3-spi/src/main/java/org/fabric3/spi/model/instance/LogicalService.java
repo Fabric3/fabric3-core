@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.component.AbstractService;
 /**
  * An instantiated service in the domain.
  */
-public class LogicalService extends Bindable {
+public class LogicalService extends LogicalBindable {
     private static final long serialVersionUID = -2417797075030173948L;
 
     private AbstractService definition;

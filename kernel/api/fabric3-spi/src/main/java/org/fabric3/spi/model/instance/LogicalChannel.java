@@ -29,7 +29,7 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 /**
  * An instantiated channel in the domain.
  */
-public class LogicalChannel extends Bindable {
+public class LogicalChannel extends LogicalBindable {
     private static final long serialVersionUID = -1098943196013754799L;
 
     private ChannelDefinition definition;

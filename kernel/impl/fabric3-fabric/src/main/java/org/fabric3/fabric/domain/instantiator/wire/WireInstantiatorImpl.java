@@ -37,7 +37,7 @@ import org.fabric3.fabric.domain.instantiator.ServiceNotFound;
 import org.fabric3.fabric.domain.instantiator.WireInstantiator;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
-import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.spi.model.instance.LogicalBindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -329,7 +329,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param binding  the binding to match against
      * @return the selected binding or null if no matching ones were found
      */
-    private LogicalBinding<?> selectBinding(Bindable bindable, LogicalBinding binding) {
+    private LogicalBinding<?> selectBinding(LogicalBindable bindable, LogicalBinding binding) {
         for (LogicalBinding<?> candidate : bindable.getBindings()) {
             if (candidate.getDefinition().getType().equals(binding.getDefinition().getType())) {
                 return candidate;
@@ -345,7 +345,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param bindable the bindable containing the binding
      * @return the matching binding or null if no matching one was found
      */
-    private LogicalBinding<?> getBinding(String name, Bindable bindable) {
+    private LogicalBinding<?> getBinding(String name, LogicalBindable bindable) {
         LogicalBinding<?> selectedBinding = null;
         for (LogicalBinding<?> binding : bindable.getBindings()) {
             if (name.equals(binding.getDefinition().getName())) {
