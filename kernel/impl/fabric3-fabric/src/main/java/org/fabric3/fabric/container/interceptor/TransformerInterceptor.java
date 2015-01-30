@@ -16,12 +16,11 @@
  */
 package org.fabric3.fabric.container.interceptor;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
-import org.fabric3.spi.transform.TransformationException;
-import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.transform.Transformer;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Converts the input parameters of an invocation to a target format and the output parameters from the target format by delegating to underlying
@@ -73,7 +72,7 @@ public class TransformerInterceptor implements Interceptor {
                     Object transformed = inTransformer.transform(params, inLoader);
                     msg.setBody(transformed);
                 }
-            } catch (TransformationException e) {
+            } catch (ContainerException e) {
                 throw new ServiceRuntimeException(e);
             }
         }
@@ -99,7 +98,7 @@ public class TransformerInterceptor implements Interceptor {
                 } else {
                     throw new ServiceRuntimeException("Unexpected type returned: " + body.getClass());
                 }
-            } catch (TransformationException e) {
+            } catch (ContainerException e) {
                 throw new ServiceRuntimeException(e);
             }
         }

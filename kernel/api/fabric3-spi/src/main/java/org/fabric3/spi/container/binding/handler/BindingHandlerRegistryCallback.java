@@ -16,8 +16,8 @@
  */
 package org.fabric3.spi.container.binding.handler;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 /**
  * Implemented by a binding extension to receive callbacks when a {@link BindingHandler} becomes available or is removed.

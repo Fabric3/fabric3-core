@@ -34,7 +34,7 @@ import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.
@@ -75,7 +75,7 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
         this.executorService = executorService;
     }
 
-    public Dispatch<Source> getInstance() throws ObjectCreationException {
+    public Dispatch<Source> getInstance() throws ContainerException {
         if (dispatch == null) {
             // there is a possibility more than one proxy will be created but since this does not have side-effects, avoid synchronization
             dispatch = createProxy();
@@ -88,9 +88,9 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
      * proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
      *
      * @return the web service proxy
-     * @throws ObjectCreationException if there was an error creating the proxy
+     * @throws ContainerException if there was an error creating the proxy
      */
-    private Dispatch<Source> createProxy() throws ObjectCreationException {
+    private Dispatch<Source> createProxy() throws ContainerException {
         try {
             Service service;
             WSService.InitParams params = new WSService.InitParams();
@@ -111,7 +111,7 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
             setSOAPAction(dispatch);
             return dispatch;
         } catch (InaccessibleWSDLException | MalformedURLException e) {
-            throw new ObjectCreationException(e);
+            throw new ContainerException(e);
         }
 
     }

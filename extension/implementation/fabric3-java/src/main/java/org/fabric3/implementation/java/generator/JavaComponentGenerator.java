@@ -18,19 +18,16 @@
  */
 package org.fabric3.implementation.java.generator;
 
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -42,6 +39,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates physical metadata for a Java component deployment.

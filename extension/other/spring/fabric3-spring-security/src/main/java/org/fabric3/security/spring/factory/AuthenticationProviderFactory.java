@@ -18,9 +18,8 @@ package org.fabric3.security.spring.factory;
 
 import java.util.List;
 
-import org.springframework.security.authentication.AuthenticationProvider;
-
 import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
+import org.springframework.security.authentication.AuthenticationProvider;
 
 /**
  * Instantiates a collection of Spring <code>AuthenticationProvider</code> instances for a Spring Security configuration.

@@ -25,7 +25,7 @@ import java.util.List;
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -40,7 +40,7 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws JmsResolutionException {
+    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws ContainerException {
         javax.jms.Destination destination;
         for (DestinationResolver resolver : resolvers) {
             destination = resolver.resolve(definition);

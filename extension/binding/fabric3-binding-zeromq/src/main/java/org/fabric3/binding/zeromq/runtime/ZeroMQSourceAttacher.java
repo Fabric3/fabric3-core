@@ -21,17 +21,16 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

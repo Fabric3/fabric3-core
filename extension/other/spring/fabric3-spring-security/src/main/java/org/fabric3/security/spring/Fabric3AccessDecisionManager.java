@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.fabric3.api.SecuritySubject;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.security.AuthorizationException;
+import org.fabric3.spi.security.AuthorizationService;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -37,10 +41,6 @@ import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-
-import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.security.AuthorizationException;
-import org.fabric3.spi.security.AuthorizationService;
 
 /**
  * Serves as a bridge between the Fabric3 security SPI and SpringSecurity for access control by implementing {@link AuthorizationService} and
@@ -69,7 +69,7 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
     }
 
     @Init
-    public void init() throws SecurityInitException {
+    public void init() throws ContainerException {
         if (getDecisionVoters() == null || getDecisionVoters().isEmpty()) {
             List<AccessDecisionVoter> voters = new ArrayList<>();
             RoleVoter roleVoter = new RoleVoter();
@@ -92,7 +92,7 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
             unanimousBased.setDecisionVoters(getDecisionVoters());
             delegate = unanimousBased;
         } else {
-            throw new SecurityInitException("Unknown access decision manager type: " + managerType);
+            throw new ContainerException("Unknown access decision manager type: " + managerType);
         }
     }
 

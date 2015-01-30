@@ -21,8 +21,8 @@ package org.fabric3.cache.spi;
 
 import java.lang.reflect.Member;
 
-import org.fabric3.spi.introspection.java.JavaValidationFailure;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 public class MissingCacheName extends JavaValidationFailure {
     private String location;

@@ -16,12 +16,12 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
+import java.lang.reflect.Array;
+
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-
-import java.lang.reflect.Array;
 
 /**
  *

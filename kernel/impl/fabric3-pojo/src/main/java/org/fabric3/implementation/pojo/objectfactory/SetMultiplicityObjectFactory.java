@@ -21,7 +21,7 @@ package org.fabric3.implementation.pojo.objectfactory;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -29,7 +29,7 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
  */
 public class SetMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<Set<ObjectFactory<?>>> {
 
-    public Set<Object> getInstance() throws ObjectCreationException {
+    public Set<Object> getInstance() throws ContainerException {
         Set<Object> set = new LinkedHashSet<>();
         for (ObjectFactory<?> factory : factories) {
             set.add(factory.getInstance());

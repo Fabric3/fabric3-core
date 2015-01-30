@@ -19,12 +19,11 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.oasisopen.sca.annotation.Scope;
-
 import org.fabric3.api.annotation.scope.Composite;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Scope;
 
 
 public class CompositeProcessor extends AbstractAnnotationProcessor<Composite> {

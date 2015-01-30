@@ -24,10 +24,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -50,7 +50,7 @@ public class Property2CalendarTransformer implements SingleTypeTransformer<Node,
         return TARGET;
     }
 
-    public Calendar transform(final Node node, ClassLoader loader) throws TransformationException {
+    public Calendar transform(final Node node, ClassLoader loader) throws ContainerException {
         XMLGregorianCalendar xmlCalendar = factory.newXMLGregorianCalendar(node.getTextContent());
         return xmlCalendar.toGregorianCalendar();
     }

@@ -19,10 +19,11 @@
  */
 package org.fabric3.spi.container.component;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.host.monitor.Monitorable;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * The runtime instantiation of an SCA component
@@ -60,16 +61,16 @@ public interface Component extends Monitorable {
     /**
      * Starts the component;
      *
-     * @throws ComponentException if an error occurs starting the component
+     * @throws ContainerException if an error occurs starting the component
      */
-    void start() throws ComponentException;
+    void start() throws ContainerException;
 
     /**
      * Stops the component.
      *
-     * @throws ComponentException if an error occurs stopping the component
+     * @throws ContainerException if an error occurs stopping the component
      */
-    void stop() throws ComponentException;
+    void stop() throws ContainerException;
 
     /**
      * Used to signal the start of a component configuration update.

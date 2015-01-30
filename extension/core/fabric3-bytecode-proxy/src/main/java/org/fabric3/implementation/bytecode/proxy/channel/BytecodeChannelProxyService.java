@@ -24,11 +24,11 @@ import java.net.URI;
 import org.fabric3.api.host.Names;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -46,14 +46,14 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
         return false;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ContainerException{
         URI uri = getClassLoaderUri(interfaze);
 
         Method[] methods = interfaze.getMethods();
         if (methods.length > 1) {
-            throw new ProxyCreationException("Channel interface must have only one method: " + interfaze.getName());
+            throw new ContainerException("Channel interface must have only one method: " + interfaze.getName());
         } else if (methods.length == 0) {
-            throw new ProxyCreationException("Channel interface must have one method: " + interfaze.getName());
+            throw new ContainerException("Channel interface must have one method: " + interfaze.getName());
         }
 
         EventStream stream = connection.getEventStream();

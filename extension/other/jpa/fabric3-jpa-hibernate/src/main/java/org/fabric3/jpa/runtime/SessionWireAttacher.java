@@ -18,24 +18,22 @@
  */
 package org.fabric3.jpa.runtime;
 
-import java.net.URI;
 import javax.transaction.TransactionManager;
-
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
-import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -80,8 +78,6 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
             } else {
                 return new StatefulSessionProxyFactory(unitName, emService, tm);
             }
-        } catch (JpaResolutionException e) {
-            throw new ContainerException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

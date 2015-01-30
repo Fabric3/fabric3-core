@@ -25,11 +25,10 @@ import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.container.executor.ExecutionException;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -56,7 +55,7 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
         URI uri = command.getComponentUri();
         Component component = componentManager.getComponent(uri);
         if (component == null) {
-            throw new ExecutionException("Component not found: " + uri);
+            throw new ContainerException("Component not found: " + uri);
         }
         component.startUpdate();
         // detach must be executed first so wire attachers can drop connection prior to adding new ones

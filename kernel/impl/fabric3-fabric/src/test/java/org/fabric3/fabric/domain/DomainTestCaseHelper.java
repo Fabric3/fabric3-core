@@ -19,18 +19,17 @@
  */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
-import javax.xml.namespace.QName;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
-import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;

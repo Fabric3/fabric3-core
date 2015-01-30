@@ -19,6 +19,7 @@ package org.fabric3.spi.container.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
@@ -66,9 +67,9 @@ public interface ChannelManager {
      * Registers a channel.
      *
      * @param channel the channel
-     * @throws RegistrationException if there is an error registering the channel
+     * @throws ContainerException if there is an error registering the channel
      */
-    void register(Channel channel) throws RegistrationException;
+    void register(Channel channel) throws ContainerException;
 
     /**
      * Removes a channel for the given URI.
@@ -76,9 +77,9 @@ public interface ChannelManager {
      * @param uri         the uri
      * @param channelSide the channel side
      * @return the channel or null
-     * @throws RegistrationException if there is an error removing the channel
+     * @throws ContainerException if there is an error removing the channel
      */
-    Channel unregister(URI uri, ChannelSide channelSide) throws RegistrationException;
+    Channel unregister(URI uri, ChannelSide channelSide) throws ContainerException;
 
     /**
      * Starts channels contained in the given deployable composite.

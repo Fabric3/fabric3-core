@@ -21,9 +21,8 @@ package org.fabric3.implementation.bytecode.proxy.wire;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.implementation.bytecode.proxy.common.ProxyException;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 
@@ -50,16 +49,12 @@ public class WireProxyObjectFactory<T> implements ObjectFactory<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T getInstance() throws ObjectCreationException {
-        try {
-            if (proxy == null) {
-                proxy = proxyFactory.createProxy(uri, interfaze, methods, WireProxyDispatcher.class, true);
-                WireProxyDispatcher dispatcher = (WireProxyDispatcher) proxy;
-                dispatcher.init(interfaze, callbackUri, chains);
-            }
-            return proxy;
-        } catch (ProxyException e) {
-            throw new ObjectCreationException(e);
+    public T getInstance() throws ContainerException {
+        if (proxy == null) {
+            proxy = proxyFactory.createProxy(uri, interfaze, methods, WireProxyDispatcher.class, true);
+            WireProxyDispatcher dispatcher = (WireProxyDispatcher) proxy;
+            dispatcher.init(interfaze, callbackUri, chains);
         }
+        return proxy;
     }
 }

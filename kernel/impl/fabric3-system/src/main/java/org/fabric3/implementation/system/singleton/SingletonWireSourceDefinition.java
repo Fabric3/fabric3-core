@@ -18,8 +18,8 @@
  */
 package org.fabric3.implementation.system.singleton;
 
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 
 /**
  *

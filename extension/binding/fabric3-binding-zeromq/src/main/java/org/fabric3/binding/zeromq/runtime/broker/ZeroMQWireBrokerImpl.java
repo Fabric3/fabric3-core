@@ -32,7 +32,6 @@ import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.ZeroMQWireBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -51,16 +50,15 @@ import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
-import org.fabric3.spi.container.wire.InterceptorCreationException;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -149,7 +147,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         eventService.subscribe(RuntimeStop.class, this);
     }
 
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException {
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException {
         SenderHolder holder;
         if (ZMQ.equals(uri.getScheme())) {
             DelegatingOneWaySender sender = new DelegatingOneWaySender(id, this, metadata);
@@ -164,27 +162,23 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
-            try {
-                PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
-                List<DataType> sourceTypes = createTypes(physicalOperation, loader);
-                Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, sourceTypes, TRANSPORT_TYPES, loader, loader);
-                chain.addInterceptor(interceptor);
-                chain.addInterceptor(new UnwrappingInterceptor());
-            } catch (InterceptorCreationException e) {
-                throw new BrokerException(e);
-            }
-            Interceptor interceptor = createInterceptor(holder, i);
+            PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
+            List<DataType> sourceTypes = createTypes(physicalOperation, loader);
+            Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, sourceTypes, TRANSPORT_TYPES, loader, loader);
+            chain.addInterceptor(interceptor);
+            chain.addInterceptor(new UnwrappingInterceptor());
+            interceptor = createInterceptor(holder, i);
             chain.addInterceptor(interceptor);
         }
         holder.getIds().add(id);
     }
 
-    public void releaseSender(String id, URI uri) throws BrokerException {
+    public void releaseSender(String id, URI uri) throws ContainerException {
         SenderHolder holder = senders.get(uri.toString());
         if (holder == null) {
             if (!ZMQ.equals(uri.getScheme())) {
                 // callback holders are dynamically created and it is possible for a sender to be released before an invocation is dispatched to it
-                throw new BrokerException("Sender not found for " + uri);
+                throw new ContainerException("Sender not found for " + uri);
             } else {
                 return;
             }
@@ -198,63 +192,59 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
     }
 
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException {
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException {
         if (receivers.containsKey(uri.toString())) {
-            throw new BrokerException("Receiver already defined for " + uri);
+            throw new ContainerException("Receiver already defined for " + uri);
         }
-        try {
-            String endpointId = uri.toString();
+        String endpointId = uri.toString();
 
-            String runtimeName = info.getRuntimeName();
-            String zone = info.getZoneName();
-            SocketAddress address;
+        String runtimeName = info.getRuntimeName();
+        String zone = info.getZoneName();
+        SocketAddress address;
 
-            if (metadata.getSocketAddresses() != null && !metadata.getSocketAddresses().isEmpty()) {
-                // bind using specified address and port
-                if (metadata.getSocketAddresses().size() != 1) {
-                    throw new BrokerException("Only one socket address can be specified");
-                }
-                SocketAddressDefinition addressDefinition = metadata.getSocketAddresses().get(0);
-                String specifiedHost = addressDefinition.getHost();
-                if ("localhost".equals(specifiedHost)) {
-                    specifiedHost = hostAddress;
-                }
-                int portNumber = addressDefinition.getPort();
-                Port port = allocator.reserve(endpointId, ZMQ, portNumber);
-                address = new SocketAddress(runtimeName, zone, "tcp", specifiedHost, port);
-            } else {
-                // bind to a randomly allocated port
-                Port port = allocator.allocate(endpointId, ZMQ);
-                address = new SocketAddress(runtimeName, zone, "tcp", host, port);
+        if (metadata.getSocketAddresses() != null && !metadata.getSocketAddresses().isEmpty()) {
+            // bind using specified address and port
+            if (metadata.getSocketAddresses().size() != 1) {
+                throw new ContainerException("Only one socket address can be specified");
             }
-
-            addTransformer(chains, loader);
-
-            boolean oneWay = isOneWay(chains, uri);
-            Receiver receiver;
-            if (oneWay) {
-                receiver = new NonReliableOneWayReceiver(manager, address, chains, executorService, metadata, monitor);
-            } else {
-                receiver = new NonReliableRequestReplyReceiver(manager, address, chains, executorService, pollTimeout, metadata, monitor);
+            SocketAddressDefinition addressDefinition = metadata.getSocketAddresses().get(0);
+            String specifiedHost = addressDefinition.getHost();
+            if ("localhost".equals(specifiedHost)) {
+                specifiedHost = hostAddress;
             }
-            receiver.start();
-
-            AddressAnnouncement event = new AddressAnnouncement(endpointId, AddressAnnouncement.Type.ACTIVATED, address);
-            addressCache.publish(event);
-
-            receivers.put(uri.toString(), receiver);
-            String id = createReceiverId(uri);
-            managementService.registerReceiver(id, receiver);
-            monitor.onProvisionEndpoint(id);
-        } catch (PortAllocationException e) {
-            throw new BrokerException("Error allocating port for " + uri, e);
+            int portNumber = addressDefinition.getPort();
+            Port port = allocator.reserve(endpointId, ZMQ, portNumber);
+            address = new SocketAddress(runtimeName, zone, "tcp", specifiedHost, port);
+        } else {
+            // bind to a randomly allocated port
+            Port port = allocator.allocate(endpointId, ZMQ);
+            address = new SocketAddress(runtimeName, zone, "tcp", host, port);
         }
+
+        addTransformer(chains, loader);
+
+        boolean oneWay = isOneWay(chains, uri);
+        Receiver receiver;
+        if (oneWay) {
+            receiver = new NonReliableOneWayReceiver(manager, address, chains, executorService, metadata, monitor);
+        } else {
+            receiver = new NonReliableRequestReplyReceiver(manager, address, chains, executorService, pollTimeout, metadata, monitor);
+        }
+        receiver.start();
+
+        AddressAnnouncement event = new AddressAnnouncement(endpointId, AddressAnnouncement.Type.ACTIVATED, address);
+        addressCache.publish(event);
+
+        receivers.put(uri.toString(), receiver);
+        String id = createReceiverId(uri);
+        managementService.registerReceiver(id, receiver);
+        monitor.onProvisionEndpoint(id);
     }
 
-    public void releaseReceiver(URI uri) throws BrokerException {
+    public void releaseReceiver(URI uri) throws ContainerException {
         Receiver receiver = receivers.remove(uri.toString());
         if (receiver == null) {
-            throw new BrokerException("Receiver not found for " + uri);
+            throw new ContainerException("Receiver not found for " + uri);
         }
         String endpointId = uri.toString();
 
@@ -381,22 +371,18 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         return chains.get(0).getPhysicalOperation().isOneWay();
     }
 
-    private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws BrokerException {
+    private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws ContainerException {
         for (InvocationChain chain : chains) {
-            try {
-                PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
-                List<DataType> targetTypes = createTypes(physicalOperation, loader);
-                Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, TRANSPORT_TYPES, targetTypes, loader, loader);
-                chain.addInterceptor(new WrappingInterceptor());
-                chain.addInterceptor(interceptor);
-            } catch (InterceptorCreationException e) {
-                throw new BrokerException(e);
-            }
+            PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
+            List<DataType> targetTypes = createTypes(physicalOperation, loader);
+            Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, TRANSPORT_TYPES, targetTypes, loader, loader);
+            chain.addInterceptor(new WrappingInterceptor());
+            chain.addInterceptor(interceptor);
         }
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws BrokerException {
+    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws ContainerException {
         try {
             List<DataType> dataTypes = new ArrayList<>();
             if (physicalOperation.getSourceParameterTypes().isEmpty()) {
@@ -410,7 +396,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             }
             return dataTypes;
         } catch (ClassNotFoundException e) {
-            throw new BrokerException("Error transforming parameter", e);
+            throw new ContainerException("Error transforming parameter", e);
         }
     }
 

@@ -16,8 +16,8 @@
  */
 package org.fabric3.api;
 
-import java.util.Set;
 import javax.security.auth.Subject;
+import java.util.Set;
 
 /**
  * Represents user security state. Implementations wrap a subject supplied by the underlying security provider.

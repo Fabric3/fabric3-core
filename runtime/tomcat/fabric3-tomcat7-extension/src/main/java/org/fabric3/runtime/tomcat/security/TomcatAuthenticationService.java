@@ -23,10 +23,6 @@ import java.util.Set;
 
 import org.apache.catalina.Realm;
 import org.apache.catalina.realm.GenericPrincipal;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.runtime.tomcat.connector.ConnectorService;
@@ -35,6 +31,9 @@ import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.UsernamePasswordToken;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation which authenticates using a Tomcat security realm.

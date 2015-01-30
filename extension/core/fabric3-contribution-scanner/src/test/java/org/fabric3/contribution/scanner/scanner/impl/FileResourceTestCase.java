@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-
 import org.fabric3.contribution.scanner.spi.FileResource;
 
 /**

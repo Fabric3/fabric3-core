@@ -19,19 +19,18 @@
  */
 package org.fabric3.container.web.jetty;
 
-import java.util.EventListener;
-import java.util.List;
-import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import java.util.EventListener;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Injects a servlet or filter with reference proxies, properties, and the component context.
@@ -87,7 +86,7 @@ public class InjectingDecorator implements ServletContextHandler.Decorator {
             for (Injector injector : injectors) {
                 try {
                     injector.inject(instance);
-                } catch (ObjectCreationException e) {
+                } catch (ContainerException e) {
                     throw new ServletException(e);
                 }
             }

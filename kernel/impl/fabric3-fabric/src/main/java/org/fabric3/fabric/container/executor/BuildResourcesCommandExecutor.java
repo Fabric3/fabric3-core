@@ -21,17 +21,15 @@ package org.fabric3.fabric.container.executor;
 
 import java.util.Map;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.container.executor.ExecutionException;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Builds resources defined in a composite on a runtime.
@@ -65,7 +63,7 @@ public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResou
     private void build(PhysicalResourceDefinition definition) throws ContainerException {
         ResourceBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
-            throw new ExecutionException("Builder not found for " + definition.getClass().getName());
+            throw new ContainerException("Builder not found for " + definition.getClass().getName());
         }
         builder.build(definition);
     }

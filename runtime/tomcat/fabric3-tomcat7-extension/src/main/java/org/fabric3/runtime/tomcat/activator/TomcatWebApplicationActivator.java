@@ -16,14 +16,14 @@
  */
 package org.fabric3.runtime.tomcat.activator;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.connector.Connector;
@@ -31,11 +31,6 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.tomcat.InstanceManager;
-import org.oasisopen.sca.ComponentContext;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
@@ -44,9 +39,13 @@ import org.fabric3.runtime.tomcat.connector.ConnectorService;
 import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.contribution.ContributionResolver;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.contribution.ContributionResolver;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Activates a web component in the host Tomcat runtime.
@@ -182,7 +181,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ObjectCreationException {
+    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ContainerException {
         List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
         if (list == null) {
             // nothing to inject

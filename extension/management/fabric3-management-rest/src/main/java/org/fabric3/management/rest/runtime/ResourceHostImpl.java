@@ -34,20 +34,18 @@ import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
-import org.fabric3.management.rest.spi.DuplicateResourceNameException;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.NoCredentialsException;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
@@ -157,7 +155,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
     }
 
-    public void register(ResourceMapping mapping) throws DuplicateResourceNameException {
+    public void register(ResourceMapping mapping) throws ContainerException {
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
             register(mapping, getMappings);
@@ -250,12 +248,12 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      *
      * @param mapping  the resource mapping
      * @param mappings the resource mappings for an HTTP verb
-     * @throws DuplicateResourceNameException if a resource for the path is already registered
+     * @throws ContainerException if a resource for the path is already registered
      */
-    private void register(ResourceMapping mapping, Map<String, ResourceMapping> mappings) throws DuplicateResourceNameException {
+    private void register(ResourceMapping mapping, Map<String, ResourceMapping> mappings) throws ContainerException {
         String path = mapping.getPath();
         if (mappings.containsKey(path)) {
-            throw new DuplicateResourceNameException("Resource already registered at: " + path);
+            throw new ContainerException("Resource already registered at: " + path);
         }
         String identifier = mapping.getIdentifier();
         List<ResourceMapping> registered = getRegistered(identifier);
@@ -467,9 +465,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     /**
      * Invokes a resource.
      *
-     * @param mapping     the resource mapping
-     * @param params      the deserialized request parameters
-     * @param replicate   true if the request should be replicated
+     * @param mapping   the resource mapping
+     * @param params    the deserialized request parameters
+     * @param replicate true if the request should be replicated
      * @return a return value or null
      * @throws ResourceException if an error invoking the resource occurs
      */
@@ -486,7 +484,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 replicate(mapping, params);
             }
             return ret;
-        } catch (IllegalAccessException | ObjectCreationException e) {
+        } catch (IllegalAccessException | ContainerException e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InvocationTargetException e) {
@@ -585,7 +583,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         } catch (IOException ex) {
             monitor.error("Cannot write error response", ex);
             monitor.error("Response was ", e);
-        } catch (TransformationException ex) {
+        } catch (ContainerException ex) {
             monitor.error("Cannot serialize error response", ex);
             monitor.error("Response was ", e);
         }

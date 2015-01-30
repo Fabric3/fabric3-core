@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -41,7 +41,7 @@ public class MethodInjectorTestCase extends TestCase {
         try {
             injector.inject(new Foo());
             fail();
-        } catch (ObjectCreationException e) {
+        } catch (ContainerException e) {
             // expected
         }
     }
@@ -53,7 +53,7 @@ public class MethodInjectorTestCase extends TestCase {
         try {
             injector.inject(new Foo());
             fail();
-        } catch (ObjectCreationException e) {
+        } catch (ContainerException e) {
             // expected
         }
     }
@@ -66,7 +66,7 @@ public class MethodInjectorTestCase extends TestCase {
             Foo foo = new Foo();
             injector.inject(foo);
             assertNull(foo.getFoo());
-        } catch (ObjectCreationException e) {
+        } catch (ContainerException e) {
             // expected
         }
     }

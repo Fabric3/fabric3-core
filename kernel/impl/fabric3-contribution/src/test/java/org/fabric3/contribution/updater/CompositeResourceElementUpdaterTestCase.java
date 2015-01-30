@@ -16,22 +16,21 @@
  */
 package org.fabric3.contribution.updater;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 
 /**
  *

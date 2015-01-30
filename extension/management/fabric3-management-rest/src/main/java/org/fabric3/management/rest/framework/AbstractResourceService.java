@@ -16,10 +16,10 @@
  */
 package org.fabric3.management.rest.framework;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;

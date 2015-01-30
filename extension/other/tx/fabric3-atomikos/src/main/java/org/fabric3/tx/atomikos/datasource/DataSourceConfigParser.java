@@ -16,24 +16,25 @@
  */
 package org.fabric3.tx.atomikos.datasource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
  */
 public class DataSourceConfigParser {
 
-    public List<DataSourceConfiguration> parse(XMLStreamReader reader) throws DataSourceParseException {
+    public List<DataSourceConfiguration> parse(XMLStreamReader reader) throws ContainerException {
         List<DataSourceConfiguration> configurations = new ArrayList<>();
         try {
             reader.nextTag();
@@ -101,7 +102,7 @@ public class DataSourceConfigParser {
                 }
             }
         } catch (XMLStreamException e) {
-            throw new DataSourceParseException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -114,7 +115,7 @@ public class DataSourceConfigParser {
         }
     }
 
-    private DataSourceType parseType(XMLStreamReader reader) throws DataSourceParseException {
+    private DataSourceType parseType(XMLStreamReader reader) throws ContainerException {
         DataSourceType dataSourceType;
         String type = readMandatoryAttribute("type", reader);
         if (type == null) {
@@ -123,31 +124,31 @@ public class DataSourceConfigParser {
             try {
                 dataSourceType = DataSourceType.valueOf(type.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new DataSourceParseException("Datasource type must be either xa or non_xa");
+                throw new ContainerException("Datasource type must be either xa or non_xa");
             }
         }
         return dataSourceType;
     }
 
-    private int parseInt(String value, String name) throws DataSourceParseException {
+    private int parseInt(String value, String name) throws ContainerException {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new DataSourceParseException("Invalid value for " + name, e);
+            throw new ContainerException("Invalid value for " + name, e);
         }
     }
 
-    private String readMandatoryAttribute(String name, XMLStreamReader reader) throws DataSourceParseException {
+    private String readMandatoryAttribute(String name, XMLStreamReader reader) throws ContainerException {
         String val = reader.getAttributeValue(null, name);
         if (val == null) {
             Location location = reader.getLocation();
             if (location == null) {
                 // configuration does not come from the file system
-                throw new DataSourceParseException("Datasource " + name + " not specified in system configuration");
+                throw new ContainerException("Datasource " + name + " not specified in system configuration");
             }
             int line = location.getLineNumber();
             int col = location.getColumnNumber();
-            throw new DataSourceParseException("Datasource " + name + " not configured [" + line + "," + col + "]");
+            throw new ContainerException("Datasource " + name + " not configured [" + line + "," + col + "]");
         }
         return val;
     }

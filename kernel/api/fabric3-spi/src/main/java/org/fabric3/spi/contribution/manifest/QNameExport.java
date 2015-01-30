@@ -20,10 +20,9 @@ package org.fabric3.spi.contribution.manifest;
 
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.Constants;
-
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
+import org.oasisopen.sca.Constants;
 
 /**
  * A QName-based contribution export

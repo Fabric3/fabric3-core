@@ -20,6 +20,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.List;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Instantiates appenders from an XML configuration source.
  */
@@ -29,18 +31,18 @@ public interface AppenderFactory {
      * Instantiates a collection of default appenders.
      *
      * @return the appenders
-     * @throws AppenderCreationException if there is an error instantiating the appenders
+     * @throws ContainerException if there is an error instantiating the appenders
      */
-    List<Appender> instantiateDefaultAppenders() throws AppenderCreationException;
+    List<Appender> instantiateDefaultAppenders() throws ContainerException;
 
     /**
      * Instantiates a collection of appenders from a configuration.
      *
      * @param reader the configuration source
      * @return the appenders
-     * @throws AppenderCreationException if there is an error instantiating the appenders
-     * @throws XMLStreamException        if there is an error parsing the configuration
+     * @throws ContainerException if there is an error instantiating the appenders
+     * @throws XMLStreamException if there is an error parsing the configuration
      */
-    List<Appender> instantiate(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException;
+    List<Appender> instantiate(XMLStreamReader reader) throws ContainerException, XMLStreamException;
 
 }

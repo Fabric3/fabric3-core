@@ -19,16 +19,14 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-
+import org.oasisopen.sca.annotation.EagerInit;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 

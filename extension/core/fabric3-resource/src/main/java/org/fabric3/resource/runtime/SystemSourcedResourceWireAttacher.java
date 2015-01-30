@@ -22,15 +22,14 @@ import java.net.URI;
 
 import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
 import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches to a service in the runtime domain.
@@ -54,7 +53,7 @@ public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<Sys
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {
-            throw new ResourceNotFoundException("Resource not found: " + targetId);
+            throw new ContainerException("Resource not found: " + targetId);
         }
         return targetComponent.createObjectFactory();
     }

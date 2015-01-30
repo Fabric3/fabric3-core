@@ -21,10 +21,9 @@ package org.fabric3.transform.property;
 import java.util.Properties;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,7 +42,7 @@ public class Property2PropertiesTransformer implements SingleTypeTransformer<Nod
         return TARGET;
     }
 
-    public Properties transform(Node node, ClassLoader loader) throws TransformationException {
+    public Properties transform(Node node, ClassLoader loader) {
         Properties properties = new Properties();
         NodeList nodeList = node.getChildNodes();
 

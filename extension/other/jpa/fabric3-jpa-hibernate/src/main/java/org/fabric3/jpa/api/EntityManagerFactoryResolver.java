@@ -20,6 +20,8 @@ package org.fabric3.jpa.api;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Resolves EntityManagerFactor instances.
  */
@@ -32,8 +34,8 @@ public interface EntityManagerFactoryResolver {
      * @param overrides   persistence unit property overrides
      * @param classLoader the classloader to load the persistence XML
      * @return Entity manager factory.
-     * @throws JpaResolutionException if an error occurs building the EMF
+     * @throws ContainerException if an error occurs building the EMF
      */
-    EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException;
+    EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws ContainerException;
 
 }

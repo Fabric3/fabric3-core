@@ -22,9 +22,9 @@ package org.fabric3.implementation.pojo.proxy;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
@@ -57,19 +57,19 @@ public class WireProxyServiceImpl implements WireProxyService {
         }
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException {
         checkExtension();
         return extension.createObjectFactory(interfaze, wire, callbackUri);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
+            throws ContainerException {
         checkExtension();
         return extension.createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
+            throws ContainerException {
         checkExtension();
         return extension.updateCallbackObjectFactory(factory, interfaze, multiThreaded, callbackUri, wire);
     }
@@ -81,9 +81,9 @@ public class WireProxyServiceImpl implements WireProxyService {
         return extension.cast(target);
     }
 
-    private void checkExtension() throws ProxyCreationException {
+    private void checkExtension() throws ContainerException {
         if (extension == null) {
-            throw new ProxyCreationException("Channel proxy service extension not installed");
+            throw new ContainerException("Channel proxy service extension not installed");
         }
     }
 

@@ -19,11 +19,10 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureClassLoader;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
+import org.fabric3.spi.container.ContainerException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

@@ -24,10 +24,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.model.os.Library;
 
 /**
  *

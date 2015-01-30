@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -50,6 +48,7 @@ import org.fabric3.util.graph.TopologicalSorter;
 import org.fabric3.util.graph.TopologicalSorterImpl;
 import org.fabric3.util.graph.Vertex;
 import org.fabric3.util.graph.VertexImpl;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Orders contribution dependencies by resolving imports and capabilities and then performing a topological sort of the dependency graph.

@@ -19,11 +19,10 @@
 package org.fabric3.security.authorization;
 
 import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.security.AuthorizationService;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Builds authorization interceptors.

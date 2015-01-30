@@ -18,7 +18,6 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
-
 import java.io.Serializable;
 
 import org.fabric3.api.model.type.component.Channel;

@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tomcat.InstanceManager;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Manages reference injection on servlet instances.
@@ -67,7 +67,7 @@ public class Fabric3InstanceManager implements InstanceManager {
             for (Injector injector : injectors) {
                 try {
                     injector.inject(instance);
-                } catch (ObjectCreationException e) {
+                } catch (ContainerException e) {
                     throw new InvocationTargetException(e);
                 }
             }

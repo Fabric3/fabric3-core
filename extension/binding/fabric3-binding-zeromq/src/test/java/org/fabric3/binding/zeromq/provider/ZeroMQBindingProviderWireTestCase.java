@@ -16,11 +16,10 @@
  */
 package org.fabric3.binding.zeromq.provider;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;

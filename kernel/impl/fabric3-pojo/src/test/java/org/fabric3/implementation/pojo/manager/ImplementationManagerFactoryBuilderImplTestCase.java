@@ -28,17 +28,17 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 
 /**
  *

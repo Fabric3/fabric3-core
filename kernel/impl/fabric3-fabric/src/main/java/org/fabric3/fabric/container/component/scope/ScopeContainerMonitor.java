@@ -19,11 +19,11 @@
  */
 package org.fabric3.fabric.container.component.scope;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.spi.container.component.InstanceDestructionException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Defines monitor events for scope containers
@@ -37,7 +37,7 @@ public interface ScopeContainerMonitor {
     void initializationError(URI uri, QName deployable, Exception e);
 
     @Severe("Error destroying component {0} ({1})")
-    void destructionError(URI uri, QName deployable, InstanceDestructionException e);
+    void destructionError(URI uri, QName deployable, ContainerException e);
 
     @Severe("Error electing zone leader")
     void leaderElectionError(Exception e);

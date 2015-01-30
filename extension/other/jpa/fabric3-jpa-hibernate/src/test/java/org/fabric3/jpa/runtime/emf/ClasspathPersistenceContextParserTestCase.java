@@ -31,6 +31,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.datasource.spi.DataSourceRegistry;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  *
@@ -85,7 +86,7 @@ public class ClasspathPersistenceContextParserTestCase extends TestCase {
         try {
             parser.parse(loader);
             fail();
-        } catch (PersistenceUnitException e) {
+        } catch (ContainerException e) {
             // expected
         }
     }

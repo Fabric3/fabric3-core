@@ -23,11 +23,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.PropertyValue;
 import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

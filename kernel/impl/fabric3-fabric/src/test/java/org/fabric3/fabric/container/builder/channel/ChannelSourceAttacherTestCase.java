@@ -20,14 +20,13 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.model.physical.ChannelSide;
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

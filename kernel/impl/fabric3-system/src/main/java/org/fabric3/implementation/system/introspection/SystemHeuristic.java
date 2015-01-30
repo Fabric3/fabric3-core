@@ -18,11 +18,10 @@
  */
 package org.fabric3.implementation.system.introspection;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Controls the order in which system implementation heuristics are applied.

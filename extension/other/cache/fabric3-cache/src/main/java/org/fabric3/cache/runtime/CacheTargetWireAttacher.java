@@ -17,15 +17,14 @@
 
 package org.fabric3.cache.runtime;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

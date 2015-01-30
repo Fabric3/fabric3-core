@@ -19,16 +19,16 @@
  */
 package org.fabric3.fabric.container.component;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.namespace.QName;
 
-import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.component.RegistrationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
 
 /**
  * Default implementation of the component manager.
@@ -40,15 +40,15 @@ public class ComponentManagerImpl implements ComponentManager {
         components = new ConcurrentHashMap<>();
     }
 
-    public synchronized void register(Component component) throws RegistrationException {
+    public synchronized void register(Component component) throws ContainerException {
         URI uri = component.getUri();
         if (components.containsKey(uri)) {
-            throw new DuplicateComponentException("A component is already registered for: " + uri.toString());
+            throw new ContainerException("A component is already registered for: " + uri.toString());
         }
         components.put(uri, component);
     }
 
-    public synchronized Component unregister(URI uri) throws RegistrationException {
+    public synchronized Component unregister(URI uri) throws ContainerException {
         return components.remove(uri);
     }
 

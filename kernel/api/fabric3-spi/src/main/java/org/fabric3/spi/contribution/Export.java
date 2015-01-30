@@ -18,8 +18,8 @@
  */
 package org.fabric3.spi.contribution;
 
-import java.io.Serializable;
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
 /**
  * A contribution export.

@@ -18,12 +18,11 @@
  */
 package org.fabric3.contribution.manifest;
 
-import java.net.URI;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.contribution.manifest.QNameImport;
 
 /**

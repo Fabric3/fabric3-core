@@ -19,7 +19,6 @@
 package org.fabric3.implementation.mock.runtime;
 
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 

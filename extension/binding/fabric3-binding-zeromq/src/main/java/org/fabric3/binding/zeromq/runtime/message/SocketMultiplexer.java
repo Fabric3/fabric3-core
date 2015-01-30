@@ -21,9 +21,8 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.util.Collection;
 import java.util.List;
 
-import org.zeromq.ZMQ;
-
 import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.zeromq.ZMQ;
 
 /**
  * Implementations return an available socket from a collection based on a selection algorithm such as round-robin.

@@ -18,13 +18,12 @@
  */
 package org.fabric3.contribution.processor;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.xml.XmlProcessor;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

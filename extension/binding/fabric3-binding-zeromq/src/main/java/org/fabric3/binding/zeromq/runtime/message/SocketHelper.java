@@ -18,9 +18,8 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import org.zeromq.ZMQ;
-
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.zeromq.ZMQ;
 
 /**
  * Helper methods for configuring ZeroMQ sockets.

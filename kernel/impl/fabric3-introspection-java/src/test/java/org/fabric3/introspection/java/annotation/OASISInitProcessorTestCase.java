@@ -22,11 +22,10 @@ package org.fabric3.introspection.java.annotation;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.annotation.Init;
-
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Init;
 
 @SuppressWarnings("unchecked")
 public class OASISInitProcessorTestCase extends TestCase {

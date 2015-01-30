@@ -21,9 +21,8 @@ package org.fabric3.implementation.timer.runtime;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.timer.spi.Task;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A {@link Task} implementation that returns the next firing interval by calling a <code>nextInterval</code> method on a specialized interval class.

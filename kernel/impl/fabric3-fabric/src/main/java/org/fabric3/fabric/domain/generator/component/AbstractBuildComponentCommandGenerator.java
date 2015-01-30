@@ -19,15 +19,15 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
+import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 

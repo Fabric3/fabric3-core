@@ -22,10 +22,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -42,13 +42,13 @@ public class Property2URLTransformer implements SingleTypeTransformer<Node, URL>
         return TARGET;
     }
 
-    public URL transform(final Node node, ClassLoader loader) throws TransformationException {
+    public URL transform(final Node node, ClassLoader loader) throws ContainerException {
         final String content = node.getTextContent();
         final URL url;
         try {
             url = new URL(node.getTextContent());
         } catch (MalformedURLException me) {
-            throw new TransformationException("Unable to create URL :- " + content, me);
+            throw new ContainerException("Unable to create URL :- " + content, me);
         }
         return url;
     }

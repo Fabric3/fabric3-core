@@ -27,6 +27,8 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import java.net.URI;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Implements unit of work boundaries for a JMS operation.
  */
@@ -52,16 +54,16 @@ public class JtaUnitOfWork implements UnitOfWork {
         this.statistics = statistics;
     }
 
-    public void begin() throws WorkException {
+    public void begin() throws ContainerException {
         try {
             tm.begin();
             tm.setTransactionTimeout(transactionTimeout);
         } catch (NotSupportedException | SystemException e) {
-            throw new WorkException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void end(Session session, Message message) throws WorkException {
+    public void end(Session session, Message message) throws ContainerException {
         try {
             if (tm.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
                 tm.commit();
@@ -71,18 +73,18 @@ public class JtaUnitOfWork implements UnitOfWork {
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException | SecurityException | IllegalStateException e) {
-            throw new WorkException("Error handling message for " + uri, e);
+            throw new ContainerException("Error handling message for " + uri, e);
         }
     }
 
-    public void rollback(Session session) throws WorkException {
+    public void rollback(Session session) throws ContainerException {
         try {
             if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
                 tm.rollback();
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
-            throw new WorkException("Error reverting transaction for " + uri, e);
+            throw new ContainerException("Error reverting transaction for " + uri, e);
         }
     }
 

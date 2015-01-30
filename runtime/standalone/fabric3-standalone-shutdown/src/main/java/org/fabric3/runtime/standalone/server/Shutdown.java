@@ -19,12 +19,12 @@
  */
 package org.fabric3.runtime.standalone.server;
 
-import java.io.IOException;
 import javax.management.JMException;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.management.remote.JMXServiceURL;
 import javax.management.remote.rmi.RMIConnector;
+import java.io.IOException;
 
 /**
  * Shuts down a server instance via JMX. Valid parameters are <code>-address (-a)</code> and <code>-port (-p)</code> if connecting to a server not

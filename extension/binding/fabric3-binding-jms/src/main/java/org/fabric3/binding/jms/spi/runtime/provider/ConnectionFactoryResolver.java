@@ -19,6 +19,7 @@ package org.fabric3.binding.jms.spi.runtime.provider;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Implemented by a JMS provider to resolve connection factories.
@@ -30,8 +31,8 @@ public interface ConnectionFactoryResolver {
      *
      * @param definition the definition to resolve
      * @return the resolved factory
-     * @throws JmsResolutionException if there is a resolution error
+     * @throws ContainerException if there is a resolution error
      */
-    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException;
+    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws ContainerException;
 
 }

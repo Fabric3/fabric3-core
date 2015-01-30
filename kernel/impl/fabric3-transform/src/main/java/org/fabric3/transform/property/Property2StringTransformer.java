@@ -19,10 +19,9 @@
 package org.fabric3.transform.property;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -39,7 +38,7 @@ public class Property2StringTransformer implements SingleTypeTransformer<Node, S
         return TARGET;
     }
 
-    public String transform(Node node, ClassLoader loader) throws TransformationException {
+    public String transform(Node node, ClassLoader loader) {
         return node.getTextContent();
     }
 }

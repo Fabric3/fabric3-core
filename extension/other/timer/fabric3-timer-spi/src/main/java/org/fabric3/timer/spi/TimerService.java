@@ -23,6 +23,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Executes scheduled tasks.
  */
@@ -34,17 +36,17 @@ public interface TimerService {
      *
      * @param poolName the pool name
      * @param coreSize the  thread pool size
-     * @throws PoolAllocationException if there is an error allocating the pool
+     * @throws ContainerException if there is an error allocating the pool
      */
-    void allocate(String poolName, int coreSize) throws PoolAllocationException;
+    void allocate(String poolName, int coreSize) throws ContainerException;
 
     /**
      * Shuts down and de-allocates a timer thread pool.
      *
      * @param poolName the pool name
-     * @throws PoolAllocationException if there is an error de-allocating the pool
+     * @throws ContainerException if there is an error de-allocating the pool
      */
-    void deallocate(String poolName) throws PoolAllocationException;
+    void deallocate(String poolName) throws ContainerException;
 
     /**
      * Creates and executes a recurring action.

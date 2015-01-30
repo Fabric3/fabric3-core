@@ -33,11 +33,11 @@ import org.fabric3.monitor.appender.console.ConsoleAppender;
 import org.fabric3.monitor.appender.console.ConsoleAppenderDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.monitor.spi.appender.AppenderCreationException;
 import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -69,17 +69,17 @@ public class AppenderFactoryImpl implements AppenderFactory {
         this.appenderBuilders = appenderBuilders;
     }
 
-    public List<Appender> instantiateDefaultAppenders() throws AppenderCreationException {
+    public List<Appender> instantiateDefaultAppenders() throws ContainerException {
         return Collections.<Appender>singletonList(new ConsoleAppender());
     }
 
-    public List<Appender> instantiate(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
+    public List<Appender> instantiate(XMLStreamReader reader) throws ContainerException, XMLStreamException {
         List<AppenderDefinition> definitions = load(reader);
         List<PhysicalAppenderDefinition> physicalDefinitions = generate(definitions);
         return build(definitions, physicalDefinitions);
     }
 
-    private List<AppenderDefinition> load(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
+    private List<AppenderDefinition> load(XMLStreamReader reader) throws ContainerException, XMLStreamException {
         List<AppenderDefinition> appenderDefinitions = new ArrayList<>();
         Set<String> definedTypes = new HashSet<>();
 
@@ -110,7 +110,7 @@ public class AppenderFactoryImpl implements AppenderFactory {
                             appenderDefinitions.add(appenderDefinition);
 
                         } else {
-                            throw new AppenderCreationException("Unexpected type: " + modelObject);
+                            throw new ContainerException("Unexpected type: " + modelObject);
                         }
                     }
 
@@ -128,30 +128,30 @@ public class AppenderFactoryImpl implements AppenderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) throws AppenderCreationException {
+    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) throws ContainerException {
         List<PhysicalAppenderDefinition> physicalDefinitions = new ArrayList<>(definitions.size());
         for (AppenderDefinition definition : definitions) {
             AppenderGenerator generator = appenderGenerators.get(definition.getClass());
             if (generator == null) {
-                throw new AppenderCreationException("Unknown appender type: " + definition.getClass());
+                throw new ContainerException("Unknown appender type: " + definition.getClass());
             }
             try {
                 PhysicalAppenderDefinition physicalDefinition = generator.generateResource(definition);
                 physicalDefinitions.add(physicalDefinition);
             } catch (GenerationException e) {
-                throw new AppenderCreationException(e);
+                throw new ContainerException(e);
             }
         }
         return physicalDefinitions;
     }
 
     @SuppressWarnings("unchecked")
-    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) throws AppenderCreationException {
+    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) throws ContainerException {
         List<Appender> appenders = new ArrayList<>(definitions.size());
         for (PhysicalAppenderDefinition definition : physicalDefinitions) {
             AppenderBuilder builder = appenderBuilders.get(definition.getClass());
             if (builder == null) {
-                throw new AppenderCreationException("Unknown appender type: " + definition.getClass());
+                throw new ContainerException("Unknown appender type: " + definition.getClass());
             }
             Appender appender = builder.build(definition);
             appenders.add(appender);

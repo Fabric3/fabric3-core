@@ -18,13 +18,11 @@
  */
 package org.fabric3.contribution.manifest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.api.host.Version;
 import org.fabric3.spi.contribution.manifest.JavaImport;
@@ -32,6 +30,7 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Processes a <code>import.java</code> element in a contribution manifest

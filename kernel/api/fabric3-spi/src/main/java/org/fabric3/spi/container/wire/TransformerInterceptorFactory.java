@@ -21,6 +21,7 @@ package org.fabric3.spi.container.wire;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 
 
@@ -40,13 +41,13 @@ public interface TransformerInterceptorFactory {
      * @param targetLoader the target service contribution classloader
      * @param sourceLoader the source component contribution classloader
      * @return the transforming interceptor
-     * @throws InterceptorCreationException if there is an error creating the interceptor such a transformer not being available for any of the
+     * @throws ContainerException if there is an error creating the interceptor such a transformer not being available for any of the
      *                                      source-target type combinations
      */
     Interceptor createInterceptor(PhysicalOperationDefinition operation,
                                   List<DataType> sources,
                                   List<DataType> targets,
                                   ClassLoader targetLoader,
-                                  ClassLoader sourceLoader) throws InterceptorCreationException;
+                                  ClassLoader sourceLoader) throws ContainerException;
 
 }

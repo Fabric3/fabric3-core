@@ -18,10 +18,10 @@ package org.fabric3.transform.string2java;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -43,11 +43,11 @@ public class String2ClassTransformer implements SingleTypeTransformer<String, Cl
         return TARGET;
     }
 
-    public Class<?> transform(String source, ClassLoader loader) throws TransformationException {
+    public Class<?> transform(String source, ClassLoader loader) throws ContainerException {
         try {
             return classLoaderRegistry.loadClass(loader, source);
         } catch (ClassNotFoundException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 

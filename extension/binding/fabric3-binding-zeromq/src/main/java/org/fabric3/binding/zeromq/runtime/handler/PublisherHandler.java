@@ -18,10 +18,9 @@
  */
 package org.fabric3.binding.zeromq.runtime.handler;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Forwards events to a ZeroMQ publisher.

@@ -18,17 +18,16 @@
  */
 package org.fabric3.datasource.runtime;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
-import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
-import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
+import org.fabric3.datasource.provision.PhysicalDataSourceResource;
+import org.fabric3.datasource.spi.DataSourceFactory;
 
 /**
  *

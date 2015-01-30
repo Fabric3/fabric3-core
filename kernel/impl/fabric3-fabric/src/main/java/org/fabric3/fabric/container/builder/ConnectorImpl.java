@@ -74,12 +74,12 @@ public class ConnectorImpl implements Connector {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
         if (sourceAttacher == null) {
-            throw new AttacherNotFoundException("Source attacher not found for type: " + sourceDefinition.getClass());
+            throw new ContainerException("Source attacher not found for type: " + sourceDefinition.getClass());
         }
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
         TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
         if (targetAttacher == null) {
-            throw new AttacherNotFoundException("Target attacher not found for type: " + targetDefinition.getClass());
+            throw new ContainerException("Target attacher not found for type: " + targetDefinition.getClass());
         }
 
         if (definition.isOptimizable()) {
@@ -96,7 +96,7 @@ public class ConnectorImpl implements Connector {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
         if (sourceAttacher == null) {
-            throw new AttacherNotFoundException("Source attacher not found for type: " + sourceDefinition.getClass());
+            throw new ContainerException("Source attacher not found for type: " + sourceDefinition.getClass());
         }
 
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
@@ -105,7 +105,7 @@ public class ConnectorImpl implements Connector {
         } else {
             TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
             if (targetAttacher == null) {
-                throw new AttacherNotFoundException("Target attacher not found for type: " + targetDefinition.getClass());
+                throw new ContainerException("Target attacher not found for type: " + targetDefinition.getClass());
             }
             targetAttacher.detach(sourceDefinition, targetDefinition);
             sourceAttacher.detach(sourceDefinition, targetDefinition);

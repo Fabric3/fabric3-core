@@ -24,15 +24,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.fabric.container.builder.BuilderNotFoundException;
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -98,7 +97,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
 
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
-            throw new BuilderNotFoundException("Builder not found for " + definition.getClass().getName());
+            throw new ContainerException("Builder not found for " + definition.getClass().getName());
         }
         return builder.build(definition);
     }

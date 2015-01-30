@@ -23,9 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -43,7 +43,7 @@ public class MethodInjector implements Injector<Object> {
         this.objectFactory = objectFactory;
     }
 
-    public void inject(Object instance) throws ObjectCreationException {
+    public void inject(Object instance) throws ContainerException {
         Object target;
         if (objectFactory == null) {
             // this can happen if a value is removed such as a reference being un-wired
@@ -62,7 +62,7 @@ public class MethodInjector implements Injector<Object> {
             throw new AssertionError("Method is not accessible:" + method);
         } catch (IllegalArgumentException | InvocationTargetException e) {
             String id = method.toString();
-            throw new ObjectCreationException("Exception thrown by setter: " + id, e);
+            throw new ContainerException("Exception thrown by setter: " + id, e);
         }
     }
 

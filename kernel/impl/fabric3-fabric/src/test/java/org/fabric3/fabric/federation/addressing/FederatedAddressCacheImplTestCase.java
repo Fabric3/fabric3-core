@@ -25,17 +25,17 @@ import java.util.concurrent.Executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressListener;
 import org.fabric3.spi.federation.addressing.AddressMonitor;
 import org.fabric3.spi.federation.addressing.AddressRequest;
 import org.fabric3.spi.federation.addressing.AddressUpdate;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.host.Port;
+import org.fabric3.spi.runtime.event.EventService;
 
 /**
  *

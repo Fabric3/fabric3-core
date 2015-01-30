@@ -56,12 +56,12 @@ public class WebLogicExecutorService implements ExecutorService {
     }
 
     @Init
-    public void init() throws ExecutorInitException {
+    public void init() {
         // returns the default work manager
         workManager = getDefaultWorkManager();
     }
 
-    private WorkManager getDefaultWorkManager() throws ExecutorInitException {
+    private WorkManager getDefaultWorkManager() {
         WorkManager wm = null;
         ClassLoader classLoader = WorkManager.class.getClassLoader();
         try {
@@ -88,7 +88,7 @@ public class WebLogicExecutorService implements ExecutorService {
             Constructor<?> wmCommonJConstructor = wmCommonJClass.getConstructor(new Class[]{wmWLSInterface});
             wm = (WorkManager) wmCommonJConstructor.newInstance(wmObj);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new ExecutorInitException(e);
+            throw new AssertionError(e);
         }
         return wm;
     }
@@ -99,7 +99,7 @@ public class WebLogicExecutorService implements ExecutorService {
                 workManager = getDefaultWorkManager();
             }
             workManager.schedule(new CommonJWorkWrapper(command));
-        } catch (WorkException | ExecutorInitException e) {
+        } catch (WorkException e) {
             LogRecord record = new LogRecord(Level.SEVERE, "Error submitting work");
             record.setThrown(e);
             logger.log(record);

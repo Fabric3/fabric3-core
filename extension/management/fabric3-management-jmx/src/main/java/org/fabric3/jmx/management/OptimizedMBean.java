@@ -33,9 +33,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.Role;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -118,7 +118,7 @@ public class OptimizedMBean<T> extends AbstractMBean {
         try {
             T instance = objectFactory.getInstance();
             return method.invoke(instance, args);
-        } catch (ObjectCreationException e) {
+        } catch (ContainerException e) {
             throw new ReflectionException(e);
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);

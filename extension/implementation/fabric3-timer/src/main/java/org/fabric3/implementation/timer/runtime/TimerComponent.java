@@ -30,7 +30,7 @@ import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.spi.container.component.ComponentException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
@@ -81,7 +81,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         classLoader = factory.getImplementationClass().getClassLoader();
     }
 
-    public void start() throws ComponentException {
+    public void start() throws ContainerException {
         super.start();
         if (Scope.DOMAIN.equals(scope)) {
             if (topologyService != null) {
@@ -98,7 +98,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         }
     }
 
-    public void stop() throws ComponentException {
+    public void stop() throws ContainerException {
         super.stop();
         if (topologyService != null && Scope.DOMAIN.equals(scope)) {
             topologyService.deregister(this);

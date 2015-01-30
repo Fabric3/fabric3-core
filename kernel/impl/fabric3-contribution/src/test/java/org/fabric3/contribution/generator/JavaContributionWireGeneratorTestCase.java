@@ -21,7 +21,6 @@ package org.fabric3.contribution.generator;
 import java.net.URI;
 
 import junit.framework.TestCase;
-
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;

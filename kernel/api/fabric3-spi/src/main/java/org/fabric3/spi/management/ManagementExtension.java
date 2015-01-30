@@ -21,6 +21,7 @@ package org.fabric3.spi.management;
 import java.net.URI;
 
 import org.fabric3.api.model.type.java.ManagementInfo;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -42,9 +43,9 @@ public interface ManagementExtension {
      * @param info          the management metadata
      * @param objectFactory the object factory responsible for returning the managed component instance
      * @param classLoader   the classloader
-     * @throws ManagementException if an error exposing the component is encountered
+     * @throws ContainerException if an error exposing the component is encountered
      */
-    void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException;
+    void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException;
 
     /**
      * Exposes an instance for management as a system resource.
@@ -53,26 +54,26 @@ public interface ManagementExtension {
      * @param group       the management group
      * @param description the instance description
      * @param instance    the instance
-     * @throws ManagementException if an error exposing the instance is encountered
+     * @throws ContainerException if an error exposing the instance is encountered
      */
-    void export(String name, String group, String description, Object instance) throws ManagementException;
+    void export(String name, String group, String description, Object instance) throws ContainerException;
 
     /**
      * Removes a component from the underlying management framework.
      *
      * @param componentUri the component URI
      * @param info         the management metadata
-     * @throws ManagementException if an error removing the component is encountered
+     * @throws ContainerException if an error removing the component is encountered
      */
-    void remove(URI componentUri, ManagementInfo info) throws ManagementException;
+    void remove(URI componentUri, ManagementInfo info) throws ContainerException;
 
     /**
      * Removes an instance from the underlying management framework.
      *
      * @param name  the management name
      * @param group the management group
-     * @throws ManagementException if an error removing the component is encountered
+     * @throws ContainerException if an error removing the component is encountered
      */
-    public void remove(String name, String group) throws ManagementException;
+    public void remove(String name, String group) throws ContainerException;
 
 }

@@ -19,6 +19,8 @@
  */
 package org.fabric3.implementation.pojo.spi.reflection;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Performs a lifecycle invocation on an instance.
  */
@@ -28,7 +30,7 @@ public interface LifecycleInvoker {
      * Performs the invocation on a given instance.
      *
      * @param instance the instance to invoke
-     * @throws ObjectCallbackException if the invocation causes an error
+     * @throws ContainerException if the invocation causes an error
      */
-    void invoke(Object instance) throws ObjectCallbackException;
+    void invoke(Object instance) throws ContainerException;
 }

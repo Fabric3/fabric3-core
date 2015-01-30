@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.container.component;
 
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * A component whose implementation instances are managed by a {@link ScopeContainer}. This interface defines callbacks used by the scope container to change
@@ -38,32 +38,32 @@ public interface ScopedComponent extends AtomicComponent {
      * called.
      *
      * @return a wrapper for a new implementation instance
-     * @throws ObjectCreationException if there was a problem instantiating the implementation
+     * @throws ContainerException if there was a problem instantiating the implementation
      */
-    Object createInstance() throws ObjectCreationException;
+    Object createInstance() throws ContainerException;
 
     /**
      * Starts a component instance. If configured on the implementation, an initialization callback will be performed.
      *
      * @param instance the instance to start
-     * @throws InstanceInitException if there is an error initializing the instance
+     * @throws ContainerException if there is an error initializing the instance
      */
-    void startInstance(Object instance) throws InstanceInitException;
+    void startInstance(Object instance) throws ContainerException;
 
     /**
      * Stops a component instance. If configured on the implementation, a destruction callback will be performed.
      *
      * @param instance    the instance to start
-     * @throws InstanceDestructionException if there is an error stopping the instance
+     * @throws ContainerException if there is an error stopping the instance
      */
-    void stopInstance(Object instance) throws InstanceDestructionException;
+    void stopInstance(Object instance) throws ContainerException;
 
     /**
      * Reinjects the instance with updated references.
      *
      * @param instance the instance
-     * @throws InstanceLifecycleException if there is an error reinjecting the instance
+     * @throws ContainerException if there is an error reinjecting the instance
      */
-    void reinject(Object instance) throws InstanceLifecycleException;
+    void reinject(Object instance) throws ContainerException;
 
 }

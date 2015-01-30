@@ -16,21 +16,20 @@
  */
 package org.fabric3.datasource.introspection;
 
-import java.lang.reflect.Member;
 import javax.sql.DataSource;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
+import java.lang.reflect.Member;
 
 import org.fabric3.api.annotation.Resource;
-import org.fabric3.datasource.model.DataSourceResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.datasource.model.DataSourceResourceReference;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles resource injection for <code>DataSource</code> types.

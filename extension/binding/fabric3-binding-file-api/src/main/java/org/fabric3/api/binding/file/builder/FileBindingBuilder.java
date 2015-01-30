@@ -16,9 +16,9 @@
  */
 package org.fabric3.api.binding.file.builder;
 
-import org.fabric3.api.model.type.builder.AbstractBuilder;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
+import org.fabric3.api.model.type.builder.AbstractBuilder;
 
 /**
  * Builder for the File binding.

@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
@@ -42,7 +42,7 @@ public class TransformerPairServiceImpl implements TransformerPairService {
     }
 
     @SuppressWarnings({"unchecked"})
-    public TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws TransformationException {
+    public TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws ContainerException {
         List<Class<?>> list = new ArrayList<>();
         JavaType type;
         if (methods.size() == 1) {

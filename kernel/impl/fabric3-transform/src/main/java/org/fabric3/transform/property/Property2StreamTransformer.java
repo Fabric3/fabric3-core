@@ -24,10 +24,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -51,12 +51,12 @@ public class Property2StreamTransformer implements SingleTypeTransformer<Node, X
     }
 
 
-    public XMLStreamReader transform(Node element, ClassLoader loader) throws TransformationException {
+    public XMLStreamReader transform(Node element, ClassLoader loader) throws ContainerException {
         DOMSource source = new DOMSource(element);
         try {
             return xmlFactory.createXMLStreamReader(source);
         } catch (XMLStreamException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 }

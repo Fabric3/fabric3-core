@@ -16,12 +16,12 @@
  */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
@@ -31,9 +31,9 @@ import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -73,10 +73,10 @@ public class ResourceInvoker {
      *
      * @param request the HTTP request
      * @return the resource representation
-     * @throws ResourceProcessingException if there is an error processing the request
+     * @throws ContainerException if there is an error processing the request
      * @throws ResourceException           if the client is not authorized to invoke an operation
      */
-    public Resource invoke(HttpServletRequest request) throws ResourceProcessingException, ResourceException {
+    public Resource invoke(HttpServletRequest request) throws ContainerException, ResourceException {
         try {
             WorkContext workContext = WorkContextCache.getThreadWorkContext();
             if (workContext == null) {
@@ -99,7 +99,7 @@ public class ResourceInvoker {
             resource.setProperty("links", links);
             return resource;
         } catch (MalformedURLException e) {
-            throw new ResourceProcessingException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class ResourceInvoker {
         }
     }
 
-    private Object invoke(ResourceMapping mapping) throws ResourceProcessingException {
+    private Object invoke(ResourceMapping mapping) throws ContainerException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
@@ -133,8 +133,8 @@ public class ResourceInvoker {
             }
             Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             return mapping.getMethod().invoke(instance);
-        } catch (IllegalArgumentException | ObjectCreationException | InvocationTargetException | IllegalAccessException e) {
-            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
+        } catch (IllegalArgumentException | ContainerException | InvocationTargetException | IllegalAccessException e) {
+            throw new ContainerException("Error invoking operation: " + mapping.getMethod(), e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }

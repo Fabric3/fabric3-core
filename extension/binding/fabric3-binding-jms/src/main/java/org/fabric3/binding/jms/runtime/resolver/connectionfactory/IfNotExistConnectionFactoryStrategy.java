@@ -27,7 +27,7 @@ import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -49,7 +49,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
         this.resolvers = resolvers;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException {
         String name = definition.getName();
         if (name != null) {
             // check if the connection factory has already been created
@@ -69,7 +69,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
 
     }
 
-    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+    public void release(ConnectionFactoryDefinition definition) throws ContainerException {
         always.release(definition);
     }
 }

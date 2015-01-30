@@ -25,13 +25,12 @@ import java.net.URI;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import org.fabric3.api.host.Environment;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.stream.InputStreamSource;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.model.type.RuntimeMode;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Loads the system configuration property for a runtime domain.

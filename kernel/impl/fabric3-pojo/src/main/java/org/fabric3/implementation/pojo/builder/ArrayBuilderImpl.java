@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.model.physical.ParamTypes;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
-import org.fabric3.spi.model.physical.ParamTypes;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,33 +45,28 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
         super(registry);
     }
 
-
     @SuppressWarnings({"unchecked"})
-    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws PropertyTransformException {
-        try {
-            Class componentType = dataType.getType().getComponentType();
-            Class<?> type = componentType;
-            if (type.isPrimitive()) {
-                type = ParamTypes.PRIMITIVE_TO_OBJECT.get(type);
-            }
-
-            List<Class<?>> types = new ArrayList<>();
-            types.add(type);
-
-            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaType(type), types);
-
-            Element root = value.getDocumentElement();
-            NodeList nodes = root.getChildNodes();
-            Object array = Array.newInstance(componentType, nodes.getLength());
-            for (int i = 0; i < nodes.getLength(); i++) {
-                Node node = nodes.item(i).getFirstChild();
-                Object val = transformer.transform(node, classLoader);
-                Array.set(array, i, val);
-            }
-            return new SingletonObjectFactory<>(array);
-        } catch (TransformationException e) {
-            throw new PropertyTransformException("Unable to transform property value: " + name, e);
+    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws ContainerException {
+        Class componentType = dataType.getType().getComponentType();
+        Class<?> type = componentType;
+        if (type.isPrimitive()) {
+            type = ParamTypes.PRIMITIVE_TO_OBJECT.get(type);
         }
+
+        List<Class<?>> types = new ArrayList<>();
+        types.add(type);
+
+        Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaType(type), types);
+
+        Element root = value.getDocumentElement();
+        NodeList nodes = root.getChildNodes();
+        Object array = Array.newInstance(componentType, nodes.getLength());
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i).getFirstChild();
+            Object val = transformer.transform(node, classLoader);
+            Array.set(array, i, val);
+        }
+        return new SingletonObjectFactory<>(array);
     }
 
 }

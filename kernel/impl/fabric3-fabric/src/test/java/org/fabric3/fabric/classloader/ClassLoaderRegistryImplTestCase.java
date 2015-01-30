@@ -22,7 +22,6 @@ package org.fabric3.fabric.classloader;
 import java.net.URI;
 
 import junit.framework.TestCase;
-
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**

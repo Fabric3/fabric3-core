@@ -20,10 +20,9 @@ package org.fabric3.contribution.wire;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Creates LocationContributionWireInstantiator instances.

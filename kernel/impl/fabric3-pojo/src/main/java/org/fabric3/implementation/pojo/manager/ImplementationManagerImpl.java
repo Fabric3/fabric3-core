@@ -25,14 +25,10 @@ import java.util.Set;
 
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceInitException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -72,7 +68,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public Object newInstance() throws ObjectCreationException {
+    public Object newInstance() throws ContainerException {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
         try {
@@ -94,48 +90,39 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void start(Object instance) throws InstanceInitException {
+    public void start(Object instance) throws ContainerException {
         if (initInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(cl);
                 initInvoker.invoke(instance);
-            } catch (ObjectCallbackException e) {
-                throw new InstanceInitException("Error initializing instance for: " + componentUri, e);
             } finally {
                 Thread.currentThread().setContextClassLoader(oldCl);
             }
         }
     }
 
-    public void stop(Object instance) throws InstanceDestructionException {
-        try {
-            if (destroyInvoker != null) {
-                ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
-                try {
-                    Thread.currentThread().setContextClassLoader(cl);
-                    destroyInvoker.invoke(instance);
-                } finally {
-                    Thread.currentThread().setContextClassLoader(oldCl);
-                }
+    public void stop(Object instance) throws ContainerException {
+        if (destroyInvoker != null) {
+            ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(cl);
+                destroyInvoker.invoke(instance);
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldCl);
             }
-        } catch (ObjectCallbackException e) {
-            throw new InstanceDestructionException("Error destroying instance for: " + componentUri, e);
         }
+        throw new ContainerException("Error destroying instance for: " + componentUri);
     }
 
-    public void reinject(Object instance) throws InstanceLifecycleException {
+    public void reinject(Object instance) throws ContainerException {
         if (!reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable:" + componentUri);
         }
-        try {
-            for (Injector<Object> injector : updatedInjectors) {
-                injector.inject(instance);
-            }
-            updatedInjectors.clear();
-        } catch (ObjectCreationException ex) {
-            throw new InstanceLifecycleException("Unable to reinject references on component: " + componentUri, ex);
+        for (Injector<Object> injector : updatedInjectors) {
+            injector.inject(instance);
         }
+        updatedInjectors.clear();
     }
 
     public void updated(Object instance, String referenceName) {

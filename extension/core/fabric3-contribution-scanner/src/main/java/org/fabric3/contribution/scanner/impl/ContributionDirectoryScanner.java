@@ -34,16 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.contribution.scanner.spi.FileSystemResource;
-import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
-import org.fabric3.contribution.scanner.spi.FileSystemResourceState;
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionService;
@@ -56,11 +47,19 @@ import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.contribution.scanner.spi.FileSystemResource;
+import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
+import org.fabric3.contribution.scanner.spi.FileSystemResourceState;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.runtime.event.Fabric3Event;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.RuntimeStart;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Scans deployment directories for contributions. In production mode, deployment directories will be scanned once at startup and any contained contributions

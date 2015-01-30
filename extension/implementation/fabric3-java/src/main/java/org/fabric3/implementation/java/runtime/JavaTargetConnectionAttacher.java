@@ -21,22 +21,21 @@ package org.fabric3.implementation.java.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a Java component consumer.

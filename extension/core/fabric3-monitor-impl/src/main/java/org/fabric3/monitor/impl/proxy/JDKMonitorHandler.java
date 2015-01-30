@@ -23,8 +23,8 @@ import java.util.Map;
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.monitor.Monitorable;
-import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.spi.monitor.DispatchInfo;
 
 /**

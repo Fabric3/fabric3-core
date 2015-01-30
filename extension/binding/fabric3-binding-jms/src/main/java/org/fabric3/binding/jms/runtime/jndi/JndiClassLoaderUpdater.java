@@ -18,12 +18,11 @@ package org.fabric3.binding.jms.runtime.jndi;
 
 import java.net.URI;
 
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Makes the <code>javax.jms</code> and <code>javax.transaction</code> packages imported by the JMS extension visible to the dynamic JNDI extension

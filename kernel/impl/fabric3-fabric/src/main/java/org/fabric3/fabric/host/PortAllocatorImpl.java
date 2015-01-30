@@ -35,21 +35,19 @@ import java.util.Set;
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 
 /**
- * The default port allocator implementation.
- * <p>
- * Implements a brute-force port allocation approach by scanning a block of available ports and opening
- * both TCP and UDP sockets as a mechanism for maintaining port locks. After receiving a port, a client must invoke {@link Port#bind(Port.TYPE)} prior
- * to binding a TCP or UDP socket in order to free the underlying lock for the socket type. Note that the port will still hold a lock for the other
- * socket type, which will guarantee the port remains inaccessible to other clients if the owning client temporarily releases its socket connection
- * (some transport bindings such as ZeroMQ may close and re-establish socket connections over the life of a communication session).
+ * The default port allocator implementation. <p> Implements a brute-force port allocation approach by scanning a block of available ports and opening both TCP
+ * and UDP sockets as a mechanism for maintaining port locks. After receiving a port, a client must invoke {@link Port#bind(Port.TYPE)} prior to binding a TCP
+ * or UDP socket in order to free the underlying lock for the socket type. Note that the port will still hold a lock for the other socket type, which will
+ * guarantee the port remains inaccessible to other clients if the owning client temporarily releases its socket connection (some transport bindings such as
+ * ZeroMQ may close and re-establish socket connections over the life of a communication session).
  */
 @Management(name = "PortAllocator", path = "/runtime/ports", group = "kernel", description = "Manages runtime ports")
 public class PortAllocatorImpl implements PortAllocator {
@@ -74,12 +72,12 @@ public class PortAllocatorImpl implements PortAllocator {
 
     @Property(required = false)
     @Source("$systemConfig/f3:runtime/@host.address")
-    public void setHost(String host){
+    public void setHost(String host) {
         configuredHost = host;
     }
 
     @Init
-    public void init() throws PortAllocationException {
+    public void init() throws ContainerException {
         if (min == NOT_ALLOCATED && max == NOT_ALLOCATED) {
             return;
         }
@@ -125,11 +123,11 @@ public class PortAllocatorImpl implements PortAllocator {
         return min != NOT_ALLOCATED && max != NOT_ALLOCATED;
     }
 
-    public Port allocate(String name, String type) throws PortAllocationException {
+    public Port allocate(String name, String type) throws ContainerException {
         List<Port> ports = checkAllocated(name, type);
         while (true) {
             if (unallocated.isEmpty()) {
-                throw new PortAllocationException("No ports available");
+                throw new ContainerException("No ports available");
             }
             int portNumber = unallocated.remove();
             SocketPair pair = checkAvailability(portNumber);
@@ -145,11 +143,11 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
-    public Port reserve(String name, String type, int portNumber) throws PortAllocationException {
+    public Port reserve(String name, String type, int portNumber) throws ContainerException {
         List<Port> ports = checkAllocated(name, type);
         SocketPair pair = checkAvailability(portNumber);
         if (pair == null) {
-            throw new PortAllocatedException(portNumber);
+            throw new ContainerException("Port allocated: " + portNumber);
         }
         int pos = unallocated.indexOf(portNumber);
         if (pos >= 0) {
@@ -181,10 +179,10 @@ public class PortAllocatorImpl implements PortAllocator {
     }
 
     public void release(int portNumber) {
-        for (Iterator<Map.Entry<String, List<Port>>> iterator = allocated.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator<Map.Entry<String, List<Port>>> iterator = allocated.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, List<Port>> entry = iterator.next();
             List<Port> ports = entry.getValue();
-            for (Iterator<Port> portIterator = ports.iterator(); portIterator.hasNext();) {
+            for (Iterator<Port> portIterator = ports.iterator(); portIterator.hasNext(); ) {
                 Port port = portIterator.next();
                 if (port.getNumber() == portNumber) {
                     portIterator.remove();
@@ -200,10 +198,10 @@ public class PortAllocatorImpl implements PortAllocator {
     }
 
     public void release(String name) {
-        for (Iterator<Map.Entry<String, List<Port>>> iterator = allocated.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator<Map.Entry<String, List<Port>>> iterator = allocated.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, List<Port>> entry = iterator.next();
             final List<Port> ports = entry.getValue();
-            for (Iterator<Port> portIterator = ports.iterator(); portIterator.hasNext();) {
+            for (Iterator<Port> portIterator = ports.iterator(); portIterator.hasNext(); ) {
                 Port port = portIterator.next();
                 if (port.getName().equals(name)) {
                     portIterator.remove();
@@ -228,19 +226,19 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
-    private List<Port> checkAllocated(String name, String type) throws PortNameAllocatedException {
+    private List<Port> checkAllocated(String name, String type) throws ContainerException {
         List<Port> ports = allocated.get(type);
         if (ports != null) {
             for (Port port : ports) {
                 if (port.getName().equals(name)) {
-                    throw new PortNameAllocatedException(type);
+                    throw new ContainerException("Port already allocated: " + type);
                 }
             }
         }
         return ports;
     }
 
-    private SocketPair checkAvailability(int port) throws PortAllocationException {
+    private SocketPair checkAvailability(int port) throws ContainerException {
         SocketPair pair = lockPort(port);
         // try the wildcard address first
         if (pair == null) {
@@ -254,12 +252,13 @@ public class PortAllocatorImpl implements PortAllocator {
             ServerSocket serverSocket = new ServerSocket();
 
             InetAddress address = null;
-            if(configuredHost != null)
+            if (configuredHost != null) {
                 address = InetAddress.getByName(configuredHost);
-            InetSocketAddress socketAddress = new InetSocketAddress(address,port);
+            }
+            InetSocketAddress socketAddress = new InetSocketAddress(address, port);
             serverSocket.setReuseAddress(true);
             serverSocket.bind(socketAddress);
-            DatagramSocket datagramSocket = new DatagramSocket(port,address);
+            DatagramSocket datagramSocket = new DatagramSocket(port, address);
             datagramSocket.setReuseAddress(true);
             return new SocketPair(serverSocket, datagramSocket);
         } catch (IOException e) {
@@ -279,7 +278,6 @@ public class PortAllocatorImpl implements PortAllocator {
             throw new IllegalArgumentException("Invalid port range specified in the runtime system configuration: ", e);
         }
     }
-
 
     private class SocketPair {
         private ServerSocket serverSocket;

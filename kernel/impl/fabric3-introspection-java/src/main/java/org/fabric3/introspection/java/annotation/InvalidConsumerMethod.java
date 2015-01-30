@@ -21,8 +21,8 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.introspection.java.JavaValidationFailure;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes an invalid consumer method.

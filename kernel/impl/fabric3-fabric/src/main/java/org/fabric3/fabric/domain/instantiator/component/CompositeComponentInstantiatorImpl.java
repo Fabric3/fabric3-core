@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
@@ -35,6 +34,7 @@ import org.fabric3.fabric.domain.instantiator.WireInstantiator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 

@@ -21,7 +21,6 @@ package org.fabric3.transport.jetty;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-
 import org.fabric3.spi.host.ServletHost;
 
 /**

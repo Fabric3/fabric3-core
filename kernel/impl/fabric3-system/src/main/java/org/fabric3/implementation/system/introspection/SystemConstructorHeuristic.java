@@ -20,12 +20,12 @@ package org.fabric3.implementation.system.introspection;
 
 import java.lang.reflect.Constructor;
 
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.NoConstructorFound;
 import org.fabric3.spi.introspection.java.annotation.AmbiguousConstructor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.Signature;
 
 /**
  * Heuristic that selects the constructor to use.

@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;

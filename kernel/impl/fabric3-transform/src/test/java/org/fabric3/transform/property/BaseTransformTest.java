@@ -18,11 +18,11 @@
  */
 package org.fabric3.transform.property;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Node;

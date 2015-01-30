@@ -21,7 +21,7 @@ package org.fabric3.transform.property;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Tests String to Date transform.
@@ -38,7 +38,7 @@ public class Property2DateTestCase extends BaseTransformTest {
             Property2DateTransformer transformer = new Property2DateTransformer();
             Date date = transformer.transform(getNode(xml), getClass().getClassLoader());
             assertNotNull(date);
-        } catch (TransformationException te) {
+        } catch (ContainerException te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -55,7 +55,7 @@ public class Property2DateTestCase extends BaseTransformTest {
             Property2DateTransformer transformer = new Property2DateTransformer();
             transformer.transform(getNode(xml), getClass().getClassLoader());
             fail("Should not reach here something wrong in [ String2Date ] code");
-        } catch (TransformationException te) {
+        } catch (ContainerException te) {
             assertNotNull(te);
             assertTrue(ParseException.class.isAssignableFrom(te.getCause().getClass()));
         } catch (Exception e) {

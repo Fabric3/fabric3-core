@@ -48,10 +48,9 @@ import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.contribution.ContributionResolver;
-import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.transport.jetty.JettyService;
 import org.oasisopen.sca.ComponentContext;
@@ -87,7 +86,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         for (Holder holder : mappings.values()) {
             try {
                 remove(holder.getContext());
-            } catch (ManagementException e) {
+            } catch (ContainerException e) {
                 monitor.error("Error removing managed bean for context: " + holder.getContext().getDisplayName(), e);
             }
         }
@@ -125,7 +124,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                     ServletContext servletContext = context.getServletContext();
                     try {
                         injectServletContext(servletContext, injectors);
-                    } catch (ObjectCreationException e) {
+                    } catch (ContainerException e) {
                         monitor.error("Error initializing web component: " + uri, e);
                     }
                 }
@@ -213,7 +212,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ObjectCreationException {
+    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ContainerException {
         List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
         if (list == null) {
             // nothing to inject
@@ -224,7 +223,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    private void export(WebAppContext context) throws ManagementException {
+    private void export(WebAppContext context) throws ContainerException {
         String displayName = context.getDisplayName();
         if (displayName == null) {
             displayName = UUID.randomUUID().toString();
@@ -238,7 +237,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    private void remove(WebAppContext context) throws ManagementException {
+    private void remove(WebAppContext context) throws ContainerException {
         String displayName = context.getDisplayName();
         if (displayName == null) {
             displayName = context.toString();

@@ -16,11 +16,10 @@
  */
 package org.fabric3.implementation.spring.runtime.component;
 
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
-
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Set as the parent of the application context associated with a Spring component. This parent will resolve wire and event stream proxies.

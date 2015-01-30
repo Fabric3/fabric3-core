@@ -16,12 +16,11 @@
  */
 package org.fabric3.management.rest.framework.domain.component;
 
-import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Response;
 import org.fabric3.spi.domain.LogicalComponentManager;

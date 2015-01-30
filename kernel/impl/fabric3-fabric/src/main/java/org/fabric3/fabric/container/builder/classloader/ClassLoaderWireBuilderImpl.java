@@ -20,12 +20,11 @@ package org.fabric3.fabric.container.builder.classloader;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

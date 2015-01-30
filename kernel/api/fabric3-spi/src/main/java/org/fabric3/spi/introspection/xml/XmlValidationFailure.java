@@ -18,10 +18,10 @@
  */
 package org.fabric3.spi.introspection.xml;
 
+import javax.xml.stream.Location;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.xml.stream.Location;
 
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;

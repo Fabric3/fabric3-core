@@ -19,22 +19,21 @@
  */
 package org.fabric3.introspection.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *

@@ -16,15 +16,14 @@
  */
 package org.fabric3.timer.introspection;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-
+import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 
 /**
  *

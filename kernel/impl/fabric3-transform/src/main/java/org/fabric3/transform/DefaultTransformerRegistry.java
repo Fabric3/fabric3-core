@@ -25,14 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default TransformerRegistry implementation.
@@ -65,8 +64,7 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
         this.factories = sorted;
     }
 
-    public Transformer<?, ?> getTransformer(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes)
-            throws TransformationException {
+    public Transformer<?, ?> getTransformer(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws ContainerException {
         Key key = new Key(source, target);
         Transformer<?, ?> transformer = transformers.get(key);
         if (transformer != null) {
@@ -91,8 +89,12 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
         }
 
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             Key that = (Key) o;
 

@@ -16,14 +16,13 @@
  */
 package org.fabric3.security.spring;
 
+import org.fabric3.spring.spi.ApplicationContextListener;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.authentication.AuthenticationManager;
-
-import org.fabric3.spring.spi.ApplicationContextListener;
 
 /**
  * Registers Spring Security authentication and access services so they can be referenced from component application contexts.

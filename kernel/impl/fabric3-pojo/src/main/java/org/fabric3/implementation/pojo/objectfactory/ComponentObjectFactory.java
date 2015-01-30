@@ -19,9 +19,8 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -34,11 +33,7 @@ public class ComponentObjectFactory implements ObjectFactory<Object> {
         this.component = component;
     }
 
-    public Object getInstance() throws ObjectCreationException {
-        try {
-            return component.getInstance();
-        } catch (InstanceLifecycleException e) {
-            throw new ObjectCreationException(e);
-        }
+    public Object getInstance() throws ContainerException {
+        return component.getInstance();
     }
 }

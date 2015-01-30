@@ -16,13 +16,12 @@
  */
 package org.fabric3.security.spring;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
-
 import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
 import org.fabric3.security.spring.config.AuthenticationProviderConfiguration;
 import org.fabric3.security.spring.config.ConfigurationParserImpl;

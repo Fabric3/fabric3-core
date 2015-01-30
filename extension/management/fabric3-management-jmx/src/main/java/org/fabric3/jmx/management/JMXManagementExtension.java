@@ -18,12 +18,6 @@
  */
 package org.fabric3.jmx.management;
 
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
 import javax.management.JMException;
@@ -34,25 +28,30 @@ import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.management.ManagementException;
-import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
 import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Exports components as MBeans using the runtime JMX MBean server.
@@ -79,7 +78,7 @@ public class JMXManagementExtension implements ManagementExtension {
         return "fabric3.jmx";
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
+    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException {
         if (mBeanServer == null) {
             return;
         }
@@ -90,11 +89,11 @@ public class JMXManagementExtension implements ManagementExtension {
                 mBeanServer.registerMBean(mBean, name);
             }
         } catch (JMException | NoSuchMethodException | ClassNotFoundException e) {
-            throw new ManagementException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void export(String name, String group, String description, Object instance) throws ManagementException {
+    public void export(String name, String group, String description, Object instance) throws ContainerException {
         try {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
@@ -139,26 +138,26 @@ public class JMXManagementExtension implements ManagementExtension {
                 mBeanServer.registerMBean(managementBean, objectName);
             }
         } catch (NoSuchMethodException | ClassNotFoundException | JMException e) {
-            throw new ManagementException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
+    public void remove(URI componentUri, ManagementInfo info) throws ContainerException {
         try {
             ObjectName name = getObjectName(componentUri, info);
             mBeanServer.unregisterMBean(name);
         } catch (JMException e) {
-            throw new ManagementException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void remove(String name, String group) throws ManagementException {
+    public void remove(String name, String group) throws ContainerException {
         try {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             mBeanServer.unregisterMBean(objectName);
         } catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException e) {
-            throw new ManagementException(e);
+            throw new ContainerException(e);
         }
     }
 

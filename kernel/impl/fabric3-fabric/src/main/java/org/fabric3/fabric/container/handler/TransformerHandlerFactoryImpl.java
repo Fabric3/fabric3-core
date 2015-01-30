@@ -19,10 +19,9 @@ package org.fabric3.fabric.container.handler;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.HandlerCreationException;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
@@ -38,19 +37,14 @@ public class TransformerHandlerFactoryImpl implements TransformerHandlerFactory 
     }
 
     @SuppressWarnings({"unchecked"})
-    public EventStreamHandler createHandler(DataType source, DataType target, List<Class<?>> eventTypes, ClassLoader loader) throws HandlerCreationException {
-        try {
-            // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
-            // or binding. A search is performed by iterating the supported source and target types in order of preference.
-            Transformer<Object, Object> transformer = (Transformer<Object, Object>) registry.getTransformer(source, target, eventTypes, eventTypes);
-            if (transformer == null) {
-                throw new NoTransformerException("No transformer found for event types: " + source + "," + target);
-            }
-            return new TransformerHandler(transformer, loader);
-        } catch (TransformationException e) {
-            throw new HandlerCreationException(e);
+    public EventStreamHandler createHandler(DataType source, DataType target, List<Class<?>> eventTypes, ClassLoader loader) throws ContainerException {
+        // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
+        // or binding. A search is performed by iterating the supported source and target types in order of preference.
+        Transformer<Object, Object> transformer = (Transformer<Object, Object>) registry.getTransformer(source, target, eventTypes, eventTypes);
+        if (transformer == null) {
+            throw new ContainerException("No transformer found for event types: " + source + "," + target);
         }
+        return new TransformerHandler(transformer, loader);
     }
-
 
 }

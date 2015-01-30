@@ -17,7 +17,6 @@
 package org.fabric3.transport.jetty.impl;
 
 import org.eclipse.jetty.servlet.ServletHolder;
-
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
 

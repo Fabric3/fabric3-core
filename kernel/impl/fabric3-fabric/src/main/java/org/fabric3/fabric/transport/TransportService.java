@@ -20,14 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.transport.Transport;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.annotation.management.OperationType.DELETE;
 import static org.fabric3.api.annotation.management.OperationType.POST;
 

@@ -19,10 +19,9 @@
 package org.fabric3.transform.property;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -39,7 +38,7 @@ public class Property2BooleanTransformer implements SingleTypeTransformer<Node, 
         return TARGET;
     }
 
-    public Boolean transform(Node node, ClassLoader loader) throws TransformationException {
+    public Boolean transform(Node node, ClassLoader loader) {
         return Boolean.valueOf(node.getTextContent());
     }
 }

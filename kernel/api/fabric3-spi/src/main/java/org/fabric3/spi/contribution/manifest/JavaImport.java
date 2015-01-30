@@ -18,15 +18,14 @@
  */
 package org.fabric3.spi.contribution.manifest;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
 
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
+import org.oasisopen.sca.Constants;
 
 /**
  * Represents an <code>import.java</code> entry in a contribution manifest.

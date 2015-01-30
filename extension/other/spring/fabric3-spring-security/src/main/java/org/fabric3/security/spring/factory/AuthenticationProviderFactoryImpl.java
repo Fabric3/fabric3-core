@@ -19,6 +19,12 @@ package org.fabric3.security.spring.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.datasource.spi.DataSourceRegistry;
+import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
+import org.fabric3.security.spring.config.AuthenticationProviderConfiguration;
+import org.fabric3.security.spring.config.JdbcProviderConfiguration;
+import org.fabric3.security.spring.config.LdapProviderConfiguration;
+import org.fabric3.security.spring.config.LdapServerConfiguration;
 import org.oasisopen.sca.annotation.Reference;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -37,13 +43,6 @@ import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
-
-import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
-import org.fabric3.security.spring.config.AuthenticationProviderConfiguration;
-import org.fabric3.security.spring.config.JdbcProviderConfiguration;
-import org.fabric3.security.spring.config.LdapProviderConfiguration;
-import org.fabric3.security.spring.config.LdapServerConfiguration;
 
 /**
  *

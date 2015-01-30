@@ -20,12 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.contract.MatchResult;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * The default ContractMatcher implementation.

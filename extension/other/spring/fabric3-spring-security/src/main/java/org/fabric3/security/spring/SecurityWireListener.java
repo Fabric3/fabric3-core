@@ -16,11 +16,10 @@
  */
 package org.fabric3.security.spring;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spring.spi.WireListener;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

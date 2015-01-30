@@ -19,9 +19,6 @@
 package org.fabric3.transform.property;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.fabric3.spi.transform.TransformationException;
 
 
 /**
@@ -41,31 +38,11 @@ public class Property2URITransformerTestCase extends BaseTransformTest {
             URI transformedURI = transformer.transform(getNode(xml), getClass().getClassLoader());
             assertNotNull(transformedURI);
             assertEquals(uriContent, transformedURI.toString());
-        } catch (TransformationException te) {
-            fail("TransformationException : - Should Not Occur" + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
         }
     }
 
-    /**
-     * Test for unsuccessful Conversion from String URI
-     */
-    public void testURITransformationSuccess() {
-        final String errorURIContent = "[[[[]]io9876^^^hasx";
-        final String xml = "<string_to_urierror>" + errorURIContent + "</string_to_urierror>";
-
-        try {
-            Property2URITransformer transformer = new Property2URITransformer();
-            transformer.transform(getNode(xml), getClass().getClassLoader());
-            fail("Should not convert to URI");
-        } catch (TransformationException te) {
-            assertNotNull(te);
-            URISyntaxException.class.isAssignableFrom(te.getClass());
-        } catch (Exception e) {
-            fail("Unexpexcted Exception Should not occur " + e);
-        }
-    }
 
 
 }

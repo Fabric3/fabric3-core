@@ -19,19 +19,17 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-
-import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.api.model.type.component.Property;
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
-
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 

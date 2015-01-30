@@ -16,12 +16,9 @@
  */
 package org.fabric3.management.rest.framework.domain.component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URL;
-import javax.servlet.http.HttpServletRequest;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -32,6 +29,8 @@ import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles the /domain/components resource by mapping the HTTP GET URL to the logical component hierarchy for a domain.

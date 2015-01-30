@@ -18,10 +18,10 @@
  */
 package org.fabric3.contribution.manifest;
 
-import java.io.ByteArrayInputStream;
-import java.net.URI;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
 
 import junit.framework.TestCase;
 

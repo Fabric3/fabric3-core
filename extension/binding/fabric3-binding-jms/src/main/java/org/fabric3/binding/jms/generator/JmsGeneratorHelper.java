@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.JmsBinding;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.binding.jms.common.JmsConnectionConstants;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**

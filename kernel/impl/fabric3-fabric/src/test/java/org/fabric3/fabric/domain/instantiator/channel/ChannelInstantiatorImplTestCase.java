@@ -16,19 +16,18 @@
  */
 package org.fabric3.fabric.domain.instantiator.channel;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
-
-import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 
 /**
  *

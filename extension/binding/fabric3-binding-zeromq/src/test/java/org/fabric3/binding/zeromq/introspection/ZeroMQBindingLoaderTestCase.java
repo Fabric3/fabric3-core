@@ -19,18 +19,17 @@
  */
 package org.fabric3.binding.zeromq.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
-import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 

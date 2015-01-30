@@ -22,10 +22,9 @@ package org.fabric3.implementation.pojo.component;
 import java.lang.reflect.InvocationTargetException;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
 
@@ -63,7 +62,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
         Object instance;
         try {
             instance = component.getInstance();
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             throw new InvocationRuntimeException(e);
         }
 
@@ -72,7 +71,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
         } finally {
             try {
                 component.releaseInstance(instance);
-            } catch (InstanceDestructionException e) {
+            } catch (ContainerException e) {
                 throw new InvocationRuntimeException(e);
             }
         }

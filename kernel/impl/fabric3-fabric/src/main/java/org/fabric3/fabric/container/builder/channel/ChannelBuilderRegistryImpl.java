@@ -25,7 +25,6 @@ import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelManager;
-import org.fabric3.spi.container.channel.RegistrationException;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -55,27 +54,18 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
         }
         ChannelBuilder builder = getBuilder(definition);
         channel = builder.build(definition);
-        try {
-            channelManager.register(channel);
-            return channel;
-        } catch (RegistrationException e) {
-            throw new ContainerException(e);
-        }
+        channelManager.register(channel);
+        return channel;
     }
 
     public void dispose(PhysicalChannelDefinition definition) throws ContainerException {
         ChannelBuilder builder = getBuilder(definition);
-        try {
-            URI uri = definition.getUri();
-            ChannelSide channelSide = definition.getChannelSide();
-            Channel channel = channelManager.getAndDecrementChannel(uri, channelSide);
-            if (channelManager.getCount(uri, channelSide) == 0) {
-                channelManager.unregister(uri, channelSide);
-                builder.dispose(definition, channel);
-            }
-
-        } catch (RegistrationException e) {
-            throw new ContainerException(e);
+        URI uri = definition.getUri();
+        ChannelSide channelSide = definition.getChannelSide();
+        Channel channel = channelManager.getAndDecrementChannel(uri, channelSide);
+        if (channelManager.getCount(uri, channelSide) == 0) {
+            channelManager.unregister(uri, channelSide);
+            builder.dispose(definition, channel);
         }
     }
 

@@ -16,14 +16,14 @@
  */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.management.rest.Constants;
@@ -33,7 +33,7 @@ import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -80,7 +80,7 @@ public class MarshallerImpl implements Marshaller {
             }
             byte[] output = mapping.getPair().getSerializer().transform(resource, loader);
             response.getOutputStream().write(output);
-        } catch (TransformationException e) {
+        } catch (ContainerException e) {
             Method method = mapping.getMethod();
             monitor.error("Error serializing response for " + method, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -157,7 +157,7 @@ public class MarshallerImpl implements Marshaller {
                 ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
                 ServletInputStream stream = request.getInputStream();
                 return new Object[]{transformer.transform(stream, loader)};
-            } catch (TransformationException e) {
+            } catch (ContainerException e) {
                 monitor.error("Error deserializing parameters for " + method, e);
                 throw new ResourceException(HttpStatus.BAD_REQUEST, "Invalid or unsupported parameter type");
             } catch (IOException e) {

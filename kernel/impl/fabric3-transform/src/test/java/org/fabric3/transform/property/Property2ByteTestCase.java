@@ -18,7 +18,7 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Tests String to Byte transform.
@@ -36,7 +36,7 @@ public class Property2ByteTestCase extends BaseTransformTest {
             final byte convertedByte = transformer.transform(getNode(xml), getClass().getClassLoader());
             assertNotNull(convertedByte);
             assertEquals(Byte.valueOf(BYTE).byteValue(), convertedByte);
-        } catch (TransformationException te) {
+        } catch (ContainerException te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -53,7 +53,7 @@ public class Property2ByteTestCase extends BaseTransformTest {
             Property2ByteTransformer transformer = new Property2ByteTransformer();
             transformer.transform(getNode(xml), getClass().getClassLoader());
             fail("Should not reach here something wrong in [ String2Byte ] code");
-        } catch (TransformationException te) {
+        } catch (ContainerException te) {
             assertNotNull(te);
             assertTrue(NumberFormatException.class.isAssignableFrom(te.getCause().getClass()));
         } catch (Exception e) {

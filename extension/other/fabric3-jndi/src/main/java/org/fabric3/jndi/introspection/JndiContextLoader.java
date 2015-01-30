@@ -16,21 +16,20 @@
  */
 package org.fabric3.jndi.introspection;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.fabric3.api.model.type.resource.jndi.JndiContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Loads JNDI context configuration specified in a composite. The format of the <code>jndi</code> element is:

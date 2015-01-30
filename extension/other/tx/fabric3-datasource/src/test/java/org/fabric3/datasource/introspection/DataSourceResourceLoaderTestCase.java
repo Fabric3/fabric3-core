@@ -16,14 +16,13 @@
  */
 package org.fabric3.datasource.introspection;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-
-import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 

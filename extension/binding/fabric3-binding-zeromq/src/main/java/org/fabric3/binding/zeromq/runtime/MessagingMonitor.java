@@ -47,7 +47,7 @@ public interface MessagingMonitor {
 
     @Info("Removed ZeroMQ endpoint [{0}]")
     void onRemoveEndpoint(String id);
-    
+
     @Debug("ZeroMQ message dropped due to unavailable endpoint")
     void dropMessage();
 

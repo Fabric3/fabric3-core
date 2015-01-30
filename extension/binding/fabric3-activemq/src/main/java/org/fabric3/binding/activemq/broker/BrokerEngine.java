@@ -30,8 +30,8 @@ import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.store.amq.AMQPersistenceAdapter;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -194,7 +194,7 @@ public class BrokerEngine {
         }
     }
 
-    private void selectPort() throws PortAllocationException {
+    private void selectPort() throws ContainerException {
         if (jmsPort == -1) {
             // port not assigned, get one from the allocator
             if (portAllocator.isPoolEnabled()) {

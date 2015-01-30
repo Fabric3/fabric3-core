@@ -21,7 +21,7 @@ package org.fabric3.implementation.pojo.objectfactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -29,7 +29,7 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
  */
 public class ListMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<List<ObjectFactory<?>>> {
 
-    public List<Object> getInstance() throws ObjectCreationException {
+    public List<Object> getInstance() throws ContainerException {
         List<Object> list = new ArrayList<>();
         for (ObjectFactory<?> factory : factories) {
             list.add(factory.getInstance());

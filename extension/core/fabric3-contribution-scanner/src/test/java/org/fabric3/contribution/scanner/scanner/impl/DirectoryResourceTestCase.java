@@ -22,7 +22,6 @@ import java.io.File;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.contribution.scanner.impl.DirectoryResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 

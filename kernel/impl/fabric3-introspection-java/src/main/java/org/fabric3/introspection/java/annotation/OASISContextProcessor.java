@@ -24,20 +24,19 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import org.oasisopen.sca.ComponentContext;
-import org.oasisopen.sca.RequestContext;
-import org.oasisopen.sca.annotation.Context;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes {@link Context} annotations.

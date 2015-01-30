@@ -2,12 +2,11 @@ package org.fabric3.binding.activemq.provider;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates default connection factory configurations for ActiveMQ.

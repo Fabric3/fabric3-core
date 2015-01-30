@@ -21,15 +21,14 @@ package org.fabric3.implementation.java.introspection;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.xml.TypeWriter;
 import org.fabric3.spi.introspection.xml.UnrecognizedTypeException;
 import org.fabric3.spi.introspection.xml.Writer;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Serializes a Java component implementation to a StAX stream.

@@ -18,23 +18,22 @@
  */
 package org.fabric3.implementation.junit.runtime;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.security.AuthenticationService;
-import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.test.spi.TestWireHolder;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

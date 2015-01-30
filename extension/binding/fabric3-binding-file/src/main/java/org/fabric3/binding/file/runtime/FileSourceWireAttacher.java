@@ -21,29 +21,28 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 import java.net.URI;
 
-import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.binding.file.annotation.Strategy;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

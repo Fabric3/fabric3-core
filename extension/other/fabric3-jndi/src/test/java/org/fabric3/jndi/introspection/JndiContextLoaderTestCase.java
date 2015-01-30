@@ -16,13 +16,12 @@
  */
 package org.fabric3.jndi.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.util.Properties;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.util.Properties;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.resource.jndi.JndiContext;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;

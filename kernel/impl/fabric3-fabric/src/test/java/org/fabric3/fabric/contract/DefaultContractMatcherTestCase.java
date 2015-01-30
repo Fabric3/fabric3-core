@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
-
 import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 

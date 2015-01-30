@@ -16,11 +16,11 @@
  */
 package org.fabric3.spi.security;
 
+import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.security.auth.Subject;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;

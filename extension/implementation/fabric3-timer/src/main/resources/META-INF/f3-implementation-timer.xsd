@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema targetNamespace="http://fabric3.org/xmlns/sca/2.0-alpha"
-		xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-		xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+        xmlns="http://www.w3.org/2001/XMLSchema"
         elementFormDefault="qualified">
 
     <include schemaLocation="sca-core-1.1-cd05.xsd" />

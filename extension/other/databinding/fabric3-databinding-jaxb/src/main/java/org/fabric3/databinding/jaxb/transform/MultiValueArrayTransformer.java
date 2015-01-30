@@ -16,7 +16,7 @@
  */
 package org.fabric3.databinding.jaxb.transform;
 
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -30,12 +30,12 @@ public class MultiValueArrayTransformer implements Transformer<Object[], Object[
     }
 
     @SuppressWarnings({"unchecked"})
-    public Object[] transform(Object[] source, ClassLoader loader) throws TransformationException {
+    public Object[] transform(Object[] source, ClassLoader loader) throws ContainerException {
         if (source == null) {
             return null;
         }
         if (source.length != transformers.length) {
-            throw new TransformationException("Source parameter length does not match the number of transformers");
+            throw new ContainerException("Source parameter length does not match the number of transformers");
         }
         for (int i = 0; i < source.length; i++) {
             source[i] = transformers[i].transform(source[i], loader);

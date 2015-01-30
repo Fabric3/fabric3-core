@@ -25,8 +25,8 @@ import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.manifest.JavaExport;

@@ -18,14 +18,12 @@
  */
 package org.fabric3.contribution.manifest;
 
-import java.net.URI;
-
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
+import java.net.URI;
 
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
+import org.oasisopen.sca.Constants;
 
 /**
  * Exports the entire package contents of a contribution. This export type is used for API and SPI contributions where all contents are visible to

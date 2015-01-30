@@ -16,14 +16,13 @@
  */
 package org.fabric3.jndi.generator;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.model.type.resource.jndi.JndiContext;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

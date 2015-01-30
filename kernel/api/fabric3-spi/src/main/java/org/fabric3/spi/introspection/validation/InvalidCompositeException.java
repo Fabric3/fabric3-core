@@ -19,10 +19,10 @@
  */
 package org.fabric3.spi.introspection.validation;
 
+import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.failure.ValidationFailure;

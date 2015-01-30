@@ -22,9 +22,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 
-import org.fabric3.api.model.type.component.Channel;
-import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.node.Domain;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.InstallException;
@@ -32,7 +29,10 @@ import org.fabric3.api.host.contribution.RemoveException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UninstallException;
 import org.fabric3.api.host.contribution.UrlContributionSource;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.node.Domain;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 

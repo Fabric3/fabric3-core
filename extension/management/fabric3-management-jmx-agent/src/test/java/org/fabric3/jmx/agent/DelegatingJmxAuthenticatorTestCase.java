@@ -19,13 +19,12 @@
  */
 package org.fabric3.jmx.agent;
 
-import java.util.Collections;
 import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.Role;
 
 /**

@@ -20,21 +20,19 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spring.spi.WireListener;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the source side of a wire to a Spring component.
@@ -73,7 +71,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
             for (WireListener listener : listeners) {
                 listener.onAttach(wire);
             }
-        } catch (ClassNotFoundException | ProxyCreationException e) {
+        } catch (ClassNotFoundException e) {
             throw new ContainerException(e);
         }
     }

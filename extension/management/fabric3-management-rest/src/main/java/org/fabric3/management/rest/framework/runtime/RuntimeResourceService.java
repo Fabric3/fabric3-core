@@ -16,19 +16,17 @@
  */
 package org.fabric3.management.rest.framework.runtime;
 
-import java.net.URI;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.management.rest.framework.AbstractResourceService;
 import org.fabric3.management.rest.model.Resource;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Listens for managed artifacts exported under the /runtime path and registers them as sub-resources of the runtime resource.

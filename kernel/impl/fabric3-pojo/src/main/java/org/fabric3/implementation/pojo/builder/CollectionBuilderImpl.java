@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
@@ -45,37 +45,32 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
         super(registry);
     }
 
-
     @SuppressWarnings({"unchecked"})
     public <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection,
                                                           String name,
                                                           JavaGenericType dataType,
                                                           Document value,
-                                                          ClassLoader classLoader) throws PropertyTransformException {
-        try {
-            List<JavaTypeInfo> typeInfos = dataType.getTypeInfo().getParameterTypesInfos();
-            if (typeInfos.size() < 1) {
-                // programming error
-                throw new PropertyTransformException("Collection properties must have a value type");
-            }
-            Class<?> type = typeInfos.get(0).getRawType();
-
-            List<Class<?>> types = new ArrayList<>();
-            types.add(type);
-
-            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaType(type), types);
-
-            Element root = value.getDocumentElement();
-            NodeList nodes = root.getChildNodes();
-            for (int i = 0; i < nodes.getLength(); i++) {
-                Node node = nodes.item(i).getFirstChild();
-                T val = (T) transformer.transform(node, classLoader);
-                collection.add(val);
-            }
-            return new SingletonObjectFactory<>(collection);
-        } catch (TransformationException e) {
-            throw new PropertyTransformException("Unable to transform property value: " + name, e);
+                                                          ClassLoader classLoader) throws ContainerException {
+        List<JavaTypeInfo> typeInfos = dataType.getTypeInfo().getParameterTypesInfos();
+        if (typeInfos.size() < 1) {
+            // programming error
+            throw new ContainerException("Collection properties must have a value type");
         }
+        Class<?> type = typeInfos.get(0).getRawType();
+
+        List<Class<?>> types = new ArrayList<>();
+        types.add(type);
+
+        Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, new JavaType(type), types);
+
+        Element root = value.getDocumentElement();
+        NodeList nodes = root.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i).getFirstChild();
+            T val = (T) transformer.transform(node, classLoader);
+            collection.add(val);
+        }
+        return new SingletonObjectFactory<>(collection);
     }
 
 }

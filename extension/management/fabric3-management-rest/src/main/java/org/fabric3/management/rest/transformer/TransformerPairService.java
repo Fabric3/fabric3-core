@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Returns a transformer pair for (de)serializing request/response types.
@@ -34,8 +34,8 @@ public interface TransformerPairService {
      * @param inputType  the input (serialized) type
      * @param outputType the type responses should be serialized to
      * @return the pair
-     * @throws TransformationException if an error occurs returning the pair
+     * @throws ContainerException if an error occurs returning the pair
      */
-    TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws TransformationException;
+    TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws ContainerException;
 
 }

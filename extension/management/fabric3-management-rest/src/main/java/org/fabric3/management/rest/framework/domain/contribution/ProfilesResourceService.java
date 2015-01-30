@@ -16,6 +16,8 @@
  */
 package org.fabric3.management.rest.framework.domain.contribution;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -26,11 +28,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -52,6 +49,8 @@ import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles the /domain/contributions/profiles resource and its sub-resources:

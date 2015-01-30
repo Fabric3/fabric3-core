@@ -16,9 +16,9 @@
  */
 package org.fabric3.management.rest.framework;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.management.rest.model.SelfLink;
 

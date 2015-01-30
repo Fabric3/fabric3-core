@@ -21,9 +21,9 @@ package org.fabric3.implementation.web.runtime;
 import javax.servlet.http.HttpSession;
 
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -33,7 +33,7 @@ public class HttpSessionInjector implements Injector<HttpSession> {
     private ObjectFactory<?> objectFactory;
     private String name;
 
-    public void inject(HttpSession session) throws ObjectCreationException {
+    public void inject(HttpSession session) throws ContainerException {
         session.setAttribute(name, objectFactory.getInstance());
     }
 

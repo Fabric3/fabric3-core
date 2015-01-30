@@ -19,10 +19,9 @@ package org.fabric3.databinding.jaxb.transform;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.w3c.dom.Node;
-
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
+import org.w3c.dom.Node;
 
 /**
  * Converts from a DOM Node to a JAXB type serialized as a JAXBElement.
@@ -36,13 +35,13 @@ public class Node2JAXBElementTransformer implements Transformer<Node, Object> {
         this.declaredType = declaredType;
     }
 
-    public Object transform(Node source, ClassLoader loader) throws TransformationException {
+    public Object transform(Node source, ClassLoader loader) throws ContainerException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
             return jaxbContext.createUnmarshaller().unmarshal(source, declaredType).getValue();
         } catch (JAXBException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

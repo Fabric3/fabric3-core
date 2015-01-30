@@ -26,17 +26,17 @@ import javax.jms.QueueConnection;
 import javax.jms.Session;
 import javax.jms.TopicConnection;
 
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Implementation that attempts to always create the destination.
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
-    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws JmsResolutionException {
+    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws ContainerException {
         Connection connection = null;
         String name = definition.getName();
         try {
@@ -53,7 +53,7 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
                 throw new IllegalArgumentException("Unknown destination type for:" + name);
             }
         } catch (JMSException ex) {
-            throw new JmsResolutionException("Unable to create destination:" + name, ex);
+            throw new ContainerException("Unable to create destination:" + name, ex);
         } finally {
             if (connection != null) {
                 try {

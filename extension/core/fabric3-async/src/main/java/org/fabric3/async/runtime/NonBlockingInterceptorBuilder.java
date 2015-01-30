@@ -20,12 +20,11 @@ package org.fabric3.async.runtime;
 
 import java.util.concurrent.ExecutorService;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates a non-blocking interceptor

@@ -25,9 +25,8 @@ import java.util.List;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -36,7 +35,6 @@ import org.oasisopen.sca.annotation.Reference;
 public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;
     private List<ConnectionFactoryResolver> resolvers;
-
 
     public NeverConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
         this.manager = manager;
@@ -47,28 +45,23 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
         this.resolvers = resolvers;
     }
 
-
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException {
         String name = definition.getName();
-        try {
-            ConnectionFactory factory = manager.get(name);
-            if (factory != null) {
-                return factory;
-            }
-
-            for (ConnectionFactoryResolver resolver : resolvers) {
-                factory = resolver.resolve(definition);
-                if (factory != null) {
-                    break;
-                }
-            }
-            return manager.register(name, factory, definition.getProperties());
-        } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
+        ConnectionFactory factory = manager.get(name);
+        if (factory != null) {
+            return factory;
         }
+
+        for (ConnectionFactoryResolver resolver : resolvers) {
+            factory = resolver.resolve(definition);
+            if (factory != null) {
+                break;
+            }
+        }
+        return manager.register(name, factory, definition.getProperties());
     }
 
-    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+    public void release(ConnectionFactoryDefinition definition) {
         // no-op
     }
 }

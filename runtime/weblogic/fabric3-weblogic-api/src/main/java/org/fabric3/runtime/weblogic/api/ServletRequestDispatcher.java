@@ -19,12 +19,12 @@
  */
 package org.fabric3.runtime.weblogic.api;
 
-import java.io.IOException;
-import java.net.URI;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import java.io.IOException;
+import java.net.URI;
 
 import org.fabric3.api.host.Names;
 

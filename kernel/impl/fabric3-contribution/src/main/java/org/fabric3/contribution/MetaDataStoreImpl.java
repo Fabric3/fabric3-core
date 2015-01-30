@@ -29,14 +29,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
@@ -51,6 +49,7 @@ import org.fabric3.spi.contribution.ResourceElementUpdater;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default MetaDataStore implementation.

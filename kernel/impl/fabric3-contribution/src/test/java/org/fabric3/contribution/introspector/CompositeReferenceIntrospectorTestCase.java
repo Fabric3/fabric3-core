@@ -3,14 +3,13 @@ package org.fabric3.contribution.introspector;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

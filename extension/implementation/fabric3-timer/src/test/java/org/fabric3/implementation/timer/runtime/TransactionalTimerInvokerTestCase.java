@@ -22,8 +22,8 @@ import javax.transaction.TransactionManager;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.oasisopen.sca.ServiceRuntimeException;
 

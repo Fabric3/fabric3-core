@@ -20,7 +20,6 @@
 package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -72,8 +71,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         this.monitor = monitor;
     }
 
-    public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+    public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws ContainerException {
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
@@ -82,36 +80,28 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         ResolvedObjects objects = resolveAdministeredObjects(source);
 
         ContainerConfiguration configuration = new ContainerConfiguration();
-        try {
-            ConnectionFactory connectionFactory = objects.getRequestFactory();
-            javax.jms.Destination destination = objects.getRequestDestination();
-            EventStream stream = connection.getEventStream();
-            EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
-            configuration.setDestinationType(metadata.getDestination().geType());
-            configuration.setDestination(destination);
-            configuration.setFactory(connectionFactory);
-            configuration.setMessageListener(listener);
-            configuration.setUri(serviceUri);
-            configuration.setSessionType(source.getSessionType());
-            populateConfiguration(configuration, metadata);
-            if (containerManager.isRegistered(serviceUri)) {
-                // the wire has changed and it is being reprovisioned
-                containerManager.unregister(serviceUri);
-            }
-            AdaptiveMessageContainer container = containerFactory.create(configuration);
-            containerManager.register(container);
-        } catch (JMSException e) {
-            throw new ContainerException(e);
+        ConnectionFactory connectionFactory = objects.getRequestFactory();
+        javax.jms.Destination destination = objects.getRequestDestination();
+        EventStream stream = connection.getEventStream();
+        EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
+        configuration.setDestinationType(metadata.getDestination().geType());
+        configuration.setDestination(destination);
+        configuration.setFactory(connectionFactory);
+        configuration.setMessageListener(listener);
+        configuration.setUri(serviceUri);
+        configuration.setSessionType(source.getSessionType());
+        populateConfiguration(configuration, metadata);
+        if (containerManager.isRegistered(serviceUri)) {
+            // the wire has changed and it is being reprovisioned
+            containerManager.unregister(serviceUri);
         }
+        AdaptiveMessageContainer container = containerFactory.create(configuration);
+        containerManager.register(container);
     }
 
     public void detach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target) throws ContainerException {
-        try {
-            containerManager.unregister(source.getUri());
-            resolver.release(source.getMetadata().getConnectionFactory());
-        } catch (JMSException e) {
-            throw new ContainerException(e);
-        }
+        containerManager.unregister(source.getUri());
+        resolver.release(source.getMetadata().getConnectionFactory());
     }
 
     private void populateConfiguration(ContainerConfiguration configuration, JmsBindingMetadata metadata) {

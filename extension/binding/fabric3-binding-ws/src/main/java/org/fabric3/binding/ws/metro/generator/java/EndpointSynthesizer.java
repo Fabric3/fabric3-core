@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.generator.java;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 

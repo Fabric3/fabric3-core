@@ -17,8 +17,6 @@
 package org.fabric3.databinding.jaxb.transform;
 
 import junit.framework.TestCase;
-
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -43,7 +41,7 @@ public class MultiValueArrayTransformerTestCase extends TestCase {
 
     private static class MockTransformer implements Transformer<Object, Object> {
 
-        public Object transform(Object o, ClassLoader loader) throws TransformationException {
+        public Object transform(Object o, ClassLoader loader) {
             return o;
         }
     }

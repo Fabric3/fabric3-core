@@ -16,12 +16,12 @@
  */
 package org.fabric3.security.spring.config;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Parses a Spring Security configuration.

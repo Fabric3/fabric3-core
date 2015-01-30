@@ -27,12 +27,11 @@ import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
-import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
-import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.hibernate.stat.Statistics;
@@ -96,7 +95,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         return cache.get(unitName);
     }
 
-    public void put(URI uri, String unitName, EntityManagerFactory factory) throws JpaResolutionException {
+    public void put(URI uri, String unitName, EntityManagerFactory factory) throws ContainerException {
         if (factory == null) {
             throw new IllegalArgumentException("EntityManagerFactory was null");
         }
@@ -110,7 +109,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         export(unitName, factory);
     }
 
-    private void export(String unitName, EntityManagerFactory factory) throws JpaResolutionException {
+    private void export(String unitName, EntityManagerFactory factory) throws ContainerException {
         if (managementService == null) {
             // management not enabled
             return;
@@ -122,8 +121,8 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         statistics.setStatisticsEnabled(true);
         try {
             managementService.export(encodeName(unitName), "Hibernate", "Hibernate session factory MBeans", statistics);
-        } catch (ManagementException e) {
-            throw new JpaResolutionException("Error exporting management bean for persistence unit: " + unitName, e);
+        } catch (ContainerException e) {
+            throw new ContainerException("Error exporting management bean for persistence unit: " + unitName, e);
         }
     }
 
@@ -134,7 +133,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         }
         try {
             managementService.remove(encodeName(unitName), "Hibernate");
-        } catch (ManagementException e) {
+        } catch (ContainerException e) {
             monitor.error(unitName, e);
         }
     }

@@ -17,10 +17,9 @@
 package org.fabric3.introspection.java.annotation;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.annotation.wire.Order;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 
 /**

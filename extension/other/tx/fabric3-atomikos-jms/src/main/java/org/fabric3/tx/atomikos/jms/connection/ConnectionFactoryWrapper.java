@@ -17,7 +17,6 @@
 package org.fabric3.tx.atomikos.jms.connection;
 
 import com.atomikos.jms.AtomikosConnectionFactoryBean;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 

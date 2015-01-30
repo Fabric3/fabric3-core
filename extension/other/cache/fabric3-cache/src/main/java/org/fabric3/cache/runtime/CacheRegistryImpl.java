@@ -3,10 +3,9 @@ package org.fabric3.cache.runtime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.cache.spi.CacheManager;
 import org.fabric3.cache.spi.CacheResource;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

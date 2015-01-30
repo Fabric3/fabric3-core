@@ -19,11 +19,11 @@
  */
 package org.fabric3.implementation.reflection.jdk;
 
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Performs an invocation on a method of a given instance
@@ -42,18 +42,18 @@ public class MethodLifecycleInvoker implements LifecycleInvoker {
         this.method.setAccessible(true);
     }
 
-    public void invoke(Object instance) throws ObjectCallbackException {
+    public void invoke(Object instance) throws ContainerException {
         try {
             method.invoke(instance);
         } catch (IllegalArgumentException e) {
             String signature = getSignature();
-            throw new ObjectCallbackException("Invalid arguments provided when invoking method: " + signature, e.getCause());
+            throw new ContainerException("Invalid arguments provided when invoking method: " + signature, e.getCause());
         } catch (IllegalAccessException e) {
             String signature = getSignature();
-            throw new ObjectCallbackException("Method is not accessible: " + signature);
+            throw new ContainerException("Method is not accessible: " + signature);
         } catch (InvocationTargetException e) {
             String signature = getSignature();
-            throw new ObjectCallbackException("Exception thrown when invoking method: " + signature, e.getCause());
+            throw new ContainerException("Exception thrown when invoking method: " + signature, e.getCause());
         }
     }
 

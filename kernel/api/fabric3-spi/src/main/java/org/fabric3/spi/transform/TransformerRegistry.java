@@ -21,6 +21,7 @@ package org.fabric3.spi.transform;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Registry of Transformers.
@@ -28,18 +29,16 @@ import org.fabric3.api.model.type.contract.DataType;
 public interface TransformerRegistry {
 
     /**
-     * Returns a transformer that can convert a set of classes from the source to target data type. The source and target data types may be Java
-     * types, XML Schema types, etc. The in and out types represent the classes that must be converted.
+     * Returns a transformer that can convert a set of classes from the source to target data type. The source and target data types may be Java types, XML
+     * Schema types, etc. The in and out types represent the classes that must be converted.
      *
      * @param source   the data type to transform from
      * @param target   the data type to transform to
      * @param inTypes  the classes that must be converted from
      * @param outTypes the classes that must be converted to
      * @return the transformer or null if one is not found
-     * @throws TransformationException if an error occurs returning the transformer
+     * @throws ContainerException if an error occurs returning the transformer
      */
-    Transformer<?, ?> getTransformer(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes)
-            throws TransformationException;
-
+    Transformer<?, ?> getTransformer(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws ContainerException;
 
 }

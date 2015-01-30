@@ -22,8 +22,8 @@ import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;

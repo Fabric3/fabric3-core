@@ -18,8 +18,8 @@
  */
 package org.fabric3.implementation.java.runtime;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;

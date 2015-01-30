@@ -16,11 +16,10 @@
  */
 package org.fabric3.runtime.weblogic.jms.runtime;
 
-import java.util.Map;
 import javax.jms.ConnectionFactory;
+import java.util.Map;
 
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 
 /**
  * Responsible for managing WebLogic connection factories. Since WLS manages enlistment with the transaction mananger transparently, this
@@ -28,12 +27,12 @@ import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
  */
 public class WebLogicConnectionFactoryManager implements ConnectionFactoryManager {
 
-    public ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException {
+    public ConnectionFactory register(String name, ConnectionFactory factory) {
         // no-op
         return factory;
     }
 
-    public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws FactoryRegistrationException {
+    public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) {
         // no-op
         return factory;
     }

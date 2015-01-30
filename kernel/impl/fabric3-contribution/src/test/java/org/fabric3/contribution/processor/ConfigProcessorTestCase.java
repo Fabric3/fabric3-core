@@ -1,15 +1,13 @@
 package org.fabric3.contribution.processor;
 
-import java.io.ByteArrayInputStream;
-import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -17,6 +15,7 @@ import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.w3c.dom.Document;
 
 /**
  *

@@ -1,9 +1,9 @@
 package org.fabric3.transform.binary;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 
 /**
  * A no-op transformer used to by-pass conversions of byte arrays. This implementation is useful when bytes are sent directly by an application over a
@@ -20,7 +20,7 @@ public class ByteArrayToByteArrayTransformer implements SingleTypeTransformer<by
         return TYPE;
     }
 
-    public byte[] transform(byte[] data, ClassLoader loader) throws TransformationException {
+    public byte[] transform(byte[] data, ClassLoader loader) throws ContainerException {
         return data;
     }
 

@@ -23,7 +23,6 @@ import javax.persistence.PersistenceUnit;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.jpa.model.PersistenceUnitResourceReference;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;

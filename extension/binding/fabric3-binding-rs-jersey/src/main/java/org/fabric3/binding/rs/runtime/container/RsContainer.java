@@ -42,8 +42,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
 import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
+import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -74,7 +75,7 @@ public final class RsContainer extends HttpServlet {
         this.resources = new ArrayList<>();
     }
 
-    public void addResource(Resource resource) throws RsContainerException {
+    public void addResource(Resource resource) throws ContainerException {
         resources.add(resource);
         reload();
     }
@@ -106,7 +107,7 @@ public final class RsContainer extends HttpServlet {
         }
     }
 
-    private void reload() throws RsContainerException {
+    private void reload() throws ContainerException {
         try {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
@@ -126,7 +127,7 @@ public final class RsContainer extends HttpServlet {
             servlet = new ServletContainer(resourceConfig);
             servlet.init(servletConfig);
         } catch (Throwable t) {
-            throw new RsContainerException(t);
+            throw new ContainerException(t);
         }
     }
 

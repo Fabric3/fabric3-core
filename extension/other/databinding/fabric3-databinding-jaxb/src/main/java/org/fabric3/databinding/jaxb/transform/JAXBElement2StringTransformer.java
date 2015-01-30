@@ -16,14 +16,14 @@
  */
 package org.fabric3.databinding.jaxb.transform;
 
-import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import java.io.StringWriter;
 
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -39,7 +39,7 @@ public class JAXBElement2StringTransformer implements Transformer<Object, String
     }
 
     @SuppressWarnings({"unchecked"})
-    public String transform(Object source, ClassLoader loader) throws TransformationException {
+    public String transform(Object source, ClassLoader loader) throws ContainerException {
         try {
             Marshaller marshaller = jaxbContext.createMarshaller();
             Class<?> type = source.getClass();
@@ -48,9 +48,8 @@ public class JAXBElement2StringTransformer implements Transformer<Object, String
             marshaller.marshal(element, writer);
             return writer.toString();
         } catch (JAXBException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
-
 
 }

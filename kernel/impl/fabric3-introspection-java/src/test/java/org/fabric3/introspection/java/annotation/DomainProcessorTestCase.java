@@ -20,7 +20,6 @@
 package org.fabric3.introspection.java.annotation;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.api.model.type.java.InjectingComponentType;

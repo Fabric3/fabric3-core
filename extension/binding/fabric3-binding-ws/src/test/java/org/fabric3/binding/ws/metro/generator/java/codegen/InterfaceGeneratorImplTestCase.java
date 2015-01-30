@@ -19,9 +19,8 @@ package org.fabric3.binding.ws.metro.generator.java.codegen;
 import javax.jws.WebService;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.annotation.OneWay;
-
 import org.fabric3.binding.ws.metro.util.ClassDefinerImpl;
+import org.oasisopen.sca.annotation.OneWay;
 
 /**
  *

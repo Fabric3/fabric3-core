@@ -44,25 +44,22 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.management.rest.transformer.TransformerPairService;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.transform.TransformationException;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Responsible for exporting components and instances as management resources.
- * <p/>
- * As part of this process, a fully-navigable management resource hierarchy will be dynamically created. For example, if a component is exported to
- * /runtime/foo/bar and a /runtime/foo resource is not configured, one will be created dynamically with a link to runtime/foo/bar. If a configured
- * resource is later exported, any previously generated dynamic resource will be overriden.
+ * Responsible for exporting components and instances as management resources. <p/> As part of this process, a fully-navigable management resource hierarchy
+ * will be dynamically created. For example, if a component is exported to /runtime/foo/bar and a /runtime/foo resource is not configured, one will be created
+ * dynamically with a link to runtime/foo/bar. If a configured resource is later exported, any previously generated dynamic resource will be overriden.
  */
 public class RestfulManagementExtension implements ManagementExtension {
     private static final JavaType JSON_INPUT_TYPE = new JavaType(InputStream.class, "JSON");
-    private static final JavaType JSON_OUTPUT_TYPE = new JavaType(byte[].class,"JSON");
+    private static final JavaType JSON_OUTPUT_TYPE = new JavaType(byte[].class, "JSON");
 
     private static final String EMPTY_PATH = "";
     private static final String ROOT_PATH = "/";
@@ -78,9 +75,7 @@ public class RestfulManagementExtension implements ManagementExtension {
     private List<ResourceListener> listeners = new ArrayList<>();
     private Map<String, ResourceMapping> dynamicResources = new ConcurrentHashMap<>();
 
-    public RestfulManagementExtension(@Reference TransformerPairService pairService,
-                                      @Reference Marshaller marshaller,
-                                      @Reference ResourceHost resourceHost) {
+    public RestfulManagementExtension(@Reference TransformerPairService pairService, @Reference Marshaller marshaller, @Reference ResourceHost resourceHost) {
         this.pairService = pairService;
         this.resourceHost = resourceHost;
     }
@@ -114,7 +109,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         return "fabric3.rest";
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
+    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException {
         String root = info.getPath();
         if (root.length() == 0) {
             root = componentUri.getPath();
@@ -166,77 +161,73 @@ public class RestfulManagementExtension implements ManagementExtension {
             if (!rootResourcePathOverride) {
                 createRootResource(identifier, root, getMappings);
             }
-        } catch (ClassNotFoundException | TransformationException | NoSuchMethodException e) {
-            throw new ManagementException(e);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            throw new ContainerException(e);
         }
     }
 
-    public void export(String name, String group, String description, Object instance) throws ManagementException {
+    public void export(String name, String group, String description, Object instance) throws ContainerException {
         String root = "/runtime/" + name;
-        try {
 
-            Set<Role> readRoles = new HashSet<>();
-            Set<Role> writeRoles = new HashSet<>();
-            parseRoles(instance, readRoles, writeRoles);
+        Set<Role> readRoles = new HashSet<>();
+        Set<Role> writeRoles = new HashSet<>();
+        parseRoles(instance, readRoles, writeRoles);
 
-            boolean rootResourcePathOverride = false;
-            List<ResourceMapping> getMappings = new ArrayList<>();
+        boolean rootResourcePathOverride = false;
+        List<ResourceMapping> getMappings = new ArrayList<>();
 
-            List<Method> methods = Arrays.asList(instance.getClass().getMethods());
-            for (Method method : methods) {
-                ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
-                if (opAnnotation == null) {
-                    continue;
-                }
-                String path = opAnnotation.path();
-                if (ROOT_PATH.equals(path)) {
-                    rootResourcePathOverride = true;
-                }
-
+        List<Method> methods = Arrays.asList(instance.getClass().getMethods());
+        for (Method method : methods) {
+            ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
+            if (opAnnotation == null) {
+                continue;
             }
-            for (Method method : methods) {
-                Set<Role> roles;
-                ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
-                if (opAnnotation != null) {
-                    OperationType type = OperationType.valueOf(opAnnotation.type().toString());
-                    Verb verb = getVerb(method, type);
-                    String[] rolesAllowed = opAnnotation.rolesAllowed();
-                    if (rolesAllowed.length == 0) {
-                        if (Verb.GET == verb) {
-                            roles = readRoles;
-                        } else {
-                            roles = writeRoles;
-                        }
+            String path = opAnnotation.path();
+            if (ROOT_PATH.equals(path)) {
+                rootResourcePathOverride = true;
+            }
+
+        }
+        for (Method method : methods) {
+            Set<Role> roles;
+            ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
+            if (opAnnotation != null) {
+                OperationType type = OperationType.valueOf(opAnnotation.type().toString());
+                Verb verb = getVerb(method, type);
+                String[] rolesAllowed = opAnnotation.rolesAllowed();
+                if (rolesAllowed.length == 0) {
+                    if (Verb.GET == verb) {
+                        roles = readRoles;
                     } else {
-                        roles = new HashSet<>();
-                        for (String roleName : rolesAllowed) {
-                            roles.add(new Role(roleName));
-                        }
+                        roles = writeRoles;
                     }
-
-                    TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-                    ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, pair, roles);
-
-                    if (Verb.GET == mapping.getVerb()) {
-                        getMappings.add(mapping);
+                } else {
+                    roles = new HashSet<>();
+                    for (String roleName : rolesAllowed) {
+                        roles.add(new Role(roleName));
                     }
-
-                    createDynamicResources(mapping, root, rootResourcePathOverride);
-
-                    resourceHost.register(mapping);
-                    notifyExport(mapping.getRelativePath(), mapping);
-
                 }
+
+                TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
+                ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, pair, roles);
+
+                if (Verb.GET == mapping.getVerb()) {
+                    getMappings.add(mapping);
+                }
+
+                createDynamicResources(mapping, root, rootResourcePathOverride);
+
+                resourceHost.register(mapping);
+                notifyExport(mapping.getRelativePath(), mapping);
+
             }
-            if (!rootResourcePathOverride) {
-                createRootResource(name, root, getMappings);
-            }
-        } catch (TransformationException e) {
-            throw new ManagementException(e);
+        }
+        if (!rootResourcePathOverride) {
+            createRootResource(name, root, getMappings);
         }
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
+    public void remove(URI componentUri, ManagementInfo info) throws ContainerException {
         String identifier = componentUri.toString();
         resourceHost.unregister(identifier);
         for (ResourceListener listener : listeners) {
@@ -245,7 +236,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         }
     }
 
-    public void remove(String name, String group) throws ManagementException {
+    public void remove(String name, String group) throws ContainerException {
         resourceHost.unregister(name);
         for (ResourceListener listener : listeners) {
             listener.onRootResourceRemove(name);
@@ -286,7 +277,6 @@ public class RestfulManagementExtension implements ManagementExtension {
             }
         }
     }
-
 
     /**
      * Creates a managed artifact mapping.
@@ -330,31 +320,27 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param identifier the identifier used to group a set of mappings during deployment and undeployment
      * @param root       the root path
      * @param mappings   the sub-resource mappings   @throws ManagementException if an error occurs creating the root resource
-     * @throws ManagementException if there is an error creating the mapping
+     * @throws ContainerException if there is an error creating the mapping
      */
-    private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws ManagementException {
-        try {
-            ResourceInvoker invoker = new ResourceInvoker(mappings, security);
-            List<Method> methods = new ArrayList<>();
-            for (ResourceMapping mapping : mappings) {
-                methods.add(mapping.getMethod());
-            }
-            TransformerPair pair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-            root = root.toLowerCase();
-            Set<Role> roles = Collections.emptySet();
-            ResourceMapping mapping = new ResourceMapping(identifier, root, root, Verb.GET, rootResourceMethod, invoker, pair, roles);
-            ResourceMapping previous = dynamicResources.remove(root);
-            if (previous != null) {
-                resourceHost.unregisterPath(previous.getPath(), Verb.GET);
-            }
-            resourceHost.register(mapping);
-            for (ResourceListener listener : listeners) {
-                listener.onRootResourceExport(mapping);
-            }
-            createDynamicResources(mapping, root, false);
-        } catch (TransformationException e) {
-            throw new ManagementException(e);
+    private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws ContainerException {
+        ResourceInvoker invoker = new ResourceInvoker(mappings, security);
+        List<Method> methods = new ArrayList<>();
+        for (ResourceMapping mapping : mappings) {
+            methods.add(mapping.getMethod());
         }
+        TransformerPair pair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
+        root = root.toLowerCase();
+        Set<Role> roles = Collections.emptySet();
+        ResourceMapping mapping = new ResourceMapping(identifier, root, root, Verb.GET, rootResourceMethod, invoker, pair, roles);
+        ResourceMapping previous = dynamicResources.remove(root);
+        if (previous != null) {
+            resourceHost.unregisterPath(previous.getPath(), Verb.GET);
+        }
+        resourceHost.register(mapping);
+        for (ResourceListener listener : listeners) {
+            listener.onRootResourceExport(mapping);
+        }
+        createDynamicResources(mapping, root, false);
     }
 
     /**
@@ -393,9 +379,9 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param mapping            the mapping
      * @param rootResourcePath   the root resource path for this hierarchy
      * @param createRootResource true if a dynamic root resource should be dynamically created
-     * @throws ManagementException if there was an error creating parent resources
+     * @throws ContainerException if there was an error creating parent resources
      */
-    private void createDynamicResources(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) throws ManagementException {
+    private void createDynamicResources(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) throws ContainerException {
         ResourceMapping previous = dynamicResources.remove(mapping.getPath());
         if (previous != null) {
             // A dynamic resource service was already registered. Remove it since it is being replaced by a configured resource service.
@@ -454,7 +440,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                                                                      mapping.getRoles());
                 mappings.add(dynamicMapping);
                 dynamicResources.put(dynamicMapping.getPath(), dynamicMapping);
-            } catch (TransformationException e) {
+            } catch (ContainerException e) {
                 throw new AssertionError(e);
             }
         }
@@ -462,6 +448,5 @@ public class RestfulManagementExtension implements ManagementExtension {
         Collections.reverse(mappings);
         return mappings;
     }
-
 
 }

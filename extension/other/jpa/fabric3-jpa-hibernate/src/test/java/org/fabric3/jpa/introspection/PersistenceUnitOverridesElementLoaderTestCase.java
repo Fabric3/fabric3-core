@@ -18,21 +18,20 @@
  */
 package org.fabric3.jpa.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.net.URI;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

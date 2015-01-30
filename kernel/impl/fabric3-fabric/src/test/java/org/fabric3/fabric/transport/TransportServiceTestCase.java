@@ -22,7 +22,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.transport.Transport;
 
 /**

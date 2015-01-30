@@ -22,9 +22,8 @@ package org.fabric3.implementation.system.runtime;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
@@ -55,7 +54,7 @@ public class SystemInvokerInterceptor implements Interceptor {
         Object instance;
         try {
             instance = component.getInstance();
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             throw new InvocationRuntimeException(e);
         }
 
@@ -68,7 +67,7 @@ public class SystemInvokerInterceptor implements Interceptor {
         } finally {
             try {
                 component.releaseInstance(instance);
-            } catch (InstanceDestructionException e) {
+            } catch (ContainerException e) {
                 throw new InvocationRuntimeException(e);
             }
         }

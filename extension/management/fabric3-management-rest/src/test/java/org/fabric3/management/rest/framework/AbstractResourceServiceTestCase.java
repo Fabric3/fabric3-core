@@ -19,7 +19,6 @@ package org.fabric3.management.rest.framework;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 

@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -57,7 +57,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return false;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException {
         URI uri = getClassLoaderUri(interfaze);
 
         List<InvocationChain> list = wire.getInvocationChains();
@@ -68,8 +68,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return new WireProxyObjectFactory<>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
     }
 
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
+    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws ContainerException {
         URI uri = getClassLoaderUri(interfaze);
 
         List<InvocationChain> list = wire.getInvocationChains();
@@ -82,9 +81,9 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
+            throws ContainerException {
         if (!(factory instanceof CallbackWireObjectFactory)) {
-            throw new AssertionError("Expected object factory of type: " + CallbackWireObjectFactory.class.getName());
+            throw new ContainerException("Expected object factory of type: " + CallbackWireObjectFactory.class.getName());
         }
         CallbackWireObjectFactory callbackFactory = (CallbackWireObjectFactory) factory;
 
@@ -106,7 +105,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return ((MultiParentClassLoader) classLoader).getName();
     }
 
-    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws ProxyCreationException {
+    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws ContainerException {
         Map<Method, InvocationChain> chainMappings = new HashMap<>(chains.size());
         for (InvocationChain chain : chains) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -114,9 +113,9 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
                 Method method = findMethod(interfaze, operation);
                 chainMappings.put(method, chain);
             } catch (NoSuchMethodException e) {
-                throw new ProxyCreationException(operation.getName());
+                throw new ContainerException(operation.getName());
             } catch (ClassNotFoundException e) {
-                throw new ProxyCreationException(e);
+                throw new ContainerException(e);
             }
         }
 

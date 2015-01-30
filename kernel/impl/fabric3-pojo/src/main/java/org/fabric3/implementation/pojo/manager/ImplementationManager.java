@@ -19,10 +19,7 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceInitException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Returns an injected component instance. This is used by a Component implementation to create new instances of application implementation objects as
@@ -33,33 +30,33 @@ public interface ImplementationManager {
      * Creates a new instance of the component. All injected values must be set but any @Init methods must not have been invoked.
      *
      * @return A new component instance
-     * @throws ObjectCreationException if there was a problem creating the instance
+     * @throws ContainerException if there was a problem creating the instance
      */
-    Object newInstance() throws ObjectCreationException;
+    Object newInstance() throws ContainerException;
 
     /**
      * Starts the instance, calling an @Init method if one is configured.
      *
      * @param instance the instance
-     * @throws InstanceInitException if there is an error when calling the initialization method
+     * @throws ContainerException if there is an error when calling the initialization method
      */
-    void start(Object instance) throws InstanceInitException;
+    void start(Object instance) throws ContainerException;
 
     /**
      * Stops the instance, calling an @Destroy method if one is configured.
      *
      * @param instance the instance
-     * @throws InstanceDestructionException if there is an error when calling the initialization method
+     * @throws ContainerException if there is an error when calling the initialization method
      */
-    void stop(Object instance) throws InstanceDestructionException;
+    void stop(Object instance) throws ContainerException;
 
     /**
      * Reinjects the instance with any updated references.
      *
      * @param instance the instance
-     * @throws InstanceLifecycleException if an error is raised during reinjection
+     * @throws ContainerException if an error is raised during reinjection
      */
-    void reinject(Object instance) throws InstanceLifecycleException;
+    void reinject(Object instance) throws ContainerException;
 
     /**
      * Updates the instance with a new reference proxy.

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.Role;
 import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.BasicSecuritySubject;

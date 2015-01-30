@@ -18,9 +18,9 @@
  */
 package org.fabric3.spi.domain.generator.binding;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 /**
  * Result for a binding match operation.

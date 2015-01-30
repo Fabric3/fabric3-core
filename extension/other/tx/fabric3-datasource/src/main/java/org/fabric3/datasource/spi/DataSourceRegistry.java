@@ -18,8 +18,8 @@
  */
 package org.fabric3.datasource.spi;
 
-import java.util.Map;
 import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * A registry of datasources.

@@ -23,10 +23,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
+import org.w3c.dom.Document;
 
 /**
  * Transforms from a JAXB top-level element instance to a DOM Document.
@@ -41,7 +40,7 @@ public class JAXBObject2DocumentTransformer implements Transformer<Object, Docum
         factory.setNamespaceAware(true);
     }
 
-    public Document transform(Object source, ClassLoader loader) throws TransformationException {
+    public Document transform(Object source, ClassLoader loader) throws ContainerException {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.newDocument();
@@ -49,7 +48,7 @@ public class JAXBObject2DocumentTransformer implements Transformer<Object, Docum
             marshaller.marshal(source, document);
             return document;
         } catch (JAXBException | ParserConfigurationException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 

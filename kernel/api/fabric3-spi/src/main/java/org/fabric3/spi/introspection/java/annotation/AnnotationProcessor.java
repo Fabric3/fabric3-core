@@ -24,8 +24,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Interface for processors that handle annotations attached to Java declarations.

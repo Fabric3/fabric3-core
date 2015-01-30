@@ -26,14 +26,14 @@ import java.util.List;
 
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
-import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
-import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
+import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;

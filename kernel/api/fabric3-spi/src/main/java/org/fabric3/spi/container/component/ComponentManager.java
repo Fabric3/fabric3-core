@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
  * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
@@ -33,18 +35,18 @@ public interface ComponentManager {
      * Registers a component which will be managed by the runtime
      *
      * @param component the component
-     * @throws RegistrationException when an error occurs registering the component
+     * @throws ContainerException when an error occurs registering the component
      */
-    void register(Component component) throws RegistrationException;
+    void register(Component component) throws ContainerException;
 
     /**
      * Un-registers a component
      *
      * @param uri the component URI to un-register
-     * @throws RegistrationException when an error occurs registering the component
+     * @throws ContainerException when an error occurs registering the component
      * @return the the component
      */
-    Component unregister(URI uri) throws RegistrationException;
+    Component unregister(URI uri) throws ContainerException;
 
     /**
      * Returns the component with the given URI

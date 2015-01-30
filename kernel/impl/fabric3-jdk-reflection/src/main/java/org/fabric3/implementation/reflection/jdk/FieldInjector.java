@@ -22,9 +22,9 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Field;
 
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -51,7 +51,7 @@ public class FieldInjector implements Injector<Object> {
     /**
      * Inject a new value on the given instance
      */
-    public void inject(Object instance) throws ObjectCreationException {
+    public void inject(Object instance) throws ContainerException {
         try {
             Object target;
             if (objectFactory == null) {

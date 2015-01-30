@@ -21,10 +21,11 @@ package org.fabric3.implementation.bytecode.proxy.common;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
- * Creates a bytecode generated proxy that dispatches to a target.
- * <p/>
- * Bytecode proxies are designed to be more performant than traditional JDK proxies as they dispatch based on a method index.
+ * Creates a bytecode generated proxy that dispatches to a target. <p/> Bytecode proxies are designed to be more performant than traditional JDK proxies as they
+ * dispatch based on a method index.
  */
 public interface ProxyFactory {
 
@@ -38,9 +39,9 @@ public interface ProxyFactory {
      * @param dispatcher     the dispatcher the proxy extends
      * @param wrapped        true if parameters should be wrapped in an array as JDK proxy invocations are
      * @return the proxy instance, which extends the provided dispatcher class
-     * @throws ProxyException if there is an error creating the proxy
+     * @throws ContainerException if there is an error creating the proxy
      */
     <T> T createProxy(URI classLoaderKey, Class<T> interfaze, Method[] methods, Class<? extends ProxyDispatcher> dispatcher, boolean wrapped)
-            throws ProxyException;
+            throws ContainerException;
 
 }

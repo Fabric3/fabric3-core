@@ -18,9 +18,8 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.transport.Transport;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

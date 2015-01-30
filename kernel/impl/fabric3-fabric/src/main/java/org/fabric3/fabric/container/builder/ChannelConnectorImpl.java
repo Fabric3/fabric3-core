@@ -34,7 +34,6 @@ import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.channel.HandlerCreationException;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
@@ -91,11 +90,11 @@ public class ChannelConnectorImpl implements ChannelConnector {
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
-            throw new AttacherNotFoundException("Attacher not found for type: " + source.getClass().getName());
+            throw new ContainerException("Attacher not found for type: " + source.getClass().getName());
         }
         TargetConnectionAttacher targetAttacher = targetAttachers.get(target.getClass());
         if (targetAttacher == null) {
-            throw new AttacherNotFoundException("Attacher not found for type: " + target.getClass().getName());
+            throw new ContainerException("Attacher not found for type: " + target.getClass().getName());
         }
 
         ChannelConnection connection = createConnection(definition);
@@ -110,11 +109,11 @@ public class ChannelConnectorImpl implements ChannelConnector {
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
-            throw new AttacherNotFoundException("Attacher not found for type: " + source.getClass().getName());
+            throw new ContainerException("Attacher not found for type: " + source.getClass().getName());
         }
         TargetConnectionAttacher targetAttacher = targetAttachers.get(target.getClass());
         if (targetAttacher == null) {
-            throw new AttacherNotFoundException("Attacher not found for type: " + target.getClass().getName());
+            throw new ContainerException("Attacher not found for type: " + target.getClass().getName());
         }
         sourceAttacher.detach(source, target);
         targetAttacher.detach(source, target);
@@ -165,7 +164,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
             }
             EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
             stream.addHandler(handler);
-        } catch (HandlerCreationException | ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new ContainerException(e);
         }
     }

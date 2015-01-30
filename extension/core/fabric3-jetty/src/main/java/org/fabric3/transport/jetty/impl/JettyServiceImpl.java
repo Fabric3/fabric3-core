@@ -54,14 +54,13 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.EndpointConstants;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -159,7 +158,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Constructor
-    public JettyServiceImpl(@Reference (name = "executorService") ExecutorService executorService,
+    public JettyServiceImpl(@Reference(name = "executorService") ExecutorService executorService,
                             @Reference ManagementService managementService,
                             @Reference PortAllocator portAllocator,
                             @Reference EventService eventService,
@@ -326,7 +325,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Init
-    public void init() throws JettyInitializationException {
+    public void init() throws ContainerException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -357,7 +356,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 }
             });
         } catch (Exception e) {
-            throw new JettyInitializationException("Error starting Jetty service", e);
+            throw new ContainerException("Error starting Jetty service", e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -484,7 +483,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             try {
                 ServletManager manager = new ServletManager(holder);
                 managementService.export(encode(path), HTTP_SERVLETS, "Registered transport servlets", manager);
-            } catch (ManagementException e) {
+            } catch (ContainerException e) {
                 monitor.exception("Exception exporting servlet management object:" + holder.getContextPath(), e);
             }
         }
@@ -529,7 +528,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                     }
                 } catch (ServletException e) {
                     monitor.exception("Exception getting servlet:" + holder.getContextPath(), e);
-                } catch (ManagementException e) {
+                } catch (ContainerException e) {
                     monitor.exception("Exception removing servlet management object:" + holder.getContextPath(), e);
                 }
             }
@@ -566,13 +565,13 @@ public class JettyServiceImpl implements JettyService, Transport {
         rootHandler.removeHandler(handler);
     }
 
-    private void initializeConnectors() throws IOException, JettyInitializationException {
+    private void initializeConnectors() throws IOException, ContainerException {
         selectHttpPort();
         selectHttpsPort();
         selectedHttp.bind(Port.TYPE.TCP);
         if (enableHttps) {
             if (keyStoreManager == null) {
-                throw new JettyInitializationException("Key store manager not found - a security extension must be installed");
+                throw new ContainerException("Key store manager not found - a security extension must be installed");
             }
             selectedHttps.bind(Port.TYPE.TCP);
             // setup HTTP and HTTPS
@@ -652,40 +651,32 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    private void selectHttpPort() throws IOException, JettyInitializationException {
-        try {
-            if (configuredHttpPort == -1) {
-                if (portAllocator.isPoolEnabled()) {
-                    selectedHttp = portAllocator.allocate("HTTP", "HTTP");
-                } else {
-                    selectedHttp = portAllocator.reserve("HTTP", "HTTP", DEFAULT_HTTP_PORT);
-                }
+    private void selectHttpPort() throws IOException, ContainerException {
+        if (configuredHttpPort == -1) {
+            if (portAllocator.isPoolEnabled()) {
+                selectedHttp = portAllocator.allocate("HTTP", "HTTP");
             } else {
-                // port is explicitly assigned
-                selectedHttp = portAllocator.reserve("HTTP", "HTTP", configuredHttpPort);
+                selectedHttp = portAllocator.reserve("HTTP", "HTTP", DEFAULT_HTTP_PORT);
             }
-        } catch (PortAllocationException e) {
-            throw new JettyInitializationException("Error allocating HTTP port", e);
+        } else {
+            // port is explicitly assigned
+            selectedHttp = portAllocator.reserve("HTTP", "HTTP", configuredHttpPort);
         }
     }
 
-    private void selectHttpsPort() throws IOException, JettyInitializationException {
+    private void selectHttpsPort() throws IOException, ContainerException {
         if (!enableHttps) {
             return;
         }
-        try {
-            if (configuredHttpsPort == -1) {
-                if (portAllocator.isPoolEnabled()) {
-                    selectedHttps = portAllocator.allocate("HTTPS", "HTTPS");
-                } else {
-                    selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", DEFAULT_HTTPS_PORT);
-                }
+        if (configuredHttpsPort == -1) {
+            if (portAllocator.isPoolEnabled()) {
+                selectedHttps = portAllocator.allocate("HTTPS", "HTTPS");
             } else {
-                // port is explicitly assigned
-                selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", configuredHttpsPort);
+                selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", DEFAULT_HTTPS_PORT);
             }
-        } catch (PortAllocationException e) {
-            throw new JettyInitializationException("Error allocating HTTPS port", e);
+        } else {
+            // port is explicitly assigned
+            selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", configuredHttpsPort);
         }
     }
 

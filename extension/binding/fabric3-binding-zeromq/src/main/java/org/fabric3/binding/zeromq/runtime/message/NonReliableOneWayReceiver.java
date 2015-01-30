@@ -25,13 +25,13 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.zeromq.ZMQ;
 
 /**

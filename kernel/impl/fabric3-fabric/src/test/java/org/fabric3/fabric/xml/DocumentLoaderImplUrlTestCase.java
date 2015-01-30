@@ -22,9 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import junit.framework.TestCase;
-import org.w3c.dom.Document;
-
 import org.fabric3.api.host.util.FileHelper;
+import org.w3c.dom.Document;
 
 /**
  *

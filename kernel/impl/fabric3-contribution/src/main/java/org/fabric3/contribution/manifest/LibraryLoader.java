@@ -18,13 +18,11 @@
  */
 package org.fabric3.contribution.manifest;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.api.host.Version;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -33,7 +31,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.model.os.OperatingSystemSpec;
-
+import org.oasisopen.sca.annotation.EagerInit;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 

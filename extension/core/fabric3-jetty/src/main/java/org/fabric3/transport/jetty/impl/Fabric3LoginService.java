@@ -19,16 +19,15 @@
  */
 package org.fabric3.transport.jetty.impl;
 
+import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.Set;
-import javax.security.auth.Subject;
 
 import org.eclipse.jetty.security.DefaultIdentityService;
 import org.eclipse.jetty.security.DefaultUserIdentity;
 import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.server.UserIdentity;
-
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthenticationException;

@@ -22,8 +22,8 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
@@ -38,9 +38,9 @@ public interface JDKWireProxyService extends WireProxyServiceExtension {
      * @param callbackUri the callback URI fr the wire fronted by the proxy or null if the wire is unidirectional
      * @param mappings    the method to invocation chain mappings
      * @return the proxy
-     * @throws ProxyCreationException if there was a problem creating the proxy
+     * @throws ContainerException if there was a problem creating the proxy
      */
-    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException;
+    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ContainerException;
 
     /**
      * Creates a Java proxy for the callback invocations chains.
@@ -48,9 +48,9 @@ public interface JDKWireProxyService extends WireProxyServiceExtension {
      * @param interfaze the interface the proxy should implement
      * @param mappings  the invocation chain mappings keyed by target URI @return the proxy
      * @return the proxy instance
-     * @throws ProxyCreationException if an error is encountered during proxy generation
+     * @throws ContainerException if an error is encountered during proxy generation
      */
-    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
+    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ContainerException;
 
     /**
      * Creates a callback proxy that always returns to the same target service

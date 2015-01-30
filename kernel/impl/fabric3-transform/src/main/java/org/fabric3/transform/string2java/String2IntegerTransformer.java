@@ -17,10 +17,10 @@
 package org.fabric3.transform.string2java;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 
 /**
  *
@@ -36,12 +36,8 @@ public class String2IntegerTransformer implements SingleTypeTransformer<String, 
         return TARGET;
     }
 
-    public Integer transform(String source, ClassLoader loader) throws TransformationException {
-        try {
-            return Integer.valueOf(source);
-        } catch (NumberFormatException e) {
-            throw new TransformationException(e);
-        }
+    public Integer transform(String source, ClassLoader loader) throws ContainerException {
+        return Integer.valueOf(source);
     }
 
 }

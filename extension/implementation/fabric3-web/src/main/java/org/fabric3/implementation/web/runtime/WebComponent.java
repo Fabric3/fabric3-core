@@ -26,18 +26,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.container.component.ComponentException;
-import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
@@ -117,7 +115,7 @@ public class WebComponent implements Component {
         this.level = level;
     }
 
-    public void start() throws ComponentException {
+    public void start() throws ContainerException {
         try {
             Map<String, List<Injector<?>>> injectors = new HashMap<>();
             injectorFactory.createInjectorMappings(injectors, siteMappings, objectFactories, classLoader);
@@ -132,17 +130,17 @@ public class WebComponent implements Component {
             injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
             // activate the web application
             activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
-        } catch (InjectionCreationException | WebApplicationActivationException e) {
-            throw new WebComponentStartException("Error starting web component: " + uri.toString(), e);
+        } catch (WebApplicationActivationException e) {
+            throw new ContainerException("Error starting web component: " + uri.toString(), e);
         }
 
     }
 
-    public void stop() throws ComponentException {
+    public void stop() throws ContainerException {
         try {
             activator.deactivate(archiveUri);
         } catch (WebApplicationActivationException e) {
-            throw new WebComponentStopException("Error stopping web component: " + uri.toString(), e);
+            throw new ContainerException("Error stopping web component: " + uri.toString(), e);
         }
     }
 
@@ -154,35 +152,35 @@ public class WebComponent implements Component {
 
     }
 
-    public void attachWire(String name, Wire wire) throws ObjectCreationException {
+    public void attachWire(String name, Wire wire) throws ContainerException {
         Map<String, InjectionSite> sites = siteMappings.get(name);
         if (sites == null || sites.isEmpty()) {
-            throw new ObjectCreationException("Injection site not found for: " + name);
+            throw new ContainerException("Injection site not found for: " + name);
         }
         Class<?> type;
         try {
             type = classLoader.loadClass(sites.values().iterator().next().getType());
         } catch (ClassNotFoundException e) {
-            throw new ObjectCreationException("Reference type not found for: " + name, e);
+            throw new ContainerException("Reference type not found for: " + name, e);
         }
         ObjectFactory<?> factory = createWireFactory(type, wire);
         attach(name, factory);
     }
 
-    public void attach(String name, ObjectFactory<?> factory) throws ObjectCreationException {
+    public void attach(String name, ObjectFactory<?> factory) throws ContainerException {
         objectFactories.put(name, factory);
     }
 
-    public void connect(String name, ChannelConnection connection) throws ObjectCreationException {
+    public void connect(String name, ChannelConnection connection) throws ContainerException {
         Map<String, InjectionSite> sites = siteMappings.get(name);
         if (sites == null || sites.isEmpty()) {
-            throw new ObjectCreationException("Injection site not found for: " + name);
+            throw new ContainerException("Injection site not found for: " + name);
         }
         Class<?> type;
         try {
             type = classLoader.loadClass(sites.values().iterator().next().getType());
         } catch (ClassNotFoundException e) {
-            throw new ObjectCreationException("Producer type not found for: " + name, e);
+            throw new ContainerException("Producer type not found for: " + name, e);
         }
         ObjectFactory<?> factory = createChannelFactory(type, connection);
         attach(name, factory);
@@ -192,7 +190,7 @@ public class WebComponent implements Component {
         return groupId;
     }
 
-    public <B> B getProperty(Class<B> type, String propertyName) throws ObjectCreationException {
+    public <B> B getProperty(Class<B> type, String propertyName) throws ContainerException {
         ObjectFactory<?> factory = propertyFactories.get(propertyName);
         if (factory != null) {
             return type.cast(factory.getInstance());
@@ -206,20 +204,12 @@ public class WebComponent implements Component {
         return (R) proxyService.cast(target);
     }
 
-    private <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws ObjectCreationException {
-        try {
-            return proxyService.createObjectFactory(interfaze, wire, null);
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
-        }
+    private <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws ContainerException {
+        return proxyService.createObjectFactory(interfaze, wire, null);
     }
 
-    private <B> ObjectFactory<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws ObjectCreationException {
-        try {
-            return channelProxyService.createObjectFactory(interfaze, connection);
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
-        }
+    private <B> ObjectFactory<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws ContainerException {
+        return channelProxyService.createObjectFactory(interfaze, connection);
     }
 
     public String toString() {

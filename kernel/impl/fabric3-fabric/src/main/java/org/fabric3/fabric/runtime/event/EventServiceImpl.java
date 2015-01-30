@@ -23,11 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3Event;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Default implementation of the EventService.

@@ -21,7 +21,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import junit.framework.TestCase;
-
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 

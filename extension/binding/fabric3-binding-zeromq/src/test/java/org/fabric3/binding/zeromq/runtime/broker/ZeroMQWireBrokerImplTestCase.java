@@ -25,25 +25,24 @@ import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.zeromq.ZMQ;
-
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.federation.addressing.AddressCache;
-import org.fabric3.spi.federation.addressing.AddressEvent;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.AddressEvent;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.host.Port;
+import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.runtime.event.EventService;
+import org.zeromq.ZMQ;
 
 /**
  *

@@ -19,12 +19,11 @@
 
 package org.fabric3.cache.generator;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.cache.model.CacheReference;
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.oasisopen.sca.annotation.EagerInit;
 
 
 /**

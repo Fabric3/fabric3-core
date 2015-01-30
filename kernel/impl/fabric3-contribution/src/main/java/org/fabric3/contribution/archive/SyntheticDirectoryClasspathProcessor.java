@@ -24,15 +24,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.spi.contribution.archive.ClasspathProcessor;
+import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.model.os.Library;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.model.os.Library;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
  * Creates the classpath for a contribution synthesized from a directory. All contained jars will be added to the classpath.

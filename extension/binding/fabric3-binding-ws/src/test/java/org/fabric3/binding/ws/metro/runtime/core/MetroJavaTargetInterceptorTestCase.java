@@ -1,17 +1,15 @@
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.lang.reflect.Method;
-import java.net.SocketTimeoutException;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
+import java.lang.reflect.Method;
+import java.net.SocketTimeoutException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.ServiceUnavailableException;
-
 import org.fabric3.spi.container.invocation.MessageImpl;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  *
@@ -37,7 +35,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
     }
 
     public void testNoRetry() throws Exception {
-        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, 0 , monitor);
+        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, 0, monitor);
 
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));
@@ -68,7 +66,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
             this.service = service;
         }
 
-        public Object getInstance() throws ObjectCreationException {
+        public Object getInstance() {
             return service;
         }
     }

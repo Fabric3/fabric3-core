@@ -19,13 +19,13 @@
  */
 package org.fabric3.fabric.container.component;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.Component;
 
 /**
@@ -77,7 +77,7 @@ public class ComponentManagerImplTestCase extends TestCase {
         try {
             manager.register(duplicate);
             fail();
-        } catch (DuplicateComponentException e) {
+        } catch (ContainerException e) {
             // expected
         }
         assertEquals(root, manager.getComponent(ROOT1));

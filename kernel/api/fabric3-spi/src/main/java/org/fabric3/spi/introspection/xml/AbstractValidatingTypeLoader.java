@@ -16,11 +16,11 @@
  */
 package org.fabric3.spi.introspection.xml;
 
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;

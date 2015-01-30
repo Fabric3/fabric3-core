@@ -19,8 +19,8 @@ package org.fabric3.cache.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.api.model.type.component.Resource;
+import org.fabric3.cache.spi.CacheResource;
 
 /**
  * A set of cache configurations defined in a composite.

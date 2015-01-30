@@ -38,7 +38,6 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.repository.ArtifactCache;
-import org.fabric3.spi.repository.CacheException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -61,92 +60,84 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
     }
 
     public void attach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
-        try {
-            ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
-            QName serviceName = endpointDefinition.getServiceName();
-            QName portName = endpointDefinition.getPortName();
-            URI servicePath = endpointDefinition.getServicePath();
-            List<InvocationChain> invocationChains = wire.getInvocationChains();
-            URI classLoaderId = source.getSEIClassLoaderUri();
-            URL wsdlLocation = source.getWsdlLocation();
+        ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
+        QName serviceName = endpointDefinition.getServiceName();
+        QName portName = endpointDefinition.getPortName();
+        URI servicePath = endpointDefinition.getServicePath();
+        List<InvocationChain> invocationChains = wire.getInvocationChains();
+        URI classLoaderId = source.getSEIClassLoaderUri();
+        URL wsdlLocation = source.getWsdlLocation();
 
-            ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
 
-            String interfaze = source.getInterface();
-            byte[] bytes = source.getGeneratedInterface();
+        String interfaze = source.getInterface();
+        byte[] bytes = source.getGeneratedInterface();
 
-            if (!(classLoader instanceof SecureClassLoader)) {
-                throw new ContainerException("Classloader for " + interfaze + " must be a SecureClassLoader");
-            }
-            Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
-
-            ClassLoader old = Thread.currentThread().getContextClassLoader();
-
-            try {
-                // SAAJ classes are needed from the TCCL
-                Thread.currentThread().setContextClassLoader(classLoader);
-
-                // cache the WSDL and schemas
-                URL generatedWsdl = null;
-                List<URL> generatedSchemas = null;
-                String wsdl = source.getWsdl();
-                if (wsdl != null) {
-                    wsdlLocation = artifactCache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
-                    generatedWsdl = wsdlLocation;
-                    generatedSchemas = cacheSchemas(servicePath, source);
-                }
-
-                String path = servicePath.toString();
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-
-                List<Handler> handlers = createHandlers(source);
-
-                URI serviceUri = source.getServiceUri();
-
-                JaxbInvoker invoker = new JaxbInvoker(invocationChains);
-                EndpointConfiguration configuration = new EndpointConfiguration(serviceUri,
-                                                                                seiClass,
-                                                                                serviceName,
-                                                                                portName,
-                                                                                path,
-                                                                                wsdlLocation,
-                                                                                invoker,
-                                                                                generatedWsdl,
-                                                                                generatedSchemas,
-                                                                                handlers);
-
-                endpointService.registerService(configuration);
-            } finally {
-                Thread.currentThread().setContextClassLoader(old);
-            }
-        } catch (CacheException e) {
-            throw new ContainerException(e);
+        if (!(classLoader instanceof SecureClassLoader)) {
+            throw new ContainerException("Classloader for " + interfaze + " must be a SecureClassLoader");
         }
-    }
+        Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
 
-    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+
         try {
-            ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
-            URI servicePath = endpointDefinition.getServicePath();
+            // SAAJ classes are needed from the TCCL
+            Thread.currentThread().setContextClassLoader(classLoader);
+
+            // cache the WSDL and schemas
+            URL generatedWsdl = null;
+            List<URL> generatedSchemas = null;
+            String wsdl = source.getWsdl();
+            if (wsdl != null) {
+                wsdlLocation = artifactCache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
+                generatedWsdl = wsdlLocation;
+                generatedSchemas = cacheSchemas(servicePath, source);
+            }
+
             String path = servicePath.toString();
             if (!path.startsWith("/")) {
                 path = "/" + path;
             }
-            artifactCache.remove(servicePath);
-            String wsdl = source.getWsdl();
-            if (wsdl != null) {
-                removeCachedSchemas(servicePath, source);
-            }
 
-            endpointService.unregisterService(path);
-        } catch (CacheException e) {
-            throw new ContainerException(e);
+            List<Handler> handlers = createHandlers(source);
+
+            URI serviceUri = source.getServiceUri();
+
+            JaxbInvoker invoker = new JaxbInvoker(invocationChains);
+            EndpointConfiguration configuration = new EndpointConfiguration(serviceUri,
+                                                                            seiClass,
+                                                                            serviceName,
+                                                                            portName,
+                                                                            path,
+                                                                            wsdlLocation,
+                                                                            invoker,
+                                                                            generatedWsdl,
+                                                                            generatedSchemas,
+                                                                            handlers);
+
+            endpointService.registerService(configuration);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
-    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws CacheException {
+    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+        ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
+        URI servicePath = endpointDefinition.getServicePath();
+        String path = servicePath.toString();
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+        artifactCache.remove(servicePath);
+        String wsdl = source.getWsdl();
+        if (wsdl != null) {
+            removeCachedSchemas(servicePath, source);
+        }
+
+        endpointService.unregisterService(path);
+    }
+
+    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws ContainerException {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
@@ -157,7 +148,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         return schemas;
     }
 
-    private void removeCachedSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws CacheException {
+    private void removeCachedSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws ContainerException {
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
             artifactCache.remove(uri);

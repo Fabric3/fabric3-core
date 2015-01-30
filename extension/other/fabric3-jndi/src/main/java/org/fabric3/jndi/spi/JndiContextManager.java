@@ -16,10 +16,10 @@
  */
 package org.fabric3.jndi.spi;
 
-import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.NamingException;
+import java.util.Properties;
 
 /**
  * Manages JNDI context resources and provides aggregated resolution operations across those managed contexts.

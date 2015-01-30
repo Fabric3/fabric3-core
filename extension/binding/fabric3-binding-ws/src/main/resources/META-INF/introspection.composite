@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3="urn:fabric3.org"
-           xmlns:wsa="http://www.w3.org/2005/08/addressing"
            targetNamespace="urn:fabric3.org"
            name="introspection">
 

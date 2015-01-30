@@ -18,14 +18,13 @@
  */
 package org.fabric3.contribution.archive;
 
+import org.fabric3.spi.contribution.ContributionProcessor;
+import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-
-import org.fabric3.spi.contribution.ContributionProcessor;
-import org.fabric3.spi.contribution.ProcessorRegistry;
 
 /**
  * The base ContributionProcessor implementation.

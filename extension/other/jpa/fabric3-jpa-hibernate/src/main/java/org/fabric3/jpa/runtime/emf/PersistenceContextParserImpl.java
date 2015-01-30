@@ -38,6 +38,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.persistence.spi.PersistenceUnitTransactionType.JTA;
 import static javax.persistence.spi.PersistenceUnitTransactionType.RESOURCE_LOCAL;
@@ -56,15 +57,15 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
         factory = XMLInputFactory.newFactory();
     }
 
-    public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException {
+    public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws ContainerException {
         Enumeration<URL> urls;
         try {
             urls = classLoader.getResources("META-INF/persistence.xml");
         } catch (IOException e) {
-            throw new PersistenceUnitException(e);
+            throw new ContainerException(e);
         }
         if (urls == null) {
-            throw new PersistenceUnitException("Persistence context (persistence.xml) not found in /META-INF");
+            throw new ContainerException("Persistence context (persistence.xml) not found in /META-INF");
         }
         List<PersistenceUnitInfo> infos = new ArrayList<>();
         while(urls.hasMoreElements()) {
@@ -97,7 +98,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                         case END_ELEMENT:
                             if ("persistence-unit".equals(reader.getName().getLocalPart())) {
                                 if (info == null) {
-                                    throw new PersistenceUnitException("Invalid persistence.xml found in :"+rootUrl);
+                                    throw new ContainerException("Invalid persistence.xml found in :"+rootUrl);
                                 }
                             }
                             break;
@@ -108,7 +109,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                 }
 
             } catch (IOException | XMLStreamException e) {
-                throw new PersistenceUnitException(e);
+                throw new ContainerException(e);
             } finally {
                 close(stream, reader);
             }
@@ -116,7 +117,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
         return infos;
     }
 
-    private URL getRootJarUrl(URL url) throws PersistenceUnitException {
+    private URL getRootJarUrl(URL url) throws ContainerException {
         try {
             String protocol = url.getProtocol();
             if ("jar".equals(protocol)) {
@@ -131,15 +132,15 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                 rootJarUrl = "file:" + rootJarUrl;
                 return new URL(rootJarUrl);
             } else {
-                throw new PersistenceUnitException("Unknown protocol: " + protocol);
+                throw new ContainerException("Unknown protocol: " + protocol);
             }
         } catch (IOException e) {
-            throw new PersistenceUnitException(e);
+            throw new ContainerException(e);
         }
     }
 
     private PersistenceUnitInfo parsePersistenceUnit(XMLStreamReader reader, ClassLoader classLoader, URL rootUrl, String version)
-            throws XMLStreamException, PersistenceUnitException, MalformedURLException {
+            throws XMLStreamException, ContainerException, MalformedURLException {
         String name = reader.getAttributeValue(null, "name");
         String trxAttr = reader.getAttributeValue(null, "transaction-type");
         PersistenceUnitTransactionType trxType = "JTA".equals(trxAttr) ? JTA : RESOURCE_LOCAL;
@@ -181,7 +182,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                         SharedCacheMode mode = SharedCacheMode.valueOf(value);
                         info.setSharedCacheMode(mode);
                     } catch (IllegalArgumentException e) {
-                        throw new PersistenceUnitException("Illegal shared cache mode: " + value);
+                        throw new ContainerException("Illegal shared cache mode: " + value);
                     }
                 } else if ("validation-mode".equals(reader.getName().getLocalPart())) {
                     String value = reader.getElementText();
@@ -189,7 +190,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                         ValidationMode mode = ValidationMode.valueOf(value);
                         info.setValidationMode(mode);
                     } catch (IllegalArgumentException e) {
-                        throw new PersistenceUnitException("Illegal validation mode: " + value);
+                        throw new ContainerException("Illegal validation mode: " + value);
                     }
                 }
                 break;
@@ -202,16 +203,16 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
         }
     }
 
-    private DataSource getDataSource(XMLStreamReader reader) throws PersistenceUnitException {
+    private DataSource getDataSource(XMLStreamReader reader) throws ContainerException {
         try {
             String dataSourceName = reader.getElementText();
             DataSource dataSource = registry.getDataSource(dataSourceName);
             if (dataSource == null) {
-                throw new PersistenceUnitException("DataSource not found: " + dataSourceName);
+                throw new ContainerException("DataSource not found: " + dataSourceName);
             }
             return dataSource;
         } catch (XMLStreamException e) {
-            throw new PersistenceUnitException(e);
+            throw new ContainerException(e);
         }
     }
 

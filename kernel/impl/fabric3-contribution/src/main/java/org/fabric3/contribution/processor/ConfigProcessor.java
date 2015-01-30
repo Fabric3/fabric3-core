@@ -4,12 +4,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.model.type.component.Composite;
@@ -25,6 +19,11 @@ import org.fabric3.spi.contribution.xml.XmlProcessor;
 import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 /**
  * Processes XML config contributions. Config XML contributions are used to deploy properties to the domain that may be referenced by components in

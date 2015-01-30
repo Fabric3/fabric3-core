@@ -16,6 +16,8 @@
  */
 package org.fabric3.management.rest.framework.domain.contribution;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,16 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
+import org.fabric3.api.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.api.host.contribution.ContributionInUseException;
 import org.fabric3.api.host.contribution.ContributionLockedException;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
@@ -47,6 +45,7 @@ import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.contribution.RemoveException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UninstallException;
+import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.management.rest.framework.ResourceHelper;
@@ -58,11 +57,10 @@ import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.api.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.spi.introspection.validation.InvalidContributionException;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**

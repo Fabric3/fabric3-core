@@ -22,9 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.oasisopen.sca.annotation.Intent;
-
 import org.fabric3.api.annotation.IntentMetaData;
+import org.oasisopen.sca.annotation.Intent;
 
 /**
  * Used to specify the current subject roles required to execute a service operation.

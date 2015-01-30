@@ -20,14 +20,13 @@ package org.fabric3.security.authorization;
 
 import java.util.List;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
-import org.fabric3.spi.container.wire.Interceptor;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Interceptor for performing role-based authorization.

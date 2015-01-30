@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.implementation.spring.model.SpringReference;
@@ -31,12 +35,8 @@ import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinit
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
-import org.fabric3.api.model.type.component.Component;
-import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.Reference;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

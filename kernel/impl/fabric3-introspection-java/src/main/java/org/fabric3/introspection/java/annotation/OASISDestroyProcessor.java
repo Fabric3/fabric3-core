@@ -21,12 +21,11 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Method;
 
-import org.oasisopen.sca.annotation.Destroy;
-
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.oasisopen.sca.annotation.Destroy;
 
 /**
  *

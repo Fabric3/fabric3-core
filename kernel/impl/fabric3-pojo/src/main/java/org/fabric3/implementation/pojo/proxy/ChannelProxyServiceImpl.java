@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
@@ -55,9 +55,9 @@ public class ChannelProxyServiceImpl implements ChannelProxyService {
         }
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ContainerException {
         if (extension == null) {
-            throw new ProxyCreationException("Channel proxy service extension not installed");
+            throw new ContainerException("Channel proxy service extension not installed");
         }
         return extension.createObjectFactory(interfaze, connection);
     }

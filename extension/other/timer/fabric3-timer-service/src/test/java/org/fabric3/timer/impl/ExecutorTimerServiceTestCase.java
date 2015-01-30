@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
-
 import org.fabric3.timer.spi.Task;
 
 /**

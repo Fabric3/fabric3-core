@@ -23,9 +23,9 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Service;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  *

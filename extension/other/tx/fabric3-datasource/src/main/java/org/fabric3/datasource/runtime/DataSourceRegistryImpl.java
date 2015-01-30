@@ -18,10 +18,10 @@
  */
 package org.fabric3.datasource.runtime;
 
+import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.sql.DataSource;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;

@@ -18,11 +18,11 @@
  */
 package org.fabric3.contribution.processor;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;

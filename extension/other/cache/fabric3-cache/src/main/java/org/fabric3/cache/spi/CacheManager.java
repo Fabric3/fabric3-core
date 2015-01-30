@@ -16,6 +16,8 @@
  */
 package org.fabric3.cache.spi;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Implementations manage cache resources for a provider on a runtime.
  */
@@ -34,16 +36,16 @@ public interface CacheManager<T extends PhysicalCacheResourceDefinition> {
      * Creates resources for a cache.
      *
      * @param configuration the cache configuration
-     * @throws CacheBuildException if there is an error creating the cache resources
+     * @throws ContainerException if there is an error creating the cache resources
      */
-    void create(T configuration) throws CacheBuildException;
+    void create(T configuration) throws ContainerException;
 
     /**
      * Removes resources for a cache.
      *
      * @param configuration the cache configuration
-     * @throws CacheBuildException if there is an error removing the cache resources
+     * @throws ContainerException if there is an error removing the cache resources
      */
-    void remove(T configuration) throws CacheBuildException;
+    void remove(T configuration) throws ContainerException;
 
 }

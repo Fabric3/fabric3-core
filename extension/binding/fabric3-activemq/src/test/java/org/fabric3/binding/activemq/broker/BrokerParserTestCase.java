@@ -18,10 +18,10 @@
  */
 package org.fabric3.binding.activemq.broker;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 

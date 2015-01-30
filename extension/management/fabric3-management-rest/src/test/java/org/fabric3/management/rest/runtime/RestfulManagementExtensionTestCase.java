@@ -24,20 +24,19 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.management.rest.spi.ResourceHost;
-import org.fabric3.management.rest.spi.ResourceMapping;
-import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.management.rest.transformer.TransformerPair;
-import org.fabric3.management.rest.transformer.TransformerPairService;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
 import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.management.rest.spi.ResourceHost;
+import org.fabric3.management.rest.spi.ResourceMapping;
+import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.management.rest.transformer.TransformerPair;
+import org.fabric3.management.rest.transformer.TransformerPairService;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 

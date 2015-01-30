@@ -26,14 +26,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.repository.ArtifactCache;
-import org.fabric3.spi.repository.CacheException;
 
 /**
  *
@@ -56,9 +55,9 @@ public class FSArtifactCache implements ArtifactCache {
         tempDir.mkdirs();
     }
 
-    public synchronized URL cache(URI uri, InputStream stream) throws CacheException {
+    public synchronized URL cache(URI uri, InputStream stream) throws ContainerException {
         if (entries.containsKey(uri)) {
-            throw new CacheException("Entry for URI already exists: " + uri);
+            throw new ContainerException("Entry for URI already exists: " + uri);
         }
         try {
             String suffix = getSuffix(uri);
@@ -70,7 +69,7 @@ public class FSArtifactCache implements ArtifactCache {
             file.deleteOnExit();
             return url;
         } catch (IOException e) {
-            throw new CacheException(e);
+            throw new ContainerException(e);
         } finally {
             try {
                 stream.close();

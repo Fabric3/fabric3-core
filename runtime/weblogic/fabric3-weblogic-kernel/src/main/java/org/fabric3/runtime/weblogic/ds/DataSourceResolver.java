@@ -16,8 +16,6 @@
  */
 package org.fabric3.runtime.weblogic.ds;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.management.AttributeChangeNotification;
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -28,14 +26,14 @@ import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.datasource.spi.DataSourceRegistry;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBEAN;
 
 /**

@@ -16,20 +16,19 @@
  */
 package org.fabric3.fabric.container.binding;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistryCallback;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

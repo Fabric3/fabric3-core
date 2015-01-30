@@ -3,10 +3,10 @@ package org.fabric3.fabric.container.binding;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
-import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.container.invocation.Message;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -58,7 +58,7 @@ public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
         try {
             // resolve the instance on every invocation so that stateless scoped components receive a new instance
             return (BindingHandler<T>) delegate.getInstance();
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

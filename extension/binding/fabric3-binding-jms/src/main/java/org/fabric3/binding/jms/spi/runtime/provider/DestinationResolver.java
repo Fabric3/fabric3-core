@@ -17,6 +17,7 @@
 package org.fabric3.binding.jms.spi.runtime.provider;
 
 import org.fabric3.api.binding.jms.model.Destination;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Implemented by a JMS provider to resolve destinations.
@@ -28,8 +29,8 @@ public interface DestinationResolver {
      *
      * @param definition the destination definition
      * @return the resolved destination
-     * @throws JmsResolutionException if there is a resolution error
+     * @throws ContainerException if there is a resolution error
      */
-    javax.jms.Destination resolve(Destination definition) throws JmsResolutionException;
+    javax.jms.Destination resolve(Destination definition) throws ContainerException;
 
 }

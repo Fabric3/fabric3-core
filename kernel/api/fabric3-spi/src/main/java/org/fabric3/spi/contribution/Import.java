@@ -18,10 +18,10 @@
  */
 package org.fabric3.spi.contribution;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 /**
  * A contribution import.

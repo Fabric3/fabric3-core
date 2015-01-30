@@ -23,9 +23,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 
@@ -55,8 +54,7 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
             return true;
         }
 
-        public Transformer<Object, Object> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
-                throws TransformationException {
+        public Transformer<Object, Object> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
             return new MockTransformer();
         }
 
@@ -64,7 +62,7 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
 
     private class MockTransformer implements Transformer<Object, Object> {
 
-        public Object transform(Object o, ClassLoader loader) throws TransformationException {
+        public Object transform(Object o, ClassLoader loader) {
             return null;
         }
 

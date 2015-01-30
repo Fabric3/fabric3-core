@@ -20,7 +20,6 @@
 package org.fabric3.transport.jetty.management;
 
 import org.eclipse.jetty.server.session.HashSessionManager;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 

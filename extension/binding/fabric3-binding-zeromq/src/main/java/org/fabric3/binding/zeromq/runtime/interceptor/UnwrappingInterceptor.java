@@ -1,9 +1,8 @@
 package org.fabric3.binding.zeromq.runtime.interceptor;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Unwraps a single message parameter from an Object array to a raw (only the parameter) form. Used when serializing a message to the ZeroMQ socket.

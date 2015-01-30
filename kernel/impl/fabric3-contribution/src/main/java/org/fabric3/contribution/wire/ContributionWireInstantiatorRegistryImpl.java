@@ -22,12 +22,11 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

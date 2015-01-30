@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.fabric3.spi.classloader.ClassLoaderObjectInputStream;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -32,12 +32,12 @@ import org.fabric3.spi.transform.Transformer;
  */
 public abstract class AbstractSerializingTransformer<S, T> implements Transformer<S, T> {
 
-    protected byte[] serialize(Object o) throws TransformationException {
+    protected byte[] serialize(Object o) throws ContainerException {
         if (o == null) {
-            throw new TransformationException("Attempt to serialize a null object");
+            throw new IllegalArgumentException("Attempt to serialize a null object");
         }
         if (!(o instanceof Serializable)) {
-            throw new TransformationException("Parameters for Java-to-Java transformations must implement Serializable: " + o.getClass());
+            throw new IllegalArgumentException("Parameters for Java-to-Java transformations must implement Serializable: " + o.getClass());
         }
         ObjectOutputStream stream = null;
         try {
@@ -47,7 +47,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
             stream.flush();
             return bos.toByteArray();
         } catch (IOException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         } finally {
             try {
                 if (stream != null) {
@@ -59,7 +59,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
         }
     }
 
-    protected Serializable deserialize(byte[] bytes, ClassLoader loader) throws TransformationException {
+    protected Serializable deserialize(byte[] bytes, ClassLoader loader) throws ContainerException {
         ByteArrayInputStream bis = null;
         ObjectInputStream stream = null;
         try {
@@ -67,7 +67,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
             stream = new ClassLoaderObjectInputStream(bis, loader);
             return (Serializable) stream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         } finally {
             try {
                 if (stream != null) {

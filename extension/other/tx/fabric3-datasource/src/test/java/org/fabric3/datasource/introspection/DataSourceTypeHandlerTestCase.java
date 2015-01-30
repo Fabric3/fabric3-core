@@ -16,12 +16,11 @@
  */
 package org.fabric3.datasource.introspection;
 
-import java.lang.reflect.Field;
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.datasource.model.DataSourceResourceReference;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

@@ -25,13 +25,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.management.ManagementException;
+import org.fabric3.api.model.type.java.ManagementInfo;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * An implementation that delegates exporting managed resources to a collection of {@link ManagementExtension}s. This implementation caches export
@@ -46,10 +45,10 @@ public class DelegatingManagementService implements ManagementService {
      * Setter to allow for reinjection of new management extensions.
      *
      * @param injected the reinjected management extensions
-     * @throws ManagementException if an error is encountered registering previous export requests
+     * @throws ContainerException if an error is encountered registering previous export requests
      */
     @Reference(required = false)
-    public void setExtensions(List<ManagementExtension> injected) throws ManagementException {
+    public void setExtensions(List<ManagementExtension> injected) throws ContainerException {
         extensions.clear();
         for (ManagementExtension extension : injected) {
             extensions.put(extension.getType(), extension);
@@ -58,7 +57,7 @@ public class DelegatingManagementService implements ManagementService {
         exportInstances();
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
+    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException {
         ComponentHolder holder = new ComponentHolder(componentUri, info, objectFactory, classLoader);
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
@@ -69,7 +68,7 @@ public class DelegatingManagementService implements ManagementService {
         componentHolders.add(holder);
     }
 
-    public void export(String name, String group, String description, Object instance) throws ManagementException {
+    public void export(String name, String group, String description, Object instance) throws ContainerException {
         InstanceHolder holder = new InstanceHolder(name, group, description, instance);
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
@@ -80,7 +79,7 @@ public class DelegatingManagementService implements ManagementService {
         instanceHolders.add(holder);
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
+    public void remove(URI componentUri, ManagementInfo info) throws ContainerException {
         for (Iterator<ComponentHolder> iterator = componentHolders.iterator(); iterator.hasNext();) {
             ComponentHolder holder = iterator.next();
             if (holder.componentUri.equals(componentUri)) {
@@ -96,7 +95,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    public void remove(String name, String group) throws ManagementException {
+    public void remove(String name, String group) throws ContainerException {
         for (Iterator<InstanceHolder> iterator = instanceHolders.iterator(); iterator.hasNext();) {
             InstanceHolder holder = iterator.next();
             if (holder.name.equals(name) && holder.group.equals(group)) {
@@ -112,7 +111,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    private void exportComponents() throws ManagementException {
+    private void exportComponents() throws ContainerException {
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();
@@ -125,7 +124,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    private void exportInstances() throws ManagementException {
+    private void exportInstances() throws ContainerException {
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();

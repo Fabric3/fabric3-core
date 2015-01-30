@@ -38,7 +38,7 @@ import org.fabric3.plugin.api.contribution.PluginContributionSource;
 import org.fabric3.plugin.api.runtime.PluginHostInfo;
 import org.fabric3.plugin.api.runtime.PluginRuntime;
 import org.fabric3.plugin.api.runtime.PluginRuntimeConfiguration;
-import org.fabric3.spi.container.component.ComponentException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -101,7 +101,7 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         WorkContextCache.getAndResetThreadWorkContext();
         try {
             getScopeContainer().startContext(deployable);
-        } catch (ComponentException e) {
+        } catch (ContainerException e) {
             throw new DeploymentException(e);
         }
     }

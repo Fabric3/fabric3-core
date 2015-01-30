@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.host.failure.ValidationFailure;
 
 /**

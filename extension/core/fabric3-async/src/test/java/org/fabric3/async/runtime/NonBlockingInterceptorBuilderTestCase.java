@@ -19,7 +19,6 @@
 package org.fabric3.async.runtime;
 
 import junit.framework.TestCase;
-
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
 
 /**

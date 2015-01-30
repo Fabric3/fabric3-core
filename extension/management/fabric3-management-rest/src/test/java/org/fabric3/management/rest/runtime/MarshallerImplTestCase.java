@@ -16,18 +16,17 @@
  */
 package org.fabric3.management.rest.runtime;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.management.rest.Constants;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.spi.ResourceMapping;

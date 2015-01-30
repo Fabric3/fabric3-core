@@ -19,10 +19,9 @@ package org.fabric3.transform.string2java;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 
 /**
  *
@@ -38,7 +37,7 @@ public class String2QNameTransformer implements SingleTypeTransformer<String, QN
         return TARGET;
     }
 
-    public QName transform(String source, ClassLoader loader) throws TransformationException {
+    public QName transform(String source, ClassLoader loader) {
         return QName.valueOf(source);
     }
 

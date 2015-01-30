@@ -21,8 +21,8 @@ package org.fabric3.implementation.pojo.objectfactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -34,7 +34,7 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
 
     private FactoryState state = FactoryState.UPDATED;
 
-    public Map<Object, Object> getInstance() throws ObjectCreationException {
+    public Map<Object, Object> getInstance() throws ContainerException {
         Map<Object, Object> map = new HashMap<>();
         for (Map.Entry<Object, ObjectFactory<?>> entry : factories.entrySet()) {
             map.put(entry.getKey(), entry.getValue().getInstance());

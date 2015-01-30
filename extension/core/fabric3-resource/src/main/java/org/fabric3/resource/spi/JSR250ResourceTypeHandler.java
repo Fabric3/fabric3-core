@@ -16,8 +16,8 @@
  */
 package org.fabric3.resource.spi;
 
-import java.lang.reflect.Member;
 import javax.annotation.Resource;
+import java.lang.reflect.Member;
 
 import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.spi.introspection.IntrospectionContext;

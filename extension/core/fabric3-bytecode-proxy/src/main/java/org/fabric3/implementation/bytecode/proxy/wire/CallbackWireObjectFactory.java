@@ -23,9 +23,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.implementation.bytecode.proxy.common.ProxyException;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 
@@ -56,27 +55,23 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         this.proxyFactory = proxyFactory;
     }
 
-    public T getInstance() throws ObjectCreationException {
+    public T getInstance() throws ContainerException {
         if (proxy != null) {
             return proxy;
         }
-        try {
-            if (chains.size() == 1) {
-                // if the component is only one callback, there will only be one invocation chain; use and optimized dispatcher
-                OptimizedCallbackDispatcher dispatcher = (OptimizedCallbackDispatcher) proxyFactory.createProxy(uri,
-                                                                                                                interfaze,
-                                                                                                                methods,
-                                                                                                                OptimizedCallbackDispatcher.class,
-                                                                                                                true);
-                dispatcher.init(chains.values().iterator().next());
-                return interfaze.cast(dispatcher);
-            } else {
-                CallbackDispatcher dispatcher = (CallbackDispatcher) proxyFactory.createProxy(uri, interfaze, methods, CallbackDispatcher.class, true);
-                dispatcher.init(chains);
-                return interfaze.cast(dispatcher);
-            }
-        } catch (ProxyException e) {
-            throw new ObjectCreationException(e);
+        if (chains.size() == 1) {
+            // if the component is only one callback, there will only be one invocation chain; use and optimized dispatcher
+            OptimizedCallbackDispatcher dispatcher = (OptimizedCallbackDispatcher) proxyFactory.createProxy(uri,
+                                                                                                            interfaze,
+                                                                                                            methods,
+                                                                                                            OptimizedCallbackDispatcher.class,
+                                                                                                            true);
+            dispatcher.init(chains.values().iterator().next());
+            return interfaze.cast(dispatcher);
+        } else {
+            CallbackDispatcher dispatcher = (CallbackDispatcher) proxyFactory.createProxy(uri, interfaze, methods, CallbackDispatcher.class, true);
+            dispatcher.init(chains);
+            return interfaze.cast(dispatcher);
         }
     }
 

@@ -24,8 +24,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.Environment;
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
 
 /**

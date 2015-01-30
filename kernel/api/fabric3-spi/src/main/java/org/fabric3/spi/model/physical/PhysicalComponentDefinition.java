@@ -19,11 +19,11 @@
  */
 package org.fabric3.spi.model.physical;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 /**
  * Used to provision a component on a runtime.

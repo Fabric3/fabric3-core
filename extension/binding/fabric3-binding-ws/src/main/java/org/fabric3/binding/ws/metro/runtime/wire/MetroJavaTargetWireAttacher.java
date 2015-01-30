@@ -45,7 +45,6 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.repository.ArtifactCache;
-import org.fabric3.spi.repository.CacheException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -117,7 +116,8 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 ObjectFactory<?> proxyFactory = new MetroProxyObjectFactory(endpointDefinition,
                                                                             wsdlLocation,
                                                                             generatedWsdl,
-                                                                            seiClass, connectionConfiguration,
+                                                                            seiClass,
+                                                                            connectionConfiguration,
                                                                             handlers,
                                                                             executorService,
                                                                             xmlInputFactory);
@@ -126,7 +126,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
-        } catch (CacheException | URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new ContainerException(e);
         }
 
@@ -140,7 +140,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         // no-op
     }
 
-    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTargetDefinition target) throws CacheException {
+    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTargetDefinition target) throws ContainerException {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : target.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());

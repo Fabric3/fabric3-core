@@ -16,9 +16,9 @@
  */
 package org.fabric3.management.rest.framework.domain.contribution;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.management.rest.model.Resource;
 

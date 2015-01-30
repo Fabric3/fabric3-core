@@ -19,6 +19,7 @@
 package org.fabric3.datasource.spi;
 
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Creates and disposes datasources on a runtime.
@@ -29,15 +30,15 @@ public interface DataSourceFactory {
      * Creates and registers a datasource.
      *
      * @param configuration the datasource configuration
-     * @throws DataSourceFactoryException if an error is encountered registering the datasource
+     * @throws ContainerException if an error is encountered registering the datasource
      */
-    void create(DataSourceConfiguration configuration) throws DataSourceFactoryException;
+    void create(DataSourceConfiguration configuration) throws ContainerException;
 
     /**
      * Removes a datasource.
      *
      * @param configuration the datasource configuration
-     * @throws DataSourceFactoryException if an error is encountered removing the datasource
+     * @throws ContainerException if an error is encountered removing the datasource
      */
-    void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException;
+    void remove(DataSourceConfiguration configuration) throws ContainerException;
 }

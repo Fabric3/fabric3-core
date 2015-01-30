@@ -19,10 +19,10 @@ package org.fabric3.implementation.pojo.builder;
 
 import java.util.Collection;
 
-import org.w3c.dom.Document;
-
-import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.w3c.dom.Document;
 
 /**
  * Builds an object factory that creates a property value collection from a DOM.
@@ -38,11 +38,11 @@ public interface CollectionBuilder {
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
      * @return the object factory
-     * @throws PropertyTransformException if there is an error creating the object factory
+     * @throws ContainerException if there is an error creating the object factory
      */
     <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection,
                                                    String name,
                                                    JavaGenericType type,
                                                    Document value,
-                                                   ClassLoader classLoader) throws PropertyTransformException;
+                                                   ClassLoader classLoader) throws ContainerException;
 }

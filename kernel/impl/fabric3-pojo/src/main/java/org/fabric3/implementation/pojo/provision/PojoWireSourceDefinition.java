@@ -19,8 +19,8 @@
  */
 package org.fabric3.implementation.pojo.provision;
 
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 
 /**
  *

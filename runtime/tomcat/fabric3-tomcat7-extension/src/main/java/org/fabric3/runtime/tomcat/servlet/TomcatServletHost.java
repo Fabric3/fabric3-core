@@ -18,7 +18,6 @@ package org.fabric3.runtime.tomcat.servlet;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
-
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,13 +28,12 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
+import org.fabric3.runtime.tomcat.connector.ConnectorService;
+import org.fabric3.spi.host.ServletHost;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.runtime.tomcat.connector.ConnectorService;
-import org.fabric3.spi.host.ServletHost;
 
 /**
  * Implementation of ServletHost that bridges to the host Tomcat runtime.

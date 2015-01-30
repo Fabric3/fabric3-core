@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.jndi.spi.JndiContextManager;
 

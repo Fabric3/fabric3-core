@@ -16,9 +16,9 @@
  */
 package org.fabric3.management.rest.spi;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.Role;
 import org.fabric3.management.rest.transformer.TransformerPair;

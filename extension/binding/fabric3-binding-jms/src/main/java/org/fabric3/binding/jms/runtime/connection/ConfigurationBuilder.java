@@ -16,12 +16,11 @@ import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
 import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -87,7 +86,7 @@ public class ConfigurationBuilder {
     }
 
     @Init
-    public void init() throws FactoryRegistrationException, ConnectionFactoryCreationException {
+    public void init() throws ContainerException {
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             ConnectionFactory factory = creatorRegistry.create(configuration);
@@ -101,7 +100,7 @@ public class ConfigurationBuilder {
             if (defaultProvider != null) {
                 builder = defaultBuilders.get(defaultProvider);
                 if (builder == null) {
-                    throw new ConnectionFactoryCreationException("Unable to create default connection factories. Provider not found: " + defaultProvider);
+                    throw new ContainerException("Unable to create default connection factories. Provider not found: " + defaultProvider);
                 }
             } else {
                 builder = defaultBuilders.values().iterator().next();
@@ -125,7 +124,7 @@ public class ConfigurationBuilder {
     }
 
     @Destroy
-    public void destroy() throws FactoryRegistrationException {
+    public void destroy() throws ContainerException {
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             manager.unregister(configuration.getName());
         }

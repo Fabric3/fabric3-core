@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
@@ -39,18 +40,18 @@ public interface ZeroMQWireBroker {
      * @param chains     the invocation chains
      * @param metadata the ZeroMQ metadata to configure the underlying socket
      * @param loader     the classloader to load invocation parameters with
-     * @throws BrokerException if a connection error occurs
+     * @throws ContainerException if a connection error occurs
      */
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException;
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException;
 
     /**
      * Releases a previous connection to a sender.
      *
      * @param id  the connection id
      * @param uri the target service URI
-     * @throws BrokerException if a connection error occurs
+     * @throws ContainerException if a connection error occurs
      */
-    public void releaseSender(String id, URI uri) throws BrokerException;
+    public void releaseSender(String id, URI uri) throws ContainerException;
 
     /**
      * Connects to a receiver that dispatches invocation requests from an ZeroMQ XREP socket. The Invocation chain order is used to match an
@@ -60,17 +61,17 @@ public interface ZeroMQWireBroker {
      * @param chains     the invocation chains
      * @param metadata the ZeroMQ metadata to configure the underlying socket
      * @param loader     the classloader to load invocation parameters with
-     * @throws BrokerException if a connection error occurs
+     * @throws ContainerException if a connection error occurs
      */
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException;
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException;
 
     /**
      * Releases previous connection to a receiver.
      *
      * @param uri the target service URI
-     * @throws BrokerException if a connection error occurs
+     * @throws ContainerException if a connection error occurs
      */
-    void releaseReceiver(URI uri) throws BrokerException;
+    void releaseReceiver(URI uri) throws ContainerException;
 
     /**
      * Starts all senders and receivers.

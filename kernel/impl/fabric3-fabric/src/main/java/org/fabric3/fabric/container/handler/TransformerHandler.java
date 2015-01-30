@@ -16,11 +16,10 @@
  */
 package org.fabric3.fabric.container.handler;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Converts the event to a target format by delegating to a transformer.
@@ -45,7 +44,7 @@ public class TransformerHandler implements EventStreamHandler {
         try {
             Object o = transformer.transform(event, loader);
             next.handle(o, endOfBatch);
-        } catch (TransformationException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

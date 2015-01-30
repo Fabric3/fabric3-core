@@ -17,10 +17,10 @@
 package org.fabric3.introspection.java.annotation;
 
 import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  * Processes the {@link Key} annotation on component implementation classes.

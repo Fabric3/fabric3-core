@@ -1,7 +1,6 @@
 package org.fabric3.execution.runtime;
 
 import junit.framework.TestCase;
-
 import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**

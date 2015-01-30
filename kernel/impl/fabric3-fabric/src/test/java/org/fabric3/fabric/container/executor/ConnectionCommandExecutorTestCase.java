@@ -26,9 +26,9 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.DetachWireCommand;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 
 /**
  *

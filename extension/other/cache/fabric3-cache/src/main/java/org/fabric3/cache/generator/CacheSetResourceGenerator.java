@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.cache.model.CacheSetResource;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheResource;
@@ -31,6 +28,8 @@ import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates a {@link }PhysicalCacheSetDefinition} for a set of cache configurations.

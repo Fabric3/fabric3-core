@@ -26,11 +26,11 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DisposeComponentCommand;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**

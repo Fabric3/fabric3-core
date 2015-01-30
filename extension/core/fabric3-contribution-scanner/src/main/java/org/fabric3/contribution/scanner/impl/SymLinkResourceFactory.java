@@ -20,13 +20,12 @@ package org.fabric3.contribution.scanner.impl;
 
 import java.io.File;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.contribution.scanner.spi.FileResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactory;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Factory for symbolic link contributions (.contribution files).

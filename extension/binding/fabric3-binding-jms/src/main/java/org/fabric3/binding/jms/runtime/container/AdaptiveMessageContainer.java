@@ -38,6 +38,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.provision.SessionType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
@@ -47,9 +48,8 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener on
- * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
- * <p/>
- * Note this implementation supports dispatching transactional and non-transactional messages.
+ * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing. <p/> Note
+ * this implementation supports dispatching transactional and non-transactional messages.
  */
 @Management
 public class AdaptiveMessageContainer {
@@ -425,10 +425,10 @@ public class AdaptiveMessageContainer {
     /**
      * Starts the container. Once started, messages will be received.
      *
-     * @throws JMSException if an error during start-up occurs
+     * @throws ContainerException if an error during start-up occurs
      */
     @ManagementOperation(description = "Starts the containing processing messages")
-    public void start() throws JMSException {
+    public void start() throws ContainerException {
         connectionManager.start();
         synchronized (syncMonitor) {
             running = true;
@@ -463,23 +463,18 @@ public class AdaptiveMessageContainer {
     /**
      * Initializes and starts the container. Once started, messages will be received.
      *
-     * @throws JMSException if an initialization error occurs
+     * @throws ContainerException if an initialization error occurs
      */
-    public void initialize() throws JMSException {
-        try {
-            synchronized (syncMonitor) {
-                initialized = true;
-                syncMonitor.notifyAll();
+    public void initialize() throws ContainerException {
+        synchronized (syncMonitor) {
+            initialized = true;
+            syncMonitor.notifyAll();
+        }
+        start();
+        synchronized (syncMonitor) {
+            for (int i = 0; i < minReceivers; i++) {
+                addReceiver();
             }
-            start();
-            synchronized (syncMonitor) {
-                for (int i = 0; i < minReceivers; i++) {
-                    addReceiver();
-                }
-            }
-        } catch (JMSException e) {
-            connectionManager.close();
-            throw e;
         }
     }
 
@@ -759,10 +754,10 @@ public class AdaptiveMessageContainer {
          * Loops while the container is running, receiving and dispatching messages.
          *
          * @return true if a message was received on executing the loop
-         * @throws JMSException  if an error occurs processing a message
-         * @throws WorkException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
+         * @throws JMSException       if an error occurs processing a message
+         * @throws ContainerException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receiveLoop() throws JMSException, WorkException {
+        private boolean receiveLoop() throws JMSException, ContainerException {
             boolean received = false;
             boolean active = true;
             while (active) {
@@ -818,10 +813,10 @@ public class AdaptiveMessageContainer {
          * Waits to receive a single message. If a message is received in the configured timeframe, it is dispatched to the listener.
          *
          * @return true if a message was received
-         * @throws JMSException  if there was an error receiving the message
-         * @throws WorkException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
+         * @throws JMSException       if there was an error receiving the message
+         * @throws ContainerException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receive() throws JMSException, WorkException {
+        private boolean receive() throws JMSException, ContainerException {
             try {
                 setRecoveryMarker();
                 boolean received = doReceive();
@@ -836,10 +831,10 @@ public class AdaptiveMessageContainer {
          * Initiates a transaction context if required and performs the blocking receive on the JMS destination.
          *
          * @return true if a message was received
-         * @throws JMSException  if a JMS-related exception occurred during the receive
-         * @throws WorkException if a transaction exception occurred during thr receive
+         * @throws JMSException       if a JMS-related exception occurred during the receive
+         * @throws ContainerException if a transaction exception occurred during thr receive
          */
-        private boolean doReceive() throws JMSException, WorkException {
+        private boolean doReceive() throws JMSException, ContainerException {
             synchronized (syncMonitor) {
                 if (!isRunning()) {
                     return false;

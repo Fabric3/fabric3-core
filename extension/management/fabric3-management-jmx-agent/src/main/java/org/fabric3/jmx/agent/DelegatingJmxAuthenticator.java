@@ -19,18 +19,17 @@
  */
 package org.fabric3.jmx.agent;
 
+import javax.management.remote.JMXAuthenticator;
+import javax.security.auth.Subject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.management.remote.JMXAuthenticator;
-import javax.security.auth.Subject;
-
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.host.runtime.ParseException;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Delegates to a runtime extension to perform JMX authentication.

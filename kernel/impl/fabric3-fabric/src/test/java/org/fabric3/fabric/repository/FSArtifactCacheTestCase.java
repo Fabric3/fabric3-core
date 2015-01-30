@@ -26,7 +26,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.FileHelper;
 

@@ -18,7 +18,6 @@ package org.fabric3.fabric.container.channel;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 

@@ -18,8 +18,6 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.spi.transform.TransformationException;
-
 /**
  * Tests String to Integer transform.
  */
@@ -36,29 +34,10 @@ public class Property2ShortTransformerTestCase extends BaseTransformTest {
             final short convertedShort = transformer.transform(getNode(xml), getClass().getClassLoader());
             assertNotNull(convertedShort);
             assertEquals(153, convertedShort);
-        } catch (TransformationException te) {
-            fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
         }
     }
 
-    /**
-     * Test failure of converting String to Short
-     */
-    public void testShortTransformFailure() {
-        final String INVALID_SHORT = "153908765";
-        final String xml = "<string_to_short>" + INVALID_SHORT + "</string_to_short>";
-        try {
-            Property2ShortTransformer transformer = new Property2ShortTransformer();
-            transformer.transform(getNode(xml), getClass().getClassLoader());
-            fail("Should not reach here something wrong in [ String2Short ] code");
-        } catch (TransformationException te) {
-            assertNotNull(te);
-            assertTrue(NumberFormatException.class.isAssignableFrom(te.getCause().getClass()));
-        } catch (Exception e) {
-            fail("Unexpexcted Exception Should not occur " + e);
-        }
-    }
 
 }

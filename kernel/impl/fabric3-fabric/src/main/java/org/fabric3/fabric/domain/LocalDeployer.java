@@ -25,7 +25,6 @@ import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.domain.Deployer;
@@ -51,7 +50,7 @@ public class LocalDeployer implements Deployer {
             if (scopeRegistry != null) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             throw new DeploymentException(e);
         }
     }

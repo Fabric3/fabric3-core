@@ -21,23 +21,22 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.binding.file.ReferenceAdapter;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

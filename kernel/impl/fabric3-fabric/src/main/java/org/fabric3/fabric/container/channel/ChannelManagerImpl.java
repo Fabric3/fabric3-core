@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
@@ -69,7 +70,7 @@ public class ChannelManagerImpl implements ChannelManager {
         return holder.counter.get();
     }
 
-    public void register(Channel channel) throws DuplicateChannelException {
+    public void register(Channel channel) throws ContainerException {
         ChannelSide channelSide = channel.getChannelSide();
         if (ChannelSide.COLLOCATED == channelSide) {
             checkAndPut(channel, collocatedChannels);
@@ -125,10 +126,10 @@ public class ChannelManagerImpl implements ChannelManager {
         return holder;
     }
 
-    private void checkAndPut(Channel channel, Map<URI, Holder> map) throws DuplicateChannelException {
+    private void checkAndPut(Channel channel, Map<URI, Holder> map) throws ContainerException {
         URI uri = channel.getUri();
         if (map.containsKey(uri)) {
-            throw new DuplicateChannelException("Channel already exists: " + uri);
+            throw new ContainerException("Channel already exists: " + uri);
         }
         map.put(uri, new Holder(channel));
     }

@@ -19,10 +19,10 @@
  */
 package org.fabric3.api.host.contribution;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 
 /**

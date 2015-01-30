@@ -16,12 +16,11 @@
  */
 package org.fabric3.fabric.container.binding;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistryCallback;
 

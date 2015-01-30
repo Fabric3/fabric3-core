@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
@@ -38,6 +37,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;

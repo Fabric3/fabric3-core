@@ -22,6 +22,7 @@ import javax.jms.JMSException;
 import java.net.URI;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Maintains shared JMS connection state for an {@link AdaptiveMessageContainer}.
@@ -59,13 +60,13 @@ public class ConnectionManager {
         return durable;
     }
 
-    public void start() throws JMSException {
+    public void start() throws ContainerException {
         if (cacheConnection) {
             getSharedConnection();
         }
     }
 
-    public Connection getConnection() throws JMSException {
+    public Connection getConnection() throws ContainerException {
         if (cacheConnection) {
             return getSharedConnection();
         } else {
@@ -77,6 +78,8 @@ public class ConnectionManager {
                 connection = connectionFactory.createConnection();
                 connection.start();
                 return connection;
+            } catch (JMSException e) {
+                throw new ContainerException(e);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
@@ -95,9 +98,9 @@ public class ConnectionManager {
      * Returns a shared connection
      *
      * @return the shared connection
-     * @throws JMSException if there was an error returning the shared connection
+     * @throws ContainerException if there was an error returning the shared connection
      */
-    private synchronized Connection getSharedConnection() throws JMSException {
+    private synchronized Connection getSharedConnection() throws ContainerException {
         if (sharedConnection == null) {
             sharedConnection = createSharedConnection();
         }
@@ -108,9 +111,9 @@ public class ConnectionManager {
      * Create a shared connection.
      *
      * @return the connection
-     * @throws JMSException if an error is encountered creating the connection
+     * @throws ContainerException if an error is encountered creating the connection
      */
-    private Connection createSharedConnection() throws JMSException {
+    private Connection createSharedConnection() throws ContainerException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Connection connection = null;
         try {
@@ -120,7 +123,7 @@ public class ConnectionManager {
             return connection;
         } catch (JMSException ex) {
             JmsHelper.closeQuietly(connection);
-            throw ex;
+            throw new ContainerException(ex);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -185,13 +188,17 @@ public class ConnectionManager {
     /**
      * Refreshes the shared connection.
      *
-     * @throws JMSException there is an error refreshing the connection
+     * @throws ContainerException there is an error refreshing the connection
      */
-    private synchronized void refreshSharedConnection() throws JMSException {
+    private synchronized void refreshSharedConnection() throws ContainerException {
         JmsHelper.closeQuietly(sharedConnection);
         sharedConnection = createSharedConnection();
         if (sharedConnectionStarted) {
-            sharedConnection.start();
+            try {
+                sharedConnection.start();
+            } catch (JMSException e) {
+                throw new ContainerException(e);
+            }
         }
     }
 

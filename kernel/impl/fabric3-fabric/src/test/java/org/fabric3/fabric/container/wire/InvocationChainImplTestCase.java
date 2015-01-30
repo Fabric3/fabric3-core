@@ -20,11 +20,10 @@
 package org.fabric3.fabric.container.wire;
 
 import junit.framework.TestCase;
-
 import org.fabric3.spi.container.invocation.Message;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  *

@@ -29,7 +29,6 @@ import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Service;
@@ -47,6 +46,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 
 /**
  *

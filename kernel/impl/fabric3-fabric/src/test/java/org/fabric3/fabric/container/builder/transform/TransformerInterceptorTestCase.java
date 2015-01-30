@@ -18,12 +18,11 @@ package org.fabric3.fabric.container.builder.transform;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.container.interceptor.TransformerInterceptor;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageImpl;
-import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.transform.Transformer;
 
 /**
  *

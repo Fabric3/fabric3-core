@@ -25,13 +25,10 @@ import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.GroupInitializationException;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceInitException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -59,17 +56,13 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super.stop();
     }
 
-    public Object getInstance(ScopedComponent component) throws InstanceLifecycleException {
-        try {
-            Object instance = component.createInstance();
-            component.startInstance(instance);
-            return instance;
-        } catch (ObjectCreationException e) {
-            throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
-        }
+    public Object getInstance(ScopedComponent component) throws ContainerException {
+        Object instance = component.createInstance();
+        component.startInstance(instance);
+        return instance;
     }
 
-    public void releaseInstance(ScopedComponent component, Object instance) throws InstanceDestructionException {
+    public void releaseInstance(ScopedComponent component, Object instance) throws ContainerException {
         component.stopInstance(instance);
     }
 

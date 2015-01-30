@@ -20,23 +20,22 @@ package org.fabric3.binding.zeromq.generator;
 
 import java.net.URI;
 
-import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

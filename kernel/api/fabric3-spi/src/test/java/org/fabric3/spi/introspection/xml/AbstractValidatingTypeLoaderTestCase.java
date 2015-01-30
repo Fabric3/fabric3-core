@@ -16,13 +16,12 @@
  */
 package org.fabric3.spi.introspection.xml;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 

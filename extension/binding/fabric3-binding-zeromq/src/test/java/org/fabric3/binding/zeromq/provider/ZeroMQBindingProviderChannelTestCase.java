@@ -19,7 +19,6 @@ package org.fabric3.binding.zeromq.provider;
 import java.net.URI;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.instance.LogicalChannel;
 

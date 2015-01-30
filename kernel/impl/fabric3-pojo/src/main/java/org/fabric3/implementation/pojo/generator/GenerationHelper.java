@@ -18,10 +18,10 @@
  */
 package org.fabric3.implementation.pojo.generator;
 
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  * Provides common functions for Java component generation.

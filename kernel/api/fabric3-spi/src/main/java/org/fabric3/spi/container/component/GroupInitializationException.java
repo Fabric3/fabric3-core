@@ -22,10 +22,12 @@ package org.fabric3.spi.container.component;
 import java.net.URI;
 import java.util.Set;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  *
  */
-public class GroupInitializationException extends InstanceLifecycleException {
+public class GroupInitializationException extends ContainerException {
     private static final long serialVersionUID = 2049226987838195489L;
     private final Set<URI> componentUris;
 

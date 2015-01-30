@@ -23,8 +23,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.os.OperatingSystem;
+import org.fabric3.api.model.type.RuntimeMode;
 
 /**
  * Interface that provides information on the host environment. This allows the runtime to access information about the environment in which it is running. The

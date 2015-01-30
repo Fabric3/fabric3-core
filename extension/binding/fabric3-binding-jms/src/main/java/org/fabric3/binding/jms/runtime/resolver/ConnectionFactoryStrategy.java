@@ -22,7 +22,7 @@ package org.fabric3.binding.jms.runtime.resolver;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Strategy for looking up connection factories.
@@ -34,16 +34,16 @@ public interface ConnectionFactoryStrategy {
      *
      * @param definition the connection factory definition.
      * @return the connection factory
-     * @throws JmsResolutionException if there is an error returning the connection factory
+     * @throws ContainerException if there is an error returning the connection factory
      */
-    ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException;
+    ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException;
 
     /**
      * Signals that a connection factory is being released and resources can be disposed.
      *
      * @param definition the definition that created the connection factory
-     * @throws JmsResolutionException if there is an error releasing resources
+     * @throws ContainerException if there is an error releasing resources
      */
-    void release(ConnectionFactoryDefinition definition) throws JmsResolutionException;
+    void release(ConnectionFactoryDefinition definition) throws ContainerException;
 
 }

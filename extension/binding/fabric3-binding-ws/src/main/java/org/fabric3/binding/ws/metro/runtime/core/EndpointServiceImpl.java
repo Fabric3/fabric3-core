@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.host.ServletHost;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -53,7 +54,7 @@ public class EndpointServiceImpl implements EndpointService {
         metroServlet = new MetroServlet(executorService);
     }
 
-    public void registerService(EndpointConfiguration configuration) throws EndpointException {
+    public void registerService(EndpointConfiguration configuration) throws ContainerException {
         String servicePath = configuration.getServicePath();
         if (servletHost.isMappingRegistered(servicePath)) {
             // wire re-provisioned
@@ -69,11 +70,11 @@ public class EndpointServiceImpl implements EndpointService {
             endpointUrls.put(configuration.getServiceUri(), endpointUrl);
             monitor.endpointProvisioned(servicePath);
         } catch (MalformedURLException e) {
-            throw new EndpointException("Error registering service: " + servicePath, e);
+            throw new ContainerException("Error registering service: " + servicePath, e);
         }
     }
 
-    public void unregisterService(String servicePath) throws EndpointException {
+    public void unregisterService(String servicePath) throws ContainerException {
         try {
             servletHost.unregisterMapping(servicePath);
             servletHost.unregisterMapping(servicePath + "/mex");
@@ -89,7 +90,7 @@ public class EndpointServiceImpl implements EndpointService {
 
             monitor.endpointRemoved(servicePath);
         } catch (MalformedURLException e) {
-            throw new EndpointException("Error registering service: " + servicePath, e);
+            throw new ContainerException("Error registering service: " + servicePath, e);
         }
     }
 

@@ -22,8 +22,8 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.container.component.InstanceInvocationException;
 
 /**
  * Dispatches from a proxy to an {@link EventStream}.
@@ -45,7 +45,7 @@ public final class JDKEventHandler implements InvocationHandler {
         return null;
     }
 
-    private Object handleProxyMethod(Method method) throws InstanceInvocationException {
+    private Object handleProxyMethod(Method method) throws ContainerException {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
         } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
@@ -54,7 +54,7 @@ public final class JDKEventHandler implements InvocationHandler {
             return hashCode();
         }
         String op = method.getName();
-        throw new InstanceInvocationException("Operation not configured: " + op);
+        throw new ContainerException("Operation not configured: " + op);
     }
 
 }

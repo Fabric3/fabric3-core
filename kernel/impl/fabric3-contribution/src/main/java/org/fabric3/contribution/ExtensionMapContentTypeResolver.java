@@ -24,10 +24,9 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.Init;
-
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
+import org.oasisopen.sca.annotation.Init;
 
 /**
  * Content type resolver that is implemented using a configured map.

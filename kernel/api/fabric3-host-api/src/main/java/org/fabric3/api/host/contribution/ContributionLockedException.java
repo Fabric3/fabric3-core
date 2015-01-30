@@ -18,9 +18,9 @@
  */
 package org.fabric3.api.host.contribution;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 /**
  * Thrown when an attempt is made to uninstall a contribution that is referenced by deployed components.

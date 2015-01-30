@@ -22,8 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -130,7 +130,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     private Object createProxy() {
         try {
             return proxyFactory.getInstance();
-        } catch (ObjectCreationException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

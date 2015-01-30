@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.fabric3.binding.jms.runtime.container;
 
-import javax.jms.JMSException;
 import java.net.URI;
+
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Manages {@link AdaptiveMessageContainer}s used to receive messages from a JMS provider.
@@ -37,16 +37,16 @@ public interface MessageContainerManager {
      * Register a container which dispatches inbound JMS messages.
      *
      * @param container the container
-     * @throws JMSException if an error registering the container is encountered
+     * @throws ContainerException if an error registering the container is encountered
      */
-    public void register(AdaptiveMessageContainer container) throws JMSException;
+    public void register(AdaptiveMessageContainer container) throws ContainerException;
 
     /**
      * Unregister a container.
      *
      * @param uri the container URI
-     * @throws JMSException if an error un-registering the container is encountered
+     * @throws ContainerException if an error un-registering the container is encountered
      */
-    public void unregister(URI uri) throws JMSException;
+    public void unregister(URI uri) throws ContainerException;
 
 }

@@ -33,19 +33,17 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.management.ManagementService;
+import org.fabric3.timer.spi.Task;
+import org.fabric3.timer.spi.TimerService;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.spi.management.ManagementException;
-import org.fabric3.spi.management.ManagementService;
-import org.fabric3.timer.spi.PoolAllocationException;
-import org.fabric3.timer.spi.Task;
-import org.fabric3.timer.spi.TimerService;
 
 /**
  *
@@ -70,18 +68,16 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
     }
 
     @Init
-    public void init() throws PoolAllocationException {
+    public void init() throws ContainerException {
         allocate(TimerService.DEFAULT_POOL, defaultPoolSize);
     }
 
     @Destroy
     public void destroy() {
-        for (ScheduledExecutorService executor : executors.values()) {
-            executor.shutdownNow();
-        }
+        executors.values().forEach(java.util.concurrent.ScheduledExecutorService::shutdownNow);
     }
 
-    public void allocate(String poolName, int coreSize) throws PoolAllocationException {
+    public void allocate(String poolName, int coreSize) throws ContainerException {
         if (executors.containsKey(poolName)) {
             throw new IllegalStateException("Pool already allocated: " + poolName);
         }
@@ -93,25 +89,17 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         statistics.start();
         statisticsCache.put(poolName, statistics);
         if (managementService != null) {
-            try {
-                managementService.export(encodeName(poolName), "timer pools", "Timer pools", statistics);
-            } catch (ManagementException e) {
-                throw new PoolAllocationException("Error allocating pool " + poolName, e);
-            }
+            managementService.export(encodeName(poolName), "timer pools", "Timer pools", statistics);
         }
     }
 
-    public void deallocate(String poolName) throws PoolAllocationException {
+    public void deallocate(String poolName) throws ContainerException {
         ScheduledExecutorService executor = executors.remove(poolName);
         if (executor == null) {
             throw new IllegalStateException("Pool not allocated: " + poolName);
         }
         if (managementService != null) {
-            try {
-                managementService.remove(encodeName(poolName), "timer pools");
-            } catch (ManagementException e) {
-                throw new PoolAllocationException("Error allocating pool " + poolName, e);
-            }
+            managementService.remove(encodeName(poolName), "timer pools");
         }
         executor.shutdown();
     }
@@ -223,7 +211,6 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         return "timer/pools/" + name.toLowerCase();
     }
 
-
     /**
      * Implements a recurring task by wrapping an runnable and rescheduling with the executor service after an iteration has completed.
      */
@@ -275,8 +262,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
     }
 
     /**
-     * Returned when a recurring task is scheduled. This class wraps a ScheduledFuture delegate which is updated after the recurring event is
-     * rescheduled.
+     * Returned when a recurring task is scheduled. This class wraps a ScheduledFuture delegate which is updated after the recurring event is rescheduled.
      *
      * @param <V> The result type returned by this Future's <tt>get</tt> method
      */

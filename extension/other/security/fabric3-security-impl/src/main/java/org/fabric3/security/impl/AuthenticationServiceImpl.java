@@ -19,16 +19,15 @@ package org.fabric3.security.impl;
 import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.UsernamePasswordToken;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Basic authentication and service that relies on a SecurityStore for subject information. This implementation may also be used to authenticate JMX

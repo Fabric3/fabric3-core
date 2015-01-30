@@ -27,12 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -50,13 +50,13 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         return true;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException {
         Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
         return new WireObjectFactory<>(interfaze, callbackUri, this, mappings);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
+           throws ContainerException  {
         Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
         Map<String, Map<Method, InvocationChain>> mappings = new HashMap<>();
         mappings.put(callbackUri.toString(), operationMappings);
@@ -64,7 +64,7 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
+            throws ContainerException {
         if (!(factory instanceof CallbackWireObjectFactory)) {
             // a placeholder object factory (i.e. created when the callback is not wired) needs to be replaced 
             return createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
@@ -75,13 +75,13 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         return callbackFactory;
     }
 
-    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException {
+    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ContainerException {
         JDKInvocationHandler<T> handler;
         handler = new JDKInvocationHandler<>(interfaze, callbackUri, mappings);
         return handler.getService();
     }
 
-    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException {
+    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ContainerException {
         ClassLoader cl = interfaze.getClassLoader();
         MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<>(mappings);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
@@ -107,7 +107,7 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         }
     }
 
-    private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) throws NoMethodForOperationException {
+    private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) throws ContainerException {
 
         List<InvocationChain> invocationChains = wire.getInvocationChains();
 
@@ -118,9 +118,9 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
                 Method method = findMethod(interfaze, operation);
                 chains.put(method, chain);
             } catch (NoSuchMethodException e) {
-                throw new NoMethodForOperationException(operation.getName());
+                throw new ContainerException(operation.getName());
             } catch (ClassNotFoundException e) {
-                throw new NoMethodForOperationException(e);
+                throw new ContainerException(e);
             }
         }
         return chains;

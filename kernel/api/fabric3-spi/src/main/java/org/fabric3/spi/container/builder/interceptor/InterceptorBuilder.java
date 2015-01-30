@@ -20,8 +20,8 @@
 package org.fabric3.spi.container.builder.interceptor;
 
 import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
  * Builds an interceptor for a wire invocation chain.

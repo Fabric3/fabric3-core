@@ -18,22 +18,21 @@
  */
 package org.fabric3.jpa.runtime.proxy;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.RollbackException;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Manages a cache of EntityManagers.
- * <p/>
+ *
  * EntityManager instances (and their underlying Hibernate Sessions) are cached for the duration of the associated JTA transaction and closed when the
  * transaction commits or rolls back.
  */

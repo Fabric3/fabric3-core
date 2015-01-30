@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
@@ -38,15 +41,12 @@ import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  *

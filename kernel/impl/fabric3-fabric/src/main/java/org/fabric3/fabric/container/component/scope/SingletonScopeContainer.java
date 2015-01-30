@@ -36,12 +36,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.GroupInitializationException;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceInitException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.oasisopen.sca.annotation.Destroy;
 
 /**
@@ -140,7 +137,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     }
 
     @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
-    public Object getInstance(ScopedComponent component) throws InstanceLifecycleException {
+    public Object getInstance(ScopedComponent component) throws ContainerException {
         Object instance = instances.get(component);
         if (instance != EMPTY && instance != null) {
             return instance;
@@ -156,7 +153,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     latch.await(5, TimeUnit.MINUTES);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
+                    throw new ContainerException("Error creating instance for: " + component.getUri(), e);
                 }
                 // an instance wrapper is now available as the instantiation has completed
                 return instances.get(component);
@@ -187,8 +184,6 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             instances.put(component, instance);
             latch.countDown();
             return instance;
-        } catch (ObjectCreationException e) {
-            throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
         } finally {
             pending.remove(component);
         }
@@ -206,7 +201,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         return Collections.singletonList(instance);
     }
 
-    public void reinject() throws InstanceLifecycleException {
+    public void reinject() throws ContainerException {
         for (Map.Entry<ScopedComponent, Object> entry : instances.entrySet()) {
             ScopedComponent component = entry.getKey();
             Object instance = entry.getValue();
@@ -287,7 +282,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             try {
                 Object instance = toDestroy.instance;
                 component.stopInstance(instance);
-            } catch (InstanceDestructionException e) {
+            } catch (ContainerException e) {
                 // log the error from destroy but continue
                 monitor.destructionError(component.getUri(), component.getDeployable(), e);
             }

@@ -22,7 +22,6 @@ package org.fabric3.fabric.domain.generator.component;
 import java.net.URI;
 
 import junit.framework.TestCase;
-
 import org.fabric3.fabric.container.command.StopComponentCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;

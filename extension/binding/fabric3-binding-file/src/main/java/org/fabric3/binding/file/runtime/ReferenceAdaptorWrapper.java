@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.fabric3.api.binding.file.ReferenceAdapter;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -32,7 +32,7 @@ public class ReferenceAdaptorWrapper implements ReferenceAdapter {
                 throw new ServiceRuntimeException("File binding adaptor must implement " + ReferenceAdapter.class.getName() + ":" + componentName);
             }
             return (ReferenceAdapter) instance;
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

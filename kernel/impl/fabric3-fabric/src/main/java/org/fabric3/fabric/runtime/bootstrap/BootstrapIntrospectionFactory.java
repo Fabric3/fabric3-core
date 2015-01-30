@@ -22,14 +22,6 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.introspection.java.ReferenceProcessorImpl;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.api.annotation.management.Management;
@@ -42,6 +34,7 @@ import org.fabric3.implementation.system.introspection.SystemServiceHeuristic;
 import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic;
 import org.fabric3.introspection.java.DefaultClassVisitor;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
+import org.fabric3.introspection.java.ReferenceProcessorImpl;
 import org.fabric3.introspection.java.annotation.ConsumerProcessor;
 import org.fabric3.introspection.java.annotation.ManagementOperationProcessor;
 import org.fabric3.introspection.java.annotation.ManagementProcessor;
@@ -59,6 +52,12 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Instantiates an ImplementationProcessor for introspecting system components.

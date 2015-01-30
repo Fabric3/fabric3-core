@@ -16,18 +16,17 @@
  */
 package org.fabric3.security.spring;
 
+import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.security.auth.Subject;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Implementation of {@link SecuritySubject} that wraps a Spring <code>Authentication</code> instance.

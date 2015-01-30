@@ -28,9 +28,9 @@ import java.util.Properties;
 import org.fabric3.api.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
-import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.ContainerException;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
 import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
@@ -50,7 +50,7 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
         this.cache = cache;
     }
 
-    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException {
+    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws ContainerException {
         EntityManagerFactory resolvedEmf = cache.get(unitName);
         if (resolvedEmf != null) {
             return resolvedEmf;
@@ -74,9 +74,9 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
      * @param overrides   persistence unit property overrides
      * @param classLoader the persistence unit classloader
      * @return the entity manager factory
-     * @throws JpaResolutionException if there is an error creating the factory
+     * @throws ContainerException if there is an error creating the factory
      */
-    private EntityManagerFactory createEntityManagerFactory(PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException {
+    private EntityManagerFactory createEntityManagerFactory(PersistenceOverrides overrides, ClassLoader classLoader) throws ContainerException {
         List<PersistenceUnitInfo> infos = parser.parse(classLoader);
         String unitName = overrides.getUnitName();
         for (PersistenceUnitInfo info : infos) {
@@ -94,7 +94,7 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
             EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(descriptor, Collections.emptyMap(), classLoader);
             return builder.build();
         }
-        throw new JpaResolutionException("Persistence unit not defined for: " + unitName);
+        throw new ContainerException("Persistence unit not defined for: " + unitName);
     }
 
 }

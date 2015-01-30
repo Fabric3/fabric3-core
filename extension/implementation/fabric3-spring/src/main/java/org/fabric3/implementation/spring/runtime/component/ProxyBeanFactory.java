@@ -19,6 +19,8 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -26,9 +28,6 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * A BeanFactory implementation that tracks wire and event stream proxies configured for a Spring component. This factory is used by a parent of the
@@ -61,7 +60,7 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
         }
         try {
             return factory.getInstance();
-        } catch (ObjectCreationException e) {
+        } catch (ContainerException e) {
             throw new BeanCreationException("Error creating proxy: " + name, e);
         }
     }

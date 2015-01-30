@@ -21,7 +21,6 @@ package org.fabric3.fabric.container.component.scope;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.ScopeContainer;
 

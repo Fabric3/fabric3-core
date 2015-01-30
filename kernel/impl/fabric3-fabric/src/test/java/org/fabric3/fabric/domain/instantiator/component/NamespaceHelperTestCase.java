@@ -16,9 +16,9 @@
  */
 package org.fabric3.fabric.domain.instantiator.component;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;

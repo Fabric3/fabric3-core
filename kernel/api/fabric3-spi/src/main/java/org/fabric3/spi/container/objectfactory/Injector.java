@@ -19,6 +19,7 @@
  */
 package org.fabric3.spi.container.objectfactory;
 
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Implementations inject an ObjectFactory value on an object instance
@@ -29,9 +30,9 @@ public interface Injector<T> {
      * Inject a value on the given instance.
      *
      * @param instance the instance to inject on.
-     * @throws ObjectCreationException if an error is raised during injection
+     * @throws ContainerException if an error is raised during injection
      */
-    void inject(T instance) throws ObjectCreationException;
+    void inject(T instance) throws ContainerException;
 
     /**
      * Adds or updates the injector with an ObjectFactory used to inject the pre-configured value.

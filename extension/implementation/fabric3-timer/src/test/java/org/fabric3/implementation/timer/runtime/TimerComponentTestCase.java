@@ -23,11 +23,10 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.implementation.timer.model.TimerType;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.timer.spi.TimerService;
 

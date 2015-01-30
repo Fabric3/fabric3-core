@@ -20,7 +20,7 @@ package org.fabric3.transform.property;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Tests String to QName transform.
@@ -39,7 +39,7 @@ public class Property2QNameTransformerTestCase extends BaseTransformTest {
             assertEquals("{http://f3.com/ns/fabric/test}f3", qname.toString());
             assertEquals("http://f3.com/ns/fabric/test", qname.getNamespaceURI());
             assertEquals("f3", qname.getLocalPart());
-        } catch (TransformationException te) {
+        } catch (ContainerException te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -59,7 +59,7 @@ public class Property2QNameTransformerTestCase extends BaseTransformTest {
             assertEquals("http://f3.com/ns/fabric/test", qname.getNamespaceURI());
             assertEquals("f3", qname.getLocalPart());
             assertEquals("foo", qname.getPrefix());
-        } catch (TransformationException te) {
+        } catch (ContainerException te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -75,9 +75,8 @@ public class Property2QNameTransformerTestCase extends BaseTransformTest {
             Property2QNameTransformer transformer = new Property2QNameTransformer();
             transformer.transform(getNode(Q_NAME), null);
             fail("Should not reach here something wrong in [ String2QName ] code");
-        } catch (TransformationException te) {
+        } catch (IllegalArgumentException te) {
             assertNotNull(te);
-            assertTrue(IllegalArgumentException.class.isAssignableFrom(te.getCause().getClass()));
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
         }

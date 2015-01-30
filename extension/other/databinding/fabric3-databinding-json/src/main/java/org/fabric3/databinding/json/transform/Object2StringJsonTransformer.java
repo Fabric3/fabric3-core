@@ -19,7 +19,7 @@ package org.fabric3.databinding.json.transform;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -32,11 +32,11 @@ public class Object2StringJsonTransformer implements Transformer<Object, String>
         this.mapper = mapper;
     }
 
-    public String transform(Object source, ClassLoader loader) throws TransformationException {
+    public String transform(Object source, ClassLoader loader) throws ContainerException {
         try {
             return mapper.writeValueAsString(source);
         } catch (IOException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 

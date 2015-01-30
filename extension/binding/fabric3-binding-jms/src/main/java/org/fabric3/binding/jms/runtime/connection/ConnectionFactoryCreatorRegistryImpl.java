@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -24,14 +24,14 @@ public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCr
     }
 
     @SuppressWarnings({"unchecked"})
-    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ConnectionFactoryCreationException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ContainerException {
         if (creators.isEmpty()) {
-            throw new ConnectionFactoryCreationException("JMS Provider not installed");
+            throw new ContainerException("JMS Provider not installed");
         }
         String provider = configuration.getProvider();
         ConnectionFactoryCreator creator = provider == null ? creators.values().iterator().next() : creators.get(provider);
         if (creator == null) {
-            throw new ConnectionFactoryCreationException("Provider not found: " + provider);
+            throw new ContainerException("Provider not found: " + provider);
         }
         ConnectionFactory factory = creator.create(configuration);
         factories.put(factory, creator);

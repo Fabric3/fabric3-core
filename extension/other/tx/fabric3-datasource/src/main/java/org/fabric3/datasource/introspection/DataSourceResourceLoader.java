@@ -16,23 +16,22 @@
  */
 package org.fabric3.datasource.introspection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Loads datasource configurations specified in a composite. The format of the datasources element is:

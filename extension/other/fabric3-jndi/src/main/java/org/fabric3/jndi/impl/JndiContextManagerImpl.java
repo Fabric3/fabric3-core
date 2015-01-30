@@ -16,19 +16,18 @@
  */
 package org.fabric3.jndi.impl;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.Name;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-
-import org.oasisopen.sca.annotation.Destroy;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.jndi.spi.JndiContextManager;
+import org.oasisopen.sca.annotation.Destroy;
 
 /**
  *

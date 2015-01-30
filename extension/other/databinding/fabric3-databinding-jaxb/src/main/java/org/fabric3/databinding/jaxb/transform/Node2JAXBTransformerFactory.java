@@ -25,9 +25,9 @@ import java.util.Set;
 
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 import org.oasisopen.sca.annotation.Reference;
@@ -51,8 +51,7 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
         return Node.class.isAssignableFrom(source.getType()) && target instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
-            throws TransformationException {
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws ContainerException {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);
             types.addAll(targetTypes);
@@ -72,7 +71,7 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
                 throw new UnsupportedOperationException("Null parameter operations not yet supported");
             }
         } catch (JAXBException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -88,6 +87,5 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
             return new Node2JAXBElementTransformer(jaxbContext, type);
         }
     }
-
 
 }

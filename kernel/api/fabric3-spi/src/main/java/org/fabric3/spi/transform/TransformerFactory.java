@@ -21,6 +21,7 @@ package org.fabric3.spi.transform;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Creates a transformer capable of converting a set of classes from a source to target data type.
@@ -51,7 +52,7 @@ public interface TransformerFactory {
      * @param inTypes  the physical types of the source data
      * @param outTypes the physical types of the converted data
      * @return the transformer the transformer
-     * @throws TransformationException if there was an error creating the transformer
+     * @throws ContainerException if there was an error creating the transformer
      */
-    Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws TransformationException;
+    Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws ContainerException;
 }

@@ -19,13 +19,11 @@
 package org.fabric3.transform.property;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -42,14 +40,7 @@ public class Property2URITransformer implements SingleTypeTransformer<Node, URI>
         return TARGET;
     }
 
-    public URI transform(final Node node, ClassLoader loader) throws TransformationException {
-        final String content = node.getTextContent();
-        final URI uri;
-        try {
-            uri = new URI(node.getTextContent());
-        } catch (URISyntaxException ue) {
-            throw new TransformationException("Unable to create URI :- " + content, ue);
-        }
-        return uri;
+    public URI transform(final Node node, ClassLoader loader) {
+        return URI.create(node.getTextContent());
     }
 }

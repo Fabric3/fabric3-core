@@ -25,17 +25,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.repository.ArtifactCache;
-import org.fabric3.spi.repository.CacheException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResolutionException;
+import org.fabric3.spi.repository.ArtifactCache;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the <code>ContributionResolver</code> which attempts to resolve a contribution URI against the metadata store, artifact cache, or
@@ -76,7 +75,7 @@ public class DefaultContributionResolver implements ContributionResolver {
             if (stream != null) {
                 try {
                     return cache.cache(contributionUri, stream);
-                } catch (CacheException e) {
+                } catch (ContainerException e) {
                     throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
                 }
             }
@@ -104,7 +103,7 @@ public class DefaultContributionResolver implements ContributionResolver {
             if (stream != null) {
                 try {
                     return Collections.singletonList(cache.cache(contributionUri, stream));
-                } catch (CacheException e) {
+                } catch (ContainerException e) {
                     throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
                 }
             }
@@ -115,7 +114,7 @@ public class DefaultContributionResolver implements ContributionResolver {
     public void release(URI contributionUri) throws ResolutionException {
         try {
             cache.remove(contributionUri);
-        } catch (CacheException e) {
+        } catch (ContainerException e) {
             throw new ResolutionException("Error releasing artifact: " + contributionUri, e);
         }
     }

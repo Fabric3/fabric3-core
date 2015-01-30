@@ -16,26 +16,25 @@
  */
 package org.fabric3.jpa.override;
 
-import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.List;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Parses persistence entries specified in the system configuration.

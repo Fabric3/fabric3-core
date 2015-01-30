@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.host.Version;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.manifest.JarManifestHandler;
@@ -33,6 +31,7 @@ import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Parses OSGi manifest headers and adds the metadata to the SCA contribution manifest.

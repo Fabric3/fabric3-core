@@ -18,8 +18,8 @@
  */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Introspects a Java-based implementation.

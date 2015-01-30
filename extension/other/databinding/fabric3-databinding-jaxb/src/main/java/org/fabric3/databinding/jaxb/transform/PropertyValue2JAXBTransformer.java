@@ -19,12 +19,11 @@ package org.fabric3.databinding.jaxb.transform;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.transform.Transformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.fabric3.spi.transform.TransformationException;
-import org.fabric3.spi.transform.Transformer;
 
 /**
  * Converts from a component property represented as a DOM Node to a JAXB type. The DOM node representation contains a root &lt;value&gt; element.
@@ -36,7 +35,7 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
         this.jaxbContext = jaxbContext;
     }
 
-    public Object transform(Node source, ClassLoader loader) throws TransformationException {
+    public Object transform(Node source, ClassLoader loader) throws ContainerException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
@@ -47,7 +46,7 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
                         return jaxbContext.createUnmarshaller().unmarshal(children.item(i));
                     }
                 }
-                throw new TransformationException("Unexpected content");
+                throw new ContainerException("Unexpected content");
 
             } else {
                 // global element
@@ -55,7 +54,7 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
             }
 
         } catch (JAXBException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

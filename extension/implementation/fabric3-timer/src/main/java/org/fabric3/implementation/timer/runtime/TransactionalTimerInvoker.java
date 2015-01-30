@@ -25,8 +25,7 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
@@ -52,7 +51,7 @@ public class TransactionalTimerInvoker implements Runnable {
         Object instance;
         try {
             instance = component.getInstance();
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             monitor.initError(e);
             throw new InvocationRuntimeException(e);
         }
@@ -78,7 +77,7 @@ public class TransactionalTimerInvoker implements Runnable {
         } finally {
             try {
                 component.releaseInstance(instance);
-            } catch (InstanceDestructionException e) {
+            } catch (ContainerException e) {
                 monitor.disposeError(e);
             }
             Thread.currentThread().setContextClassLoader(old);

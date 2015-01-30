@@ -22,15 +22,14 @@ import java.util.List;
 
 import org.easymock.IMocksControl;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.MissingResource;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

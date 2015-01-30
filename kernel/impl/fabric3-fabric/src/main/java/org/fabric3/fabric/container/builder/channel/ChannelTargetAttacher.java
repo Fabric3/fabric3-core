@@ -51,10 +51,10 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         // no-op since channel do not maintain references to incoming handlers
     }
 
-    private Channel getChannel(URI uri, ChannelSide channelSide) throws ChannelNotFoundException {
+    private Channel getChannel(URI uri, ChannelSide channelSide) throws ContainerException {
         Channel channel = channelManager.getChannel(uri, channelSide);
         if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found");
+            throw new ContainerException("Channel not found");
         }
         return channel;
     }

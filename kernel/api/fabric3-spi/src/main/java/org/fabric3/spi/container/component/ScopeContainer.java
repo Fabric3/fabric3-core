@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import java.util.List;
 
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Manages the lifecycle and visibility component implementations instances.
@@ -54,35 +55,35 @@ public interface ScopeContainer {
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
      * @param deployable the deployable to start the context for
-     * @throws ComponentException if an exception starting the context was encountered
+     * @throws ContainerException if an exception starting the context was encountered
      */
-    void startContext(QName deployable) throws ComponentException;
+    void startContext(QName deployable) throws ContainerException;
 
     /**
      * Stop the context associated with the current work context.
      *
      * @param deployable the deployable to start the context for
-     * @throws ComponentException if there is an error stopping the context
+     * @throws ContainerException if there is an error stopping the context
      */
-    void stopContext(QName deployable) throws ComponentException;
+    void stopContext(QName deployable) throws ContainerException;
 
     /**
      * Returns an instance associated with the current scope context, creating one if necessary
      *
      * @param component the component
      * @return the instance
-     * @throws InstanceLifecycleException if there was a problem instantiating the target instance
+     * @throws ContainerException if there was a problem instantiating the target instance
      */
-    Object getInstance(ScopedComponent component) throws InstanceLifecycleException;
+    Object getInstance(ScopedComponent component) throws ContainerException;
 
     /**
      * Return am instance after use (for example, after invoking the instance).
      *
      * @param component the component
      * @param instance  the instance
-     * @throws InstanceDestructionException if there was a problem returning the target instance
+     * @throws ContainerException if there was a problem returning the target instance
      */
-    void releaseInstance(ScopedComponent component, Object instance) throws InstanceDestructionException;
+    void releaseInstance(ScopedComponent component, Object instance) throws ContainerException;
 
     /**
      * Returns a snapshot of the component instances that are active and currently managed by the scope container.
@@ -95,8 +96,8 @@ public interface ScopeContainer {
     /**
      * Reinjects all live instances with updated wires
      *
-     * @throws InstanceLifecycleException if an error occurs during reinjection
+     * @throws ContainerException if an error occurs during reinjection
      */
-    void reinject() throws InstanceLifecycleException;
+    void reinject() throws ContainerException;
 
 }

@@ -19,8 +19,8 @@ package org.fabric3.binding.zeromq.provider;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
 import org.fabric3.spi.domain.generator.binding.BindingProvider;

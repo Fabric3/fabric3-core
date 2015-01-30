@@ -17,11 +17,10 @@
 
 package org.fabric3.implementation.pojo.builder;
 
-import org.fabric3.spi.container.ContainerException;
-import org.w3c.dom.Document;
-
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.w3c.dom.Document;
 
 /**
  * Creates ObjectFactory instances for property values.

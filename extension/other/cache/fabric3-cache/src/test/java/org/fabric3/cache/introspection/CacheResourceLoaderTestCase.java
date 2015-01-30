@@ -1,12 +1,11 @@
 package org.fabric3.cache.introspection;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.cache.model.CacheSetResource;
 import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

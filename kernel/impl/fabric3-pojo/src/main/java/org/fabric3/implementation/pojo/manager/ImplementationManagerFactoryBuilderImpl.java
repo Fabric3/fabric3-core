@@ -26,14 +26,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -50,7 +51,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws ImplementationBuildException {
+    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws ContainerException {
         try {
             URI componentUri = definition.getComponentUri();
             String className = definition.getImplementationClass();
@@ -68,7 +69,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
             for (int i = 0; i < cdiSources.length; i++) {
                 if (cdiSources[i] == null) {
                     String clazz = ctr.getName();
-                    throw new ImplementationBuildException("No injection value for constructor parameter " + i + " in class " + clazz);
+                    throw new ContainerException("No injection value for constructor parameter " + i + " in class " + clazz);
                 }
             }
 
@@ -89,7 +90,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
                                                         cl,
                                                         reflectionFactory);
         } catch (ClassNotFoundException | NoSuchMethodException ex) {
-            throw new ImplementationBuildException(ex);
+            throw new ContainerException(ex);
         }
     }
 

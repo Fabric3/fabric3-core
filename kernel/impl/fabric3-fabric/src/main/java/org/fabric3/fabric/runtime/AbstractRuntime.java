@@ -50,9 +50,9 @@ import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.monitor.proxy.JDKMonitorProxyService;
 import org.fabric3.monitor.proxy.MonitorProxyServiceImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.component.ScopedComponent;
@@ -167,7 +167,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         try {
             Object instance = component.getInstance();
             return service.cast(instance);
-        } catch (InstanceLifecycleException e) {
+        } catch (ContainerException e) {
             // this is an error with the runtime and not something that is recoverable
             throw new AssertionError(e);
         }

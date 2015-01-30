@@ -18,12 +18,11 @@
  */
 package org.fabric3.execution.generator;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.execution.model.ExecutorServiceResourceReference;
 import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

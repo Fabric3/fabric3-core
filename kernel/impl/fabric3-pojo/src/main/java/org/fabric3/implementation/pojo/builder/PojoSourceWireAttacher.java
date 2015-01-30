@@ -26,10 +26,10 @@ import java.util.List;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
@@ -52,10 +52,10 @@ public abstract class PojoSourceWireAttacher {
      * @param sourceDefinition the source metadata
      * @param targetDefinition the target metadata
      * @return the key
-     * @throws KeyInstantiationException if there is an error instantiating the key
+     * @throws ContainerException if there is an error instantiating the key
      */
     @SuppressWarnings("unchecked")
-    protected Object getKey(PojoWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition) throws KeyInstantiationException {
+    protected Object getKey(PojoWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition) throws ContainerException {
         if (!sourceDefinition.isKeyed()) {
             return null;
         }
@@ -70,7 +70,7 @@ public abstract class PojoSourceWireAttacher {
         try {
             keyType = classLoaderRegistry.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
         } catch (ClassNotFoundException e) {
-            throw new KeyInstantiationException("Error loading reference key type for: " + sourceDefinition.getUri(), e);
+            throw new ContainerException("Error loading reference key type for: " + sourceDefinition.getUri(), e);
         }
         if (String.class.equals(keyType)) {
             // short-circuit the transformation and return the string
@@ -85,21 +85,16 @@ public abstract class PojoSourceWireAttacher {
 
     }
 
-
     @SuppressWarnings("unchecked")
-    private Object createKey(DataType targetType, String value, ClassLoader classLoader) throws KeyInstantiationException {
-        try {
-            Class<?> type = targetType.getType();
-            List<Class<?>> types = new ArrayList<>();
-            types.add(type);
-            Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(TypeConstants.STRING_TYPE, targetType, types, types);
-            if (transformer == null) {
-                throw new KeyInstantiationException("No transformer for : " + targetType);
-            }
-            return transformer.transform(value, classLoader);
-        } catch (TransformationException e) {
-            throw new KeyInstantiationException("Error transforming property", e);
+    private Object createKey(DataType targetType, String value, ClassLoader classLoader) throws ContainerException {
+        Class<?> type = targetType.getType();
+        List<Class<?>> types = new ArrayList<>();
+        types.add(type);
+        Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(TypeConstants.STRING_TYPE, targetType, types, types);
+        if (transformer == null) {
+            throw new ContainerException("No transformer for : " + targetType);
         }
+        return transformer.transform(value, classLoader);
     }
 
 }

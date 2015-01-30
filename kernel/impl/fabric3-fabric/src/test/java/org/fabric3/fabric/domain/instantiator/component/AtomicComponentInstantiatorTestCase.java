@@ -30,7 +30,6 @@ import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
@@ -51,6 +50,7 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

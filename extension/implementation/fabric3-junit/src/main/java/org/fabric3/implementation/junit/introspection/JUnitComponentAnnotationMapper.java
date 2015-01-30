@@ -16,10 +16,8 @@
  */
 package org.fabric3.implementation.junit.introspection;
 
-import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
 
-import org.fabric3.api.Namespaces;
 import org.fabric3.api.implementation.junit.Fabric3Runner;
 import org.fabric3.spi.introspection.java.ComponentAnnotationMapper;
 import org.junit.runner.RunWith;

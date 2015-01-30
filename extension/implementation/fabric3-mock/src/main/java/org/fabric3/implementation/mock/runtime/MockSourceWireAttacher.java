@@ -21,9 +21,9 @@ package org.fabric3.implementation.mock.runtime;
 import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  *

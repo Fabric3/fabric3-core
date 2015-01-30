@@ -22,28 +22,29 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
- * Creates Injector collections for injecting references, properties and context proxies into web application artifacts. These include servlets,
- * filters, the servlet context, and the session context.
+ * Creates Injector collections for injecting references, properties and context proxies into web application artifacts. These include servlets, filters, the
+ * servlet context, and the session context.
  */
 public interface InjectorFactory {
     /**
      * Populates a map of Injectors for each injectable artifact (servlet, filter, servlet context or session context) in the  web application.
      *
      * @param injectors    the map to populate, keyed by artifact id (e.g. servlet class name)
-     * @param siteMappings a map keyed by site name (e.g. a reference or property name). The value is a map keyed by injectable artifact id with a
-     *                     value containing a description of the injection site. For example, a reference may be injected on fields of multiple
-     *                     servlets. This would be represented by an entry keyed on reference name with a value of a map keyed by servlet class name
-     *                     and values containing injection site descriptions of the servlet fields.
+     * @param siteMappings a map keyed by site name (e.g. a reference or property name). The value is a map keyed by injectable artifact id with a value
+     *                     containing a description of the injection site. For example, a reference may be injected on fields of multiple servlets. This would
+     *                     be represented by an entry keyed on reference name with a value of a map keyed by servlet class name and values containing injection
+     *                     site descriptions of the servlet fields.
      * @param factories    the object factories that supply injected values.
      * @param classLoader  the classloader to load classes in for the web application
-     * @throws InjectionCreationException if an error occurs creating the injectors.
+     * @throws ContainerException if an error occurs creating the injectors.
      */
     void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                 Map<String, Map<String, InjectionSite>> siteMappings,
                                 Map<String, ObjectFactory<?>> factories,
-                                ClassLoader classLoader) throws InjectionCreationException;
+                                ClassLoader classLoader) throws ContainerException;
 }

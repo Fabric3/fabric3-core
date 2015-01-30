@@ -20,6 +20,13 @@ package org.fabric3.implementation.junit.generator;
 
 import java.net.URI;
 
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
@@ -29,12 +36,8 @@ import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.api.model.type.component.Component;
-import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -46,9 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

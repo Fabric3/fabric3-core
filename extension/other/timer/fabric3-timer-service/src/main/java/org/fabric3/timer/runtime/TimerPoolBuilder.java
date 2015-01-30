@@ -17,13 +17,11 @@
 package org.fabric3.timer.runtime;
 
 import org.fabric3.spi.container.ContainerException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.timer.provision.PhysicalTimerPoolResource;
-import org.fabric3.timer.spi.PoolAllocationException;
 import org.fabric3.timer.spi.TimerService;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -37,18 +35,10 @@ public class TimerPoolBuilder implements ResourceBuilder<PhysicalTimerPoolResour
     }
 
     public void build(PhysicalTimerPoolResource definition) throws ContainerException {
-        try {
-            service.allocate(definition.getName(), definition.getCoreSize());
-        } catch (PoolAllocationException e) {
-            throw new ContainerException(e);
-        }
+        service.allocate(definition.getName(), definition.getCoreSize());
     }
 
     public void remove(PhysicalTimerPoolResource definition) throws ContainerException {
-        try {
-            service.deallocate(definition.getName());
-        } catch (PoolAllocationException e) {
-            throw new ContainerException(e);
-        }
+        service.deallocate(definition.getName());
     }
 }

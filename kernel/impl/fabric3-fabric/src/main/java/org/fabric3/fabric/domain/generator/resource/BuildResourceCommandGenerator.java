@@ -22,12 +22,10 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -35,6 +33,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates a command to build resources defined in a composite on a runtime.

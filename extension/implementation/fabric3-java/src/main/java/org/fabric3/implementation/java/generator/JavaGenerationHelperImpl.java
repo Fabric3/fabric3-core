@@ -20,21 +20,23 @@ package org.fabric3.implementation.java.generator;
 
 import java.net.URI;
 
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.api.model.type.component.Callback;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.JavaImplementation;
+import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.implementation.java.provision.JavaComponentDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
+import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
+import org.fabric3.implementation.pojo.generator.GenerationHelper;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -44,10 +46,7 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.Signature;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

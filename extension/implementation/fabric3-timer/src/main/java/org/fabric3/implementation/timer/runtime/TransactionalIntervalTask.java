@@ -18,18 +18,17 @@
  */
 package org.fabric3.implementation.timer.runtime;
 
-import java.lang.reflect.Method;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
-
-import org.oasisopen.sca.ServiceRuntimeException;
+import java.lang.reflect.Method;
 
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.fabric3.timer.spi.Task;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A {@link Task} implementation that returns the next firing interval by calling a <code>nextInterval</code> method on the timer component

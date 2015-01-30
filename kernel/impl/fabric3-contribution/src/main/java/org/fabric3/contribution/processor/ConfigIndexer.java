@@ -3,16 +3,15 @@ package org.fabric3.contribution.processor;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * No-op indexer for config contributions (which do not require indexing).

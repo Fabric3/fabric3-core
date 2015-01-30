@@ -18,20 +18,19 @@
  */
 package org.fabric3.contribution;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
+import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
-import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;

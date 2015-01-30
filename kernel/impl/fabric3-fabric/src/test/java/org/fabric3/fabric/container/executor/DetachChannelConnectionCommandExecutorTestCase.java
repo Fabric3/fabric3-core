@@ -22,8 +22,8 @@ package org.fabric3.fabric.container.executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.container.builder.ChannelConnector;
+import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**

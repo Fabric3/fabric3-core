@@ -22,8 +22,7 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 
@@ -55,14 +54,10 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         this.mappings = mappings;
     }
 
-    public T getInstance() throws ObjectCreationException {
+    public T getInstance() throws ContainerException {
         // as an optimization, only create one proxy since they are stateless
         if (proxy == null) {
-            try {
-                proxy = interfaze.cast(proxyService.createProxy(interfaze, callbackUri, mappings));
-            } catch (ProxyCreationException e) {
-                throw new ObjectCreationException(e);
-            }
+            proxy = interfaze.cast(proxyService.createProxy(interfaze, callbackUri, mappings));
         }
         return proxy;
     }

@@ -30,15 +30,15 @@ public class AutoAckUnitOfWork implements UnitOfWork {
     public AutoAckUnitOfWork() {
     }
 
-    public void begin() throws WorkException {
+    public void begin() {
         // do nothing
     }
 
-    public void end(Session session, Message message) throws WorkException {
+    public void end(Session session, Message message) {
         // do nothing
     }
 
-    public void rollback(Session session) throws WorkException {
+    public void rollback(Session session) {
         // do nothing
     }
 

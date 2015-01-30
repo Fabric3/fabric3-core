@@ -21,10 +21,10 @@ package org.fabric3.transform.property;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -41,7 +41,7 @@ public class Property2QNameTransformer implements SingleTypeTransformer<Node, QN
         return TARGET;
     }
 
-    public QName transform(final Node node, ClassLoader loader) throws TransformationException {
+    public QName transform(final Node node, ClassLoader loader) throws ContainerException {
         String content = node.getTextContent();
         // see if the content looks like it might reference a namespace
         int index = content.indexOf(':');
@@ -54,10 +54,6 @@ public class Property2QNameTransformer implements SingleTypeTransformer<Node, QN
                 return new QName(uri, localPart, prefix);
             }
         }
-        try {
-            return QName.valueOf(content);
-        } catch (IllegalArgumentException ie) {
-            throw new TransformationException("Unable to transform on QName ", ie);
-        }
+        return QName.valueOf(content);
     }
 }

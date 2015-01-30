@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.monitor.spi.appender.AppenderCreationException;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
@@ -45,7 +44,7 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
     }
 
     @Init
-    public void init() throws IOException, AppenderCreationException {
+    public void init() throws IOException {
         destinations = new AtomicReference<>();
         destinations.set(new MonitorDestination[0]);
         eventService.subscribe(RuntimeDestroyed.class, new MonitorEventListener());

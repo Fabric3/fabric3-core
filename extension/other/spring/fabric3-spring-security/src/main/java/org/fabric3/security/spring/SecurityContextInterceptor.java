@@ -16,13 +16,12 @@
  */
 package org.fabric3.security.spring;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *

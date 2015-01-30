@@ -23,8 +23,8 @@ import java.util.List;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.monitor.MonitorService;
 import org.oasisopen.sca.annotation.Reference;
 

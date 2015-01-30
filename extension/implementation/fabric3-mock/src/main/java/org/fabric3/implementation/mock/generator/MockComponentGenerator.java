@@ -18,15 +18,13 @@
  */
 package org.fabric3.implementation.mock.generator;
 
-import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
+import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -36,6 +34,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

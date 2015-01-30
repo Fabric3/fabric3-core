@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.fabric3.spi.container.component.InstanceInvocationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -123,7 +123,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         return this;
     }
 
-    private Object handleProxyMethod(Method method, Object[] args) throws InstanceInvocationException {
+    private Object handleProxyMethod(Method method, Object[] args) throws ContainerException {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
         } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName()) && args.length == 1) {
@@ -133,7 +133,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
             // TODO better hash algorithm
         }
         String op = method.getName();
-        throw new InstanceInvocationException("Operation not configured: " + op);
+        throw new ContainerException("Operation not configured: " + op);
     }
 
     private Object proxyEquals(Object other) {

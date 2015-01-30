@@ -18,21 +18,21 @@ package org.fabric3.implementation.system.generator;
 
 import java.net.URI;
 
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
+import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.api.model.type.component.Component;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -44,10 +44,9 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.spi.model.type.system.SystemImplementation;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

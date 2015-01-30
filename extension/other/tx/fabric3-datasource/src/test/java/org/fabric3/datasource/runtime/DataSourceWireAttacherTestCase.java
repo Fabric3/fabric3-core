@@ -22,9 +22,9 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -79,7 +79,7 @@ public class DataSourceWireAttacherTestCase extends TestCase {
         try {
             attacher.createObjectFactory(definition);
             fail();
-        } catch (DataSourceNotFoundException e) {
+        } catch (ContainerException e) {
             // expected
         }
         EasyMock.verify(registry);

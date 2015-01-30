@@ -21,7 +21,6 @@ package org.fabric3.implementation.proxy.jdk.channel;
 
 import java.lang.reflect.Proxy;
 
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -35,15 +34,14 @@ public class JDKChannelProxyServiceImpl implements JDKChannelProxyService {
         return true;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) {
         return new ChannelConnectionObjectFactory<>(interfaze, this, connection.getEventStream());
     }
 
-    public <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException {
+    public <T> T createProxy(Class<T> interfaze, EventStream stream) {
         ClassLoader loader = interfaze.getClassLoader();
         JDKEventHandler handler = new JDKEventHandler(stream);
         return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
     }
-
 
 }

@@ -19,12 +19,11 @@
  */
 package org.fabric3.fabric.container.component.scope;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.ScopeContainer;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Managed composite-scoped components. Composite-scoped components have one instance per runtime where the component's parent composite is deployed.

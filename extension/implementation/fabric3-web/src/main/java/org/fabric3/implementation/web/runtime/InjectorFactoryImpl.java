@@ -24,14 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -47,13 +48,13 @@ public class InjectorFactoryImpl implements InjectorFactory {
     public void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                        Map<String, Map<String, InjectionSite>> siteMappings,
                                        Map<String, ObjectFactory<?>> factories,
-                                       ClassLoader classLoader) throws InjectionCreationException {
+                                       ClassLoader classLoader) throws ContainerException {
         for (Map.Entry<String, ObjectFactory<?>> entry : factories.entrySet()) {
             String siteName = entry.getKey();
             ObjectFactory<?> factory = entry.getValue();
             Map<String, InjectionSite> artifactMapping = siteMappings.get(siteName);
             if (artifactMapping == null) {
-                throw new InjectionCreationException("Injection site not found for: " + siteName);
+                throw new ContainerException("Injection site not found for: " + siteName);
             }
             for (Map.Entry<String, InjectionSite> siteEntry : artifactMapping.entrySet()) {
                 String artifactName = siteEntry.getKey();
@@ -79,22 +80,22 @@ public class InjectorFactoryImpl implements InjectorFactory {
     }
 
     private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, MethodInjectionSite site, ClassLoader classLoader)
-            throws InjectionCreationException {
+            throws ContainerException {
         try {
             Method method = getMethod(site, artifactName, classLoader);
             return reflectionFactory.createInjector(method, factory);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new InjectionCreationException(e);
+            throw new ContainerException(e);
         }
     }
 
     private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, FieldInjectionSite site, ClassLoader classLoader)
-            throws InjectionCreationException {
+            throws ContainerException {
         try {
             Field field = getField(site, artifactName, classLoader);
             return reflectionFactory.createInjector(field, factory);
         } catch (NoSuchFieldException | ClassNotFoundException e) {
-            throw new InjectionCreationException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -118,8 +119,7 @@ public class InjectorFactoryImpl implements InjectorFactory {
         return methodSite.getSignature().getMethod(clazz);
     }
 
-    private Field getField(FieldInjectionSite site, String implementationClass, ClassLoader classLoader)
-            throws NoSuchFieldException, ClassNotFoundException {
+    private Field getField(FieldInjectionSite site, String implementationClass, ClassLoader classLoader) throws NoSuchFieldException, ClassNotFoundException {
         Class<?> clazz = classLoader.loadClass(implementationClass);
         String name = site.getName();
         while (clazz != null) {

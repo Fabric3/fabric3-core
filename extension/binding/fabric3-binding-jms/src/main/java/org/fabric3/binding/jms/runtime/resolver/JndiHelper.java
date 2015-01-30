@@ -19,10 +19,10 @@
  */
 package org.fabric3.binding.jms.runtime.resolver;
 
-import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.Hashtable;
 
 /**
  * Performs JNDI resolution.

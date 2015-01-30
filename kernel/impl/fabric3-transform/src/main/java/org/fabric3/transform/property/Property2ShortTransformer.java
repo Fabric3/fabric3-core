@@ -19,10 +19,9 @@
 package org.fabric3.transform.property;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.TypeConstants;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.spi.transform.TransformationException;
 import org.w3c.dom.Node;
 
 /**
@@ -39,11 +38,7 @@ public class Property2ShortTransformer implements SingleTypeTransformer<Node, Sh
         return TARGET;
     }
 
-    public Short transform(Node node, ClassLoader loader) throws TransformationException {
-        try {
-            return Short.valueOf(node.getTextContent());
-        } catch (NumberFormatException ex) {
-            throw new TransformationException("Unsupportable short " + node.getTextContent(), ex);
-        }
+    public Short transform(Node node, ClassLoader loader) {
+        return Short.valueOf(node.getTextContent());
     }
 }

@@ -21,6 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
@@ -36,18 +37,18 @@ public interface ZeroMQPubSubBroker {
      * @param metadata     the ZeroMQ metadata to configure the underlying socket
      * @param connection   the consumer connection to dispatch received message to
      * @param loader       the classloader for deserializing events, typically the consumer implementation contribution classloader
-     * @throws BrokerException if an error occurs creating the subscription
+     * @throws ContainerException if an error occurs creating the subscription
      */
-    void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException;
+    void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws ContainerException;
 
     /**
      * Removes a consumer from the given channel.
      *
      * @param subscriberId the unique subscription id
      * @param metadata     the ZeroMQ metadata to configure the underlying socket
-     * @throws BrokerException if an error occurs removing the subscription
+     * @throws ContainerException if an error occurs removing the subscription
      */
-    void unsubscribe(URI subscriberId, ZeroMQMetadata metadata) throws BrokerException;
+    void unsubscribe(URI subscriberId, ZeroMQMetadata metadata) throws ContainerException;
 
     /**
      * Connects the channel connection to the publisher for the given channel.
@@ -56,19 +57,19 @@ public interface ZeroMQPubSubBroker {
      * @param metadata     the ZeroMQ metadata to configure the underlying socket
      * @param connection   the producer that dispatches messages to the publisher
      * @param loader       the classloader for the event types being sent
-     * @throws BrokerException if an error occurs removing the subscription
+     * @throws ContainerException if an error occurs removing the subscription
      */
     void connect(String connectionId, ZeroMQMetadata metadata, boolean dedicatedThread, ChannelConnection connection, ClassLoader loader)
-            throws BrokerException;
+            throws ContainerException;
 
     /**
      * Releases a publisher for a channel.
      *
      * @param connectionId the unique id for the connection
      * @param metadata     the ZeroMQ metadata to configure the underlying socket
-     * @throws BrokerException if an error occurs removing the publisher
+     * @throws ContainerException if an error occurs removing the publisher
      */
-    void release(String connectionId, ZeroMQMetadata metadata) throws BrokerException;
+    void release(String connectionId, ZeroMQMetadata metadata) throws ContainerException;
 
     /**
      * Starts all publishers and subscribers.

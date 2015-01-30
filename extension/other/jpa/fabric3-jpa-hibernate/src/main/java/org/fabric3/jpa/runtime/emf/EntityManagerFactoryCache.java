@@ -18,10 +18,10 @@
  */
 package org.fabric3.jpa.runtime.emf;
 
-import java.net.URI;
 import javax.persistence.EntityManagerFactory;
+import java.net.URI;
 
-import org.fabric3.jpa.api.JpaResolutionException;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * A cache of EntityManagerFactory instances.
@@ -42,8 +42,8 @@ public interface EntityManagerFactoryCache {
      * @param uri      the URI of the contribution the persistence unit is defined in
      * @param unitName the persistence unit name
      * @param factory      the EntityManagerFactory to cache
-     * @throws JpaResolutionException if there is an error caching the EntityManagerFactory
+     * @throws ContainerException if there is an error caching the EntityManagerFactory
      */
-    void put(URI uri, String unitName, EntityManagerFactory factory) throws JpaResolutionException;
+    void put(URI uri, String unitName, EntityManagerFactory factory) throws ContainerException;
 
 }

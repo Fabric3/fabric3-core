@@ -16,13 +16,13 @@
  */
 package org.fabric3.jndi.impl;
 
-import java.util.Hashtable;
-import java.util.Properties;
 import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
+import java.util.Hashtable;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

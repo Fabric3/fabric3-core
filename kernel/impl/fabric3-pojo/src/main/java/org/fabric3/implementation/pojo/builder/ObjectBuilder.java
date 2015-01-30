@@ -17,10 +17,10 @@
 
 package org.fabric3.implementation.pojo.builder;
 
-import org.w3c.dom.Document;
-
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.w3c.dom.Document;
 
 /**
  * Builds an object factory that creates a property value object from a DOM.
@@ -35,8 +35,8 @@ public interface ObjectBuilder {
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
      * @return the object factory
-     * @throws PropertyTransformException if there is an error creating the object factory
+     * @throws ContainerException if there is an error creating the object factory
      */
-    ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws PropertyTransformException;
+    ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws ContainerException;
 
 }

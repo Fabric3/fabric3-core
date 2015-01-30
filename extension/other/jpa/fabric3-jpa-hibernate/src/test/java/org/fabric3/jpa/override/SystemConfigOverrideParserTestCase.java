@@ -18,18 +18,17 @@
  */
 package org.fabric3.jpa.override;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.runtime.event.ExtensionsInitialized;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

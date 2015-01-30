@@ -16,24 +16,23 @@
  */
 package org.fabric3.databinding.jaxb.transform;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
-import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 /**
  * Creates Transformers capable of marshalling JAXB types to DOM.
@@ -55,8 +54,7 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
         return target.getType().equals(Document.class) && source instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
-            throws TransformationException {
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws ContainerException {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);
             types.addAll(targetTypes);
@@ -76,7 +74,7 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
                 throw new UnsupportedOperationException("Null parameter operations not yet supported");
             }
         } catch (JAXBException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -88,6 +86,5 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
             return new JAXBElement2DocumentTransformer(jaxbContext, name);
         }
     }
-
 
 }

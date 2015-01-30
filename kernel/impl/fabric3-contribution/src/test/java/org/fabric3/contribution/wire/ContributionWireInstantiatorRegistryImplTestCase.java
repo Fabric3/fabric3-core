@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import junit.framework.TestCase;
-
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
 import org.fabric3.spi.contribution.ContributionWire;

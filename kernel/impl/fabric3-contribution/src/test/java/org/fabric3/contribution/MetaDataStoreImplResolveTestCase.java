@@ -26,11 +26,10 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
+import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
-import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;

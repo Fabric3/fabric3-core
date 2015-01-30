@@ -20,7 +20,6 @@
 package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
@@ -106,31 +105,27 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         ResolvedObjects objects = resolveAdministeredObjects(source);
 
         ContainerConfiguration configuration = new ContainerConfiguration();
-        try {
-            ConnectionFactory requestFactory = objects.getRequestFactory();
-            javax.jms.Destination requestDestination = objects.getRequestDestination();
-            ConnectionFactory responseFactory = objects.getResponseFactory();
-            javax.jms.Destination responseDestination = objects.getResponseDestination();
+        ConnectionFactory requestFactory = objects.getRequestFactory();
+        javax.jms.Destination requestDestination = objects.getRequestDestination();
+        ConnectionFactory responseFactory = objects.getResponseFactory();
+        javax.jms.Destination responseDestination = objects.getResponseDestination();
 
-            List<BindingHandler<Message>> handlers = createHandlers(source);
-            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, handlers, monitor);
+        List<BindingHandler<Message>> handlers = createHandlers(source);
+        ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, handlers, monitor);
 
-            configuration.setDestination(requestDestination);
-            configuration.setFactory(requestFactory);
-            configuration.setMessageListener(listener);
-            configuration.setUri(serviceUri);
-            configuration.setSessionType(trxType);
-            populateConfiguration(configuration, source.getMetadata());
+        configuration.setDestination(requestDestination);
+        configuration.setFactory(requestFactory);
+        configuration.setMessageListener(listener);
+        configuration.setUri(serviceUri);
+        configuration.setSessionType(trxType);
+        populateConfiguration(configuration, source.getMetadata());
 
-            if (containerManager.isRegistered(serviceUri)) {
-                // the wire has changed and it is being reprovisioned
-                containerManager.unregister(serviceUri);
-            }
-            AdaptiveMessageContainer container = containerFactory.create(configuration);
-            containerManager.register(container);
-        } catch (JMSException e) {
-            throw new ContainerException(e);
+        if (containerManager.isRegistered(serviceUri)) {
+            // the wire has changed and it is being reprovisioned
+            containerManager.unregister(serviceUri);
         }
+        AdaptiveMessageContainer container = containerFactory.create(configuration);
+        containerManager.register(container);
     }
 
     private void populateConfiguration(ContainerConfiguration configuration, JmsBindingMetadata metadata) {
@@ -160,13 +155,9 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
     }
 
     public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
-        try {
-            containerManager.unregister(target.getUri());
-            // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
-            resolver.release(source.getMetadata().getConnectionFactory());
-        } catch (JMSException e) {
-            throw new ContainerException(e);
-        }
+        containerManager.unregister(target.getUri());
+        // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
+        resolver.release(source.getMetadata().getConnectionFactory());
     }
 
     public void attachObjectFactory(JmsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)

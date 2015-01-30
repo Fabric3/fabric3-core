@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -97,7 +97,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
                 } else {
                     entry.getValue().start();
                 }
-            } catch (JMSException e) {
+            } catch (ContainerException e) {
                 managerMonitor.startError(entry.getKey(), e);
             }
         }
@@ -109,34 +109,26 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         return containers.containsKey(serviceUri);
     }
 
-    public void register(AdaptiveMessageContainer container) throws JMSException {
+    public void register(AdaptiveMessageContainer container) throws ContainerException {
         URI uri = container.getContainerUri();
         containers.put(uri, container);
 
-        try {
-            String encodedName = encodeName(uri);
-            String encodedGroup = encodeGroup(uri);
-            managementService.export(encodedName, encodedGroup, "JMS message container", container);
-        } catch (ManagementException e) {
-            throw new JMSException(e.getMessage());
-        }
+        String encodedName = encodeName(uri);
+        String encodedGroup = encodeGroup(uri);
+        managementService.export(encodedName, encodedGroup, "JMS message container", container);
         if (started) {
             container.initialize();
             managerMonitor.registerListener(uri);
         }
     }
 
-    public void unregister(URI uri) throws JMSException {
+    public void unregister(URI uri) throws ContainerException {
         AdaptiveMessageContainer container = containers.remove(uri);
         if (container != null) {
             container.shutdown();
-            try {
-                String encodedName = encodeName(uri);
-                String encodedGroup = encodeGroup(uri);
-                managementService.remove(encodedName, encodedGroup);
-            } catch (ManagementException e) {
-                throw new JMSException(e.getMessage());
-            }
+            String encodedName = encodeName(uri);
+            String encodedGroup = encodeGroup(uri);
+            managementService.remove(encodedName, encodedGroup);
             managerMonitor.unRegisterListener(uri);
         }
     }
@@ -163,7 +155,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
                         entry.getValue().initialize();
                     }
                     managerMonitor.registerListener(entry.getKey());
-                } catch (JMSException e) {
+                } catch (ContainerException e) {
                     managerMonitor.startError(entry.getKey(), e);
                 }
             }

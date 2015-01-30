@@ -18,16 +18,15 @@
  */
 package org.fabric3.contribution.manifest;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.annotation.EagerInit;
-
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.model.os.OperatingSystemSpec;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *

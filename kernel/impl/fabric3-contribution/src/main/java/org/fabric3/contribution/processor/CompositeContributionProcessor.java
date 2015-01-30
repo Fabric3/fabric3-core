@@ -2,11 +2,6 @@ package org.fabric3.contribution.processor;
 
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
@@ -23,6 +18,10 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes composite files deployed as a contribution.

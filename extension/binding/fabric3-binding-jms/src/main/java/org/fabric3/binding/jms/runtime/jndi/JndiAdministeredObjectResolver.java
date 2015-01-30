@@ -19,16 +19,14 @@ package org.fabric3.binding.jms.runtime.jndi;
 import javax.jms.ConnectionFactory;
 import javax.naming.NamingException;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
-import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
+import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
 import org.fabric3.jndi.spi.JndiContextManager;
+import org.fabric3.spi.container.ContainerException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Resolves administered objects against JNDI contexts managed by the runtime {@link JndiContextManager}.
@@ -42,7 +40,7 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
         this.factoryManager = factoryManager;
     }
 
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws ContainerException {
         try {
             String name = definition.getName();
             ConnectionFactory factory = contextManager.lookup(ConnectionFactory.class, name);
@@ -50,16 +48,16 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
                 return null;
             }
             return factoryManager.register(name, factory, definition.getProperties());
-        } catch (NamingException | FactoryRegistrationException e) {
-            throw new JmsResolutionException(e);
+        } catch (NamingException e) {
+            throw new ContainerException(e);
         }
     }
 
-    public javax.jms.Destination resolve(Destination definition) throws JmsResolutionException {
+    public javax.jms.Destination resolve(Destination definition) throws ContainerException {
         try {
             return contextManager.lookup(javax.jms.Destination.class, definition.getName());
         } catch (NamingException e) {
-            throw new JmsResolutionException(e);
+            throw new ContainerException(e);
         }
     }
 

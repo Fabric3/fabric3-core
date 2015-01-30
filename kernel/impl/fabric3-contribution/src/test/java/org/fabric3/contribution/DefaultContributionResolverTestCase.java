@@ -25,11 +25,10 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.repository.ArtifactCache;
 
 /**
  *

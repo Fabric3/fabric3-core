@@ -19,7 +19,6 @@
 package org.fabric3.spi.model.os;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.host.Version;
 import org.fabric3.api.host.os.OperatingSystem;
 

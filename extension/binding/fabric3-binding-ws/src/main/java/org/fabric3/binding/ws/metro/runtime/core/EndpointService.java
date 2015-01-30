@@ -19,6 +19,8 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.net.URI;
 import java.net.URL;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Activates and de-activates web service endpoints.
  */
@@ -28,17 +30,17 @@ public interface EndpointService {
      * Registers a web service endpoint.
      *
      * @param configuration the endpoint configuration
-     * @throws EndpointException if there is an error registering the endpoint
+     * @throws ContainerException if there is an error registering the endpoint
      */
-    void registerService(EndpointConfiguration configuration) throws EndpointException;
+    void registerService(EndpointConfiguration configuration) throws ContainerException;
 
     /**
      * Unregisters a web service endpoint.
      *
      * @param path the endpoint path
-     * @throws EndpointException if there is an error unregistering the endpoint
+     * @throws ContainerException if there is an error unregistering the endpoint
      */
-    void unregisterService(String path) throws EndpointException;
+    void unregisterService(String path) throws ContainerException;
 
     /**
      * Returns the endpoint URL for the service.

@@ -23,7 +23,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

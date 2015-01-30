@@ -18,17 +18,16 @@ package org.fabric3.fabric.container.builder.channel;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.model.physical.ChannelSide;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the source side of a channel connection to a channel.
@@ -56,10 +55,10 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
         channel.unsubscribe(targetUri);
     }
 
-    private Channel getChannel(URI uri, ChannelSide channelSide) throws ChannelNotFoundException {
+    private Channel getChannel(URI uri, ChannelSide channelSide) throws ContainerException {
         Channel channel = channelManager.getChannel(uri, channelSide);
         if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found");
+            throw new ContainerException("Channel not found");
         }
         return channel;
     }

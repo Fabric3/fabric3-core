@@ -18,15 +18,14 @@
  */
 package org.fabric3.jpa.generator;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.model.HibernateSessionResourceReference;
 import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

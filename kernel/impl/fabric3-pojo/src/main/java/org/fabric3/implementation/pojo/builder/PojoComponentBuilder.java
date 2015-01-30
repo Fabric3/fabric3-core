@@ -42,13 +42,12 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.model.physical.ParamTypes;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.model.physical.ParamTypes;
 import org.w3c.dom.Document;
 
 /**
@@ -103,24 +102,16 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
             ObjectFactory<Object> objectFactory = component.createObjectFactory();
-            try {
-                URI uri = definition.getComponentUri();
-                managementService.export(uri, info, objectFactory, classLoader);
-            } catch (ManagementException e) {
-                throw new ContainerException(e);
-            }
+            URI uri = definition.getComponentUri();
+            managementService.export(uri, info, objectFactory, classLoader);
         }
     }
 
     protected void dispose(PojoComponentDefinition definition) throws ContainerException {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
-            try {
-                URI uri = definition.getComponentUri();
-                managementService.remove(uri, info);
-            } catch (ManagementException e) {
-                throw new ContainerException(e);
-            }
+            URI uri = definition.getComponentUri();
+            managementService.remove(uri, info);
         }
     }
 

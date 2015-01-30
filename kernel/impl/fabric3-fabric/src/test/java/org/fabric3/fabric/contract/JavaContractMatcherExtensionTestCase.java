@@ -18,9 +18,8 @@
 package org.fabric3.fabric.contract;
 
 import junit.framework.TestCase;
-
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.api.model.type.java.Signature;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  *

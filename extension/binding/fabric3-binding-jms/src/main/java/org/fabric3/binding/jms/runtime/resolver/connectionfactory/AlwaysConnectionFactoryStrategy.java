@@ -33,8 +33,7 @@ import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -50,35 +49,27 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
         this.manager = manager;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
-        try {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException {
             Map<String, String> properties = definition.getProperties();
             String className = properties.get("class");
             ConnectionFactory factory = instantiate(className, properties);
             String name = definition.getName();
             created.add(name);
             return manager.register(name, factory, definition.getProperties());
-        } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException(e);
-        }
     }
 
-    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
-        try {
+    public void release(ConnectionFactoryDefinition definition) throws ContainerException {
             String name = definition.getName();
             if (created.remove(name)) {
                 ConnectionFactory factory = manager.unregister(name);
                 if (factory == null) {
-                    throw new JmsResolutionException("Connection factory not found: " + name);
+                    throw new ContainerException("Connection factory not found: " + name);
                 }
                 creatorRegistry.release(factory);
             }
-        } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException(e);
-        }
     }
 
-    private ConnectionFactory instantiate(String className, Map<String, String> props) throws JmsResolutionException {
+    private ConnectionFactory instantiate(String className, Map<String, String> props) throws ContainerException {
         try {
             ConnectionFactory factory = (ConnectionFactory) Class.forName(className).newInstance();
             for (PropertyDescriptor pd : Introspector.getBeanInfo(factory.getClass()).getPropertyDescriptors()) {
@@ -91,7 +82,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             }
             return factory;
         } catch (InstantiationException | InvocationTargetException | IntrospectionException | ClassNotFoundException | IllegalAccessException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
+            throw new ContainerException("Unable to create connection factory: " + className, e);
         }
 
     }

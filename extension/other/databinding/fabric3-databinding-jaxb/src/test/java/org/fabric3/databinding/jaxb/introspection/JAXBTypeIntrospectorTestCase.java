@@ -25,8 +25,6 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
-import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapperImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.type.java.JavaType;
 

@@ -27,8 +27,8 @@ import java.util.Set;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 import org.oasisopen.sca.annotation.Reference;
@@ -53,7 +53,7 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
         return target.getType().equals(String.class) && "JAXB".equals(target.getDatabinding()) && source instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws TransformationException {
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws ContainerException {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);
             types.addAll(targetTypes);
@@ -73,7 +73,7 @@ public class JAXB2StringTransformerFactory implements TransformerFactory {
                 return createTransformer(source.getType(), jaxbContext);
             }
         } catch (JAXBException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 

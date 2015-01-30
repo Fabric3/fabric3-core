@@ -30,27 +30,26 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.contribution.UnresolvedImportException;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.manifest.ContributionImport;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
-import org.fabric3.api.host.Names;
-import org.fabric3.api.host.contribution.UnresolvedImportException;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;
-import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
+import org.fabric3.spi.model.os.Library;
 
 /**
  * This is more intended to be a integration test then a unit test. *

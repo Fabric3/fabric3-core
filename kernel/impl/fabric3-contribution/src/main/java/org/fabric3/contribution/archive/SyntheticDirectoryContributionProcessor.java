@@ -21,13 +21,12 @@ package org.fabric3.contribution.archive;
 import java.io.File;
 import java.net.URL;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Synthesizes a special contribution from a directory that is configured to extend an extension point derived from the name of the directory. For

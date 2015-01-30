@@ -36,9 +36,8 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
@@ -89,7 +88,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         assertSame(stringFactory, args[1]);
     }
 
-    public void testFieldInjectors() throws ObjectCreationException {
+    public void testFieldInjectors()  {
         sites.put(new FieldInjectionSite(intField), intProperty);
         sites.put(new FieldInjectionSite(stringField), stringProperty);
 
@@ -103,7 +102,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
 
-    public void testMethodInjectors() throws ObjectCreationException {
+    public void testMethodInjectors() {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
 
@@ -117,7 +116,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
 
-    public void testFactory() throws ObjectCreationException, InstanceLifecycleException {
+    public void testFactory() throws ContainerException {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
 

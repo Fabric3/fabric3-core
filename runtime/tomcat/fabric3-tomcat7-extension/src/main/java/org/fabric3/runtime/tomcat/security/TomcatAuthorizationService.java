@@ -18,14 +18,13 @@ package org.fabric3.runtime.tomcat.security;
 
 import java.util.Collection;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.NotAuthorizedException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation which uses Tomcat security to determine access rights.

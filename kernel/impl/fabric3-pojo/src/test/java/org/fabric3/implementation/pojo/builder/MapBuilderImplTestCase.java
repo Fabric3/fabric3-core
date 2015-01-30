@@ -28,11 +28,10 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.model.type.TypeConstants;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.w3c.dom.Document;
@@ -140,7 +139,7 @@ public class MapBuilderImplTestCase extends TestCase {
 
     private class MockTransformer implements Transformer<Node, String> {
 
-        public String transform(Node value, ClassLoader loader) throws TransformationException {
+        public String transform(Node value, ClassLoader loader) {
             return value.getTextContent();
         }
     }

@@ -21,8 +21,8 @@ import javax.persistence.PersistenceException;
 import java.util.Collections;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
-import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
+import org.fabric3.spi.container.ContainerException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
@@ -60,7 +60,7 @@ public class Fabric3EntityManagerFactoryBean extends LocalContainerEntityManager
                 String unitName = getPersistenceUnitName();
                 PersistenceOverrides overrides = new PersistenceOverrides(unitName, Collections.<String, String>emptyMap());
                 return resolver.resolve(unitName, overrides, getBeanClassLoader());
-            } catch (JpaResolutionException e) {
+            } catch (ContainerException e) {
                 throw new PersistenceException(e);
             }
         }

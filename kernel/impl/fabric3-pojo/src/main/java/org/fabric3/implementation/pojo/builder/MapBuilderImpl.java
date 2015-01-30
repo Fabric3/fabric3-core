@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
@@ -56,51 +56,46 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
     }
 
     @SuppressWarnings({"unchecked"})
-    public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader)
-            throws PropertyTransformException {
-        try {
-            List<JavaTypeInfo> typeInfos = type.getTypeInfo().getParameterTypesInfos();
-            if (typeInfos.size() < 2) {
-                // programming error
-                throw new PropertyTransformException("Map properties must have a key and value type");
-            }
-            Class<?> keyType = typeInfos.get(0).getRawType();
-            List<Class<?>> keyTypes = new ArrayList<>();
-            keyTypes.add(keyType);
-            Class<?> valueType = type.getTypeInfo().getParameterTypesInfos().get(1).getRawType();
-            List<Class<?>> valueTypes = new ArrayList<>();
-            valueTypes.add(valueType);
-
-            Transformer<Node, ?> keyTransformer = getTransformer(name, PROPERTY_TYPE, new JavaType(keyType), keyTypes);
-            Transformer<Node, ?> valueTransformer = getTransformer(name, PROPERTY_TYPE, new JavaType(valueType), valueTypes);
-
-            Map<Object, Object> map = new HashMap<>();
-            Element root = value.getDocumentElement();
-
-            Element topValue = normalizeValues(root);
-            if (topValue == null) {
-                throw new PropertyTransformException("Invalid Map format: no top-level value tag for " + name);
-            }
-
-            NodeList keys = topValue.getElementsByTagName("key");
-            NodeList values = topValue.getElementsByTagName("value");
-            if (keys.getLength() != values.getLength()) {
-                throw new PropertyTransformException("Invalid Map format: keys and values must be the same length for " + name);
-            } else if (keys.getLength() == 0) {
-                throw new PropertyTransformException("Invalid Map format: there must be a key and value node for property " + name);
-            }
-            for (int i = 0; i < keys.getLength(); i++) {
-                Element keyNode = (Element) keys.item(i);
-                Element valNode = (Element) values.item(i);
-                Object key = keyTransformer.transform(keyNode, classLoader);
-                Object val = valueTransformer.transform(valNode, classLoader);
-                map.put(key, val);
-
-            }
-            return new SingletonObjectFactory<Map>(map);
-        } catch (TransformationException e) {
-            throw new PropertyTransformException("Unable to transform property value: " + name, e);
+    public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws ContainerException {
+        List<JavaTypeInfo> typeInfos = type.getTypeInfo().getParameterTypesInfos();
+        if (typeInfos.size() < 2) {
+            // programming error
+            throw new ContainerException("Map properties must have a key and value type");
         }
+        Class<?> keyType = typeInfos.get(0).getRawType();
+        List<Class<?>> keyTypes = new ArrayList<>();
+        keyTypes.add(keyType);
+        Class<?> valueType = type.getTypeInfo().getParameterTypesInfos().get(1).getRawType();
+        List<Class<?>> valueTypes = new ArrayList<>();
+        valueTypes.add(valueType);
+
+        Transformer<Node, ?> keyTransformer = getTransformer(name, PROPERTY_TYPE, new JavaType(keyType), keyTypes);
+        Transformer<Node, ?> valueTransformer = getTransformer(name, PROPERTY_TYPE, new JavaType(valueType), valueTypes);
+
+        Map<Object, Object> map = new HashMap<>();
+        Element root = value.getDocumentElement();
+
+        Element topValue = normalizeValues(root);
+        if (topValue == null) {
+            throw new ContainerException("Invalid Map format: no top-level value tag for " + name);
+        }
+
+        NodeList keys = topValue.getElementsByTagName("key");
+        NodeList values = topValue.getElementsByTagName("value");
+        if (keys.getLength() != values.getLength()) {
+            throw new ContainerException("Invalid Map format: keys and values must be the same length for " + name);
+        } else if (keys.getLength() == 0) {
+            throw new ContainerException("Invalid Map format: there must be a key and value node for property " + name);
+        }
+        for (int i = 0; i < keys.getLength(); i++) {
+            Element keyNode = (Element) keys.item(i);
+            Element valNode = (Element) values.item(i);
+            Object key = keyTransformer.transform(keyNode, classLoader);
+            Object val = valueTransformer.transform(valNode, classLoader);
+            map.put(key, val);
+
+        }
+        return new SingletonObjectFactory<Map>(map);
 
     }
 
@@ -144,6 +139,5 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
             return newRoot;
         }
     }
-
 
 }

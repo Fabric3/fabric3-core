@@ -18,14 +18,13 @@
  */
 package org.fabric3.jpa.contribution;
 
-import org.oasisopen.sca.annotation.Property;
-
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Adds an implicit import of the EhCache contribution extension into any contribution using JPA on a runtime configured to use EhCache. This is

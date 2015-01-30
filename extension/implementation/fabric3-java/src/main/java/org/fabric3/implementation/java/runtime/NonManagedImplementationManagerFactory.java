@@ -18,14 +18,11 @@ package org.fabric3.implementation.java.runtime;
 
 import java.lang.reflect.Type;
 
+import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceInitException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 
@@ -76,17 +73,17 @@ public class NonManagedImplementationManagerFactory implements ImplementationMan
         throw new UnsupportedOperationException();
     }
 
-    public Object newInstance() throws ObjectCreationException {
+    public Object newInstance() throws ContainerException {
         return instance;
     }
 
-    public void start(Object instance) throws InstanceInitException {
+    public void start(Object instance) throws ContainerException {
     }
 
-    public void stop(Object instance) throws InstanceDestructionException {
+    public void stop(Object instance) throws ContainerException {
     }
 
-    public void reinject(Object instance) throws InstanceLifecycleException {
+    public void reinject(Object instance) throws ContainerException {
     }
 
     public void updated(Object instance, String referenceName) {

@@ -19,15 +19,14 @@ package org.fabric3.channel.disruptor.introspection;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.api.model.type.component.Channel;
-import org.fabric3.spi.model.physical.ChannelConstants;
+import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.physical.ChannelConstants;
 
 /**
  *

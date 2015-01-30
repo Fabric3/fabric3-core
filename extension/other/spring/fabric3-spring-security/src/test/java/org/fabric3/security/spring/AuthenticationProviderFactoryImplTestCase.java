@@ -20,13 +20,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
 import org.fabric3.security.spring.config.JdbcProviderConfiguration;
 import org.fabric3.security.spring.factory.AuthenticationProviderFactoryImpl;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 /**
  *

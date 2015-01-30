@@ -18,7 +18,6 @@ package org.fabric3.management.rest.runtime;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.Verb;
 

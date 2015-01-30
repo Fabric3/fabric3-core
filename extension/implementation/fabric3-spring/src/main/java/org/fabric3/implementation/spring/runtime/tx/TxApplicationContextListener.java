@@ -18,19 +18,17 @@
  */
 package org.fabric3.implementation.spring.runtime.tx;
 
-import java.util.Map;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.transaction.jta.JtaTransactionManager;
+import java.util.Map;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.spring.spi.ApplicationContextListener;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.transaction.jta.JtaTransactionManager;
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 import static org.fabric3.implementation.spring.api.SpringConstants.TRX_ALIAS;
 

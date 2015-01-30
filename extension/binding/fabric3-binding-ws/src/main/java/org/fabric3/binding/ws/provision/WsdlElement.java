@@ -19,8 +19,8 @@
  */
 package org.fabric3.binding.ws.provision;
 
-import java.io.Serializable;
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
 /**
  * Encapsulates the service name and QName.

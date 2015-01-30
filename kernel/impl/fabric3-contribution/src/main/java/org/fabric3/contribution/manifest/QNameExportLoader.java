@@ -22,11 +22,10 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Processes a QName-based <code>export</code> element in a contribution manifest

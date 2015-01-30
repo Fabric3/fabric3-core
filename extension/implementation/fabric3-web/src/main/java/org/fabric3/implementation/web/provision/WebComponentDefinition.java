@@ -21,10 +21,9 @@ package org.fabric3.implementation.web.provision;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
-
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.w3c.dom.Document;
 
 /**
  *

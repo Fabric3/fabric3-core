@@ -18,6 +18,8 @@
  */
 package org.fabric3.spi.transform;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Base interface for data format conversions.
  */
@@ -29,8 +31,8 @@ public interface Transformer<SOURCE, TARGET> {
      * @param source the source instance
      * @param loader the classloader for instantiating target types
      * @return a new instance of the target type
-     * @throws TransformationException if there was a problem during the transformation
+     * @throws ContainerException if there was a problem during the transformation
      */
-    TARGET transform(SOURCE source, ClassLoader loader) throws TransformationException;
+    TARGET transform(SOURCE source, ClassLoader loader) throws ContainerException;
 
 }

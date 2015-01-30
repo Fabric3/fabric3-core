@@ -34,24 +34,21 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
-import org.fabric3.spi.container.component.InstanceDestructionException;
-import org.fabric3.spi.container.component.InstanceInitException;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Wraps an object intended to serve as a system component provided to the Fabric3 runtime by the host environment.
@@ -120,7 +117,7 @@ public class SingletonComponent implements ScopedComponent {
         return true;
     }
 
-    public Object createInstance() throws ObjectCreationException {
+    public Object createInstance() {
         return instance;
     }
 
@@ -148,21 +145,17 @@ public class SingletonComponent implements ScopedComponent {
         this.level = level;
     }
 
-    public void startInstance(Object instance) throws InstanceInitException {
+    public void startInstance(Object instance) {
         // no-op
     }
 
-    public void stopInstance(Object instance) throws InstanceDestructionException {
+    public void stopInstance(Object instance) throws ContainerException {
         // no-op
     }
 
-    public void reinject(Object instance) throws InstanceLifecycleException {
+    public void reinject(Object instance) throws ContainerException {
         for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
-            try {
-                inject(entry.getValue(), entry.getKey());
-            } catch (ObjectCreationException e) {
-                throw new AssertionError(e);
-            }
+            inject(entry.getValue(), entry.getKey());
         }
         reinjectionMappings.clear();
     }
@@ -329,9 +322,9 @@ public class SingletonComponent implements ScopedComponent {
      *
      * @param attribute the InjectableAttribute defining the field or method
      * @param factory   the ObjectFactory that returns the value to inject
-     * @throws ObjectCreationException if an error occurs during injection
+     * @throws ContainerException if an error occurs during injection
      */
-    private void inject(Injectable attribute, ObjectFactory factory) throws ObjectCreationException {
+    private void inject(Injectable attribute, ObjectFactory factory) throws ContainerException {
         for (Map.Entry<Member, Injectable> entry : sites.entrySet()) {
             if (entry.getValue().equals(attribute)) {
                 Member member = entry.getKey();
@@ -341,7 +334,7 @@ public class SingletonComponent implements ScopedComponent {
                         ((Field) member).set(instance, param);
                     } catch (IllegalAccessException e) {
                         // should not happen as accessibility is already set
-                        throw new ObjectCreationException(e);
+                        throw new ContainerException(e);
                     }
                 } else if (member instanceof Method) {
                     try {
@@ -350,11 +343,11 @@ public class SingletonComponent implements ScopedComponent {
                         method.invoke(instance, param);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         // should not happen as accessibility is already set
-                        throw new ObjectCreationException(e);
+                        throw new ContainerException(e);
                     }
                 } else {
                     // programming error
-                    throw new ObjectCreationException("Unsupported member type" + member);
+                    throw new ContainerException("Unsupported member type" + member);
                 }
             }
         }

@@ -20,6 +20,7 @@
 package org.fabric3.implementation.pojo.manager;
 
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.spi.container.ContainerException;
 
 /**
  * Creates {@link ImplementationManagerFactory}s.
@@ -32,7 +33,7 @@ public interface ImplementationManagerFactoryBuilder {
      * @param managerDefinition the definition that describes the provider
      * @param classLoader       the classloader to use to load any implementation classes
      * @return a provider built from the supplied definition
-     * @throws ImplementationBuildException if there was a problem with the definition
+     * @throws ContainerException if there was a problem with the definition
      */
-    ImplementationManagerFactory build(ImplementationManagerDefinition managerDefinition, ClassLoader classLoader) throws ImplementationBuildException;
+    ImplementationManagerFactory build(ImplementationManagerDefinition managerDefinition, ClassLoader classLoader) throws ContainerException;
 }

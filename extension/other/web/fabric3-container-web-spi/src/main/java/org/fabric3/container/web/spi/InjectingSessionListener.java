@@ -18,13 +18,13 @@
  */
 package org.fabric3.container.web.spi;
 
-import java.util.List;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.util.List;
 
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Injects reference proxies into an HTTP session when it is created.
@@ -41,7 +41,7 @@ public class InjectingSessionListener implements HttpSessionListener {
         for (Injector<HttpSession> injector : injectors) {
             try {
                 injector.inject(session);
-            } catch (ObjectCreationException e) {
+            } catch (ContainerException e) {
                 throw new RuntimeInjectionException(e);
             }
         }

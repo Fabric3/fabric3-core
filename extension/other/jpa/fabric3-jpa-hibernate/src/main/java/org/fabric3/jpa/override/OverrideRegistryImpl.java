@@ -24,11 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  *

@@ -25,10 +25,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-
-import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.transform.Transformer;
+import org.w3c.dom.Document;
 
 /**
  * Transforms from a JAXB instance not annotated with XmlRootElement to a DOM Document.
@@ -46,7 +45,7 @@ public class JAXBElement2DocumentTransformer implements Transformer<Object, Docu
     }
 
     @SuppressWarnings({"unchecked"})
-    public Document transform(Object source, ClassLoader loader) throws TransformationException {
+    public Document transform(Object source, ClassLoader loader) throws ContainerException {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.newDocument();
@@ -67,7 +66,7 @@ public class JAXBElement2DocumentTransformer implements Transformer<Object, Docu
 
             return document;
         } catch (JAXBException | ParserConfigurationException e) {
-            throw new TransformationException(e);
+            throw new ContainerException(e);
         }
     }
 

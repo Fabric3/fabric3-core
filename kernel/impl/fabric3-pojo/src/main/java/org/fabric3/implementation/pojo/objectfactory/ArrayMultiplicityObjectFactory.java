@@ -19,11 +19,11 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.container.objectfactory.ObjectCreationException;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-
 import java.lang.reflect.Array;
 import java.util.List;
+
+import org.fabric3.spi.container.ContainerException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Returns an <code>Array</code> of object instances.
@@ -35,7 +35,7 @@ public class ArrayMultiplicityObjectFactory extends AbstractCollectionMultiplici
         this.interfaceType = interfaceType;
     }
 
-    public Object getInstance() throws ObjectCreationException {
+    public Object getInstance() throws ContainerException {
         Object array = Array.newInstance(interfaceType, factories.size());
         for (int i = 0; i < factories.size(); i++) {
             Array.set(array, i, factories.get(i).getInstance());

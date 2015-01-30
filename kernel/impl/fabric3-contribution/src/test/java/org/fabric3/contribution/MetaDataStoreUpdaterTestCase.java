@@ -18,6 +18,7 @@
  */
 package org.fabric3.contribution;
 
+import javax.xml.namespace.QName;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -25,17 +26,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
-import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.ProcessorRegistry;

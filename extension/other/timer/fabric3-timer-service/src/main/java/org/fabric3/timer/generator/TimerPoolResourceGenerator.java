@@ -16,14 +16,13 @@
  */
 package org.fabric3.timer.generator;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
+import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
-import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 import org.fabric3.timer.provision.PhysicalTimerPoolResource;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Generates PhysicalTimerPoolResource definitions.
