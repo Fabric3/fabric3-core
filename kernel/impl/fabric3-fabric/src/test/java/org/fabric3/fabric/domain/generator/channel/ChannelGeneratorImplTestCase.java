@@ -169,7 +169,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
     }
 
     private LogicalChannel createChannel() {
-        ChannelDefinition definition = new ChannelDefinition("channel", URI.create("contribution"));
+        ChannelDefinition definition = new ChannelDefinition("channel");
         return new LogicalChannel(URI.create("channel"), definition, null);
     }
 

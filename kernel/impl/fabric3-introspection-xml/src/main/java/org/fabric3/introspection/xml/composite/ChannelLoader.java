@@ -95,7 +95,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
         boolean local = Boolean.parseBoolean(reader.getAttributeValue(null, "local"));
 
-        ChannelDefinition definition = new ChannelDefinition(name, uri, channelType, local);
+        ChannelDefinition definition = new ChannelDefinition(name, channelType, local);
 
         validateAttributes(reader, context, definition);
 

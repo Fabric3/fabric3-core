@@ -41,7 +41,7 @@ public class ZeroMQBindingProviderChannelTestCase extends TestCase {
 
     protected void setUp() {
         provider = new ZeroMQBindingProvider();
-        ChannelDefinition definition = new ChannelDefinition("channel", URI.create("contribution"));
+        ChannelDefinition definition = new ChannelDefinition("channel");
         channel = new LogicalChannel(URI.create("test"), definition, null);
     }
 

@@ -223,7 +223,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     }
 
     private LogicalChannel createChannel(LogicalCompositeComponent parent, boolean addBinding) {
-        ChannelDefinition channelDefinition = new ChannelDefinition("testChannel", URI.create("contribution"));
+        ChannelDefinition channelDefinition = new ChannelDefinition("testChannel");
         LogicalChannel channel = new LogicalChannel(URI.create("testChannel"), channelDefinition, parent);
         parent.addChannel(channel);
         if (addBinding) {

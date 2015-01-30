@@ -22,9 +22,7 @@ package org.fabric3.api.model.type.component;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.fabric3.api.model.type.ModelObject;
 
@@ -38,7 +36,6 @@ public abstract class BindingDefinition extends ModelObject<BindableDefinition> 
     protected QName type;
     protected String name;
 
-    private Set<String> requiredCapabilities = new HashSet<>();
     private List<BindingHandlerDefinition> handlers = new ArrayList<>();
 
     /**
@@ -79,14 +76,6 @@ public abstract class BindingDefinition extends ModelObject<BindableDefinition> 
 
     public QName getType() {
         return type;
-    }
-
-    public Set<String> getRequiredCapabilities() {
-        return requiredCapabilities;
-    }
-
-    public void addRequiredCapability(String capability) {
-        requiredCapabilities.add(capability);
     }
 
     /**

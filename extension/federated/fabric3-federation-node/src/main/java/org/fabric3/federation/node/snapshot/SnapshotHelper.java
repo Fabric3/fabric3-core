@@ -91,10 +91,9 @@ public class SnapshotHelper {
     static LogicalChannel snapshot(LogicalChannel channel, Composite composite, LogicalState state, LogicalCompositeComponent domain) {
         ChannelDefinition definition = channel.getDefinition();
         String name = definition.getName();
-        URI contributionUri = definition.getContributionUri();
         String type = definition.getType();
         boolean local = definition.isLocal();
-        ChannelDefinition definitionCopy = new ChannelDefinition(name, contributionUri, type, local);
+        ChannelDefinition definitionCopy = new ChannelDefinition(name, type, local);
         definitionCopy.setParent(composite);
         definitionCopy.setLocal(definition.isLocal());
         LogicalChannel channelCopy = new LogicalChannel(channel.getUri(), definitionCopy, domain);

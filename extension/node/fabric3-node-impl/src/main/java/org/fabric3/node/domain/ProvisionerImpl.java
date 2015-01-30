@@ -127,7 +127,6 @@ public class ProvisionerImpl implements Provisioner {
     public void deploy(ChannelDefinition definition) throws DeploymentException {
         try {
             URI uri = ContributionResolver.getContribution();
-            definition.setContributionUri(uri);
             Composite wrapper = createWrapperComposite(definition.getName());
             wrapper.add(definition);
             domain.include(wrapper, false);
@@ -217,9 +216,6 @@ public class ProvisionerImpl implements Provisioner {
             if (definition.getComponentType() instanceof Composite) {
                 setContributionUris((Composite) definition.getComponentType());
             }
-        }
-        for (ChannelDefinition definition : composite.getChannels().values()) {
-            definition.setContributionUri(uri);
         }
     }
 

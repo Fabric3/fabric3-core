@@ -21,7 +21,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
 
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.component.RingBufferData;
@@ -181,6 +180,6 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         super.setUp();
         loader = new RingBufferChannelTypeLoader();
         context = new DefaultIntrospectionContext();
-        definition = new ChannelDefinition("channel", URI.create("channel"));
+        definition = new ChannelDefinition("channel");
     }
 }

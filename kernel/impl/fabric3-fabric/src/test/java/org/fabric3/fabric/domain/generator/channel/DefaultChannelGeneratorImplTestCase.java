@@ -31,7 +31,7 @@ public class DefaultChannelGeneratorImplTestCase extends TestCase {
     private DefaultChannelGeneratorExtensionImpl generator = new DefaultChannelGeneratorExtensionImpl();
 
     public void testGenerate() throws Exception {
-        ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
+        ChannelDefinition channelDefinition = new ChannelDefinition("test");
         LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
         QName deployable = new QName("test", "test");
         channel.setDeployable(deployable);

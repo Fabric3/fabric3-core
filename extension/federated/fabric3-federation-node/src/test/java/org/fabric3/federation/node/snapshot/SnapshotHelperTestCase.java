@@ -60,7 +60,6 @@ public class SnapshotHelperTestCase extends TestCase {
     public void testSnapshotChannel() throws Exception {
         LogicalChannel snapshot = SnapshotHelper.snapshot(channel, composite, LogicalState.MARKED, domain);
         assertNotNull(snapshot.getDefinition());
-        assertNotNull(snapshot.getDefinition().getContributionUri());
         assertEquals(LogicalState.MARKED, snapshot.getState());
     }
 
@@ -139,7 +138,7 @@ public class SnapshotHelperTestCase extends TestCase {
         domain = new LogicalCompositeComponent(URI.create("domain"), domainDefinition, null);
         domain.addComponent(component);
 
-        ChannelDefinition channelDefinition = new ChannelDefinition("Channel", URI.create("contribution"));
+        ChannelDefinition channelDefinition = new ChannelDefinition("Channel");
         channel = new LogicalChannel(URI.create("channel"), channelDefinition, null);
     }
 

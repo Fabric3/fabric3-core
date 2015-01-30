@@ -18,8 +18,6 @@ package org.fabric3.api.model.type.component;
 
 import javax.xml.namespace.QName;
 import java.io.Serializable;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +30,6 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     private static final long serialVersionUID = 8735705202863105855L;
 
     private String name;
-    private URI contributionUri;
     private String type = DEFAULT_TYPE;
     private boolean local;
 
@@ -42,18 +39,10 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
         this.name = name;
     }
 
-    public ChannelDefinition(String name, URI contributionUri) {
+    public ChannelDefinition(String name, String type, boolean local) {
         this.name = name;
-        this.contributionUri = contributionUri;
-        bindings = new ArrayList<>();
-    }
-
-    public ChannelDefinition(String name, URI contributionUri, String type, boolean local) {
-        this.name = name;
-        this.contributionUri = contributionUri;
         this.type = type;
         this.local = local;
-        bindings = new ArrayList<>();
     }
 
     /**
@@ -63,24 +52,6 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the URI of the contribution this channel is defined in.
-     *
-     * @return the URI of the contribution this channel is defined in
-     */
-    public URI getContributionUri() {
-        return contributionUri;
-    }
-
-    /**
-     * Sets the contribution URI.
-     *
-     * @param uri the contribution URI
-     */
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
     }
 
     /**

@@ -67,7 +67,7 @@ public class ChannelInstantiatorImplTestCase extends TestCase {
         instantiator = new ChannelInstantiatorImpl();
 
         URI contributionUri = URI.create("contribution");
-        ChannelDefinition channel = new ChannelDefinition("channel", contributionUri);
+        ChannelDefinition channel = new ChannelDefinition("channel");
         BindingDefinition binding = new MockBinding();
         channel.addBinding(binding);
 
