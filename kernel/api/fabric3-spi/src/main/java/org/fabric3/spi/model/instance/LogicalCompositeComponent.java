@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 
 /**
@@ -48,7 +48,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param definition the component definition
      * @param parent     the component parent
      */
-    public LogicalCompositeComponent(URI uri, ComponentDefinition<CompositeImplementation> definition, LogicalCompositeComponent parent) {
+    public LogicalCompositeComponent(URI uri, Component<CompositeImplementation> definition, LogicalCompositeComponent parent) {
         super(uri, definition, parent);
     }
 
@@ -59,7 +59,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param definition the component definition
      * @param autowire   true if autowire is enabled
      */
-    public LogicalCompositeComponent(URI uri, ComponentDefinition<CompositeImplementation> definition, boolean autowire) {
+    public LogicalCompositeComponent(URI uri, Component<CompositeImplementation> definition, boolean autowire) {
         super(uri, definition, null);
         this.autowire = autowire;
     }

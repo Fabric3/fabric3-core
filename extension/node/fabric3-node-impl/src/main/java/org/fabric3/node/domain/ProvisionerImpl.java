@@ -23,12 +23,13 @@ import java.util.List;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
-import org.fabric3.api.model.type.builder.JavaComponentDefinitionBuilder;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.builder.JavaComponentBuilder;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -62,7 +63,7 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     public void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException {
-        ComponentDefinition<?> definition = JavaComponentDefinitionBuilder.newBuilder(name, instance).build();
+        Component<?> definition = JavaComponentBuilder.newBuilder(name, instance).build();
         if (interfaces == null) {
             // if no interfaces are specified, check if the implementation class implements one or more interfaces
             Class<?>[] implementedInterfaces = getClass().getInterfaces();
@@ -88,7 +89,7 @@ public class ProvisionerImpl implements Provisioner {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(ContributionResolver.getContribution(), getClass().getClassLoader());
 
         // enrich the model
-        for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
+        for (Component<? extends Implementation<?>> definition : composite.getComponents().values()) {
             componentProcessor.process(definition, context);
         }
         checkErrors(context);
@@ -106,17 +107,17 @@ public class ProvisionerImpl implements Provisioner {
         }
     }
 
-    public void deploy(ComponentDefinition<?> definition) throws DeploymentException {
+    public void deploy(Component<?> component) throws DeploymentException {
         URI uri = ContributionResolver.getContribution();
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(uri, getClass().getClassLoader());
-        definition.setContributionUri(uri);
+        component.setContributionUri(uri);
 
-        componentProcessor.process(definition, context);
+        componentProcessor.process(component, context);
         checkErrors(context);
 
         try {
-            Composite wrapper = createWrapperComposite(definition.getName());
-            wrapper.add(definition);
+            Composite wrapper = createWrapperComposite(component.getName());
+            wrapper.add(component);
 
             domain.include(wrapper, false);
         } catch (org.fabric3.api.host.domain.DeploymentException e) {
@@ -124,11 +125,11 @@ public class ProvisionerImpl implements Provisioner {
         }
     }
 
-    public void deploy(ChannelDefinition definition) throws DeploymentException {
+    public void deploy(Channel channel) throws DeploymentException {
         try {
             URI uri = ContributionResolver.getContribution();
-            Composite wrapper = createWrapperComposite(definition.getName());
-            wrapper.add(definition);
+            Composite wrapper = createWrapperComposite(channel.getName());
+            wrapper.add(channel);
             domain.include(wrapper, false);
         } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new DeploymentException(e);
@@ -190,19 +191,18 @@ public class ProvisionerImpl implements Provisioner {
         contribution.addResource(resource);
     }
 
-    private void addService(Class<?> interfaze, ComponentDefinition<?> definition) throws ValidationDeploymentException {
+    private void addService(Class<?> interfaze, Component<?> definition) throws ValidationDeploymentException {
         URI uri = ContributionResolver.getContribution();
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(uri, getClass().getClassLoader());
         JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
-        ServiceDefinition serviceDefinition = new ServiceDefinition(interfaze.getSimpleName(), contract);
-        definition.getComponentType().add(serviceDefinition);
+        Service<ComponentType> service = new Service<>(interfaze.getSimpleName(), contract);
+        definition.getComponentType().add(service);
         checkErrors(context);
     }
 
     private void checkErrors(DefaultIntrospectionContext context) throws ValidationDeploymentException {
         List<ValidationFailure> errors = context.getErrors();
         List<ValidationFailure> warnings = context.getErrors();
-
         if (context.hasErrors()) {
             throw new ValidationDeploymentException(errors, warnings);
         }
@@ -211,7 +211,7 @@ public class ProvisionerImpl implements Provisioner {
     private void setContributionUris(Composite composite) {
         URI uri = ContributionResolver.getContribution();
         composite.setContributionUri(uri);
-        for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
+        for (Component<? extends Implementation<?>> definition : composite.getComponents().values()) {
             definition.setContributionUri(uri);
             if (definition.getComponentType() instanceof Composite) {
                 setContributionUris((Composite) definition.getComponentType());

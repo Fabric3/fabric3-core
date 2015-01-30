@@ -25,11 +25,11 @@
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsTargetWireAttacher"/>
     </component>
 
-    <component name="JmsConnectionSourceAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition">
+    <component name="JmsConnectionSourceAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionSource">
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionSourceAttacher"/>
     </component>
 
-    <component name="JmsConnectionTargetAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition">
+    <component name="JmsConnectionTargetAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionTarget">
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionTargetAttacher"/>
     </component>
 
@@ -91,7 +91,7 @@
         <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingLoader"/>
     </component>
 
-    <component name="JmsWireBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
+    <component name="JmsWireBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBinding">
         <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsWireBindingGenerator"/>
     </component>
 
@@ -99,7 +99,7 @@
         <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingPostProcessor"/>
     </component>
 
-    <component name="JmsConnectionBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
+    <component name="JmsConnectionBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBinding">
         <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsConnectionBindingGenerator"/>
     </component>
 

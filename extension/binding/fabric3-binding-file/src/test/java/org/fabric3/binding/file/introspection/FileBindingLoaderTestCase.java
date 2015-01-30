@@ -27,7 +27,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.binding.file.model.FileBindingDefinition;
+import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -46,7 +46,7 @@ public class FileBindingLoaderTestCase extends TestCase {
     public void testLoadBindingElement() throws Exception {
         XMLStreamReader reader = createReader(REFERENCE_BINDING_CONFIG);
         IntrospectionContext context = new DefaultIntrospectionContext();
-        FileBindingDefinition definition = loader.load(reader, context);
+        FileBinding definition = loader.load(reader, context);
         assertFalse(context.hasErrors());
 
         assertEquals("file", definition.getName());
@@ -59,7 +59,7 @@ public class FileBindingLoaderTestCase extends TestCase {
     public void testLoadArchiveStrategy() throws Exception {
         XMLStreamReader reader = createReader(STRATEGY_BINDING_CONFIG);
         IntrospectionContext context = new DefaultIntrospectionContext();
-        FileBindingDefinition definition = loader.load(reader, context);
+        FileBinding definition = loader.load(reader, context);
         assertFalse(context.hasErrors());
 
         assertEquals("file", definition.getName());

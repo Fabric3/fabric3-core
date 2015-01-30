@@ -20,7 +20,6 @@
 package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
@@ -33,7 +32,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.model.type.contract.DataType;
@@ -109,9 +108,9 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         ContainerConfiguration configuration = new ContainerConfiguration();
         try {
             ConnectionFactory requestFactory = objects.getRequestFactory();
-            Destination requestDestination = objects.getRequestDestination();
+            javax.jms.Destination requestDestination = objects.getRequestDestination();
             ConnectionFactory responseFactory = objects.getResponseFactory();
-            Destination responseDestination = objects.getResponseDestination();
+            javax.jms.Destination responseDestination = objects.getResponseDestination();
 
             List<BindingHandler<Message>> handlers = createHandlers(source);
             ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, handlers, monitor);
@@ -184,17 +183,17 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
 
         ConnectionFactory requestConnectionFactory = resolver.resolve(requestDefinition);
-        DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-        Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
+        Destination destination = metadata.getDestination();
+        javax.jms.Destination requestDestination = resolver.resolve(destination, requestConnectionFactory);
 
-        validateDestination(requestDestination, requestDestinationDefinition);
+        validateDestination(requestDestination, destination);
 
         ConnectionFactory responseConnectionFactory = null;
-        Destination responseDestination = null;
+        javax.jms.Destination responseDestination = null;
         if (metadata.isResponse()) {
             ConnectionFactoryDefinition responseDefinition = metadata.getResponseConnectionFactory();
             responseConnectionFactory = resolver.resolve(responseDefinition);
-            DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
+            Destination responseDestinationDefinition = metadata.getResponseDestination();
             if (responseDestinationDefinition != null) {
                 // it is legal to omit the response destination, in which case the service must use the JMSReplyTo header from the request message
                 responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
@@ -204,7 +203,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
     }
 
-    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws ContainerException {
+    private void validateDestination(javax.jms.Destination requestDestination, Destination requestDestinationDefinition) throws ContainerException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
             throw new ContainerException("Destination is not a queue: " + requestDestinationDefinition.getName());
@@ -247,13 +246,13 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
     private class ResolvedObjects {
         private ConnectionFactory requestFactory;
         private ConnectionFactory responseFactory;
-        private Destination requestDestination;
-        private Destination responseDestination;
+        private javax.jms.Destination requestDestination;
+        private javax.jms.Destination responseDestination;
 
         private ResolvedObjects(ConnectionFactory requestFactory,
-                                Destination requestDestination,
+                                javax.jms.Destination requestDestination,
                                 ConnectionFactory responseFactory,
-                                Destination responseDestination) {
+                                javax.jms.Destination responseDestination) {
             this.requestFactory = requestFactory;
             this.requestDestination = requestDestination;
             this.responseFactory = responseFactory;
@@ -268,11 +267,11 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
             return responseFactory;
         }
 
-        public Destination getRequestDestination() {
+        public javax.jms.Destination getRequestDestination() {
             return requestDestination;
         }
 
-        public Destination getResponseDestination() {
+        public javax.jms.Destination getResponseDestination() {
             return responseDestination;
         }
     }

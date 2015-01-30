@@ -18,22 +18,22 @@
  */
 package org.fabric3.spi.domain.generator.wire;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
- * Implementations generate a {@link BindingDefinition} for a callback. This is required for bindings that do not require a separate callback configuration on a
- * service or reference.
+ * Implementations generate a {@link Binding} for a callback. This is required for bindings that do not require a separate callback configuration on a service
+ * or reference.
  */
-public interface CallbackBindingGenerator<BD extends BindingDefinition> {
+public interface CallbackBindingGenerator<B extends Binding> {
 
     /**
      * Generates a callback binding definition for a service.
      *
-     * @param forwardBinding
-     * @return
+     * @param forwardBinding the forward binding
+     * @return the generated binding
      */
-    BD generateServiceCallback(LogicalBinding<BD> forwardBinding);
+    B generateServiceCallback(LogicalBinding<B> forwardBinding);
 
     /**
      * Generates a callback binding definition for a reference.
@@ -41,6 +41,6 @@ public interface CallbackBindingGenerator<BD extends BindingDefinition> {
      * @param forwardBinding the forward binding
      * @return the binding definition
      */
-    BD generateReferenceCallback(LogicalBinding<BD> forwardBinding);
+    B generateReferenceCallback(LogicalBinding<B> forwardBinding);
 
 }

@@ -18,13 +18,13 @@
  */
 package org.fabric3.jpa.model;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * Represents an entity manager factory treated as a resource.
  */
-public final class PersistenceUnitResourceReference extends ResourceReferenceDefinition {
+public final class PersistenceUnitResourceReference extends ResourceReference {
     private static final long serialVersionUID = 8935762119919982256L;
     private String unitName;
 

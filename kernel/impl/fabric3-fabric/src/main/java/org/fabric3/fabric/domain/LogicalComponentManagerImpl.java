@@ -24,7 +24,7 @@ import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -121,7 +121,7 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(domainUri.toString());
+        Component<CompositeImplementation> definition = new Component<>(domainUri.toString());
         definition.setImplementation(impl);
         definition.setContributionUri(Names.BOOT_CONTRIBUTION);
         domain = new LogicalCompositeComponent(domainUri, definition, autowire);

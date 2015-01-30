@@ -29,9 +29,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.fabric3.api.annotation.model.EndpointUri;
-import org.fabric3.api.binding.rs.model.RsBindingDefinition;
+import org.fabric3.api.binding.rs.model.RsBinding;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.PostProcessor;
@@ -55,10 +55,10 @@ public class RsPostProcessor implements PostProcessor {
 
     public void process(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Path path = implClass.getAnnotation(Path.class);
-        ServiceDefinition<ComponentType> bindingService = null;
+        Service<ComponentType> bindingService = null;
         if (path == null) {
             ClassLoader classLoader = implClass.getClassLoader();
-            for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
+            for (Service<ComponentType> service : componentType.getServices().values()) {
                 try {
                     Class<?> interfaze = classLoader.loadClass(service.getServiceContract().getQualifiedInterfaceName());
                     path = interfaze.getAnnotation(Path.class);
@@ -89,7 +89,7 @@ public class RsPostProcessor implements PostProcessor {
                     // interface not found
                     return;
                 }
-                for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
+                for (Service<ComponentType> service : componentType.getServices().values()) {
                     if (service.getServiceContract().getQualifiedInterfaceName().equals(bindingInterface.getName())) {
                         bindingService = service;
                         break;
@@ -105,7 +105,7 @@ public class RsPostProcessor implements PostProcessor {
             base = endpointUri.value();
         }
 
-        RsBindingDefinition binding = new RsBindingDefinition(serviceName, URI.create("/" + base));
+        RsBinding binding = new RsBinding(serviceName, URI.create("/" + base));
         bindingService.addBinding(binding);
     }
 

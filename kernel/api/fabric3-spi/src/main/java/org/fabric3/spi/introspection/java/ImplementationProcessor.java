@@ -16,30 +16,30 @@
  */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ * Processes a {@link Component}, potentially adding metadata based on introspecting the component implementation.
  */
 public interface ImplementationProcessor<I extends Implementation<?>> {
 
     /**
      * Processes the component definition.
      *
-     * @param definition the component definition
+     * @param component the component definition
      * @param context    the introspection context
      */
-    void process(ComponentDefinition<I> definition, IntrospectionContext context);
+    void process(Component<I> component, IntrospectionContext context);
 
     /**
-     * Processes a component definition, introspecting the provided implementation class to determine the component type.
+     * Processes a component component, introspecting the provided implementation class to determine the component type.
      *
-     * @param definition the component definition
+     * @param component the component component
      * @param clazz      the implementation class
      * @param context    the introspection context
      */
-    void process(ComponentDefinition<I> definition, Class<?> clazz, IntrospectionContext context);
+    void process(Component<I> component, Class<?> clazz, IntrospectionContext context);
 
 }

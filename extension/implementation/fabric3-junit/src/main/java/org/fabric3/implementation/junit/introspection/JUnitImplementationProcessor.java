@@ -17,11 +17,11 @@
 package org.fabric3.implementation.junit.introspection;
 
 import org.fabric3.api.annotation.wire.Key;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
+import org.fabric3.implementation.junit.model.JUnitBinding;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
@@ -40,29 +40,29 @@ public class JUnitImplementationProcessor implements ImplementationProcessor<JUn
         this.introspector = introspector;
     }
 
-    public void process(ComponentDefinition<JUnitImplementation> definition, IntrospectionContext context) {
-        JUnitImplementation implementation = definition.getImplementation();
+    public void process(Component<JUnitImplementation> component, IntrospectionContext context) {
+        JUnitImplementation implementation = component.getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
         introspector.introspect(componentType, context);
 
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
-        for (ServiceDefinition<ComponentType> serviceDefinition : componentType.getServices().values()) {
-            if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
-                JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(null);
-                serviceDefinition.addBinding(bindingDefinition);
+        for (Service<ComponentType> service : componentType.getServices().values()) {
+            if (service.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
+                JUnitBinding bindingDefinition = new JUnitBinding(null);
+                service.addBinding(bindingDefinition);
                 break;
             }
         }
     }
 
-    public void process(ComponentDefinition<JUnitImplementation> definition, Class<?> clazz, IntrospectionContext context) {
+    public void process(Component<JUnitImplementation> component, Class<?> clazz, IntrospectionContext context) {
         String name = clazz.getName();
         JUnitImplementation implementation = new JUnitImplementation(name);
         InjectingComponentType componentType = new InjectingComponentType(name);
         implementation.setComponentType(componentType);
-        definition.setImplementation(implementation);
-        process(definition, context);
+        component.setImplementation(implementation);
+        process(component, context);
 
     }
 

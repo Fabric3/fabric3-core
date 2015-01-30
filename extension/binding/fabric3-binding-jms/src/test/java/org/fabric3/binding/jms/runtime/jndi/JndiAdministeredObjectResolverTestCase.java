@@ -17,13 +17,12 @@
 package org.fabric3.binding.jms.runtime.jndi;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.jndi.spi.JndiContextManager;
 
@@ -50,11 +49,11 @@ public class JndiAdministeredObjectResolverTestCase extends TestCase {
     }
 
     public void testResolveDestination() throws Exception {
-        Destination destination = EasyMock.createMock(Destination.class);
-        EasyMock.expect(contextManager.lookup(Destination.class, "test")).andReturn(destination);
+        javax.jms.Destination destination = EasyMock.createMock(javax.jms.Destination.class);
+        EasyMock.expect(contextManager.lookup(javax.jms.Destination.class, "test")).andReturn(destination);
         EasyMock.replay(destination, contextManager, factoryManager);
 
-        DestinationDefinition definition = new DestinationDefinition();
+        Destination definition = new Destination();
         definition.setName("test");
         assertNotNull(resolver.resolve(definition));
 

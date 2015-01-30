@@ -22,7 +22,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Implementation;
@@ -76,7 +76,7 @@ public class InstantiationTestCase extends TestCase {
         InjectingComponentType childType = new InjectingComponentType();
         MockImplementation childImp = new MockImplementation();
         childImp.setComponentType(childType);
-        ComponentDefinition<MockImplementation> child = new ComponentDefinition<>("child");
+        Component<MockImplementation> child = new Component<>("child");
         child.setImplementation(childImp);
 
         Composite composite = new Composite(null);

@@ -18,7 +18,7 @@ package org.fabric3.binding.rs.generator;
 
 import java.net.URI;
 
-import org.fabric3.binding.rs.model.ProviderResourceDefinition;
+import org.fabric3.binding.rs.model.ProviderResource;
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -30,10 +30,10 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
-public class ProviderResourceGenerator implements ResourceGenerator<ProviderResourceDefinition> {
+public class ProviderResourceGenerator implements ResourceGenerator<ProviderResource> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResourceDefinition> resource) throws GenerationException {
-        ProviderResourceDefinition definition = resource.getDefinition();
+    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResource> resource) throws GenerationException {
+        ProviderResource definition = resource.getDefinition();
         String providerName = definition.getProviderName();
         URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);
         String bindingAnnotation = definition.getBindingAnnotation();

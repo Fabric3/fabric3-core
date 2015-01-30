@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
@@ -48,7 +48,7 @@ public class ChannelLoaderTestCase extends TestCase {
     private IntrospectionContext ctx;
 
     public void testLoadChannel() throws Exception {
-        ChannelDefinition channel = loader.load(reader, ctx);
+        Channel channel = loader.load(reader, ctx);
         assertEquals("channel", channel.getName());
         assertFalse(ctx.hasErrors());
     }
@@ -65,7 +65,7 @@ public class ChannelLoaderTestCase extends TestCase {
         implLoader.setProperties(new Property("prop"));
         registry.registerLoader(MockImplementation.TYPE, implLoader);
         loader = new ChannelLoader(registry);
-        Map map = Collections.singletonMap(ChannelDefinition.DEFAULT_TYPE, new MockChannelTypeLoader());
+        Map map = Collections.singletonMap(Channel.DEFAULT_TYPE, new MockChannelTypeLoader());
         loader.setChannelTypeLoaders(map);
 
         reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
@@ -80,7 +80,7 @@ public class ChannelLoaderTestCase extends TestCase {
             return EMPTY;
         }
 
-        public void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context) {
+        public void load(Channel channel, XMLStreamReader reader, IntrospectionContext context) {
         }
     }
 

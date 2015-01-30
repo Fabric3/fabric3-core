@@ -19,15 +19,14 @@
 package org.fabric3.binding.jms.runtime.resolver;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by {@link
- * ConnectionFactoryDefinition} or {@link DestinationDefinition}.
+ * ConnectionFactoryDefinition} or {@link Destination}.
  */
 public interface AdministeredObjectResolver {
 
@@ -43,12 +42,12 @@ public interface AdministeredObjectResolver {
     /**
      * Resolves a destination.
      *
-     * @param definition the destination definition
+     * @param destination the destination definition
      * @param factory    the connection factory
      * @return the destination
      * @throws JmsResolutionException if there is an error during resolution
      */
-    Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException;
+    javax.jms.Destination resolve(Destination destination, ConnectionFactory factory) throws JmsResolutionException;
 
     /**
      * Signals that a connection factory is being released and resources can be disposed.

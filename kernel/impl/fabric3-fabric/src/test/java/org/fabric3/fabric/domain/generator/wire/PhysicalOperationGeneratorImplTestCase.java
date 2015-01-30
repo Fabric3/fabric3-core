@@ -26,7 +26,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.DataType;
@@ -112,7 +112,7 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     private LogicalOperation createOperation() {
         MockImplementation implementation = new MockImplementation();
-        ComponentDefinition<?> componentDefinition = new ComponentDefinition("component", implementation);
+        Component<?> componentDefinition = new Component("component", implementation);
         componentDefinition.setContributionUri(CONTRIBUTION_URI);
         LogicalComponent component = new LogicalComponent(URI.create("component"), componentDefinition, null);
         LogicalService service = new LogicalService(URI.create("component#service"), null, component);

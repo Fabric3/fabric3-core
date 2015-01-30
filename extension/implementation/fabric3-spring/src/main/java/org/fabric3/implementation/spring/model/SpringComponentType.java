@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
@@ -57,7 +57,7 @@ public class SpringComponentType extends InjectingComponentType {
         return beansByName;
     }
 
-    public void add(ServiceDefinition<ComponentType> service) {
+    public void add(Service<ComponentType> service) {
         if (!(service instanceof SpringService)) {
             throw new IllegalArgumentException("Service type must be " + SpringService.class.getName());
         }

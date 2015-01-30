@@ -19,13 +19,13 @@
  */
 package org.fabric3.monitor.model;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  *
  */
-public class MonitorResourceReference extends ResourceReferenceDefinition {
+public class MonitorResourceReference extends ResourceReference {
     private static final long serialVersionUID = -6723752212878850748L;
     private String destination;
 

@@ -22,11 +22,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.domain.instantiator.CompositeComponentInstantiator;
@@ -61,28 +61,28 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         this(atomicInstantiator, wireInstantiator, null);
     }
 
-    public LogicalComponent<CompositeImplementation> instantiate(ComponentDefinition<CompositeImplementation> definition,
+    public LogicalComponent<CompositeImplementation> instantiate(Component<CompositeImplementation> component,
                                                                  LogicalCompositeComponent parent,
                                                                  InstantiationContext context) {
 
-        URI uri = URI.create(parent.getUri() + "/" + definition.getName());
-        Composite composite = Composite.class.cast(definition.getComponentType());
+        URI uri = URI.create(parent.getUri() + "/" + component.getName());
+        Composite composite = Composite.class.cast(component.getComponentType());
 
-        LogicalCompositeComponent component = new LogicalCompositeComponent(uri, definition, parent);
-        initializeProperties(component, definition, context);
-        instantiateChildComponents(component, composite, context);
-        wireInstantiator.instantiateCompositeWires(composite, component, context);
-        instantiateResources(component, composite);
-        wireInstantiator.instantiateCompositeWires(composite, component, context);
+        LogicalCompositeComponent logicalComponent = new LogicalCompositeComponent(uri, component, parent);
+        initializeProperties(logicalComponent, component, context);
+        instantiateChildComponents(logicalComponent, composite, context);
+        wireInstantiator.instantiateCompositeWires(composite, logicalComponent, context);
+        instantiateResources(logicalComponent, composite);
+        wireInstantiator.instantiateCompositeWires(composite, logicalComponent, context);
         if (channelInstantiator != null) {
-            channelInstantiator.instantiateChannels(composite, component, context);
+            channelInstantiator.instantiateChannels(composite, logicalComponent, context);
         }
         if (parent.getComponent(uri) != null) {
             DuplicateComponent error = new DuplicateComponent(uri, parent);
             context.addError(error);
         }
-        parent.addComponent(component);
-        return component;
+        parent.addComponent(logicalComponent);
+        return logicalComponent;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -90,7 +90,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
 
         // create the child components
         List<LogicalComponent<?>> children = new ArrayList<>();
-        for (ComponentDefinition<? extends Implementation<?>> child : composite.getComponents().values()) {
+        for (Component<? extends Implementation<?>> child : composite.getComponents().values()) {
 
             LogicalComponent<?> childComponent = atomicInstantiator.instantiate(child, component, context);
             component.addComponent(childComponent);
@@ -104,7 +104,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
 
     @SuppressWarnings({"unchecked"})
     private void instantiateResources(LogicalCompositeComponent component, Composite composite) {
-        for (ResourceDefinition definition : composite.getResources()) {
+        for (Resource definition : composite.getResources()) {
             LogicalResource<?> resource = new LogicalResource(definition, component);
             component.addResource(resource);
         }

@@ -27,11 +27,11 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
 import org.fabric3.spi.domain.generator.binding.BindingProvider;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -176,14 +176,14 @@ public class BindingSelectorImplTestCase extends TestCase {
         source.addReference(reference);
         composite.addComponent(source);
 
-        ComponentDefinition definition = new ComponentDefinition("target", new Implementation<ComponentType>() {
+        Component definition = new Component("target", new Implementation<ComponentType>() {
             public String getType() {
                 return null;
             }
         });
         LogicalComponent target = new LogicalComponent(URI.create("composite/target"), definition, composite);
         target.setZone(targetZone);
-        ServiceDefinition componentService = new ServiceDefinition("test");
+        Service componentService = new Service("test");
         componentService.setServiceContract(new JavaServiceContract());
         LogicalService service = new LogicalService(URI.create("composite/source#service"), componentService, target);
 
@@ -198,7 +198,7 @@ public class BindingSelectorImplTestCase extends TestCase {
     private LogicalCompositeComponent createComponentWithChannel() {
         URI compositeUri = URI.create("composite");
         LogicalCompositeComponent composite = new LogicalCompositeComponent(compositeUri, null, null);
-        ChannelDefinition definition = new ChannelDefinition("channel");
+        Channel definition = new Channel("channel");
         LogicalChannel channel = new LogicalChannel(URI.create("composite/channel"), definition, composite);
         composite.addChannel(channel);
         return composite;

@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import java.io.Serializable;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -37,12 +37,12 @@ public interface ChannelTypeLoader {
     String[] getAttributes();
 
     /**
-     * Loads the data into {@link ChannelDefinition#addMetadata(QName, Serializable)}.
+     * Loads the data into {@link Channel#addMetadata(QName, Serializable)}.
      *
-     * @param channelDefinition the channel definition
+     * @param channel the channel definition
      * @param reader            the XML stream
      * @param context           the current introspection context for reporting errors.
      */
-    void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context);
+    void load(Channel channel, XMLStreamReader reader, IntrospectionContext context);
 
 }

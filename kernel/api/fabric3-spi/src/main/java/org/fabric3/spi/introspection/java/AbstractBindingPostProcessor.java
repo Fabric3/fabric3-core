@@ -27,13 +27,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.fabric3.api.annotation.model.BindingHandler;
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -69,29 +68,25 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
         return value.isEmpty() ? null : value;
     }
 
-    protected abstract BindingDefinition processService(A annotation,
-                                                        ServiceDefinition<ComponentType> service,
-                                                        InjectingComponentType componentType,
+    protected abstract Binding processService(A annotation,
+                                              Service<ComponentType> service,
+                                              InjectingComponentType componentType,
+                                              Class<?> implClass,
+                                              IntrospectionContext context);
+
+    protected abstract Binding processServiceCallback(A annotation,
+                                                      Service<ComponentType> service,
+                                                      InjectingComponentType componentType,
+                                                      Class<?> implClass,
+                                                      IntrospectionContext context);
+
+    protected abstract Binding processReference(A annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context);
+
+    protected abstract Binding processReferenceCallback(A annotation,
+                                                        Reference reference,
+                                                        AccessibleObject object,
                                                         Class<?> implClass,
                                                         IntrospectionContext context);
-
-    protected abstract BindingDefinition processServiceCallback(A annotation,
-                                                                ServiceDefinition<ComponentType> service,
-                                                                InjectingComponentType componentType,
-                                                                Class<?> implClass,
-                                                                IntrospectionContext context);
-
-    protected abstract BindingDefinition processReference(A annotation,
-                                                          ReferenceDefinition reference,
-                                                          AccessibleObject object,
-                                                          Class<?> implClass,
-                                                          IntrospectionContext context);
-
-    protected abstract BindingDefinition processReferenceCallback(A annotation,
-                                                                  ReferenceDefinition reference,
-                                                                  AccessibleObject object,
-                                                                  Class<?> implClass,
-                                                                  IntrospectionContext context);
 
     private void processService(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         A annotation = implClass.getAnnotation(annotationType);
@@ -102,7 +97,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
         if (serviceInterface.equals(Void.class)) {
             serviceInterface = null;
         }
-        ServiceDefinition<ComponentType> boundService = null;
+        Service<ComponentType> boundService = null;
         if (serviceInterface == null) {
             if (componentType.getServices().size() != 1) {
                 InvalidAnnotation error = new InvalidAnnotation("Binding annotation must specify a service interface", implClass, annotation, implClass);
@@ -112,7 +107,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
             boundService = componentType.getServices().values().iterator().next();
         } else {
             String name = serviceInterface.getName();
-            for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
+            for (Service<ComponentType> service : componentType.getServices().values()) {
                 String interfaceName = service.getServiceContract().getQualifiedInterfaceName();
                 if (interfaceName.equals(name)) {
                     boundService = service;
@@ -125,7 +120,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 return;
             }
         }
-        BindingDefinition binding = processService(annotation, boundService, componentType, implClass, context);
+        Binding binding = processService(annotation, boundService, componentType, implClass, context);
         if (binding == null) {
             return;
         }
@@ -134,7 +129,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
 
         ServiceContract contract = boundService.getServiceContract();
         if (contract.getCallbackContract() != null) {
-            BindingDefinition callbackBinding = processServiceCallback(annotation, boundService, componentType, implClass, context);
+            Binding callbackBinding = processServiceCallback(annotation, boundService, componentType, implClass, context);
             if (callbackBinding != null) {
                 boundService.addCallbackBinding(callbackBinding);
             }
@@ -144,10 +139,10 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
 
     private void processReferences(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         for (Map.Entry<ModelObject, InjectionSite> entry : componentType.getInjectionSiteMappings().entrySet()) {
-            if (!(entry.getKey() instanceof ReferenceDefinition)) {
+            if (!(entry.getKey() instanceof Reference)) {
                 continue;
             }
-            ReferenceDefinition reference = (ReferenceDefinition) entry.getKey();
+            Reference reference = (Reference) entry.getKey();
             InjectionSite site = entry.getValue();
             if (site instanceof FieldInjectionSite) {
                 FieldInjectionSite fieldSite = (FieldInjectionSite) site;
@@ -164,14 +159,14 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 for (Annotation annotation : annotations) {
                     if (annotationType.equals(annotation.annotationType())) {
                         A castAnnotation = annotationType.cast(annotation);
-                        BindingDefinition binding = processReference(castAnnotation, reference, constructor, implClass, context);
+                        Binding binding = processReference(castAnnotation, reference, constructor, implClass, context);
                         if (binding == null) {
                             continue;
                         }
                         reference.addBinding(binding);
                         ServiceContract contract = reference.getServiceContract();
                         if (contract.getCallbackContract() != null) {
-                            BindingDefinition callbackBinding = processReferenceCallback(castAnnotation, reference, constructor, implClass, context);
+                            Binding callbackBinding = processReferenceCallback(castAnnotation, reference, constructor, implClass, context);
                             if (callbackBinding != null) {
                                 reference.addCallbackBinding(callbackBinding);
                             }
@@ -183,19 +178,19 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
 
     }
 
-    private void processBindingAnnotation(AccessibleObject object, ReferenceDefinition reference, Class<?> implClass, IntrospectionContext context) {
+    private void processBindingAnnotation(AccessibleObject object, Reference reference, Class<?> implClass, IntrospectionContext context) {
         A annotation = object.getAnnotation(annotationType);
         if (annotation == null) {
             return;
         }
-        BindingDefinition binding = processReference(annotation, reference, object, implClass, context);
+        Binding binding = processReference(annotation, reference, object, implClass, context);
         if (binding == null) {
             return;
         }
         reference.addBinding(binding);
         ServiceContract contract = reference.getServiceContract();
         if (contract.getCallbackContract() != null) {
-            BindingDefinition callbackBinding = processReferenceCallback(annotationType.cast(annotation), reference, object, implClass, context);
+            Binding callbackBinding = processReferenceCallback(annotationType.cast(annotation), reference, object, implClass, context);
             if (callbackBinding != null) {
                 reference.addCallbackBinding(callbackBinding);
             }
@@ -203,8 +198,8 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
 
     }
 
-    private void processHandlers(AnnotatedElement element, BindingDefinition binding, Class<?> implClass, IntrospectionContext context) {
-        BindingHandler annotation = element.getAnnotation(BindingHandler.class);
+    private void processHandlers(AnnotatedElement element, Binding binding, Class<?> implClass, IntrospectionContext context) {
+        org.fabric3.api.annotation.model.BindingHandler annotation = element.getAnnotation(org.fabric3.api.annotation.model.BindingHandler.class);
         if (annotation == null) {
             return;
         }
@@ -220,12 +215,12 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
 
     private void parseHandlerUri(String value,
                                  AnnotatedElement element,
-                                 BindingDefinition binding,
+                                 Binding binding,
                                  Class<?> implClass,
                                  IntrospectionContext context,
-                                 BindingHandler annotation) {
+                                 org.fabric3.api.annotation.model.BindingHandler annotation) {
         try {
-            BindingHandlerDefinition definition = new BindingHandlerDefinition(new URI(value));
+            BindingHandler definition = new BindingHandler(new URI(value));
             binding.addHandler(definition);
         } catch (URISyntaxException e) {
             InvalidAnnotation error = new InvalidAnnotation("Invalid binding handler URI", element, annotation, implClass, e);

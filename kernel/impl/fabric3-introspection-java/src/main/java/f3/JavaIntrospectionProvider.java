@@ -58,7 +58,6 @@ import org.fabric3.introspection.java.annotation.ProducerProcessor;
 import org.fabric3.introspection.java.annotation.StatelessProcessor;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.introspection.java.policy.DefaultOperationPolicyIntrospector;
-import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Destroy;
@@ -69,7 +68,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
 import org.oasisopen.sca.annotation.Scope;
 import org.oasisopen.sca.annotation.Service;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides components for Java artifact introspection.

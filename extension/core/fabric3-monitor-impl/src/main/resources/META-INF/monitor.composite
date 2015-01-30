@@ -56,7 +56,7 @@
         <f3:implementation.system class="org.fabric3.monitor.impl.introspection.MonitorResourceLoader"/>
     </component>
 
-    <component name="MonitorResourceGenerator" f3:key="org.fabric3.monitor.spi.model.type.MonitorResourceDefinition">
+    <component name="MonitorResourceGenerator" f3:key="org.fabric3.monitor.spi.model.type.MonitorResource">
         <f3:implementation.system class="org.fabric3.monitor.impl.generator.MonitorResourceGenerator"/>
     </component>
 

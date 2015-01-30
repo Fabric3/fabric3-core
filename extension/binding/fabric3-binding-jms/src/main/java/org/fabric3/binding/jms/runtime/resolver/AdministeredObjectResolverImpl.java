@@ -19,13 +19,12 @@
 package org.fabric3.binding.jms.runtime.resolver;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -48,13 +47,13 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
         return strategy.getConnectionFactory(definition);
     }
 
-    public Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
-        CreateOption create = definition.getCreate();
+    public javax.jms.Destination resolve(Destination destination, ConnectionFactory factory) throws JmsResolutionException {
+        CreateOption create = destination.getCreate();
         DestinationStrategy strategy = destinationStrategies.get(create);
         if (strategy == null) {
             throw new AssertionError("DestinationStrategy not configured: " + create);
         }
-        return strategy.getDestination(definition, factory);
+        return strategy.getDestination(destination, factory);
     }
 
     public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {

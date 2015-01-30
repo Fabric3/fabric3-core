@@ -34,9 +34,9 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  * Implementation of the test binding generator.
  */
 @EagerInit
-public class TestWireBindingGenerator implements WireBindingGenerator<TestBindingDefinition> {
+public class TestWireBindingGenerator implements WireBindingGenerator<TestBinding> {
 
-    public TestBindingWireSourceDefinition generateSource(LogicalBinding<TestBindingDefinition> logicalBinding,
+    public TestBindingWireSourceDefinition generateSource(LogicalBinding<TestBinding> logicalBinding,
                                                           ServiceContract contract,
                                                           List<LogicalOperation> operations) throws GenerationException {
         TestBindingWireSourceDefinition definition = new TestBindingWireSourceDefinition();
@@ -44,7 +44,7 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
         return definition;
     }
 
-    public TestBindingWireTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> logicalBinding,
+    public TestBindingWireTargetDefinition generateTarget(LogicalBinding<TestBinding> logicalBinding,
                                                           ServiceContract contract,
                                                           List<LogicalOperation> operations) throws GenerationException {
 
@@ -53,7 +53,7 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
         return definition;
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBindingDefinition> serviceBinding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBinding> serviceBinding,
                                                                      ServiceContract contract,
                                                                      List<LogicalOperation> operations) throws GenerationException {
 

@@ -41,8 +41,8 @@ import java.util.SortedSet;
 
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.java.InjectableType;
@@ -59,7 +59,6 @@ import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
-import org.oasisopen.sca.annotation.Service;
 
 /**
  *
@@ -168,7 +167,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         }
     }
 
-    public void processMultiplicity(ReferenceDefinition definition, boolean required, Type type, TypeMapping typeMapping) {
+    public void processMultiplicity(Reference definition, boolean required, Type type, TypeMapping typeMapping) {
         MultiplicityType multiplicityType = introspectMultiplicity(type, typeMapping);
         if (MultiplicityType.COLLECTION == multiplicityType) {
             Multiplicity multiplicity = required ? Multiplicity.ONE_N : Multiplicity.ZERO_N;
@@ -216,7 +215,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
         // if it's Remotable or a local Service, it must be a reference
         if (isAnnotationPresent(rawType, Remotable.class)
-                || isAnnotationPresent(rawType, Service.class)) {
+                || isAnnotationPresent(rawType, org.oasisopen.sca.annotation.Service.class)) {
             return InjectableType.REFERENCE;
         }
 
@@ -259,7 +258,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         return interfaces;
     }
 
-    public Set<Method> getInjectionMethods(Class<?> type, Collection<ServiceDefinition<ComponentType>> services) {
+    public Set<Method> getInjectionMethods(Class<?> type, Collection<Service<ComponentType>> services) {
         Set<Signature> exclude = getOperations(services);
         Set<Method> methods = new HashSet<>();
         while (type != null) {
@@ -308,9 +307,9 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
     }
 
-    private Set<Signature> getOperations(Collection<ServiceDefinition<ComponentType>> services) {
+    private Set<Signature> getOperations(Collection<Service<ComponentType>> services) {
         Set<Signature> operations = new HashSet<>();
-        for (ServiceDefinition<ComponentType> definition : services) {
+        for (Service<ComponentType> definition : services) {
             List<? extends Operation> ops = definition.getServiceContract().getOperations();
             for (Operation operation : ops) {
                 String name = operation.getName();

@@ -31,9 +31,9 @@ import java.net.URI;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.binding.rs.model.ProviderResourceDefinition;
+import org.fabric3.binding.rs.model.ProviderResource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.contribution.JavaResourceProcessorExtension;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -52,10 +52,10 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
         this.monitor = monitor;
     }
 
-    public void process(ComponentDefinition<JavaImplementation> definition) {
+    public void process(Component<JavaImplementation> component) {
         try {
-            URI contributionUri = definition.getContributionUri();
-            String implClass = definition.getImplementation().getImplementationClass();
+            URI contributionUri = component.getContributionUri();
+            String implClass = component.getImplementation().getImplementationClass();
             Class<?> clazz = classLoaderRegistry.loadClass(contributionUri, implClass);
             if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)
                 && !ContextResolver.class.isAssignableFrom(clazz) && !MessageBodyReader.class.isAssignableFrom(clazz)
@@ -90,9 +90,9 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
                     break;
                 }
             }
-            String name = definition.getName();
-            ProviderResourceDefinition resourceDefinition = new ProviderResourceDefinition(name, bindingAnnotation, implClass, contributionUri);
-            definition.getParent().add(resourceDefinition);
+            String name = component.getName();
+            ProviderResource providerResource = new ProviderResource(name, bindingAnnotation, implClass, contributionUri);
+            component.getParent().add(providerResource);
         } catch (ClassNotFoundException e) {
             throw new AssertionError(e);   // will not happen
         }

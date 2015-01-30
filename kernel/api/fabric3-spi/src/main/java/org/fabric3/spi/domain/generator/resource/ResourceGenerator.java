@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.domain.generator.resource;
 
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
@@ -26,7 +26,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 /**
  * Generates {@link PhysicalResourceDefinition}s from a resource definition declared in a composite.
  */
-public interface ResourceGenerator<RD extends ResourceDefinition> {
+public interface ResourceGenerator<RD extends Resource> {
 
     /**
      * Generate the physical definition for a logical resource.

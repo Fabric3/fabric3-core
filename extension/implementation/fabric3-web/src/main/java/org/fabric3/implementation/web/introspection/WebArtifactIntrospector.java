@@ -22,9 +22,9 @@ import java.net.URL;
 import java.util.Map;
 
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ProducerDefinition;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.Producer;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -41,7 +41,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Introspects a web application to create a component type. One component type per web contribution is created and stored as a resource to be used to configure
@@ -55,7 +54,7 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
     private ContractMatcher matcher;
     private IntrospectionHelper helper;
 
-    public WebArtifactIntrospector(@Reference ClassVisitor classVisitor, @Reference ContractMatcher matcher, @Reference IntrospectionHelper helper) {
+    public WebArtifactIntrospector(@org.oasisopen.sca.annotation.Reference ClassVisitor classVisitor, @org.oasisopen.sca.annotation.Reference ContractMatcher matcher, @org.oasisopen.sca.annotation.Reference IntrospectionHelper helper) {
         this.classVisitor = classVisitor;
         this.matcher = matcher;
         this.helper = helper;
@@ -125,9 +124,9 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
      * @param context       the introspection context
      */
     private void mergeComponentTypes(WebComponentType componentType, InjectingComponentType tempType, IntrospectionContext context) {
-        for (Map.Entry<String, ReferenceDefinition<ComponentType>> entry : tempType.getReferences().entrySet()) {
+        for (Map.Entry<String, Reference<ComponentType>> entry : tempType.getReferences().entrySet()) {
             String name = entry.getKey();
-            ReferenceDefinition<ComponentType> reference = componentType.getReferences().get(name);
+            Reference<ComponentType> reference = componentType.getReferences().get(name);
             if (reference != null) {
                 ServiceContract source = reference.getServiceContract();
                 ServiceContract target = entry.getValue().getServiceContract();
@@ -141,9 +140,9 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
                 componentType.add(entry.getValue());
             }
         }
-        for (Map.Entry<String, ResourceReferenceDefinition> entry : tempType.getResourceReferences().entrySet()) {
+        for (Map.Entry<String, ResourceReference> entry : tempType.getResourceReferences().entrySet()) {
             String name = entry.getKey();
-            ResourceReferenceDefinition definition = componentType.getResourceReferences().get(name);
+            ResourceReference definition = componentType.getResourceReferences().get(name);
             if (definition != null) {
                 ServiceContract source = definition.getServiceContract();
                 ServiceContract target = entry.getValue().getServiceContract();
@@ -157,9 +156,9 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
                 componentType.add(entry.getValue());
             }
         }
-        for (Map.Entry<String, ProducerDefinition<ComponentType>> entry : tempType.getProducers().entrySet()) {
+        for (Map.Entry<String, Producer<ComponentType>> entry : tempType.getProducers().entrySet()) {
             String name = entry.getKey();
-            ProducerDefinition definition = componentType.getProducers().get(name);
+            Producer definition = componentType.getProducers().get(name);
             if (definition != null) {
                 ServiceContract source = definition.getServiceContract();
                 ServiceContract target = entry.getValue().getServiceContract();

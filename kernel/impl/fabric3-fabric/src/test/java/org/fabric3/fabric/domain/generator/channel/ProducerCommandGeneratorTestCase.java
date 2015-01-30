@@ -29,8 +29,8 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -60,10 +60,10 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI channelUri = URI.create("ChannelNotFound");
-        ComponentDefinition definition = new ComponentDefinition("component");
+        Component definition = new Component("component");
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
         component.setDeployable(DEPLOYABLE);
-        LogicalProducer producer = new LogicalProducer(URI.create("component#producer"), new ProducerDefinition("consumer"), component);
+        LogicalProducer producer = new LogicalProducer(URI.create("component#producer"), new Producer("consumer"), component);
         producer.addTarget(channelUri);
         component.addProducer(producer);
 
@@ -160,10 +160,10 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         LogicalChannel channel = new LogicalChannel(channelUri, null, parent);
         parent.addChannel(channel);
 
-        ComponentDefinition definition = new ComponentDefinition("component");
+        Component definition = new Component("component");
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
         component.setDeployable(DEPLOYABLE);
-        LogicalProducer producer = new LogicalProducer(URI.create("component#producer"), new ProducerDefinition("consumer"), component);
+        LogicalProducer producer = new LogicalProducer(URI.create("component#producer"), new Producer("consumer"), component);
         producer.addTarget(channelUri);
         component.addProducer(producer);
         return component;

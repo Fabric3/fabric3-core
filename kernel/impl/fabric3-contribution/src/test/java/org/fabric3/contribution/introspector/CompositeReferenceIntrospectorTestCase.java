@@ -5,7 +5,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Include;
@@ -40,7 +40,7 @@ public class CompositeReferenceIntrospectorTestCase extends TestCase {
         Composite composite = new Composite(name);
         ResourceElement<QNameSymbol, Composite> refers = new ResourceElement<>(symbol, composite);
 
-        ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<>("referrer");
+        Component<CompositeImplementation> child = new Component<>("referrer");
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(referred.getValue());
         child.setImplementation(implementation);

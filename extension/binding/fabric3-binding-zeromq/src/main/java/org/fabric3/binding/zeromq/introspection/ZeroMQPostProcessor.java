@@ -26,12 +26,12 @@ import java.util.List;
 
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -48,8 +48,8 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         super(ZeroMQ.class);
     }
 
-    protected BindingDefinition processService(ZeroMQ annotation,
-                                               ServiceDefinition<ComponentType> boundService,
+    protected Binding processService(ZeroMQ annotation,
+                                               Service<ComponentType> boundService,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -58,7 +58,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
 
             ZeroMQMetadata metadata = new ZeroMQMetadata();
             String bindingName = "ZMQ" + serviceInterface.getSimpleName();
-            ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
+            ZeroMQBinding binding = new ZeroMQBinding(bindingName, metadata);
             int port = annotation.port();
             if (port > 0) {
                 SocketAddressDefinition address = new SocketAddressDefinition("localhost", port);
@@ -73,22 +73,22 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         }
     }
 
-    protected BindingDefinition processServiceCallback(ZeroMQ annotation,
-                                                       ServiceDefinition<ComponentType> service,
+    protected Binding processServiceCallback(ZeroMQ annotation,
+                                                       Service<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {
         return null; // not needed
     }
 
-    protected BindingDefinition processReference(ZeroMQ annotation,
-                                                 ReferenceDefinition reference,
+    protected Binding processReference(ZeroMQ annotation,
+                                                 Reference reference,
                                                  AccessibleObject object,
                                                  Class<?> implClass,
                                                  IntrospectionContext context) {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         String bindingName = "ZMQ" + reference.getName();
-        ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
+        ZeroMQBinding binding = new ZeroMQBinding(bindingName, metadata);
 
         parseTarget(annotation, binding, object, implClass, context);
         parseAddresses(annotation, metadata, object, implClass, context);
@@ -97,8 +97,8 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         return binding;
     }
 
-    protected BindingDefinition processReferenceCallback(ZeroMQ annotation,
-                                                         ReferenceDefinition reference,
+    protected Binding processReferenceCallback(ZeroMQ annotation,
+                                                         Reference reference,
                                                          AccessibleObject object,
                                                          Class<?> implClass,
                                                          IntrospectionContext context) {
@@ -139,7 +139,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         metadata.setSocketAddresses(addressDefinitions);
     }
 
-    private void parseTarget(ZeroMQ annotation, ZeroMQBindingDefinition binding, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
+    private void parseTarget(ZeroMQ annotation, ZeroMQBinding binding, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
         String target = annotation.target();
         try {
             URI targetUri = new URI(target);

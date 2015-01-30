@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.api.annotation.Cache;
-import org.fabric3.cache.model.CacheReferenceDefinition;
+import org.fabric3.cache.model.CacheReference;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -44,7 +44,7 @@ public class CacheProcessorTestCase extends TestCase {
         processor.visitField(annotation, field, Foo.class, componentType, context);
 
         assertFalse(context.hasErrors());
-        CacheReferenceDefinition definition = (CacheReferenceDefinition) componentType.getResourceReferences().get("cache");
+        CacheReference definition = (CacheReference) componentType.getResourceReferences().get("cache");
         assertEquals("cache", definition.getCacheName());
 
         EasyMock.verify(contractProcessor, helper);
@@ -66,7 +66,7 @@ public class CacheProcessorTestCase extends TestCase {
         processor.visitMethod(annotation, method, Foo.class, componentType, context);
 
         assertFalse(context.hasErrors());
-        CacheReferenceDefinition definition = (CacheReferenceDefinition) componentType.getResourceReferences().get("cache");
+        CacheReference definition = (CacheReference) componentType.getResourceReferences().get("cache");
         assertEquals("cache", definition.getCacheName());
 
         EasyMock.verify(contractProcessor, helper);
@@ -87,7 +87,7 @@ public class CacheProcessorTestCase extends TestCase {
         processor.visitConstructorParameter(annotation, constructor, 0, Foo.class, componentType, context);
 
         assertFalse(context.hasErrors());
-        CacheReferenceDefinition definition = (CacheReferenceDefinition) componentType.getResourceReferences().get("cache");
+        CacheReference definition = (CacheReference) componentType.getResourceReferences().get("cache");
         assertEquals("cache", definition.getCacheName());
 
         EasyMock.verify(contractProcessor, helper);

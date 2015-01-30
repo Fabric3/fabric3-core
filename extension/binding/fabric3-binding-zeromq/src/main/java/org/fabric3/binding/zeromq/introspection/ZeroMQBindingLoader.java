@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Loads a <code>binding.zeromq</code> element in a composite.
  */
 @EagerInit
-public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBindingDefinition> {
+public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBinding> {
 
     public ZeroMQBindingLoader() {
         addAttributes("name",
@@ -55,19 +55,19 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
                       "wireFormat");
     }
 
-    public ZeroMQBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public ZeroMQBinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String bindingName = reader.getAttributeValue(null, "name");
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
-        ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition(bindingName, metadata);
+        ZeroMQBinding binding = new ZeroMQBinding(bindingName, metadata);
 
         String target = reader.getAttributeValue(null, "target");
         if (target != null) {
             try {
                 URI targetUri = new URI(target);
-                definition.setTargetUri(targetUri);
+                binding.setTargetUri(targetUri);
             } catch (URISyntaxException e) {
                 InvalidValue error = new InvalidValue("Invalid target URI specified: " + target, startLocation, e);
                 context.addError(error);
@@ -98,14 +98,14 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
             for (String entry : addressStrings) {
                 String[] tokens = entry.split(":");
                 if (tokens.length != 2) {
-                    context.addError(new InvalidValue("Invalid address: " + entry, startLocation, definition));
+                    context.addError(new InvalidValue("Invalid address: " + entry, startLocation, binding));
                 } else {
                     try {
                         String host = tokens[0];
                         int port = Integer.parseInt(tokens[1]);
                         addressDefinitions.add(new SocketAddressDefinition(host, port));
                     } catch (NumberFormatException e) {
-                        context.addError(new InvalidValue("Invalid port: " + e.getMessage(), startLocation, definition));
+                        context.addError(new InvalidValue("Invalid port: " + e.getMessage(), startLocation, binding));
                     }
                 }
             }
@@ -119,10 +119,10 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         metadata.setReceiveBuffer(receiveBuffer);
         metadata.setWireFormat(wireFormat);
 
-        validateAttributes(reader, context, definition);
+        validateAttributes(reader, context, binding);
 
         LoaderUtil.skipToEndElement(reader);
-        return definition;
+        return binding;
     }
 
     private long parseLong(String name, XMLStreamReader reader, IntrospectionContext context) {

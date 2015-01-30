@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
-import org.fabric3.api.model.type.builder.WireDefinitionBuilder;
+import org.fabric3.api.model.type.builder.WireBuilder;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.contribution.ClasspathProcessorRegistryImpl;
 import org.fabric3.contribution.ContributionLoaderImpl;
@@ -73,7 +73,7 @@ import org.fabric3.contribution.wire.QNameWireInstantiator;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
 import org.oasisopen.sca.Constants;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides components for the contribution service.
@@ -182,10 +182,10 @@ public class ContributionServiceProvider {
     }
 
     private static void reinjectMetaDataStore(CompositeBuilder compositeBuilder) {
-        WireDefinitionBuilder wireBuilder = WireDefinitionBuilder.newBuilder();
+        WireBuilder wireBuilder = WireBuilder.newBuilder();
         compositeBuilder.wire(wireBuilder.source("MetaDataStore/instantiatorRegistry").target("ContributionWireInstantiatorRegistry").build());
 
-        wireBuilder = WireDefinitionBuilder.newBuilder();
+        wireBuilder = WireBuilder.newBuilder();
         compositeBuilder.wire(wireBuilder.source("MetaDataStore/processorRegistry").target("ProcessorRegistry").build());
     }
 }

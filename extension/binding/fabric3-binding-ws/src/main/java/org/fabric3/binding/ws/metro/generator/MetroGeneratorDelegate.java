@@ -16,7 +16,7 @@
  */
 package org.fabric3.binding.ws.metro.generator;
 
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
@@ -36,7 +36,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire source definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> serviceBinding, T contract) throws GenerationException;
+    MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> serviceBinding, T contract) throws GenerationException;
 
     /**
      * Generates a target definition from a logical binding.
@@ -46,7 +46,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding, T contract) throws GenerationException;
+    MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> referenceBinding, T contract) throws GenerationException;
 
     /**
      * Generates a target definition from logical reference and service bindings.
@@ -56,6 +56,6 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding, T contract) throws GenerationException;
+    MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, T contract) throws GenerationException;
 
 }

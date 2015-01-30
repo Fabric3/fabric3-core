@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import org.fabric3.api.annotation.Target;
 import org.fabric3.api.annotation.Targets;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -39,7 +39,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -49,7 +48,8 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
     private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
 
-    public ReferenceProcessorImpl(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
+    public ReferenceProcessorImpl(@org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
+                                  @org.oasisopen.sca.annotation.Reference IntrospectionHelper helper) {
         this.contractProcessor = contractProcessor;
         this.helper = helper;
     }
@@ -59,7 +59,7 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         Annotation[] annotations = field.getAnnotations();
-        ReferenceDefinition definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
+        Reference definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
         componentType.add(definition, site);
         addTargets(field, field, context, definition);
     }
@@ -74,7 +74,7 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Annotation[] annotations = method.getAnnotations();
-        ReferenceDefinition definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
+        Reference definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
         addTargets(method, method, context, definition);
         componentType.add(definition, site);
     }
@@ -90,28 +90,28 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         Annotation[] annotations = constructor.getParameterAnnotations()[index];
-        ReferenceDefinition definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
+        Reference definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
         componentType.add(definition, site);
         addTargets(constructor, constructor, context, definition);
 
     }
 
-    private ReferenceDefinition createDefinition(String name,
-                                                 boolean required,
-                                                 Type type,
-                                                 Class<?> implClass,
-                                                 Annotation[] annotations,
-                                                 InjectingComponentType componentType,
-                                                 IntrospectionContext context) {
+    private Reference createDefinition(String name,
+                                       boolean required,
+                                       Type type,
+                                       Class<?> implClass,
+                                       Annotation[] annotations,
+                                       InjectingComponentType componentType,
+                                       IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
         ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
-        ReferenceDefinition definition = new ReferenceDefinition(name, contract);
+        Reference definition = new Reference(name, contract);
         helper.processMultiplicity(definition, required, type, typeMapping);
         return definition;
     }
 
-    private void addTargets(AccessibleObject accessibleObject, Member member, IntrospectionContext context, ReferenceDefinition definition) {
+    private void addTargets(AccessibleObject accessibleObject, Member member, IntrospectionContext context, Reference definition) {
         Targets targetsAnnotation = accessibleObject.getAnnotation(Targets.class);
         if (targetsAnnotation != null) {
             Multiplicity multiplicity = definition.getMultiplicity();

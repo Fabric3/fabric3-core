@@ -23,14 +23,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Producer;
 
 /**
  * A producer on an instantiated component in the domain.
  */
 public class LogicalProducer extends LogicalInvocable {
     private static final long serialVersionUID = 5403855901902189810L;
-    private ProducerDefinition definition;
+    private Producer definition;
     private List<URI> targets;
 
     /**
@@ -40,7 +40,7 @@ public class LogicalProducer extends LogicalInvocable {
      * @param definition the producer type definition
      * @param parent     the parent component
      */
-    public LogicalProducer(URI uri, ProducerDefinition definition, LogicalComponent<?> parent) {
+    public LogicalProducer(URI uri, Producer definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         targets = new ArrayList<>();
@@ -51,7 +51,7 @@ public class LogicalProducer extends LogicalInvocable {
      *
      * @return the producer type definition
      */
-    public ProducerDefinition getDefinition() {
+    public Producer getDefinition() {
         return definition;
     }
 

@@ -20,8 +20,8 @@ import java.net.URI;
 
 import org.fabric3.fabric.domain.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -33,7 +33,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 public class ChannelInstantiatorImpl implements ChannelInstantiator {
 
     public void instantiateChannels(Composite composite, LogicalCompositeComponent parent, InstantiationContext context) {
-        for (ChannelDefinition definition : composite.getChannels().values()) {
+        for (Channel definition : composite.getChannels().values()) {
             URI uri = URI.create(parent.getUri() + "/" + definition.getName());
             if (parent.getChannel(uri) != null) {
                 DuplicateChannel error = new DuplicateChannel(uri, parent);
@@ -41,8 +41,8 @@ public class ChannelInstantiatorImpl implements ChannelInstantiator {
                 continue;
             }
             LogicalChannel channel = new LogicalChannel(uri, definition, parent);
-            for (BindingDefinition binding : definition.getBindings()) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, channel);
+            for (Binding binding : definition.getBindings()) {
+                LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, channel);
                 channel.addBinding(logicalBinding);
             }
             channel.setDeployable(composite.getName());

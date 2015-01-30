@@ -25,7 +25,7 @@ import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -35,7 +35,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 /**
  * Generates PhysicalWireSourceDefinitions and PhysicalWireTargetDefinitions for the Metro web services binding.
  */
-public class MetroWireBindingGenerator implements WireBindingGenerator<WsBindingDefinition> {
+public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding> {
     private Map<Class<?>, MetroGeneratorDelegate> delegates;
 
     @Reference
@@ -44,19 +44,19 @@ public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding
     }
 
     @SuppressWarnings({"unchecked"})
-    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
+    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateSource(binding, contract);
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateTarget(binding, contract);
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding,
                                                                      ServiceContract contract,
                                                                      List<LogicalOperation> operations) throws GenerationException {
         MetroGeneratorDelegate delegate = getDelegate(contract);

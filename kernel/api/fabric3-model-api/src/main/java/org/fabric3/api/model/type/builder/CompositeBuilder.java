@@ -24,13 +24,13 @@ import java.net.URL;
 import java.util.List;
 
 import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ResourceDefinition;
-import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Resource;
+import org.fabric3.api.model.type.component.Wire;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -64,7 +64,7 @@ public class CompositeBuilder extends AbstractBuilder {
      * @param definition the component definition
      * @return the builder
      */
-    public CompositeBuilder component(ComponentDefinition<?> definition) {
+    public CompositeBuilder component(Component<?> definition) {
         checkState();
         composite.add(definition);
         return this;
@@ -76,7 +76,7 @@ public class CompositeBuilder extends AbstractBuilder {
      * @param definition the channel definition
      * @return the builder
      */
-    public CompositeBuilder channel(ChannelDefinition definition) {
+    public CompositeBuilder channel(Channel definition) {
         checkState();
         composite.add(definition);
         return this;
@@ -88,7 +88,7 @@ public class CompositeBuilder extends AbstractBuilder {
      * @param definition the resource definition
      * @return the builder
      */
-    public CompositeBuilder resource(ResourceDefinition definition) {
+    public CompositeBuilder resource(Resource definition) {
         checkState();
         composite.add(definition);
         return this;
@@ -112,12 +112,12 @@ public class CompositeBuilder extends AbstractBuilder {
     /**
      * Adds the wire definition to the composite.
      *
-     * @param wireDefinition the wire definition
+     * @param wire the wire definition
      * @return the builder
      */
-    public CompositeBuilder wire(WireDefinition wireDefinition) {
+    public CompositeBuilder wire(Wire wire) {
         checkState();
-        composite.add(wireDefinition);
+        composite.add(wire);
         return this;
     }
 

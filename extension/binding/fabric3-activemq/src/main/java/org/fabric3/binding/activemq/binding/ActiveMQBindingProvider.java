@@ -26,9 +26,9 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.DestinationType;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
 import org.fabric3.api.model.type.contract.Operation;
@@ -138,8 +138,8 @@ public class ActiveMQBindingProvider implements BindingProvider {
         // setup forward bindings
         // derive the forward queue name from the service name
         String forwardQueue = target.getUri().toString();
-        JmsBindingDefinition referenceDefinition = createBindingDefinition(forwardQueue, response, false);  // XA not enabled on references
-        LogicalBinding<JmsBindingDefinition> referenceBinding = new LogicalBinding<>(referenceDefinition, source, deployable);
+        JmsBinding binding = createBinding(forwardQueue, response, false);  // XA not enabled on references
+        LogicalBinding<JmsBinding> referenceBinding = new LogicalBinding<>(binding, source, deployable);
         referenceBinding.setAssigned(true);
         source.addBinding(referenceBinding);
 
@@ -147,8 +147,8 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
         if (bindTarget) {
             boolean xa = isXA(target);
-            JmsBindingDefinition serviceDefinition = createBindingDefinition(forwardQueue, response, xa);
-            LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, target, deployable);
+            JmsBinding serviceDefinition = createBinding(forwardQueue, response, xa);
+            LogicalBinding<JmsBinding> serviceBinding = new LogicalBinding<>(serviceDefinition, target, deployable);
             serviceBinding.setAssigned(true);
             target.addBinding(serviceBinding);
         }
@@ -160,20 +160,18 @@ public class ActiveMQBindingProvider implements BindingProvider {
             String callbackQueue = target.getUri().toString() + "Callback";
             boolean callbackXa = isXA(target);
 
-            JmsBindingDefinition callbackReferenceDefinition = createBindingDefinition(callbackQueue, false, callbackXa);
-            LogicalBinding<JmsBindingDefinition> callbackReferenceBinding = new LogicalBinding<>(callbackReferenceDefinition, source, deployable);
+            JmsBinding callbackBinding = createBinding(callbackQueue, false, callbackXa);
+            LogicalBinding<JmsBinding> callbackReferenceBinding = new LogicalBinding<>(callbackBinding, source, deployable);
             callbackReferenceBinding.setAssigned(true);
             source.addCallbackBinding(callbackReferenceBinding);
-            callbackReferenceDefinition.setGeneratedTargetUri(createCallbackUri(target));
+            callbackBinding.setGeneratedTargetUri(createCallbackUri(target));
 
             if (bindTarget) {
-                JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue,
-                                                                                         false,
-                                                                                         false); // XA not enabled on service side callback
-                LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition, target, deployable);
+                JmsBinding callbackTargetBinding = createBinding(callbackQueue, false, false); // XA not enabled on service side callback
+                LogicalBinding<JmsBinding> callbackServiceBinding = new LogicalBinding<>(callbackTargetBinding, target, deployable);
                 callbackServiceBinding.setAssigned(true);
                 target.addCallbackBinding(callbackServiceBinding);
-                callbackServiceDefinition.setGeneratedTargetUri(createCallbackUri(target));
+                callbackTargetBinding.setGeneratedTargetUri(createCallbackUri(target));
             }
         }
     }
@@ -185,27 +183,27 @@ public class ActiveMQBindingProvider implements BindingProvider {
         boolean response = isRequestResponse(targetContract);
 
         boolean xa = isXA(service);
-        JmsBindingDefinition serviceDefinition = createBindingDefinition(forwardQueue, response, xa);
-        LogicalBinding<JmsBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, service, deployable);
+        JmsBinding binding = createBinding(forwardQueue, response, xa);
+        LogicalBinding<JmsBinding> serviceBinding = new LogicalBinding<>(binding, service, deployable);
         serviceBinding.setAssigned(true);
         service.addBinding(serviceBinding);
 
         // check if the interface is bidirectional
         if (targetContract.getCallbackContract() != null) {
             String callbackQueue = service.getUri().toString() + "Callback";
-            JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue, false, false); // XA not enabled on service side callback
-            LogicalBinding<JmsBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition, service, deployable);
+            JmsBinding callbackBinding = createBinding(callbackQueue, false, false); // XA not enabled on service side callback
+            LogicalBinding<JmsBinding> callbackServiceBinding = new LogicalBinding<>(callbackBinding, service, deployable);
             callbackServiceBinding.setAssigned(true);
             service.addCallbackBinding(callbackServiceBinding);
-            callbackServiceDefinition.setGeneratedTargetUri(createCallbackUri(service));
+            callbackBinding.setGeneratedTargetUri(createCallbackUri(service));
         }
     }
 
     public void bind(LogicalChannel channel) {
         QName deployable = channel.getParent().getDeployable();
         String topic = channel.getUri().toString();
-        JmsBindingDefinition channelDefinition = createTopicBindingDefinition(topic);
-        LogicalBinding<JmsBindingDefinition> channelBinding = new LogicalBinding<>(channelDefinition, channel, deployable);
+        JmsBinding binding = createTopicBinding(topic);
+        LogicalBinding<JmsBinding> channelBinding = new LogicalBinding<>(binding, channel, deployable);
         channelBinding.setAssigned(true);
         channel.addBinding(channelBinding);
     }
@@ -225,14 +223,14 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return false;
     }
 
-    private JmsBindingDefinition createBindingDefinition(String queueName, boolean response, boolean xa) {
+    private JmsBinding createBinding(String queueName, boolean response, boolean xa) {
         JmsBindingMetadata metadata = new JmsBindingMetadata();
         metadata.setCacheLevel(level);
-        DestinationDefinition destinationDefinition = new DestinationDefinition();
-        destinationDefinition.setType(DestinationType.QUEUE);
-        destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
-        destinationDefinition.setName(queueName);
-        metadata.setDestination(destinationDefinition);
+        Destination destination = new Destination();
+        destination.setType(DestinationType.QUEUE);
+        destination.setCreate(CreateOption.IF_NOT_EXIST);
+        destination.setName(queueName);
+        metadata.setDestination(destination);
         ConnectionFactoryDefinition factoryDefinition = new ConnectionFactoryDefinition();
         if (xa && xaConnectionFactory != null) {
             // XA connection factory defined
@@ -247,30 +245,30 @@ public class ActiveMQBindingProvider implements BindingProvider {
         }
 
         if (response) {
-            DestinationDefinition responseDestinationDefinition = new DestinationDefinition();
-            responseDestinationDefinition.setType(DestinationType.QUEUE);
-            responseDestinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
-            responseDestinationDefinition.setName(queueName + "Response");
+            Destination responseDestination = new Destination();
+            responseDestination.setType(DestinationType.QUEUE);
+            responseDestination.setCreate(CreateOption.IF_NOT_EXIST);
+            responseDestination.setName(queueName + "Response");
             ResponseDefinition responseDefinition = new ResponseDefinition();
             responseDefinition.setConnectionFactory(factoryDefinition);
-            responseDefinition.setDestination(responseDestinationDefinition);
+            responseDefinition.setDestination(responseDestination);
             metadata.setResponse(responseDefinition);
         }
 
-        JmsBindingDefinition definition = new JmsBindingDefinition(metadata);
+        JmsBinding definition = new JmsBinding(metadata);
         definition.setJmsMetadata(metadata);
         definition.setName("bindingSCAJMS");
         return definition;
     }
 
-    private JmsBindingDefinition createTopicBindingDefinition(String topicName) {
+    private JmsBinding createTopicBinding(String topicName) {
         JmsBindingMetadata metadata = new JmsBindingMetadata();
         metadata.setCacheLevel(level);
-        DestinationDefinition destinationDefinition = new DestinationDefinition();
-        destinationDefinition.setType(DestinationType.TOPIC);
-        destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
-        destinationDefinition.setName(topicName);
-        metadata.setDestination(destinationDefinition);
+        Destination destination = new Destination();
+        destination.setType(DestinationType.TOPIC);
+        destination.setCreate(CreateOption.IF_NOT_EXIST);
+        destination.setName(topicName);
+        metadata.setDestination(destination);
 
         if (connectionFactory != null) {
             // non-XA connection factory defined
@@ -279,7 +277,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
             factoryDefinition.setCreate(CreateOption.NEVER);
             metadata.setConnectionFactory(factoryDefinition);
         }
-        JmsBindingDefinition definition = new JmsBindingDefinition(metadata);
+        JmsBinding definition = new JmsBinding(metadata);
         definition.setJmsMetadata(metadata);
         definition.setName("bindingSCAJMS");
         return definition;

@@ -24,7 +24,7 @@ import org.easymock.EasyMock;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
-import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResource;
 import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
@@ -45,9 +45,9 @@ public class MonitorGeneratorTestCase extends TestCase {
         generator.setDestinationGenerators(map);
 
         MockDefinition destinationDefinition = new MockDefinition();
-        MonitorResourceDefinition resourceDefinition = new MonitorResourceDefinition("test");
+        MonitorResource resourceDefinition = new MonitorResource("test");
         resourceDefinition.setDestinationDefinition(destinationDefinition);
-        LogicalResource<MonitorResourceDefinition> resource = new LogicalResource<>(resourceDefinition, null);
+        LogicalResource<MonitorResource> resource = new LogicalResource<>(resourceDefinition, null);
 
         generator.generateResource(resource);
 

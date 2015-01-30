@@ -25,7 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyMany;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
@@ -68,7 +68,7 @@ public class ComponentManyPropertyTestCase extends TestCase {
 
         XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_NONE.getBytes()));
         reader.nextTag();
-        ComponentDefinition<?> definition = loader.load(reader, context);
+        Component<?> definition = loader.load(reader, context);
         assertEquals(PropertyMany.MANY, definition.getPropertyValues().get("prop").getMany());
     }
 
@@ -79,7 +79,7 @@ public class ComponentManyPropertyTestCase extends TestCase {
 
         XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML_SINGLE.getBytes()));
         reader.nextTag();
-        ComponentDefinition<?> definition = loader.load(reader, context);
+        Component<?> definition = loader.load(reader, context);
         assertEquals(PropertyMany.SINGLE, definition.getPropertyValues().get("prop").getMany());
     }
 

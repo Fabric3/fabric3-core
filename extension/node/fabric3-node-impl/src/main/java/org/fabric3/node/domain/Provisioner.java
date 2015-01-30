@@ -18,8 +18,8 @@ package org.fabric3.node.domain;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 
 /**
@@ -51,7 +51,7 @@ public interface Provisioner {
      * @param definition the component definition
      * @throws DeploymentException if there is a deployment error
      */
-    void deploy(ComponentDefinition<?> definition) throws DeploymentException;
+    void deploy(Component<?> definition) throws DeploymentException;
 
     /**
      * Deploys a channel.
@@ -59,7 +59,7 @@ public interface Provisioner {
      * @param definition the channel
      * @throws DeploymentException if there is a deployment error
      */
-    void deploy(ChannelDefinition definition) throws DeploymentException;
+    void deploy(Channel definition) throws DeploymentException;
 
     /**
      * Un-deploys the channel or component with the given name

@@ -25,16 +25,16 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.component.Target;
-import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Wire;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.instantiator.AmbiguousService;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
@@ -174,7 +174,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private LogicalComponent<?> createLogicalComponentWithBoundReference(Target serviceTarget) {
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("component", null);
+        Component<CompositeImplementation> definition = new Component<>("component", null);
         LogicalCompositeComponent logicalComposite = new LogicalCompositeComponent(URI.create("composite"), definition, null);
         LogicalComponent<?> logicalComponent = new LogicalComponent(URI.create("composite/component"), definition, logicalComposite);
         logicalComposite.addComponent(logicalComponent);
@@ -191,7 +191,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private LogicalComponent<?> createLogicalComponent() {
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("component", null);
+        Component<CompositeImplementation> definition = new Component<>("component", null);
         LogicalCompositeComponent logicalComposite = new LogicalCompositeComponent(URI.create("composite"), definition, null);
         LogicalComponent<?> logicalComponent = new LogicalComponent(URI.create("composite/component"), definition, logicalComposite);
         logicalComposite.addComponent(logicalComponent);
@@ -205,10 +205,10 @@ public class WireInstantiatorImplTestCase extends TestCase {
     }
 
     private LogicalService createLogicalService(String name, LogicalComponent<?> logicalComponent) {
-        ServiceDefinition<ComponentDefinition> componentService = new ServiceDefinition<>(name);
+        Service<Component> componentService = new Service<>(name);
         logicalComponent.getDefinition().add(componentService);
 
-        ServiceDefinition<ComponentType> service = new ServiceDefinition<>(name);
+        Service<ComponentType> service = new Service<>(name);
 
         URI serviceUri = URI.create("composite/component#" + name);
         LogicalService logicalService = new LogicalService(serviceUri, service, logicalComponent);
@@ -218,11 +218,11 @@ public class WireInstantiatorImplTestCase extends TestCase {
     }
 
     private LogicalReference createLogicalReference(LogicalComponent<?> logicalComponent, Target target) {
-        ReferenceDefinition<ComponentDefinition> componentReference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+        Reference<Component> componentReference = new Reference<>("reference", Multiplicity.ONE_ONE);
         componentReference.addTarget(target);
         logicalComponent.getDefinition().add(componentReference);
 
-        ReferenceDefinition<ComponentType> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+        Reference<ComponentType> reference = new Reference<>("reference", Multiplicity.ONE_ONE);
 
         URI referenceUri = URI.create("composite/component#reference");
         LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);
@@ -235,22 +235,22 @@ public class WireInstantiatorImplTestCase extends TestCase {
     private LogicalCompositeComponent createLogicalComposite(Composite composite) {
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(composite);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("composite", implementation);
+        Component<CompositeImplementation> definition = new Component<>("composite", implementation);
         LogicalCompositeComponent logicalComposite = new LogicalCompositeComponent(URI.create("composite"), definition, null);
-        for (ComponentDefinition component : composite.getComponents().values()) {
+        for (Component component : composite.getComponents().values()) {
             String nameStr = composite.getName().getLocalPart() + "/" + component.getName();
             URI uri = URI.create(nameStr);
             LogicalComponent logicalComponent = new LogicalComponent(uri, component, logicalComposite);
             logicalComposite.addComponent(logicalComponent);
-            Map<String, ReferenceDefinition> references = component.getReferences();
-            for (ReferenceDefinition reference : references.values()) {
+            Map<String, Reference> references = component.getReferences();
+            for (Reference reference : references.values()) {
                 URI referenceUri = URI.create(nameStr + "#" + reference.getName());
                 LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);
                 logicalReference.setServiceContract(new MockContract());
                 logicalComponent.addReference(logicalReference);
             }
-            Map<String, ServiceDefinition> services = component.getServices();
-            for (ServiceDefinition service : services.values()) {
+            Map<String, Service> services = component.getServices();
+            for (Service service : services.values()) {
                 URI serviceUri = URI.create(nameStr + "#" + service.getName());
                 LogicalService logicalService = new LogicalService(serviceUri, service, logicalComponent);
                 logicalService.setServiceContract(new MockContract());
@@ -265,25 +265,25 @@ public class WireInstantiatorImplTestCase extends TestCase {
         QName name = new QName("test", "composite");
         Composite composite = new Composite(name);
 
-        ComponentDefinition fooComponent = new ComponentDefinition("foo");
-        ReferenceDefinition reference = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
+        Component fooComponent = new Component("foo");
+        Reference reference = new Reference("reference", Multiplicity.ONE_ONE);
         fooComponent.add(reference);
         composite.add(fooComponent);
 
-        ComponentDefinition barComponent = new ComponentDefinition("bar");
-        ServiceDefinition service = new ServiceDefinition("reference");
+        Component barComponent = new Component("bar");
+        Service service = new Service("reference");
         barComponent.add(service);
         composite.add(barComponent);
 
-        WireDefinition wireDefinition = createWire();
-        composite.add(wireDefinition);
+        Wire wire = createWire();
+        composite.add(wire);
         return composite;
     }
 
-    private WireDefinition createWire() {
+    private Wire createWire() {
         Target referenceTarget = new Target("foo");
         Target serviceTarget = new Target("bar");
-        return new WireDefinition(referenceTarget, serviceTarget, false);
+        return new Wire(referenceTarget, serviceTarget, false);
     }
 
     @Override
@@ -305,7 +305,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
         }
     }
 
-    private class MockBinding extends BindingDefinition {
+    private class MockBinding extends Binding {
         private static final long serialVersionUID = -7088192438672216044L;
 
         public MockBinding() {

@@ -18,13 +18,13 @@
  */
 package org.fabric3.execution.model;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A resource that takes an ExecutorService type.
  */
-public class ExecutorServiceResourceReference extends ResourceReferenceDefinition {
+public class ExecutorServiceResourceReference extends ResourceReference {
     private static final long serialVersionUID = -7941116454357577579L;
 
     public ExecutorServiceResourceReference(String resourceName, ServiceContract contract) {

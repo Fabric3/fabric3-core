@@ -18,7 +18,6 @@ package org.fabric3.binding.zeromq.introspection;
 
 import junit.framework.TestCase;
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
-import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
@@ -33,28 +32,28 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
 
     public void testServiceBinding() throws Exception {
         InjectingComponentType type = new InjectingComponentType(SingleService.class.getName());
-        ServiceDefinition serviceDefinition = addService(Service.class, type);
+        org.fabric3.api.model.type.component.Service service = addService(Service.class, type);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
 
         processor.process(type, SingleService.class, context);
 
         assertFalse(context.hasErrors());
-        assertFalse(serviceDefinition.getBindings().isEmpty());
+        assertFalse(service.getBindings().isEmpty());
     }
 
     public void testMultiServiceBinding() throws Exception {
         InjectingComponentType type = new InjectingComponentType(MultiService.class.getName());
-        ServiceDefinition serviceDefinition = addService(Service.class, type);
-        ServiceDefinition serviceDefinition2 = addService(Service2.class, type);
+        org.fabric3.api.model.type.component.Service service = addService(Service.class, type);
+        org.fabric3.api.model.type.component.Service service2 = addService(Service2.class, type);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
 
         processor.process(type, MultiService.class, context);
 
         assertFalse(context.hasErrors());
-        assertTrue(serviceDefinition.getBindings().isEmpty());
-        assertFalse(serviceDefinition2.getBindings().isEmpty());
+        assertTrue(service.getBindings().isEmpty());
+        assertFalse(service2.getBindings().isEmpty());
     }
 
     public void testMultiNoService() throws Exception {
@@ -84,21 +83,21 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
 
     public void testBiDirectionalServiceBinding() throws Exception {
         InjectingComponentType type = new InjectingComponentType(BiDirectionalServiceImpl.class.getName());
-        ServiceDefinition serviceDefinition = addService(BiDirectionalService.class, type);
+        org.fabric3.api.model.type.component.Service service = addService(BiDirectionalService.class, type);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
 
         processor.process(type, BiDirectionalServiceImpl.class, context);
 
         assertFalse(context.hasErrors());
-        assertFalse(serviceDefinition.getBindings().isEmpty());
+        assertFalse(service.getBindings().isEmpty());
     }
 
-    private ServiceDefinition addService(Class<?> interfaze, InjectingComponentType type) {
-        ServiceDefinition serviceDefinition = new ServiceDefinition(interfaze.getSimpleName());
-        serviceDefinition.setServiceContract(new JavaServiceContract(interfaze));
-        type.add(serviceDefinition);
-        return serviceDefinition;
+    private org.fabric3.api.model.type.component.Service addService(Class<?> interfaze, InjectingComponentType type) {
+        org.fabric3.api.model.type.component.Service service = new org.fabric3.api.model.type.component.Service(interfaze.getSimpleName());
+        service.setServiceContract(new JavaServiceContract(interfaze));
+        type.add(service);
+        return service;
     }
 
     private interface Service {

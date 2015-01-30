@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
@@ -107,7 +107,7 @@ public class JmsLoaderHelper {
         Map<String, String> uriProperties = jmsUri.getProperties();
 
         // Destination
-        DestinationDefinition destination = new DestinationDefinition();
+        Destination destination = new Destination();
         String destinationType = uriProperties.get(DESTINATION_TYPE);
         if ("topic".equalsIgnoreCase(destinationType)) {
             destination.setType(DestinationType.TOPIC);
@@ -126,7 +126,7 @@ public class JmsLoaderHelper {
         // Response copy configuration of request
         ResponseDefinition response = new ResponseDefinition();
         response.setConnectionFactory(connectionFactory);
-        DestinationDefinition responseDestinationDef = new DestinationDefinition();
+        Destination responseDestinationDef = new Destination();
         String responseDestination = uriProperties.get(RESPONSE_DESTINATION);
         responseDestinationDef.setName(responseDestination);
         responseDestinationDef.setCreate(CreateOption.NEVER);

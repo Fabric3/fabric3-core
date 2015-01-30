@@ -23,9 +23,9 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.model.CacheSetResourceDefinition;
+import org.fabric3.cache.model.CacheSetResource;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
-import org.fabric3.cache.spi.CacheResourceDefinition;
+import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.cache.spi.CacheResourceGenerator;
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -36,7 +36,7 @@ import org.fabric3.spi.model.instance.LogicalResource;
  * Generates a {@link }PhysicalCacheSetDefinition} for a set of cache configurations.
  */
 @EagerInit
-public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetResourceDefinition> {
+public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetResource> {
     private Map<Class<?>, CacheResourceGenerator> generators = new HashMap<>();
 
     @Reference(required = false)
@@ -45,10 +45,10 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResourceDefinition> resource) throws GenerationException {
+    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResource> resource) throws GenerationException {
         PhysicalCacheSetDefinition definitions = new PhysicalCacheSetDefinition();
-        List<CacheResourceDefinition> configurations = resource.getDefinition().getDefinitions();
-        for (CacheResourceDefinition definition : configurations) {
+        List<CacheResource> configurations = resource.getDefinition().getDefinitions();
+        for (CacheResource definition : configurations) {
             CacheResourceGenerator generator = getGenerator(definition);
             PhysicalCacheResourceDefinition physicalResourceDefinition = generator.generateResource(definition);
             definitions.addDefinition(physicalResourceDefinition);
@@ -56,8 +56,8 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
         return definitions;
     }
 
-    private CacheResourceGenerator getGenerator(CacheResourceDefinition configuration) throws GenerationException {
-        Class<? extends CacheResourceDefinition> type = configuration.getClass();
+    private CacheResourceGenerator getGenerator(CacheResource configuration) throws GenerationException {
+        Class<? extends CacheResource> type = configuration.getClass();
         CacheResourceGenerator generator = generators.get(type);
         if (generator == null) {
             throw new GenerationException("Cache resource generator not found for type : " + type);

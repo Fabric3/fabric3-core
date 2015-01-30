@@ -21,11 +21,11 @@
         <f3:implementation.system class="org.fabric3.binding.rs.introspection.RsJavaResourceProcessorExtension"/>
     </component>
 
-    <component name="RsWireBindingGenerator" f3:key="org.fabric3.api.binding.rs.model.RsBindingDefinition">
+    <component name="RsWireBindingGenerator" f3:key="org.fabric3.api.binding.rs.model.RsBinding">
         <f3:implementation.system class="org.fabric3.binding.rs.generator.RsWireBindingGenerator"/>
     </component>
 
-    <component name="ProviderResourceGenerator" f3:key="org.fabric3.binding.rs.model.ProviderResourceDefinition">
+    <component name="ProviderResourceGenerator" f3:key="org.fabric3.binding.rs.model.ProviderResource">
         <f3:implementation.system class="org.fabric3.binding.rs.generator.ProviderResourceGenerator"/>
     </component>
 

@@ -27,17 +27,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyMany;
 import org.fabric3.api.model.type.component.PropertyValue;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
@@ -55,7 +55,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -65,7 +64,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
  * Loads a component definition from an XML-based assembly file
  */
 @EagerInit
-public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefinition<?>> {
+public class ComponentLoader extends AbstractExtensibleTypeLoader<Component<?>> {
 
     private static final QName COMPONENT = new QName(SCA_NS, "component");
     private static final QName PROPERTY = new QName(SCA_NS, "property");
@@ -88,7 +87,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     @Constructor
-    public ComponentLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper, @Reference ContractMatcher contractMatcher) {
+    public ComponentLoader(@org.oasisopen.sca.annotation.Reference LoaderRegistry registry, @org.oasisopen.sca.annotation.Reference LoaderHelper loaderHelper, @org.oasisopen.sca.annotation.Reference ContractMatcher contractMatcher) {
         super(registry);
         addAttributes("name", "autowire", "requires", "policySets", "key", "order");
         this.loaderHelper = loaderHelper;
@@ -96,7 +95,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
-    public ComponentDefinition<?> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Component<?> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
@@ -106,7 +105,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
         String key = loaderHelper.loadKey(reader);
 
-        ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<>(name);
+        Component<Implementation<?>> definition = new Component<>(name);
 
         int order = parserOrder(reader, definition, startLocation, context);
 
@@ -150,16 +149,16 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         return COMPONENT;
     }
 
-    private void parseService(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
+    private void parseService(Component<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        @SuppressWarnings("unchecked") ServiceDefinition<ComponentDefinition> service = registry.load(reader, ServiceDefinition.class, context);
+        @SuppressWarnings("unchecked") Service<Component> service = registry.load(reader, Service.class, context);
         if (service == null) {
             // there was an error with the service configuration, just skip it
             return;
         }
         String name = service.getName();
-        ServiceDefinition<ComponentType> typeService = componentType.getServices().get(name);
+        Service<ComponentType> typeService = componentType.getServices().get(name);
         if (typeService == null) {
             // ensure the service exists
             ComponentServiceNotFound failure = new ComponentServiceNotFound(name, definition, startLocation);
@@ -177,7 +176,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
     }
 
-    private ComponentDefinition<?> parseSubElements(ComponentDefinition<Implementation<?>> definition, XMLStreamReader reader, IntrospectionContext context)
+    private Component<?> parseSubElements(Component<Implementation<?>> definition, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         ComponentType componentType = definition.getComponentType();
 
@@ -211,16 +210,16 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
     }
 
-    private void parseReference(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
+    private void parseReference(Component<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        @SuppressWarnings("unchecked") ReferenceDefinition<ComponentDefinition> reference = registry.load(reader, ReferenceDefinition.class, context);
+        @SuppressWarnings("unchecked") Reference<Component> reference = registry.load(reader, Reference.class, context);
         if (reference == null) {
             // there was an error with the reference configuration, just skip it
             return;
         }
         String name = reference.getName();
-        ReferenceDefinition<ComponentType> typeReference = componentType.getReferences().get(name);
+        Reference<ComponentType> typeReference = componentType.getReferences().get(name);
         if (typeReference == null) {
             // ensure the reference exists
             ComponentReferenceNotFound failure = new ComponentReferenceNotFound(name, definition, startLocation);
@@ -250,18 +249,18 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     }
 
-    private void parseProducer(ComponentDefinition<Implementation<?>> definition,
+    private void parseProducer(Component<Implementation<?>> definition,
                                ComponentType componentType,
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        @SuppressWarnings("unchecked") ProducerDefinition<ComponentDefinition> producer = registry.load(reader, ProducerDefinition.class, context);
+        @SuppressWarnings("unchecked") Producer<Component> producer = registry.load(reader, Producer.class, context);
         if (producer == null) {
             // there was an error with the producer configuration, just skip it
             return;
         }
         String name = producer.getName();
-        ProducerDefinition typeProducer = componentType.getProducers().get(name);
+        Producer typeProducer = componentType.getProducers().get(name);
         if (typeProducer == null) {
             // ensure the producer exists
             ComponentProducerNotFound failure = new ComponentProducerNotFound(name, definition, startLocation);
@@ -271,19 +270,19 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         definition.add(producer);
     }
 
-    private void parseConsumer(ComponentDefinition<Implementation<?>> definition,
+    private void parseConsumer(Component<Implementation<?>> definition,
                                ComponentType componentType,
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        @SuppressWarnings("unchecked") ConsumerDefinition<ComponentDefinition> consumer = registry.load(reader, ConsumerDefinition.class, context);
+        @SuppressWarnings("unchecked") Consumer<Component> consumer = registry.load(reader, Consumer.class, context);
         if (consumer == null) {
             // there was an error with the consumer configuration, just skip it
             return;
         }
         String name = consumer.getName();
-        ConsumerDefinition<ComponentType> typeConsumer = componentType.getConsumers().get(name);
+        Consumer<ComponentType> typeConsumer = componentType.getConsumers().get(name);
         if (typeConsumer == null) {
             // ensure the consumer exists
             ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation);
@@ -294,7 +293,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         definition.add(consumer);
     }
 
-    private void parsePropertyValue(ComponentDefinition<?> definition,
+    private void parsePropertyValue(Component<?> definition,
                                     ComponentType componentType,
                                     XMLStreamReader reader,
                                     Map<Property, Location> propertyLocations,
@@ -338,8 +337,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location in the composite where the contract is defined
      * @param context     the context
      */
-    private void processServiceContract(ServiceDefinition service,
-                                        ServiceDefinition<ComponentType> typeService,
+    private void processServiceContract(Service service,
+                                        Service<ComponentType> typeService,
                                         Location location,
                                         IntrospectionContext context) {
         if (service.getServiceContract() == null) {
@@ -369,8 +368,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the location in the composite where the reference is defines
      * @param context       the context
      */
-    private void processReferenceContract(ReferenceDefinition reference,
-                                          ReferenceDefinition<ComponentType> typeReference,
+    private void processReferenceContract(Reference reference,
+                                          Reference<ComponentType> typeReference,
                                           Location location,
                                           IntrospectionContext context) {
         if (reference.getServiceContract() == null) {
@@ -399,8 +398,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location where the contract is defined in the composite
      * @param context     the context
      */
-    private void matchServiceCallbackContracts(ServiceDefinition service,
-                                               ServiceDefinition<ComponentType> typeService,
+    private void matchServiceCallbackContracts(Service service,
+                                               Service<ComponentType> typeService,
                                                Location location,
                                                IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
@@ -433,8 +432,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the location where the contract is defined in the composite
      * @param context       the context
      */
-    private void matchReferenceCallbackContracts(ReferenceDefinition reference,
-                                                 ReferenceDefinition<ComponentType> typeReference,
+    private void matchReferenceCallbackContracts(Reference reference,
+                                                 Reference<ComponentType> typeReference,
                                                  Location location,
                                                  IntrospectionContext context) {
         ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
@@ -467,8 +466,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the current location
      * @param context       the context
      */
-    private void processMultiplicity(ReferenceDefinition<ComponentDefinition> reference,
-                                     ReferenceDefinition<ComponentType> typeReference,
+    private void processMultiplicity(Reference<Component> reference,
+                                     Reference<ComponentType> typeReference,
                                      Location location,
                                      IntrospectionContext context) {
         String name = reference.getName();
@@ -489,7 +488,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
     }
 
-    private int parserOrder(XMLStreamReader reader, ComponentDefinition<Implementation<?>> definition, Location startLocation, IntrospectionContext context) {
+    private int parserOrder(XMLStreamReader reader, Component<Implementation<?>> definition, Location startLocation, IntrospectionContext context) {
         String orderStr = reader.getAttributeValue(null, "order");
         int order = Integer.MIN_VALUE;
         if (orderStr != null) {
@@ -503,7 +502,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         return order;
     }
 
-    private void validateRequiredProperties(ComponentDefinition<?> definition, Map<Property, Location> propertyLocations, IntrospectionContext context) {
+    private void validateRequiredProperties(Component<?> definition, Map<Property, Location> propertyLocations, IntrospectionContext context) {
         ComponentType type = definition.getComponentType();
         Map<String, ? extends Property> properties = type.getProperties();
         Map<String, PropertyValue> values = definition.getPropertyValues();

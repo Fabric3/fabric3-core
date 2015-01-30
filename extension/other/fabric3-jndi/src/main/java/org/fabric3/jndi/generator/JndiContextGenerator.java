@@ -18,7 +18,7 @@ package org.fabric3.jndi.generator;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.api.model.type.resource.jndi.JndiContextDefinition;
+import org.fabric3.api.model.type.resource.jndi.JndiContext;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -29,9 +29,9 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
  *
  */
 @EagerInit
-public class JndiContextGenerator implements ResourceGenerator<JndiContextDefinition> {
+public class JndiContextGenerator implements ResourceGenerator<JndiContext> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<JndiContextDefinition> resource) throws GenerationException {
+    public PhysicalResourceDefinition generateResource(LogicalResource<JndiContext> resource) throws GenerationException {
         return new PhysicalJndiContextDefinition(resource.getDefinition().getContexts());
     }
 }

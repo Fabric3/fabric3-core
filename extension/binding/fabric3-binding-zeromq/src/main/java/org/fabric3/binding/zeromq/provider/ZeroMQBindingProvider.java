@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
 import org.fabric3.spi.domain.generator.binding.BindingProvider;
@@ -32,14 +32,17 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Property;
 
 /**
  * A binding.sca provider that uses ZeroMQ as the underlying transport.
  */
 public class ZeroMQBindingProvider implements BindingProvider {
-    private static final BindingMatchResult MATCH = new BindingMatchResult(true, ZeroMQBindingDefinition.BINDING_0MQ);
-    private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, ZeroMQBindingDefinition.BINDING_0MQ);
+    private static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.zeromq");
+
+    private static final BindingMatchResult MATCH = new BindingMatchResult(true, BINDING_QNAME);
+    private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, BINDING_QNAME);
 
     private boolean enabled = true;
     private long highWater = -1;
@@ -79,7 +82,7 @@ public class ZeroMQBindingProvider implements BindingProvider {
     }
 
     public QName getType() {
-        return ZeroMQBindingDefinition.BINDING_0MQ;
+        return BINDING_QNAME;
     }
 
     public BindingMatchResult canBind(LogicalWire wire) {
@@ -98,8 +101,8 @@ public class ZeroMQBindingProvider implements BindingProvider {
         QName deployable = service.getParent().getDeployable();
 
         ZeroMQMetadata metadata = createMetadata();
-        ZeroMQBindingDefinition serviceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
-        LogicalBinding<ZeroMQBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, service, deployable);
+        ZeroMQBinding bindingDefinition = new ZeroMQBinding("binding.zeromq", metadata);
+        LogicalBinding<ZeroMQBinding> serviceBinding = new LogicalBinding<>(bindingDefinition, service, deployable);
         serviceBinding.setAssigned(true);
         service.addBinding(serviceBinding);
 
@@ -109,12 +112,10 @@ public class ZeroMQBindingProvider implements BindingProvider {
             // setup callback bindings
             ZeroMQMetadata callbackMetadata = createMetadata();
 
-            ZeroMQBindingDefinition callbackServiceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
-            LogicalBinding<ZeroMQBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition,
-                                                                                                                         service,
-                                                                                                                         deployable);
-            callbackServiceBinding.setAssigned(true);
-            service.addCallbackBinding(callbackServiceBinding);
+            ZeroMQBinding callbackBindingDefinition = new ZeroMQBinding("binding.zeromq.callback", callbackMetadata);
+            LogicalBinding<ZeroMQBinding> callbackBinding = new LogicalBinding<>(callbackBindingDefinition, service, deployable);
+            callbackBinding.setAssigned(true);
+            service.addCallbackBinding(callbackBinding);
         }
 
     }
@@ -127,17 +128,17 @@ public class ZeroMQBindingProvider implements BindingProvider {
         ZeroMQMetadata metadata = createMetadata();
 
         // setup the forward binding
-        ZeroMQBindingDefinition referenceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
-        LogicalBinding<ZeroMQBindingDefinition> referenceBinding = new LogicalBinding<>(referenceDefinition, source, deployable);
-        referenceDefinition.setTargetUri(URI.create(UriHelper.getBaseName(target.getUri())));
+        ZeroMQBinding referenceBindingDefinition = new ZeroMQBinding("binding.zeromq", metadata);
+        LogicalBinding<ZeroMQBinding> referenceBinding = new LogicalBinding<>(referenceBindingDefinition, source, deployable);
+        referenceBindingDefinition.setTargetUri(URI.create(UriHelper.getBaseName(target.getUri())));
         referenceBinding.setAssigned(true);
         source.addBinding(referenceBinding);
 
         boolean bindTarget = bindTarget(target);
 
         if (bindTarget) {
-            ZeroMQBindingDefinition serviceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
-            LogicalBinding<ZeroMQBindingDefinition> serviceBinding = new LogicalBinding<>(serviceDefinition, target, deployable);
+            ZeroMQBinding serviceBindingDefinition = new ZeroMQBinding("binding.zeromq", metadata);
+            LogicalBinding<ZeroMQBinding> serviceBinding = new LogicalBinding<>(serviceBindingDefinition, target, deployable);
             serviceBinding.setAssigned(true);
             target.addBinding(serviceBinding);
         }
@@ -148,18 +149,14 @@ public class ZeroMQBindingProvider implements BindingProvider {
             // setup callback bindings
             ZeroMQMetadata callbackMetadata = createMetadata();
 
-            ZeroMQBindingDefinition callbackReferenceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
-            LogicalBinding<ZeroMQBindingDefinition> callbackReferenceBinding = new LogicalBinding<>(callbackReferenceDefinition,
-                                                                                                                           source,
-                                                                                                                           deployable);
+            ZeroMQBinding callbackReferenceBindingDefinition = new ZeroMQBinding("binding.zeromq.callback", callbackMetadata);
+            LogicalBinding<ZeroMQBinding> callbackReferenceBinding = new LogicalBinding<>(callbackReferenceBindingDefinition, source, deployable);
             callbackReferenceBinding.setAssigned(true);
             source.addCallbackBinding(callbackReferenceBinding);
 
             if (bindTarget) {
-                ZeroMQBindingDefinition callbackServiceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
-                LogicalBinding<ZeroMQBindingDefinition> callbackServiceBinding = new LogicalBinding<>(callbackServiceDefinition,
-                                                                                                                             target,
-                                                                                                                             deployable);
+                ZeroMQBinding callbackServiceBindingDefinition = new ZeroMQBinding("binding.zeromq.callback", callbackMetadata);
+                LogicalBinding<ZeroMQBinding> callbackServiceBinding = new LogicalBinding<>(callbackServiceBindingDefinition, target, deployable);
                 callbackServiceBinding.setAssigned(true);
                 target.addCallbackBinding(callbackServiceBinding);
             }
@@ -169,8 +166,8 @@ public class ZeroMQBindingProvider implements BindingProvider {
     public void bind(LogicalChannel channel) throws BindingSelectionException {
         ZeroMQMetadata metadata = createMetadata();
         metadata.setChannelName(channel.getDefinition().getName());
-        ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
-        LogicalBinding<ZeroMQBindingDefinition> binding = new LogicalBinding<>(definition, channel);
+        ZeroMQBinding definition = new ZeroMQBinding("binding.zeromq", metadata);
+        LogicalBinding<ZeroMQBinding> binding = new LogicalBinding<>(definition, channel);
         channel.addBinding(binding);
     }
 

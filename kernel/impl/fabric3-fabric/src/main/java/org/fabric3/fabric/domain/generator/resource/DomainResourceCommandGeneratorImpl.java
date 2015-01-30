@@ -19,7 +19,7 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
@@ -67,7 +67,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
     @SuppressWarnings({"unchecked"})
     private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws GenerationException {
         List<PhysicalResourceDefinition> definitions = new ArrayList<>();
-        ResourceDefinition resourceDefinition = resource.getDefinition();
+        Resource resourceDefinition = resource.getDefinition();
         ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());
         PhysicalResourceDefinition definition = generator.generateResource(resource);
         definitions.add(definition);

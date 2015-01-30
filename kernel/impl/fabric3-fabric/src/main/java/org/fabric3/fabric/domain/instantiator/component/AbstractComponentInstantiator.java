@@ -34,7 +34,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.fabric3.api.model.type.F3NamespaceContext;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyValue;
@@ -64,23 +64,23 @@ public abstract class AbstractComponentInstantiator {
     /**
      * Set the initial actual property values of a component.
      *
-     * @param component  the component to initialize
-     * @param definition the definition of the component
-     * @param context    the instantiation context
+     * @param logicalComponent the component to initialize
+     * @param component        the definition of the component
+     * @param context          the instantiation context
      */
-    protected void initializeProperties(LogicalComponent<?> component, ComponentDefinition<?> definition, InstantiationContext context) {
+    protected void initializeProperties(LogicalComponent<?> logicalComponent, Component<?> component, InstantiationContext context) {
 
-        Map<String, PropertyValue> propertyValues = definition.getPropertyValues();
-        ComponentType componentType = definition.getComponentType();
-        LogicalCompositeComponent parent = component.getParent();
+        Map<String, PropertyValue> propertyValues = component.getPropertyValues();
+        ComponentType componentType = component.getComponentType();
+        LogicalCompositeComponent parent = logicalComponent.getParent();
 
         for (Property property : componentType.getProperties().values()) {
             String name = property.getName();
             PropertyValue propertyValue = propertyValues.get(name);
             if (propertyValue != null && propertyValue.getInstanceValue() != null) {
                 // instance value is set
-                LogicalProperty logicalProperty = new LogicalProperty(name, propertyValue.getInstanceValue(), component);
-                component.setProperties(logicalProperty);
+                LogicalProperty logicalProperty = new LogicalProperty(name, propertyValue.getInstanceValue(), logicalComponent);
+                logicalComponent.setProperties(logicalProperty);
             } else {
                 Document value;
                 if (propertyValue == null) {
@@ -95,7 +95,7 @@ public abstract class AbstractComponentInstantiator {
                             propertyValue = new PropertyValue("name", source);
                             value = deriveValueFromXPath(propertyValue, parent, nsContext);
                         } catch (PropertyTypeException e) {
-                            InvalidProperty error = new InvalidProperty(name, component, e);
+                            InvalidProperty error = new InvalidProperty(name, logicalComponent, e);
                             context.addError(error);
                             return;
                         }
@@ -107,14 +107,14 @@ public abstract class AbstractComponentInstantiator {
                     // the spec defines the following sequence
                     if (propertyValue.getFile() != null) {
                         // load the value from an external resource
-                        value = loadValueFromFile(property.getName(), propertyValue.getFile(), component, context);
+                        value = loadValueFromFile(property.getName(), propertyValue.getFile(), logicalComponent, context);
                     } else if (propertyValue.getSource() != null) {
                         // get the value by evaluating an XPath against the composite properties
                         try {
                             NamespaceContext nsContext = propertyValue.getNamespaceContext();
                             value = deriveValueFromXPath(propertyValue, parent, nsContext);
                         } catch (PropertyTypeException e) {
-                            InvalidProperty error = new InvalidProperty(name, component, e);
+                            InvalidProperty error = new InvalidProperty(name, logicalComponent, e);
                             context.addError(error);
                             return;
                         }
@@ -126,7 +126,7 @@ public abstract class AbstractComponentInstantiator {
                 }
                 if (property.isRequired() && value == null && (propertyValue == null || (propertyValue != null && propertyValue.getInstanceValue() == null))) {
                     // The XPath expression returned an empty value. Since the property is required, throw an exception
-                    PropertySourceNotFound error = new PropertySourceNotFound(name, component);
+                    PropertySourceNotFound error = new PropertySourceNotFound(name, logicalComponent);
                     context.addError(error);
                 } else if (!property.isRequired() && value == null) {
                     // The XPath expression returned an empty value. Since the property is optional, ignore it
@@ -137,11 +137,11 @@ public abstract class AbstractComponentInstantiator {
                     LogicalProperty logicalProperty;
                     QName type = property.getType();
                     if (type == null) {
-                        logicalProperty = new LogicalProperty(name, value, many, component);
+                        logicalProperty = new LogicalProperty(name, value, many, logicalComponent);
                     } else {
-                        logicalProperty = new LogicalProperty(name, value, many, type, component);
+                        logicalProperty = new LogicalProperty(name, value, many, type, logicalComponent);
                     }
-                    component.setProperties(logicalProperty);
+                    logicalComponent.setProperties(logicalProperty);
                 }
             }
 
@@ -149,26 +149,23 @@ public abstract class AbstractComponentInstantiator {
 
     }
 
-    Document deriveValueFromXPath(final PropertyValue propertyValue, final LogicalComponent<?> parent, NamespaceContext nsContext)
-            throws PropertyTypeException {
+    Document deriveValueFromXPath(PropertyValue propertyValue, LogicalComponent<?> parent, NamespaceContext nsContext) throws PropertyTypeException {
 
-        XPathVariableResolver variableResolver = new XPathVariableResolver() {
-            public Object resolveVariable(QName qName) {
-                String name = qName.getLocalPart();
-                LogicalProperty property = parent.getProperties(name);
-                if (property == null) {
-                    return null;
-                }
-                if (propertyValue.getType() != null && property.getType() != null && !propertyValue.getType().equals(property.getType())) {
-                    throw new PropertyTypeException("Property types are incompatible:" + name + " and " + propertyValue.getName());
-                }
-                Document value = property.getValue();
-                if (value == null || value.getDocumentElement().getChildNodes().getLength() == 0) {
-                    return null;
-                }
-                // select the first value
-                return value.getDocumentElement();
+        XPathVariableResolver variableResolver = qName -> {
+            String name = qName.getLocalPart();
+            LogicalProperty property = parent.getProperties(name);
+            if (property == null) {
+                return null;
             }
+            if (propertyValue.getType() != null && property.getType() != null && !propertyValue.getType().equals(property.getType())) {
+                throw new PropertyTypeException("Property types are incompatible:" + name + " and " + propertyValue.getName());
+            }
+            Document value = property.getValue();
+            if (value == null || value.getDocumentElement().getChildNodes().getLength() == 0) {
+                return null;
+            }
+            // select the first value
+            return value.getDocumentElement();
         };
 
         XPath xpath = XPATH_FACTORY.newXPath();

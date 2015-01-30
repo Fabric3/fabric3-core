@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ResourceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.Resource;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
@@ -85,11 +85,11 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         componentGenerators.put(clazz, generator);
     }
 
-    public <T extends ResourceReferenceDefinition> void register(Class<T> clazz, ResourceReferenceGenerator<T> generator) {
+    public <T extends ResourceReference> void register(Class<T> clazz, ResourceReferenceGenerator<T> generator) {
         resourceReferenceGenerators.put(clazz, generator);
     }
 
-    public <T extends BindingDefinition> void register(Class<T> clazz, WireBindingGenerator<T> generator) {
+    public <T extends Binding> void register(Class<T> clazz, WireBindingGenerator<T> generator) {
         bindingGenerators.put(clazz, generator);
     }
 
@@ -103,7 +103,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends BindingDefinition> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         WireBindingGenerator<T> generator = (WireBindingGenerator<T>) bindingGenerators.get(clazz);
         if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
@@ -112,7 +112,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends BindingDefinition> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Binding> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         ConnectionBindingGenerator<T> generator = (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
         if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
@@ -121,7 +121,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz)
+    public <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz)
             throws GeneratorNotFoundException {
         ResourceReferenceGenerator<T> generator = (ResourceReferenceGenerator<T>) resourceReferenceGenerators.get(clazz);
         if (generator == null) {
@@ -135,7 +135,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends ResourceDefinition> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         ResourceGenerator<T> generator = (ResourceGenerator<T>) resourceGenerators.get(clazz);
         if (generator == null) {
             throw new GeneratorNotFoundException(clazz);

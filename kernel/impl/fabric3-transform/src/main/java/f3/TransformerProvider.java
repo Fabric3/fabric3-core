@@ -48,7 +48,7 @@ import org.fabric3.transform.property.Property2URLTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
 import org.fabric3.transform.string2java.String2QNameTransformer;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides transformers.

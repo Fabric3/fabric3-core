@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.model.Implementation;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ComponentAnnotationMapper;
 import org.fabric3.spi.introspection.java.ComponentProcessor;
@@ -48,18 +48,18 @@ public class ComponentProcessorImpl implements ComponentProcessor {
     }
 
     @SuppressWarnings("unchecked")
-    public void process(ComponentDefinition<?> definition, IntrospectionContext context) {
-        String type = definition.getImplementation().getType();
+    public void process(Component<?> component, IntrospectionContext context) {
+        String type = component.getImplementation().getType();
         ImplementationProcessor processor = implementationProcessors.get(type);
         if (processor == null) {
             context.addError(new UnknownImplementation("Unknown implementation type: " + type));
             return;
         }
-        processor.process(definition, context);
+        processor.process(component, context);
     }
 
     @SuppressWarnings("unchecked")
-    public void process(ComponentDefinition<?> definition, Class clazz, IntrospectionContext context) {
+    public void process(Component<?> component, Class clazz, IntrospectionContext context) {
         String implementationType = "java";   // default to Java the implementation type
         for (Annotation annotation : clazz.getAnnotations()) {
             Implementation implementation = annotation.annotationType().getAnnotation(Implementation.class);
@@ -82,7 +82,7 @@ public class ComponentProcessorImpl implements ComponentProcessor {
             context.addError(new UnknownImplementation("Unknown implementation type: " + implementationType));
             return;
         }
-        processor.process(definition, clazz, context);
+        processor.process(component, clazz, context);
 
     }
 }

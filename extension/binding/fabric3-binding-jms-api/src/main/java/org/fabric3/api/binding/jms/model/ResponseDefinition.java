@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.ModelObject;
  */
 public class ResponseDefinition extends ModelObject {
     private static final long serialVersionUID = -3413442748842988653L;
-    private DestinationDefinition destination;
+    private Destination destination;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
     private ActivationSpec activationSpec;
 
@@ -38,11 +38,11 @@ public class ResponseDefinition extends ModelObject {
         this.connectionFactory = connectionFactory;
     }
 
-    public DestinationDefinition getDestination() {
+    public Destination getDestination() {
         return destination;
     }
 
-    public void setDestination(DestinationDefinition destination) {
+    public void setDestination(Destination destination) {
         this.destination = destination;
     }
 

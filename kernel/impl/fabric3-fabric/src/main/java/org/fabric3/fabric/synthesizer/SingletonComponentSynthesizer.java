@@ -21,10 +21,11 @@ package org.fabric3.fabric.synthesizer;
 import java.net.URI;
 
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
@@ -103,7 +104,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     private <S, I extends S> LogicalComponent<?> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)
             throws InvalidServiceContractException, AssemblyException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
-        ComponentDefinition<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
+        Component<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
         InstantiationContext context = new InstantiationContext();
         LogicalComponent<?> logical = instantiator.instantiate(definition, domain, context);
         if (context.hasErrors()) {
@@ -121,7 +122,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         return logical;
     }
 
-    private <S, I extends S> ComponentDefinition<Implementation<?>> createDefinition(String name, Class<S> type, I instance, boolean introspect)
+    private <S, I extends S> Component<Implementation<?>> createDefinition(String name, Class<S> type, I instance, boolean introspect)
             throws InvalidServiceContractException {
 
         String implClassName = instance.getClass().getName();
@@ -136,7 +137,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             implementationIntrospector.introspect(componentType, context);
             implementation.setComponentType(componentType);
 
-            ComponentDefinition<Implementation<?>> def = new ComponentDefinition<>(name);
+            Component<Implementation<?>> def = new Component<>(name);
             SingletonImplementation singletonImplementation = new SingletonImplementation(implementation.getComponentType(), implClassName);
             def.setImplementation(singletonImplementation);
             def.setContributionUri(BOOT_CONTRIBUTION);
@@ -148,14 +149,14 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
                 throw new InvalidServiceContractException(context.getErrors());
             }
             String serviceName = contract.getInterfaceName();
-            ServiceDefinition service = new ServiceDefinition(serviceName, contract);
+            Service<ComponentType> service = new Service<>(serviceName, contract);
 
             InjectingComponentType componentType = new InjectingComponentType(implClassName);
             componentType.add(service);
 
             SingletonImplementation implementation = new SingletonImplementation(componentType, implClassName);
             implementation.setComponentType(componentType);
-            ComponentDefinition<Implementation<?>> def = new ComponentDefinition<>(name);
+            Component<Implementation<?>> def = new Component<>(name);
             def.setImplementation(implementation);
             def.setContributionUri(BOOT_CONTRIBUTION);
             return def;

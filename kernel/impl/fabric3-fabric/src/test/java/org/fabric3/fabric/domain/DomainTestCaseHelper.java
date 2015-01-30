@@ -29,7 +29,7 @@ import org.easymock.IAnswer;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.failure.AssemblyFailure;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
@@ -50,7 +50,7 @@ public class DomainTestCaseHelper {
     private static final QName DEPLOYABLE = new QName("foo", "bar");
 
 
-    public static IAnswer<InstantiationContext> createAnswer(final ComponentDefinition definition) {
+    public static IAnswer<InstantiationContext> createAnswer(final Component definition) {
         return new IAnswer<InstantiationContext>() {
 
             @SuppressWarnings({"unchecked"})
@@ -65,7 +65,7 @@ public class DomainTestCaseHelper {
         };
     }
 
-    public static IAnswer<InstantiationContext> createErrorAnswer(final ComponentDefinition definition) {
+    public static IAnswer<InstantiationContext> createErrorAnswer(final Component definition) {
         return new IAnswer<InstantiationContext>() {
 
             @SuppressWarnings({"unchecked"})
@@ -87,7 +87,7 @@ public class DomainTestCaseHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public static Composite createComposite(Contribution contribution, ComponentDefinition definition, MetaDataStore store) {
+    public static Composite createComposite(Contribution contribution, Component definition, MetaDataStore store) {
         Composite composite = new Composite(DEPLOYABLE);
         composite.add(definition);
         composite.setContributionUri(contribution.getUri());

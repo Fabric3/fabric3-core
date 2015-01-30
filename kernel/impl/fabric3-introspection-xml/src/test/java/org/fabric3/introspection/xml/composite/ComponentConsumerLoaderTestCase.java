@@ -25,8 +25,8 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentConsumerLoader;
@@ -45,7 +45,7 @@ public class ComponentConsumerLoaderTestCase extends TestCase {
     private IntrospectionContext ctx;
 
     public void testLoad() throws Exception {
-        ConsumerDefinition<ComponentDefinition> consumer = loader.load(reader, ctx);
+        Consumer<Component> consumer = loader.load(reader, ctx);
         assertEquals("consumer", consumer.getName());
         assertEquals("source", consumer.getSources().get(0).toString());
         assertFalse(ctx.hasErrors());

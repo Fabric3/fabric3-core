@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -47,7 +47,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
  * Loads a channel definition from an XML-based assembly file
  */
 @EagerInit
-public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinition> {
+public class ChannelLoader extends AbstractExtensibleTypeLoader<Channel> {
 
     private static final QName CHANNEL = new QName(SCA_NS, "channel");
 
@@ -66,7 +66,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
         }
     }
 
-    public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Channel load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -78,12 +78,12 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
         String channelType = reader.getAttributeValue(null, "type");
         if (channelType == null) {
-            channelType = ChannelDefinition.DEFAULT_TYPE;
+            channelType = Channel.DEFAULT_TYPE;
         }
 
         boolean local = Boolean.parseBoolean(reader.getAttributeValue(null, "local"));
 
-        ChannelDefinition definition = new ChannelDefinition(name, channelType, local);
+        Channel definition = new Channel(name, channelType, local);
 
         validateAttributes(reader, context, definition);
 
@@ -101,12 +101,12 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
                     QName elementName = reader.getName();
                     ModelObject type = registry.load(reader, ModelObject.class, context);
-                    if (type instanceof BindingDefinition) {
+                    if (type instanceof Binding) {
                         if (local) {
                             context.addError(new IllegalBinding("Bindings cannot be configured on a local channel: " + name, location, definition));
                             continue;
                         }
-                        BindingDefinition binding = (BindingDefinition) type;
+                        Binding binding = (Binding) type;
                         boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
                         if (check) {
                             definition.addBinding(binding);

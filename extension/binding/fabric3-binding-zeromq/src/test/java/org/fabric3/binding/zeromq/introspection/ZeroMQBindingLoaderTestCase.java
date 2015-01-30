@@ -27,14 +27,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 public class ZeroMQBindingLoaderTestCase extends TestCase {
     private static final String BINDING_CONFIG =
@@ -46,7 +44,7 @@ public class ZeroMQBindingLoaderTestCase extends TestCase {
     public void testLoadZeroMQBindingElement() throws Exception {
         XMLStreamReader reader = createReader(BINDING_CONFIG);
         IntrospectionContext context = new DefaultIntrospectionContext();
-        ZeroMQBindingDefinition definition = loader.load(reader, context);
+        ZeroMQBinding definition = loader.load(reader, context);
         assertFalse(context.hasErrors());
 
         assertEquals("zmq", definition.getName());

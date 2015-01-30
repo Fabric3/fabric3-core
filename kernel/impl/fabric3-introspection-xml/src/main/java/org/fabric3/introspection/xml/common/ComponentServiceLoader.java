@@ -25,9 +25,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -41,7 +41,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component service configuration.
  */
-public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<ServiceDefinition> {
+public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Service> {
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
 
@@ -54,7 +54,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Service
         return SERVICE;
     }
 
-    public ServiceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Service load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -63,7 +63,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Service
             context.addError(failure);
             return null;
         }
-        ServiceDefinition<ComponentDefinition> definition = new ServiceDefinition<>(name);
+        Service<Component> definition = new Service<>(name);
 
         validateAttributes(reader, context, definition);
 
@@ -82,8 +82,8 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Service
 
                     if (type instanceof ServiceContract) {
                         definition.setServiceContract((ServiceContract) type);
-                    } else if (type instanceof BindingDefinition) {
-                        BindingDefinition binding = (BindingDefinition) type;
+                    } else if (type instanceof Binding) {
+                        Binding binding = (Binding) type;
                         if (callback) {
                             if (binding.getName() == null) {
                                 // set the default binding name

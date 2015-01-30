@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
@@ -117,7 +117,7 @@ public class WebImplementationSynthesizer implements ContributionServiceListener
         QName compositeName = new QName(HostNamespaces.SYNTHESIZED, localPart);
         Composite composite = new Composite(compositeName);
         composite.setContributionUri(contributionUri);
-        ComponentDefinition<WebImplementation> component = new ComponentDefinition<>(localPart, implementation);
+        Component<WebImplementation> component = new Component<>(localPart, implementation);
         component.setContributionUri(contributionUri);
         composite.add(component);
         return composite;

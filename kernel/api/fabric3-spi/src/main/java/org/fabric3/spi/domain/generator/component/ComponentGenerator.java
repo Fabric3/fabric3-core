@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.domain.generator.component;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -40,7 +40,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public interface ComponentGenerator<C extends LogicalComponent<? extends Implementation<?>>> {
 
     /**
-     * Generates an {@link PhysicalComponentDefinition} based on a {@link ComponentDefinition}. The resulting
+     * Generates an {@link PhysicalComponentDefinition} based on a {@link Component}. The resulting
      * PhysicalComponentDefinition is added to the PhysicalChangeSet associated with the current GeneratorContext.
      *
      * @param component the logical component to evaluate

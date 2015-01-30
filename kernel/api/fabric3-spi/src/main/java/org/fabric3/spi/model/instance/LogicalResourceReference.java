@@ -20,12 +20,12 @@ package org.fabric3.spi.model.instance;
 
 import java.net.URI;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 
 /**
  * A reference to a resource on an instantiated component in the domain.
  */
-public class LogicalResourceReference<RD extends ResourceReferenceDefinition> extends LogicalInvocable {
+public class LogicalResourceReference<RD extends ResourceReference> extends LogicalInvocable {
     private static final long serialVersionUID = -6298167441706672513L;
 
     private RD definition;

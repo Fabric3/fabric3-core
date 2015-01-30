@@ -26,10 +26,8 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -54,7 +52,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
     private final IntrospectionHelper helper;
     private final JavaContractProcessor contractProcessor;
 
-    public SystemUnannotatedHeuristic(@Reference IntrospectionHelper helper, @Reference JavaContractProcessor contractProcessor) {
+    public SystemUnannotatedHeuristic(@org.oasisopen.sca.annotation.Reference IntrospectionHelper helper, @org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor) {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
     }
@@ -170,7 +168,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
                               IntrospectionContext context) {
         Class<?> type = helper.getBaseType(parameterType, typeMapping);
         ServiceContract contract = contractProcessor.introspect(type, context, componentType);
-        ReferenceDefinition reference = new ReferenceDefinition(name, contract);
+        Reference reference = new Reference(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         componentType.add(reference, site);
     }

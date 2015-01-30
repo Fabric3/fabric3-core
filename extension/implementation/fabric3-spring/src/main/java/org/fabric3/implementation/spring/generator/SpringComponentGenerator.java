@@ -24,16 +24,16 @@ import java.util.Map;
 
 import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringImplementation;
-import org.fabric3.implementation.spring.model.SpringReferenceDefinition;
+import org.fabric3.implementation.spring.model.SpringReference;
 import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -63,7 +63,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
 
     public PhysicalComponentDefinition generate(LogicalComponent<SpringImplementation> component) throws GenerationException {
         URI uri = component.getUri();
-        ComponentDefinition<SpringImplementation> componentDefinition = component.getDefinition();
+        Component<SpringImplementation> componentDefinition = component.getDefinition();
         SpringImplementation implementation = componentDefinition.getImplementation();
 
         // if the app context is in a jar, calculate the base location, otherwise it is null
@@ -140,16 +140,16 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         throw new UnsupportedOperationException();
     }
 
-    private Map<String, String> handleDefaultReferenceMappings(ComponentDefinition<SpringImplementation> componentDefinition, ComponentType type) {
+    private Map<String, String> handleDefaultReferenceMappings(Component<SpringImplementation> component, ComponentType type) {
         Map<String, String> mappings = new HashMap<>();
-        for (ReferenceDefinition reference : type.getReferences().values()) {
-            SpringReferenceDefinition springReference = (SpringReferenceDefinition) reference;
+        for (Reference reference : type.getReferences().values()) {
+            SpringReference springReference = (SpringReference) reference;
             String defaultStr = springReference.getDefaultValue();
             if (defaultStr == null) {
                 continue;
             }
             String refName = springReference.getName();
-            if (componentDefinition.getReferences().containsKey(refName)) {
+            if (component.getReferences().containsKey(refName)) {
                 continue;
             }
             mappings.put(defaultStr, refName);

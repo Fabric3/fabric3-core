@@ -22,9 +22,9 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -67,22 +67,22 @@ public class ChannelInstantiatorImplTestCase extends TestCase {
         instantiator = new ChannelInstantiatorImpl();
 
         URI contributionUri = URI.create("contribution");
-        ChannelDefinition channel = new ChannelDefinition("channel");
-        BindingDefinition binding = new MockBinding();
+        Channel channel = new Channel("channel");
+        Binding binding = new MockBinding();
         channel.addBinding(binding);
 
         composite = new Composite(COMPOSITE_NAME);
         composite.add(channel);
 
         URI parentUri = URI.create("parent");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("parent");
+        Component<CompositeImplementation> definition = new Component<>("parent");
         parent = new LogicalCompositeComponent(parentUri, definition, null);
         context = new InstantiationContext();
 
     }
 
 
-    private class MockBinding extends BindingDefinition {
+    private class MockBinding extends Binding {
         private static final long serialVersionUID = -7088192438672216044L;
 
         public MockBinding() {

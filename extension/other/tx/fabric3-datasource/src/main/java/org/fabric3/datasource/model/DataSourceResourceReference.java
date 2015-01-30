@@ -18,13 +18,13 @@
  */
 package org.fabric3.datasource.model;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A resource that takes a DataSource type.
  */
-public class DataSourceResourceReference extends ResourceReferenceDefinition {
+public class DataSourceResourceReference extends ResourceReference {
     private static final long serialVersionUID = -7941116454357577579L;
     private String dataSourceName;
 

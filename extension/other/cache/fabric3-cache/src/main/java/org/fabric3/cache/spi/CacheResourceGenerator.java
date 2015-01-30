@@ -25,7 +25,7 @@ import org.fabric3.spi.domain.generator.GenerationException;
 /**
  * Specialized generator for runtime cache configuration.
  */
-public interface CacheResourceGenerator<D extends CacheResourceDefinition> {
+public interface CacheResourceGenerator<D extends CacheResource> {
 
     /**
      * Generate the physical cache definition for a runtime from a cache definition declared in a composite.

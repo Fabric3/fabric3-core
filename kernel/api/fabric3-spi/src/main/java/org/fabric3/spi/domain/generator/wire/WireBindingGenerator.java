@@ -21,7 +21,7 @@ package org.fabric3.spi.domain.generator.wire;
 
 import java.util.List;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -32,7 +32,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 /**
  * Generates {@link PhysicalWireSourceDefinition}s and {@link PhysicalWireTargetDefinition}s for resolved wire bindings.
  */
-public interface WireBindingGenerator<BD extends BindingDefinition> {
+public interface WireBindingGenerator<BD extends Binding> {
 
     /**
      * Generates metadata used to attach a physical wire connected to a target service to a source transport.

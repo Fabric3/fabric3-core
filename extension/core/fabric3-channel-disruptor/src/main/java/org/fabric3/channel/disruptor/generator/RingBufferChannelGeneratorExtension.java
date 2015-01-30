@@ -19,7 +19,7 @@ package org.fabric3.channel.disruptor.generator;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -36,11 +36,11 @@ public class RingBufferChannelGeneratorExtension implements ChannelGeneratorExte
 
     public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException {
         URI uri = channel.getUri();
-        ChannelDefinition definition = channel.getDefinition();
-        String channelType = definition.getType();
+        Channel channelDefinition = channel.getDefinition();
+        String channelType = channelDefinition.getType();
 
         PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ASYNCHRONOUS_WORKER);
-        physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
+        physicalDefinition.setMetadata(channelDefinition.getMetadata().get(ChannelConstants.METADATA));
 
         return physicalDefinition;
     }

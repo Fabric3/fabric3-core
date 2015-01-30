@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
@@ -45,7 +45,6 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -62,13 +61,13 @@ public class ServiceResolverImpl implements ServiceResolver {
     private HostInfo info;
     private AtomicInteger idCounter = new AtomicInteger();
 
-    public ServiceResolverImpl(@Reference Introspector introspector,
-                               @Reference(name = "lcm") LogicalComponentManager lcm,
-                               @Reference AutowireResolver autowireResolver,
-                               @Reference BindingSelector bindingSelector,
-                               @Reference WireGenerator wireGenerator,
-                               @Reference Connector connector,
-                               @Reference HostInfo info) {
+    public ServiceResolverImpl(@org.oasisopen.sca.annotation.Reference Introspector introspector,
+                               @org.oasisopen.sca.annotation.Reference(name = "lcm") LogicalComponentManager lcm,
+                               @org.oasisopen.sca.annotation.Reference AutowireResolver autowireResolver,
+                               @org.oasisopen.sca.annotation.Reference BindingSelector bindingSelector,
+                               @org.oasisopen.sca.annotation.Reference WireGenerator wireGenerator,
+                               @org.oasisopen.sca.annotation.Reference Connector connector,
+                               @org.oasisopen.sca.annotation.Reference HostInfo info) {
         this.introspector = introspector;
         this.lcm = lcm;
         this.autowireResolver = autowireResolver;
@@ -131,14 +130,14 @@ public class ServiceResolverImpl implements ServiceResolver {
         QName qName = new QName(HostNamespaces.SYNTHESIZED, "SyntheticComposite" + id);
         Composite composite = new Composite(qName);
 
-        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<>(name);
-        componentDefinition.setParent(composite);
+        Component<NonManagedImplementation> component = new Component<>(name);
+        component.setParent(composite);
         NonManagedImplementation implementation = new NonManagedImplementation();
-        componentDefinition.setImplementation(implementation);
-        ReferenceDefinition<ComponentType> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+        component.setImplementation(implementation);
+        Reference<ComponentType> reference = new Reference<>("reference", Multiplicity.ONE_ONE);
         composite.add(reference);
 
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, componentDefinition, domainComponent);
+        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, component, domainComponent);
         logicalComponent.setZone(info.getZoneName());
         reference.setServiceContract(contract);
         LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);

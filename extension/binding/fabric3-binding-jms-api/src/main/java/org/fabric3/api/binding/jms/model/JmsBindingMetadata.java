@@ -36,7 +36,7 @@ public class JmsBindingMetadata extends ModelObject {
     private HeadersDefinition headers = new HeadersDefinition();
 
     private String jndiUrl;
-    private DestinationDefinition destination;
+    private Destination destination;
     private ActivationSpec activationSpec;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
     private ResponseDefinition response;
@@ -75,11 +75,11 @@ public class JmsBindingMetadata extends ModelObject {
         this.correlationScheme = correlationScheme;
     }
 
-    public DestinationDefinition getDestination() {
+    public Destination getDestination() {
         return destination;
     }
 
-    public void setDestination(DestinationDefinition destination) {
+    public void setDestination(Destination destination) {
         this.destination = destination;
     }
 
@@ -99,7 +99,7 @@ public class JmsBindingMetadata extends ModelObject {
         this.response = response;
     }
 
-    public DestinationDefinition getResponseDestination() {
+    public Destination getResponseDestination() {
         if (response == null) {
             return null;
         }

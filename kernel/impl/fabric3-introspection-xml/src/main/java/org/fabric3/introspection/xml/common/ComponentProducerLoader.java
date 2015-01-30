@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -46,7 +46,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component producer configuration.
  */
-public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<ProducerDefinition<ComponentDefinition>> {
+public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Producer<Component>> {
     private static final QName PRODUCER = new QName(SCA_NS, "producer");
 
     public ComponentProducerLoader(@Reference LoaderRegistry registry) {
@@ -58,7 +58,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Produc
         return PRODUCER;
     }
 
-    public ProducerDefinition<ComponentDefinition> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Producer<Component> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -69,7 +69,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Produc
         }
 
         String targetAttribute = reader.getAttributeValue(null, "target");
-        ProducerDefinition<ComponentDefinition> producer = new ProducerDefinition<>(name);
+        Producer<Component> producer = new Producer<>(name);
 
         List<URI> targets = new ArrayList<>();
         if (targetAttribute != null) {
@@ -102,8 +102,8 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Produc
                 ModelObject type = registry.load(reader, ModelObject.class, context);
                 if (type instanceof ServiceContract) {
                     producer.setServiceContract((ServiceContract) type);
-                } else if (type instanceof BindingDefinition) {
-                    BindingDefinition binding = (BindingDefinition) type;
+                } else if (type instanceof Binding) {
+                    Binding binding = (Binding) type;
                     boolean check = BindingHelper.checkDuplicateNames(binding, producer.getBindings(), location, context);
                     if (check) {
                         producer.addBinding(binding);

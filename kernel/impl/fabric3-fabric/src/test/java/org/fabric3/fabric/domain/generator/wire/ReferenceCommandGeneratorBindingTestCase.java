@@ -24,9 +24,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.container.command.ConnectionCommand;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -47,15 +47,15 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testAttach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        Reference referenceDefinition = new Reference("reference", contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
@@ -77,15 +77,15 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testDetach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        Reference referenceDefinition = new Reference("reference", contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
@@ -108,15 +108,15 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testReinject() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        Reference referenceDefinition = new Reference("reference", contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
@@ -145,15 +145,15 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testNoGeneration() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        Reference referenceDefinition = new Reference("reference", contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
         source.setState(LogicalState.PROVISIONED);
@@ -172,7 +172,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testCallbackGeneration() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
@@ -180,9 +180,9 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         contract.setCallbackContract(callbackContract);
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        Reference referenceDefinition = new Reference("reference", contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 

@@ -21,8 +21,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -71,10 +71,10 @@ public class ZeroMQBindingProviderWireTestCase extends TestCase {
                 return this;
             }
         };
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        Reference referenceDefinition = new Reference("reference", contract);
         LogicalReference reference = new LogicalReference(URI.create("domain://client#reference"), referenceDefinition, client);
 
-        ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
+        Service serviceDefinition = new Service("service", contract);
         LogicalService service = new LogicalService(URI.create("domain://component#service"), serviceDefinition, component);
 
         wire = new LogicalWire(null, reference, service, deployable);

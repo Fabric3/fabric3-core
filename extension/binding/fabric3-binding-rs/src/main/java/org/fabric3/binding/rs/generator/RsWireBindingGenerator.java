@@ -21,11 +21,10 @@ package org.fabric3.binding.rs.generator;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.binding.rs.model.RsBindingDefinition;
+import org.fabric3.api.binding.rs.model.RsBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -36,21 +35,21 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Implementation of the REST binding generator.
  */
 @EagerInit
-public class RsWireBindingGenerator implements WireBindingGenerator<RsBindingDefinition> {
-    public RsWireSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
+public class RsWireBindingGenerator implements WireBindingGenerator<RsBinding> {
+    public RsWireSourceDefinition generateSource(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = binding.getDefinition().getTargetUri();
 
         return new RsWireSourceDefinition(interfaze, uri);
     }
 
-    public RsWireTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
+    public RsWireTargetDefinition generateTarget(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBinding> binding,
                                                                      ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws GenerationException {
+                                                                     List<LogicalOperation> operations) {
         return generateTarget(binding, contract, operations);
     }
 

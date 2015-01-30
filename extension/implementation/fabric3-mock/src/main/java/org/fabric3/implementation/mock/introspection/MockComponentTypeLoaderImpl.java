@@ -24,7 +24,7 @@ import org.easymock.IMocksControl;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -37,14 +37,14 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
     private final JavaContractProcessor contractProcessor;
-    private final ServiceDefinition<ComponentType> controlService;
+    private final Service<ComponentType> controlService;
 
     public MockComponentTypeLoaderImpl(@Reference JavaContractProcessor contractProcessor) {
         this.contractProcessor = contractProcessor;
         IntrospectionContext context = new DefaultIntrospectionContext();
         ServiceContract controlServiceContract = contractProcessor.introspect(IMocksControl.class, context);
         assert !context.hasErrors(); // should not happen
-        controlService = new ServiceDefinition<>("mockControl", controlServiceContract);
+        controlService = new Service<>("mockControl", controlServiceContract);
     }
 
     /**
@@ -76,7 +76,7 @@ public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
             if (index != -1) {
                 name = name.substring(index + 1);
             }
-            componentType.add(new ServiceDefinition<>(name, serviceContract));
+            componentType.add(new Service<>(name, serviceContract));
         }
         componentType.add(controlService);
         componentType.setScope("STATELESS");

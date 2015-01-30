@@ -23,7 +23,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -36,12 +36,12 @@ public class BindingHelperTestCase extends TestCase {
 
     @SuppressWarnings({"serial"})
     public void testBinding() throws Exception {
-        BindingDefinition existingBinding = new BindingDefinition("someBinding", URI.create("target"), "bar") {
+        Binding existingBinding = new Binding("someBinding", URI.create("target"), "bar") {
         };
-        List<BindingDefinition> bindings = new ArrayList<>();
+        List<Binding> bindings = new ArrayList<>();
         bindings.add(existingBinding);
 
-        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), "bar") {
+        Binding newBinding = new Binding(URI.create("endpoint"), "bar") {
         };
 
         IntrospectionContext context = new DefaultIntrospectionContext();
@@ -58,17 +58,17 @@ public class BindingHelperTestCase extends TestCase {
      */
     @SuppressWarnings({"serial"})
     public void testBindingError() throws Exception {
-        BindingDefinition existingBinding1 = new BindingDefinition("name", URI.create("target"), "bar") {
+        Binding existingBinding1 = new Binding("name", URI.create("target"), "bar") {
         };
 
-        BindingDefinition existingBinding2 = new BindingDefinition("bar", URI.create("target"), "bar") {
+        Binding existingBinding2 = new Binding("bar", URI.create("target"), "bar") {
         };
 
-        List<BindingDefinition> bindings = new ArrayList<>();
+        List<Binding> bindings = new ArrayList<>();
         bindings.add(existingBinding1);
         bindings.add(existingBinding2);
 
-        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), "bar") {
+        Binding newBinding = new Binding(URI.create("endpoint"), "bar") {
         };
 
         IntrospectionContext context = new DefaultIntrospectionContext();
@@ -80,12 +80,12 @@ public class BindingHelperTestCase extends TestCase {
 
     @SuppressWarnings({"serial"})
     public void testSyntheticBindingName() throws Exception {
-        BindingDefinition existingBinding = new BindingDefinition("service", URI.create("target"), "bar") {
+        Binding existingBinding = new Binding("service", URI.create("target"), "bar") {
         };
-        List<BindingDefinition> bindings = new ArrayList<>();
+        List<Binding> bindings = new ArrayList<>();
         bindings.add(existingBinding);
 
-        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), "bar") {
+        Binding newBinding = new Binding(URI.create("endpoint"), "bar") {
         };
 
         IntrospectionContext context = new DefaultIntrospectionContext();

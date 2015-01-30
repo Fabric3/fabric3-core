@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
@@ -152,7 +152,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             if (generator == null) {
                 throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
-            BindingDefinition definition = generator.generateServiceCallback(logicalBinding);
+            Binding definition = generator.generateServiceCallback(logicalBinding);
             definition.setParent(service.getDefinition());
             LogicalBinding<?> logicalCallback = new LogicalBinding(definition, service);
             service.addCallbackBinding(logicalCallback);

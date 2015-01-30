@@ -20,7 +20,7 @@ package org.fabric3.introspection.xml.common;
 
 import javax.xml.stream.Location;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -28,7 +28,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class BindingNameNotConfigured extends XmlValidationFailure {
 
-    public BindingNameNotConfigured(BindingDefinition binding, Location location) {
+    public BindingNameNotConfigured(Binding binding, Location location) {
         super("A binding name must be configured for bindings on " + binding.getType(), location, binding);
     }
 

@@ -25,9 +25,9 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Resource;
-import org.fabric3.cache.model.CacheReferenceDefinition;
+import org.fabric3.cache.model.CacheReference;
 import org.fabric3.cache.spi.MissingCacheName;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -54,7 +54,7 @@ public class CacheResourceTypeHandler implements ResourceTypeHandler {
     }
 
 
-    public ResourceReferenceDefinition createResourceReference(String name,
+    public ResourceReference createResourceReference(String name,
                                                                Resource annotation,
                                                                Member member,
                                                                InjectingComponentType componentType,
@@ -63,8 +63,8 @@ public class CacheResourceTypeHandler implements ResourceTypeHandler {
         if (cacheName.length() == 0) {
             MissingCacheName error = new MissingCacheName(member, componentType);
             context.addError(error);
-            return new CacheReferenceDefinition(name, contract, false, "error");
+            return new CacheReference(name, contract, false, "error");
         }
-        return new CacheReferenceDefinition(name, contract, false, cacheName);
+        return new CacheReference(name, contract, false, cacheName);
     }
 }

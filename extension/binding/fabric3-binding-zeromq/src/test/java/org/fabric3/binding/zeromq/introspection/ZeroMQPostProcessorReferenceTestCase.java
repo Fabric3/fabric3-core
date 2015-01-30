@@ -18,8 +18,8 @@ package org.fabric3.binding.zeromq.introspection;
 
 import junit.framework.TestCase;
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -27,7 +27,6 @@ import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -40,15 +39,15 @@ public class ZeroMQPostProcessorReferenceTestCase extends TestCase {
 
         ServiceContract contract = new JavaServiceContract(Service.class);
 
-        ReferenceDefinition fieldReference = new ReferenceDefinition("fieldService", contract);
+        Reference fieldReference = new Reference("fieldService", contract);
         FieldInjectionSite fieldSite = new FieldInjectionSite(ServiceClientImpl.class.getDeclaredField("fieldService"));
         type.add(fieldReference, fieldSite);
 
-        ReferenceDefinition methodReference = new ReferenceDefinition("methodService", contract);
+        Reference methodReference = new Reference("methodService", contract);
         MethodInjectionSite methodSite = new MethodInjectionSite(ServiceClientImpl.class.getDeclaredMethod("setMethodService", Service.class), 0);
         type.add(methodReference, methodSite);
 
-        ReferenceDefinition ctorReference = new ReferenceDefinition("methodService", contract);
+        Reference ctorReference = new Reference("methodService", contract);
         ConstructorInjectionSite ctorSite = new ConstructorInjectionSite(ServiceClientImpl.class.getDeclaredConstructor(Service.class), 0);
         type.add(ctorReference, ctorSite);
 
@@ -59,11 +58,11 @@ public class ZeroMQPostProcessorReferenceTestCase extends TestCase {
         assertFalse(context.hasErrors());
         assertFalse(fieldReference.getBindings().isEmpty());
 
-        ZeroMQBindingDefinition fieldBinding = (ZeroMQBindingDefinition) fieldReference.getBindings().get(0);
+        ZeroMQBinding fieldBinding = (ZeroMQBinding) fieldReference.getBindings().get(0);
         assertEquals(2, fieldBinding.getZeroMQMetadata().getSocketAddresses().size());
 
         assertFalse(methodReference.getBindings().isEmpty());
-        ZeroMQBindingDefinition methodBinding = (ZeroMQBindingDefinition) methodReference.getBindings().get(0);
+        ZeroMQBinding methodBinding = (ZeroMQBinding) methodReference.getBindings().get(0);
         assertEquals("Service", methodBinding.getTargetUri().toString());
         assertFalse(ctorReference.getBindings().isEmpty());
     }
@@ -75,18 +74,18 @@ public class ZeroMQPostProcessorReferenceTestCase extends TestCase {
     private static class ServiceClientImpl {
 
         @ZeroMQ(addresses = "123.3.3:80 123.3.4:80")
-        @Reference
+        @org.oasisopen.sca.annotation.Reference
         protected Service fieldService;
 
         private Service service;
 
         @ZeroMQ(target = "Service")
-        @Reference
+        @org.oasisopen.sca.annotation.Reference
         public void setMethodService(Service service) {
             this.service = service;
         }
 
-        public ServiceClientImpl(@Reference @ZeroMQ Service service) {
+        public ServiceClientImpl(@org.oasisopen.sca.annotation.Reference @ZeroMQ Service service) {
             this.service = service;
         }
     }

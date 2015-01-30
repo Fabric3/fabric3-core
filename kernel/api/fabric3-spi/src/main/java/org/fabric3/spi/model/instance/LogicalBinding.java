@@ -21,12 +21,12 @@ package org.fabric3.spi.model.instance;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 
 /**
  * An instantiated binding.
  */
-public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArtifact<LogicalBindable> {
+public class LogicalBinding<BD extends Binding> extends LogicalScaArtifact<LogicalBindable> {
     private static final long serialVersionUID = 8153501808553226042L;
 
     private BD definition;

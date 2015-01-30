@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -31,7 +31,7 @@ public class DefaultChannelGeneratorImplTestCase extends TestCase {
     private DefaultChannelGeneratorExtensionImpl generator = new DefaultChannelGeneratorExtensionImpl();
 
     public void testGenerate() throws Exception {
-        ChannelDefinition channelDefinition = new ChannelDefinition("test");
+        Channel channelDefinition = new Channel("test");
         LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
         QName deployable = new QName("test", "test");
         channel.setDeployable(deployable);

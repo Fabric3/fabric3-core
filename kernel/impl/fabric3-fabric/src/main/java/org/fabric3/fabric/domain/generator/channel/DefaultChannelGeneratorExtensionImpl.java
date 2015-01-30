@@ -19,7 +19,7 @@ package org.fabric3.fabric.domain.generator.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -36,7 +36,7 @@ public class DefaultChannelGeneratorExtensionImpl implements ChannelGeneratorExt
 
     public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException {
         URI uri = channel.getUri();
-        ChannelDefinition definition = channel.getDefinition();
+        Channel definition = channel.getDefinition();
         String channelType = definition.getType();
 
         PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ChannelDeliveryType.DEFAULT);

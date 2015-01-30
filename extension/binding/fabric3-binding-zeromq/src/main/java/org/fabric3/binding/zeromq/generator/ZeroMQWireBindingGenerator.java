@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -43,10 +43,10 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
-public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBindingDefinition> {
+public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBinding> {
     private static final String TARGET_URI = "targetUri";
 
-    public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> binding,
+    public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBinding> binding,
                                                      ServiceContract contract,
                                                      List<LogicalOperation> operations) throws GenerationException {
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
@@ -58,7 +58,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         }
     }
 
-    public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
+    public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBinding> binding,
                                                      ServiceContract contract,
                                                      List<LogicalOperation> operations) throws GenerationException {
         validateServiceContract(contract);
@@ -82,7 +82,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         return generateTarget(contract, targetUri, metadata);
     }
 
-    public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
+    public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding,
                                                                    ServiceContract contract,
                                                                    List<LogicalOperation> operations) throws GenerationException {
         URI targetUri = binding.getParent().getUri();
@@ -106,7 +106,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
      * @return the URI or null
      * @throws GenerationException if there is a parsing error
      */
-    private URI parseTargetUri(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
+    private URI parseTargetUri(LogicalBinding<ZeroMQBinding> binding) throws GenerationException {
         URI bindingTargetUri = binding.getDefinition().getTargetUri();
         if (bindingTargetUri == null) {
             // create a synthetic name

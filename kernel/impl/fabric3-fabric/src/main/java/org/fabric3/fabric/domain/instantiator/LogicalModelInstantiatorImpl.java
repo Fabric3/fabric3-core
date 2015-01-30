@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -127,14 +127,14 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         if (synthetic) {
             for (Include include : composite.getIncludes().values()) {
                 Composite included = include.getIncluded();
-                for (ResourceDefinition definition : included.getResources()) {
+                for (Resource definition : included.getResources()) {
                     LogicalResource<?> resource = new LogicalResource<>(definition, domain);
                     resource.setDeployable(included.getName());
                     domain.addResource(resource);
                 }
             }
         } else {
-            for (ResourceDefinition definition : composite.getResources()) {
+            for (Resource definition : composite.getResources()) {
                 LogicalResource<?> resource = new LogicalResource<>(definition, domain);
                 resource.setDeployable(composite.getName());
                 domain.addResource(resource);
@@ -152,9 +152,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      */
     private void instantiate(Composite composite, LogicalCompositeComponent domain, boolean synthetic, InstantiationContext context) {
         // instantiate the declared components
-        Collection<ComponentDefinition<? extends Implementation<?>>> definitions = composite.getDeclaredComponents().values();
+        Collection<Component<? extends Implementation<?>>> definitions = composite.getDeclaredComponents().values();
         List<LogicalComponent<?>> newComponents = new ArrayList<>(definitions.size());
-        for (ComponentDefinition<? extends Implementation<?>> definition : definitions) {
+        for (Component<? extends Implementation<?>> definition : definitions) {
             LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
             setDeployable(logicalComponent, composite.getName());
             newComponents.add(logicalComponent);
@@ -195,13 +195,13 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      * @return the instantiated component
      */
     @SuppressWarnings("unchecked")
-    private LogicalComponent<?> instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
+    private LogicalComponent<?> instantiate(Component<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
         if (definition.getComponentType() instanceof Composite) {
-            ComponentDefinition<CompositeImplementation> componentDefinition = (ComponentDefinition<CompositeImplementation>) definition;
-            return compositeComponentInstantiator.instantiate(componentDefinition, parent, context);
+            Component<CompositeImplementation> component = (Component<CompositeImplementation>) definition;
+            return compositeComponentInstantiator.instantiate(component, parent, context);
         } else {
-            ComponentDefinition<Implementation<?>> componentDefinition = (ComponentDefinition<Implementation<?>>) definition;
-            return atomicComponentInstantiator.instantiate(componentDefinition, parent, context);
+            Component<Implementation<?>> component = (Component<Implementation<?>>) definition;
+            return atomicComponentInstantiator.instantiate(component, parent, context);
         }
     }
 
@@ -221,7 +221,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                                      InstantiationContext context) {
         // instantiate the included components
         for (Include include : composite.getIncludes().values()) {
-            for (ComponentDefinition<? extends Implementation<?>> definition : include.getIncluded().getComponents().values()) {
+            for (Component<? extends Implementation<?>> definition : include.getIncluded().getComponents().values()) {
                 LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
                 if (synthetic) {
                     // If it is a synthetic composite, included composites are the deployables.

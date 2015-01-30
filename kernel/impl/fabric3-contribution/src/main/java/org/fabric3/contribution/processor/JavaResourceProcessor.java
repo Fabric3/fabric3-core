@@ -23,12 +23,11 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.stream.Source;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.java.JavaImplementation;
@@ -81,7 +80,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         ResourceElement<?, ?> resourceElement = resource.getResourceElements().get(0);
         Class<?> clazz = (Class<?>) resourceElement.getValue();
 
-        Component annotation = clazz.getAnnotation(Component.class);
+        org.fabric3.api.annotation.model.Component annotation = clazz.getAnnotation(org.fabric3.api.annotation.model.Component.class);
         String name = clazz.getSimpleName();
         if (annotation != null && annotation.name().length() > 0) {
             name = annotation.name();
@@ -90,7 +89,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         try {
             QName compositeName = getCompositeName(resourceElement, annotation);
 
-            ComponentDefinition definition = new ComponentDefinition(name);
+            Component definition = new Component(name);
             definition.setContributionUri(context.getContributionUri());
             componentProcessor.process(definition, clazz, context);
 
@@ -103,14 +102,14 @@ public class JavaResourceProcessor implements ResourceProcessor {
         }
     }
 
-    private QName getCompositeName(ResourceElement<?, ?> resourceElement, Component annotation) {
+    private QName getCompositeName(ResourceElement<?, ?> resourceElement, org.fabric3.api.annotation.model.Component annotation) {
         QName compositeName;
         if (annotation != null) {
             compositeName = QName.valueOf(annotation.composite());
         } else {
             compositeName = resourceElement.getMetadata(QName.class);
             if (compositeName == null) {
-                compositeName = QName.valueOf(Component.DEFAULT_COMPOSITE);
+                compositeName = QName.valueOf(org.fabric3.api.annotation.model.Component.DEFAULT_COMPOSITE);
             }
         }
         return compositeName;
@@ -125,7 +124,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
                 break;
             }
         }
-        ComponentDefinition<JavaImplementation> definition = resourceElement.getSymbol().getKey();
+        Component<JavaImplementation> definition = resourceElement.getSymbol().getKey();
         QName compositeName = resourceElement.getValue();
         QNameSymbol compositeSymbol = new QNameSymbol(compositeName);
         Contribution contribution = resource.getContribution();
@@ -191,9 +190,9 @@ public class JavaResourceProcessor implements ResourceProcessor {
         }
     }
 
-    private class ParsedComponentSymbol extends Symbol<ComponentDefinition> {
+    private class ParsedComponentSymbol extends Symbol<Component> {
 
-        public ParsedComponentSymbol(ComponentDefinition definition) {
+        public ParsedComponentSymbol(Component definition) {
             super(definition);
         }
     }

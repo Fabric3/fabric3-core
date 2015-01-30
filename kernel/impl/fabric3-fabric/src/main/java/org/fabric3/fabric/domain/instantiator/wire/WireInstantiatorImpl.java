@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Target;
-import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Wire;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.instantiator.AmbiguousService;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
@@ -43,7 +43,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the WireInstantiator.
@@ -51,13 +50,13 @@ import org.oasisopen.sca.annotation.Reference;
 public class WireInstantiatorImpl implements WireInstantiator {
     private ContractMatcher matcher;
 
-    public WireInstantiatorImpl(@Reference ContractMatcher matcher) {
+    public WireInstantiatorImpl(@org.oasisopen.sca.annotation.Reference ContractMatcher matcher) {
         this.matcher = matcher;
     }
 
     public void instantiateCompositeWires(Composite composite, LogicalCompositeComponent parent, InstantiationContext context) {
         // instantiate wires held directly in the composite and in included composites
-        for (WireDefinition definition : composite.getWires()) {
+        for (Wire definition : composite.getWires()) {
             // resolve the source reference
             Target referenceTarget = definition.getReferenceTarget();
             LogicalReference reference = resolveReference(referenceTarget, parent, context);
@@ -93,8 +92,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
     private void instantiateReferenceWires(LogicalReference reference, InstantiationContext context) {
         LogicalCompositeComponent parent = reference.getParent().getParent();
-        ReferenceDefinition componentReference = reference.getComponentReference();
-        ReferenceDefinition<ComponentType> definition = reference.getDefinition();
+        Reference componentReference = reference.getComponentReference();
+        Reference<ComponentType> definition = reference.getDefinition();
         if (componentReference == null && definition.getTargets().isEmpty()) {
             // the reference is not configured on the component definition in the composite or in the component type so there are no wires
             return;

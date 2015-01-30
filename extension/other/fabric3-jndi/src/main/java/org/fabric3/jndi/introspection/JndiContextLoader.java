@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.api.model.type.resource.jndi.JndiContextDefinition;
+import org.fabric3.api.model.type.resource.jndi.JndiContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -46,9 +46,9 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * </pre>
  */
 @EagerInit
-public class JndiContextLoader implements TypeLoader<JndiContextDefinition> {
+public class JndiContextLoader implements TypeLoader<JndiContext> {
 
-    public JndiContextDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public JndiContext load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Map<String, Properties> contexts = new HashMap<>();
         Properties properties = null;
         while (true) {
@@ -88,7 +88,7 @@ public class JndiContextLoader implements TypeLoader<JndiContextDefinition> {
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 if ("jndi".equals(reader.getName().getLocalPart())) {
-                    return new JndiContextDefinition(contexts);
+                    return new JndiContext(contexts);
                 }
             }
         }

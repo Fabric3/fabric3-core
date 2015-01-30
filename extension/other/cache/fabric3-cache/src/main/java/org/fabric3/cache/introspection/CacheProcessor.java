@@ -27,9 +27,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Cache;
-import org.fabric3.cache.model.CacheReferenceDefinition;
+import org.fabric3.cache.model.CacheReference;
 import org.fabric3.cache.spi.MissingCacheName;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -57,8 +57,8 @@ public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {
         String name = helper.getSiteName(field, null);
         FieldInjectionSite site = new FieldInjectionSite(field);
         Class<?> type = field.getType();
-        ResourceReferenceDefinition definition = create(name, annotation, type, field, componentType, context);
-        componentType.add(definition, site);
+        ResourceReference resourceReference = create(name, annotation, type, field, componentType, context);
+        componentType.add(resourceReference, site);
     }
 
     public void visitMethod(Cache annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
@@ -70,8 +70,8 @@ public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {
         String name = helper.getSiteName(method, null);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Class<?> type = method.getParameterTypes()[0];
-        ResourceReferenceDefinition definition = create(name, annotation, type, method, componentType, context);
-        componentType.add(definition, site);
+        ResourceReference resourceReference = create(name, annotation, type, method, componentType, context);
+        componentType.add(resourceReference, site);
     }
 
     public void visitConstructorParameter(Cache annotation,
@@ -82,11 +82,11 @@ public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {
                                           IntrospectionContext context) {
         String name = annotation.name();
         Class<?> type = constructor.getParameterTypes()[index];
-        ResourceReferenceDefinition definition = create(name, annotation, type, constructor, componentType, context);
-        componentType.add(definition);
+        ResourceReference resourceReference = create(name, annotation, type, constructor, componentType, context);
+        componentType.add(resourceReference);
     }
 
-    private ResourceReferenceDefinition create(String name,
+    private ResourceReference create(String name,
                                                Cache annotation,
                                                Class<?> type,
                                                Member member,
@@ -97,9 +97,9 @@ public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {
         if (cacheName.length() == 0) {
             MissingCacheName error = new MissingCacheName(member, componentType);
             context.addError(error);
-            return new CacheReferenceDefinition(name, contract, false, "error");
+            return new CacheReference(name, contract, false, "error");
         }
-        return new CacheReferenceDefinition(name, contract, false, cacheName);
+        return new CacheReference(name, contract, false, cacheName);
     }
 
 

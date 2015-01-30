@@ -27,7 +27,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.binding.file.model.FileBindingDefinition;
+import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -48,10 +48,10 @@ public class FileWireBindingGeneratorTestCase extends TestCase {
 
     public void testSourceGeneration() throws Exception {
         ServiceContract contract = createServiceContract();
-        FileBindingDefinition definition = new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
+        FileBinding definition = new FileBinding("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, service);
+        LogicalBinding<FileBinding> logicalBinding = new LogicalBinding<>(definition, service);
 
         FileBindingWireSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
         assertNotNull(physical.getLocation());
@@ -62,10 +62,10 @@ public class FileWireBindingGeneratorTestCase extends TestCase {
     public void testInvalidServiceContractGeneration() throws Exception {
         ServiceContract contract = new JavaServiceContract(Object.class); // invalid contract
 
-        FileBindingDefinition definition = new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
+        FileBinding definition = new FileBinding("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, service);
+        LogicalBinding<FileBinding> logicalBinding = new LogicalBinding<>(definition, service);
 
         try {
             generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
@@ -77,8 +77,8 @@ public class FileWireBindingGeneratorTestCase extends TestCase {
 
     public void testReferenceGeneration() throws Exception {
         ServiceContract contract = createReferenceContract();
-        FileBindingDefinition definition = new FileBindingDefinition("binding", "location", "error");
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<>(definition, null);
+        FileBinding definition = new FileBinding("binding", "location", "error");
+        LogicalBinding<FileBinding> logicalBinding = new LogicalBinding<>(definition, null);
 
         FileBindingWireTargetDefinition physical = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
         assertNotNull(physical.getLocation());

@@ -16,7 +16,7 @@
  */
 package org.fabric3.spi.contribution;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.java.JavaImplementation;
 
 /**
@@ -27,7 +27,7 @@ public interface JavaResourceProcessorExtension {
     /**
      * Process metadata for the given Java component implementation.
      *
-     * @param definition the component
+     * @param component the component
      */
-    void process(ComponentDefinition<JavaImplementation> definition);
+    void process(Component<JavaImplementation> component);
 }

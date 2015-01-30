@@ -19,8 +19,8 @@ package org.fabric3.api.node;
 import javax.xml.namespace.QName;
 import java.net.URL;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 
 /**
@@ -68,17 +68,17 @@ public interface Domain {
     /**
      * Deploys a component specified by the given definition.
      *
-     * @param definition the component definition
+     * @param component the component definition
      * @return the domain
      */
-    Domain deploy(ComponentDefinition<?> definition);
+    Domain deploy(Component<?> component);
 
     /**
      * Deploys a channel.
      *
-     * @param definition the channel
+     * @param channel the channel
      */
-    Domain deploy(ChannelDefinition definition);
+    Domain deploy(Channel channel);
 
     /**
      * Deploys an artifact such as a composite file or contribution to the domain.

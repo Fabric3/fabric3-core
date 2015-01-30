@@ -41,7 +41,7 @@ import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.validation.InvalidCompositeException;
-import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
+import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 
 /**
  * Creates the initial system composite that is deployed to the runtime domain.
@@ -97,13 +97,12 @@ public class BootstrapCompositeFactory {
 
         if (!hostInfo.getDeployDirectories().isEmpty()) {
             // supports file-based deploy
-            builder.component(SystemComponentDefinitionBuilder.newBuilder("SyntheticDirectoryContributionProcessor",
-                                                                          SyntheticDirectoryContributionProcessor.class).build());
+            builder.component(SystemComponentBuilder.newBuilder("SyntheticDirectoryContributionProcessor",
+                                                                SyntheticDirectoryContributionProcessor.class).build());
 
-            builder.component(SystemComponentDefinitionBuilder.newBuilder("SyntheticDirectoryClasspathProcessor",
-                                                                          SyntheticDirectoryClasspathProcessor.class).build());
+            builder.component(SystemComponentBuilder.newBuilder("SyntheticDirectoryClasspathProcessor", SyntheticDirectoryClasspathProcessor.class).build());
 
-            builder.component(SystemComponentDefinitionBuilder.newBuilder("SymLinkClasspathProcessor", SymLinkClasspathProcessor.class).build());
+            builder.component(SystemComponentBuilder.newBuilder("SymLinkClasspathProcessor", SymLinkClasspathProcessor.class).build());
 
         }
 
@@ -111,7 +110,7 @@ public class BootstrapCompositeFactory {
 
         URI contributionUri = contribution.getUri();
         IntrospectionContext context = new DefaultIntrospectionContext(contributionUri, bootClassLoader, COMPOSITE_URL);
-        for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
+        for (Component<? extends Implementation<?>> definition : composite.getComponents().values()) {
             processor.introspect((InjectingComponentType) definition.getComponentType(), context);
         }
 
@@ -135,7 +134,7 @@ public class BootstrapCompositeFactory {
      */
     private static void addContributionUri(URI contributionUri, Composite composite) {
         composite.setContributionUri(contributionUri);
-        for (ComponentDefinition<?> definition : composite.getComponents().values()) {
+        for (Component<?> definition : composite.getComponents().values()) {
             if (definition.getComponentType() instanceof Composite) {
                 Composite componentType = Composite.class.cast(definition.getComponentType());
                 addContributionUri(contributionUri, componentType);

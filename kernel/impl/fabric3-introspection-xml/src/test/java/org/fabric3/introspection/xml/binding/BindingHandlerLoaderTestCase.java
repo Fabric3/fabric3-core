@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
@@ -26,7 +26,7 @@ public class BindingHandlerLoaderTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = createReader(XML_VALID);
 
-        BindingHandlerDefinition definition = loader.load(reader, context);
+        BindingHandler definition = loader.load(reader, context);
         assertEquals(URI.create("TestComponent"), definition.getTarget());
     }
 

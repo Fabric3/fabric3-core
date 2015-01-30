@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.model.type.resource.jndi.JndiContextDefinition;
+import org.fabric3.api.model.type.resource.jndi.JndiContext;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 
@@ -62,7 +62,7 @@ public class JndiContextLoaderTestCase extends TestCase {
 
         JndiContextLoader loader = new JndiContextLoader();
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-        JndiContextDefinition resource = loader.load(reader, context);
+        JndiContext resource = loader.load(reader, context);
 
         assertFalse(context.hasErrors());
         assertEquals(2, resource.getContexts().size());

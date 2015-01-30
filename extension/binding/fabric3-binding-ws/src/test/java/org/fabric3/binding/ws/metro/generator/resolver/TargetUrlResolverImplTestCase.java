@@ -21,7 +21,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.host.ServletHost;
@@ -33,7 +33,7 @@ import org.fabric3.spi.model.instance.LogicalService;
  *
  */
 public class TargetUrlResolverImplTestCase extends TestCase {
-    private LogicalBinding<WsBindingDefinition> binding;
+    private LogicalBinding<WsBinding> binding;
 
     public void testSingleVMHttp() throws Exception {
         ServletHost servletHost = EasyMock.createMock(ServletHost.class);
@@ -54,7 +54,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     protected void setUp() throws Exception {
         super.setUp();
-        WsBindingDefinition definition = new WsBindingDefinition("name", URI.create("service"), null, null, 0);
+        WsBinding definition = new WsBinding("name", URI.create("service"), null, null, 0);
         LogicalComponent<?> component = new LogicalComponent(null, null, null);
         component.setZone("1");
         LogicalService service = new LogicalService(null, null, component);

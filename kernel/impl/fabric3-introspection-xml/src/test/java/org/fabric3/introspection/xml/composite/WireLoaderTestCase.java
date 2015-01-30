@@ -26,7 +26,7 @@ import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Wire;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -55,9 +55,9 @@ public class WireLoaderTestCase extends TestCase {
         reader.nextTag();
         Composite type = loader.load(reader, context);
         assertEquals(3, type.getWires().size());
-        WireDefinition wire1 = type.getWires().get(0);
-        WireDefinition wire2 = type.getWires().get(1);
-        WireDefinition wire3 = type.getWires().get(2);
+        Wire wire1 = type.getWires().get(0);
+        Wire wire2 = type.getWires().get(1);
+        Wire wire3 = type.getWires().get(2);
 
         assertEquals("source", wire1.getReferenceTarget().getComponent());
         assertEquals("reference", wire2.getReferenceTarget().getBindable());

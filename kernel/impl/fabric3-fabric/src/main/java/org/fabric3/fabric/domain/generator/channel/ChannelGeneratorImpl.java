@@ -19,7 +19,7 @@ package org.fabric3.fabric.domain.generator.channel;
 import javax.xml.namespace.QName;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -76,7 +76,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends BindingDefinition> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
         return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 

@@ -13,7 +13,7 @@
         <f3:implementation.system class="org.fabric3.binding.file.introspection.FileBindingPostProcessor"/>
     </component>
 
-    <component name="FileWireBindingGenerator" f3:key="org.fabric3.api.binding.file.model.FileBindingDefinition">
+    <component name="FileWireBindingGenerator" f3:key="org.fabric3.api.binding.file.model.FileBinding">
         <f3:implementation.system class="org.fabric3.binding.file.generator.FileWireBindingGenerator"/>
     </component>
 

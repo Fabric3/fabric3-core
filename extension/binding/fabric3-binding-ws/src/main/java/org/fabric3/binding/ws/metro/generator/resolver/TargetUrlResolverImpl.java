@@ -19,7 +19,7 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -45,12 +45,12 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
         this.hostInfo = hostInfo;
     }
 
-    public URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding) throws GenerationException {
+    public URL resolveUrl(LogicalBinding<WsBinding> binding) throws GenerationException {
         try {
             URL targetUrl;
-            String path = serviceBinding.getDefinition().getTargetUri().toString();
+            String path = binding.getDefinition().getTargetUri().toString();
             if (path == null) {
-                path = serviceBinding.getParent().getUri().getFragment();
+                path = binding.getParent().getUri().getFragment();
             }
             boolean https = false;
             if (RuntimeMode.VM == hostInfo.getRuntimeMode()) {

@@ -6,16 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.cache.spi.CacheResourceDefinition;
+import org.fabric3.cache.spi.CacheResource;
 
 /**
  *
  */
 public class CacheRegistryImpl implements CacheRegistry {
-    private Map<Class<CacheResourceDefinition>, CacheManager<?>> managers = new ConcurrentHashMap<>();
+    private Map<Class<CacheResource>, CacheManager<?>> managers = new ConcurrentHashMap<>();
 
     @Reference(required = false)
-    public void setManagers(Map<Class<CacheResourceDefinition>, CacheManager<?>> managers) {
+    public void setManagers(Map<Class<CacheResource>, CacheManager<?>> managers) {
         this.managers = managers;
     }
 

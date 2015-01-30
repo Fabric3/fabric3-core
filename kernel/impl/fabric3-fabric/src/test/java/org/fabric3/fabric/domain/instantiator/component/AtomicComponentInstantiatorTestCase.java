@@ -27,20 +27,20 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyMany;
 import org.fabric3.api.model.type.component.PropertyValue;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.ResourceReference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -65,7 +65,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     private AtomicComponentInstantiatorImpl instantiator;
     private LogicalCompositeComponent parent;
     private InstantiationContext context;
-    private ComponentDefinition<MockImplementation> component;
+    private Component<MockImplementation> component;
 
     public void testInstantiate() throws Exception {
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
@@ -185,7 +185,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         ComponentType type = new ComponentType();
         MockImplementation implementation = new MockImplementation();
         implementation.setComponentType(type);
-        component = new ComponentDefinition<>("component");
+        component = new Component<>("component");
         component.setImplementation(implementation);
 
         createService(component);
@@ -195,7 +195,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         createResource(component);
 
         URI parentUri = URI.create("parent");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("parent");
+        Component<CompositeImplementation> definition = new Component<>("parent");
         parent = new LogicalCompositeComponent(parentUri, definition, null);
 
         context = new InstantiationContext();
@@ -203,29 +203,29 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
 
     }
 
-    private void createConsumer(ComponentDefinition component) {
-        ConsumerDefinition<ComponentType> definition = new ConsumerDefinition<>("consumer");
+    private void createConsumer(Component component) {
+        Consumer<ComponentType> definition = new Consumer<>("consumer");
         component.getComponentType().add(definition);
 
-        ConsumerDefinition<ComponentDefinition> consumer = new ConsumerDefinition<>("consumer");
+        Consumer<Component> consumer = new Consumer<>("consumer");
         consumer.setSources(Collections.singletonList(CONSUMER_SOURCE));
         component.add(consumer);
     }
 
-    private void createProducer(ComponentDefinition component) {
-        ProducerDefinition<ComponentType> definition = new ProducerDefinition<>("producer");
+    private void createProducer(Component component) {
+        Producer<ComponentType> definition = new Producer<>("producer");
         component.getComponentType().add(definition);
 
-        ProducerDefinition<ComponentDefinition> producer = new ProducerDefinition<>("producer");
+        Producer<Component> producer = new Producer<>("producer");
         producer.setTargets( Collections.singletonList(PRODUCER_TARGET));
         component.add(producer);
     }
 
-    private void createReference(ComponentDefinition component) {
-        ReferenceDefinition<ComponentType> definition = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+    private void createReference(Component component) {
+        Reference<ComponentType> definition = new Reference<>("reference", Multiplicity.ONE_ONE);
         component.getComponentType().add(definition);
 
-        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+        Reference<Component> reference = new Reference<>("reference", Multiplicity.ONE_ONE);
         Target target = new Target(REFERENCE_TARGET);
         reference.addTarget(target);
         reference.addBinding(new MockBinding());
@@ -233,18 +233,18 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         component.add(reference);
     }
 
-    private void createService(ComponentDefinition component) {
-        ServiceDefinition<ComponentType> definition = new ServiceDefinition<>("service");
+    private void createService(Component component) {
+        Service<ComponentType> definition = new Service<>("service");
         component.getComponentType().add(definition);
 
-        ServiceDefinition<ComponentDefinition> service = new ServiceDefinition<>("service");
+        Service<Component> service = new Service<>("service");
         service.addBinding(new MockBinding());
         service.addCallbackBinding(new MockBinding());
         component.add(service);
     }
 
-    private void createResource(ComponentDefinition component) {
-        ResourceReferenceDefinition definition = new ResourceReferenceDefinition("resource", null, false);
+    private void createResource(Component component) {
+        ResourceReference definition = new ResourceReference("resource", null, false);
         component.getComponentType().add(definition);
     }
 
@@ -260,7 +260,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     }
 
 
-    private class MockBinding extends BindingDefinition {
+    private class MockBinding extends Binding {
         private static final long serialVersionUID = -7088192438672216044L;
 
         public MockBinding() {

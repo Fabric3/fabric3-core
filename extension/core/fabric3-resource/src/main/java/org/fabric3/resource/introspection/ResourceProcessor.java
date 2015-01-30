@@ -28,7 +28,7 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Resource;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.spi.ResourceTypeHandler;
@@ -74,7 +74,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
         Class<?> type = helper.getBaseType(genericType, typeMapping);
 
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        ResourceReferenceDefinition definition;
+        ResourceReference definition;
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
@@ -99,7 +99,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
         Class<?> type = helper.getBaseType(genericType, typeMapping);
 
         FieldInjectionSite site = new FieldInjectionSite(field);
-        ResourceReferenceDefinition definition;
+        ResourceReference definition;
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
@@ -126,7 +126,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        ResourceReferenceDefinition definition;
+        ResourceReference definition;
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type

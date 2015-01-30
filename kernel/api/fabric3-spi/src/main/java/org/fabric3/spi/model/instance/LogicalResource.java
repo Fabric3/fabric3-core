@@ -22,12 +22,12 @@ package org.fabric3.spi.model.instance;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 
 /**
  * An instantiated resource defined in a composite.
  */
-public class LogicalResource<R extends ResourceDefinition> extends LogicalScaArtifact<LogicalCompositeComponent> {
+public class LogicalResource<R extends Resource> extends LogicalScaArtifact<LogicalCompositeComponent> {
     private static final long serialVersionUID = -8094856609591381761L;
 
     private R definition;

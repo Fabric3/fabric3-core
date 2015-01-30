@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.binding.file.model.FileBindingDefinition;
+import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -46,7 +46,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class FileWireBindingGenerator implements WireBindingGenerator<FileBindingDefinition> {
+public class FileWireBindingGenerator implements WireBindingGenerator<FileBinding> {
     private static final String REGEX_ALL = ".*";
     private HostInfo info;
 
@@ -61,12 +61,11 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         this.info = info;
     }
 
-    public FileBindingWireSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations) throws GenerationException {
+    public FileBindingWireSourceDefinition generateSource(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+            throws GenerationException {
         validateServiceContract(contract);
         boolean dataHandler = isDataHandler(contract);
-        FileBindingDefinition definition = binding.getDefinition();
+        FileBinding definition = binding.getDefinition();
         String pattern = definition.getPattern();
         if (pattern == null) {
             pattern = REGEX_ALL;
@@ -86,21 +85,29 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         if (delay == -1) {
             delay = defaultDelay;
         }
-        return new FileBindingWireSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay, dataHandler);
+        return new FileBindingWireSourceDefinition(uri,
+                                                   pattern,
+                                                   location,
+                                                   strategy,
+                                                   archiveLocation,
+                                                   errorLocation,
+                                                   adapterClass,
+                                                   adaptorUri,
+                                                   delay,
+                                                   dataHandler);
     }
 
-    public FileBindingWireTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations) throws GenerationException {
+    public FileBindingWireTargetDefinition generateTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+            throws GenerationException {
         validateReferenceContract(contract);
-        FileBindingDefinition definition = binding.getDefinition();
+        FileBinding definition = binding.getDefinition();
         String location = definition.getLocation();
         String adapterClass = definition.getAdapterClass();
         URI adaptorUri = getAdaptorUri(definition);
         return new FileBindingWireTargetDefinition(location, adapterClass, adaptorUri);
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBindingDefinition> binding,
+    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBinding> binding,
                                                                      ServiceContract contract,
                                                                      List<LogicalOperation> operations) throws GenerationException {
         throw new UnsupportedOperationException();
@@ -168,7 +175,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         return false;
     }
 
-    private URI getAdaptorUri(FileBindingDefinition definition) throws GenerationException {
+    private URI getAdaptorUri(FileBinding definition) throws GenerationException {
         String uri = definition.getAdapterUri();
         if (uri == null) {
             return null;

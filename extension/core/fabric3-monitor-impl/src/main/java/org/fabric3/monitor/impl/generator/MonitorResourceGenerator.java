@@ -22,7 +22,7 @@ import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
-import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResource;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -30,10 +30,10 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Generates a {@link PhysicalMonitorDefinition} from a {@link MonitorResourceDefinition}.
+ * Generates a {@link PhysicalMonitorDefinition} from a {@link MonitorResource}.
  */
 @EagerInit
-public class MonitorResourceGenerator implements ResourceGenerator<MonitorResourceDefinition> {
+public class MonitorResourceGenerator implements ResourceGenerator<MonitorResource> {
     private Map<Class<?>, MonitorDestinationGenerator<?>> destinationGenerators;
 
     @Reference
@@ -42,8 +42,8 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResourceDefinition> logicalResource) throws GenerationException {
-        MonitorResourceDefinition resourceDefinition = logicalResource.getDefinition();
+    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResource> logicalResource) throws GenerationException {
+        MonitorResource resourceDefinition = logicalResource.getDefinition();
 
         PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition(resourceDefinition.getName());
 

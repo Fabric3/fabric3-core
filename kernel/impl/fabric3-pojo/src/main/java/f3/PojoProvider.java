@@ -33,7 +33,7 @@ import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition
 import org.fabric3.implementation.pojo.proxy.ChannelProxyServiceImpl;
 import org.fabric3.implementation.pojo.proxy.WireProxyServiceImpl;
 import org.fabric3.implementation.pojo.reflection.ReflectionFactoryImpl;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides components for handling POJO runtime artifacts.

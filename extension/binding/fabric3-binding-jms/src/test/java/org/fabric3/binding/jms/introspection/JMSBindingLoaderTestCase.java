@@ -32,14 +32,14 @@ import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.MessageSelection;
 import org.fabric3.api.binding.jms.model.OperationPropertiesDefinition;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -105,12 +105,12 @@ public class JMSBindingLoaderTestCase extends TestCase {
         XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(JMS_BINDING.getBytes()));
         streamReader.nextTag();
 
-        JmsBindingDefinition binding = loader.load(streamReader, context);
+        JmsBinding binding = loader.load(streamReader, context);
         JmsBindingMetadata metadata = binding.getJmsMetadata();
 
         // verify destination configuration
         assertEquals(CorrelationScheme.CORRELATION_ID, metadata.getCorrelationScheme());
-        DestinationDefinition destination = metadata.getDestination();
+        Destination destination = metadata.getDestination();
         assertEquals("serviceQueue", destination.getName());
         assertEquals(DestinationType.QUEUE, destination.geType());
         assertEquals(CreateOption.ALWAYS, destination.getCreate());
@@ -124,7 +124,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
         assertEquals("val", connectionFactory.getProperties().get("prop1"));
 
         // verify response
-        DestinationDefinition responseDestination = metadata.getResponseDestination();
+        Destination responseDestination = metadata.getResponseDestination();
         assertEquals("clientQueue", responseDestination.getName());
         assertEquals(DestinationType.QUEUE, responseDestination.geType());
         assertEquals(CreateOption.ALWAYS, responseDestination.getCreate());
@@ -153,7 +153,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
         XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(ACTIVATION_SPEC.getBytes()));
         streamReader.nextTag();
 
-        JmsBindingDefinition binding = loader.load(streamReader, context);
+        JmsBinding binding = loader.load(streamReader, context);
         JmsBindingMetadata metadata = binding.getJmsMetadata();
         ActivationSpec spec = metadata.getActivationSpec();
         assertEquals("serviceQueue", spec.getName());
@@ -170,7 +170,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
         XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(MESSAGE_SELECTION.getBytes()));
         streamReader.nextTag();
 
-        JmsBindingDefinition binding = loader.load(streamReader, context);
+        JmsBinding binding = loader.load(streamReader, context);
         JmsBindingMetadata metadata = binding.getJmsMetadata();
         MessageSelection messageSelection = metadata.getMessageSelection();
         assertEquals("select", messageSelection.getSelector());
@@ -185,7 +185,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
         LoaderRegistry registry = EasyMock.createStrictMock(LoaderRegistry.class);
 
         URI uri = URI.create("TestHandler");
-        EasyMock.expect(registry.load(reader, BindingHandlerDefinition.class, context)).andReturn(new BindingHandlerDefinition(uri));
+        EasyMock.expect(registry.load(reader, BindingHandler.class, context)).andReturn(new BindingHandler(uri));
         EasyMock.replay(handlerRegistry, registry);
 
         JmsBindingLoader loader = new JmsBindingLoader(registry);

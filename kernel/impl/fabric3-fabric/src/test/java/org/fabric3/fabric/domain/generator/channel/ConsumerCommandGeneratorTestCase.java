@@ -29,8 +29,8 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -60,10 +60,10 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI channelUri = URI.create("NotFoundChannel");
-        ComponentDefinition definition = new ComponentDefinition("component");
+        Component definition = new Component("component");
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
         component.setDeployable(DEPLOYABLE);
-        LogicalConsumer consumer = new LogicalConsumer(URI.create("component#consumer"), new ConsumerDefinition("consumer"), component);
+        LogicalConsumer consumer = new LogicalConsumer(URI.create("component#consumer"), new Consumer("consumer"), component);
         component.addConsumer(consumer);
 
         consumer.addSource(channelUri);
@@ -188,10 +188,10 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         URI channelUri = URI.create("channel");
         LogicalChannel channel = new LogicalChannel(channelUri, null, parent);
         parent.addChannel(channel);
-        ComponentDefinition definition = new ComponentDefinition("component");
+        Component definition = new Component("component");
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
         component.setDeployable(DEPLOYABLE);
-        LogicalConsumer consumer = new LogicalConsumer(URI.create("component#consumer"), new ConsumerDefinition("consumer"), component);
+        LogicalConsumer consumer = new LogicalConsumer(URI.create("component#consumer"), new Consumer("consumer"), component);
         component.addConsumer(consumer);
 
         consumer.addSource(channelUri);

@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.ws.metro.generator.GenerationHelper;
 import org.fabric3.binding.ws.metro.generator.MetroGeneratorDelegate;
@@ -77,20 +77,20 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         this.info = info;
     }
 
-    public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract)
+    public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, JavaServiceContract contract)
             throws GenerationException {
 
         URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
         Class<?> serviceClass = loadServiceClass(contract, contributionUri);
-        WsBindingDefinition definition = binding.getDefinition();
-        URL wsdlLocation = getWsdlLocation(definition, serviceClass);
+        WsBinding bindingDefinition = binding.getDefinition();
+        URL wsdlLocation = getWsdlLocation(bindingDefinition, serviceClass);
 
         ServiceEndpointDefinition endpointDefinition = createServiceEndpointDefinition(binding, contract, serviceClass);
 
         String interfaze = contract.getQualifiedInterfaceName();
 
         // create handler definitions
-        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
+        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), bindingDefinition);
 
         byte[] generatedBytes = null;
         String wsdl = null;
@@ -154,11 +154,11 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         //        }
     }
 
-    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract)
+    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, JavaServiceContract contract)
             throws GenerationException {
         URL targetUrl = null;
-        WsBindingDefinition definition = binding.getDefinition();
-        URI targetUri = definition.getTargetUri();
+        WsBinding bindingDefinition = binding.getDefinition();
+        URI targetUri = bindingDefinition.getTargetUri();
 
         if (binding.isCallback() && targetUri != null) {
             throw new GenerationException("A web services callback binding cannot be used with a binding URI on a service: " + binding.getParent().getUri());
@@ -173,31 +173,31 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             } catch (MalformedURLException e) {
                 throw new GenerationException(e);
             }
-        } else if (definition.getWsdlElement() == null && definition.getWsdlLocation() == null && !binding.isCallback()) {
+        } else if (bindingDefinition.getWsdlElement() == null && bindingDefinition.getWsdlLocation() == null && !binding.isCallback()) {
             throw new GenerationException("A web service binding URI must be specified: " + binding.getParent().getUri());
         }
 
         return generateTarget(binding, targetUrl, contract);
     }
 
-    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding, JavaServiceContract contract)
+    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, JavaServiceContract contract)
             throws GenerationException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding);
         return generateTarget(serviceBinding, targetUrl, contract);
     }
 
-    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, URL targetUrl, JavaServiceContract contract)
+    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, URL targetUrl, JavaServiceContract contract)
             throws GenerationException {
         URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
         Class<?> serviceClass = loadServiceClass(contract, contributionUri);
-        WsBindingDefinition definition = binding.getDefinition();
-        URL wsdlLocation = getWsdlLocation(definition, serviceClass);
+        WsBinding bindingDefinition = binding.getDefinition();
+        URL wsdlLocation = getWsdlLocation(bindingDefinition, serviceClass);
 
         ReferenceEndpointDefinition endpointDefinition = createReferenceEndpointDefinition(binding, contract, serviceClass, targetUrl);
 
         String interfaze = contract.getQualifiedInterfaceName();
 
-        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
+        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), bindingDefinition);
 
         byte[] generatedBytes = null;
         String wsdl = null;
@@ -228,7 +228,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         }
 
         // obtain connection information
-        ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(definition);
+        ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(bindingDefinition);
 
         URI classLoaderUri = null;
         if (serviceClass.getClassLoader() instanceof MultiParentClassLoader) {
@@ -237,7 +237,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
 
-        int retries = definition.getRetries();
+        int retries = bindingDefinition.getRetries();
         MetroJavaWireTargetDefinition targetDefinition = new MetroJavaWireTargetDefinition(endpointDefinition,
                                                                                            interfaze,
                                                                                            generatedBytes,
@@ -263,7 +263,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
      * @return the WSDL location or null
      * @throws GenerationException if the WSDL location is invalid
      */
-    private URL getWsdlLocation(WsBindingDefinition definition, Class<?> serviceClass) throws GenerationException {
+    private URL getWsdlLocation(WsBinding definition, Class<?> serviceClass) throws GenerationException {
         try {
             String location = definition.getWsdlLocation();
             if (location != null) {
@@ -301,7 +301,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         }
     }
 
-    private ServiceEndpointDefinition createServiceEndpointDefinition(LogicalBinding<WsBindingDefinition> binding,
+    private ServiceEndpointDefinition createServiceEndpointDefinition(LogicalBinding<WsBinding> binding,
                                                                       JavaServiceContract contract,
                                                                       Class<?> serviceClass) throws GenerationException {
         URI targetUri = binding.getDefinition().getTargetUri();
@@ -311,7 +311,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         return synthesizer.synthesizeServiceEndpoint(contract, serviceClass, targetUri);
     }
 
-    private ReferenceEndpointDefinition createReferenceEndpointDefinition(LogicalBinding<WsBindingDefinition> binding,
+    private ReferenceEndpointDefinition createReferenceEndpointDefinition(LogicalBinding<WsBinding> binding,
                                                                           JavaServiceContract contract,
                                                                           Class<?> serviceClass,
                                                                           URL targetUrl) throws GenerationException {

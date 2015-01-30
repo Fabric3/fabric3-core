@@ -18,7 +18,7 @@
         <f3:implementation.system class="org.fabric3.binding.ws.introspection.WsaLoader"/>
     </component>
 
-    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
+    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBinding">
         <f3:implementation.system class="org.fabric3.binding.ws.generator.WsCallbackBindingGenerator"/>
     </component>
 

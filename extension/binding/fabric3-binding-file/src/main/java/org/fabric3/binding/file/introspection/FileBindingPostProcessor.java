@@ -18,13 +18,12 @@ package org.fabric3.binding.file.introspection;
 
 import java.lang.reflect.AccessibleObject;
 
-import org.fabric3.api.binding.file.annotation.FileBinding;
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.binding.file.model.FileBindingDefinition;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.binding.file.model.FileBinding;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -35,46 +34,46 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Introspects file binding information in a component implementation.
  */
 @EagerInit
-public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileBinding> {
+public class FileBindingPostProcessor extends AbstractBindingPostProcessor<org.fabric3.api.binding.file.annotation.FileBinding> {
 
     public FileBindingPostProcessor() {
-        super(FileBinding.class);
+        super(org.fabric3.api.binding.file.annotation.FileBinding.class);
     }
 
-    protected BindingDefinition processService(FileBinding annotation,
-                                               ServiceDefinition<ComponentType> service,
-                                               InjectingComponentType componentType,
+    protected Binding processService(org.fabric3.api.binding.file.annotation.FileBinding annotation,
+                                     Service<ComponentType> service,
+                                     InjectingComponentType componentType,
+                                     Class<?> implClass,
+                                     IntrospectionContext context) {
+        return createBinding(annotation, implClass, context);
+
+    }
+
+    protected Binding processServiceCallback(org.fabric3.api.binding.file.annotation.FileBinding annotation,
+                                             Service<ComponentType> service,
+                                             InjectingComponentType componentType,
+                                             Class<?> implClass,
+                                             IntrospectionContext context) {
+        return null; // not supported
+    }
+
+    protected Binding processReference(org.fabric3.api.binding.file.annotation.FileBinding annotation,
+                                       Reference reference,
+                                       AccessibleObject object,
+                                       Class<?> implClass,
+                                       IntrospectionContext context) {
+        return createBinding(annotation, implClass, context);
+    }
+
+    protected Binding processReferenceCallback(org.fabric3.api.binding.file.annotation.FileBinding annotation,
+                                               Reference reference,
+                                               AccessibleObject object,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
-        return createDefinition(annotation, implClass, context);
-
-    }
-
-    protected BindingDefinition processServiceCallback(FileBinding annotation,
-                                                       ServiceDefinition<ComponentType> service,
-                                                       InjectingComponentType componentType,
-                                                       Class<?> implClass,
-                                                       IntrospectionContext context) {
         return null; // not supported
     }
 
-    protected BindingDefinition processReference(FileBinding annotation,
-                                                 ReferenceDefinition reference,
-                                                 AccessibleObject object,
-                                                 Class<?> implClass,
-                                                 IntrospectionContext context) {
-        return createDefinition(annotation, implClass, context);
-    }
-
-    protected BindingDefinition processReferenceCallback(FileBinding annotation,
-                                                         ReferenceDefinition reference,
-                                                         AccessibleObject object,
-                                                         Class<?> implClass,
-                                                         IntrospectionContext context) {
-        return null; // not supported
-    }
-
-    private FileBindingDefinition createDefinition(FileBinding annotation, Class<?> implClass, IntrospectionContext context) {
+    private FileBinding createBinding(org.fabric3.api.binding.file.annotation.FileBinding annotation, Class<?> implClass, IntrospectionContext context) {
         String name = annotation.name();
         if (name.isEmpty()) {
             name = "FileBinding";
@@ -98,7 +97,7 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
             InvalidAnnotation error = new InvalidAnnotation("Invalid delay value specified on file binding", implClass, annotation, implClass);
             context.addError(error);
         }
-        return new FileBindingDefinition(name, pattern, location, strategy, archiveLocation, errorLocation, null, adapterUri, delay);
+        return new FileBinding(name, pattern, location, strategy, archiveLocation, errorLocation, null, adapterUri, delay);
 
     }
 

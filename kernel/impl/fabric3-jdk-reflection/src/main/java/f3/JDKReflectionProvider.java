@@ -27,7 +27,7 @@ import org.fabric3.implementation.reflection.jdk.JDKInjectorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory;
 import org.fabric3.implementation.reflection.jdk.JDKServiceInvokerFactory;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides components for JDK-based reflection.

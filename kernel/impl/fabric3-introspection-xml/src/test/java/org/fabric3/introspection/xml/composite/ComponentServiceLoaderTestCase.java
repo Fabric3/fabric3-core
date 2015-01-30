@@ -26,7 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -45,7 +45,7 @@ public class ComponentServiceLoaderTestCase extends TestCase {
     private IntrospectionContext ctx;
 
     public void testLoad() throws Exception {
-        ServiceDefinition service = loader.load(reader, ctx);
+        Service service = loader.load(reader, ctx);
         assertEquals("service", service.getName());
         assertFalse(ctx.hasErrors());
     }

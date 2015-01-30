@@ -18,15 +18,14 @@
  */
 package org.fabric3.fabric.domain.collector;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.model.instance.LogicalBindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -369,7 +368,7 @@ public class CollectorImplTestCase extends TestCase {
         return domain;
     }
 
-    private <R extends ResourceDefinition> void createResource(QName deployable, LogicalState state, LogicalCompositeComponent parent) {
+    private <R extends Resource> void createResource(QName deployable, LogicalState state, LogicalCompositeComponent parent) {
         LogicalResource resource = new LogicalResource<R>(null, parent);
         resource.setDeployable(deployable);
         resource.setState(state);

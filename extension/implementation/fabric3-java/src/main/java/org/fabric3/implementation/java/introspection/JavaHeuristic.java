@@ -30,7 +30,7 @@ import java.util.Set;
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
@@ -50,7 +50,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -61,9 +60,9 @@ public class JavaHeuristic implements HeuristicProcessor {
 
     private final HeuristicProcessor serviceHeuristic;
 
-    public JavaHeuristic(@Reference IntrospectionHelper helper,
-                         @Reference JavaContractProcessor contractProcessor,
-                         @Reference(name = "service") HeuristicProcessor serviceHeuristic) {
+    public JavaHeuristic(@org.oasisopen.sca.annotation.Reference IntrospectionHelper helper,
+                         @org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
+                         @org.oasisopen.sca.annotation.Reference(name = "service") HeuristicProcessor serviceHeuristic) {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
         this.serviceHeuristic = serviceHeuristic;
@@ -113,7 +112,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                 for (Constructor<?> constructor : constructors) {
                     for (Annotation[] annotations : constructor.getParameterAnnotations()) {
                         for (Annotation annotation : annotations) {
-                            if (annotation.annotationType().equals(Reference.class)
+                            if (annotation.annotationType().equals(org.oasisopen.sca.annotation.Reference.class)
                                     || annotation.annotationType().equals(Producer.class)
                                     || annotation.annotationType().equals(Monitor.class)) {
                                 if (selected != null) {
@@ -254,7 +253,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                               IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(declaringClass);
         ServiceContract contract = contractProcessor.introspect(parameterType, context, componentType);
-        ReferenceDefinition reference = new ReferenceDefinition(name, contract);
+        Reference reference = new Reference(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         componentType.add(reference, site);
     }

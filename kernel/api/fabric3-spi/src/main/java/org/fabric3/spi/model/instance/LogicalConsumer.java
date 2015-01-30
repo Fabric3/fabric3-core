@@ -23,14 +23,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 
 /**
  * A consumer on an instantiated component in the domain.
  */
 public class LogicalConsumer extends LogicalInvocable {
     private static final long serialVersionUID = -8094856609591381761L;
-    private ConsumerDefinition definition;
+    private Consumer definition;
     private List<URI> sources;
 
     /**
@@ -40,7 +40,7 @@ public class LogicalConsumer extends LogicalInvocable {
      * @param definition the consumer type definition
      * @param parent     the parent component
      */
-    public LogicalConsumer(URI uri, ConsumerDefinition definition, LogicalComponent<?> parent) {
+    public LogicalConsumer(URI uri, Consumer definition, LogicalComponent<?> parent) {
         super(uri, null, parent);
         this.definition = definition;
         sources = new ArrayList<>();
@@ -51,7 +51,7 @@ public class LogicalConsumer extends LogicalInvocable {
      *
      * @return the producer type definition
      */
-    public ConsumerDefinition getDefinition() {
+    public Consumer getDefinition() {
         return definition;
     }
 

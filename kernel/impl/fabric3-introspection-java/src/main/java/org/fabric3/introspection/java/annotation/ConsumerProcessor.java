@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.annotation.Consumer;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.Signature;
@@ -46,10 +45,10 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Introspects {@link Consumer} annotations.
+ * Introspects {@link org.fabric3.api.annotation.Consumer} annotations.
  */
 @EagerInit
-public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
+public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.api.annotation.Consumer> {
     private IntrospectionHelper helper;
 
     private List<TypeIntrospector> typeIntrospectors = Collections.emptyList();
@@ -60,11 +59,11 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
     }
 
     public ConsumerProcessor(@Reference IntrospectionHelper helper) {
-        super(Consumer.class);
+        super(org.fabric3.api.annotation.Consumer.class);
         this.helper = helper;
     }
 
-    public void visitMethod(Consumer annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+    public void visitMethod(org.fabric3.api.annotation.Consumer annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         if (method.getParameterTypes().length > 1) {
             InvalidConsumerMethod failure = new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter", method, componentType);
             context.addError(failure);
@@ -75,17 +74,17 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         // TODO handle policies
         String name = helper.getSiteName(method, annotation.value());
         Signature signature = new Signature(method);
-        ConsumerDefinition definition = new ConsumerDefinition(name, types);
+        Consumer consumer = new Consumer(name, types);
 
         int sequence = annotation.sequence();
         if (sequence < 0) {
             context.addError(new InvalidConsumerMethod("Sequence number cannot be negative: " + method, method, componentType));
         } else {
-            definition.setSequence(sequence);
+            consumer.setSequence(sequence);
         }
         Class<?> clazz = method.getDeclaringClass();
-        processSources(annotation, definition, method, clazz, context);
-        componentType.add(definition, signature);
+        processSources(annotation, consumer, method, clazz, context);
+        componentType.add(consumer, signature);
     }
 
     private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {
@@ -117,14 +116,14 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         return dataType;
     }
 
-    private void processSources(Consumer annotation, ConsumerDefinition definition, AccessibleObject member, Class<?> clazz, IntrospectionContext context) {
+    private void processSources(org.fabric3.api.annotation.Consumer annotation, Consumer consumer, AccessibleObject member, Class<?> clazz, IntrospectionContext context) {
         try {
             if (annotation.sources().length > 0) {
                 for (String target : annotation.sources()) {
-                    definition.addSource(new URI(target));
+                    consumer.addSource(new URI(target));
                 }
             } else if (annotation.source().length() > 0) {
-                definition.addSource(new URI(annotation.source()));
+                consumer.addSource(new URI(annotation.source()));
             }
         } catch (URISyntaxException e) {
             InvalidAnnotation error = new InvalidAnnotation("Invalid consumer source on : " + clazz.getName(), member, annotation, clazz, e);

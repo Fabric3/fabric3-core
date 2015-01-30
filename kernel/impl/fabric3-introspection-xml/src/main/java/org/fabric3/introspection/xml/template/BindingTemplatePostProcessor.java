@@ -20,16 +20,15 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 
 import org.fabric3.api.annotation.model.BindingTemplate;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles services and references configured with {@link BindingTemplate}.
@@ -37,45 +36,45 @@ import org.oasisopen.sca.annotation.Reference;
 public class BindingTemplatePostProcessor extends AbstractBindingPostProcessor<BindingTemplate> {
     private TemplateRegistry registry;
 
-    public BindingTemplatePostProcessor(@Reference TemplateRegistry registry) {
+    public BindingTemplatePostProcessor(@org.oasisopen.sca.annotation.Reference TemplateRegistry registry) {
         super(BindingTemplate.class);
         this.registry = registry;
     }
 
-    protected BindingDefinition processService(BindingTemplate annotation,
-                                               ServiceDefinition<ComponentType> service,
-                                               InjectingComponentType componentType,
-                                               Class<?> implClass,
-                                               IntrospectionContext context) {
+    protected Binding processService(BindingTemplate annotation,
+                                     Service<ComponentType> service,
+                                     InjectingComponentType componentType,
+                                     Class<?> implClass,
+                                     IntrospectionContext context) {
         return resolve(annotation, implClass, implClass, context);
     }
 
-    protected BindingDefinition processServiceCallback(BindingTemplate annotation,
-                                                       ServiceDefinition<ComponentType> service,
-                                                       InjectingComponentType componentType,
-                                                       Class<?> implClass,
-                                                       IntrospectionContext context) {
+    protected Binding processServiceCallback(BindingTemplate annotation,
+                                             Service<ComponentType> service,
+                                             InjectingComponentType componentType,
+                                             Class<?> implClass,
+                                             IntrospectionContext context) {
         return null; // not yet supported
     }
 
-    protected BindingDefinition processReference(BindingTemplate annotation,
-                                                 ReferenceDefinition reference,
-                                                 AccessibleObject object,
-                                                 Class<?> implClass,
-                                                 IntrospectionContext context) {
+    protected Binding processReference(BindingTemplate annotation,
+                                       Reference reference,
+                                       AccessibleObject object,
+                                       Class<?> implClass,
+                                       IntrospectionContext context) {
         return resolve(annotation, object, implClass, context);
     }
 
-    protected BindingDefinition processReferenceCallback(BindingTemplate annotation,
-                                                         ReferenceDefinition reference,
-                                                         AccessibleObject object,
-                                                         Class<?> implClass,
-                                                         IntrospectionContext context) {
+    protected Binding processReferenceCallback(BindingTemplate annotation,
+                                               Reference reference,
+                                               AccessibleObject object,
+                                               Class<?> implClass,
+                                               IntrospectionContext context) {
         return null; // not yet supported
     }
 
-    private BindingDefinition resolve(BindingTemplate annotation, AnnotatedElement element, Class<?> implClazz, IntrospectionContext context) {
-        BindingDefinition binding = registry.resolve(BindingDefinition.class, annotation.value());
+    private Binding resolve(BindingTemplate annotation, AnnotatedElement element, Class<?> implClazz, IntrospectionContext context) {
+        Binding binding = registry.resolve(Binding.class, annotation.value());
         if (binding == null) {
             InvalidAnnotation error = new InvalidAnnotation("Binding template not found: " + annotation.value(), element, annotation, implClazz);
             context.addError(error);

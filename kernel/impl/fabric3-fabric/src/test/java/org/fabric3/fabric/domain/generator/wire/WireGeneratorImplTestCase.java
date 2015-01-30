@@ -26,8 +26,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -330,7 +330,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private LogicalService createService() {
-        ComponentDefinition definition = new ComponentDefinition("component", new MockImplementation());
+        Component definition = new Component("component", new MockImplementation());
         definition.setContributionUri(CONTRIBUTION_URI);
         LogicalComponent component = new LogicalComponent(URI.create("component"), definition, null);
         LogicalService service = new LogicalService(URI.create("component#service"), null, component);
@@ -375,7 +375,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private LogicalReference createReference() {
-        ComponentDefinition definition = new ComponentDefinition("component", new MockImplementation());
+        Component definition = new Component("component", new MockImplementation());
         definition.setContributionUri(CONTRIBUTION_URI);
         LogicalComponent component = new LogicalComponent(URI.create("component"), definition, null);
         LogicalReference reference = new LogicalReference(URI.create("component#reference"), null, component);
@@ -385,7 +385,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         return reference;
     }
 
-    private class MockBindingDefinition extends BindingDefinition {
+    private class MockBindingDefinition extends Binding {
         private static final long serialVersionUID = 6341221394239456452L;
 
         public MockBindingDefinition() {

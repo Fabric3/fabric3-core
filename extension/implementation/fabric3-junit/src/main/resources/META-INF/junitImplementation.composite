@@ -39,7 +39,7 @@
         <f3:implementation.system class="org.fabric3.implementation.junit.generator.JUnitComponentGenerator"/>
     </component>
 
-    <component name="JUnitWireBindingGenerator" f3:key="org.fabric3.implementation.junit.model.JUnitBindingDefinition">
+    <component name="JUnitWireBindingGenerator" f3:key="org.fabric3.implementation.junit.model.JUnitBinding">
         <f3:implementation.system class="org.fabric3.implementation.junit.generator.JUnitWireBindingGenerator"/>
     </component>
 

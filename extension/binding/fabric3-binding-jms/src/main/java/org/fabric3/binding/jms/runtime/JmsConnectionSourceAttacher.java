@@ -20,14 +20,13 @@
 package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
@@ -36,7 +35,7 @@ import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
 import org.fabric3.binding.jms.runtime.container.MessageContainerFactory;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
@@ -53,7 +52,7 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 /**
  * Attaches a consumer to a JMS destination.
  */
-public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<JmsConnectionSourceDefinition> {
+public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<JmsConnectionSource> {
 
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
@@ -73,7 +72,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         this.monitor = monitor;
     }
 
-    public void attach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
+    public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ContainerException {
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -85,7 +84,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         ContainerConfiguration configuration = new ContainerConfiguration();
         try {
             ConnectionFactory connectionFactory = objects.getRequestFactory();
-            Destination destination = objects.getRequestDestination();
+            javax.jms.Destination destination = objects.getRequestDestination();
             EventStream stream = connection.getEventStream();
             EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
             configuration.setDestinationType(metadata.getDestination().geType());
@@ -106,7 +105,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         }
     }
 
-    public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target) throws ContainerException {
         try {
             containerManager.unregister(source.getUri());
             resolver.release(source.getMetadata().getConnectionFactory());
@@ -136,20 +135,20 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source) throws ContainerException {
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSource source) throws ContainerException {
         JmsBindingMetadata metadata = source.getMetadata();
-        ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
-        ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
-        DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-        Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
+        ConnectionFactoryDefinition connectionFactory = metadata.getConnectionFactory();
+        ConnectionFactory requestConnectionFactory = resolver.resolve(connectionFactory);
+        Destination requestDestinationDefinition = metadata.getDestination();
+        javax.jms.Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
         return new ResolvedObjects(requestConnectionFactory, requestDestination);
     }
 
     private class ResolvedObjects {
         private ConnectionFactory requestFactory;
-        private Destination requestDestination;
+        private javax.jms.Destination requestDestination;
 
-        private ResolvedObjects(ConnectionFactory requestFactory, Destination requestDestination) {
+        private ResolvedObjects(ConnectionFactory requestFactory, javax.jms.Destination requestDestination) {
             this.requestFactory = requestFactory;
             this.requestDestination = requestDestination;
         }
@@ -158,7 +157,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             return requestFactory;
         }
 
-        public Destination getRequestDestination() {
+        public javax.jms.Destination getRequestDestination() {
             return requestDestination;
         }
 

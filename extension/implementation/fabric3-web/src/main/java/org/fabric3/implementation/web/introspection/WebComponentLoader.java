@@ -33,7 +33,7 @@ import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.spi.contribution.Contribution;
@@ -50,7 +50,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads <code><implementation.web></code> from a composite.
@@ -61,7 +60,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
     private LoaderRegistry registry;
     private MetaDataStore metaDataStore;
 
-    public WebComponentLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore metaDataStore) {
+    public WebComponentLoader(@org.oasisopen.sca.annotation.Reference LoaderRegistry registry, @org.oasisopen.sca.annotation.Reference MetaDataStore metaDataStore) {
         this.registry = registry;
         this.metaDataStore = metaDataStore;
         addAttributes("uri");
@@ -88,7 +87,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
 
             // check if an explicit component type file is present (required for backward compatibility)
             ComponentType componentType = loadComponentType(context);
-            for (Map.Entry<String, ReferenceDefinition<ComponentType>> entry : componentType.getReferences().entrySet()) {
+            for (Map.Entry<String, Reference<ComponentType>> entry : componentType.getReferences().entrySet()) {
                 type.add(entry.getValue());
             }
             for (Map.Entry<String, Property> entry : componentType.getProperties().entrySet()) {

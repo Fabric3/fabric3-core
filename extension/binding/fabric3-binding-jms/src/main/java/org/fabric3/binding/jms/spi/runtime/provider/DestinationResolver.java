@@ -16,9 +16,7 @@
  */
 package org.fabric3.binding.jms.spi.runtime.provider;
 
-import javax.jms.Destination;
-
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 
 /**
  * Implemented by a JMS provider to resolve destinations.
@@ -32,6 +30,6 @@ public interface DestinationResolver {
      * @return the resolved destination
      * @throws JmsResolutionException if there is a resolution error
      */
-    Destination resolve(DestinationDefinition definition) throws JmsResolutionException;
+    javax.jms.Destination resolve(Destination definition) throws JmsResolutionException;
 
 }

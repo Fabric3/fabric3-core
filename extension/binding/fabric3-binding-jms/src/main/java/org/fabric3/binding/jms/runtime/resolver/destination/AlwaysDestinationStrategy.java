@@ -21,7 +21,6 @@ package org.fabric3.binding.jms.runtime.resolver.destination;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.QueueConnection;
 import javax.jms.Session;
@@ -29,7 +28,7 @@ import javax.jms.TopicConnection;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
@@ -37,7 +36,7 @@ import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws JmsResolutionException {
         Connection connection = null;
         String name = definition.getName();
         try {

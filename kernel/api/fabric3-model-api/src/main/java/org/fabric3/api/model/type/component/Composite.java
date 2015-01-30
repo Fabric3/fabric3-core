@@ -44,17 +44,17 @@ public class Composite extends ComponentType {
     private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.NODE);
     private List<String> environments = Collections.emptyList();
 
-    private Map<String, ComponentDefinition<? extends Implementation<?>>> components = new HashMap<>();
+    private Map<String, Component<? extends Implementation<?>>> components = new HashMap<>();
     private Map<QName, Include> includes = new HashMap<>();
-    private List<WireDefinition> wires = new ArrayList<>();
-    private Map<String, ChannelDefinition> channels = new HashMap<>();
-    private List<ResourceDefinition> resources = new ArrayList<>();
+    private List<Wire> wires = new ArrayList<>();
+    private Map<String, Channel> channels = new HashMap<>();
+    private List<Resource> resources = new ArrayList<>();
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
-    private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView = new HashMap<>();
-    private Map<String, ChannelDefinition> channelsView = new HashMap<>();
-    private List<WireDefinition> wiresView = new ArrayList<>();
-    private List<ResourceDefinition> resourcesView = new ArrayList<>();
+    private Map<String, Component<? extends Implementation<?>>> componentsView = new HashMap<>();
+    private Map<String, Channel> channelsView = new HashMap<>();
+    private List<Wire> wiresView = new ArrayList<>();
+    private List<Resource> resourcesView = new ArrayList<>();
 
     private List<Namespace> namespaces;
 
@@ -179,7 +179,7 @@ public class Composite extends ComponentType {
      *
      * @return components
      */
-    public Map<String, ComponentDefinition<? extends Implementation<?>>> getComponents() {
+    public Map<String, Component<? extends Implementation<?>>> getComponents() {
         return componentsView;
     }
 
@@ -188,7 +188,7 @@ public class Composite extends ComponentType {
      *
      * @param component the component
      */
-    public void add(ComponentDefinition<? extends Implementation<?>> component) {
+    public void add(Component<? extends Implementation<?>> component) {
         component.setParent(this);
         componentsView.put(component.getName(), component);
         components.put(component.getName(), component);
@@ -199,7 +199,7 @@ public class Composite extends ComponentType {
      *
      * @return wires
      */
-    public List<WireDefinition> getWires() {
+    public List<Wire> getWires() {
         return wiresView;
     }
 
@@ -208,7 +208,7 @@ public class Composite extends ComponentType {
      *
      * @param wire the wire
      */
-    public void add(WireDefinition wire) {
+    public void add(Wire wire) {
         wire.setParent(this);
         wires.add(wire);
         wiresView.add(wire);
@@ -219,7 +219,7 @@ public class Composite extends ComponentType {
      *
      * @return channels
      */
-    public Map<String, ChannelDefinition> getChannels() {
+    public Map<String, Channel> getChannels() {
         return channelsView;
     }
 
@@ -228,7 +228,7 @@ public class Composite extends ComponentType {
      *
      * @param channel the channel
      */
-    public void add(ChannelDefinition channel) {
+    public void add(Channel channel) {
         channel.setParent(this);
         channelsView.put(channel.getName(), channel);
         channels.put(channel.getName(), channel);
@@ -239,7 +239,7 @@ public class Composite extends ComponentType {
      *
      * @return channels
      */
-    public List<ResourceDefinition> getResources() {
+    public List<Resource> getResources() {
         return resourcesView;
     }
 
@@ -248,7 +248,7 @@ public class Composite extends ComponentType {
      *
      * @param resource the resource
      */
-    public void add(ResourceDefinition resource) {
+    public void add(Resource resource) {
         resource.setParent(this);
         resourcesView.add(resource);
         resources.add(resource);
@@ -282,7 +282,7 @@ public class Composite extends ComponentType {
      *
      * @return components
      */
-    public Map<String, ComponentDefinition<? extends Implementation<?>>> getDeclaredComponents() {
+    public Map<String, Component<? extends Implementation<?>>> getDeclaredComponents() {
         return components;
     }
 
@@ -291,7 +291,7 @@ public class Composite extends ComponentType {
      *
      * @return wires
      */
-    public List<WireDefinition> getDeclaredWires() {
+    public List<Wire> getDeclaredWires() {
         return wires;
     }
 
@@ -300,7 +300,7 @@ public class Composite extends ComponentType {
      *
      * @return channels
      */
-    public Map<String, ChannelDefinition> getDeclaredChannels() {
+    public Map<String, Channel> getDeclaredChannels() {
         return channels;
     }
 
@@ -309,7 +309,7 @@ public class Composite extends ComponentType {
      *
      * @return resources
      */
-    public List<ResourceDefinition> getDeclaredResources() {
+    public List<Resource> getDeclaredResources() {
         return resources;
     }
 

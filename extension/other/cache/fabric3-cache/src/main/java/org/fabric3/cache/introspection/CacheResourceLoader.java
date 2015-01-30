@@ -28,8 +28,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.model.CacheSetResourceDefinition;
-import org.fabric3.cache.spi.CacheResourceDefinition;
+import org.fabric3.cache.model.CacheSetResource;
+import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
  * </pre>
  */
 @EagerInit
-public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetResourceDefinition> {
+public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetResource> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "caches");
     private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "caches");
 
@@ -71,10 +71,10 @@ public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetRe
     }
 
 
-    public CacheSetResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        CacheSetResourceDefinition definition = new CacheSetResourceDefinition();
+    public CacheSetResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        CacheSetResource cacheSetResource = new CacheSetResource();
 
-        validateAttributes(reader, context, definition);
+        validateAttributes(reader, context, cacheSetResource);
 
         while (true) {
             switch (reader.next()) {
@@ -90,17 +90,17 @@ public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetRe
                     }
 
                     reader.nextTag();
-                    CacheResourceDefinition configuration = registry.load(reader, CacheResourceDefinition.class, context);
+                    CacheResource configuration = registry.load(reader, CacheResource.class, context);
                     if (configuration == null) {
                         continue;
                     }
                     configuration.setCacheName(name);
-                    definition.addDefinition(configuration);
+                    cacheSetResource.addDefinition(configuration);
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 if ("caches".equals(reader.getName().getLocalPart())) {
-                    return definition;
+                    return cacheSetResource;
                 }
             }
         }

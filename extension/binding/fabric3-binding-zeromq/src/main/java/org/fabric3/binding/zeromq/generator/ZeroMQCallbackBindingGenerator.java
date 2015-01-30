@@ -16,7 +16,7 @@
  */
 package org.fabric3.binding.zeromq.generator;
 
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -26,14 +26,14 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
-public class ZeroMQCallbackBindingGenerator implements CallbackBindingGenerator<ZeroMQBindingDefinition> {
-    public ZeroMQBindingDefinition generateServiceCallback(LogicalBinding<ZeroMQBindingDefinition> forwardBinding) {
+public class ZeroMQCallbackBindingGenerator implements CallbackBindingGenerator<ZeroMQBinding> {
+    public ZeroMQBinding generateServiceCallback(LogicalBinding<ZeroMQBinding> forwardBinding) {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
-        return new ZeroMQBindingDefinition("binding.zeromq.callback", metadata);
+        return new ZeroMQBinding("binding.zeromq.callback", metadata);
     }
 
-    public ZeroMQBindingDefinition generateReferenceCallback(LogicalBinding<ZeroMQBindingDefinition> forwardBinding) {
+    public ZeroMQBinding generateReferenceCallback(LogicalBinding<ZeroMQBinding> forwardBinding) {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
-        return new ZeroMQBindingDefinition("binding.zeromq.callback", metadata);
+        return new ZeroMQBinding("binding.zeromq.callback", metadata);
     }
 }

@@ -23,15 +23,15 @@ import java.net.URI;
 import org.fabric3.api.binding.jms.annotation.JMS;
 import org.fabric3.api.binding.jms.annotation.JMSConfiguration;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
+import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.MessageSelection;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -48,40 +48,32 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         super(JMS.class);
     }
 
-    protected BindingDefinition processService(JMS annotation,
-                                               ServiceDefinition<ComponentType> service,
-                                               InjectingComponentType componentType,
-                                               Class<?> implClass,
-                                               IntrospectionContext context) {
+    protected Binding processService(JMS annotation,
+                                     Service<ComponentType> service,
+                                     InjectingComponentType componentType,
+                                     Class<?> implClass,
+                                     IntrospectionContext context) {
         return createDefinition(annotation, annotation.value(), implClass, context);
 
     }
 
-    protected BindingDefinition processServiceCallback(JMS annotation,
-                                                       ServiceDefinition<ComponentType> service,
-                                                       InjectingComponentType componentType,
-                                                       Class<?> implClass,
-                                                       IntrospectionContext context) {
+    protected Binding processServiceCallback(JMS annotation,
+                                             Service<ComponentType> service,
+                                             InjectingComponentType componentType,
+                                             Class<?> implClass,
+                                             IntrospectionContext context) {
         return createDefinition(annotation, annotation.callback(), implClass, context);
     }
 
-    protected BindingDefinition processReference(JMS annotation,
-                                                 ReferenceDefinition reference,
-                                                 AccessibleObject object,
-                                                 Class<?> implClass,
-                                                 IntrospectionContext context) {
+    protected Binding processReference(JMS annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
         return createDefinition(annotation, annotation.value(), implClass, context);
     }
 
-    protected BindingDefinition processReferenceCallback(JMS annotation,
-                                                         ReferenceDefinition reference,
-                                                         AccessibleObject object,
-                                                         Class<?> implClass,
-                                                         IntrospectionContext context) {
+    protected Binding processReferenceCallback(JMS annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
         return createDefinition(annotation, annotation.callback(), implClass, context);
     }
 
-    private JmsBindingDefinition createDefinition(JMS annotation, JMSConfiguration configuration, Class<?> implClass, IntrospectionContext context) {
+    private JmsBinding createDefinition(JMS annotation, JMSConfiguration configuration, Class<?> implClass, IntrospectionContext context) {
         String name = annotation.name();
         if (name.isEmpty()) {
             name = "JMSBinding";
@@ -90,16 +82,16 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
 
         parseConfiguration(configuration, metadata, implClass, context);
 
-        JmsBindingDefinition definition = new JmsBindingDefinition(name, metadata);
+        JmsBinding binding = new JmsBinding(name, metadata);
 
         // needed for callbacks
-        DestinationDefinition destinationDefinition = metadata.getDestination();
-        if (destinationDefinition != null) {
-            String target = destinationDefinition.getName();
+        Destination destination = metadata.getDestination();
+        if (destination != null) {
+            String target = destination.getName();
             URI bindingUri = URI.create("jms://" + target);
-            definition.setGeneratedTargetUri(bindingUri);
+            binding.setGeneratedTargetUri(bindingUri);
         }
-        return definition;
+        return binding;
     }
 
     private void parseConfiguration(JMSConfiguration configuration, JmsBindingMetadata metadata, Class<?> implClass, IntrospectionContext context) {
@@ -107,7 +99,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         factory.setName(getNullibleValue(configuration.connectionFactory()));
         metadata.setConnectionFactory(factory);
 
-        DestinationDefinition destination = new DestinationDefinition();
+        Destination destination = new Destination();
         destination.setName(configuration.destination());
         metadata.setDestination(destination);
 
@@ -144,7 +136,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         }
 
         ResponseDefinition response = new ResponseDefinition();
-        DestinationDefinition responseDestination = new DestinationDefinition();
+        Destination responseDestination = new Destination();
         responseDestination.setName(configuration.responseDestination());
         response.setDestination(responseDestination);
 

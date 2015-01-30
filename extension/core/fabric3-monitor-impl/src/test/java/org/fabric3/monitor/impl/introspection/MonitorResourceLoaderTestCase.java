@@ -23,7 +23,7 @@ import java.io.ByteArrayInputStream;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResource;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -50,7 +50,7 @@ public class MonitorResourceLoaderTestCase extends TestCase {
         EasyMock.replay(loaderRegistry);
         reader.nextTag();
 
-        MonitorResourceDefinition definition = loader.load(reader, context);
+        MonitorResource definition = loader.load(reader, context);
 
         assertFalse(context.hasErrors());
         assertNotNull(definition.getDestinationDefinition());

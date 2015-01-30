@@ -37,12 +37,12 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
     private String key;
     private int order = Integer.MIN_VALUE;
 
-    private Map<String, ServiceDefinition<ComponentType>> services = new HashMap<>();
-    private Map<String, ConsumerDefinition<ComponentType>> consumers = new HashMap<>();
-    private Map<String, ReferenceDefinition<ComponentType>> references = new HashMap<>();
-    private Map<String, ProducerDefinition<ComponentType>> producers = new HashMap<>();
+    private Map<String, Service<ComponentType>> services = new HashMap<>();
+    private Map<String, Consumer<ComponentType>> consumers = new HashMap<>();
+    private Map<String, Reference<ComponentType>> references = new HashMap<>();
+    private Map<String, Producer<ComponentType>> producers = new HashMap<>();
     private Map<String, Property> properties = new HashMap<>();
-    private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<>();
+    private Map<String, ResourceReference> resourceReferences = new HashMap<>();
 
     private List<String> policies;
 
@@ -87,7 +87,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return services provided by the implementation
      */
-    public Map<String, ServiceDefinition<ComponentType>> getServices() {
+    public Map<String, Service<ComponentType>> getServices() {
         return services;
     }
 
@@ -96,7 +96,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param service the service to add
      */
-    public void add(ServiceDefinition<ComponentType> service) {
+    public void add(Service<ComponentType> service) {
         service.setParent(this);
         services.put(service.getName(), service);
     }
@@ -106,7 +106,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return the consumers provided by the implementation
      */
-    public Map<String, ConsumerDefinition<ComponentType>> getConsumers() {
+    public Map<String, Consumer<ComponentType>> getConsumers() {
         return consumers;
     }
 
@@ -115,7 +115,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param consumer the consumer to add
      */
-    public void add(ConsumerDefinition<ComponentType> consumer) {
+    public void add(Consumer<ComponentType> consumer) {
         consumer.setParent(this);
         consumers.put(consumer.getName(), consumer);
     }
@@ -125,7 +125,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return references defined by the implementation
      */
-    public Map<String, ReferenceDefinition<ComponentType>> getReferences() {
+    public Map<String, Reference<ComponentType>> getReferences() {
         return references;
     }
 
@@ -134,7 +134,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param reference the reference to add
      */
-    public void add(ReferenceDefinition<ComponentType> reference) {
+    public void add(Reference<ComponentType> reference) {
         reference.setParent(this);
         references.put(reference.getName(), reference);
     }
@@ -144,7 +144,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return producers defined by implementation
      */
-    public Map<String, ProducerDefinition<ComponentType>> getProducers() {
+    public Map<String, Producer<ComponentType>> getProducers() {
         return producers;
     }
 
@@ -153,7 +153,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param producer the producer to add
      */
-    public void add(ProducerDefinition<ComponentType> producer) {
+    public void add(Producer<ComponentType> producer) {
         producer.setParent(this);
         producers.put(producer.getName(), producer);
     }
@@ -182,7 +182,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return resource references defined by the implementation
      */
-    public Map<String, ResourceReferenceDefinition> getResourceReferences() {
+    public Map<String, ResourceReference> getResourceReferences() {
         return resourceReferences;
     }
 
@@ -191,7 +191,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param definition the resource reference to add
      */
-    public void add(ResourceReferenceDefinition definition) {
+    public void add(ResourceReference definition) {
         definition.setParent(this);
         resourceReferences.put(definition.getName(), definition);
     }

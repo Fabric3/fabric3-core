@@ -24,11 +24,11 @@ import java.util.Map;
 
 import org.fabric3.api.binding.ws.annotation.BindingConfiguration;
 import org.fabric3.api.binding.ws.annotation.WebServiceBinding;
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -45,8 +45,8 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
         super(WebServiceBinding.class);
     }
 
-    protected BindingDefinition processService(WebServiceBinding annotation,
-                                               ServiceDefinition<ComponentType> service,
+    protected Binding processService(WebServiceBinding annotation,
+                                               Service<ComponentType> service,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -54,31 +54,31 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
 
     }
 
-    protected BindingDefinition processServiceCallback(WebServiceBinding annotation,
-                                                       ServiceDefinition<ComponentType> service,
+    protected Binding processServiceCallback(WebServiceBinding annotation,
+                                                       Service<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {
         return null; // not yet supported
     }
 
-    protected BindingDefinition processReference(WebServiceBinding annotation,
-                                                 ReferenceDefinition reference,
+    protected Binding processReference(WebServiceBinding annotation,
+                                                 Reference reference,
                                                  AccessibleObject object,
                                                  Class<?> implClass,
                                                  IntrospectionContext context) {
         return createDefinition(annotation, implClass, context);
     }
 
-    protected BindingDefinition processReferenceCallback(WebServiceBinding annotation,
-                                                         ReferenceDefinition reference,
+    protected Binding processReferenceCallback(WebServiceBinding annotation,
+                                                         Reference reference,
                                                          AccessibleObject object,
                                                          Class<?> implClass,
                                                          IntrospectionContext context) {
         return null; // not yet supported
     }
 
-    private WsBindingDefinition createDefinition(WebServiceBinding annotation, Class<?> implClass, IntrospectionContext context) {
+    private WsBinding createDefinition(WebServiceBinding annotation, Class<?> implClass, IntrospectionContext context) {
         String name = annotation.name();
         if (name.isEmpty()) {
             name = "WSBinding";
@@ -88,13 +88,13 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
         String wsdlElement = getNullibleValue(annotation.wsdlElement());
         int retries = annotation.retries();
 
-        WsBindingDefinition binding = new WsBindingDefinition(name, uri, wsdlLocation, wsdlElement, retries);
+        WsBinding binding = new WsBinding(name, uri, wsdlLocation, wsdlElement, retries);
 
         parseConfiguration(annotation, binding);
         return binding;
     }
 
-    private void parseConfiguration(WebServiceBinding annotation, WsBindingDefinition binding) {
+    private void parseConfiguration(WebServiceBinding annotation, WsBinding binding) {
         BindingConfiguration[] configurations = annotation.configuration();
         if (configurations.length == 0) {
             return;

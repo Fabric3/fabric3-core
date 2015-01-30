@@ -24,10 +24,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.model.type.component.CallbackDefinition;
+import org.fabric3.api.model.type.component.Callback;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -41,28 +40,28 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  *
  */
-public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback> {
+public class OASISCallbackProcessor extends AbstractAnnotationProcessor<org.oasisopen.sca.annotation.Callback> {
     private final IntrospectionHelper helper;
     private final JavaContractProcessor contractProcessor;
 
     public OASISCallbackProcessor(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
-        super(Callback.class);
+        super(org.oasisopen.sca.annotation.Callback.class);
         this.contractProcessor = contractProcessor;
         this.helper = helper;
     }
 
 
-    public void visitField(Callback annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+    public void visitField(org.oasisopen.sca.annotation.Callback annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         validate(field, componentType, context);
 
         String name = helper.getSiteName(field, null);
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        CallbackDefinition definition = createDefinition(name, type, implClass, componentType, context);
+        Callback definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
-    public void visitMethod(Callback annotation,
+    public void visitMethod(org.oasisopen.sca.annotation.Callback annotation,
                             Method method,
                             Class<?> implClass,
                             InjectingComponentType componentType,
@@ -72,7 +71,7 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
         String name = helper.getSiteName(method, null);
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        CallbackDefinition definition = createDefinition(name, type, implClass, componentType, context);
+        Callback definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -96,7 +95,7 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
         }
     }
 
-    private CallbackDefinition createDefinition(String name,
+    private Callback createDefinition(String name,
                                                 Type type,
                                                 Class<?> implClass,
                                                 InjectingComponentType componentType,
@@ -104,7 +103,7 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
         ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
-        return new CallbackDefinition(name, contract);
+        return new Callback(name, contract);
     }
 
 

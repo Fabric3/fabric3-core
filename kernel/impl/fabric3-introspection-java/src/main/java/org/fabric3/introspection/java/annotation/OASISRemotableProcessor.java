@@ -23,7 +23,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
 
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
@@ -43,7 +43,7 @@ public class OASISRemotableProcessor<I extends Implementation<? extends Injectin
 
     public void visitType(Remotable annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(type, context, componentType);
-        ServiceDefinition definition = new ServiceDefinition(serviceContract.getInterfaceName(), serviceContract);
+        Service definition = new Service(serviceContract.getInterfaceName(), serviceContract);
         componentType.add(definition);
     }
 }

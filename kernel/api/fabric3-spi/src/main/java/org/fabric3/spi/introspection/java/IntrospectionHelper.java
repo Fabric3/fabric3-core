@@ -28,8 +28,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -114,7 +114,7 @@ public interface IntrospectionHelper {
      * @param type        the multiplicity of a type
      * @param typeMapping the current introspection type mapping    @return the multiplicity of the type
      */
-    public void processMultiplicity(ReferenceDefinition definition, boolean required, Type type, TypeMapping typeMapping);
+    public void processMultiplicity(Reference definition, boolean required, Type type, TypeMapping typeMapping);
 
     /**
      * Introspects the type Returns true if the supplied type should be treated as many-valued.
@@ -196,7 +196,7 @@ public interface IntrospectionHelper {
      * @param services the services implemented by the class
      * @return the method injection sites for the class
      */
-    Set<Method> getInjectionMethods(Class<?> type, Collection<ServiceDefinition<ComponentType>> services);
+    Set<Method> getInjectionMethods(Class<?> type, Collection<Service<ComponentType>> services);
 
     /**
      * Returns method injection sites provided by a class or any super class.

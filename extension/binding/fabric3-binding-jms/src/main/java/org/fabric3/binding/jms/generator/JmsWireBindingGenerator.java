@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.fabric3.api.binding.jms.model.ActivationSpec;
 import org.fabric3.api.binding.jms.model.CreateOption;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
+import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -51,7 +51,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
  */
 @EagerInit
-public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingDefinition> {
+public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding> {
     private static final String JAXB = "JAXB";
 
     private static final String MANAGED_TRANSACTION = "managedTransaction";
@@ -74,7 +74,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         this.provisioner = provisioner;
     }
 
-    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
+    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
 
         SessionType sessionType = getSessionType(binding.getParent().getParent());
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
@@ -104,7 +104,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         return definition;
     }
 
-    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
+    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException {
 
         SessionType sessionType = getSessionType(binding.getParent().getParent());
 
@@ -135,9 +135,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
 
         if (contract.getCallbackContract() != null) {
             for (LogicalBinding<?> callbackBinding : binding.getParent().getCallbackBindings()) {
-                if (callbackBinding.getDefinition() instanceof JmsBindingDefinition) {
-                    JmsBindingDefinition callbackDefinition = (JmsBindingDefinition) callbackBinding.getDefinition();
-                    DestinationDefinition callbackDestination = callbackDefinition.getJmsMetadata().getDestination();
+                if (callbackBinding.getDefinition() instanceof JmsBinding) {
+                    JmsBinding callbackDefinition = (JmsBinding) callbackBinding.getDefinition();
+                    Destination callbackDestination = callbackDefinition.getJmsMetadata().getDestination();
                     definition.setCallbackDestination(callbackDestination);
                 }
             }
@@ -145,7 +145,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
         return definition;
     }
 
-    public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> binding,
+    public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBinding> binding,
                                                                 ServiceContract contract,
                                                                 List<LogicalOperation> operations) throws GenerationException {
         return generateTarget(binding, contract, operations);
@@ -175,10 +175,10 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
             if (!operation.isOneWay()) {
                 ResponseDefinition responseDefinition = new ResponseDefinition();
                 responseDefinition.setConnectionFactory(metadata.getConnectionFactory());
-                DestinationDefinition destinationDefinition = new DestinationDefinition();
-                destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
-                destinationDefinition.setName(metadata.getDestination().getName() + "Response");
-                responseDefinition.setDestination(destinationDefinition);
+                Destination destination = new Destination();
+                destination.setCreate(CreateOption.IF_NOT_EXIST);
+                destination.setName(metadata.getDestination().getName() + "Response");
+                responseDefinition.setDestination(destination);
                 metadata.setResponse(responseDefinition);
                 break;
             }
@@ -242,7 +242,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
     }
 
     private void processDestinationDefinitions(JmsBindingMetadata metadata, boolean reference) throws JmsGenerationException {
-        DestinationDefinition destination = metadata.getDestination();
+        Destination destination = metadata.getDestination();
         if (destination == null) {
             // create a definition from the activation spec
             ActivationSpec spec = metadata.getActivationSpec();
@@ -254,7 +254,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
                 metadata.setDestination(destination);
             }
         }
-        DestinationDefinition responseDestination = metadata.getResponseDestination();
+        Destination responseDestination = metadata.getResponseDestination();
         ResponseDefinition responseDefinition = metadata.getResponse();
         if (responseDestination == null && responseDefinition != null && responseDefinition.getActivationSpec() != null) {
             ActivationSpec spec = responseDefinition.getActivationSpec();
@@ -269,8 +269,8 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
      * @param spec the activation spec
      * @return the definition
      */
-    private DestinationDefinition populateActivationInformation(ActivationSpec spec) {
-        DestinationDefinition destination = new DestinationDefinition();
+    private Destination populateActivationInformation(ActivationSpec spec) {
+        Destination destination = new Destination();
         destination.setCreate(spec.getCreate());
         destination.setName(spec.getName());
         destination.addProperties(spec.getProperties());

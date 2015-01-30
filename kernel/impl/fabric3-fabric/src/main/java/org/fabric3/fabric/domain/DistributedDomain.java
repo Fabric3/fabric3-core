@@ -39,7 +39,6 @@ import org.oasisopen.sca.annotation.Reference;
  * Implements a distributed domain containing user-defined services.
  */
 public class DistributedDomain extends AbstractDomain implements Domain {
-    private boolean transactional;
     private BindingSelector bindingSelector;
 
     public DistributedDomain(@Reference(name = "store") MetaDataStore metaDataStore,

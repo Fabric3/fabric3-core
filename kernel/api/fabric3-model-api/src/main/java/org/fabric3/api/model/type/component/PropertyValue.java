@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * The value of a configured component property.
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
-public class PropertyValue extends ModelObject<ComponentDefinition> {
+public class PropertyValue extends ModelObject<Component> {
     private static final long serialVersionUID = -1638553201072873854L;
     private String name;
     private String source;

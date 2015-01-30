@@ -22,7 +22,7 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 
 /**
  * An instantiated service.
@@ -30,7 +30,7 @@ import org.fabric3.api.model.type.component.ServiceDefinition;
 public class LogicalService extends LogicalBindable {
     private static final long serialVersionUID = -2417797075030173948L;
 
-    private ServiceDefinition<ComponentType> definition;
+    private Service<ComponentType> definition;
     private LogicalComponent<?> leafComponent;
     private LogicalService leafService;
 
@@ -42,7 +42,7 @@ public class LogicalService extends LogicalBindable {
      * @param parent     the service parent component
      */
     @SuppressWarnings("unchecked")
-    public LogicalService(URI uri, ServiceDefinition<ComponentType> definition, LogicalComponent<?> parent) {
+    public LogicalService(URI uri, Service<ComponentType> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         leafComponent = parent;
@@ -54,7 +54,7 @@ public class LogicalService extends LogicalBindable {
      *
      * @return the service definition for the logical service
      */
-    public ServiceDefinition<ComponentType> getDefinition() {
+    public Service<ComponentType> getDefinition() {
         return definition;
     }
 

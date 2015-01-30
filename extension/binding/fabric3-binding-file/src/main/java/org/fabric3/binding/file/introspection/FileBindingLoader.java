@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.binding.file.model.FileBindingDefinition;
+import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -33,7 +33,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Loads a <code>binding.file</code> element in a composite.
  */
 @EagerInit
-public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingDefinition> {
+public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBinding> {
 
     public FileBindingLoader() {
         addAttributes("requires",
@@ -49,7 +49,7 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
                       "delay");
     }
 
-    public FileBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public FileBinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String bindingName = reader.getAttributeValue(null, "name");
@@ -76,20 +76,12 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
         String pattern = reader.getAttributeValue(null, "pattern");
 
         long delay = parseDelay(reader, context);
-        FileBindingDefinition definition = new FileBindingDefinition(bindingName,
-                                                                     pattern,
-                                                                     location,
-                                                                     strategy,
-                                                                     archiveLocation,
-                                                                     errorLocation,
-                                                                     adapterClass,
-                                                                     adapterUri,
-                                                                     delay);
+        FileBinding binding = new FileBinding(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adapterUri, delay);
 
-        validateAttributes(reader, context, definition);
+        validateAttributes(reader, context, binding);
 
         LoaderUtil.skipToEndElement(reader);
-        return definition;
+        return binding;
     }
 
     private Strategy parseStrategy(XMLStreamReader reader) {

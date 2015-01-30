@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
-import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.model.type.builder.AbstractBuilder;
 
@@ -29,7 +29,7 @@ import org.fabric3.api.model.type.builder.AbstractBuilder;
  * Builder for the ZeroMQ binding.
  */
 public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
-    private ZeroMQBindingDefinition binding;
+    private ZeroMQBinding binding;
 
     public static ZeroMQBindingDefinitionBuilder newBuilder() {
         return new ZeroMQBindingDefinitionBuilder();
@@ -40,10 +40,10 @@ public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
     }
 
     public ZeroMQBindingDefinitionBuilder(String name) {
-        this.binding = new ZeroMQBindingDefinition(name, new ZeroMQMetadata());
+        this.binding = new ZeroMQBinding(name, new ZeroMQMetadata());
     }
 
-    public ZeroMQBindingDefinition build() {
+    public ZeroMQBinding build() {
         checkState();
         freeze();
         return binding;
@@ -83,7 +83,7 @@ public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
         return this;
     }
 
-    public ZeroMQBindingDefinition receiveBuffer(long value) {
+    public ZeroMQBinding receiveBuffer(long value) {
         checkState();
         binding.getZeroMQMetadata().setReceiveBuffer(value);
         return binding;

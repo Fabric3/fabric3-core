@@ -20,7 +20,7 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -28,7 +28,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateComponentService extends XmlValidationFailure {
 
-    public DuplicateComponentService(String referenceName, Location location, ComponentDefinition<?> definition) {
+    public DuplicateComponentService(String referenceName, Location location, Component<?> definition) {
         super("The service " + referenceName + " is configured more than once on the component ", location, definition);
     }
 

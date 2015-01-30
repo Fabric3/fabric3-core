@@ -16,12 +16,12 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 
 /**
  *
  */
-public class MockBinding extends BindingDefinition {
+public class MockBinding extends Binding {
     private static final long serialVersionUID = -2225564023619496625L;
 
     public MockBinding() {

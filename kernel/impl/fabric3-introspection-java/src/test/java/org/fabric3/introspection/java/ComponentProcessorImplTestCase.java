@@ -22,8 +22,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.annotation.model.Component;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -40,9 +39,9 @@ public class ComponentProcessorImplTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testProcessDefinitionNoImplementation() throws Exception {
-        ComponentDefinition definition = new ComponentDefinition("test");
+        Component definition = new Component("test");
 
-        implementationProcessor.process(EasyMock.isA(ComponentDefinition.class), EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class));
+        implementationProcessor.process(EasyMock.isA(Component.class), EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class));
 
         EasyMock.replay(implementationProcessor);
 
@@ -53,11 +52,11 @@ public class ComponentProcessorImplTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testProcessDefinition() throws Exception {
-        ComponentDefinition definition = new ComponentDefinition("test");
+        Component definition = new Component("test");
         JavaImplementation implementation = new JavaImplementation();
         definition.setImplementation(implementation);
 
-        implementationProcessor.process(EasyMock.isA(ComponentDefinition.class), EasyMock.isA(IntrospectionContext.class));
+        implementationProcessor.process(EasyMock.isA(Component.class), EasyMock.isA(IntrospectionContext.class));
 
         EasyMock.replay(implementationProcessor);
 
@@ -79,7 +78,7 @@ public class ComponentProcessorImplTestCase extends TestCase {
         context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
     }
 
-    @Component
+    @org.fabric3.api.annotation.model.Component
     private class TestComponent {
 
     }

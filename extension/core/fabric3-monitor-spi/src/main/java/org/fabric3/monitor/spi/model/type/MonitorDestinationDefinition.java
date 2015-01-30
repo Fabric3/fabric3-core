@@ -21,7 +21,7 @@ import org.fabric3.api.model.type.ModelObject;
 /**
  *
  */
-public abstract class MonitorDestinationDefinition extends ModelObject<MonitorResourceDefinition> {
+public abstract class MonitorDestinationDefinition extends ModelObject<MonitorResource> {
     private static final long serialVersionUID = -3230760911483352321L;
 
 

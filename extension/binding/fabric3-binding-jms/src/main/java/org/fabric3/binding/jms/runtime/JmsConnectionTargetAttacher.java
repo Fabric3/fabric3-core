@@ -20,16 +20,15 @@
 package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 
 import org.fabric3.binding.jms.runtime.channel.JmsEventStreamHandler;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
@@ -42,14 +41,14 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches a producer to a JMS destination.
  */
-public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTargetDefinition> {
+public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTarget> {
     private AdministeredObjectResolver resolver;
 
     public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver, @Reference ChannelManager channelManager) {
         this.resolver = resolver;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target, ChannelConnection connection)
+    public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target, ChannelConnection connection)
             throws ContainerException {
 
         // resolve the connection factories and destinations
@@ -57,11 +56,11 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
         HeadersDefinition headers = metadata.getHeaders();
         boolean persistent = DeliveryMode.PERSISTENT == headers.getDeliveryMode() || headers.getDeliveryMode() == null;
-        Destination destination;
+        javax.jms.Destination destination;
         ConnectionFactory connectionFactory;
         try {
             connectionFactory = resolver.resolve(connectionFactoryDefinition);
-            DestinationDefinition destinationDefinition = metadata.getDestination();
+            Destination destinationDefinition = metadata.getDestination();
             destination = resolver.resolve(destinationDefinition, connectionFactory);
         } catch (JmsResolutionException e) {
             throw new ContainerException(e);
@@ -71,7 +70,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target) throws ContainerException {
         resolver.release(target.getMetadata().getConnectionFactory());
     }
 

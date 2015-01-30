@@ -25,7 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
@@ -68,7 +68,7 @@ public class ComponentLoaderDuplicateServiceTestCase extends TestCase {
          referenceLoader.init();
 
          MockImplementationLoader implLoader = new MockImplementationLoader();
-         implLoader.setServices(new ServiceDefinition("ref"));
+         implLoader.setServices(new Service("ref"));
          registry.registerLoader(MockImplementation.TYPE, implLoader);
          loader = new ComponentLoader(registry, helper);
 

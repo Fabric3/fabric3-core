@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
 
 /**
@@ -36,7 +36,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private static final long serialVersionUID = -3520150701040845117L;
 
     private URI uri;
-    private ComponentDefinition<I> definition;
+    private Component<I> definition;
     private Map<String, LogicalProperty> properties = new HashMap<>();
     private Map<String, LogicalService> services = new HashMap<>();
     private Map<String, LogicalReference> references = new HashMap<>();
@@ -52,7 +52,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      * @param definition Definition of the component.
      * @param parent     Parent of the component.
      */
-    public LogicalComponent(URI uri, ComponentDefinition<I> definition, LogicalCompositeComponent parent) {
+    public LogicalComponent(URI uri, Component<I> definition, LogicalCompositeComponent parent) {
         super(parent);
         this.uri = uri;
         this.definition = definition;
@@ -276,7 +276,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      *
      * @return the component implementation type
      */
-    public ComponentDefinition<I> getDefinition() {
+    public Component<I> getDefinition() {
         return definition;
     }
 

@@ -30,8 +30,8 @@ import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.api.model.type.component.CallbackDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Callback;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -62,7 +62,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws GenerationException {
-        ComponentDefinition<? extends JavaImplementation> logical = component.getDefinition();
+        Component<? extends JavaImplementation> logical = component.getDefinition();
         JavaImplementation implementation = logical.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
         String scope = type.getScope();
@@ -137,7 +137,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         String interfaceName = serviceContract.getQualifiedInterfaceName();
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         String name = null;
-        for (CallbackDefinition entry : type.getCallbacks().values()) {
+        for (Callback entry : type.getCallbacks().values()) {
             // NB: This currently only supports the case where one callback injection site of the same type is on an implementation.
             // TODO clarify with the spec if having more than one callback injection site of the same type is valid
             ServiceContract candidate = entry.getServiceContract();
@@ -177,7 +177,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setUri(uri);
 
         // assume only wires to composite scope components can be optimized
-        ComponentDefinition<JavaImplementation> componentDefinition = component.getDefinition();
+        Component<JavaImplementation> componentDefinition = component.getDefinition();
         JavaImplementation implementation = componentDefinition.getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
         String scope = componentType.getScope();

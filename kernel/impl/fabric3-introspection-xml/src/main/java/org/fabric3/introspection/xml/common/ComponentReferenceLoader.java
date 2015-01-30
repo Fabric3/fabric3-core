@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -40,7 +40,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -48,13 +47,13 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component reference configuration.
  */
-public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<ReferenceDefinition> {
+public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Reference> {
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
 
     private LoaderHelper loaderHelper;
 
-    public ComponentReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
+    public ComponentReferenceLoader(@org.oasisopen.sca.annotation.Reference LoaderRegistry registry, @org.oasisopen.sca.annotation.Reference LoaderHelper loaderHelper) {
         super(registry);
         addAttributes("name", "autowire", "target", "multiplicity", "requires", "policySets", "nonOverridable");
         this.loaderHelper = loaderHelper;
@@ -64,7 +63,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Refer
         return REFERENCE;
     }
 
-    public ReferenceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Reference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -76,7 +75,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Refer
 
         Multiplicity multiplicity = parseMultiplicity(reader, startLocation, context);
 
-        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>(name, multiplicity);
+        Reference<Component> reference = new Reference<>(name, multiplicity);
 
 
         parseTargets(reference, reader, startLocation, context);
@@ -98,8 +97,8 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Refer
                 ModelObject type = registry.load(reader, ModelObject.class, context);
                 if (type instanceof ServiceContract) {
                     reference.setServiceContract((ServiceContract) type);
-                } else if (type instanceof BindingDefinition) {
-                    BindingDefinition binding = (BindingDefinition) type;
+                } else if (type instanceof Binding) {
+                    Binding binding = (Binding) type;
                     if (!reference.getTargets().isEmpty()) {
                         if (!bindingError) {
                             // bindings cannot be configured on references if the @target attribute is used
@@ -151,7 +150,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Refer
         return multiplicity;
     }
 
-    private void parseTargets(ReferenceDefinition reference, XMLStreamReader reader, Location location, IntrospectionContext context) {
+    private void parseTargets(Reference reference, XMLStreamReader reader, Location location, IntrospectionContext context) {
         String targetAttribute = reader.getAttributeValue(null, "target");
         List<Target> targets = new ArrayList<>();
         try {
@@ -170,8 +169,8 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Refer
         reference.addTargets(targets);
     }
 
-    private void configureBinding(ReferenceDefinition<ComponentDefinition> reference,
-                                  BindingDefinition binding,
+    private void configureBinding(Reference<Component> reference,
+                                  Binding binding,
                                   boolean callback,
                                   Location location,
                                   IntrospectionContext context) {

@@ -23,11 +23,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.annotation.Consumer;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Consumer;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
@@ -70,8 +69,8 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
         this.helper = helper;
     }
 
-    public void process(ComponentDefinition<JavaImplementation> definition, IntrospectionContext context) {
-        JavaImplementation implementation = definition.getImplementation();
+    public void process(Component<JavaImplementation> component, IntrospectionContext context) {
+        JavaImplementation implementation = component.getImplementation();
         Object instance = implementation.getInstance();
         InjectingComponentType componentType = implementation.getComponentType();
         if (instance == null) {
@@ -83,7 +82,7 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
                 // introspect services if not defined
                 addServiceDefinitions(instance, componentType, context);
             }
-            processAnnotations(instance, definition, context);
+            processAnnotations(instance, component, context);
 
             for (PostProcessor postProcessor : postProcessors) {
                 postProcessor.process(componentType, instance.getClass(), context);
@@ -91,22 +90,22 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
         }
     }
 
-    public void process(ComponentDefinition<JavaImplementation> definition, Class<?> clazz, IntrospectionContext context) {
+    public void process(Component<JavaImplementation> component, Class<?> clazz, IntrospectionContext context) {
         JavaImplementation implementation = createImplementation(clazz, context);
-        definition.setImplementation(implementation);
-        process(definition, context);
+        component.setImplementation(implementation);
+        process(component, context);
     }
 
     protected abstract JavaImplementation createImplementation(Class<?> clazz, IntrospectionContext context);
 
     @SuppressWarnings("unchecked")
-    private void processAnnotations(Object instance, ComponentDefinition<?> definition, IntrospectionContext context) {
+    private void processAnnotations(Object instance, Component<?> definition, IntrospectionContext context) {
         InjectingComponentType componentType = (InjectingComponentType) definition.getComponentType();
         Class<?> implClass = instance.getClass();
         // handle consumer annotations
-        AnnotationProcessor consumerProcessor = annotationProcessors.get(Consumer.class);
+        AnnotationProcessor consumerProcessor = annotationProcessors.get(org.fabric3.api.annotation.Consumer.class);
         for (Method method : implClass.getDeclaredMethods()) {
-            Consumer consumer = method.getAnnotation(Consumer.class);
+            org.fabric3.api.annotation.Consumer consumer = method.getAnnotation(org.fabric3.api.annotation.Consumer.class);
             if (consumer == null) {
                 continue;
             }
@@ -121,9 +120,9 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
             consumerProcessor.visitMethod(consumer, method, implClass, componentType, context);
         }
         // add automatic configuration for consumer annotations
-        for (ConsumerDefinition<ComponentType> consumerDefinition : componentType.getConsumers().values()) {
-            String name = consumerDefinition.getName();
-            ConsumerDefinition<ComponentDefinition> componentConsumer = new ConsumerDefinition<>(name);
+        for (Consumer<ComponentType> consumer : componentType.getConsumers().values()) {
+            String name = consumer.getName();
+            Consumer<Component> componentConsumer = new Consumer<>(name);
             componentConsumer.setSources(Collections.singletonList(URI.create(name)));
             definition.add(componentConsumer);
         }
@@ -145,7 +144,7 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
 
         String serviceName = serviceInterface.getSimpleName();
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context);
-        ServiceDefinition<ComponentType> serviceDefinition = new ServiceDefinition<>(serviceName, contract);
-        componentType.add(serviceDefinition);
+        Service<ComponentType> service = new Service<>(serviceName, contract);
+        componentType.add(service);
     }
 }

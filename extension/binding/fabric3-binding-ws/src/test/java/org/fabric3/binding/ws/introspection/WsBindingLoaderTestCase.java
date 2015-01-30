@@ -9,8 +9,8 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
+import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
@@ -33,7 +33,7 @@ public class WsBindingLoaderTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = createReader(XML_VALID);
         EasyMock.replay(loaderRegistry);
-        WsBindingDefinition definition = loader.load(reader, context);
+        WsBinding definition = loader.load(reader, context);
         assertEquals("http://fabric3.org/TestService", definition.getTargetUri().toString());
         EasyMock.verify(loaderRegistry);
     }
@@ -41,11 +41,11 @@ public class WsBindingLoaderTestCase extends TestCase {
     public void testLoadConfigurationAndHandlers() throws Exception {
         XMLStreamReader reader = createReader(XML_CONFIG_HANDLER);
         EasyMock.expect(loaderRegistry.load(reader, Object.class, context)).andReturn(Collections.singletonMap("key1", "value1"));
-        EasyMock.expect(loaderRegistry.load(reader, Object.class, context)).andReturn(new BindingHandlerDefinition(URI.create("test"))).times(2);
+        EasyMock.expect(loaderRegistry.load(reader, Object.class, context)).andReturn(new BindingHandler(URI.create("test"))).times(2);
 
         EasyMock.replay(loaderRegistry);
 
-        WsBindingDefinition definition = loader.load(reader, context);
+        WsBinding definition = loader.load(reader, context);
         assertEquals("http://fabric3.org/TestService", definition.getTargetUri().toString());
         assertTrue(definition.getConfiguration().containsKey("key1"));
         assertEquals(2, definition.getHandlers().size());

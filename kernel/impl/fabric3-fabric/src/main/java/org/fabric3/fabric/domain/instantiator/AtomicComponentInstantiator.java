@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.domain.instantiator;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
@@ -31,11 +31,11 @@ public interface AtomicComponentInstantiator {
      * Instantiates a logical component and any children from a component definition in the given parent context. Note the parent is updated with the
      * instantiated component.
      *
-     * @param definition the component definition to instantiate from @return the instantiated logical component
+     * @param component the component definition to instantiate from @return the instantiated logical component
      * @param parent     the parent logical component
      * @param context    the instantiation context
      * @return an instantiated logical component
      */
-    LogicalComponent<?> instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context);
+    LogicalComponent<?> instantiate(Component<?> component, LogicalCompositeComponent parent, InstantiationContext context);
 
 }

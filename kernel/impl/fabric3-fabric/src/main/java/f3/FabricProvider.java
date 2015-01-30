@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
-import org.fabric3.api.model.type.builder.WireDefinitionBuilder;
+import org.fabric3.api.model.type.builder.WireBuilder;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.container.binding.BindingHandlerRegistryImpl;
 import org.fabric3.fabric.container.builder.ChannelConnectorImpl;
@@ -105,8 +105,8 @@ import org.fabric3.fabric.security.KeyStoreManagerImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.fabric.transport.TransportService;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
-import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import org.fabric3.spi.model.type.system.SystemComponentBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides subsystems for core runtime operation.
@@ -269,7 +269,7 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(DefaultChannelGeneratorExtensionImpl.class).key("default").build());
 
         // the wire forces a reinjection of the generator into the RuntimeDomain
-        compositeBuilder.wire(WireDefinitionBuilder.newBuilder().source("RuntimeDomain/generator").target("Generator").build());
+        compositeBuilder.wire(WireBuilder.newBuilder().source("RuntimeDomain/generator").target("Generator").build());
     }
 
     private static void addInstantiatorSubsystem(CompositeBuilder compositeBuilder) {
@@ -298,7 +298,7 @@ public class FabricProvider {
     }
 
     private static void addDomainSubsystem(CompositeBuilder compositeBuilder) {
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("ApplicationDomain", DistributedDomain.class);
+        SystemComponentBuilder componentBuilder = newBuilder("ApplicationDomain", DistributedDomain.class);
         componentBuilder.reference("logicalComponentManager", "LogicalComponentManager");
         compositeBuilder.component(componentBuilder.build());
 
@@ -312,7 +312,7 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(SingletonComponentSynthesizer.class).build());
 
-        compositeBuilder.wire(WireDefinitionBuilder.newBuilder().source("RuntimeDomain/deployer").target("LocalDeployer").build());
+        compositeBuilder.wire(WireBuilder.newBuilder().source("RuntimeDomain/deployer").target("LocalDeployer").build());
 
     }
 }

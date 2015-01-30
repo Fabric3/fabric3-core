@@ -23,7 +23,7 @@ import java.util.Set;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -52,22 +52,22 @@ public class SystemServiceHeuristic implements HeuristicProcessor {
             // if the class does not implement any interfaces, then the class itself is the service contract
             // we don't have to worry about proxies because all wires to system components are optimized
             if (interfaces.isEmpty()) {
-                ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(implClass, componentType, context);
-                componentType.add(serviceDefinition);
+                Service<ComponentType> service = createServiceDefinition(implClass, componentType, context);
+                componentType.add(service);
             } else {
                 // otherwise, expose all of the implemented interfaces
                 for (Class<?> serviceInterface : interfaces) {
-                    ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(serviceInterface, componentType, context);
-                    componentType.add(serviceDefinition);
+                    Service<ComponentType> service = createServiceDefinition(serviceInterface, componentType, context);
+                    componentType.add(service);
                 }
             }
         }
 
     }
 
-    private ServiceDefinition<ComponentType> createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext
+    private Service<ComponentType> createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext
             context) {
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
-        return new ServiceDefinition<>(contract.getInterfaceName(), contract);
+        return new Service<>(contract.getInterfaceName(), contract);
     }
 }

@@ -20,14 +20,14 @@ package org.fabric3.fabric.domain.instantiator.component;
 
 import java.net.URI;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
-import org.fabric3.api.model.type.component.ProducerDefinition;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Consumer;
+import org.fabric3.api.model.type.component.Producer;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.ResourceReference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -45,166 +45,163 @@ import org.fabric3.spi.model.instance.LogicalService;
 public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiator implements AtomicComponentInstantiator {
 
     @SuppressWarnings({"unchecked"})
-    public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
-        URI uri = URI.create(parent.getUri() + "/" + definition.getName());
-        LogicalComponent<?> component = new LogicalComponent(uri, definition, parent);
+    public LogicalComponent instantiate(Component<?> component, LogicalCompositeComponent parent, InstantiationContext context) {
+        URI uri = URI.create(parent.getUri() + "/" + component.getName());
+        LogicalComponent<?> logicalComponent = new LogicalComponent(uri, component, parent);
         if (parent.getComponent(uri) != null) {
             DuplicateComponent error = new DuplicateComponent(uri, parent);
             context.addError(error);
         }
-        parent.addComponent(component);
+        parent.addComponent(logicalComponent);
 
-        ComponentType componentType = definition.getComponentType();
+        ComponentType componentType = component.getComponentType();
         if (componentType == null) {
-            return component;
+            return logicalComponent;
         }
-        initializeProperties(component, definition, context);
-        createServices(definition, component, componentType);
-        createReferences(definition, component, componentType);
-        createProducers(definition, component, componentType);
-        createConsumers(definition, component, componentType);
-        createResourceReferences(component, componentType);
-        return component;
+        initializeProperties(logicalComponent, component, context);
+        createServices(component, logicalComponent, componentType);
+        createReferences(component, logicalComponent, componentType);
+        createProducers(component, logicalComponent, componentType);
+        createConsumers(component, logicalComponent, componentType);
+        createResourceReferences(logicalComponent, componentType);
+        return logicalComponent;
     }
 
-    private void createServices(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
+    private void createServices(Component<?> component, LogicalComponent<?> logicalComponent, ComponentType componentType) {
+        for (Service<ComponentType> service : componentType.getServices().values()) {
             String name = service.getName();
-            URI serviceUri = component.getUri().resolve('#' + name);
-            LogicalService logicalService = new LogicalService(serviceUri, service, component);
+            URI serviceUri = logicalComponent.getUri().resolve('#' + name);
+            LogicalService logicalService = new LogicalService(serviceUri, service, logicalComponent);
 
-            for (BindingDefinition binding : service.getBindings()) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
+            for (Binding binding : service.getBindings()) {
+                LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalService);
                 logicalService.addBinding(logicalBinding);
             }
 
-            for (BindingDefinition binding : service.getCallbackBindings()) {
-                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
+            for (Binding binding : service.getCallbackBindings()) {
+                LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalService);
                 logicalService.addCallbackBinding(logicalBinding);
             }
 
             // service is configured in the component definition
-            ServiceDefinition<ComponentDefinition> componentService = definition.getServices().get(name);
+            Service<Component> componentService = component.getServices().get(name);
             if (componentService != null) {
-                for (BindingDefinition binding : componentService.getBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
+                for (Binding binding : componentService.getBindings()) {
+                    LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalService);
                     logicalService.addBinding(logicalBinding);
                 }
-                for (BindingDefinition binding : componentService.getCallbackBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
+                for (Binding binding : componentService.getCallbackBindings()) {
+                    LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalService);
                     logicalService.addCallbackBinding(logicalBinding);
                 }
             }
-            component.addService(logicalService);
+            logicalComponent.addService(logicalService);
         }
     }
 
-    private void createReferences(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ReferenceDefinition<ComponentType> reference : componentType.getReferences().values()) {
+    private void createReferences(Component<?> component, LogicalComponent<?> logicalComponent, ComponentType componentType) {
+        for (Reference<ComponentType> reference : componentType.getReferences().values()) {
             String name = reference.getName();
-            URI referenceUri = component.getUri().resolve('#' + name);
-            LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);
+            URI referenceUri = logicalComponent.getUri().resolve('#' + name);
+            LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);
 
-            ReferenceDefinition<ComponentDefinition> componentReference = definition.getReferences().get(name);
+            Reference<Component> componentReference = component.getReferences().get(name);
             if (componentReference != null) {
                 // reference is configured in the component definition
-                for (BindingDefinition binding : componentReference.getBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
+                for (Binding binding : componentReference.getBindings()) {
+                    LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addBinding(logicalBinding);
                 }
-                for (BindingDefinition binding : componentReference.getCallbackBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
+                for (Binding binding : componentReference.getCallbackBindings()) {
+                    LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addCallbackBinding(logicalBinding);
                 }
             } else {
                 // check if reference is configured with bindings in the component type
-                for (BindingDefinition binding : reference.getBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
+                for (Binding binding : reference.getBindings()) {
+                    LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addBinding(logicalBinding);
                 }
-                for (BindingDefinition binding : reference.getCallbackBindings()) {
-                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalReference);
+                for (Binding binding : reference.getCallbackBindings()) {
+                    LogicalBinding<Binding> logicalBinding = new LogicalBinding<>(binding, logicalReference);
                     logicalReference.addCallbackBinding(logicalBinding);
                 }
             }
-            component.addReference(logicalReference);
+            logicalComponent.addReference(logicalReference);
         }
     }
 
-    private void createConsumers(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ConsumerDefinition<ComponentType> consumer : componentType.getConsumers().values()) {
+    private void createConsumers(Component<?> definition, LogicalComponent<?> logicalComponent, ComponentType componentType) {
+        for (Consumer<ComponentType> consumer : componentType.getConsumers().values()) {
             String name = consumer.getName();
-            URI consumerUri = component.getUri().resolve('#' + name);
-            LogicalConsumer logicalConsumer = new LogicalConsumer(consumerUri, consumer, component);
+            URI consumerUri = logicalComponent.getUri().resolve('#' + name);
+            LogicalConsumer logicalConsumer = new LogicalConsumer(consumerUri, consumer, logicalComponent);
 
-            // producer is configured in the component definition
-            ConsumerDefinition<ComponentDefinition> componentConsumer = definition.getConsumers().get(name);
+            // producer is configured in the logicalComponent definition
+            Consumer<Component> componentConsumer = definition.getConsumers().get(name);
             if (componentConsumer != null) {
                 for (URI uri : componentConsumer.getSources()) {
-                    addSource(logicalConsumer, uri, component);
+                    addSource(logicalConsumer, uri, logicalComponent);
                 }
             } else {
                 for (URI uri : consumer.getSources()) {
-                    addSource(logicalConsumer, uri, component);
+                    addSource(logicalConsumer, uri, logicalComponent);
                 }
             }
-            component.addConsumer(logicalConsumer);
+            logicalComponent.addConsumer(logicalConsumer);
         }
     }
 
-    private void createProducers(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ProducerDefinition<ComponentType> producer : componentType.getProducers().values()) {
+    private void createProducers(Component<?> component, LogicalComponent<?> logicalComponent, ComponentType componentType) {
+        for (Producer<ComponentType> producer : componentType.getProducers().values()) {
             String name = producer.getName();
-            URI producerUri = component.getUri().resolve('#' + name);
-            LogicalProducer logicalProducer = new LogicalProducer(producerUri, producer, component);
+            URI producerUri = logicalComponent.getUri().resolve('#' + name);
+            LogicalProducer logicalProducer = new LogicalProducer(producerUri, producer, logicalComponent);
 
-            // producer is configured in the component definition
-            ProducerDefinition<ComponentDefinition> componentProducer = definition.getProducers().get(name);
+            // producer is configured in the logicalComponent definition
+            Producer<Component> componentProducer = component.getProducers().get(name);
             if (componentProducer != null) {
                 for (URI uri : componentProducer.getTargets()) {
-                    addTarget(logicalProducer, uri, component);
+                    addTarget(logicalProducer, uri, logicalComponent);
                 }
             } else {
                 for (URI uri : producer.getTargets()) {
-                    addTarget(logicalProducer, uri, component);
+                    addTarget(logicalProducer, uri, logicalComponent);
                 }
             }
-            component.addProducer(logicalProducer);
+            logicalComponent.addProducer(logicalProducer);
         }
     }
 
-    private void addSource(LogicalConsumer logicalConsumer, URI uri, LogicalComponent<?> component) {
+    private void addSource(LogicalConsumer logicalConsumer, URI uri, LogicalComponent<?> logicalComponent) {
         if (uri.isAbsolute()) {
-            LogicalComponent<?> domain = component.getParent();
+            LogicalComponent<?> domain = logicalComponent.getParent();
             while (domain.getParent() != null) {
                 domain = domain.getParent();
             }
             logicalConsumer.addSource(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
         } else {
-            logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+            logicalConsumer.addSource(URI.create(logicalComponent.getParent().getUri().toString() + "/" + uri.toString()));
         }
     }
 
-    private void addTarget(LogicalProducer logicalProducer, URI uri, LogicalComponent<?> component) {
+    private void addTarget(LogicalProducer logicalProducer, URI uri, LogicalComponent<?> logicalComponent) {
         if (uri.isAbsolute()) {
-            LogicalComponent<?> domain = component.getParent();
+            LogicalComponent<?> domain = logicalComponent.getParent();
             while (domain.getParent() != null) {
                 domain = domain.getParent();
             }
             logicalProducer.addTarget(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
         } else {
-            logicalProducer.addTarget(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+            logicalProducer.addTarget(URI.create(logicalComponent.getParent().getUri().toString() + "/" + uri.toString()));
         }
     }
 
-    private void createResourceReferences(LogicalComponent<?> component, ComponentType componentType) {
-        for (ResourceReferenceDefinition resourceReference : componentType.getResourceReferences().values()) {
-            URI resourceUri = component.getUri().resolve('#' + resourceReference.getName());
-            LogicalResourceReference<ResourceReferenceDefinition> logicalResourceReference = new LogicalResourceReference<>(
-                    resourceUri,
-                    resourceReference,
-                    component);
-            component.addResource(logicalResourceReference);
+    private void createResourceReferences(LogicalComponent<?> logicalComponent, ComponentType componentType) {
+        for (ResourceReference reference : componentType.getResourceReferences().values()) {
+            URI resourceUri = logicalComponent.getUri().resolve('#' + reference.getName());
+            LogicalResourceReference<ResourceReference> logicalReference = new LogicalResourceReference<>(resourceUri, reference, logicalComponent);
+            logicalComponent.addResource(logicalReference);
         }
     }
 

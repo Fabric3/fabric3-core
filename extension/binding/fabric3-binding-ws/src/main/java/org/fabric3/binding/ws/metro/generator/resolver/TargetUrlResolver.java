@@ -18,7 +18,7 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 
 import java.net.URL;
 
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
@@ -31,10 +31,10 @@ public interface TargetUrlResolver {
     /**
      * Calculate the URL from the service binding metadata.
      *
-     * @param serviceBinding the service binding
+     * @param binding the service binding
      * @return the URL
      * @throws GenerationException if the URL cannot be created
      */
-    URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding) throws GenerationException;
+    URL resolveUrl(LogicalBinding<WsBinding> binding) throws GenerationException;
 
 }

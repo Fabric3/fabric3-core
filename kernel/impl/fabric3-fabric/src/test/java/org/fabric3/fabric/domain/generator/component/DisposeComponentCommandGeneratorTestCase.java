@@ -23,7 +23,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.fabric.container.command.DisposeComponentCommand;
@@ -48,7 +48,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
         DisposeComponentCommandGenerator generator = new DisposeComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        Component<MockImplementation> definition = new Component<>("component", new MockImplementation());
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.MARKED);
 
@@ -64,7 +64,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
 
         DisposeComponentCommandGenerator generator = new DisposeComponentCommandGenerator(registry);
 
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component", new MockImplementation());
+        Component<MockImplementation> definition = new Component<>("component", new MockImplementation());
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
         assertNull(generator.generate(component));

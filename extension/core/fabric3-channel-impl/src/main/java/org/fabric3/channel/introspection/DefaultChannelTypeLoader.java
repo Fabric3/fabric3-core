@@ -18,7 +18,7 @@ package org.fabric3.channel.introspection;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 
@@ -32,7 +32,7 @@ public class DefaultChannelTypeLoader implements ChannelTypeLoader {
         return EMPTY;
     }
 
-    public void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context) {
+    public void load(Channel channel, XMLStreamReader reader, IntrospectionContext context) {
         // no-op
     }
 }

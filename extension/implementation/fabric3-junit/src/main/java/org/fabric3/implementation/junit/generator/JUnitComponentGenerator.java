@@ -29,7 +29,7 @@ import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -67,7 +67,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
 
     public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws GenerationException {
 
-        ComponentDefinition<JUnitImplementation> definition = component.getDefinition();
+        Component<JUnitImplementation> definition = component.getDefinition();
         JUnitImplementation implementation = definition.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
         String scope = type.getScope();

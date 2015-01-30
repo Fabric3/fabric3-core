@@ -9,7 +9,7 @@
         <f3:implementation.system class="org.fabric3.jndi.introspection.JndiContextLoader"/>
     </component>
 
-    <component name="JndiContextGenerator" f3:key="org.fabric3.api.model.type.resource.jndi.JndiContextDefinition">
+    <component name="JndiContextGenerator" f3:key="org.fabric3.api.model.type.resource.jndi.JndiContext">
         <f3:implementation.system class="org.fabric3.jndi.generator.JndiContextGenerator"/>
     </component>
 

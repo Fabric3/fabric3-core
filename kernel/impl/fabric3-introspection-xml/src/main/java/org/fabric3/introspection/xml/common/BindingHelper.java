@@ -19,7 +19,7 @@ package org.fabric3.introspection.xml.common;
 import javax.xml.stream.Location;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -35,10 +35,7 @@ public class BindingHelper {
      * @param location the location of the binding configuration
      * @param context  the introspection context
      */
-    public static void configureName(BindingDefinition binding,
-                                     List<BindingDefinition> bindings,
-                                     Location location,
-                                     IntrospectionContext context) {
+    public static void configureName(Binding binding, List<Binding> bindings, Location location, IntrospectionContext context) {
         String name = binding.getType();
         if (searchName(name, bindings)) {
             binding.setName(name);
@@ -49,7 +46,6 @@ public class BindingHelper {
         }
     }
 
-
     /**
      * Checks for duplicate binding names
      *
@@ -59,11 +55,8 @@ public class BindingHelper {
      * @param context  the introspection context
      * @return true if the bindings do not contain duplicates, otherwise false
      */
-    public static boolean checkDuplicateNames(BindingDefinition binding,
-                                              List<BindingDefinition> bindings,
-                                              Location location,
-                                              IntrospectionContext context) {
-        for (BindingDefinition definition : bindings) {
+    public static boolean checkDuplicateNames(Binding binding, List<Binding> bindings, Location location, IntrospectionContext context) {
+        for (Binding definition : bindings) {
             String bindingName = definition.getName();
             if (bindingName.equals(binding.getName())) {
                 InvalidBindingName error = new InvalidBindingName("Duplicate binding named " + bindingName, location, definition);
@@ -74,14 +67,13 @@ public class BindingHelper {
         return true;
     }
 
-    private static boolean searchName(String name, List<BindingDefinition> bindings) {
-        for (BindingDefinition entry : bindings) {
+    private static boolean searchName(String name, List<Binding> bindings) {
+        for (Binding entry : bindings) {
             if (name.equals(entry.getName())) {
                 return true;
             }
         }
         return false;
     }
-
 
 }

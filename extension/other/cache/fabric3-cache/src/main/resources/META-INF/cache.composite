@@ -17,11 +17,11 @@
         <f3:implementation.system class="org.fabric3.cache.introspection.CacheProcessor"/>
     </component>
 
-    <component name="CacheReferenceGenerator" f3:key="org.fabric3.cache.model.CacheReferenceDefinition">
+    <component name="CacheReferenceGenerator" f3:key="org.fabric3.cache.model.CacheReference">
         <f3:implementation.system class="org.fabric3.cache.generator.CacheReferenceGenerator"/>
     </component>
 
-    <component name="CacheSetResourceGenerator" f3:key="org.fabric3.cache.model.CacheSetResourceDefinition">
+    <component name="CacheSetResourceGenerator" f3:key="org.fabric3.cache.model.CacheSetResource">
         <f3:implementation.system class="org.fabric3.cache.generator.CacheSetResourceGenerator"/>
     </component>
 

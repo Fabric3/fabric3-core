@@ -20,7 +20,6 @@
 package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
@@ -33,7 +32,7 @@ import java.util.Map;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
@@ -241,25 +240,25 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
         try {
             ConnectionFactory requestConnectionFactory = resolver.resolve(connectionFactoryDefinition);
-            DestinationDefinition destinationDefinition = metadata.getDestination();
-            Destination requestDestination = resolver.resolve(destinationDefinition, requestConnectionFactory);
+            Destination destination = metadata.getDestination();
+            javax.jms.Destination requestDestination = resolver.resolve(destination, requestConnectionFactory);
             wireConfiguration.setRequestConnectionFactory(requestConnectionFactory);
             wireConfiguration.setRequestDestination(requestDestination);
-            validateDestination(requestDestination, destinationDefinition);
+            validateDestination(requestDestination, destination);
             if (metadata.isResponse()) {
                 connectionFactoryDefinition = metadata.getResponseConnectionFactory();
 
                 ConnectionFactory responseConnectionFactory = resolver.resolve(connectionFactoryDefinition);
-                destinationDefinition = metadata.getResponseDestination();
-                Destination responseDestination = resolver.resolve(destinationDefinition, responseConnectionFactory);
+                destination = metadata.getResponseDestination();
+                javax.jms.Destination responseDestination = resolver.resolve(destination, responseConnectionFactory);
                 CorrelationScheme scheme = metadata.getCorrelationScheme();
                 ResponseListener listener = new ResponseListener(responseDestination, scheme);
                 wireConfiguration.setResponseListener(listener);
-                validateDestination(responseDestination, destinationDefinition);
+                validateDestination(responseDestination, destination);
             }
-            DestinationDefinition callbackDestinationDefinition = target.getCallbackDestination();
+            Destination callbackDestinationDefinition = target.getCallbackDestination();
             if (callbackDestinationDefinition != null) {
-                Destination callbackDestination = resolver.resolve(callbackDestinationDefinition, requestConnectionFactory);
+                javax.jms.Destination callbackDestination = resolver.resolve(callbackDestinationDefinition, requestConnectionFactory);
                 wireConfiguration.setCallbackDestination(callbackDestination);
                 if (callbackDestination != null) {
                     if (callbackDestination instanceof Queue) {
@@ -278,7 +277,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     }
 
-    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws ContainerException {
+    private void validateDestination(javax.jms.Destination requestDestination, Destination requestDestinationDefinition) throws ContainerException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
             throw new ContainerException("Destination is not a queue: " + requestDestinationDefinition.getName());

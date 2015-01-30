@@ -25,7 +25,7 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.plugin.contribution.PluginContributionProcessor;
 import org.fabric3.plugin.contribution.ProjectClasspathProcessor;
 import org.fabric3.plugin.test.WireHolderImpl;
-import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
+import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 
 /**
  *
@@ -36,9 +36,9 @@ public class FabricProvider {
     @Provides
     public static Composite getComposite() {
         CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
-        compositeBuilder.component(SystemComponentDefinitionBuilder.newBuilder(WireHolderImpl.class).build());
-        compositeBuilder.component(SystemComponentDefinitionBuilder.newBuilder(ProjectClasspathProcessor.class).build());
-        compositeBuilder.component(SystemComponentDefinitionBuilder.newBuilder(PluginContributionProcessor.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(WireHolderImpl.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(ProjectClasspathProcessor.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(PluginContributionProcessor.class).build());
         return compositeBuilder.build();
     }
 }

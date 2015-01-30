@@ -16,12 +16,12 @@
  */
 package org.fabric3.api.model.type.resource.timer;
 
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 
 /**
  * A configured timer pool.
  */
-public class TimerPoolResource extends ResourceDefinition {
+public class TimerPoolResource extends Resource {
     private static final long serialVersionUID = -4977101036434115885L;
 
     private String name;

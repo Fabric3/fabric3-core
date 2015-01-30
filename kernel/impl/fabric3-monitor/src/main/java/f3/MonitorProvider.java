@@ -29,7 +29,7 @@ import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorServiceImpl;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides core components for the monitor subsystem.

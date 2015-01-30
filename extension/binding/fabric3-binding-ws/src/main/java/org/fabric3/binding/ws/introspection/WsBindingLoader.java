@@ -28,8 +28,8 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.fabric3.api.binding.ws.model.EndpointReference;
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
+import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -44,7 +44,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  *
  */
 @EagerInit
-public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefinition> {
+public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBinding> {
     private static final String WSDL_NS = "http://www.w3.org/ns/wsdl-instance";
     private static final String WSDL_2004_NS = "http://www.w3.org/2004/08/wsdl-instance";
 
@@ -61,7 +61,7 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
     }
 
     @SuppressWarnings({"unchecked"})
-    public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public WsBinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location location = reader.getLocation();
         String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
         String wsdlLocation = reader.getAttributeValue(WSDL_NS, "wsdlLocation");
@@ -75,7 +75,7 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
 
         URI targetUri = parseTargetUri(reader, context);
 
-        WsBindingDefinition binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
+        WsBinding binding = new WsBinding(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
 
         validateAttributes(reader, context, binding);
 
@@ -90,8 +90,8 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
                 case START_ELEMENT:
                     Object elementValue = registry.load(reader, Object.class, context);
                     Location startAttribute = reader.getLocation();
-                    if (elementValue instanceof BindingHandlerDefinition) {
-                        binding.addHandler((BindingHandlerDefinition) elementValue);
+                    if (elementValue instanceof BindingHandler) {
+                        binding.addHandler((BindingHandler) elementValue);
                     } else if (elementValue instanceof Map) {
                         binding.setConfiguration((Map<String, String>) elementValue);
                     } else if (elementValue instanceof EndpointReference) {

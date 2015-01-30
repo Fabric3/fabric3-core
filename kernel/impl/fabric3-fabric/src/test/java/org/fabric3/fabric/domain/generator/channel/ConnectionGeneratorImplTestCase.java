@@ -24,12 +24,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
@@ -194,7 +194,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     private LogicalConsumer createConsumer(LogicalCompositeComponent parent, String channelName) {
         LogicalComponent<?> component = createComponent(parent);
 
-        ConsumerDefinition consumerDefinition = new ConsumerDefinition("consumer");
+        Consumer consumerDefinition = new Consumer("consumer");
         DataType javaClass = new JavaType(Object.class);
         List list = Collections.singletonList(javaClass);
         consumerDefinition.setTypes(list);
@@ -208,7 +208,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     private LogicalProducer createProducer(LogicalCompositeComponent parent, String target) {
         LogicalComponent<?> component = createComponent(parent);
 
-        ProducerDefinition producerDefinition = new ProducerDefinition("producer");
+        Producer producerDefinition = new Producer("producer");
         LogicalProducer producer = new LogicalProducer(URI.create("composite/component#producer"), producerDefinition, component);
         DataType javaClass = new JavaType(Object.class);
         List list = Collections.singletonList(javaClass);
@@ -221,7 +221,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     }
 
     private LogicalChannel createChannel(LogicalCompositeComponent parent, boolean addBinding) {
-        ChannelDefinition channelDefinition = new ChannelDefinition("testChannel");
+        Channel channelDefinition = new Channel("testChannel");
         LogicalChannel channel = new LogicalChannel(URI.create("testChannel"), channelDefinition, parent);
         parent.addChannel(channel);
         if (addBinding) {
@@ -233,7 +233,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
     private LogicalComponent<?> createComponent(LogicalCompositeComponent parent) {
         MockImplementation impl = new MockImplementation();
-        ComponentDefinition<MockImplementation> definition = new ComponentDefinition<>("component");
+        Component<MockImplementation> definition = new Component<>("component");
         definition.setImplementation(impl);
         LogicalComponent<?> component = new LogicalComponent<>(URI.create("composite/component"), definition, parent);
         parent.addComponent(component);

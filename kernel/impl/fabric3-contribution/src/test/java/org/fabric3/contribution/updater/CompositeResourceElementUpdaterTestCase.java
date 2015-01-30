@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Include;
@@ -49,7 +49,7 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
         assertTrue(set.contains(oldComposite));
         assertTrue(set.contains(referringComposite));
 
-        for (ComponentDefinition child : referringComposite.getDeclaredComponents().values()) {
+        for (Component child : referringComposite.getDeclaredComponents().values()) {
             Composite composite = (Composite) child.getImplementation().getComponentType();
             assertEquals(newComposite, composite);
         }
@@ -71,7 +71,7 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
                 }
             }
         }
-        for (ComponentDefinition child : referringComposite.getDeclaredComponents().values()) {
+        for (Component child : referringComposite.getDeclaredComponents().values()) {
             Composite composite = (Composite) child.getImplementation().getComponentType();
             assertNotSame(oldComposite, composite);
             assertTrue(composite.isPointer());
@@ -93,7 +93,7 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
         QName referringName = new QName("test", "referring");
         referringComposite = new Composite(referringName);
 
-        ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<>("child");
+        Component<CompositeImplementation> child = new Component<>("child");
         CompositeImplementation implementation = new CompositeImplementation();
         implementation.setComponentType(oldComposite);
         child.setImplementation(implementation);

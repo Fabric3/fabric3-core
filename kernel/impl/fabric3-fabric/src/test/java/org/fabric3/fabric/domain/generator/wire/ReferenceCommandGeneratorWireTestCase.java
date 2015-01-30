@@ -23,11 +23,11 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
@@ -52,22 +52,22 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testAttach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         URI targetUri = URI.create("target");
-        ComponentDefinition<?> targetDefinition = new ComponentDefinition(null);
+        Component<?> targetDefinition = new Component(null);
         LogicalComponent<?> target = new LogicalComponent(targetUri, targetDefinition, composite);
         JavaServiceContract contract = new JavaServiceContract();
-        ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
+        Service serviceDefinition = new Service("service", contract);
         LogicalService service = new LogicalService(URI.create("target#service"), serviceDefinition, target);
         target.addService(service);
         composite.addComponent(target);
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
+        Reference referenceDefinition = new Reference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -91,14 +91,14 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testTargetCollectDetach() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         URI targetUri = URI.create("target");
-        ComponentDefinition<?> targetDefinition = new ComponentDefinition(null);
+        Component<?> targetDefinition = new Component(null);
         LogicalComponent<?> target = new LogicalComponent(targetUri, targetDefinition, composite);
         JavaServiceContract contract = new JavaServiceContract();
-        ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
+        Service serviceDefinition = new Service("service", contract);
         LogicalService service = new LogicalService(URI.create("target#service"), serviceDefinition, target);
         target.addService(service);
         composite.addComponent(target);
@@ -107,9 +107,9 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         target.setState(LogicalState.MARKED);
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
+        Reference referenceDefinition = new Reference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -134,23 +134,23 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testTargetCollectDetachMultiplicity1ToNReference() throws Exception {
         URI root = URI.create("root");
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(null);
+        Component<CompositeImplementation> definition = new Component<>(null);
         LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
 
         JavaServiceContract contract = new JavaServiceContract();
 
         URI targetUri2 = URI.create("target2");
-        ComponentDefinition<?> targetDefinition2 = new ComponentDefinition(null);
+        Component<?> targetDefinition2 = new Component(null);
         LogicalComponent<?> target2 = new LogicalComponent(targetUri2, targetDefinition2, composite);
-        ServiceDefinition serviceDefinition2 = new ServiceDefinition("service", contract);
+        Service serviceDefinition2 = new Service("service", contract);
         LogicalService service2 = new LogicalService(URI.create("source#service"), serviceDefinition2, target2);
         target2.addService(service2);
         composite.addComponent(target2);
 
         URI targetUri = URI.create("target");
-        ComponentDefinition<?> targetDefinition = new ComponentDefinition(null);
+        Component<?> targetDefinition = new Component(null);
         LogicalComponent<?> target = new LogicalComponent(targetUri, targetDefinition, composite);
-        ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
+        Service serviceDefinition = new Service("service", contract);
         LogicalService service = new LogicalService(URI.create("source#service"), serviceDefinition, target);
         target.addService(service);
         composite.addComponent(target);
@@ -159,9 +159,9 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         target.setState(LogicalState.MARKED);
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        Component<?> sourceDefinition = new Component(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
+        Reference referenceDefinition = new Reference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         referenceDefinition.setMultiplicity(Multiplicity.ONE_N);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);

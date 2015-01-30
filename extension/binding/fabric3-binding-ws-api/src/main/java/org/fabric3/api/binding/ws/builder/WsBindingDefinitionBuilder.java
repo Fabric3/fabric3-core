@@ -19,14 +19,14 @@ package org.fabric3.api.binding.ws.builder;
 import java.net.URI;
 import java.util.Map;
 
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.model.type.builder.AbstractBuilder;
 
 /**
  * Builder for the WS binding.
  */
 public class WsBindingDefinitionBuilder extends AbstractBuilder {
-    private WsBindingDefinition binding;
+    private WsBinding binding;
 
     public static WsBindingDefinitionBuilder newBuilder() {
         return new WsBindingDefinitionBuilder();
@@ -37,7 +37,7 @@ public class WsBindingDefinitionBuilder extends AbstractBuilder {
     }
 
     public WsBindingDefinitionBuilder(String name) {
-        this.binding = new WsBindingDefinition();
+        this.binding = new WsBinding();
         binding.setName(name);
     }
 

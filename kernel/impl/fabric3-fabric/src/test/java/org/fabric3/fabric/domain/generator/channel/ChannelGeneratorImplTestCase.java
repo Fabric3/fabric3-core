@@ -25,7 +25,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
@@ -169,7 +169,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
     }
 
     private LogicalChannel createChannel() {
-        ChannelDefinition definition = new ChannelDefinition("channel");
+        Channel definition = new Channel("channel");
         return new LogicalChannel(URI.create("channel"), definition, null);
     }
 

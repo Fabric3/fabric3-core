@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -36,15 +36,15 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testBuild() throws Exception {
-        ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
+        ResourceGenerator<Mock> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
         EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
+        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(Mock.class))).andReturn(resourceGenerator);
         EasyMock.replay(registry, resourceGenerator);
 
         DomainResourceCommandGeneratorImpl generator = new DomainResourceCommandGeneratorImpl(registry);
 
-        LogicalResource resource = new LogicalResource(new MockDefinition(), null);
+        LogicalResource resource = new LogicalResource(new Mock(), null);
 
         assertNotNull(generator.generateBuild(resource));
 
@@ -58,7 +58,7 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
         DomainResourceCommandGeneratorImpl generator = new DomainResourceCommandGeneratorImpl(registry);
 
-        LogicalResource resource = new LogicalResource(new MockDefinition(), null);
+        LogicalResource resource = new LogicalResource(new Mock(), null);
         resource.setState(LogicalState.PROVISIONED);
 
         assertNull(generator.generateBuild(resource));
@@ -68,15 +68,15 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testDispose() throws Exception {
-        ResourceGenerator<MockDefinition> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
+        ResourceGenerator<Mock> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
         EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
+        EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(Mock.class))).andReturn(resourceGenerator);
         EasyMock.replay(registry, resourceGenerator);
 
         DomainResourceCommandGeneratorImpl generator = new DomainResourceCommandGeneratorImpl(registry);
 
-        LogicalResource resource = new LogicalResource(new MockDefinition(), null);
+        LogicalResource resource = new LogicalResource(new Mock(), null);
         resource.setState(LogicalState.MARKED);
         assertNotNull(generator.generateDispose(resource));
 
@@ -90,7 +90,7 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
         DomainResourceCommandGeneratorImpl generator = new DomainResourceCommandGeneratorImpl(registry);
 
-        LogicalResource resource = new LogicalResource(new MockDefinition(), null);
+        LogicalResource resource = new LogicalResource(new Mock(), null);
         resource.setState(LogicalState.PROVISIONED);
 
         assertNull(generator.generateDispose(resource));
@@ -98,7 +98,7 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
         EasyMock.verify(registry);
     }
 
-    private class MockDefinition extends ResourceDefinition {
+    private class Mock extends Resource {
         private static final long serialVersionUID = -4013178193696275298L;
     }
 

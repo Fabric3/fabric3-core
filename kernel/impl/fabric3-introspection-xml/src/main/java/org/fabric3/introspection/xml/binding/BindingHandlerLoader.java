@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -35,14 +35,14 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Type loader for the <f3:handler> element.
  */
 @EagerInit
-public class BindingHandlerLoader extends AbstractValidatingTypeLoader<BindingHandlerDefinition> {
-    private static final BindingHandlerDefinition INVALID_DEFINITION = new BindingHandlerDefinition(URI.create("Invalid"));
+public class BindingHandlerLoader extends AbstractValidatingTypeLoader<BindingHandler> {
+    private static final BindingHandler INVALID_DEFINITION = new BindingHandler(URI.create("Invalid"));
 
     public BindingHandlerLoader() {
         addAttributes("target");
     }
 
-    public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public BindingHandler load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         String target = reader.getAttributeValue(null, "target");
         if (target == null || "".equals(target)) {
@@ -54,7 +54,7 @@ public class BindingHandlerLoader extends AbstractValidatingTypeLoader<BindingHa
         }
         try {
             URI targetUri = new URI(target);
-            BindingHandlerDefinition definition = new BindingHandlerDefinition(targetUri);
+            BindingHandler definition = new BindingHandler(targetUri);
             validateAttributes(reader, context, definition);
             return definition;
         } catch (URISyntaxException e) {

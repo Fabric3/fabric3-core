@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
@@ -49,7 +49,6 @@ import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.junit.After;
 import org.junit.Before;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -60,9 +59,9 @@ public class JUnitHeuristic implements HeuristicProcessor {
 
     private HeuristicProcessor serviceHeuristic;
 
-    public JUnitHeuristic(@Reference IntrospectionHelper helper,
-                          @Reference JavaContractProcessor contractProcessor,
-                          @Reference(name = "service") HeuristicProcessor serviceHeuristic) {
+    public JUnitHeuristic(@org.oasisopen.sca.annotation.Reference IntrospectionHelper helper,
+                          @org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
+                          @org.oasisopen.sca.annotation.Reference(name = "service") HeuristicProcessor serviceHeuristic) {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
         this.serviceHeuristic = serviceHeuristic;
@@ -253,7 +252,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
                               IntrospectionContext context) {
         Class<?> type = helper.getBaseType(parameterType, typeMapping);
         ServiceContract contract = contractProcessor.introspect(type, context, componentType);
-        ReferenceDefinition reference = new ReferenceDefinition(name, contract);
+        Reference reference = new Reference(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         componentType.add(reference, site);
     }

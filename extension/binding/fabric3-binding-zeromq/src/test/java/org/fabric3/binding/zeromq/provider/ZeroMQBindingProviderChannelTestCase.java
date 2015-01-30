@@ -20,7 +20,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**
@@ -41,7 +41,7 @@ public class ZeroMQBindingProviderChannelTestCase extends TestCase {
 
     protected void setUp() {
         provider = new ZeroMQBindingProvider();
-        ChannelDefinition definition = new ChannelDefinition("channel");
+        Channel definition = new Channel("channel");
         channel = new LogicalChannel(URI.create("test"), definition, null);
     }
 

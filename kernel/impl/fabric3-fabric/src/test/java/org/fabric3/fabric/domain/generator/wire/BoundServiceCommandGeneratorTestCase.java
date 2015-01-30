@@ -23,12 +23,12 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.fabric.container.command.ConnectionCommand;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -71,12 +71,12 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ServiceDefinition serviceDefinition = new ServiceDefinition("service");
+        Service serviceDefinition = new Service("service");
         InjectingComponentType componentType = new InjectingComponentType();
         componentType.add(serviceDefinition);
         JavaImplementation implementation = new JavaImplementation();
         implementation.setComponentType(componentType);
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<>("component", implementation);
+        Component<JavaImplementation> definition = new Component<>("component", implementation);
         LogicalComponent<?> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
         LogicalService service = new LogicalService(URI.create("component#service"), null, component);
@@ -170,7 +170,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         component.getServices().iterator().next().getBindings().get(0).setState(state);
     }
 
-    private class MockBindingDefinition extends BindingDefinition {
+    private class MockBindingDefinition extends Binding {
         private static final long serialVersionUID = 6341221394239456452L;
 
         public MockBindingDefinition() {

@@ -2,7 +2,7 @@ package org.fabric3.contribution.introspector;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.ReferenceIntrospector;
@@ -29,7 +29,7 @@ public class CompositeReferenceIntrospector implements ReferenceIntrospector<QNa
                 return true;
             }
         }
-        for (ComponentDefinition<?> component : composite.getComponents().values()) {
+        for (Component<?> component : composite.getComponents().values()) {
             if (component.getComponentType() instanceof Composite) {
                 Composite type = (Composite) component.getComponentType();
                 if (name.equals(type.getName())) {

@@ -20,7 +20,7 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -28,7 +28,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class ComponentPropertyNotFound extends XmlValidationFailure {
 
-    public ComponentPropertyNotFound(String propertyName, ComponentDefinition definition, Location location) {
+    public ComponentPropertyNotFound(String propertyName, Component definition, Location location) {
         super("The component " + definition.getName() + " does not have a property " + propertyName, location, definition);
     }
 

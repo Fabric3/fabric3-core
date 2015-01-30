@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.domain.generator.channel;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -32,7 +32,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 /**
  * Generates {@link PhysicalConnectionSourceDefinition}s and {@link PhysicalConnectionTargetDefinition}s for resolved connection bindings.
  */
-public interface ConnectionBindingGenerator<BD extends BindingDefinition> {
+public interface ConnectionBindingGenerator<BD extends Binding> {
 
     /**
      * Generates metadata used to provision a binding transport when a channel is deployed. If provisioning is not required, this method may return null.

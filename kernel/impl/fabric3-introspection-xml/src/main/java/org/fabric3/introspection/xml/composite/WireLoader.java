@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.model.type.component.Target;
-import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Wire;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
@@ -38,7 +38,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
+public class WireLoader extends AbstractValidatingTypeLoader<Wire> {
     private LoaderHelper helper;
 
     public WireLoader(@Reference LoaderHelper helper) {
@@ -47,7 +47,7 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
     }
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
-    public WireDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Wire load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String referenceAttribute = reader.getAttributeValue(null, "source");
@@ -64,7 +64,7 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
             InvalidValue failure = new InvalidValue("Invalid wire attribute", startLocation, e);
             context.addError(failure);
         }
-        WireDefinition definition = new WireDefinition(referenceTarget, serviceTarget, replace);
+        Wire definition = new Wire(referenceTarget, serviceTarget, replace);
         validateAttributes(reader, context, definition);
         LoaderUtil.skipToEndElement(reader);
         return definition;

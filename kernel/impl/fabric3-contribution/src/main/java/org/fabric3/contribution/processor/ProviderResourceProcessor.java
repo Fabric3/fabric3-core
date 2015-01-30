@@ -30,7 +30,7 @@ import org.fabric3.api.annotation.model.Environment;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.contribution.Constants;
@@ -133,7 +133,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                 composite.setContributionUri(contributionUri);
 
                 // introspect definitions
-                for (ComponentDefinition<?> definition : composite.getComponents().values()) {
+                for (Component<?> definition : composite.getComponents().values()) {
                     ImplementationIntrospector introspector = introspectors.get(definition.getImplementation().getType());
                     if (introspector == null) {
                         continue;

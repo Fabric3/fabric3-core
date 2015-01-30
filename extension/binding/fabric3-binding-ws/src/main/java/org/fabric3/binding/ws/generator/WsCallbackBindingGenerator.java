@@ -18,7 +18,7 @@
  */
 package org.fabric3.binding.ws.generator;
 
-import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -27,13 +27,13 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
-public class WsCallbackBindingGenerator implements CallbackBindingGenerator<WsBindingDefinition> {
+public class WsCallbackBindingGenerator implements CallbackBindingGenerator<WsBinding> {
 
-    public WsBindingDefinition generateServiceCallback(LogicalBinding<WsBindingDefinition> forwardBinding) {
-        return new WsBindingDefinition();
+    public WsBinding generateServiceCallback(LogicalBinding<WsBinding> forwardBinding) {
+        return new WsBinding();
     }
 
-    public WsBindingDefinition generateReferenceCallback(LogicalBinding<WsBindingDefinition> forwardBinding) {
-        return new WsBindingDefinition();
+    public WsBinding generateReferenceCallback(LogicalBinding<WsBinding> forwardBinding) {
+        return new WsBinding();
     }
 }

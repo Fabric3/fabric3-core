@@ -26,7 +26,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentReferenceLoader;
@@ -69,7 +69,7 @@ public class ComponentLoaderDuplicateReferenceTestCase extends TestCase {
         referenceLoader.init();
 
         MockImplementationLoader implLoader = new MockImplementationLoader();
-        implLoader.setReferences(new ReferenceDefinition("ref", Multiplicity.ONE_ONE));
+        implLoader.setReferences(new Reference("ref", Multiplicity.ONE_ONE));
         registry.registerLoader(MockImplementation.TYPE, implLoader);
         loader = new ComponentLoader(registry, helper);
 

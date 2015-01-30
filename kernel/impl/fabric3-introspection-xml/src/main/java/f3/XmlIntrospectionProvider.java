@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
@@ -46,9 +46,9 @@ import org.fabric3.introspection.xml.template.TemplateElementLoader;
 import org.fabric3.introspection.xml.template.TemplateLoader;
 import org.fabric3.introspection.xml.template.TemplateRegistryImpl;
 import org.fabric3.introspection.xml.template.TemplatesElementLoader;
-import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
+import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 import org.oasisopen.sca.Constants;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides components for XML artifact introspection.
@@ -69,9 +69,9 @@ public class XmlIntrospectionProvider {
     }
 
     private static void addTemplateLoader(CompositeBuilder compositeBuilder) {
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("TemplateLoader", TemplateLoader.class);
+        SystemComponentBuilder componentBuilder = newBuilder("TemplateLoader", TemplateLoader.class);
         componentBuilder.key(Constants.SCA_PREFIX + "binding.template");
-        componentBuilder.property("expectedType", BindingDefinition.class.getName());
+        componentBuilder.property("expectedType", Binding.class.getName());
         compositeBuilder.component(componentBuilder.build());
 
         compositeBuilder.component(newBuilder(TemplateElementLoader.class).build());

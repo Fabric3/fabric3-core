@@ -21,10 +21,10 @@ package org.fabric3.fabric.domain.generator;
 
 import java.util.List;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ResourceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.Resource;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -55,7 +55,7 @@ public interface GeneratorRegistry {
      * @return The registered binding generator.
      * @throws GeneratorNotFoundException if no generator is registered for the binding type
      */
-    <T extends BindingDefinition> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Returns a {@link ConnectionBindingGenerator} for the specified binding class.
@@ -64,7 +64,7 @@ public interface GeneratorRegistry {
      * @return The registered binding generator.
      * @throws GeneratorNotFoundException if no generator is registered for the binding type
      */
-    <T extends BindingDefinition> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Binding> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Returns the {@link ResourceReferenceGenerator} for the resource type.
@@ -73,7 +73,7 @@ public interface GeneratorRegistry {
      * @return the resource reference generator
      * @throws GeneratorNotFoundException if no generator is registered for the resource type
      */
-    <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Returns the {@link ResourceGenerator} for the resource type.
@@ -82,7 +82,7 @@ public interface GeneratorRegistry {
      * @return the resource generator
      * @throws GeneratorNotFoundException if no generator is registered for the resource type
      */
-    <T extends ResourceDefinition> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Returns registered {@link InterceptorGenerator}s.

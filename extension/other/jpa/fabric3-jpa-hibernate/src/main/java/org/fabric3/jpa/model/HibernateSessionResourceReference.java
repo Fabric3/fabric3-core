@@ -18,13 +18,13 @@
  */
 package org.fabric3.jpa.model;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * Represents a Hibernate Session treated as a resource.
  */
-public final class HibernateSessionResourceReference extends ResourceReferenceDefinition {
+public final class HibernateSessionResourceReference extends ResourceReference {
     private static final long serialVersionUID = 4343784880360787751L;
     private String unitName;
     private boolean multiThreaded;

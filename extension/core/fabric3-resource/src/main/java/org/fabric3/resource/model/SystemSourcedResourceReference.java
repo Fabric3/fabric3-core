@@ -18,13 +18,13 @@
  */
 package org.fabric3.resource.model;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A resource sourced from the runtime domain.
  */
-public class SystemSourcedResourceReference extends ResourceReferenceDefinition {
+public class SystemSourcedResourceReference extends ResourceReference {
     private static final long serialVersionUID = 8542386357450347005L;
     private String mappedName;
 

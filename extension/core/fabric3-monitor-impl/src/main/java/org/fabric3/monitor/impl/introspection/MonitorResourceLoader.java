@@ -27,7 +27,7 @@ import java.util.Set;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Loads a monitor resource configuration.
  */
 @EagerInit
-public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorResourceDefinition> {
+public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorResource> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "monitor");
     private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "monitor");
 
@@ -67,16 +67,16 @@ public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorR
         registry.unregisterLoader(SCA_TYPE);
     }
 
-    public MonitorResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public MonitorResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MonitorResourceDefinition definition = new MonitorResourceDefinition("");
+            MonitorResource definition = new MonitorResource("");
             MissingAttribute error = new MissingAttribute("A monitor name must be specified", reader.getLocation(), definition);
             context.addError(error);
             return definition;
         }
 
-        MonitorResourceDefinition definition = new MonitorResourceDefinition(name);
+        MonitorResource definition = new MonitorResource(name);
         DefaultMonitorDestinationDefinition destinationDefinition = new DefaultMonitorDestinationDefinition();
         definition.setDestinationDefinition(destinationDefinition);
 

@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.CallbackDefinition;
+import org.fabric3.api.model.type.component.Callback;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.ResourceReference;
 
 /**
  * A component type associated with an implementation that supports injection.
@@ -48,7 +48,7 @@ public class InjectingComponentType extends ComponentType {
     private Signature destroyMethod;
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<>();
     private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<>();
-    private Map<String, CallbackDefinition> callbacks = new HashMap<>();
+    private Map<String, Callback> callbacks = new HashMap<>();
     private Map<String, Signature> consumerSignatures = new HashMap<>();
 
     /**
@@ -154,7 +154,7 @@ public class InjectingComponentType extends ComponentType {
      * @param reference     the reference to add
      * @param injectionSite the injection site for the reference
      */
-    public void add(ReferenceDefinition reference, InjectionSite injectionSite) {
+    public void add(Reference reference, InjectionSite injectionSite) {
         super.add(reference);
         Injectable injectable = new Injectable(InjectableType.REFERENCE, reference.getName());
         addInjectionSite(injectionSite, injectable);
@@ -167,7 +167,7 @@ public class InjectingComponentType extends ComponentType {
      * @param producer      the producer to add
      * @param injectionSite the injection site for the producer
      */
-    public void add(ProducerDefinition producer, InjectionSite injectionSite) {
+    public void add(Producer producer, InjectionSite injectionSite) {
         super.add(producer);
         Injectable injectable = new Injectable(InjectableType.PRODUCER, producer.getName());
         addInjectionSite(injectionSite, injectable);
@@ -180,7 +180,7 @@ public class InjectingComponentType extends ComponentType {
      * @param consumer  the consumer to add
      * @param signature the consumer method signature
      */
-    public void add(ConsumerDefinition consumer, Signature signature) {
+    public void add(Consumer consumer, Signature signature) {
         super.add(consumer);
         consumerSignatures.put(consumer.getName(), signature);
     }
@@ -214,7 +214,7 @@ public class InjectingComponentType extends ComponentType {
      * @param definition    the resource reference to add
      * @param injectionSite the injection site for the resource
      */
-    public void add(ResourceReferenceDefinition definition, InjectionSite injectionSite) {
+    public void add(ResourceReference definition, InjectionSite injectionSite) {
         super.add(definition);
         Injectable injectable = new Injectable(InjectableType.RESOURCE, definition.getName());
         addInjectionSite(injectionSite, injectable);
@@ -227,7 +227,7 @@ public class InjectingComponentType extends ComponentType {
      * @param definition    the callback proxy definition
      * @param injectionSite the proxy injection site
      */
-    public void add(CallbackDefinition definition, InjectionSite injectionSite) {
+    public void add(Callback definition, InjectionSite injectionSite) {
         definition.setParent(this);
         String name = definition.getName();
         callbacks.put(name, definition);
@@ -241,7 +241,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @return the collection of proxy definitions
      */
-    public Map<String, CallbackDefinition> getCallbacks() {
+    public Map<String, Callback> getCallbacks() {
         return callbacks;
     }
 

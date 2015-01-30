@@ -63,15 +63,15 @@
         <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQPostProcessor"/>
     </component>
 
-    <component name="ZeroMQWireBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+    <component name="ZeroMQWireBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBinding">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQWireBindingGenerator"/>
     </component>
 
-    <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+    <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBinding">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator"/>
     </component>
 
-    <component name="ZeroMQCallbackBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+    <component name="ZeroMQCallbackBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBinding">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQCallbackBindingGenerator"/>
     </component>
     <component name="ZeroMQBindingProvider">

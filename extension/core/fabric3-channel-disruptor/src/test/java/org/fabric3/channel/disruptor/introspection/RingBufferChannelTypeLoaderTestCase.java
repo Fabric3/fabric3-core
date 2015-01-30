@@ -24,7 +24,7 @@ import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.component.RingBufferData;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -48,7 +48,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
 
     private RingBufferChannelTypeLoader loader;
     private IntrospectionContext context;
-    private ChannelDefinition definition;
+    private Channel definition;
 
     public void testRingSize() throws Exception {
         XMLStreamReader reader = getReader(RING_SIZE);
@@ -180,6 +180,6 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         super.setUp();
         loader = new RingBufferChannelTypeLoader();
         context = new DefaultIntrospectionContext();
-        definition = new ChannelDefinition("channel");
+        definition = new Channel("channel");
     }
 }

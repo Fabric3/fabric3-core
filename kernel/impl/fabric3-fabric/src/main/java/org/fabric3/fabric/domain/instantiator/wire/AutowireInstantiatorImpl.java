@@ -21,10 +21,10 @@ package org.fabric3.fabric.domain.instantiator.wire;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.instantiator.AutowireInstantiator;
@@ -37,7 +37,6 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Resolves unspecified reference targets using the SCA autowire algorithm. If a target is found, a corresponding LogicalWire will be created.
@@ -45,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class AutowireInstantiatorImpl implements AutowireInstantiator {
     private AutowireResolver resolver;
 
-    public AutowireInstantiatorImpl(@Reference AutowireResolver resolver) {
+    public AutowireInstantiatorImpl(@org.oasisopen.sca.annotation.Reference AutowireResolver resolver) {
         this.resolver = resolver;
     }
 
@@ -79,12 +78,12 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
     private void resolveReference(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {
 
-        ReferenceDefinition<ComponentDefinition> componentReference = logicalReference.getComponentReference();
+        Reference<Component> componentReference = logicalReference.getComponentReference();
         LogicalComponent<?> component = logicalReference.getParent();
 
-        ReferenceDefinition<ComponentType> referenceDefinition = logicalReference.getDefinition();
+        Reference<ComponentType> reference = logicalReference.getDefinition();
         if (componentReference == null) {
-            List<Target> targets = referenceDefinition.getTargets();
+            List<Target> targets = reference.getTargets();
             if (!targets.isEmpty()) {
                 return;
             }
@@ -104,7 +103,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            ServiceContract requiredContract = referenceDefinition.getServiceContract();
+            ServiceContract requiredContract = reference.getServiceContract();
             boolean resolved = instantiateWires(logicalReference, requiredContract, component.getParent());
             if (!resolved) {
                 instantiateWires(logicalReference, requiredContract, compositeComponent);
@@ -112,7 +111,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         }
 
         boolean targeted = !logicalReference.getLeafReference().getWires().isEmpty();
-        if (!targeted && referenceDefinition.isRequired() && !logicalReference.isBound()) {
+        if (!targeted && reference.isRequired() && !logicalReference.isBound()) {
             String referenceUri = logicalReference.getUri().toString();
             ReferenceNotFound error = new ReferenceNotFound("Unable to resolve reference " + referenceUri, logicalReference);
             context.addError(error);

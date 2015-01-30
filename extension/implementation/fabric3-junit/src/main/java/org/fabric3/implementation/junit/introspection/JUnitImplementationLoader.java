@@ -23,10 +23,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
-import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
+import org.fabric3.implementation.junit.model.JUnitBinding;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -61,10 +61,10 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
         ContextConfiguration configuration = loadConfiguration(reader, implementation, context);
-        for (ServiceDefinition<ComponentType> serviceDefinition : implementation.getComponentType().getServices().values()) {
-            if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
-                JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(configuration);
-                serviceDefinition.addBinding(bindingDefinition);
+        for (Service<ComponentType> service : implementation.getComponentType().getServices().values()) {
+            if (service.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
+                JUnitBinding bindingDefinition = new JUnitBinding(configuration);
+                service.addBinding(bindingDefinition);
                 break;
             }
         }

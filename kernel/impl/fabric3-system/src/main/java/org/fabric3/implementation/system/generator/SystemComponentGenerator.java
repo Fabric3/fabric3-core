@@ -29,7 +29,7 @@ import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -62,7 +62,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalComponentDefinition generate(LogicalComponent<SystemImplementation> component) throws GenerationException {
-        ComponentDefinition<SystemImplementation> definition = component.getDefinition();
+        Component<SystemImplementation> definition = component.getDefinition();
         SystemImplementation implementation = definition.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
 

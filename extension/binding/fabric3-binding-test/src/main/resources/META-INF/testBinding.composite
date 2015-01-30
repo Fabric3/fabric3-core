@@ -23,7 +23,7 @@ destination uri the reference should flow invocations to as in:
         <f3:implementation.system class="org.fabric3.binding.test.TestBindingLoader"/>
     </component>
 
-    <component name="TestWireBindingGenerator" f3:key="org.fabric3.binding.test.TestBindingDefinition">
+    <component name="TestWireBindingGenerator" f3:key="org.fabric3.binding.test.TestBinding">
         <f3:implementation.system class="org.fabric3.binding.test.TestWireBindingGenerator"/>
     </component>
 

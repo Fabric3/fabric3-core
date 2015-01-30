@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.host.HostNamespaces;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
@@ -126,12 +126,12 @@ public class ChannelResolverImpl implements ChannelResolver {
         InjectingComponentType componentType = new InjectingComponentType();
         NonManagedImplementation implementation = new NonManagedImplementation();
         implementation.setComponentType(componentType);
-        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<>("F3Synthetic");
-        componentDefinition.setContributionUri(ContributionResolver.getContribution(interfaze));
-        componentDefinition.setImplementation(implementation);
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, componentDefinition, domainComponent);
+        Component<NonManagedImplementation> component = new Component<>("F3Synthetic");
+        component.setContributionUri(ContributionResolver.getContribution(interfaze));
+        component.setImplementation(implementation);
+        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, component, domainComponent);
 
-        ProducerDefinition producerDefinition = new ProducerDefinition("producer", contract);
+        Producer producerDefinition = new Producer("producer", contract);
 
         LogicalProducer producer = new LogicalProducer(URI.create(domainRoot + "/F3Synthetic#producer"), producerDefinition, logicalComponent);
         producer.addTarget(channelUri);

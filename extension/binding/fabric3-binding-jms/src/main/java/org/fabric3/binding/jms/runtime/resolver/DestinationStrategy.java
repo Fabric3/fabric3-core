@@ -20,9 +20,8 @@
 package org.fabric3.binding.jms.runtime.resolver;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
@@ -38,6 +37,6 @@ public interface DestinationStrategy {
      * @return Looked up or created destination.
      * @throws JmsResolutionException if there is an error looking up the destination
      */
-    Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException;
+    javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws JmsResolutionException;
 
 }

@@ -17,7 +17,7 @@
 package org.fabric3.api.binding.jms.builder;
 
 import org.fabric3.api.binding.jms.model.CreateOption;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
 import org.fabric3.api.model.type.builder.AbstractBuilder;
@@ -47,7 +47,7 @@ public class ResponseDefinitionBuilder extends AbstractBuilder {
 
     public ResponseDefinitionBuilder destination(String name, DestinationType type, CreateOption option) {
         checkState();
-        DestinationDefinition definition = new DestinationDefinition();
+        Destination definition = new Destination();
         definition.setName(name);
         definition.setType(type);
         definition.setCreate(option);
@@ -57,7 +57,7 @@ public class ResponseDefinitionBuilder extends AbstractBuilder {
 
     public ResponseDefinitionBuilder destination(String name, DestinationType type) {
         checkState();
-        DestinationDefinition definition = new DestinationDefinition();
+        Destination definition = new Destination();
         definition.setName(name);
         definition.setType(type);
         responseDefinition.setDestination(definition);

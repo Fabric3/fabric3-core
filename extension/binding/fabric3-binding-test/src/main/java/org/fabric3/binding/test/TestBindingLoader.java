@@ -34,12 +34,12 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Parses <code>binding.test</code> for services and references. A uri to bind the service to or target a reference must be provided as an attribute.
  */
 @EagerInit
-public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
+public class TestBindingLoader implements TypeLoader<TestBinding> {
 
-    public TestBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public TestBinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        TestBindingDefinition definition = null;
+        TestBinding binding = null;
         String uri = null;
         try {
             URI targetUri = null;
@@ -48,13 +48,13 @@ public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
                 targetUri = new URI(uri);
             }
             String name = reader.getAttributeValue(null, "name");
-            definition = new TestBindingDefinition(name, targetUri);
+            binding = new TestBinding(name, targetUri);
         } catch (URISyntaxException ex) {
             InvalidValue failure = new InvalidValue("The binding URI is not valid: " + uri, startLocation);
             context.addError(failure);
         }
         LoaderUtil.skipToEndElement(reader);
-        return definition;
+        return binding;
 
     }
 

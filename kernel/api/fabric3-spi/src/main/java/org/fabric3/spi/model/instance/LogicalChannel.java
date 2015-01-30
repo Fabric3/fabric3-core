@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 
 /**
  * An instantiated channel in the domain.
@@ -31,13 +31,13 @@ import org.fabric3.api.model.type.component.ChannelDefinition;
 public class LogicalChannel extends LogicalBindable {
     private static final long serialVersionUID = -1098943196013754799L;
 
-    private ChannelDefinition definition;
+    private Channel definition;
 
     private String zone = Names.LOCAL_ZONE;
     private QName deployable;
     private LogicalState state = LogicalState.NEW;
 
-    public LogicalChannel(URI uri, ChannelDefinition definition, LogicalCompositeComponent parent) {
+    public LogicalChannel(URI uri, Channel definition, LogicalCompositeComponent parent) {
         super(uri, null, parent);
         this.definition = definition;
     }
@@ -47,7 +47,7 @@ public class LogicalChannel extends LogicalBindable {
      *
      * @return the ChannelDefinition for this channel
      */
-    public ChannelDefinition getDefinition() {
+    public Channel getDefinition() {
         return definition;
     }
 

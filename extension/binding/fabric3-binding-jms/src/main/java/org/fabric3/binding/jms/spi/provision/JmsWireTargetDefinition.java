@@ -22,7 +22,7 @@ package org.fabric3.binding.jms.spi.provision;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -36,7 +36,7 @@ public class JmsWireTargetDefinition extends PhysicalWireTargetDefinition {
     private JmsBindingMetadata metadata;
     private SessionType sessionType;
     private List<OperationPayloadTypes> payloadTypes;
-    private DestinationDefinition callbackDestination;
+    private Destination callbackDestination;
     private List<PhysicalBindingHandlerDefinition> handlers;
 
     /**
@@ -96,11 +96,11 @@ public class JmsWireTargetDefinition extends PhysicalWireTargetDefinition {
         return sessionType;
     }
 
-    public void setCallbackDestination(DestinationDefinition definition) {
+    public void setCallbackDestination(Destination definition) {
         this.callbackDestination = definition;
     }
 
-    public DestinationDefinition getCallbackDestination() {
+    public Destination getCallbackDestination() {
         return callbackDestination;
     }
 

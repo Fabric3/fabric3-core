@@ -23,14 +23,14 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.binding.jms.model.DestinationType;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.
  */
 @EagerInit
-public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
+public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBinding> {
     private static final String JAXB = "JAXB";
 
 
@@ -62,7 +62,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
-                                                                       LogicalBinding<JmsBindingDefinition> binding,
+                                                                       LogicalBinding<JmsBinding> binding,
                                                                        ChannelDeliveryType deliveryType) throws GenerationException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
@@ -79,21 +79,21 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         metadata.setSubscriptionId(specifier);
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
-        ConsumerDefinition<?> consumerDefinition = consumer.getDefinition();
+        Consumer<?> consumerDefinition = consumer.getDefinition();
         DataType dataType = isJAXB(consumerDefinition.getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
-        JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata, dataType, sessionType);
+        JmsConnectionSource connectionSource = new JmsConnectionSource(uri, metadata, dataType, sessionType);
         if (provisioner != null) {
-            provisioner.generateConnectionSource(definition);
+            provisioner.generateConnectionSource(connectionSource);
         }
-        return definition;
+        return connectionSource;
     }
 
-    private SessionType getSessionType(LogicalBinding<JmsBindingDefinition> binding) {
+    private SessionType getSessionType(LogicalBinding<JmsBinding> binding) {
         return binding.getDefinition().getJmsMetadata().isClientAcknowledge() ? SessionType.CLIENT_ACKNOWLEDGE : SessionType.AUTO_ACKNOWLEDGE;
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
-                                                                       LogicalBinding<JmsBindingDefinition> binding,
+                                                                       LogicalBinding<JmsBinding> binding,
                                                                        ChannelDeliveryType deliveryType) throws GenerationException {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
@@ -102,14 +102,14 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
 
-        JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata, type);
+        JmsConnectionTarget connectionTarget = new JmsConnectionTarget(uri, metadata, type);
         if (provisioner != null) {
-            provisioner.generateConnectionTarget(definition);
+            provisioner.generateConnectionTarget(connectionTarget);
         }
-        return definition;
+        return connectionTarget;
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBindingDefinition> binding, ChannelDeliveryType deliveryType)
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBinding> binding, ChannelDeliveryType deliveryType)
             throws GenerationException {
         // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
         return new JmsChannelBindingDefinition();

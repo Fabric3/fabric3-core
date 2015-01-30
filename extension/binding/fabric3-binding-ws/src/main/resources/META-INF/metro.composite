@@ -17,7 +17,7 @@
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
     </component>
 
-    <component name="MetroWireBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
+    <component name="MetroWireBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBinding">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroWireBindingGenerator"/>
     </component>
 

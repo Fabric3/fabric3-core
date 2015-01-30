@@ -20,7 +20,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.model.type.component.RingBufferData;
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
@@ -50,7 +50,7 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
         return ATTRIBUTES;
     }
 
-    public void load(ChannelDefinition definition, XMLStreamReader reader, IntrospectionContext context) {
+    public void load(Channel definition, XMLStreamReader reader, IntrospectionContext context) {
         Location startLocation = reader.getLocation();
 
         RingBufferData data = new RingBufferData();
@@ -91,7 +91,7 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
         definition.addMetadata(ChannelConstants.METADATA, data);
     }
 
-    private int parseRingSize(ChannelDefinition definition, XMLStreamReader reader, Location startLocation, IntrospectionContext context, RingBufferData data) {
+    private int parseRingSize(Channel definition, XMLStreamReader reader, Location startLocation, IntrospectionContext context, RingBufferData data) {
         String sizeStr = reader.getAttributeValue(null, RING_SIZE);
         int ringSize = DEFAULT_RING_SIZE;
         if (sizeStr != null) {
@@ -104,7 +104,7 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
         return ringSize;
     }
 
-    private long parseLong(ChannelDefinition definition,
+    private long parseLong(Channel definition,
                            XMLStreamReader reader,
                            Location startLocation,
                            String attributeName,

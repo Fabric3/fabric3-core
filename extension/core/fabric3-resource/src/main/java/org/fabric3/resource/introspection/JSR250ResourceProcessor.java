@@ -18,17 +18,16 @@
  */
 package org.fabric3.resource.introspection;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Resource;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.spi.JSR250ResourceTypeHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -37,8 +36,8 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes metadata for the {@link Resource} annotation.
@@ -66,7 +65,7 @@ public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resourc
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         FieldInjectionSite site = new FieldInjectionSite(field);
 
-        ResourceReferenceDefinition definition;
+        ResourceReference definition;
         JSR250ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
@@ -93,7 +92,7 @@ public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resourc
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
 
-        ResourceReferenceDefinition definition;
+        ResourceReference definition;
         JSR250ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type

@@ -29,7 +29,7 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -60,7 +60,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
-        Map<String, ServiceDefinition<ComponentType>> services = componentType.getServices();
+        Map<String, Service<ComponentType>> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(noInterfaceContract, services.get("NoInterface").getServiceContract());
         control.verify();
@@ -76,19 +76,19 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, OneInterface.class, context);
-        Map<String, ServiceDefinition<ComponentType>> services = componentType.getServices();
+        Map<String, Service<ComponentType>> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(serviceInterfaceContract, services.get("ServiceInterface").getServiceContract());
         control.verify();
     }
 
     public void testServiceWithExistingServices() throws IntrospectionException {
-        ServiceDefinition<ComponentType> definition = new ServiceDefinition<>("Contract");
+        Service<ComponentType> definition = new Service<>("Contract");
         componentType.add(definition);
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
-        Map<String, ServiceDefinition<ComponentType>> services = componentType.getServices();
+        Map<String, Service<ComponentType>> services = componentType.getServices();
         assertEquals(1, services.size());
         assertSame(definition, services.get("Contract"));
         control.verify();

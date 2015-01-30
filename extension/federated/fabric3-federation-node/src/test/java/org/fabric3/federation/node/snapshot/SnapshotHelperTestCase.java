@@ -20,12 +20,12 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -42,8 +42,8 @@ import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 @SuppressWarnings("unchecked")
 public class SnapshotHelperTestCase extends TestCase {
     private JavaServiceContract contract;
-    private ServiceDefinition serviceDefinition;
-    private LogicalService service;
+    private Service service;
+    private LogicalService logicalService;
     private LogicalComponent component;
     private LogicalCompositeComponent domain;
     private LogicalChannel channel;
@@ -63,13 +63,13 @@ public class SnapshotHelperTestCase extends TestCase {
     }
 
     public void testSnapshotServiceDefinition() throws Exception {
-        ServiceDefinition<ComponentType> snapshot = SnapshotHelper.snapshot(serviceDefinition);
+        Service<ComponentType> snapshot = SnapshotHelper.snapshot(service);
         assertEquals("service", snapshot.getName());
         assertNotNull(snapshot.getServiceContract());
     }
 
     public void testSnapshotService() throws Exception {
-        LogicalService snapshot = SnapshotHelper.snapshot(service, component);
+        LogicalService snapshot = SnapshotHelper.snapshot(logicalService, component);
         assertEquals("service", snapshot.getUri().toString());
         assertNotNull(snapshot.getServiceContract());
         assertNotNull(snapshot.getDefinition());
@@ -113,32 +113,32 @@ public class SnapshotHelperTestCase extends TestCase {
         contract.setCallbackContract(callbackContract);
         contract.setRemotable(true);
 
-        serviceDefinition = new ServiceDefinition("service", contract);
+        service = new Service("service", contract);
 
-        service = new LogicalService(URI.create("service"), serviceDefinition, null);
-        LogicalBinding binding = new LogicalBinding(null, service);
-        service.addBinding(binding);
+        logicalService = new LogicalService(URI.create("service"), service, null);
+        LogicalBinding binding = new LogicalBinding(null, logicalService);
+        logicalService.addBinding(binding);
 
         RemoteImplementation componentImpl = new RemoteImplementation();
         ComponentType componentType = new ComponentType();
-        componentType.add(serviceDefinition);
+        componentType.add(service);
         componentImpl.setComponentType(componentType);
-        ComponentDefinition<RemoteImplementation> componentDefinition = new ComponentDefinition<>("domain", componentImpl);
-        component = new LogicalComponent(URI.create("component"), componentDefinition, null);
-        componentDefinition.setContributionUri(URI.create("contribution"));
-        LogicalService componentService = new LogicalService(URI.create("componentService"), serviceDefinition, component);
-        component.addService(componentService);
+        Component<RemoteImplementation> component = new Component<>("domain", componentImpl);
+        this.component = new LogicalComponent(URI.create("component"), component, null);
+        component.setContributionUri(URI.create("contribution"));
+        LogicalService componentService = new LogicalService(URI.create("componentService"), service, this.component);
+        this.component.addService(componentService);
 
         composite = new Composite(new QName("test", "test"));
         // composite.add(serviceDefinition);
         CompositeImplementation domainImpl = new CompositeImplementation();
         domainImpl.setComponentType(composite);
-        ComponentDefinition<CompositeImplementation> domainDefinition = new ComponentDefinition<>("domain", domainImpl);
+        Component<CompositeImplementation> domainDefinition = new Component<>("domain", domainImpl);
         domain = new LogicalCompositeComponent(URI.create("domain"), domainDefinition, null);
-        domain.addComponent(component);
+        domain.addComponent(this.component);
 
-        ChannelDefinition channelDefinition = new ChannelDefinition("Channel");
-        channel = new LogicalChannel(URI.create("channel"), channelDefinition, null);
+        Channel channel = new Channel("Channel");
+        this.channel = new LogicalChannel(URI.create("channel"), channel, null);
     }
 
     private interface Foo {

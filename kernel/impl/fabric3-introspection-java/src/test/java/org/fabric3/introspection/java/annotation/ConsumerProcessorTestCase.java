@@ -23,10 +23,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -39,30 +38,30 @@ public class ConsumerProcessorTestCase extends TestCase {
 
     public void testMethod() throws Exception {
         Method method = TestClass.class.getDeclaredMethod("onEvent", String.class);
-        Consumer annotation = method.getAnnotation(Consumer.class);
+        org.fabric3.api.annotation.Consumer annotation = method.getAnnotation(org.fabric3.api.annotation.Consumer.class);
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
 
-        Map<String, ConsumerDefinition<ComponentType>> consumers = componentType.getConsumers();
-        ConsumerDefinition<ComponentType> definition = consumers.get("onEvent");
+        Map<String, Consumer<ComponentType>> consumers = componentType.getConsumers();
+        Consumer<ComponentType> definition = consumers.get("onEvent");
         assertEquals(1, definition.getTypes().size());
         assertEquals(String.class, definition.getTypes().get(0).getType());
     }
 
     public void testSequenceMethod() throws Exception {
         Method method = TestClass.class.getDeclaredMethod("onSequenceEvent", String.class);
-        Consumer annotation = method.getAnnotation(Consumer.class);
+        org.fabric3.api.annotation.Consumer annotation = method.getAnnotation(org.fabric3.api.annotation.Consumer.class);
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
 
-        Map<String, ConsumerDefinition<ComponentType>> consumers = componentType.getConsumers();
-        ConsumerDefinition definition = consumers.get("onSequenceEvent");
+        Map<String, Consumer<ComponentType>> consumers = componentType.getConsumers();
+        Consumer definition = consumers.get("onSequenceEvent");
 
         assertEquals(2, definition.getSequence());
     }
@@ -78,12 +77,12 @@ public class ConsumerProcessorTestCase extends TestCase {
 
     public static class TestClass {
 
-        @Consumer
+        @org.fabric3.api.annotation.Consumer
         public void onEvent(String message) {
 
         }
 
-        @Consumer(sequence = 2)
+        @org.fabric3.api.annotation.Consumer(sequence = 2)
         public void onSequenceEvent(String message) {
 
         }

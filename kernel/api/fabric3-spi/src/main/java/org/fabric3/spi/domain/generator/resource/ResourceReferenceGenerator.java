@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.domain.generator.resource;
 
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -26,7 +26,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 /**
  * Generates metadata to attach a component resource reference to a resource.
  */
-public interface ResourceReferenceGenerator<R extends ResourceReferenceDefinition> {
+public interface ResourceReferenceGenerator<R extends ResourceReference> {
 
     /**
      * Generate the physical definition for the logical resource reference.

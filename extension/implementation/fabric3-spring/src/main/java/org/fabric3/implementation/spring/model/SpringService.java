@@ -16,13 +16,13 @@
  */
 package org.fabric3.implementation.spring.model;
 
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * An SCA service definition in a Spring application context.
  */
-public class SpringService extends ServiceDefinition {
+public class SpringService extends Service {
     private static final long serialVersionUID = 204519855340684340L;
     private String target;
 

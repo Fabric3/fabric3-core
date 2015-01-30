@@ -29,15 +29,15 @@ import java.util.Collection;
 
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
-import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Consumer;
+import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.spring.model.BeanDefinition;
 import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.implementation.spring.model.SpringConsumer;
-import org.fabric3.implementation.spring.model.SpringReferenceDefinition;
+import org.fabric3.implementation.spring.model.SpringReference;
 import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
@@ -46,7 +46,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -76,7 +75,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         strictValidation = validation;
     }
 
-    public SpringImplementationProcessorImpl(@Reference JavaContractProcessor contractProcessor) {
+    public SpringImplementationProcessorImpl(@org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor) {
         this.contractProcessor = contractProcessor;
         xmlInputFactory = XMLInputFactory.newFactory();
     }
@@ -170,9 +169,9 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @param context the context
      */
     private void validate(SpringComponentType type, IntrospectionContext context, Location location) {
-        Collection<ReferenceDefinition<ComponentType>> references = type.getReferences().values();
-        for (ReferenceDefinition reference : references) {
-            String defaultStr = ((SpringReferenceDefinition) reference).getDefaultValue();
+        Collection<Reference<ComponentType>> references = type.getReferences().values();
+        for (Reference reference : references) {
+            String defaultStr = ((SpringReference) reference).getDefaultValue();
             if (defaultStr != null) {
                 if (!type.getBeansById().containsKey(defaultStr) && !type.getBeansByName().containsKey(defaultStr)) {
                     InvalidValue error = new InvalidValue("Default value '" + defaultStr + "' does not reference a valid bean", location, type);
@@ -334,7 +333,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         String defaultStr = reader.getAttributeValue(null, "default");
 
         ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
-        ReferenceDefinition definition = new SpringReferenceDefinition(name, contract, defaultStr);
+        Reference definition = new SpringReference(name, contract, defaultStr);
         type.add(definition);
         return true;
     }
@@ -427,7 +426,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
-        ConsumerDefinition definition = new SpringConsumer(name, dataType, targetTokens[0], targetTokens[1]);
+        Consumer definition = new SpringConsumer(name, dataType, targetTokens[0], targetTokens[1]);
         type.add(definition);
         return true;
     }
@@ -476,7 +475,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(error);
         }
 
-        ProducerDefinition definition = new ProducerDefinition(name, contract);
+        Producer definition = new Producer(name, contract);
         type.add(definition);
         return true;
     }

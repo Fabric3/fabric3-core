@@ -22,12 +22,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
@@ -50,7 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of WireGenerator.
@@ -60,15 +59,15 @@ public class WireGeneratorImpl implements WireGenerator {
     private ContractMatcher matcher;
     private PhysicalOperationGenerator operationGenerator;
 
-    public WireGeneratorImpl(@Reference GeneratorRegistry generatorRegistry,
-                             @Reference ContractMatcher matcher,
-                             @Reference PhysicalOperationGenerator operationGenerator) {
+    public WireGeneratorImpl(@org.oasisopen.sca.annotation.Reference GeneratorRegistry generatorRegistry,
+                             @org.oasisopen.sca.annotation.Reference ContractMatcher matcher,
+                             @org.oasisopen.sca.annotation.Reference PhysicalOperationGenerator operationGenerator) {
         this.generatorRegistry = generatorRegistry;
         this.matcher = matcher;
         this.operationGenerator = operationGenerator;
     }
 
-    public <T extends BindingDefinition> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) throws GenerationException {
+    public <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) throws GenerationException {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
@@ -100,7 +99,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return pwd;
     }
 
-    public <T extends BindingDefinition> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws GenerationException {
+    public <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws GenerationException {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
@@ -124,7 +123,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    public <T extends BindingDefinition> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws GenerationException {
+    public <T extends Binding> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws GenerationException {
         checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent component = reference.getParent();
@@ -147,7 +146,7 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(binding, contract, operations);
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
-            ReferenceDefinition<ComponentType> referenceDefinition = reference.getDefinition();
+            Reference<ComponentType> referenceDefinition = reference.getDefinition();
             URI callbackUri = generateCallbackUri(component, callbackContract, referenceDefinition.getName());
             targetDefinition.setCallbackUri(callbackUri);
         }
@@ -158,7 +157,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    public <T extends BindingDefinition> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws GenerationException {
+    public <T extends Binding> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws GenerationException {
         checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent<?> component = reference.getParent();
@@ -198,7 +197,7 @@ public class WireGeneratorImpl implements WireGenerator {
         }
     }
 
-    public <T extends ResourceReferenceDefinition> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference)
+    public <T extends ResourceReference> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference)
             throws GenerationException {
         T resourceDefinition = resourceReference.getDefinition();
         LogicalComponent<?> component = resourceReference.getParent();
@@ -244,7 +243,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalService service = wire.getTarget().getLeafService();
         LogicalComponent source = reference.getParent();
         LogicalComponent target = service.getLeafComponent();
-        ReferenceDefinition<ComponentType> referenceDefinition = reference.getDefinition();
+        Reference<ComponentType> referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
 
         // generate the metadata used to attach the physical wire to the source component
@@ -291,11 +290,11 @@ public class WireGeneratorImpl implements WireGenerator {
      * @throws GenerationException if an error occurs during generation
      */
     @SuppressWarnings({"unchecked"})
-    private <BD extends BindingDefinition> PhysicalWireDefinition generateRemoteWire(LogicalWire wire) throws GenerationException {
+    private <BD extends Binding> PhysicalWireDefinition generateRemoteWire(LogicalWire wire) throws GenerationException {
         LogicalReference reference = wire.getSource();
         LogicalService service = wire.getTarget();
         LogicalComponent source = reference.getParent();
-        ReferenceDefinition<ComponentType> referenceDefinition = reference.getDefinition();
+        Reference<ComponentType> referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
         ServiceContract serviceContract = service.getServiceContract();
         ServiceContract callbackContract = serviceContract.getCallbackContract();
@@ -449,7 +448,7 @@ public class WireGeneratorImpl implements WireGenerator {
     private int getOrder(LogicalComponent component) {
         int order = component.getDefinition().getOrder();
         if (order == Integer.MIN_VALUE) {
-            ComponentDefinition<?> definition = component.getDefinition();
+            Component<?> definition = component.getDefinition();
             if (definition.getComponentType() != null) {
                 order = definition.getComponentType().getOrder();
             }
@@ -464,12 +463,12 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getGenerator(T definition) throws GeneratorNotFoundException {
+    private <T extends ResourceReference> ResourceReferenceGenerator<T> getGenerator(T definition) throws GeneratorNotFoundException {
         return (ResourceReferenceGenerator<T>) generatorRegistry.getResourceReferenceGenerator(definition.getClass());
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends BindingDefinition> WireBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+    private <T extends Binding> WireBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
         return (WireBindingGenerator<T>) generatorRegistry.getBindingGenerator(binding.getDefinition().getClass());
     }
 

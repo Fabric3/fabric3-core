@@ -17,13 +17,12 @@
 package org.fabric3.binding.jms.runtime.jndi;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.naming.NamingException;
 
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
@@ -56,9 +55,9 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
         }
     }
 
-    public Destination resolve(DestinationDefinition definition) throws JmsResolutionException {
+    public javax.jms.Destination resolve(Destination definition) throws JmsResolutionException {
         try {
-            return contextManager.lookup(Destination.class, definition.getName());
+            return contextManager.lookup(javax.jms.Destination.class, definition.getName());
         } catch (NamingException e) {
             throw new JmsResolutionException(e);
         }

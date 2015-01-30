@@ -16,8 +16,8 @@
  */
 package org.fabric3.binding.jms.spi.generator;
 
-import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.spi.domain.generator.GenerationException;
@@ -52,7 +52,7 @@ public interface JmsResourceProvisioner {
      * @param definition the source definition
      * @throws GenerationException if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionSource(JmsConnectionSourceDefinition definition) throws GenerationException ;
+    public void generateConnectionSource(JmsConnectionSource definition) throws GenerationException ;
 
     /**
      * Called after a target connection definition has been generated.
@@ -60,6 +60,6 @@ public interface JmsResourceProvisioner {
      * @param definition the target definition
      * @throws GenerationException if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionTarget(JmsConnectionTargetDefinition definition) throws GenerationException;
+    public void generateConnectionTarget(JmsConnectionTarget definition) throws GenerationException;
     
 }

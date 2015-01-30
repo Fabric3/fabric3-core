@@ -7,8 +7,8 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.cache.model.CacheSetResourceDefinition;
-import org.fabric3.cache.spi.CacheResourceDefinition;
+import org.fabric3.cache.model.CacheSetResource;
+import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -27,29 +27,29 @@ public class CacheResourceLoaderTestCase extends TestCase {
     private XMLInputFactory factory;
 
     public void testLoad() throws Exception {
-        CacheResourceDefinition resourceDefinition = new CacheResourceDefinition() {
+        CacheResource resourceDefinition = new CacheResource() {
         };
         EasyMock.expect(registry.load(EasyMock.isA(XMLStreamReader.class),
-                                      EasyMock.eq(CacheResourceDefinition.class),
+                                      EasyMock.eq(CacheResource.class),
                                       EasyMock.isA(IntrospectionContext.class))).andReturn(resourceDefinition);
         EasyMock.replay(registry);
 
         XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
 
-        CacheSetResourceDefinition definition = loader.load(reader, context);
+        CacheSetResource definition = loader.load(reader, context);
 
         assertFalse(context.hasErrors());
         assertEquals(1, definition.getDefinitions().size());
-        CacheResourceDefinition cacheDefinition = definition.getDefinitions().get(0);
+        CacheResource cacheDefinition = definition.getDefinitions().get(0);
         assertEquals("cache", cacheDefinition.getCacheName());
     }
 
     public void testLoadNoName() throws Exception {
-        CacheResourceDefinition resourceDefinition = new CacheResourceDefinition() {
+        CacheResource resourceDefinition = new CacheResource() {
         };
         EasyMock.expect(registry.load(EasyMock.isA(XMLStreamReader.class),
-                                      EasyMock.eq(CacheResourceDefinition.class),
+                                      EasyMock.eq(CacheResource.class),
                                       EasyMock.isA(IntrospectionContext.class))).andReturn(resourceDefinition);
         EasyMock.replay(registry);
 

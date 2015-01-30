@@ -21,14 +21,14 @@ package org.fabric3.fabric.domain.instantiator.wire;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
@@ -143,7 +143,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(parentUri.toString());
+        Component<CompositeImplementation> definition = new Component<>(parentUri.toString());
         definition.setImplementation(impl);
         return new LogicalCompositeComponent(parentUri, definition, parent);
     }
@@ -151,17 +151,17 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
     private LogicalComponent<?> createSourceAtomic(Class<?> requiredInterface, LogicalCompositeComponent parent) {
 
         ServiceContract contract = new JavaServiceContract(requiredInterface);
-        ReferenceDefinition<ComponentType> referenceDefinition = new ReferenceDefinition<>("ref", contract, Multiplicity.ONE_ONE);
+        Reference<ComponentType> reference = new Reference<>("ref", contract, Multiplicity.ONE_ONE);
         ComponentType type = new ComponentType();
-        type.add(referenceDefinition);
+        type.add(reference);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
-        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<>(SOURCE_URI.toString());
+        Component<MockAtomicImpl> definition = new Component<>(SOURCE_URI.toString());
         definition.setImplementation(impl);
-        ReferenceDefinition<ComponentDefinition> target = new ReferenceDefinition<>(REFERENCE_URI.getFragment(), Multiplicity.ONE_ONE);
+        Reference<Component> target = new Reference<>(REFERENCE_URI.getFragment(), Multiplicity.ONE_ONE);
         definition.add(target);
         LogicalComponent<?> component = new LogicalComponent<>(SOURCE_URI, definition, parent);
-        LogicalReference logicalReference = new LogicalReference(REFERENCE_URI, referenceDefinition, component);
+        LogicalReference logicalReference = new LogicalReference(REFERENCE_URI, reference, component);
         component.addReference(logicalReference);
         return component;
     }
@@ -169,12 +169,12 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
     private LogicalComponent<?> createTargetAtomic(Class<?> serviceInterface, LogicalCompositeComponent parent) {
         URI uri = URI.create("target");
         JavaServiceContract contract = new JavaServiceContract(serviceInterface);
-        ServiceDefinition<ComponentType> service = new ServiceDefinition<>("service", contract);
+        Service<ComponentType> service = new Service<>("service", contract);
         ComponentType type = new ComponentType();
         type.add(service);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
-        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<>(uri.toString());
+        Component<MockAtomicImpl> definition = new Component<>(uri.toString());
         definition.setImplementation(impl);
         LogicalComponent component = new LogicalComponent<>(uri, definition, parent);
         LogicalService logicalService = new LogicalService(TARGET_URI, service, parent);

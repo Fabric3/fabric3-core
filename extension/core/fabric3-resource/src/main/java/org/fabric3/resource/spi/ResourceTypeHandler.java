@@ -19,7 +19,7 @@ package org.fabric3.resource.spi;
 import java.lang.reflect.Member;
 
 import org.fabric3.api.annotation.Resource;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -29,7 +29,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 public interface ResourceTypeHandler {
 
     /**
-     * Creates a {@link ResourceReferenceDefinition} for a given type.
+     * Creates a {@link ResourceReference} for a given type.
      *
      * @param resourceName  the name of the resource injection site
      * @param annotation    the resource annotation
@@ -38,7 +38,7 @@ public interface ResourceTypeHandler {
      * @param context       the current introspection context  @return the ResourceDefinition
      * @return the resource definition
      */
-    ResourceReferenceDefinition createResourceReference(String resourceName,
+    ResourceReference createResourceReference(String resourceName,
                                                         Resource annotation,
                                                         Member member,
                                                         InjectingComponentType componentType,

@@ -21,8 +21,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Reference;
+import org.fabric3.api.model.type.component.Service;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -32,8 +32,8 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class MockImplementationLoader implements TypeLoader<MockImplementation> {
     private Property[] properties;
-    private ReferenceDefinition<ComponentType>[] referenceDefinitions;
-    private ServiceDefinition<ComponentType>[] serviceDefinitions;
+    private Reference<ComponentType>[] references;
+    private Service<ComponentType>[] services;
 
     public MockImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         MockImplementation impl = new MockImplementation();
@@ -44,13 +44,13 @@ public class MockImplementationLoader implements TypeLoader<MockImplementation> 
                 type.add(property);
             }
         }
-        if (referenceDefinitions != null) {
-            for (ReferenceDefinition<ComponentType> definition : referenceDefinitions) {
+        if (references != null) {
+            for (Reference<ComponentType> definition : references) {
                 type.add(definition);
             }
         }
-        if (serviceDefinitions != null) {
-            for (ServiceDefinition<ComponentType> definition : serviceDefinitions) {
+        if (services != null) {
+            for (Service<ComponentType> definition : services) {
                 type.add(definition);
             }
         }
@@ -63,13 +63,13 @@ public class MockImplementationLoader implements TypeLoader<MockImplementation> 
     }
 
     @SuppressWarnings("unchecked")
-    public void setReferences(ReferenceDefinition... referenceDefinitions) {
-        this.referenceDefinitions = referenceDefinitions;
+    public void setReferences(Reference... references) {
+        this.references = references;
     }
 
     @SuppressWarnings("unchecked")
-    public void setServices(ServiceDefinition... serviceDefinitions) {
-        this.serviceDefinitions = serviceDefinitions;
+    public void setServices(Service... services) {
+        this.services = services;
     }
 
 }

@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -45,7 +45,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component consumer configuration.
  */
-public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<ConsumerDefinition<ComponentDefinition>> {
+public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Consumer<Component>> {
     private static final QName CONSUMER = new QName(SCA_NS, "consumer");
 
     public ComponentConsumerLoader(@Reference LoaderRegistry registry) {
@@ -57,7 +57,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Consum
         return CONSUMER;
     }
 
-    public ConsumerDefinition<ComponentDefinition> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public Consumer<Component> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -69,7 +69,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Consum
 
         String targetAttribute = reader.getAttributeValue(null, "source");
         List<URI> sources = new ArrayList<>();
-        ConsumerDefinition<ComponentDefinition> consumer = new ConsumerDefinition<>(name);
+        Consumer<Component> consumer = new Consumer<>(name);
         try {
             if (targetAttribute != null) {
                 StringTokenizer tokenizer = new StringTokenizer(targetAttribute);
@@ -98,8 +98,8 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Consum
                 QName elementName = reader.getName();
                 ModelObject type;
                 type = registry.load(reader, ModelObject.class, context);
-                if (type instanceof BindingDefinition) {
-                    BindingDefinition binding = (BindingDefinition) type;
+                if (type instanceof Binding) {
+                    Binding binding = (Binding) type;
                     boolean check = BindingHelper.checkDuplicateNames(binding, consumer.getBindings(), location, context);
                     if (check) {
                         consumer.addBinding(binding);

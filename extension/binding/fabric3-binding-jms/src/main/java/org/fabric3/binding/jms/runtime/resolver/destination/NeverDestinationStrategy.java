@@ -20,10 +20,9 @@
 package org.fabric3.binding.jms.runtime.resolver.destination;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import java.util.List;
 
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
@@ -40,9 +39,9 @@ public class NeverDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws JmsResolutionException {
         for (DestinationResolver resolver : resolvers) {
-            Destination destination = resolver.resolve(definition);
+            javax.jms.Destination destination = resolver.resolve(definition);
             if (destination != null) {
                 return destination;
             }

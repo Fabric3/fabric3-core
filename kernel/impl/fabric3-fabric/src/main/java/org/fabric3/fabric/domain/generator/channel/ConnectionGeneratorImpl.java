@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.ChannelEvent;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -211,7 +212,8 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
     private PhysicalEventStreamDefinition generateEventStream(LogicalConsumer consumer) {
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("default");
-        List<DataType> types = consumer.getDefinition().getTypes();
+        Consumer<?> consumerDefinition = consumer.getDefinition();
+        List<DataType> types = consumerDefinition.getTypes();
         boolean typed = false;
         boolean takesChannelEvent = false;
         for (DataType dataType : types) {
@@ -241,7 +243,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends BindingDefinition> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
         return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 

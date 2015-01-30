@@ -34,14 +34,14 @@ import java.util.Map;
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyValue;
-import org.fabric3.api.model.type.component.ResourceDefinition;
-import org.fabric3.api.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Resource;
+import org.fabric3.api.model.type.component.Wire;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -160,10 +160,10 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         // UnrecognizedElement added to the context if none is found
         if (modelObject instanceof Property) {
             type.add((Property) modelObject);
-        } else if (modelObject instanceof ComponentDefinition) {
-            type.add((ComponentDefinition<?>) modelObject);
-        } else if (modelObject instanceof ResourceDefinition) {
-            type.add((ResourceDefinition) modelObject);
+        } else if (modelObject instanceof Component) {
+            type.add((Component<?>) modelObject);
+        } else if (modelObject instanceof Resource) {
+            type.add((Resource) modelObject);
         } else if (modelObject == null) {
             // loaders may elect to return a null element; ignore
         } else {
@@ -174,8 +174,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
 
     private void handleWire(Composite type, XMLStreamReader reader, QName compositeName, IntrospectionContext context, IntrospectionContext parentContext)
             throws XMLStreamException {
-        WireDefinition wire;
-        wire = registry.load(reader, WireDefinition.class, context);
+        Wire wire;
+        wire = registry.load(reader, Wire.class, context);
         if (wire == null) {
             // error encountered loading the wire
             updateContext(parentContext, context, compositeName);
@@ -192,30 +192,30 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                                     IntrospectionContext context,
                                     IntrospectionContext parentContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, context);
-        if (componentDefinition == null) {
+        Component<?> component = registry.load(reader, Component.class, context);
+        if (component == null) {
             // error encountered loading the componentDefinition
             updateContext(parentContext, context, compositeName);
             return false;
         }
-        String key = componentDefinition.getName();
+        String key = component.getName();
         if (type.getComponents().containsKey(key)) {
             DuplicateComponentName failure = new DuplicateComponentName(key, startLocation, type);
             context.addError(failure);
             return false;
         }
-        type.add(componentDefinition);
-        if (componentDefinition.getComponentType() == null) {
+        type.add(component);
+        if (component.getComponentType() == null) {
             return false;
         }
 
         // Calculate the namespace context from the composite element since XMLStreamReader.getNamespaceCount() only returns the number of namespaces
         // declared on the current element. This means namespaces defined on parent elements which are active (e.g. <composite>) or not reported.
         // Scoping results in no namespaces being reported 
-        for (PropertyValue value : componentDefinition.getPropertyValues().values()) {
+        for (PropertyValue value : component.getPropertyValues().values()) {
             value.setNamespaceContext(nsContext);
         }
-        locations.put(componentDefinition, startLocation);
+        locations.put(component, startLocation);
         return true;
     }
 
@@ -226,20 +226,20 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                                IntrospectionContext context,
                                IntrospectionContext parentContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ChannelDefinition channelDefinition = registry.load(reader, ChannelDefinition.class, context);
-        if (channelDefinition == null) {
+        Channel channel = registry.load(reader, Channel.class, context);
+        if (channel == null) {
             // error encountered loading the channel definition
             updateContext(parentContext, context, compositeName);
             return;
         }
-        String key = channelDefinition.getName();
+        String key = channel.getName();
         if (type.getChannels().containsKey(key)) {
             DuplicateChannelName failure = new DuplicateChannelName(key, startLocation, type);
             context.addError(failure);
             return;
         }
-        locations.put(channelDefinition, startLocation);
-        type.add(channelDefinition);
+        locations.put(channel, startLocation);
+        type.add(channel);
     }
 
     private void handleInclude(Composite type,
@@ -266,7 +266,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (included == null) {
             return;
         }
-        for (ComponentDefinition definition : included.getComponents().values()) {
+        for (Component definition : included.getComponents().values()) {
             String key = definition.getName();
             if (type.getComponents().containsKey(key)) {
                 DuplicateComponentName failure = new DuplicateComponentName(key, startLocation, type);

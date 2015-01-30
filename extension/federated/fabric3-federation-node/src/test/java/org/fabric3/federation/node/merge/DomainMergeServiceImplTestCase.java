@@ -21,7 +21,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -123,7 +123,7 @@ public class DomainMergeServiceImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("domain");
+        Component<CompositeImplementation> definition = new Component<>("domain");
         definition.setImplementation(impl);
         domain = new LogicalCompositeComponent(URI.create("domain"), definition, null);
         domain.setState(LogicalState.PROVISIONED);
@@ -133,7 +133,7 @@ public class DomainMergeServiceImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>("domain");
+        Component<CompositeImplementation> definition = new Component<>("domain");
         definition.setImplementation(impl);
         snapshot = new LogicalCompositeComponent(URI.create("domain"), definition, null);
         snapshot.setState(LogicalState.NEW);

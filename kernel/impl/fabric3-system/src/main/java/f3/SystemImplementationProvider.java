@@ -34,7 +34,6 @@ import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinit
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
 import org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher;
@@ -45,9 +44,9 @@ import org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition
 import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
-import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
+import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 import org.fabric3.spi.model.type.system.SystemImplementation;
-import static org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder.newBuilder;
+import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
 
 /**
  * Provides components for managing system and singleton components.
@@ -74,13 +73,13 @@ public class SystemImplementationProvider {
 
     private static void addSystemImplementation(CompositeBuilder compositeBuilder) {
         compositeBuilder.component(newBuilder(SystemImplementationLoader.class).key(Namespaces.F3_PREFIX + "implementation.system").build());
-        compositeBuilder.component(newBuilder(SystemComponentBuilder.class).key(SystemComponentDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(org.fabric3.implementation.system.runtime.SystemComponentBuilder.class).key(SystemComponentDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(SystemSourceWireAttacher.class).key(SystemWireSourceDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(SystemTargetWireAttacher.class).key(SystemWireTargetDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(SystemSourceConnectionAttacher.class).key(SystemConnectionSourceDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(SystemTargetConnectionAttacher.class).key(SystemConnectionTargetDefinition.class.getName()).build());
 
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("SystemImplementationIntrospectorImpl", SystemImplementationIntrospectorImpl.class);
+        SystemComponentBuilder componentBuilder = newBuilder("SystemImplementationIntrospectorImpl", SystemImplementationIntrospectorImpl.class);
         componentBuilder.key("system");
         componentBuilder.reference("heuristic", "SystemHeuristic");
         compositeBuilder.component(componentBuilder.build());

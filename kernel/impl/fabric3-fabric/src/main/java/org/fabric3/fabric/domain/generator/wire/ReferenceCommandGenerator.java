@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
@@ -210,7 +210,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
             if (generator == null) {
                 throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
-            BindingDefinition definition = generator.generateReferenceCallback(logicalBinding);
+            Binding definition = generator.generateReferenceCallback(logicalBinding);
             definition.setParent(reference.getDefinition());
             LogicalBinding<?> logicalCallback = new LogicalBinding(definition, reference);
             reference.addCallbackBinding(logicalCallback);

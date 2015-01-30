@@ -21,8 +21,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.annotation.model.Component;
-import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
@@ -51,7 +50,7 @@ public class JavaResourceProcessorTestCase extends TestCase {
         ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, TestComponent.class);
         resource.addResourceElement(resourceElement);
 
-        componentProcessor.process(EasyMock.isA(ComponentDefinition.class), EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class));
+        componentProcessor.process(EasyMock.isA(Component.class), EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall();
         EasyMock.expect(metaDataStore.resolve(EasyMock.eq(URI.create("test")),
                                               EasyMock.eq(Composite.class),
@@ -105,12 +104,12 @@ public class JavaResourceProcessorTestCase extends TestCase {
         context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
     }
 
-    @Component
+    @org.fabric3.api.annotation.model.Component
     private class TestComponent {
 
     }
 
-    @Component(composite = "{" + XMLConstants.NULL_NS_URI + "}foo")
+    @org.fabric3.api.annotation.model.Component(composite = "{" + XMLConstants.NULL_NS_URI + "}foo")
     private class BadTestComponent {
 
     }
