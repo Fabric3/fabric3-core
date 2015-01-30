@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
-           name="XMLIntrospectionComposite">
-
-    <include name="CommonLoaderComposite" scdlResource="META-INF/loaderCommon.composite"/>
-    <include name="CompositeLoaderComposite" scdlResource="META-INF/compositeLoader.composite"/>
-    <include name="TemplateLoaderComposite" scdlResource="META-INF/templateLoader.composite"/>
-</composite>

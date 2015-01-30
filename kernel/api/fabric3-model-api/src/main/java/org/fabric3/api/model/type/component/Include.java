@@ -19,7 +19,6 @@
  */
 package org.fabric3.api.model.type.component;
 
-import java.net.URL;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.ModelObject;
@@ -31,7 +30,6 @@ public class Include extends ModelObject<Composite> {
     private static final long serialVersionUID = 3982129607792011105L;
 
     private QName name;
-    private URL scdlLocation;
     private Composite included;
 
     /**
@@ -50,24 +48,6 @@ public class Include extends ModelObject<Composite> {
      */
     public void setName(QName name) {
         this.name = name;
-    }
-
-    /**
-     * Returns the location of the SCDL for composite being included.
-     *
-     * @return the location of the SCDL for composite being included
-     */
-    public URL getScdlLocation() {
-        return scdlLocation;
-    }
-
-    /**
-     * Sets the location of the SCDL for composite being included.
-     *
-     * @param scdlLocation the location of the SCDL for composite being included
-     */
-    public void setScdlLocation(URL scdlLocation) {
-        this.scdlLocation = scdlLocation;
     }
 
     /**
