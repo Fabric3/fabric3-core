@@ -48,7 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -225,8 +224,7 @@ public class WireGeneratorImpl implements WireGenerator {
     private boolean isLocal(LogicalWire wire) {
         String sourceZone = wire.getSource().getParent().getZone();
         String targetZone = wire.getTarget().getParent().getZone();
-        return sourceZone.equals(targetZone) && (wire.getSourceBinding() == null || wire.getSourceBinding().getDefinition() instanceof SCABinding) && (
-                wire.getTargetBinding() == null || wire.getTargetBinding().getDefinition() instanceof SCABinding);
+        return sourceZone.equals(targetZone) && (wire.getSourceBinding() == null) && (wire.getTargetBinding() == null);
 
     }
 

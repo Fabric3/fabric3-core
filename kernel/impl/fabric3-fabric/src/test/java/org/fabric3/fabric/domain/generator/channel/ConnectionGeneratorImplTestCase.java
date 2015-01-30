@@ -157,7 +157,6 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testGenerateBoundProducer() throws Exception {
-        // Note this test should be updated to verify policy when the later is supported on producers
         ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         MockPhysicalConnectionSourceDefinition sourceDefinition = new MockPhysicalConnectionSourceDefinition();
         EasyMock.expect(componentGenerator.generateConnectionSource(EasyMock.isA(LogicalProducer.class))).andReturn(sourceDefinition);

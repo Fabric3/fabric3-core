@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * An artifact which can be bound to a remote transport.
@@ -57,20 +56,12 @@ public abstract class LogicalBindable extends LogicalInvocable {
     }
 
     /**
-     * Returns true if this bindable has been configured with a concrete binding as opposed to using binding.sca.
+     * Convenience method.
      *
-     * @return true if this bindable has been configured with a concrete binding as opposed to using binding.sca
+     * @return true if the channel is configured with a binding
      */
-    public boolean isConcreteBound() {
-        if (bindings.isEmpty()) {
-            return false;
-        }
-        for (LogicalBinding<?> binding : bindings) {
-            if (!(binding.getDefinition() instanceof SCABinding)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isBound() {
+        return !getBindings().isEmpty();
     }
 
     /**
@@ -100,6 +91,5 @@ public abstract class LogicalBindable extends LogicalInvocable {
         binding.setCallback(true);
         callbackBindings.add(binding);
     }
-
 
 }

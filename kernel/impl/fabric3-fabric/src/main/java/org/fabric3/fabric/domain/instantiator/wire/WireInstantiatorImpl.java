@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.component.AbstractReference;
-import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.Target;
@@ -44,7 +43,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -102,29 +100,11 @@ public class WireInstantiatorImpl implements WireInstantiator {
             return;
         }
 
-        List<Target> serviceTargets = componentReference != null ? componentReference.getTargets(): definition.getTargets();
+        List<Target> serviceTargets = componentReference != null ? componentReference.getTargets() : definition.getTargets();
         if (serviceTargets.isEmpty()) {
             serviceTargets = definition.getTargets();
         }
-        List<SCABinding> scaBindings = new ArrayList<>();
-        List<BindingDefinition> bindings = componentReference != null ? componentReference.getBindings() : definition.getBindings();
-        for (BindingDefinition binding : bindings) {
-            if (binding instanceof SCABinding) {
-                SCABinding scaBinding = (SCABinding) binding;
-                scaBindings.add(scaBinding);
-            }
-        }
-        if (scaBindings.isEmpty()) {
-            //  if the component reference has no bindings, use the composite definition's
-
-            for (BindingDefinition binding : definition.getBindings()) {
-                if (binding instanceof SCABinding) {
-                    SCABinding scaBinding = (SCABinding) binding;
-                    scaBindings.add(scaBinding);
-                }
-            }
-        }
-        if (serviceTargets.isEmpty() && scaBindings.isEmpty()) {
+        if (serviceTargets.isEmpty()) {
             // no targets are specified
             return;
         }
@@ -140,30 +120,13 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
 
         List<LogicalWire> wires = new ArrayList<>();
-        if (!scaBindings.isEmpty()) {
-            // resolve the reference targets and create logical wires
-            for (SCABinding binding : scaBindings) {
-                Target target = binding.getTarget();
-                if (target == null) {
-                    // SCA binding with no target specified, don't wire
-                    continue;
-                }
-                String bindingName = binding.getName();
-                LogicalWire wire = createWire(target, reference, bindingName, parent, context);
-                if (wire == null) {
-                    continue;
-                }
-                wires.add(wire);
+        // resolve the reference targets and create logical wires
+        for (Target target : serviceTargets) {
+            LogicalWire wire = createWire(target, reference, null, parent, context);
+            if (wire == null) {
+                continue;
             }
-        } else {
-            // resolve the reference targets and create logical wires
-            for (Target target : serviceTargets) {
-                LogicalWire wire = createWire(target, reference, null, parent, context);
-                if (wire == null) {
-                    continue;
-                }
-                wires.add(wire);
-            }
+            wires.add(wire);
         }
         if (!wires.isEmpty()) {
             parent.addWires(reference, wires);

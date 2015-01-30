@@ -39,7 +39,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -116,9 +115,6 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             }
 
             for (LogicalBinding<?> binding : service.getBindings()) {
-                if (binding.getDefinition() instanceof SCABinding) {
-                    continue;
-                }
                 if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED) {
                     PhysicalWireDefinition pwd = wireGenerator.generateBoundService(binding, callbackUri);
                     if (LogicalState.MARKED == binding.getState()) {
@@ -134,9 +130,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
                 }
             }
             // generate the callback command set
-            if (callbackBinding != null && !(callbackBinding.getDefinition() instanceof SCABinding) && ((callbackBinding.getState() == LogicalState.NEW
-                                                                                                         || callbackBinding.getState()
-                                                                                                            == LogicalState.MARKED))) {
+            if (callbackBinding != null && ((callbackBinding.getState() == LogicalState.NEW || callbackBinding.getState() == LogicalState.MARKED))) {
                 PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundServiceCallback(callbackBinding);
                 if (LogicalState.MARKED == callbackBinding.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();
@@ -154,10 +148,6 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
     @SuppressWarnings("unchecked")
     private void generateCallbackBindings(LogicalService service) throws GenerationException {
         for (LogicalBinding<?> logicalBinding : service.getBindings()) {
-            if (logicalBinding.getDefinition() instanceof SCABinding) {
-                // skip SCA binding
-                continue;
-            }
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {
                 throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());

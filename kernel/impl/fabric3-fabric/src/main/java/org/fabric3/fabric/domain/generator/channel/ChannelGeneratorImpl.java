@@ -19,21 +19,20 @@ package org.fabric3.fabric.domain.generator.channel;
 import javax.xml.namespace.QName;
 import java.util.Map;
 
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -65,16 +64,11 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
         PhysicalChannelDefinition definition = generator.generate(channel, deployable);
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
-            if (!(binding.getDefinition() instanceof SCABinding)) {
-                // avoid generating SCABinding
-                ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-                ChannelDeliveryType deliveryType = definition.getDeliveryType();
-                PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding, deliveryType);
-                definition.setBindingDefinition(bindingDefinition);
-                definition.setChannelSide(ChannelDirection.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
-            } else {
-                definition.setChannelSide(ChannelSide.COLLOCATED);
-            }
+            ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+            ChannelDeliveryType deliveryType = definition.getDeliveryType();
+            PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding, deliveryType);
+            definition.setBindingDefinition(bindingDefinition);
+            definition.setChannelSide(ChannelDirection.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
         } else {
             definition.setChannelSide(ChannelSide.COLLOCATED);
         }

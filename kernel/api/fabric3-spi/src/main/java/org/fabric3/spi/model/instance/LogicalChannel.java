@@ -24,7 +24,6 @@ import java.net.URI;
 
 import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * An instantiated channel in the domain.
@@ -116,30 +115,6 @@ public class LogicalChannel extends LogicalBindable {
             return null;
         }
         return getBindings().get(0);
-    }
-
-    /**
-     * Convenience method as channels can be configured with only one binding.
-     */
-    public void clearBinding() {
-        getBindings().clear();
-    }
-
-    /**
-     * Convenience method as channels can be configured with only one binding.
-     *
-     * @return true if the channel is configured with a binding
-     */
-    public boolean isBound() {
-        if (getBindings().isEmpty()) {
-            return false;
-        }
-        for (LogicalBinding<?> binding : getBindings()) {
-            if (!(binding.getDefinition() instanceof SCABinding)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

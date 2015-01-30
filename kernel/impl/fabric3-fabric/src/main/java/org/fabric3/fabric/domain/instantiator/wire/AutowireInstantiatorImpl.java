@@ -62,7 +62,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
     private void resolveReferences(LogicalComponent<?> component, InstantiationContext context) {
         LogicalCompositeComponent parent = component.getParent();
         for (LogicalReference reference : component.getReferences()) {
-            if (reference.isConcreteBound()) {
+            if (reference.isBound()) {
                 // reference is targeted using binding.sca or is explicitly bound so it should not be autowired
                 continue;
             }
@@ -112,7 +112,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         }
 
         boolean targeted = !logicalReference.getLeafReference().getWires().isEmpty();
-        if (!targeted && referenceDefinition.isRequired() && !logicalReference.isConcreteBound()) {
+        if (!targeted && referenceDefinition.isRequired() && !logicalReference.isBound()) {
             String referenceUri = logicalReference.getUri().toString();
             ReferenceNotFound error = new ReferenceNotFound("Unable to resolve reference " + referenceUri, logicalReference);
             context.addError(error);

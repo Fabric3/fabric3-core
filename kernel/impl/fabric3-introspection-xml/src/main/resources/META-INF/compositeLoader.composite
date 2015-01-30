@@ -56,10 +56,6 @@
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.ImplementationCompositeLoader"/>
     </component>
 
-    <component name="SCABindingLoader">
-        <f3:implementation.system class="org.fabric3.introspection.xml.binding.SCABindingLoader"/>
-    </component>
-
     <component name="BindingHandlerLoader" f3:key="f3:handler">
         <f3:implementation.system class="org.fabric3.introspection.xml.binding.BindingHandlerLoader"/>
     </component>

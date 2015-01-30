@@ -39,7 +39,6 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -87,19 +86,14 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command)
-            throws GenerationException {
+    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) throws GenerationException {
         boolean reinjection = isBoundReinjection(reference);
 
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
-            if (logicalBinding.getDefinition() instanceof SCABinding) {
-                // skip SCA binding
-                continue;
-            }
             generateBinding(component, logicalBinding, command, reinjection, false);
         }
         if (reference.getServiceContract().getCallbackContract() != null) {
-            boolean bindings = reference.isConcreteBound();
+            boolean bindings = reference.isBound();
             if (bindings) {
                 List<LogicalBinding<?>> callbackBindings = reference.getCallbackBindings();
                 if (callbackBindings.isEmpty()) {
@@ -212,10 +206,6 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     @SuppressWarnings("unchecked")
     private void generateCallbackBindings(LogicalReference reference) throws GenerationException {
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
-            if (logicalBinding.getDefinition() instanceof SCABinding) {
-                // skip SCA binding
-                continue;
-            }
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {
                 throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());

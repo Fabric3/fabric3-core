@@ -193,15 +193,13 @@ public class BindingSelectorImpl implements BindingSelector {
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
     private void selectBinding(LogicalChannel channel) throws BindingSelectionException {
-        if (channel.isConcreteBound() || channel.getDefinition().isLocal()) {
+        if (channel.isBound() || channel.getDefinition().isLocal()) {
             return;
         }
         List<BindingMatchResult> results = new ArrayList<>();
         for (BindingProvider provider : providers) {
             BindingMatchResult result = provider.canBind(channel);
             if (result.isMatch()) {
-                // clear binding.sca
-                channel.clearBinding();
                 provider.bind(channel);
                 if (channel.getBindings().isEmpty()) {
                     QName type = result.getType();

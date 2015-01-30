@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.binding.BindingHandlerLoader;
-import org.fabric3.introspection.xml.binding.SCABindingLoader;
 import org.fabric3.introspection.xml.common.ComponentConsumerLoader;
 import org.fabric3.introspection.xml.common.ComponentProducerLoader;
 import org.fabric3.introspection.xml.common.ComponentReferenceLoader;
@@ -100,7 +99,6 @@ public class XmlIntrospectionProvider {
         compositeBuilder.component(newBuilder("CompositeLoader", CompositeLoader.class).build());
 
         compositeBuilder.component(newBuilder(ImplementationCompositeLoader.class).build());
-        compositeBuilder.component(newBuilder(SCABindingLoader.class).build());
         compositeBuilder.component(newBuilder(BindingHandlerLoader.class).key(Namespaces.F3_PREFIX + "handler").build());
         compositeBuilder.component(newBuilder(ConfigurationLoader.class).key(Constants.SCA_PREFIX + "configuration").build());
 
