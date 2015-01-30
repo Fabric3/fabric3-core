@@ -19,6 +19,9 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.model.type.ModelObject;
@@ -27,11 +30,16 @@ import org.fabric3.api.model.type.contract.DataType;
 /**
  * A consumer introspected from a component type.
  */
-public class ConsumerDefinition<P extends ModelObject> extends AbstractConsumer<P> {
+public class ConsumerDefinition<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = -4222312633353056234L;
     public static final int NO_SEQUENCE = 0;
 
+    private String name;
     private int sequence = NO_SEQUENCE;
+
+    private List<DataType> types = Collections.emptyList();
+    private List<URI> sources = new ArrayList<>();
+
 
     /**
      * Constructor.
@@ -39,7 +47,7 @@ public class ConsumerDefinition<P extends ModelObject> extends AbstractConsumer<
      * @param name the consumer name
      */
     public ConsumerDefinition(String name) {
-        this(name, null);
+        this.name = name;
     }
 
     /**
@@ -49,7 +57,62 @@ public class ConsumerDefinition<P extends ModelObject> extends AbstractConsumer<
      * @param types the data types required by this consumer
      */
     public ConsumerDefinition(String name, List<DataType> types) {
-        super(name, types);
+        this.name = name;
+        this.types = types;
+    }
+
+    /**
+     * Returns the consumer name.
+     *
+     * @return the reference name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the data types required by this consumer.
+     *
+     * @return the data types required by this consumer
+     */
+    public List<DataType> getTypes() {
+        return types;
+    }
+
+    /**
+     * Sets the data types required by this consumer.
+     *
+     * @param types the data types required by this consumer
+     */
+    public void setTypes(List<DataType> types) {
+        this.types = types;
+    }
+
+    /**
+     * Returns the URIs of channels this consumer receives events from.
+     *
+     * @return the URIs of channels this consumer receives events from
+     */
+    public List<URI> getSources() {
+        return sources;
+    }
+
+    /**
+     * Sets the source channel uris.
+     *
+     * @param sources the source channel uris
+     */
+    public void setSources(List<URI> sources) {
+        this.sources = sources;
+    }
+
+    /**
+     * Adds a channel source for this consumer
+     *
+     * @param source the source URI
+     */
+    public void addSource(URI source) {
+        sources.add(source);
     }
 
     /**

@@ -29,10 +29,11 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.model.BindingHandler;
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -69,13 +70,13 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
     }
 
     protected abstract BindingDefinition processService(A annotation,
-                                                        AbstractService<?> service,
+                                                        ServiceDefinition<ComponentType> service,
                                                         InjectingComponentType componentType,
                                                         Class<?> implClass,
                                                         IntrospectionContext context);
 
     protected abstract BindingDefinition processServiceCallback(A annotation,
-                                                                AbstractService<?> service,
+                                                                ServiceDefinition<ComponentType> service,
                                                                 InjectingComponentType componentType,
                                                                 Class<?> implClass,
                                                                 IntrospectionContext context);
@@ -101,7 +102,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
         if (serviceInterface.equals(Void.class)) {
             serviceInterface = null;
         }
-        AbstractService boundService = null;
+        ServiceDefinition<ComponentType> boundService = null;
         if (serviceInterface == null) {
             if (componentType.getServices().size() != 1) {
                 InvalidAnnotation error = new InvalidAnnotation("Binding annotation must specify a service interface", implClass, annotation, implClass);
@@ -111,7 +112,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
             boundService = componentType.getServices().values().iterator().next();
         } else {
             String name = serviceInterface.getName();
-            for (AbstractService service : componentType.getServices().values()) {
+            for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
                 String interfaceName = service.getServiceContract().getQualifiedInterfaceName();
                 if (interfaceName.equals(name)) {
                     boundService = service;

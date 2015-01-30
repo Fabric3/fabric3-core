@@ -19,14 +19,30 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A reference.
  */
-public class ReferenceDefinition<P extends ModelObject> extends AbstractReference<P> {
+public class ReferenceDefinition<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = 4641581818938572132L;
+
+    private String name;
+
+    private ServiceContract serviceContract;
+    private Multiplicity multiplicity;
+
+    private boolean keyed;
+    private DataType keyDataType;
+
+    private List<BindingDefinition> callbackBindings = new ArrayList<>();
+
+    private List<Target> targets = new ArrayList<>();
 
     /**
      * Constructor.
@@ -65,7 +81,133 @@ public class ReferenceDefinition<P extends ModelObject> extends AbstractReferenc
      * @param multiplicity    the reference multiplicity
      */
     public ReferenceDefinition(String name, ServiceContract serviceContract, Multiplicity multiplicity) {
-        super(name, serviceContract, multiplicity);
+        this.name = name;
+        this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
+        this.multiplicity = multiplicity;
     }
+
+    /**
+     * Returns the reference name.
+     *
+     * @return the reference name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the service contract required by this reference.
+     *
+     * @return the service contract required by this reference
+     */
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    /**
+     * Sets the service contract required by this reference.
+     *
+     * @param serviceContract the service contract required by this reference
+     */
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
+    }
+
+    /**
+     * Returns the reference multiplicity.
+     *
+     * @return the reference multiplicity
+     */
+    public Multiplicity getMultiplicity() {
+        return multiplicity;
+    }
+
+    /**
+     * Sets the reference multiplicity.
+     *
+     * @param multiplicity the reference multiplicity
+     */
+    public void setMultiplicity(Multiplicity multiplicity) {
+        this.multiplicity = multiplicity;
+    }
+
+    public List<Target> getTargets() {
+        return targets;
+    }
+
+    public void addTargets(List<Target> targets) {
+        this.targets.addAll(targets);
+    }
+
+    public void addTarget(Target target) {
+        targets.add(target);
+    }
+
+    /**
+     * Returns true if the reference is required
+     *
+     * @return true if the reference is required
+     */
+    public boolean isRequired() {
+        return multiplicity == Multiplicity.ONE_ONE || multiplicity == Multiplicity.ONE_N;
+    }
+
+    /**
+     * Returns the callback bindings configured on the reference
+     *
+     * @return the callback bindings configured on the reference.
+     */
+    public List<BindingDefinition> getCallbackBindings() {
+        return callbackBindings;
+    }
+
+    /**
+     * Adds a configured callback binding.
+     *
+     * @param binding callback binding to be added
+     */
+    public void addCallbackBinding(BindingDefinition binding) {
+        this.callbackBindings.add(binding);
+    }
+
+    /**
+     * Returns true if the reference is a keyed reference, i.e. is a map-style multiplicity.
+     *
+     * @return true if the reference is a keyed reference
+     */
+    public boolean isKeyed() {
+        return keyed;
+    }
+
+    /**
+     * Sets if if the reference is a keyed reference.
+     *
+     * @param keyed true if the reference is a keyed reference
+     */
+    public void setKeyed(boolean keyed) {
+        this.keyed = keyed;
+    }
+
+    /**
+     * Returns the reference key type.
+     *
+     * @return the reference key type.
+     */
+    public DataType getKeyDataType() {
+        return keyDataType;
+    }
+
+    /**
+     * Sets the reference key type.
+     *
+     * @param keyDataType the reference key type
+     */
+    public void setKeyDataType(DataType keyDataType) {
+        this.keyDataType = keyDataType;
+    }
+
 
 }

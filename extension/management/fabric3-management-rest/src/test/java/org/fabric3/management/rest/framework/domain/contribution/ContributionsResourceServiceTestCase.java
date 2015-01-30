@@ -16,18 +16,17 @@
  */
 package org.fabric3.management.rest.framework.domain.contribution;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
@@ -83,6 +82,7 @@ public class ContributionsResourceServiceTestCase extends TestCase {
         EasyMock.verify(contributionService, store);
     }
 
+    @SuppressWarnings("unchecked")
     public void testGetContributions() throws Exception {
         URI contributionUri = URI.create("thecontribution");
         Contribution contribution = createContribution(contributionUri);
@@ -183,6 +183,7 @@ public class ContributionsResourceServiceTestCase extends TestCase {
         EasyMock.verify(contributionService, store, request);
     }
 
+    @SuppressWarnings("unchecked")
     public void testCreateContributionPropagetErrors() throws Exception {
         URI contributionUri = URI.create("thecontribution");
         EasyMock.expect(contributionService.store(EasyMock.isA(ContributionSource.class))).andReturn(contributionUri);

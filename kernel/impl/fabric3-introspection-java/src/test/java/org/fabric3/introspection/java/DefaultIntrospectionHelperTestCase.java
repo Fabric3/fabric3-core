@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -215,7 +215,7 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
         expected.add(InjectionBase.class.getDeclaredMethod("setPublicBase", int.class));
         expected.add(InjectionBase.class.getDeclaredMethod("setPublicOverride", int.class));
         expected.add(InjectionBase.class.getDeclaredMethod("setProtectedBase", int.class));
-        Collection<AbstractService> services = Collections.emptySet();
+        Collection<ServiceDefinition<ComponentType>> services = Collections.emptySet();
         assertEquals(expected, helper.getInjectionMethods(InjectionBase.class, services));
     }
 
@@ -225,20 +225,20 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
         expected.add(InjectionBase.class.getDeclaredMethod("setProtectedBase", int.class));
         expected.add(InjectionSubClass.class.getDeclaredMethod("setPublicOverride", int.class));
         expected.add(InjectionSubClass.class.getDeclaredMethod("setAbstract", int.class));
-        Collection<AbstractService> services = Collections.emptySet();
+        Collection<ServiceDefinition<ComponentType>> services = Collections.emptySet();
         assertEquals(expected, helper.getInjectionMethods(InjectionSubClass.class, services));
     }
 
     public void testGetInjectionMethodsExcludesService() throws NoSuchMethodException {
         Set<Method> expected = Collections.emptySet();
-        Set<AbstractService> services = new HashSet<>();
+        Set<ServiceDefinition<ComponentType>> services = new HashSet<>();
         IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(InterfaceWithSetter.class, mapping);
 
         JavaServiceContract contract = createContract();
 
-        AbstractService definition = new ServiceDefinition("InterfaceWithSetter", contract);
+        ServiceDefinition<ComponentType> definition = new ServiceDefinition<>("InterfaceWithSetter", contract);
         services.add(definition);
         assertEquals(expected, helper.getInjectionMethods(InjectionWithInterface.class, services));
     }

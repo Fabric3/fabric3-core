@@ -39,7 +39,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
 
     private Map<String, ServiceDefinition<ComponentDefinition>> services = new HashMap<>();
     private Map<String, ReferenceDefinition<ComponentDefinition>> references = new HashMap<>();
-    private Map<String, ComponentProducer> producers = new HashMap<>();
+    private Map<String, ProducerDefinition<ComponentDefinition>> producers = new HashMap<>();
     private Map<String, ConsumerDefinition<ComponentDefinition>> consumers = new HashMap<>();
     private Map<String, PropertyValue> propertyValues = new HashMap<>();
 
@@ -171,7 +171,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param producer the producer to add
      */
-    public void add(ComponentProducer producer) {
+    public void add(ProducerDefinition<ComponentDefinition> producer) {
         producer.setParent(this);
         pushElement(producer);
         producers.put(producer.getName(), producer);
@@ -182,7 +182,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param producer the producer to remove
      */
-    public void remove(ComponentProducer producer) {
+    public void remove(ProducerDefinition<ComponentDefinition> producer) {
         producer.setParent(null);
         removeElement(producer);
         producers.remove(producer.getName());
@@ -194,7 +194,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @return the producers configured by this component
      */
-    public Map<String, ComponentProducer> getProducers() {
+    public Map<String, ProducerDefinition<ComponentDefinition>> getProducers() {
         return producers;
     }
 

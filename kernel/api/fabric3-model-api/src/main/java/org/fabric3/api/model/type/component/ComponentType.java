@@ -37,10 +37,10 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
     private String key;
     private int order = Integer.MIN_VALUE;
 
-    private Map<String, AbstractService> services = new HashMap<>();
+    private Map<String, ServiceDefinition<ComponentType>> services = new HashMap<>();
     private Map<String, ConsumerDefinition<ComponentType>> consumers = new HashMap<>();
-    private Map<String, ReferenceDefinition> references = new HashMap<>();
-    private Map<String, ProducerDefinition> producers = new HashMap<>();
+    private Map<String, ReferenceDefinition<ComponentType>> references = new HashMap<>();
+    private Map<String, ProducerDefinition<ComponentType>> producers = new HashMap<>();
     private Map<String, Property> properties = new HashMap<>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<>();
 
@@ -87,7 +87,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return services provided by the implementation
      */
-    public Map<String, AbstractService> getServices() {
+    public Map<String, ServiceDefinition<ComponentType>> getServices() {
         return services;
     }
 
@@ -131,7 +131,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return references defined by the implementation
      */
-    public Map<String, ReferenceDefinition> getReferences() {
+    public Map<String, ReferenceDefinition<ComponentType>> getReferences() {
         return references;
     }
 
@@ -153,7 +153,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return producers defined by implementation
      */
-    public Map<String, ProducerDefinition> getProducers() {
+    public Map<String, ProducerDefinition<ComponentType>> getProducers() {
         return producers;
     }
 
@@ -162,7 +162,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param producer the producer to add
      */
-    public void add(ProducerDefinition producer) {
+    public void add(ProducerDefinition<ComponentType> producer) {
         producer.setParent(this);
         if (roundTrip) {
             pushElement(producer);
@@ -224,6 +224,5 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
     public List<String> getPolicies() {
         return policies == null ? Collections.emptyList() : policies;
     }
-
 
 }

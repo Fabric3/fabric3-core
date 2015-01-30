@@ -28,9 +28,10 @@ import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -48,7 +49,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
     }
 
     protected BindingDefinition processService(ZeroMQ annotation,
-                                               AbstractService<?> boundService,
+                                               ServiceDefinition<ComponentType> boundService,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -73,7 +74,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
     }
 
     protected BindingDefinition processServiceCallback(ZeroMQ annotation,
-                                                       AbstractService<?> service,
+                                                       ServiceDefinition<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {

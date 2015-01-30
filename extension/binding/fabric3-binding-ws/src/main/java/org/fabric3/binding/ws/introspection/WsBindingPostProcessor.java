@@ -22,13 +22,14 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.AbstractService;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.binding.ws.annotation.BindingConfiguration;
 import org.fabric3.api.binding.ws.annotation.WebServiceBinding;
 import org.fabric3.api.binding.ws.model.WsBindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
@@ -45,7 +46,7 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
     }
 
     protected BindingDefinition processService(WebServiceBinding annotation,
-                                               AbstractService<?> service,
+                                               ServiceDefinition<ComponentType> service,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -54,7 +55,7 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
     }
 
     protected BindingDefinition processServiceCallback(WebServiceBinding annotation,
-                                                       AbstractService<?> service,
+                                                       ServiceDefinition<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {

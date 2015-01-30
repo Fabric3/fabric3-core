@@ -35,6 +35,7 @@ public class JndiAdministeredObjectResolverTestCase extends TestCase {
     private JndiContextManager contextManager;
     private ConnectionFactoryManager factoryManager;
 
+    @SuppressWarnings("unchecked")
     public void testResolveConnectionFactory() throws Exception {
         ConnectionFactory factory = EasyMock.createMock(ConnectionFactory.class);
         EasyMock.expect(contextManager.lookup(ConnectionFactory.class, "test")).andReturn(factory);

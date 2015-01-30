@@ -20,6 +20,7 @@ package org.fabric3.implementation.system.introspection;
 
 import java.util.Set;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.model.type.component.ServiceDefinition;
@@ -51,12 +52,12 @@ public class SystemServiceHeuristic implements HeuristicProcessor {
             // if the class does not implement any interfaces, then the class itself is the service contract
             // we don't have to worry about proxies because all wires to system components are optimized
             if (interfaces.isEmpty()) {
-                ServiceDefinition serviceDefinition = createServiceDefinition(implClass, componentType, context);
+                ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(implClass, componentType, context);
                 componentType.add(serviceDefinition);
             } else {
                 // otherwise, expose all of the implemented interfaces
                 for (Class<?> serviceInterface : interfaces) {
-                    ServiceDefinition serviceDefinition = createServiceDefinition(serviceInterface, componentType, context);
+                    ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(serviceInterface, componentType, context);
                     componentType.add(serviceDefinition);
                 }
             }
@@ -64,8 +65,9 @@ public class SystemServiceHeuristic implements HeuristicProcessor {
 
     }
 
-    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext context) {
+    private ServiceDefinition<ComponentType> createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext
+            context) {
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
-        return new ServiceDefinition(contract.getInterfaceName(), contract);
+        return new ServiceDefinition<>(contract.getInterfaceName(), contract);
     }
 }

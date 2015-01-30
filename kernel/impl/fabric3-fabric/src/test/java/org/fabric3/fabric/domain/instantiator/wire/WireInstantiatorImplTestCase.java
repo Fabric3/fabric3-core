@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
@@ -204,8 +205,10 @@ public class WireInstantiatorImplTestCase extends TestCase {
     }
 
     private LogicalService createLogicalService(String name, LogicalComponent<?> logicalComponent) {
-        ServiceDefinition<ComponentDefinition> service = new ServiceDefinition<>(name);
-        logicalComponent.getDefinition().add(service);
+        ServiceDefinition<ComponentDefinition> componentService = new ServiceDefinition<>(name);
+        logicalComponent.getDefinition().add(componentService);
+
+        ServiceDefinition<ComponentType> service = new ServiceDefinition<>(name);
 
         URI serviceUri = URI.create("composite/component#" + name);
         LogicalService logicalService = new LogicalService(serviceUri, service, logicalComponent);
@@ -215,9 +218,11 @@ public class WireInstantiatorImplTestCase extends TestCase {
     }
 
     private LogicalReference createLogicalReference(LogicalComponent<?> logicalComponent, Target target) {
-        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
-        reference.addTarget(target);
-        logicalComponent.getDefinition().add(reference);
+        ReferenceDefinition<ComponentDefinition> componentReference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+        componentReference.addTarget(target);
+        logicalComponent.getDefinition().add(componentReference);
+
+        ReferenceDefinition<ComponentType> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
 
         URI referenceUri = URI.create("composite/component#reference");
         LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);

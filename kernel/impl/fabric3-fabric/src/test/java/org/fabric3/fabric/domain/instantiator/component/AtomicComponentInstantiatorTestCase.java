@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentProducer;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
@@ -215,10 +214,11 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     }
 
     private void createProducer(ComponentDefinition component) {
-        ProducerDefinition definition = new ProducerDefinition("producer");
+        ProducerDefinition<ComponentType> definition = new ProducerDefinition<>("producer");
         component.getComponentType().add(definition);
 
-        ComponentProducer producer = new ComponentProducer("producer", Collections.singletonList(PRODUCER_TARGET));
+        ProducerDefinition<ComponentDefinition> producer = new ProducerDefinition<>("producer");
+        producer.setTargets( Collections.singletonList(PRODUCER_TARGET));
         component.add(producer);
     }
 

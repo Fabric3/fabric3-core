@@ -27,16 +27,15 @@ import java.util.Set;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionException;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
@@ -61,7 +60,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
-        Map<String, AbstractService> services = componentType.getServices();
+        Map<String, ServiceDefinition<ComponentType>> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(noInterfaceContract, services.get("NoInterface").getServiceContract());
         control.verify();
@@ -77,19 +76,19 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, OneInterface.class, context);
-        Map<String, AbstractService> services = componentType.getServices();
+        Map<String, ServiceDefinition<ComponentType>> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(serviceInterfaceContract, services.get("ServiceInterface").getServiceContract());
         control.verify();
     }
 
     public void testServiceWithExistingServices() throws IntrospectionException {
-        ServiceDefinition definition = new ServiceDefinition("Contract");
+        ServiceDefinition<ComponentType> definition = new ServiceDefinition<>("Contract");
         componentType.add(definition);
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
-        Map<String, AbstractService> services = componentType.getServices();
+        Map<String, ServiceDefinition<ComponentType>> services = componentType.getServices();
         assertEquals(1, services.size());
         assertSame(definition, services.get("Contract"));
         control.verify();
@@ -121,8 +120,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
     }
 
     private JavaServiceContract createServiceContract(Class<?> type) {
-        @SuppressWarnings("unchecked")
-        JavaServiceContract contract = EasyMock.createMock(JavaServiceContract.class);
+        @SuppressWarnings("unchecked") JavaServiceContract contract = EasyMock.createMock(JavaServiceContract.class);
         EasyMock.expect(contract.getInterfaceName()).andStubReturn(type.getSimpleName());
         contract.setParent(EasyMock.isA(ModelObject.class));
         EasyMock.replay(contract);

@@ -20,9 +20,10 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 
 import org.fabric3.api.annotation.model.BindingTemplate;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -42,7 +43,7 @@ public class BindingTemplatePostProcessor extends AbstractBindingPostProcessor<B
     }
 
     protected BindingDefinition processService(BindingTemplate annotation,
-                                               AbstractService<?> service,
+                                               ServiceDefinition<ComponentType> service,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -50,7 +51,7 @@ public class BindingTemplatePostProcessor extends AbstractBindingPostProcessor<B
     }
 
     protected BindingDefinition processServiceCallback(BindingTemplate annotation,
-                                                       AbstractService<?> service,
+                                                       ServiceDefinition<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {

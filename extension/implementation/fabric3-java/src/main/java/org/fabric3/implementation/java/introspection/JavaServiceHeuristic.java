@@ -21,7 +21,6 @@ package org.fabric3.implementation.java.introspection;
 import java.util.Set;
 
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -53,7 +52,7 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         // if any services have been defined, just introspect policy
         if (!componentType.getServices().isEmpty()) {
-            for (AbstractService definition : componentType.getServices().values()) {
+            for (ServiceDefinition<ComponentType> definition : componentType.getServices().values()) {
                 JavaServiceContract contract = (JavaServiceContract) definition.getServiceContract();
                 policyIntrospector.introspectPolicyOnOperations(contract, implClass, context);
             }
@@ -63,7 +62,7 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
         Set<Class<?>> interfaces = helper.getImplementedInterfaces(implClass);
         if (interfaces.isEmpty()) {
             // no interfaces, use implementation
-            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
+            ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
             componentType.add(serviceDefinition);
         } else {
             // class implements all interfaces that are not management interfaces or in the Java package
@@ -72,19 +71,19 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
                 if (interfaze.isAnnotationPresent(Management.class) || pkg == null || pkg.getName().startsWith("java")) {
                     continue;
                 }
-                ServiceDefinition serviceDefinition = createServiceDefinition(interfaze, implClass, componentType, context);
+                ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(interfaze, implClass, componentType, context);
                 componentType.add(serviceDefinition);
             }
         }
     }
 
     @SuppressWarnings({"unchecked"})
-    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface,
+    private ServiceDefinition<ComponentType> createServiceDefinition(Class<?> serviceInterface,
                                                       Class<?> implClass,
                                                       ComponentType componentType,
                                                       IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
-        ServiceDefinition definition = new ServiceDefinition(contract.getInterfaceName(), contract);
+        ServiceDefinition<ComponentType> definition = new ServiceDefinition<>(contract.getInterfaceName(), contract);
         policyIntrospector.introspectPolicyOnOperations(contract, implClass, context);
         return definition;
     }

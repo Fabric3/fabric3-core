@@ -18,13 +18,14 @@ package org.fabric3.binding.file.introspection;
 
 import java.lang.reflect.AccessibleObject;
 
-import org.fabric3.api.model.type.component.AbstractService;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ReferenceDefinition;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.binding.file.annotation.FileBinding;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
@@ -41,7 +42,7 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
     }
 
     protected BindingDefinition processService(FileBinding annotation,
-                                               AbstractService<?> service,
+                                               ServiceDefinition<ComponentType> service,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -50,7 +51,7 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
     }
 
     protected BindingDefinition processServiceCallback(FileBinding annotation,
-                                                       AbstractService<?> service,
+                                                       ServiceDefinition<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {

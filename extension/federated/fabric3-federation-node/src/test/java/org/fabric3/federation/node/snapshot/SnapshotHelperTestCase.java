@@ -20,7 +20,6 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -64,7 +63,7 @@ public class SnapshotHelperTestCase extends TestCase {
     }
 
     public void testSnapshotServiceDefinition() throws Exception {
-        AbstractService snapshot = SnapshotHelper.snapshot(serviceDefinition);
+        ServiceDefinition<ComponentType> snapshot = SnapshotHelper.snapshot(serviceDefinition);
         assertEquals("service", snapshot.getName());
         assertNotNull(snapshot.getServiceContract());
     }

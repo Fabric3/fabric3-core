@@ -22,10 +22,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
@@ -146,7 +147,7 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateTarget(binding, contract, operations);
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
-            AbstractReference referenceDefinition = reference.getDefinition();
+            ReferenceDefinition<ComponentType> referenceDefinition = reference.getDefinition();
             URI callbackUri = generateCallbackUri(component, callbackContract, referenceDefinition.getName());
             targetDefinition.setCallbackUri(callbackUri);
         }
@@ -242,7 +243,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalService service = wire.getTarget().getLeafService();
         LogicalComponent source = reference.getParent();
         LogicalComponent target = service.getLeafComponent();
-        AbstractReference referenceDefinition = reference.getDefinition();
+        ReferenceDefinition<ComponentType> referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
 
         // generate the metadata used to attach the physical wire to the source component
@@ -293,7 +294,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalReference reference = wire.getSource();
         LogicalService service = wire.getTarget();
         LogicalComponent source = reference.getParent();
-        AbstractReference referenceDefinition = reference.getDefinition();
+        ReferenceDefinition<ComponentType> referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
         ServiceContract serviceContract = service.getServiceContract();
         ServiceContract callbackContract = serviceContract.getCallbackContract();

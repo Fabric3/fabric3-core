@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -111,8 +111,8 @@ public class SnapshotHelper {
         RemoteImplementation remoteImplementation = new RemoteImplementation();
         ComponentType typeCopy = new ComponentType();
         ComponentType type = definition.getComponentType();
-        for (AbstractService abstractDefinition : type.getServices().values()) {
-            ServiceDefinition serviceDefinitionCopy = snapshot(abstractDefinition);
+        for (ServiceDefinition<ComponentType> abstractDefinition : type.getServices().values()) {
+            ServiceDefinition<ComponentType> serviceDefinitionCopy = snapshot(abstractDefinition);
             typeCopy.add(serviceDefinitionCopy);
         }
         remoteImplementation.setComponentType(typeCopy);
@@ -137,19 +137,19 @@ public class SnapshotHelper {
     }
 
     static LogicalService snapshot(LogicalService service, LogicalComponent<RemoteImplementation> parent) {
-        AbstractService abstractDefinition = service.getDefinition();
-        ServiceDefinition serviceDefinitionCopy = snapshot(abstractDefinition);
+        ServiceDefinition<ComponentType> abstractDefinition = service.getDefinition();
+        ServiceDefinition<ComponentType> serviceDefinitionCopy = snapshot(abstractDefinition);
         URI serviceUri = service.getUri();
         LogicalService serviceCopy = new LogicalService(serviceUri, serviceDefinitionCopy, parent);
         serviceCopy.getBindings().addAll(service.getBindings());
         return serviceCopy;
     }
 
-    static ServiceDefinition snapshot(AbstractService abstractDefinition) {
+    static <P extends ModelObject> ServiceDefinition<P> snapshot(ServiceDefinition<P> abstractDefinition) {
         ServiceContract contract = abstractDefinition.getServiceContract();
         String serviceName = abstractDefinition.getName();
         ServiceContract contractCopy = snapshot(contract);
-        return new ServiceDefinition(serviceName, contractCopy);
+        return new ServiceDefinition<>(serviceName, contractCopy);
     }
 
     static RemoteServiceContract snapshot(ServiceContract contract) {

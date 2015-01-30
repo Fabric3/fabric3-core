@@ -19,14 +19,23 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A producer introspected from a component type.
  */
-public class ProducerDefinition extends AbstractProducer<ComponentType> {
+public class ProducerDefinition<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = -4222312633353056234L;
 
+    private String name;
+    private ServiceContract serviceContract;
+
+    protected List<URI> targets = new ArrayList<>();
 
     /**
      * Constructor.
@@ -35,12 +44,70 @@ public class ProducerDefinition extends AbstractProducer<ComponentType> {
      * @param serviceContract the service contract required by this producer
      */
     public ProducerDefinition(String name, ServiceContract serviceContract) {
-        super(name, serviceContract);
+        this.name = name;
+        this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
+
     }
 
     public ProducerDefinition(String name) {
-        super(name);
+        this.name = name;
     }
 
+    /**
+     * Returns the producer name.
+     *
+     * @return the producer name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the service contract required by this producer.
+     *
+     * @return the service contract required by this producer
+     */
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    /**
+     * Sets the service contract required by this producer.
+     *
+     * @param serviceContract the service contract required by this producer
+     */
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
+    }
+
+    /**
+     * Returns the URIs of channels this producer sends messages to.
+     *
+     * @return the URIs of channels this producer sends messages to
+     */
+    public List<URI> getTargets() {
+        return targets;
+    }
+
+    /**
+     * Sets the URIs of channels this producer sends messages to.
+     *
+     * @param targets the URIs of channels this producer sends messages to
+     */
+    public void setTargets(List<URI> targets) {
+        this.targets = targets;
+    }
+
+    /**
+     * Adds the URI of a channel this producer sends messages to.
+     *
+     * @param target the channel URI
+     */
+    public void addTarget(URI target) {
+        targets.add(target);
+    }
 
 }

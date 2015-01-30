@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.Property;
@@ -169,7 +170,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @param context the context
      */
     private void validate(SpringComponentType type, IntrospectionContext context, Location location) {
-        Collection<ReferenceDefinition> references = type.getReferences().values();
+        Collection<ReferenceDefinition<ComponentType>> references = type.getReferences().values();
         for (ReferenceDefinition reference : references) {
             String defaultStr = ((SpringReferenceDefinition) reference).getDefaultValue();
             if (defaultStr != null) {

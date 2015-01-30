@@ -16,8 +16,9 @@
  */
 package org.fabric3.implementation.junit.introspection;
 
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
@@ -44,7 +45,7 @@ public class JUnitImplementationProcessor implements ImplementationProcessor<JUn
 
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
-        for (AbstractService serviceDefinition : componentType.getServices().values()) {
+        for (ServiceDefinition<ComponentType> serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
                 JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(null);
                 serviceDefinition.addBinding(bindingDefinition);

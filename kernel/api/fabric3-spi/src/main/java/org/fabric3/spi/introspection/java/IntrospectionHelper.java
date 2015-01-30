@@ -27,11 +27,12 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
 
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.TypeMapping;
-import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
 /**
@@ -195,7 +196,7 @@ public interface IntrospectionHelper {
      * @param services the services implemented by the class
      * @return the method injection sites for the class
      */
-    Set<Method> getInjectionMethods(Class<?> type, Collection<AbstractService> services);
+    Set<Method> getInjectionMethods(Class<?> type, Collection<ServiceDefinition<ComponentType>> services);
 
     /**
      * Returns method injection sites provided by a class or any super class.

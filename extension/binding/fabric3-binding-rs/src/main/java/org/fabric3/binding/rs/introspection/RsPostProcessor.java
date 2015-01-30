@@ -30,7 +30,8 @@ import java.util.Set;
 
 import org.fabric3.api.annotation.model.EndpointUri;
 import org.fabric3.api.binding.rs.model.RsBindingDefinition;
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.PostProcessor;
@@ -54,10 +55,10 @@ public class RsPostProcessor implements PostProcessor {
 
     public void process(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Path path = implClass.getAnnotation(Path.class);
-        AbstractService<?> bindingService = null;
+        ServiceDefinition<ComponentType> bindingService = null;
         if (path == null) {
             ClassLoader classLoader = implClass.getClassLoader();
-            for (AbstractService service : componentType.getServices().values()) {
+            for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
                 try {
                     Class<?> interfaze = classLoader.loadClass(service.getServiceContract().getQualifiedInterfaceName());
                     path = interfaze.getAnnotation(Path.class);
@@ -88,7 +89,7 @@ public class RsPostProcessor implements PostProcessor {
                     // interface not found
                     return;
                 }
-                for (AbstractService service : componentType.getServices().values()) {
+                for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
                     if (service.getServiceContract().getQualifiedInterfaceName().equals(bindingInterface.getName())) {
                         bindingService = service;
                         break;

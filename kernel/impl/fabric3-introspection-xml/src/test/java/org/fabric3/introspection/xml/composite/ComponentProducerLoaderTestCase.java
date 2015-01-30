@@ -25,7 +25,8 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ComponentProducer;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentProducerLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -43,18 +44,9 @@ public class ComponentProducerLoaderTestCase extends TestCase {
     private IntrospectionContext ctx;
 
     public void testLoad() throws Exception {
-        ComponentProducer producer = loader.load(reader, ctx);
+        ProducerDefinition<ComponentDefinition> producer = loader.load(reader, ctx);
         assertEquals("producer", producer.getName());
         assertEquals("target", producer.getTargets().get(0).toString());
-        assertFalse(ctx.hasErrors());
-    }
-
-    public void testRoundTrip() throws Exception {
-        loader.setRoundTrip(true);
-        ComponentProducer producer = loader.load(reader, ctx);
-        assertEquals("producer", producer.getName());
-        assertEquals("target", producer.getTargets().get(0).toString());
-        assertEquals("target", producer.getSpecifiedAttributes().iterator().next());
         assertFalse(ctx.hasErrors());
     }
 

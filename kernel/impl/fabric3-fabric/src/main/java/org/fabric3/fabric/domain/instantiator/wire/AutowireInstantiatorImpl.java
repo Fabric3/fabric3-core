@@ -21,8 +21,8 @@ package org.fabric3.fabric.domain.instantiator.wire;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.Target;
@@ -82,7 +82,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         ReferenceDefinition<ComponentDefinition> componentReference = logicalReference.getComponentReference();
         LogicalComponent<?> component = logicalReference.getParent();
 
-        AbstractReference<?> referenceDefinition = logicalReference.getDefinition();
+        ReferenceDefinition<ComponentType> referenceDefinition = logicalReference.getDefinition();
         if (componentReference == null) {
             List<Target> targets = referenceDefinition.getTargets();
             if (!targets.isEmpty()) {

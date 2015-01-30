@@ -22,26 +22,24 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.ProducerDefinition;
-import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition;
-import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
-import org.oasisopen.sca.ComponentContext;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.Property;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
+import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
+import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
-import org.fabric3.api.model.type.component.AbstractReference;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -55,9 +53,10 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.api.model.type.java.InjectionSite;
-
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 import static org.fabric3.implementation.web.provision.WebConstants.SERVLET_CONTEXT_SITE;
 import static org.fabric3.implementation.web.provision.WebConstants.SESSION_CONTEXT_SITE;
@@ -122,7 +121,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
 
     private Map<String, Map<String, InjectionSite>> generateInjectionMapping(WebComponentType type) {
         Map<String, Map<String, InjectionSite>> mappings = new HashMap<>();
-        for (AbstractReference definition : type.getReferences().values()) {
+        for (ReferenceDefinition<ComponentType> definition : type.getReferences().values()) {
             generateReferenceInjectionMapping(definition, type, mappings);
         }
         for (ResourceReferenceDefinition definition : type.getResourceReferences().values()) {
@@ -138,7 +137,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return mappings;
     }
 
-    private void generateReferenceInjectionMapping(AbstractReference definition, WebComponentType type, Map<String, Map<String, InjectionSite>> mappings) {
+    private void generateReferenceInjectionMapping(ReferenceDefinition<ComponentType> definition, WebComponentType type, Map<String, Map<String, InjectionSite>> mappings) {
         Map<String, InjectionSite> mapping = mappings.get(definition.getName());
         if (mapping == null) {
             mapping = new HashMap<>();

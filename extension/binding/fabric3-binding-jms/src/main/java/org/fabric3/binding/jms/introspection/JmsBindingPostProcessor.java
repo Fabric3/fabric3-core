@@ -28,9 +28,10 @@ import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.MessageSelection;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
@@ -48,7 +49,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
     }
 
     protected BindingDefinition processService(JMS annotation,
-                                               AbstractService<?> service,
+                                               ServiceDefinition<ComponentType> service,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
@@ -57,7 +58,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
     }
 
     protected BindingDefinition processServiceCallback(JMS annotation,
-                                                       AbstractService<?> service,
+                                                       ServiceDefinition<ComponentType> service,
                                                        InjectingComponentType componentType,
                                                        Class<?> implClass,
                                                        IntrospectionContext context) {

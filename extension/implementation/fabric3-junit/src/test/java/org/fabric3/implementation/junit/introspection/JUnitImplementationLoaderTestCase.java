@@ -22,8 +22,7 @@ import java.io.StringReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
@@ -61,7 +60,7 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(CONFIGURATION_XML));
         reader.nextTag();
         JUnitImplementation definition = loader.load(reader, context);
-        AbstractService serviceDefinition = definition.getComponentType().getServices().get("Foo");
+        ServiceDefinition<ComponentType> serviceDefinition = definition.getComponentType().getServices().get("Foo");
         JUnitBindingDefinition bindingDefinition = (JUnitBindingDefinition) serviceDefinition.getBindings().get(0);
         assertEquals("username", bindingDefinition.getConfiguration().getUsername());
         assertEquals("password", bindingDefinition.getConfiguration().getPassword());
@@ -72,20 +71,18 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
         super.setUp();
         JUnitImplementationIntrospector processor = EasyMock.createNiceMock(JUnitImplementationIntrospector.class);
         processor.introspect(EasyMock.isA(InjectingComponentType.class), EasyMock.isA(IntrospectionContext.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
-            public Void answer() throws Throwable {
-                InjectingComponentType componentType = (InjectingComponentType) EasyMock.getCurrentArguments()[0];
-                ServiceDefinition serviceDefinition = new ServiceDefinition("Foo");
-                serviceDefinition.setServiceContract(new JavaServiceContract() {
-                    private static final long serialVersionUID = 6696779955276690454L;
+        EasyMock.expectLastCall().andAnswer(() -> {
+            InjectingComponentType componentType = (InjectingComponentType) EasyMock.getCurrentArguments()[0];
+            ServiceDefinition<ComponentType> serviceDefinition = new ServiceDefinition<>("Foo");
+            serviceDefinition.setServiceContract(new JavaServiceContract() {
+                private static final long serialVersionUID = 6696779955276690454L;
 
-                    public String getQualifiedInterfaceName() {
-                        return "org.fabric3.test.Foo";
-                    }
-                });
-                componentType.add(serviceDefinition);
-                return null;
-            }
+                public String getQualifiedInterfaceName() {
+                    return "org.fabric3.test.Foo";
+                }
+            });
+            componentType.add(serviceDefinition);
+            return null;
         });
         EasyMock.replay(processor);
         loader = new JUnitImplementationLoader(processor);

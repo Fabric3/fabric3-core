@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
@@ -134,8 +135,8 @@ public class ServiceResolverImpl implements ServiceResolver {
         componentDefinition.setParent(composite);
         NonManagedImplementation implementation = new NonManagedImplementation();
         componentDefinition.setImplementation(implementation);
-        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
-        componentDefinition.add(reference);
+        ReferenceDefinition<ComponentType> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
+        composite.add(reference);
 
         LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, componentDefinition, domainComponent);
         logicalComponent.setZone(info.getZoneName());

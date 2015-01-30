@@ -21,7 +21,7 @@ import javax.servlet.Servlet;
 import java.net.URL;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
@@ -125,9 +125,9 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
      * @param context       the introspection context
      */
     private void mergeComponentTypes(WebComponentType componentType, InjectingComponentType tempType, IntrospectionContext context) {
-        for (Map.Entry<String, ReferenceDefinition> entry : tempType.getReferences().entrySet()) {
+        for (Map.Entry<String, ReferenceDefinition<ComponentType>> entry : tempType.getReferences().entrySet()) {
             String name = entry.getKey();
-            AbstractReference reference = componentType.getReferences().get(name);
+            ReferenceDefinition<ComponentType> reference = componentType.getReferences().get(name);
             if (reference != null) {
                 ServiceContract source = reference.getServiceContract();
                 ServiceContract target = entry.getValue().getServiceContract();
@@ -157,7 +157,7 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
                 componentType.add(entry.getValue());
             }
         }
-        for (Map.Entry<String, ProducerDefinition> entry : tempType.getProducers().entrySet()) {
+        for (Map.Entry<String, ProducerDefinition<ComponentType>> entry : tempType.getProducers().entrySet()) {
             String name = entry.getKey();
             ProducerDefinition definition = componentType.getProducers().get(name);
             if (definition != null) {

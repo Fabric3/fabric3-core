@@ -20,11 +20,8 @@ package org.fabric3.fabric.domain.instantiator.component;
 
 import java.net.URI;
 
-import org.fabric3.api.model.type.component.AbstractReference;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentProducer;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.Implementation;
@@ -73,7 +70,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createServices(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (AbstractService<?> service : componentType.getServices().values()) {
+        for (ServiceDefinition<ComponentType> service : componentType.getServices().values()) {
             String name = service.getName();
             URI serviceUri = component.getUri().resolve('#' + name);
             LogicalService logicalService = new LogicalService(serviceUri, service, component);
@@ -105,7 +102,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createReferences(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (AbstractReference<?> reference : componentType.getReferences().values()) {
+        for (ReferenceDefinition<ComponentType> reference : componentType.getReferences().values()) {
             String name = reference.getName();
             URI referenceUri = component.getUri().resolve('#' + name);
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);
@@ -158,13 +155,13 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createProducers(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ProducerDefinition producer : componentType.getProducers().values()) {
+        for (ProducerDefinition<ComponentType> producer : componentType.getProducers().values()) {
             String name = producer.getName();
             URI producerUri = component.getUri().resolve('#' + name);
             LogicalProducer logicalProducer = new LogicalProducer(producerUri, producer, component);
 
             // producer is configured in the component definition
-            ComponentProducer componentProducer = definition.getProducers().get(name);
+            ProducerDefinition<ComponentDefinition> componentProducer = definition.getProducers().get(name);
             if (componentProducer != null) {
                 for (URI uri : componentProducer.getTargets()) {
                     addTarget(logicalProducer, uri, component);

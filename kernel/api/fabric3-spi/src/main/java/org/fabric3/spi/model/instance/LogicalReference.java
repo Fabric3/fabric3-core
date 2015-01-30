@@ -22,8 +22,8 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 
 /**
@@ -32,7 +32,7 @@ import org.fabric3.api.model.type.component.ReferenceDefinition;
 public class LogicalReference extends LogicalBindable {
     private static final long serialVersionUID = 2308698868251298609L;
 
-    private AbstractReference definition;
+    private ReferenceDefinition<ComponentType> definition;
     private boolean resolved;
     private LogicalReference leafReference;
 
@@ -43,7 +43,7 @@ public class LogicalReference extends LogicalBindable {
      * @param definition the reference type definition
      * @param parent     the parent component
      */
-    public LogicalReference(URI uri, AbstractReference<?> definition, LogicalComponent<?> parent) {
+    public LogicalReference(URI uri, ReferenceDefinition<ComponentType> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         leafReference = this;
@@ -54,7 +54,7 @@ public class LogicalReference extends LogicalBindable {
      *
      * @return the reference type definition
      */
-    public AbstractReference getDefinition() {
+    public ReferenceDefinition<ComponentType> getDefinition() {
         return definition;
     }
 

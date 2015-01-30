@@ -39,9 +39,10 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.java.InjectableType;
@@ -258,7 +259,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         return interfaces;
     }
 
-    public Set<Method> getInjectionMethods(Class<?> type, Collection<AbstractService> services) {
+    public Set<Method> getInjectionMethods(Class<?> type, Collection<ServiceDefinition<ComponentType>> services) {
         Set<Signature> exclude = getOperations(services);
         Set<Method> methods = new HashSet<>();
         while (type != null) {
@@ -307,9 +308,9 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
     }
 
-    private Set<Signature> getOperations(Collection<AbstractService> services) {
+    private Set<Signature> getOperations(Collection<ServiceDefinition<ComponentType>> services) {
         Set<Signature> operations = new HashSet<>();
-        for (AbstractService definition : services) {
+        for (ServiceDefinition<ComponentType> definition : services) {
             List<? extends Operation> ops = definition.getServiceContract().getOperations();
             for (Operation operation : ops) {
                 String name = operation.getName();

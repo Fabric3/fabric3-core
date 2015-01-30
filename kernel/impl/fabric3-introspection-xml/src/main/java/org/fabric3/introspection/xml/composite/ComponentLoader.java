@@ -27,10 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.component.AbstractReference;
-import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentProducer;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.Implementation;
@@ -156,13 +153,13 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseService(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ServiceDefinition service = registry.load(reader, ServiceDefinition.class, context);
+        ServiceDefinition<ComponentDefinition> service = registry.load(reader, ServiceDefinition.class, context);
         if (service == null) {
             // there was an error with the service configuration, just skip it
             return;
         }
         String name = service.getName();
-        AbstractService typeService = componentType.getServices().get(name);
+        ServiceDefinition<ComponentType> typeService = componentType.getServices().get(name);
         if (typeService == null) {
             // ensure the service exists
             ComponentServiceNotFound failure = new ComponentServiceNotFound(name, definition, startLocation);
@@ -258,7 +255,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ComponentProducer producer = registry.load(reader, ComponentProducer.class, context);
+        ProducerDefinition<ComponentDefinition> producer = registry.load(reader, ProducerDefinition.class, context);
         if (producer == null) {
             // there was an error with the producer configuration, just skip it
             return;
@@ -341,7 +338,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location in the composite where the contract is defined
      * @param context     the context
      */
-    private void processServiceContract(ServiceDefinition service, AbstractService typeService, Location location, IntrospectionContext context) {
+    private void processServiceContract(ServiceDefinition service, ServiceDefinition<ComponentType> typeService, Location location, IntrospectionContext context) {
         if (service.getServiceContract() == null) {
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
@@ -369,7 +366,10 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the location in the composite where the reference is defines
      * @param context       the context
      */
-    private void processReferenceContract(ReferenceDefinition reference, AbstractReference typeReference, Location location, IntrospectionContext context) {
+    private void processReferenceContract(ReferenceDefinition reference,
+                                          ReferenceDefinition<ComponentType> typeReference,
+                                          Location location,
+                                          IntrospectionContext context) {
         if (reference.getServiceContract() == null) {
             // if the reference contract is not set, inherit from the component type service
             reference.setServiceContract(typeReference.getServiceContract());
@@ -396,7 +396,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location where the contract is defined in the composite
      * @param context     the context
      */
-    private void matchServiceCallbackContracts(ServiceDefinition service, AbstractService typeService, Location location, IntrospectionContext context) {
+    private void matchServiceCallbackContracts(ServiceDefinition service, ServiceDefinition<ComponentType> typeService, Location location, IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
         if (callbackContract == null) {
             return;
@@ -428,7 +428,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param context       the context
      */
     private void matchReferenceCallbackContracts(ReferenceDefinition reference,
-                                                 AbstractReference typeReference,
+                                                 ReferenceDefinition<ComponentType> typeReference,
                                                  Location location,
                                                  IntrospectionContext context) {
         ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
@@ -461,7 +461,10 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the current location
      * @param context       the context
      */
-    private void processMultiplicity(ReferenceDefinition reference, AbstractReference typeReference, Location location, IntrospectionContext context) {
+    private void processMultiplicity(ReferenceDefinition<ComponentDefinition> reference,
+                                     ReferenceDefinition<ComponentType> typeReference,
+                                     Location location,
+                                     IntrospectionContext context) {
         String name = reference.getName();
         if (reference.getMultiplicity() == null) {
             Multiplicity multiplicity = typeReference.getMultiplicity();

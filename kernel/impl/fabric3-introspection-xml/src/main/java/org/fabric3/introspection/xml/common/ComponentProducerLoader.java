@@ -19,29 +19,28 @@
  */
 package org.fabric3.introspection.xml.common;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.annotation.Source;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentProducer;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -49,7 +48,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component producer configuration.
  */
-public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<ComponentProducer> {
+public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<ProducerDefinition<ComponentDefinition>> {
     private static final QName PRODUCER = new QName(SCA_NS, "producer");
 
     private boolean roundTrip;
@@ -69,7 +68,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
         return PRODUCER;
     }
 
-    public ComponentProducer load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public ProducerDefinition<ComponentDefinition> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -80,7 +79,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
         }
 
         String targetAttribute = reader.getAttributeValue(null, "target");
-        ComponentProducer producer = new ComponentProducer(name);
+        ProducerDefinition<ComponentDefinition> producer = new ProducerDefinition<>(name);
 
         List<URI> targets = new ArrayList<>();
         if (targetAttribute != null) {

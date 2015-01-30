@@ -21,16 +21,16 @@ package org.fabric3.spi.model.instance;
 
 import java.net.URI;
 
-import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 
 /**
- * An instantiated service in the domain.
+ * An instantiated service.
  */
 public class LogicalService extends LogicalBindable {
     private static final long serialVersionUID = -2417797075030173948L;
 
-    private AbstractService definition;
-    private URI promote;
+    private ServiceDefinition<ComponentType> definition;
     private LogicalComponent<?> leafComponent;
     private LogicalService leafService;
 
@@ -42,7 +42,7 @@ public class LogicalService extends LogicalBindable {
      * @param parent     the service parent component
      */
     @SuppressWarnings("unchecked")
-    public LogicalService(URI uri, AbstractService definition, LogicalComponent<?> parent) {
+    public LogicalService(URI uri, ServiceDefinition<ComponentType> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         leafComponent = parent;
@@ -54,26 +54,8 @@ public class LogicalService extends LogicalBindable {
      *
      * @return the service definition for the logical service
      */
-    public AbstractService getDefinition() {
+    public ServiceDefinition<ComponentType> getDefinition() {
         return definition;
-    }
-
-    /**
-     * Returns the component service uri promoted by this service.
-     *
-     * @return the component service uri promoted by this service
-     */
-    public URI getPromotedUri() {
-        return promote;
-    }
-
-    /**
-     * Sets the component service uri promoted by this service
-     *
-     * @param uri the component service uri promoted by this service
-     */
-    public void setPromotedUri(URI uri) {
-        this.promote = uri;
     }
 
     /**
@@ -86,20 +68,8 @@ public class LogicalService extends LogicalBindable {
         return leafComponent;
     }
 
-    /**
-     * Sets the leaf component
-     *
-     * @param component the leaf component
-     */
-    public void setLeafComponent(LogicalComponent<?> component) {
-        this.leafComponent = component;
-    }
-
     public LogicalService getLeafService() {
         return leafService;
     }
 
-    public void setLeafService(LogicalService leafService) {
-        this.leafService = leafService;
-    }
 }

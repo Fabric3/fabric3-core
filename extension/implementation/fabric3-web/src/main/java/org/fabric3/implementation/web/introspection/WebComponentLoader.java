@@ -94,7 +94,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
 
             // check if an explicit component type file is present (required for backward compatibility)
             ComponentType componentType = loadComponentType(context);
-            for (Map.Entry<String, ReferenceDefinition> entry : componentType.getReferences().entrySet()) {
+            for (Map.Entry<String, ReferenceDefinition<ComponentType>> entry : componentType.getReferences().entrySet()) {
                 type.add(entry.getValue());
             }
             for (Map.Entry<String, Property> entry : componentType.getProperties().entrySet()) {
