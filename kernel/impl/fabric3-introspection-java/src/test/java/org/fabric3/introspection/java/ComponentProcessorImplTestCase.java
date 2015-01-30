@@ -16,7 +16,6 @@
  */
 package org.fabric3.introspection.java;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
@@ -26,11 +25,9 @@ import org.easymock.EasyMock;
 import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.introspection.java.ComponentProcessorImpl;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
-import static org.fabric3.api.model.type.java.JavaImplementation.IMPLEMENTATION_JAVA;
 
 /**
  *
@@ -75,7 +72,7 @@ public class ComponentProcessorImplTestCase extends TestCase {
         implementationProcessor = EasyMock.createMock(ImplementationProcessor.class);
 
         processor = new ComponentProcessorImpl();
-        Map<QName, ImplementationProcessor<?>> map = Collections.<QName, ImplementationProcessor<?>>singletonMap(IMPLEMENTATION_JAVA, implementationProcessor);
+        Map<String, ImplementationProcessor<?>> map = Collections.<String, ImplementationProcessor<?>>singletonMap("java", implementationProcessor);
         processor.setImplementationProcessors(map);
 
         ClassLoader classLoader = getClass().getClassLoader();

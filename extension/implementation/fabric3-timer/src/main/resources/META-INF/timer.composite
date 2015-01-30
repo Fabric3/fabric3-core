@@ -14,7 +14,7 @@
         <f3:implementation.system class="org.fabric3.implementation.timer.generator.TimerComponentGenerator"/>
     </component>
 
-    <component name="TimerImplementationProcessor" f3:key="f3:implementation.timer">
+    <component name="TimerImplementationProcessor">
         <f3:implementation.system class="org.fabric3.implementation.timer.introspection.TimerImplementationProcessor"/>
     </component>
 

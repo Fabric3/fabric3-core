@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.instantiator.wire;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -186,7 +185,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
     private class MockAtomicImpl extends Implementation<ComponentType> {
         private static final long serialVersionUID = 9075647188452892957L;
 
-        public QName getType() {
+        public String getType() {
             throw new UnsupportedOperationException();
         }
     }

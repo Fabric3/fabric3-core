@@ -53,7 +53,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ProviderResourceProcessor implements ResourceProcessor {
     private HostInfo info;
-    private Map<QName, ImplementationIntrospector> introspectors = Collections.emptyMap();
+    private Map<String, ImplementationIntrospector> introspectors = Collections.emptyMap();
 
     public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference HostInfo info) {
         this.info = info;
@@ -61,7 +61,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
     }
 
     @Reference(required = false)
-    public void setIntrospectors(Map<QName, ImplementationIntrospector> processors) {
+    public void setIntrospectors(Map<String, ImplementationIntrospector> processors) {
         this.introspectors = processors;
     }
 

@@ -43,7 +43,7 @@ public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBind
                                                     ServiceContract contract,
                                                     List<LogicalOperation> operations) throws GenerationException {
         ComponentDefinition<?> definition = bindingDefinition.getParent().getParent().getDefinition();
-        String testName = definition.getImplementation().getArtifactName();
+        String testName = definition.getImplementation().getImplementationName();
         ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
         return new JUnitWireSourceDefinition(testName, configuration);
     }

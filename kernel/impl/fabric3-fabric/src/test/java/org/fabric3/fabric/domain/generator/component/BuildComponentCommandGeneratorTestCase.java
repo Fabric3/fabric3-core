@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -76,7 +75,7 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
         private static final long serialVersionUID = -4177749325047896524L;
 
         @Override
-        public QName getType() {
+        public String getType() {
             return null;
         }
     }

@@ -18,16 +18,12 @@
  */
 package org.fabric3.api.model.type.java;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.component.Implementation;
-import org.oasisopen.sca.Constants;
 
 /**
  * Represents a Java component implementation type.
  */
 public class JavaImplementation extends Implementation<InjectingComponentType> {
-    public static final QName IMPLEMENTATION_JAVA = new QName(Constants.SCA_NS, "implementation.java");
     private static final long serialVersionUID = 8922589166061811190L;
     private String implementationClass;
     private transient Object instance;
@@ -40,8 +36,8 @@ public class JavaImplementation extends Implementation<InjectingComponentType> {
         this.implementationClass = instance.getClass().getName();
     }
 
-    public QName getType() {
-        return IMPLEMENTATION_JAVA;
+    public String getType() {
+        return "java";
     }
 
     public String getImplementationClass() {
@@ -52,7 +48,7 @@ public class JavaImplementation extends Implementation<InjectingComponentType> {
         this.implementationClass = implementationClass;
     }
 
-    public String getArtifactName() {
+    public String getImplementationName() {
         return getImplementationClass();
     }
 

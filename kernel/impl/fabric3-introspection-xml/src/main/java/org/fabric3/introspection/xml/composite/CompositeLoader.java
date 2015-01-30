@@ -99,8 +99,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
 
         String name = reader.getAttributeValue(null, "name");
         String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
-        String localStr = reader.getAttributeValue(null, "local");
-        boolean local = Boolean.valueOf(localStr);
         IntrospectionContext childContext = new DefaultIntrospectionContext(context, targetNamespace);
         QName compositeName = new QName(targetNamespace, name);
         NamespaceContext nsContext = createNamespaceContext(reader);
@@ -116,7 +114,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         parseModes(modes, type, reader, context);
 
         type.setContributionUri(context.getContributionUri());
-        type.setLocal(local);
 
         validateAttributes(reader, context, type);
 
@@ -268,12 +265,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         Composite included = include.getIncluded();
         if (included == null) {
             return;
-        }
-        if (type.isLocal() != included.isLocal()) {
-            InvalidInclude error = new InvalidInclude(
-                    "Composite " + type.getName() + " has a local value of " + type.isLocal() + " and the included composite " + includeName
-                    + " has a value of " + included.isLocal(), startLocation);
-            context.addError(error);
         }
         for (ComponentDefinition definition : included.getComponents().values()) {
             String key = definition.getName();

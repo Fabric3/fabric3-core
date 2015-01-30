@@ -16,8 +16,6 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -26,9 +24,8 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class NonManagedImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = 8179450453871659967L;
-    private static final QName TYPE = new QName(org.fabric3.api.Namespaces.F3, "NonManaged");
 
-    public QName getType() {
-        return TYPE;
+    public String getType() {
+        return "NonManaged";
     }
 }

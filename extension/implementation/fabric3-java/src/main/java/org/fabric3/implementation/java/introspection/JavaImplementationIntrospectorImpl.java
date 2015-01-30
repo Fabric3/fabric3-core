@@ -21,6 +21,7 @@ package org.fabric3.implementation.java.introspection;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
@@ -36,6 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
+@Key("java")
 public class JavaImplementationIntrospectorImpl implements JavaImplementationIntrospector {
     private final ClassVisitor classVisitor;
     private final HeuristicProcessor heuristic;

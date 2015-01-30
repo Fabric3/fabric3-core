@@ -81,7 +81,7 @@ public class SystemImplementationProvider {
         compositeBuilder.component(newBuilder(SystemTargetConnectionAttacher.class).key(SystemConnectionTargetDefinition.class.getName()).build());
 
         SystemComponentDefinitionBuilder componentBuilder = newBuilder("SystemImplementationIntrospectorImpl", SystemImplementationIntrospectorImpl.class);
-        componentBuilder.key(Namespaces.F3_PREFIX + "implementation.system");
+        componentBuilder.key("system");
         componentBuilder.reference("heuristic", "SystemHeuristic");
         compositeBuilder.component(componentBuilder.build());
 

@@ -411,7 +411,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         private static final long serialVersionUID = -8283300933931216298L;
 
         @Override
-        public QName getType() {
+        public String getType() {
             return null;
         }
     }

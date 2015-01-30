@@ -20,7 +20,6 @@
 package org.fabric3.fabric.domain.instantiator.component;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -273,7 +272,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         private static final long serialVersionUID = 820191204264624733L;
 
         @Override
-        public QName getType() {
+        public String getType() {
             return null;
         }
     }

@@ -19,6 +19,7 @@
  */
 package org.fabric3.implementation.system.introspection;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -34,6 +35,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Loads a system component type
  */
+@Key("system")
 public class SystemImplementationIntrospectorImpl implements ImplementationIntrospector {
     private final ClassVisitor classVisitor;
     private final HeuristicProcessor heuristic;

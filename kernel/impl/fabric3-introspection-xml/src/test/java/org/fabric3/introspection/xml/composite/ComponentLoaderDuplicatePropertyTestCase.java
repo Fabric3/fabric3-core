@@ -19,6 +19,7 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
@@ -37,12 +38,11 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  *
  */
 public class ComponentLoaderDuplicatePropertyTestCase extends TestCase {
-    private static String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
-            + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
-            + "<f3:implementation.testing/>"
-            + "<property name='prop'><value>val</value></property>"
-            + "<property name='prop'><value>val</value></property>"
-            + "</component>";
+    private static final QName IMPLEMENTATION_TESTING = new QName(org.fabric3.api.Namespaces.F3, "implementation.testing");
+
+    private static String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' " + "xmlns:f3='"
+                                + org.fabric3.api.Namespaces.F3 + "'>" + "<f3:implementation.testing/>" + "<property name='prop'><value>val</value></property>"
+                                + "<property name='prop'><value>val</value></property>" + "</component>";
 
     private ComponentLoader loader;
     private XMLStreamReader reader;
@@ -67,7 +67,7 @@ public class ComponentLoaderDuplicatePropertyTestCase extends TestCase {
 
         MockImplementationLoader implLoader = new MockImplementationLoader();
         implLoader.setProperties(new Property("prop"));
-        registry.registerLoader(MockImplementation.TYPE, implLoader);
+        registry.registerLoader(IMPLEMENTATION_TESTING, implLoader);
         loader = new ComponentLoader(registry, helper);
 
         reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));

@@ -18,18 +18,15 @@
  */
 package org.fabric3.implementation.spring.model;
 
-import javax.xml.namespace.QName;
 import java.util.List;
 
 import org.fabric3.api.model.type.component.Implementation;
-import org.oasisopen.sca.Constants;
 
 /**
  * A Spring component implementation type.
  */
 public class SpringImplementation extends Implementation<SpringComponentType> {
     private static final long serialVersionUID = -6701786225245805039L;
-    public static final QName IMPLEMENTATION_SPRING = new QName(Constants.SCA_NS, "implementation.spring");
 
     public enum LocationType {
         JAR, DIRECTORY, FILE
@@ -40,8 +37,8 @@ public class SpringImplementation extends Implementation<SpringComponentType> {
 
     private LocationType locationType = LocationType.FILE;
 
-    public QName getType() {
-        return IMPLEMENTATION_SPRING;
+    public String getType() {
+        return "spring";
     }
 
     public String getLocation() {

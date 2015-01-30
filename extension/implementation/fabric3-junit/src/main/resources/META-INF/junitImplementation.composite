@@ -9,7 +9,7 @@
         <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationLoader"/>
     </component>
 
-    <component name="JUnitImplementationIntrospector" f3:key="f3:junit">
+    <component name="JUnitImplementationIntrospector">
         <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationIntrospectorImpl"/>
         <reference name="heuristic" target="JUnitHeuristic"/>
     </component>
@@ -22,7 +22,7 @@
         <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitArtifactIntrospector"/>
     </component>
 
-    <component name="JUnitImplementationProcessor" f3:key="f3:junit">
+    <component name="JUnitImplementationProcessor">
         <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationProcessor"/>
     </component>
 

@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,7 +137,7 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
             return componentType;
         }
 
-        public QName getType() {
+        public String getType() {
             return null;
         }
     }

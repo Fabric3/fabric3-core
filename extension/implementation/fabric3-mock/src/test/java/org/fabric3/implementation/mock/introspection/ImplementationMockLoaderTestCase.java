@@ -18,21 +18,16 @@
  */
 package org.fabric3.implementation.mock.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.implementation.mock.introspection.Bar;
-import org.fabric3.implementation.mock.introspection.Baz;
-import org.fabric3.implementation.mock.introspection.Foo;
-import org.fabric3.implementation.mock.introspection.ImplementationMockLoader;
-import org.fabric3.implementation.mock.introspection.MockComponentTypeLoader;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -40,6 +35,8 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  *
  */
 public class ImplementationMockLoaderTestCase extends TestCase {
+    private static final QName IMPLEMENTATION_MOCK = new QName(org.fabric3.api.Namespaces.F3, "implementation.mock");
+
     private static final String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
             "           xmlns:sca='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
             "           xmlns:f3='urn:fabric3.org'" +
@@ -66,7 +63,7 @@ public class ImplementationMockLoaderTestCase extends TestCase {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
 
         while (reader.hasNext()) {
-            if (reader.next() == XMLStreamConstants.START_ELEMENT && ImplementationMock.IMPLEMENTATION_MOCK.equals(reader.getName())) {
+            if (reader.next() == XMLStreamConstants.START_ELEMENT && IMPLEMENTATION_MOCK.equals(reader.getName())) {
                 break;
             }
         }

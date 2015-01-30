@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -245,7 +244,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         private static final long serialVersionUID = -7252835651799578229L;
 
         @Override
-        public QName getType() {
+        public String getType() {
             return null;
         }
     }

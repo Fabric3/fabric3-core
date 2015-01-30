@@ -18,16 +18,17 @@
  */
 package org.fabric3.implementation.mock.introspection;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -40,6 +41,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class ImplementationMockLoader implements TypeLoader<ImplementationMock> {
+    private static final QName IMPLEMENTATION_MOCK = new QName(org.fabric3.api.Namespaces.F3, "implementation.mock");
 
     private final MockComponentTypeLoader componentTypeLoader;
 
@@ -61,7 +63,7 @@ public class ImplementationMockLoader implements TypeLoader<ImplementationMock> 
      */
     public ImplementationMock load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
 
-        assert reader.getName().equals(ImplementationMock.IMPLEMENTATION_MOCK);
+        assert reader.getName().equals(IMPLEMENTATION_MOCK);
 
         String textualContent = reader.getElementText().trim();
 
@@ -74,7 +76,7 @@ public class ImplementationMockLoader implements TypeLoader<ImplementationMock> 
 
         InjectingComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);
 
-        assert reader.getName().equals(ImplementationMock.IMPLEMENTATION_MOCK);
+        assert reader.getName().equals(IMPLEMENTATION_MOCK);
 
         return new ImplementationMock(mockedInterfaces, componentType);
 

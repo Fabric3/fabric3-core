@@ -5,7 +5,7 @@
            name="SystemImplementationComposite"
            autowire="true">
 
-    <component name="SystemImplementationLoader" f3:key="f3:implementation.system">
+    <component name="SystemImplementationLoader">
         <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationLoader"/>
     </component>
 
@@ -29,7 +29,7 @@
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher"/>
     </component>
 
-    <component name="SystemImplementationIntrospector" f3:key="f3:implementation.system">
+    <component name="SystemImplementationIntrospector">
         <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationIntrospectorImpl"/>
         <reference name="heuristic" target="SystemHeuristic"/>
     </component>

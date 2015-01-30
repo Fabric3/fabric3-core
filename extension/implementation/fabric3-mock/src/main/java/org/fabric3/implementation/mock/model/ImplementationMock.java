@@ -19,7 +19,6 @@
 package org.fabric3.implementation.mock.model;
 
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -30,7 +29,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 public class ImplementationMock extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3519206465795353416L;
 
-    public static final QName IMPLEMENTATION_MOCK = new QName(org.fabric3.api.Namespaces.F3, "implementation.mock");
 
     private final List<String> mockedInterfaces;
 
@@ -58,8 +56,8 @@ public class ImplementationMock extends Implementation<InjectingComponentType> {
      * Gets the component type qualified name.
      */
     @Override
-    public QName getType() {
-        return IMPLEMENTATION_MOCK;
+    public String getType() {
+        return "mock";
     }
 
 }

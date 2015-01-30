@@ -19,6 +19,7 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
@@ -36,6 +37,7 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  *
  */
 public class ComponentServiceLoaderTestCase extends TestCase {
+    private static final QName IMPLEMENTATION_MOCK = new QName(org.fabric3.api.Namespaces.F3, "implementation.mock");
     private static final String XML = "<service xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='service'/>";
 
     private ComponentServiceLoader loader;
@@ -53,7 +55,7 @@ public class ComponentServiceLoaderTestCase extends TestCase {
         LoaderRegistry registry = new LoaderRegistryImpl();
 
         MockImplementationLoader implLoader = new MockImplementationLoader();
-        registry.registerLoader(MockImplementation.TYPE, implLoader);
+        registry.registerLoader(IMPLEMENTATION_MOCK, implLoader);
         loader = new ComponentServiceLoader(registry);
 
         reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));

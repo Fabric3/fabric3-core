@@ -18,15 +18,12 @@
  */
 package org.fabric3.implementation.junit.model;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.java.JavaImplementation;
 
 /**
  *
  */
 public class JUnitImplementation extends JavaImplementation {
-    public static final QName IMPLEMENTATION_JUNIT = new QName(org.fabric3.api.Namespaces.F3, "junit");
     private static final long serialVersionUID = -5048471724313487914L;
     private String implementationClass;
 
@@ -39,8 +36,8 @@ public class JUnitImplementation extends JavaImplementation {
         this.implementationClass = className;
     }
 
-    public QName getType() {
-        return IMPLEMENTATION_JUNIT;
+    public String getType() {
+        return "junit";
     }
 
     /**
@@ -52,7 +49,7 @@ public class JUnitImplementation extends JavaImplementation {
         return implementationClass;
     }
 
-    public String getArtifactName() {
+    public String getImplementationName() {
         return getImplementationClass();
     }
 

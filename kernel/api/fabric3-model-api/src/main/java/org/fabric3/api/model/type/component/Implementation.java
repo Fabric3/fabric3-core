@@ -19,8 +19,6 @@
  */
 package org.fabric3.api.model.type.component;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.ModelObject;
 
 /**
@@ -58,19 +56,19 @@ public abstract class Implementation<T extends ComponentType> extends ModelObjec
     }
 
     /**
-     * Returns the implementation artifact name.
+     * Returns the implementation name.
      *
-     * @return the implementation artifact name
+     * @return the implementation name
      */
-    public String getArtifactName() {
+    public String getImplementationName() {
         return null;
     }
 
     /**
-     * Returns the XML element corresponding to this type.
+     * Returns implementation type.
      *
-     * @return the XML element corresponding to this type
+     * @return the implementation type
      */
-    public abstract QName getType();
+    public abstract String getType();
 
 }

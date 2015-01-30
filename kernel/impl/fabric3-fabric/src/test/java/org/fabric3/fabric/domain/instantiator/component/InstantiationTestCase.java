@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.instantiator.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -89,7 +88,7 @@ public class InstantiationTestCase extends TestCase {
     private class MockImplementation extends Implementation<ComponentType> {
         private static final long serialVersionUID = 4128780797281194069L;
 
-        public QName getType() {
+        public String getType() {
             return null;
         }
     }

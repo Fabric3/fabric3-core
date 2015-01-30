@@ -36,7 +36,8 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  *
  */
 public class ComponentLoaderNoReferenceTestCase extends TestCase {
-    private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
+
+    private static String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
             + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
             + "<f3:implementation.testing/>"
             + "<reference name='notThere' target='test'/>"

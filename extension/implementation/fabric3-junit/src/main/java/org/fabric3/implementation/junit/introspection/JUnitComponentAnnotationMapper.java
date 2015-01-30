@@ -30,9 +30,8 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class JUnitComponentAnnotationMapper implements ComponentAnnotationMapper {
-    private static final QName JUNIT = new QName(Namespaces.F3, "junit");
 
-    public QName getImplementationType(Annotation annotation) {
+    public String getImplementationType(Annotation annotation) {
         if (!(annotation instanceof RunWith)) {
             return null;
         }
@@ -40,6 +39,6 @@ public class JUnitComponentAnnotationMapper implements ComponentAnnotationMapper
         if (!Fabric3Runner.class.equals(runWith.value())) {
             return null;
         }
-        return JUNIT;
+        return "junit";
     }
 }

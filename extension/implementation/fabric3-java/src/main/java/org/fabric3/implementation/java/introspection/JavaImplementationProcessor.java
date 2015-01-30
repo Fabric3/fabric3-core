@@ -16,6 +16,7 @@
  */
 package org.fabric3.implementation.java.introspection;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -26,6 +27,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Adds metadata for Java component implementations.
  */
+@Key("java")
 public class JavaImplementationProcessor extends AbstractPojoImplementationProcessor {
     public JavaImplementationProcessor(@Reference JavaContractProcessor processor,
                                        @Reference JavaImplementationIntrospector introspector,

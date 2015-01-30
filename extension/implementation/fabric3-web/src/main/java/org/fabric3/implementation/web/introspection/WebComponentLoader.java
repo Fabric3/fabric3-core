@@ -18,6 +18,7 @@
  */
 package org.fabric3.implementation.web.introspection;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -47,7 +48,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -57,6 +57,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplementation> {
+    private static final QName IMPLEMENTATION_WEB = new QName(org.oasisopen.sca.Constants.SCA_NS, "implementation.web");
     private LoaderRegistry registry;
     private MetaDataStore metaDataStore;
 
@@ -68,14 +69,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
 
     @Init
     public void init() {
-        registry.registerLoader(WebImplementation.IMPLEMENTATION_WEB, this);
-        registry.registerLoader(WebImplementation.IMPLEMENTATION_WEBAPP, this);
-    }
-
-    @Destroy
-    public void destroy() {
-        registry.unregisterLoader(WebImplementation.IMPLEMENTATION_WEB);
-        registry.unregisterLoader(WebImplementation.IMPLEMENTATION_WEBAPP);
+        registry.registerLoader(IMPLEMENTATION_WEB, this);
     }
 
     public WebImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {

@@ -25,7 +25,7 @@ import org.fabric3.api.implementation.timer.model.TimerType;
 /**
  * Configures a timer component.
  */
-@Implementation("{urn:fabric3.org}implementation.timer")
+@Implementation("timer")
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Timer {
 

@@ -177,7 +177,7 @@ public class BindingSelectorImplTestCase extends TestCase {
         composite.addComponent(source);
 
         ComponentDefinition definition = new ComponentDefinition("target", new Implementation<ComponentType>() {
-            public QName getType() {
+            public String getType() {
                 return null;
             }
         });

@@ -16,6 +16,7 @@
  */
 package org.fabric3.implementation.timer.introspection;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.implementation.timer.annotation.Timer;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.implementation.timer.model.TimerImplementation;
@@ -35,6 +36,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("timer")
 public class TimerImplementationProcessor extends AbstractPojoImplementationProcessor {
     public TimerImplementationProcessor(@Reference JavaContractProcessor processor,
                                         @Reference JavaImplementationIntrospector introspector,

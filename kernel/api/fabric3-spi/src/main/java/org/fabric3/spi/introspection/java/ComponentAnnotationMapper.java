@@ -16,7 +16,6 @@
  */
 package org.fabric3.spi.introspection.java;
 
-import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
 
 /**
@@ -30,6 +29,6 @@ public interface ComponentAnnotationMapper {
      * @param annotation the annotation
      * @return the component implementation type associated with the annotation or null if there is no association.
      */
-    QName getImplementationType(Annotation annotation);
+    String getImplementationType(Annotation annotation);
 
 }

@@ -18,8 +18,6 @@
  */
 package org.fabric3.api.implementation.timer.model;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.java.JavaImplementation;
 
 /**
@@ -28,11 +26,10 @@ import org.fabric3.api.model.type.java.JavaImplementation;
 public class TimerImplementation extends JavaImplementation {
     private static final long serialVersionUID = -911919528396189874L;
 
-    public static final QName IMPLEMENTATION_TIMER = new QName(org.fabric3.api.Namespaces.F3, "implementation.timer");
     private TimerData timerData;
 
-    public QName getType() {
-        return IMPLEMENTATION_TIMER;
+    public String getType() {
+        return "timer";
     }
 
     public TimerData getTimerData() {

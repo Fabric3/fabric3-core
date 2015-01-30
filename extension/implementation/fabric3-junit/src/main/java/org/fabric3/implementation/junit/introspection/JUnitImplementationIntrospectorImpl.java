@@ -18,8 +18,8 @@
  */
 package org.fabric3.implementation.junit.introspection;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -27,11 +27,12 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
+@Key("junit")
 public class JUnitImplementationIntrospectorImpl implements JUnitImplementationIntrospector {
     private final ClassVisitor classVisitor;
     private final HeuristicProcessor heuristic;

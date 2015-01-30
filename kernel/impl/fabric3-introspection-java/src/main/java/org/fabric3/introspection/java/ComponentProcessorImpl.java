@@ -16,7 +16,6 @@
  */
 package org.fabric3.introspection.java;
 
-import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +24,6 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.model.Implementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ComponentAnnotationMapper;
 import org.fabric3.spi.introspection.java.ComponentProcessor;
@@ -36,11 +34,11 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ComponentProcessorImpl implements ComponentProcessor {
-    private Map<QName, ImplementationProcessor<?>> implementationProcessors = Collections.emptyMap();
+    private Map<String, ImplementationProcessor<?>> implementationProcessors = Collections.emptyMap();
     private List<ComponentAnnotationMapper> mappers = new ArrayList<>();
 
     @Reference(required = false)
-    public void setImplementationProcessors(Map<QName, ImplementationProcessor<?>> implementationProcessors) {
+    public void setImplementationProcessors(Map<String, ImplementationProcessor<?>> implementationProcessors) {
         this.implementationProcessors = implementationProcessors;
     }
 
@@ -51,7 +49,7 @@ public class ComponentProcessorImpl implements ComponentProcessor {
 
     @SuppressWarnings("unchecked")
     public void process(ComponentDefinition<?> definition, IntrospectionContext context) {
-        QName type = definition.getImplementation().getType();
+        String type = definition.getImplementation().getType();
         ImplementationProcessor processor = implementationProcessors.get(type);
         if (processor == null) {
             context.addError(new UnknownImplementation("Unknown implementation type: " + type));
@@ -62,15 +60,15 @@ public class ComponentProcessorImpl implements ComponentProcessor {
 
     @SuppressWarnings("unchecked")
     public void process(ComponentDefinition<?> definition, Class clazz, IntrospectionContext context) {
-        QName implementationType = JavaImplementation.IMPLEMENTATION_JAVA;   // default to Java the implementation type
+        String implementationType = "java";   // default to Java the implementation type
         for (Annotation annotation : clazz.getAnnotations()) {
             Implementation implementation = annotation.annotationType().getAnnotation(Implementation.class);
             if (implementation != null) {
-                implementationType = QName.valueOf(implementation.value());
+                implementationType = implementation.value();
                 break;
             } else {
                 for (ComponentAnnotationMapper mapper : mappers) {
-                    QName alias = mapper.getImplementationType(annotation);
+                    String alias = mapper.getImplementationType(annotation);
                     if (alias != null) {
                         implementationType = alias;
                         break;

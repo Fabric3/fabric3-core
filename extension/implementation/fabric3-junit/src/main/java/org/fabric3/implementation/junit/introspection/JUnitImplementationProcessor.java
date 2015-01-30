@@ -16,6 +16,7 @@
  */
 package org.fabric3.implementation.junit.introspection;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
@@ -31,6 +32,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("junit")
 public class JUnitImplementationProcessor implements ImplementationProcessor<JUnitImplementation> {
     private JUnitImplementationIntrospector introspector;
 

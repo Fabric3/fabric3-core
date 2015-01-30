@@ -18,8 +18,6 @@
  */
 package org.fabric3.implementation.web.introspection;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -28,9 +26,8 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class WebArtifactImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -5415465119697665067L;
-    public static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "webArtifact");
 
-    public QName getType() {
-        return QNAME;
+    public String getType() {
+        return "webartifact";
     }
 }

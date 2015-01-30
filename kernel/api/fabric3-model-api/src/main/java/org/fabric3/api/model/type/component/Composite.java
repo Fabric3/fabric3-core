@@ -39,7 +39,6 @@ public class Composite extends ComponentType {
 
     private QName name;
     private URI contributionUri;
-    private boolean local;
 
     private boolean deployable;
     private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.NODE);
@@ -110,24 +109,6 @@ public class Composite extends ComponentType {
      */
     public void setContributionUri(URI contributionUri) {
         this.contributionUri = contributionUri;
-    }
-
-    /**
-     * Indicates if components in this composite should be co-located.
-     *
-     * @return true if components in this composite should be co-located
-     */
-    public boolean isLocal() {
-        return local;
-    }
-
-    /**
-     * Sets whether components in this composite should be co-located.
-     *
-     * @param local true if components in this composite should be co-located
-     */
-    public void setLocal(boolean local) {
-        this.local = local;
     }
 
     /**

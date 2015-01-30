@@ -23,18 +23,16 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Implementation;
-import org.oasisopen.sca.Constants;
 
 /**
  * A composite component implementation.
  */
 public class CompositeImplementation extends Implementation<Composite> {
     private static final long serialVersionUID = 2140686609936627287L;
-    private static final QName IMPLEMENTATION_COMPOSITE = new QName(Constants.SCA_NS, "implementation.composite");
     private QName name;
 
-    public QName getType() {
-        return IMPLEMENTATION_COMPOSITE;
+    public String getType() {
+        return "composite";
     }
 
     public QName getName() {
@@ -45,9 +43,8 @@ public class CompositeImplementation extends Implementation<Composite> {
         this.name = name;
     }
 
-    public String getArtifactName() {
+    public String getImplementationName() {
         return name == null ? null : name.toString();
     }
-
 
 }

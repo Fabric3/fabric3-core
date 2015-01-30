@@ -23,21 +23,23 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.model.type.system.SystemImplementation;
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.system.SystemImplementation;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads information for a system implementation
  */
 @EagerInit
+@Key(Namespaces.F3_PREFIX + "implementation.system")
 public class SystemImplementationLoader extends AbstractValidatingTypeLoader<SystemImplementation> {
     private ImplementationIntrospector implementationIntrospector;
 

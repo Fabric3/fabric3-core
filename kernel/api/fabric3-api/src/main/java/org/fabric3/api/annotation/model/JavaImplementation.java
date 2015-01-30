@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({TYPE})
 @Retention(RUNTIME)
-@Implementation("{http://docs.oasis-open.org/ns/opencsa/sca/200912}implementation.java")
+@Implementation("java")
 @Inherited
 public @interface JavaImplementation {
 }
