@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
@@ -152,7 +152,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
     private LogicalComponent<?> createSourceAtomic(Class<?> requiredInterface, LogicalCompositeComponent parent) {
 
         ServiceContract contract = new JavaServiceContract(requiredInterface);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("ref", contract, Multiplicity.ONE_ONE);
+        ReferenceDefinition<ComponentType> referenceDefinition = new ReferenceDefinition<>("ref", contract, Multiplicity.ONE_ONE);
         ComponentType type = new ComponentType();
         type.add(referenceDefinition);
         MockAtomicImpl impl = new MockAtomicImpl();
@@ -170,7 +170,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
     private LogicalComponent<?> createTargetAtomic(Class<?> serviceInterface, LogicalCompositeComponent parent) {
         URI uri = URI.create("target");
         JavaServiceContract contract = new JavaServiceContract(serviceInterface);
-        ServiceDefinition service = new ServiceDefinition("service", contract);
+        ServiceDefinition<ComponentType> service = new ServiceDefinition<>("service", contract);
         ComponentType type = new ComponentType();
         type.add(service);
         MockAtomicImpl impl = new MockAtomicImpl();

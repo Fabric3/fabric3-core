@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
@@ -196,7 +196,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      */
     @SuppressWarnings("unchecked")
     private LogicalComponent<?> instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
-        if (definition.getImplementation() instanceof CompositeImplementation) {
+        if (definition.getComponentType() instanceof Composite) {
             ComponentDefinition<CompositeImplementation> componentDefinition = (ComponentDefinition<CompositeImplementation>) definition;
             return compositeComponentInstantiator.instantiate(componentDefinition, parent, context);
         } else {

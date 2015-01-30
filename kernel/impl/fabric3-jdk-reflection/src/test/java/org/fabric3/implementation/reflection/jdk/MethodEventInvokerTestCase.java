@@ -21,7 +21,6 @@ package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Method;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 
@@ -35,7 +34,7 @@ public class MethodEventInvokerTestCase extends TestCase {
         MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
         try {
             injector.invoke(new Foo());
-            Assert.fail();
+            fail();
         } catch (ObjectCallbackException e) {
             // expected
         }

@@ -48,7 +48,7 @@ public class ArrayBuilderImplTestCase extends TestCase {
     public void testArrayBuild() throws Exception {
         DataType type = new JavaType(String[].class);
 
-        List list = Collections.singletonList(String.class);
+        List<Class<?>> list = Collections.singletonList(String.class);
 
         registry.getTransformer(TypeConstants.PROPERTY_TYPE, JAVA_CLASS, list, list);
         EasyMock.expectLastCall().andReturn(new MockTransformer());

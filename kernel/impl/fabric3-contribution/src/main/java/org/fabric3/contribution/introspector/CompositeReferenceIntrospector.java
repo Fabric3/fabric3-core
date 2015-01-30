@@ -2,16 +2,13 @@ package org.fabric3.contribution.introspector;
 
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeImplementation;
-import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.ReferenceIntrospector;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Determines if a composite references another artifact. Currently only composite references from child component implementations
@@ -33,9 +30,8 @@ public class CompositeReferenceIntrospector implements ReferenceIntrospector<QNa
             }
         }
         for (ComponentDefinition<?> component : composite.getComponents().values()) {
-            Implementation<?> implementation = component.getImplementation();
-            if (implementation instanceof CompositeImplementation) {
-                Composite type = (Composite) implementation.getComponentType();
+            if (component.getComponentType() instanceof Composite) {
+                Composite type = (Composite) component.getComponentType();
                 if (name.equals(type.getName())) {
                     return true;
                 }

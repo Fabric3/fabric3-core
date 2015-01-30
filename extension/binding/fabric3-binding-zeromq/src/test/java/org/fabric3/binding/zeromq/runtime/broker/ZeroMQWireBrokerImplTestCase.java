@@ -94,6 +94,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
 
+        //noinspection unchecked
         EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
                                                              EasyMock.isA(List.class),
                                                              EasyMock.isA(List.class),
@@ -132,6 +133,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
 
+        //noinspection unchecked
         EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
                                                              EasyMock.isA(List.class),
                                                              EasyMock.isA(List.class),

@@ -25,7 +25,6 @@ import java.util.Set;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
@@ -150,11 +149,12 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
                     if (value instanceof Composite) {
                         Composite current = (Composite) value;
                         for (ComponentDefinition component : current.getDeclaredComponents().values()) {
-                            if (component.getImplementation() instanceof CompositeImplementation) {
-                                CompositeImplementation implementation = (CompositeImplementation) component.getImplementation();
-                                if (implementation.getComponentType().getName().equals(newComposite.getName())) {
+                            if (component.getComponentType() instanceof Composite) {
+
+                                if (((Composite)component.getComponentType()).getName().equals(newComposite.getName())) {
                                     // replace with the updated composite
-                                    implementation.setComponentType(newComposite);
+                                    //noinspection unchecked
+                                    component.getImplementation().setComponentType(newComposite);
                                     set.add(current);
                                 }
                             }

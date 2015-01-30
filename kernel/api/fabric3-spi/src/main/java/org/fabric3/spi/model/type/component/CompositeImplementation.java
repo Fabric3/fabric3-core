@@ -17,10 +17,12 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.api.model.type.component;
+package org.fabric3.spi.model.type.component;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Implementation;
 import org.oasisopen.sca.Constants;
 
 /**

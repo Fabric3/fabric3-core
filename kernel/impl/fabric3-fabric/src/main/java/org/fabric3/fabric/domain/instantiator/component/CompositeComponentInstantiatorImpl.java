@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
@@ -66,7 +66,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                                                                  InstantiationContext context) {
 
         URI uri = URI.create(parent.getUri() + "/" + definition.getName());
-        Composite composite = definition.getImplementation().getComponentType();
+        Composite composite = Composite.class.cast(definition.getComponentType());
 
         LogicalCompositeComponent component = new LogicalCompositeComponent(uri, definition, parent);
         initializeProperties(component, definition, context);

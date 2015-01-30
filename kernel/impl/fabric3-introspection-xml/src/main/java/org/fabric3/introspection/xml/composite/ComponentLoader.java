@@ -153,7 +153,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseService(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ServiceDefinition<ComponentDefinition> service = registry.load(reader, ServiceDefinition.class, context);
+        @SuppressWarnings("unchecked") ServiceDefinition<ComponentDefinition> service = registry.load(reader, ServiceDefinition.class, context);
         if (service == null) {
             // there was an error with the service configuration, just skip it
             return;
@@ -179,7 +179,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     private ComponentDefinition<?> parseSubElements(ComponentDefinition<Implementation<?>> definition, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
-        ComponentType componentType = definition.getImplementation().getComponentType();
+        ComponentType componentType = definition.getComponentType();
 
         Map<Property, Location> propertyLocations = new HashMap<>();
         while (true) {
@@ -214,7 +214,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseReference(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ReferenceDefinition<ComponentDefinition> reference = registry.load(reader, ReferenceDefinition.class, context);
+        @SuppressWarnings("unchecked") ReferenceDefinition<ComponentDefinition> reference = registry.load(reader, ReferenceDefinition.class, context);
         if (reference == null) {
             // there was an error with the reference configuration, just skip it
             return;
@@ -255,7 +255,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ProducerDefinition<ComponentDefinition> producer = registry.load(reader, ProducerDefinition.class, context);
+        @SuppressWarnings("unchecked") ProducerDefinition<ComponentDefinition> producer = registry.load(reader, ProducerDefinition.class, context);
         if (producer == null) {
             // there was an error with the producer configuration, just skip it
             return;
@@ -277,7 +277,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        ConsumerDefinition<ComponentDefinition> consumer = registry.load(reader, ConsumerDefinition.class, context);
+        @SuppressWarnings("unchecked") ConsumerDefinition<ComponentDefinition> consumer = registry.load(reader, ConsumerDefinition.class, context);
         if (consumer == null) {
             // there was an error with the consumer configuration, just skip it
             return;
@@ -338,7 +338,10 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location in the composite where the contract is defined
      * @param context     the context
      */
-    private void processServiceContract(ServiceDefinition service, ServiceDefinition<ComponentType> typeService, Location location, IntrospectionContext context) {
+    private void processServiceContract(ServiceDefinition service,
+                                        ServiceDefinition<ComponentType> typeService,
+                                        Location location,
+                                        IntrospectionContext context) {
         if (service.getServiceContract() == null) {
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
@@ -396,7 +399,10 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location where the contract is defined in the composite
      * @param context     the context
      */
-    private void matchServiceCallbackContracts(ServiceDefinition service, ServiceDefinition<ComponentType> typeService, Location location, IntrospectionContext context) {
+    private void matchServiceCallbackContracts(ServiceDefinition service,
+                                               ServiceDefinition<ComponentType> typeService,
+                                               Location location,
+                                               IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
         if (callbackContract == null) {
             return;
@@ -498,7 +504,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void validateRequiredProperties(ComponentDefinition<?> definition, Map<Property, Location> propertyLocations, IntrospectionContext context) {
-        ComponentType type = definition.getImplementation().getComponentType();
+        ComponentType type = definition.getComponentType();
         Map<String, ? extends Property> properties = type.getProperties();
         Map<String, PropertyValue> values = definition.getPropertyValues();
         for (Property property : properties.values()) {

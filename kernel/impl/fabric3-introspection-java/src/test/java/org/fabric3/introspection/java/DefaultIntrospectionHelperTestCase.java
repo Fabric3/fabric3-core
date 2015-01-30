@@ -254,7 +254,7 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
 
     private JavaServiceContract createContract() {
         JavaServiceContract contract = new JavaServiceContract(InterfaceWithSetter.class);
-        List inputTypes = Collections.singletonList(new JavaType(Integer.TYPE));
+        List<DataType> inputTypes = Collections.singletonList(new JavaType(Integer.TYPE));
         JavaType outputType = new JavaType(Void.class);
         Operation operation = new Operation("setFromInterface", inputTypes, outputType, Collections.<DataType>emptyList());
         contract.setOperations(Collections.singletonList(operation));

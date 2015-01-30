@@ -43,7 +43,6 @@ import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.contribution.archive.SyntheticDirectoryClasspathProcessor;
@@ -137,10 +136,8 @@ public class BootstrapCompositeFactory {
     private static void addContributionUri(URI contributionUri, Composite composite) {
         composite.setContributionUri(contributionUri);
         for (ComponentDefinition<?> definition : composite.getComponents().values()) {
-            Implementation<?> implementation = definition.getImplementation();
-            if (CompositeImplementation.class.isInstance(implementation)) {
-                CompositeImplementation compositeImplementation = CompositeImplementation.class.cast(implementation);
-                Composite componentType = compositeImplementation.getComponentType();
+            if (definition.getComponentType() instanceof Composite) {
+                Composite componentType = Composite.class.cast(definition.getComponentType());
                 addContributionUri(contributionUri, componentType);
             } else {
                 definition.setContributionUri(contributionUri);

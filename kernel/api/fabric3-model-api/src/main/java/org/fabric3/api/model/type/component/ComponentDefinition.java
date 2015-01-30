@@ -91,7 +91,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      * @return Component type.
      */
     public ComponentType getComponentType() {
-        return getImplementation().getComponentType();
+        return implementation != null ? getImplementation().getComponentType() : null;
     }
 
     /**
@@ -165,7 +165,6 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
         services.remove(service.getName());
     }
 
-
     /**
      * Adds a producer to this component.
      *
@@ -187,7 +186,6 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
         removeElement(producer);
         producers.remove(producer.getName());
     }
-
 
     /**
      * Returns the producers configured by this component definition.
@@ -260,7 +258,6 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
         propertyValues.remove(value.getName());
     }
 
-
     /**
      * Returns the key to be used if this component is wired to a map of references.
      *
@@ -314,6 +311,5 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     public void setContributionUri(URI contributionUri) {
         this.contributionUri = contributionUri;
     }
-
 
 }

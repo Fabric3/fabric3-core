@@ -25,6 +25,7 @@ import java.util.List;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
@@ -78,7 +79,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         metadata.setSubscriptionId(specifier);
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
-        DataType dataType = isJAXB(consumer.getDefinition().getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
+        ConsumerDefinition<?> consumerDefinition = consumer.getDefinition();
+        DataType dataType = isJAXB(consumerDefinition.getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
         JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata, dataType, sessionType);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);

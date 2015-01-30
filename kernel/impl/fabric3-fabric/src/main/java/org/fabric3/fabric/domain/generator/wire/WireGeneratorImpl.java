@@ -205,6 +205,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // Generates the wire source metadata
         ComponentGenerator sourceGenerator = getGenerator(component);
+        @SuppressWarnings("unchecked")
         PhysicalWireSourceDefinition sourceDefinition = sourceGenerator.generateResourceSource(resourceReference);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
@@ -432,9 +433,8 @@ public class WireGeneratorImpl implements WireGenerator {
         String key = component.getDefinition().getKey();
         if (key == null) {
             // check if the key was specified in the component type
-            Implementation implementation = component.getDefinition().getImplementation();
-            if (implementation != null && implementation.getComponentType() != null) {
-                key = implementation.getComponentType().getKey();
+            if (component.getDefinition().getComponentType() != null) {
+                key = component.getDefinition().getComponentType().getKey();
             }
         }
         return key;
@@ -450,9 +450,8 @@ public class WireGeneratorImpl implements WireGenerator {
         int order = component.getDefinition().getOrder();
         if (order == Integer.MIN_VALUE) {
             ComponentDefinition<?> definition = component.getDefinition();
-            Implementation<?> implementation = definition.getImplementation();
-            if (implementation != null && implementation.getComponentType() != null) {
-                order = implementation.getComponentType().getOrder();
+            if (definition.getComponentType() != null) {
+                order = definition.getComponentType().getOrder();
             }
         }
         return order;

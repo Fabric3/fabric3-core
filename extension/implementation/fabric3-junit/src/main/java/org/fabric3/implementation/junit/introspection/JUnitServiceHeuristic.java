@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -59,7 +60,7 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
 
         JavaServiceContract testContract = generateTestContract(implClass);
-        ServiceDefinition testService = new ServiceDefinition(TEST_SERVICE_NAME, testContract);
+        ServiceDefinition<ComponentType> testService = new ServiceDefinition<>(TEST_SERVICE_NAME, testContract);
         componentType.add(testService);
         // if the class implements a single interface, use it, otherwise the contract is the class itself
         Set<Class<?>> interfaces = helper.getImplementedInterfaces(implClass);
@@ -68,16 +69,15 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
                 if (interfaze.getCanonicalName().endsWith("Test")) {
                     continue;
                 }
-                ServiceDefinition serviceDefinition = createServiceDefinition(interfaze, componentType, context);
+                ServiceDefinition<ComponentType> serviceDefinition = createServiceDefinition(interfaze, componentType, context);
                 componentType.add(serviceDefinition);
             }
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext context) {
-        ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
-        return new ServiceDefinition(contract.getInterfaceName(), contract);
+    private ServiceDefinition<ComponentType> createServiceDefinition(Class<?> interfaze, InjectingComponentType type, IntrospectionContext context) {
+        ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
+        return new ServiceDefinition<>(contract.getInterfaceName(), contract);
     }
 
     private JavaServiceContract generateTestContract(Class<?> implClass) {

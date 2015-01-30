@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.spi.model.type.component.CompositeImplementation;
 
 /**
  * An instantiated composite component in the domain.

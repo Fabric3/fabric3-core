@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
-import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
@@ -55,11 +54,10 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         }
         parent.addComponent(component);
 
-        Implementation<?> impl = definition.getImplementation();
-        if (impl == null) {
+        ComponentType componentType = definition.getComponentType();
+        if (componentType == null) {
             return component;
         }
-        ComponentType componentType = impl.getComponentType();
         initializeProperties(component, definition, context);
         createServices(definition, component, componentType);
         createReferences(definition, component, componentType);

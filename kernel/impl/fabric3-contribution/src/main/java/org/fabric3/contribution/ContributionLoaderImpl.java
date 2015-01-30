@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.oasisopen.sca.annotation.Reference;
 
@@ -110,9 +111,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         if (location != null) {
             try {
                 List<URL> classpath = classpathProcessorRegistry.process(location, manifest.getLibraries());
-                for (URL url : classpath) {
-                    loader.addURL(url);
-                }
+                classpath.forEach(loader::addURL);
                 setSysPathsField(loader);
             } catch (IOException e) {
                 throw new ContributionLoadException(e);
@@ -122,12 +121,12 @@ public class ContributionLoaderImpl implements ContributionLoader {
 
         // connect imported contribution classloaders according to their wires
         for (ContributionWire<?, ?> wire : wires) {
-            ClassLoaderWireGenerator generator = generators.get(wire.getClass());
+            @SuppressWarnings("SuspiciousMethodCalls") ClassLoaderWireGenerator generator = generators.get(wire.getClass());
             if (generator == null) {
                 // not all contribution wires resolve resources through classloaders, so skip if one is not found
                 continue;
             }
-            PhysicalClassLoaderWireDefinition wireDefinition = generator.generate(wire);
+            @SuppressWarnings("unchecked") PhysicalClassLoaderWireDefinition wireDefinition = generator.generate(wire);
             builder.build(loader, wireDefinition);
         }
 
@@ -168,18 +167,14 @@ public class ContributionLoaderImpl implements ContributionLoader {
         Set<Contribution> contributions = store.resolveDependentContributions(uri);
         if (!contributions.isEmpty()) {
             Set<URI> dependents = new HashSet<>(contributions.size());
-            for (Contribution dependent : contributions) {
-                if (ContributionState.INSTALLED == dependent.getState()) {
-                    dependents.add(dependent.getUri());
-                }
-            }
+            dependents.addAll(contributions.stream().filter(dependent -> ContributionState.INSTALLED == dependent.getState()).map(Contribution::getUri).collect(
+                    Collectors.toList()));
             if (!dependents.isEmpty()) {
                 throw new ContributionInUseException("Contribution is in use: " + uri, uri, dependents);
             }
         }
         classLoaderRegistry.unregister(uri);
     }
-
 
     private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws UnresolvedImportException {
         // clear the wires as the contribution may have been loaded previously
@@ -248,6 +243,5 @@ public class ContributionLoaderImpl implements ContributionLoader {
             throw new AssertionError(e);
         }
     }
-
 
 }

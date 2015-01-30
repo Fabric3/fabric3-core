@@ -37,7 +37,6 @@ import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyValue;
@@ -209,8 +208,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             return false;
         }
         type.add(componentDefinition);
-        Implementation<?> implementation = componentDefinition.getImplementation();
-        if (implementation == null || implementation.getComponentType() == null) {
+        if (componentDefinition.getComponentType() == null) {
             return false;
         }
 

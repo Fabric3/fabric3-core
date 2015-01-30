@@ -218,7 +218,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBindingD
      * @return the transaction type
      */
     private SessionType getSessionType(LogicalComponent<?> component) {
-        List<String> policies = component.getDefinition().getImplementation().getComponentType().getPolicies();
+        List<String> policies = component.getDefinition().getComponentType().getPolicies();
         if (policies.contains(MANAGED_TRANSACTION) || policies.contains(MANAGED_TRANSACTION_GLOBAL) || policies.contains(MANAGED_TRANSACTION_LOCAL)) {
             return SessionType.GLOBAL_TRANSACTED;
         }

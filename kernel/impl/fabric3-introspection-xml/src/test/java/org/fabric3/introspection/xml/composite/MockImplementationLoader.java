@@ -19,6 +19,7 @@ package org.fabric3.introspection.xml.composite;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
@@ -31,8 +32,8 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class MockImplementationLoader implements TypeLoader<MockImplementation> {
     private Property[] properties;
-    private ReferenceDefinition[] referenceDefinitions;
-    private ServiceDefinition[] serviceDefinitions;
+    private ReferenceDefinition<ComponentType>[] referenceDefinitions;
+    private ServiceDefinition<ComponentType>[] serviceDefinitions;
 
     public MockImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         MockImplementation impl = new MockImplementation();
@@ -44,12 +45,12 @@ public class MockImplementationLoader implements TypeLoader<MockImplementation> 
             }
         }
         if (referenceDefinitions != null) {
-            for (ReferenceDefinition definition : referenceDefinitions) {
+            for (ReferenceDefinition<ComponentType> definition : referenceDefinitions) {
                 type.add(definition);
             }
         }
         if (serviceDefinitions != null) {
-            for (ServiceDefinition definition : serviceDefinitions) {
+            for (ServiceDefinition<ComponentType> definition : serviceDefinitions) {
                 type.add(definition);
             }
         }
@@ -61,10 +62,12 @@ public class MockImplementationLoader implements TypeLoader<MockImplementation> 
         this.properties = properties;
     }
 
+    @SuppressWarnings("unchecked")
     public void setReferences(ReferenceDefinition... referenceDefinitions) {
         this.referenceDefinitions = referenceDefinitions;
     }
 
+    @SuppressWarnings("unchecked")
     public void setServices(ServiceDefinition... serviceDefinitions) {
         this.serviceDefinitions = serviceDefinitions;
     }

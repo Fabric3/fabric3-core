@@ -20,6 +20,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import junit.framework.TestCase;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -33,7 +34,7 @@ public class RsPostProcessorTestCase extends TestCase {
 
     public void testIntrospectImplClass() throws Exception {
         InjectingComponentType type = new InjectingComponentType(TestImpl.class.getName());
-        ServiceDefinition service = new ServiceDefinition("TestImpl", new JavaServiceContract(TestImpl.class));
+        ServiceDefinition<ComponentType> service = new ServiceDefinition<>("TestImpl", new JavaServiceContract(TestImpl.class));
         type.add(service);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -46,7 +47,7 @@ public class RsPostProcessorTestCase extends TestCase {
 
     public void testIntrospectSingleService() throws Exception {
         InjectingComponentType type = new InjectingComponentType(TestSingleService.class.getName());
-        ServiceDefinition service = new ServiceDefinition("TestService", new JavaServiceContract(TestService.class));
+        ServiceDefinition<ComponentType> service = new ServiceDefinition<>("TestService", new JavaServiceContract(TestService.class));
         type.add(service);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -59,9 +60,9 @@ public class RsPostProcessorTestCase extends TestCase {
 
     public void testIntrospectMultiService() throws Exception {
         InjectingComponentType type = new InjectingComponentType(TestMultiService.class.getName());
-        ServiceDefinition service = new ServiceDefinition("TestService", new JavaServiceContract(TestService.class));
+        ServiceDefinition<ComponentType> service = new ServiceDefinition<>("TestService", new JavaServiceContract(TestService.class));
         type.add(service);
-        ServiceDefinition service2 = new ServiceDefinition("TestService2", new JavaServiceContract(TestService2.class));
+        ServiceDefinition<ComponentType> service2 = new ServiceDefinition<>("TestService2", new JavaServiceContract(TestService2.class));
         type.add(service2);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
