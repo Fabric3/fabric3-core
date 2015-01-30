@@ -38,7 +38,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
     private int order = Integer.MIN_VALUE;
 
     private Map<String, AbstractService> services = new HashMap<>();
-    private Map<String, ConsumerDefinition> consumers = new HashMap<>();
+    private Map<String, ConsumerDefinition<ComponentType>> consumers = new HashMap<>();
     private Map<String, ReferenceDefinition> references = new HashMap<>();
     private Map<String, ProducerDefinition> producers = new HashMap<>();
     private Map<String, Property> properties = new HashMap<>();
@@ -96,7 +96,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param service the service to add
      */
-    public void add(ServiceDefinition service) {
+    public void add(ServiceDefinition<ComponentType> service) {
         service.setParent(this);
         if (roundTrip) {
             pushElement(service);
@@ -109,7 +109,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @return the consumers provided by the implementation
      */
-    public Map<String, ConsumerDefinition> getConsumers() {
+    public Map<String, ConsumerDefinition<ComponentType>> getConsumers() {
         return consumers;
     }
 
@@ -118,7 +118,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param consumer the consumer to add
      */
-    public void add(ConsumerDefinition consumer) {
+    public void add(ConsumerDefinition<ComponentType> consumer) {
         consumer.setParent(this);
         if (roundTrip) {
             pushElement(consumer);
@@ -140,7 +140,7 @@ public class ComponentType extends ModelObject<Implementation> implements Policy
      *
      * @param reference the reference to add
      */
-    public void add(ReferenceDefinition reference) {
+    public void add(ReferenceDefinition<ComponentType> reference) {
         reference.setParent(this);
         if (roundTrip) {
             pushElement(reference);

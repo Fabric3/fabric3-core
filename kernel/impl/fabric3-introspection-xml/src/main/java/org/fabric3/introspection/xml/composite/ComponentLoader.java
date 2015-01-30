@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;
-import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentProducer;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -218,13 +217,13 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseReference(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ReferenceDefinition reference = registry.load(reader, ReferenceDefinition.class, context);
+        ReferenceDefinition<ComponentDefinition> reference = registry.load(reader, ReferenceDefinition.class, context);
         if (reference == null) {
             // there was an error with the reference configuration, just skip it
             return;
         }
         String name = reference.getName();
-        AbstractReference typeReference = componentType.getReferences().get(name);
+        ReferenceDefinition<ComponentType> typeReference = componentType.getReferences().get(name);
         if (typeReference == null) {
             // ensure the reference exists
             ComponentReferenceNotFound failure = new ComponentReferenceNotFound(name, definition, startLocation);
@@ -281,13 +280,13 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        ComponentConsumer consumer = registry.load(reader, ComponentConsumer.class, context);
+        ConsumerDefinition<ComponentDefinition> consumer = registry.load(reader, ConsumerDefinition.class, context);
         if (consumer == null) {
             // there was an error with the consumer configuration, just skip it
             return;
         }
         String name = consumer.getName();
-        ConsumerDefinition typeConsumer = componentType.getConsumers().get(name);
+        ConsumerDefinition<ComponentType> typeConsumer = componentType.getConsumers().get(name);
         if (typeConsumer == null) {
             // ensure the consumer exists
             ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation);

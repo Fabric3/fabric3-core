@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.Consumer;
-import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -121,10 +121,10 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
             consumerProcessor.visitMethod(consumer, method, implClass, componentType, context);
         }
         // add automatic configuration for consumer annotations
-        for (ConsumerDefinition consumerDefinition : componentType.getConsumers().values()) {
+        for (ConsumerDefinition<ComponentType> consumerDefinition : componentType.getConsumers().values()) {
             String name = consumerDefinition.getName();
-            URI channelUri = URI.create(name);
-            ComponentConsumer componentConsumer = new ComponentConsumer(name, Collections.singletonList(channelUri));
+            ConsumerDefinition<ComponentDefinition> componentConsumer = new ConsumerDefinition<>(name);
+            componentConsumer.setSources(Collections.singletonList(URI.create(name)));
             definition.add(componentConsumer);
         }
     }
@@ -145,7 +145,7 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
 
         String serviceName = serviceInterface.getSimpleName();
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context);
-        ServiceDefinition serviceDefinition = new ServiceDefinition(serviceName, contract);
+        ServiceDefinition<ComponentType> serviceDefinition = new ServiceDefinition<>(serviceName, contract);
         componentType.add(serviceDefinition);
     }
 }

@@ -21,12 +21,13 @@ package org.fabric3.api.model.type.component;
 
 import java.util.List;
 
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * A consumer introspected from a component type.
  */
-public class ConsumerDefinition extends AbstractConsumer<ComponentType> {
+public class ConsumerDefinition<P extends ModelObject> extends AbstractConsumer<P> {
     private static final long serialVersionUID = -4222312633353056234L;
     public static final int NO_SEQUENCE = 0;
 

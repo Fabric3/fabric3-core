@@ -29,7 +29,6 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentProducer;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -207,10 +206,11 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     }
 
     private void createConsumer(ComponentDefinition component) {
-        ConsumerDefinition definition = new ConsumerDefinition("consumer");
+        ConsumerDefinition<ComponentType> definition = new ConsumerDefinition<>("consumer");
         component.getComponentType().add(definition);
 
-        ComponentConsumer consumer = new ComponentConsumer("consumer", Collections.singletonList(CONSUMER_SOURCE));
+        ConsumerDefinition<ComponentDefinition> consumer = new ConsumerDefinition<>("consumer");
+        consumer.setSources(Collections.singletonList(CONSUMER_SOURCE));
         component.add(consumer);
     }
 
@@ -223,10 +223,10 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     }
 
     private void createReference(ComponentDefinition component) {
-        ReferenceDefinition definition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition<ComponentType> definition = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
         component.getComponentType().add(definition);
 
-        ReferenceDefinition reference = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
         Target target = new Target(REFERENCE_TARGET);
         reference.addTarget(target);
         reference.addBinding(new MockBinding());
@@ -235,10 +235,10 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     }
 
     private void createService(ComponentDefinition component) {
-        ServiceDefinition definition = new ServiceDefinition("service");
+        ServiceDefinition<ComponentType> definition = new ServiceDefinition<>("service");
         component.getComponentType().add(definition);
 
-        ServiceDefinition service = new ServiceDefinition("service");
+        ServiceDefinition<ComponentDefinition> service = new ServiceDefinition<>("service");
         service.addBinding(new MockBinding());
         service.addCallbackBinding(new MockBinding());
         component.add(service);

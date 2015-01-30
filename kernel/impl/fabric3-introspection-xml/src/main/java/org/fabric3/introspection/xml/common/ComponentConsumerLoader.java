@@ -32,7 +32,8 @@ import java.util.StringTokenizer;
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentConsumer;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -46,7 +47,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component consumer configuration.
  */
-public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<ComponentConsumer> {
+public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<ConsumerDefinition<ComponentDefinition>> {
     private static final QName CONSUMER = new QName(SCA_NS, "consumer");
 
     private boolean roundTrip;
@@ -66,7 +67,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
         return CONSUMER;
     }
 
-    public ComponentConsumer load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public ConsumerDefinition<ComponentDefinition> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -78,7 +79,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
 
         String targetAttribute = reader.getAttributeValue(null, "source");
         List<URI> sources = new ArrayList<>();
-        ComponentConsumer consumer = new ComponentConsumer(name);
+        ConsumerDefinition<ComponentDefinition> consumer = new ConsumerDefinition<>(name);
         try {
             if (targetAttribute != null) {
                 StringTokenizer tokenizer = new StringTokenizer(targetAttribute);

@@ -23,7 +23,6 @@ import java.net.URI;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentProducer;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -138,13 +137,13 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createConsumers(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ConsumerDefinition consumer : componentType.getConsumers().values()) {
+        for (ConsumerDefinition<ComponentType> consumer : componentType.getConsumers().values()) {
             String name = consumer.getName();
             URI consumerUri = component.getUri().resolve('#' + name);
             LogicalConsumer logicalConsumer = new LogicalConsumer(consumerUri, consumer, component);
 
             // producer is configured in the component definition
-            ComponentConsumer componentConsumer = definition.getConsumers().get(name);
+            ConsumerDefinition<ComponentDefinition> componentConsumer = definition.getConsumers().get(name);
             if (componentConsumer != null) {
                 for (URI uri : componentConsumer.getSources()) {
                     addSource(logicalConsumer, uri, component);

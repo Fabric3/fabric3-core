@@ -24,6 +24,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.fabric3.api.annotation.Consumer;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -45,8 +46,8 @@ public class ConsumerProcessorTestCase extends TestCase {
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
 
-        Map<String, ConsumerDefinition> consumers = componentType.getConsumers();
-        ConsumerDefinition definition = consumers.get("onEvent");
+        Map<String, ConsumerDefinition<ComponentType>> consumers = componentType.getConsumers();
+        ConsumerDefinition<ComponentType> definition = consumers.get("onEvent");
         assertEquals(1, definition.getTypes().size());
         assertEquals(String.class, definition.getTypes().get(0).getType());
     }
@@ -60,7 +61,7 @@ public class ConsumerProcessorTestCase extends TestCase {
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
 
-        Map<String, ConsumerDefinition> consumers = componentType.getConsumers();
+        Map<String, ConsumerDefinition<ComponentType>> consumers = componentType.getConsumers();
         ConsumerDefinition definition = consumers.get("onSequenceEvent");
 
         assertEquals(2, definition.getSequence());
