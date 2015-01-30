@@ -27,13 +27,15 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.spi.container.ContainerException;
+
 /**
  * Parses broker configuration from the runtime system configuration.
  */
 public class BrokerParser {
 
 
-    public BrokerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, InvalidBrokerConfigurationException {
+    public BrokerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         reader.nextTag();
         BrokerConfiguration configuration = new BrokerConfiguration();
         while (true) {
@@ -57,7 +59,7 @@ public class BrokerParser {
         }
     }
 
-    private void parsePersistenceAdapter(XMLStreamReader reader, BrokerConfiguration configuration) throws InvalidBrokerConfigurationException {
+    private void parsePersistenceAdapter(XMLStreamReader reader, BrokerConfiguration configuration) throws ContainerException {
         String type = reader.getAttributeValue(null, "type");
         PersistenceAdapterConfig adaptorConfig = new PersistenceAdapterConfig();
         if (type == null) {
@@ -124,7 +126,7 @@ public class BrokerParser {
     }
 
     private void parseTransportConnectors(XMLStreamReader reader, BrokerConfiguration configuration)
-            throws XMLStreamException, InvalidBrokerConfigurationException {
+            throws XMLStreamException, ContainerException {
         List<TransportConnectorConfig> transportConfigs = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
@@ -168,7 +170,7 @@ public class BrokerParser {
     }
 
     private void parseNetworkConnectors(XMLStreamReader reader, BrokerConfiguration configuration)
-            throws XMLStreamException, InvalidBrokerConfigurationException {
+            throws XMLStreamException, ContainerException {
         List<URI> uris = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
@@ -199,24 +201,24 @@ public class BrokerParser {
         }
     }
 
-    private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws InvalidBrokerConfigurationException {
+    private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws ContainerException {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new InvalidBrokerConfigurationException(message);
+            throw new ContainerException(message);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new InvalidBrokerConfigurationException(message + " [" + line + "," + col + "]");
+        throw new ContainerException(message + " [" + line + "," + col + "]");
     }
 
-    private void raiseInvalidConfiguration(String message, Throwable e, XMLStreamReader reader) throws InvalidBrokerConfigurationException {
+    private void raiseInvalidConfiguration(String message, Throwable e, XMLStreamReader reader) throws ContainerException {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new InvalidBrokerConfigurationException(message, e);
+            throw new ContainerException(message, e);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new InvalidBrokerConfigurationException(message + " [" + line + "," + col + "]", e);
+        throw new ContainerException(message + " [" + line + "," + col + "]", e);
     }
 
 }

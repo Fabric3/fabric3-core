@@ -25,6 +25,7 @@ import javax.transaction.TransactionManager;
 import java.io.Serializable;
 import java.sql.Connection;
 
+import org.fabric3.spi.container.ContainerException;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Filter;
@@ -454,7 +455,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
             }
             EntityManager em = emService.getEntityManager(unitName, this, trx);
             return (Session) em.getDelegate();
-        } catch (SystemException | EntityManagerCreationException e) {
+        } catch (SystemException | ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

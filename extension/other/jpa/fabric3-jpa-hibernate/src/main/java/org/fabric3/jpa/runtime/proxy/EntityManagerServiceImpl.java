@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -46,7 +47,7 @@ public class EntityManagerServiceImpl implements EntityManagerService {
         this.emfCache = emfCache;
     }
 
-    public EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws EntityManagerCreationException {
+    public EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws ContainerException {
         // Note this method is thread-safe as a Transaction is only visible to a single thread at time.
         Key key = new Key(transaction, unitName);
         EntityManager em = cache.get(key);
@@ -54,7 +55,7 @@ public class EntityManagerServiceImpl implements EntityManagerService {
             // no entity manager for the persistence unit associated with the transaction
             EntityManagerFactory emf = emfCache.get(unitName);
             if (emf == null) {
-                throw new EntityManagerCreationException("No EntityManagerFactory found for persistence unit: " + unitName);
+                throw new ContainerException("No EntityManagerFactory found for persistence unit: " + unitName);
             }
             em = emf.createEntityManager();
             // don't synchronize on the transaction since it can assume to be bound to a thread at this point
@@ -64,12 +65,12 @@ public class EntityManagerServiceImpl implements EntityManagerService {
         return em;
     }
 
-    private void registerTransactionScopedSync(HibernateProxy proxy, Key key) throws EntityManagerCreationException {
+    private void registerTransactionScopedSync(HibernateProxy proxy, Key key) throws ContainerException {
         try {
             TransactionScopedSync sync = new TransactionScopedSync(key, proxy);
             key.transaction.registerSynchronization(sync);
         } catch (RollbackException | SystemException e) {
-            throw new EntityManagerCreationException(e);
+            throw new ContainerException(e);
         }
     }
 

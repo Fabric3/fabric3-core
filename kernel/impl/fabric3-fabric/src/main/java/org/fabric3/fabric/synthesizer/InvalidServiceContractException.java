@@ -22,13 +22,14 @@ package org.fabric3.fabric.synthesizer;
 import java.util.List;
 
 import org.fabric3.api.host.failure.ValidationFailure;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  *
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
-public class InvalidServiceContractException extends ComponentRegistrationException {
+public class InvalidServiceContractException extends ContainerException {
     private static final long serialVersionUID = 4367622270403828483L;
     private List<ValidationFailure> errors;
 

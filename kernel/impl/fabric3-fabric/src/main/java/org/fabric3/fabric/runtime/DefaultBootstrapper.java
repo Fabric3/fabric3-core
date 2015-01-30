@@ -46,12 +46,12 @@ import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
 import org.fabric3.fabric.runtime.bootstrap.Java6HostExports;
-import org.fabric3.fabric.synthesizer.ComponentRegistrationException;
 import org.fabric3.fabric.synthesizer.ComponentSynthesizer;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
@@ -256,7 +256,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws InitializationException {
         try {
             synthesizer.registerComponent(name, type, instance, introspect);
-        } catch (ComponentRegistrationException e) {
+        } catch (ContainerException e) {
             throw new InitializationException(e);
         }
     }

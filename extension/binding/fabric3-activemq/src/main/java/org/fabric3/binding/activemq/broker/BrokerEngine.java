@@ -101,7 +101,7 @@ public class BrokerEngine {
     }
 
     @Property(required = false)
-    public void setBrokerConfig(XMLStreamReader reader) throws InvalidBrokerConfigurationException, XMLStreamException {
+    public void setBrokerConfig(XMLStreamReader reader) throws ContainerException, XMLStreamException {
         BrokerParser parser = new BrokerParser();
         brokerConfiguration = parser.parse(reader);
     }

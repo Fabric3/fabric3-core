@@ -19,7 +19,6 @@ import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationP
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
-import org.fabric3.binding.jms.spi.runtime.provider.InvalidConfigurationException;
 import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.oasisopen.sca.annotation.Destroy;
@@ -80,7 +79,7 @@ public class ConfigurationBuilder {
     }
 
     @Property(required = false)
-    public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, InvalidConfigurationException {
+    public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         factoryConfigurations.clear();
         parseConfigurations(factoryConfigurations, reader);
     }
@@ -143,10 +142,10 @@ public class ConfigurationBuilder {
      * @param configurations the collection to populate
      * @param reader         the XML stream
      * @throws XMLStreamException            if there is an error parsing the stream
-     * @throws InvalidConfigurationException if the configuration contains an error or is invalid
+     * @throws ContainerException if the configuration contains an error or is invalid
      */
     private void parseConfigurations(List<ConnectionFactoryConfiguration> configurations, XMLStreamReader reader)
-            throws XMLStreamException, InvalidConfigurationException {
+            throws XMLStreamException, ContainerException {
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -154,7 +153,7 @@ public class ConfigurationBuilder {
                     if (name.equals("connection.factory")) {
                         // no factory specified, pick the first one
                         if (parsers.isEmpty()) {
-                            throw new InvalidConfigurationException("JMS provider not installed");
+                            throw new ContainerException("JMS provider not installed");
                         }
                         String provider = reader.getAttributeValue(null, "provider");
                         ConnectionFactoryConfigurationParser parser;
@@ -163,7 +162,7 @@ public class ConfigurationBuilder {
                         } else {
                             parser = parsers.get(provider);
                             if (parser == null) {
-                                throw new InvalidConfigurationException("JMS provider not installed: " + provider);
+                                throw new ContainerException("JMS provider not installed: " + provider);
                             }
                         }
 
@@ -180,14 +179,14 @@ public class ConfigurationBuilder {
         }
     }
 
-    private void checkErrors(DefaultIntrospectionContext context) throws InvalidConfigurationException {
+    private void checkErrors(DefaultIntrospectionContext context) throws ContainerException {
         if (context.hasErrors()) {
             StringBuilder builder = new StringBuilder();
             builder.append("The following errors were found:\n");
             for (ValidationFailure error : context.getErrors()) {
                 builder.append(error.getMessage()).append("\n");
             }
-            throw new InvalidConfigurationException(builder.toString());
+            throw new ContainerException(builder.toString());
         }
     }
 

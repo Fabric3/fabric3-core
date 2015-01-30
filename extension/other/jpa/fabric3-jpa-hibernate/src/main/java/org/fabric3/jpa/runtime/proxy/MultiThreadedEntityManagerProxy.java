@@ -38,6 +38,7 @@ import javax.transaction.TransactionManager;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.container.ContainerException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -280,7 +281,7 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
                 throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
             return emService.getEntityManager(unitName, this, trx);
-        } catch (SystemException | EntityManagerCreationException e) {
+        } catch (SystemException | ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

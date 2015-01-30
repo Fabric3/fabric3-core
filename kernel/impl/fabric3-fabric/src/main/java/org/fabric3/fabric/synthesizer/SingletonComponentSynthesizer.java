@@ -88,7 +88,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         this.scopeContainer = scopeContainer;
     }
 
-    public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ComponentRegistrationException {
+    public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ContainerException {
         try {
             LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
             ScopedComponent physical = createPhysicalComponent(logical, instance);
@@ -97,7 +97,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             // initialize the component - needed for reinjection to work
             scopeContainer.getInstance(physical);
         } catch (ContainerException | AssemblyException e) {
-            throw new ComponentRegistrationException(e);
+            throw new ContainerException(e);
         }
     }
 
