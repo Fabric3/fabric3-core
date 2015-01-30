@@ -23,7 +23,6 @@ import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.builder.WireDefinitionBuilder;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.fabric.classloader.SerializationServiceImpl;
 import org.fabric3.fabric.container.binding.BindingHandlerRegistryImpl;
 import org.fabric3.fabric.container.builder.ChannelConnectorImpl;
 import org.fabric3.fabric.container.builder.ConnectorImpl;
@@ -91,10 +90,7 @@ import org.fabric3.fabric.domain.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.domain.instantiator.channel.ChannelInstantiatorImpl;
 import org.fabric3.fabric.domain.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.domain.instantiator.component.AutowireNormalizerImpl;
 import org.fabric3.fabric.domain.instantiator.component.CompositeComponentInstantiatorImpl;
-import org.fabric3.fabric.domain.instantiator.promotion.PromotionNormalizerImpl;
-import org.fabric3.fabric.domain.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.domain.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
 import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
@@ -149,8 +145,6 @@ public class FabricProvider {
     private static void addServicesSubsystem(CompositeBuilder compositeBuilder) {
 
         compositeBuilder.component(newBuilder(EventServiceImpl.class).build());
-
-        compositeBuilder.component(newBuilder(SerializationServiceImpl.class).build());
 
         compositeBuilder.component(newBuilder(TransportService.class).build());
 
@@ -288,12 +282,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(WireInstantiatorImpl.class).build());
 
         compositeBuilder.component(newBuilder(ChannelInstantiatorImpl.class).build());
-
-        compositeBuilder.component(newBuilder(PromotionNormalizerImpl.class).build());
-
-        compositeBuilder.component(newBuilder(AutowireNormalizerImpl.class).build());
-
-        compositeBuilder.component(newBuilder(PromotionResolutionServiceImpl.class).build());
 
         compositeBuilder.component(newBuilder(TypeAutowireResolver.class).build());
 

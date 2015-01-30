@@ -27,15 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;
-import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentProducer;
-import org.fabric3.api.model.type.component.ComponentReference;
-import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.Implementation;
@@ -44,6 +40,8 @@ import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.PropertyMany;
 import org.fabric3.api.model.type.component.PropertyValue;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
@@ -82,7 +80,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     private LoaderHelper loaderHelper;
     private ContractMatcher contractMatcher;
-    private boolean roundTrip;
 
     /**
      * Constructor used during bootstrap
@@ -102,12 +99,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         this.contractMatcher = contractMatcher;
     }
 
-    @org.oasisopen.sca.annotation.Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
-    }
-
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public ComponentDefinition<?> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
@@ -117,38 +108,19 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             context.addError(failure);
             return null;
         }
-        String autowireStr = reader.getAttributeValue(null, "autowire");
-        Autowire autowire = Autowire.fromString(autowireStr);
         String key = loaderHelper.loadKey(reader);
 
         ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<>(name);
 
         int order = parserOrder(reader, definition, startLocation, context);
 
-        if (roundTrip) {
-            definition.enableRoundTrip();
-            if (autowireStr != null) {
-                definition.attributeSpecified("autowire");
-            }
-            if (key != null) {
-                definition.attributeSpecified("key");
-            }
-            if (order != Integer.MIN_VALUE) {
-                definition.attributeSpecified("order");
-            }
-        }
         definition.setContributionUri(context.getContributionUri());
-        definition.setAutowire(autowire);
         definition.setKey(key);
         definition.setOrder(order);
 
         validateAttributes(reader, context, definition);
 
-        if (roundTrip) {
-            LoaderUtil.nextTagRecord(definition, reader);
-        } else {
-            reader.nextTag();
-        }
+        reader.nextTag();
         QName elementName = reader.getName();
 
         if (COMPONENT.equals(elementName)) {
@@ -185,7 +157,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseService(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ComponentService service = registry.load(reader, ComponentService.class, context);
+        ServiceDefinition service = registry.load(reader, ServiceDefinition.class, context);
         if (service == null) {
             // there was an error with the service configuration, just skip it
             return;
@@ -239,19 +211,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 case END_ELEMENT:
                     validateRequiredProperties(definition, propertyLocations, context);
                     return definition;
-                case XMLStreamReader.COMMENT:
-                    if (!roundTrip) {
-                        continue;
-                    }
-                    String comment = reader.getText();
-                    definition.addComment(comment);
-                    continue;
-                default:
-                    if (!roundTrip) {
-                        continue;
-                    }
-                    comment = reader.getText();
-                    definition.addText(comment);
             }
         }
     }
@@ -259,7 +218,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseReference(ComponentDefinition<?> definition, ComponentType componentType, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ComponentReference reference = registry.load(reader, ComponentReference.class, context);
+        ReferenceDefinition reference = registry.load(reader, ReferenceDefinition.class, context);
         if (reference == null) {
             // there was an error with the reference configuration, just skip it
             return;
@@ -383,7 +342,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location in the composite where the contract is defined
      * @param context     the context
      */
-    private void processServiceContract(ComponentService service, AbstractService typeService, Location location, IntrospectionContext context) {
+    private void processServiceContract(ServiceDefinition service, AbstractService typeService, Location location, IntrospectionContext context) {
         if (service.getServiceContract() == null) {
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
@@ -394,8 +353,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 String name = service.getName();
                 IncompatibleContracts error = new IncompatibleContracts(
                         "The component service interface " + name + " is not compatible with the promoted service " + typeService.getName() + ": "
-                        + result.getError(), location, service
-                );
+                        + result.getError(), location, service);
                 context.addError(error);
             } else {
                 matchServiceCallbackContracts(service, typeService, location, context);
@@ -412,7 +370,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the location in the composite where the reference is defines
      * @param context       the context
      */
-    private void processReferenceContract(ComponentReference reference, AbstractReference typeReference, Location location, IntrospectionContext context) {
+    private void processReferenceContract(ReferenceDefinition reference, AbstractReference typeReference, Location location, IntrospectionContext context) {
         if (reference.getServiceContract() == null) {
             // if the reference contract is not set, inherit from the component type service
             reference.setServiceContract(typeReference.getServiceContract());
@@ -423,8 +381,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 String name = reference.getName();
                 IncompatibleContracts error = new IncompatibleContracts(
                         "The component reference contract " + name + " is not compatible with the promoted reference " + typeReference.getName() + ": "
-                        + result.getError(), location, reference
-                );
+                        + result.getError(), location, reference);
                 context.addError(error);
             } else {
                 matchReferenceCallbackContracts(reference, typeReference, location, context);
@@ -440,7 +397,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location where the contract is defined in the composite
      * @param context     the context
      */
-    private void matchServiceCallbackContracts(ComponentService service, AbstractService typeService, Location location, IntrospectionContext context) {
+    private void matchServiceCallbackContracts(ServiceDefinition service, AbstractService typeService, Location location, IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
         if (callbackContract == null) {
             return;
@@ -471,7 +428,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the location where the contract is defined in the composite
      * @param context       the context
      */
-    private void matchReferenceCallbackContracts(ComponentReference reference,
+    private void matchReferenceCallbackContracts(ReferenceDefinition reference,
                                                  AbstractReference typeReference,
                                                  Location location,
                                                  IntrospectionContext context) {
@@ -505,7 +462,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location      the current location
      * @param context       the context
      */
-    private void processMultiplicity(ComponentReference reference, AbstractReference typeReference, Location location, IntrospectionContext context) {
+    private void processMultiplicity(ReferenceDefinition reference, AbstractReference typeReference, Location location, IntrospectionContext context) {
         String name = reference.getName();
         if (reference.getMultiplicity() == null) {
             Multiplicity multiplicity = typeReference.getMultiplicity();

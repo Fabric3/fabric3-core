@@ -29,11 +29,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
@@ -86,18 +81,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
         return key;
     }
 
-    public Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException {
-        Set<QName> qNames = new HashSet<>();
-        String val = reader.getAttributeValue(null, attribute);
-        if (val != null) {
-            StringTokenizer tok = new StringTokenizer(val);
-            while (tok.hasMoreElements()) {
-                qNames.add(createQName(tok.nextToken(), reader));
-            }
-        }
-        return qNames;
-    }
-
     public QName createQName(String name, XMLStreamReader reader) throws InvalidPrefixException {
         QName qName;
         int index = name.indexOf(':');
@@ -117,21 +100,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
         return qName;
     }
 
-    public URI parseUri(String target) throws URISyntaxException {
-        if (target == null) {
-            return null;
-        }
-
-        int index = target.lastIndexOf('/');
-        if (index == -1) {
-            return new URI(target);
-        } else {
-            String uri = target.substring(0, index);
-            String fragment = target.substring(index + 1);
-            return new URI(uri + '#' + fragment);
-        }
-    }
-
     public Target parseTarget(String target, XMLStreamReader reader) throws InvalidTargetException {
         if (target == null) {
             return null;
@@ -145,20 +113,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
             return new Target(tokens[0], tokens[1], tokens[2]);
         } else {
             throw new InvalidTargetException("Invalid target format: " + target, target, reader);
-        }
-    }
-
-    public List<URI> parseListOfUris(XMLStreamReader reader, String attribute) throws URISyntaxException {
-        String value = reader.getAttributeValue(null, attribute);
-        if (value == null || value.length() == 0) {
-            return null;
-        } else {
-            StringTokenizer tok = new StringTokenizer(value);
-            List<URI> result = new ArrayList<>(tok.countTokens());
-            while (tok.hasMoreTokens()) {
-                result.add(parseUri(tok.nextToken().trim()));
-            }
-            return result;
         }
     }
 

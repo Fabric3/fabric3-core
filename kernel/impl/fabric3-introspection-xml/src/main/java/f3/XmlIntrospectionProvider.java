@@ -37,8 +37,6 @@ import org.fabric3.introspection.xml.common.PropertyLoader;
 import org.fabric3.introspection.xml.composite.ChannelLoader;
 import org.fabric3.introspection.xml.composite.ComponentLoader;
 import org.fabric3.introspection.xml.composite.CompositeLoader;
-import org.fabric3.introspection.xml.composite.CompositeReferenceLoader;
-import org.fabric3.introspection.xml.composite.CompositeServiceLoader;
 import org.fabric3.introspection.xml.composite.ImplementationCompositeLoader;
 import org.fabric3.introspection.xml.composite.IncludeLoader;
 import org.fabric3.introspection.xml.composite.PropertyValueLoader;
@@ -96,16 +94,10 @@ public class XmlIntrospectionProvider {
         compositeBuilder.component(newBuilder(PropertyValueLoader.class).build());
         compositeBuilder.component(newBuilder(ComponentLoader.class).build());
         compositeBuilder.component(newBuilder(IncludeLoader.class).build());
-        compositeBuilder.component(newBuilder(CompositeReferenceLoader.class).build());
-        compositeBuilder.component(newBuilder(CompositeServiceLoader.class).build());
         compositeBuilder.component(newBuilder(ChannelLoader.class).build());
         compositeBuilder.component(newBuilder(WireLoader.class).key(Constants.SCA_PREFIX + "wire").build());
 
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("CompositeLoader", CompositeLoader.class);
-        componentBuilder.reference("service", "CompositeServiceLoader");
-        componentBuilder.reference("reference", "CompositeReferenceLoader");
-        componentBuilder.reference("property", "PropertyLoader");
-        compositeBuilder.component(componentBuilder.build());
+        compositeBuilder.component(newBuilder("CompositeLoader", CompositeLoader.class).build());
 
         compositeBuilder.component(newBuilder(ImplementationCompositeLoader.class).build());
         compositeBuilder.component(newBuilder(SCABindingLoader.class).build());

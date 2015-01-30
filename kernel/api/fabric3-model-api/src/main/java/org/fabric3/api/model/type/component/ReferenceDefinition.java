@@ -19,12 +19,13 @@
  */
 package org.fabric3.api.model.type.component;
 
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
- * A reference introspected from a component type.
+ * A reference.
  */
-public class ReferenceDefinition extends AbstractReference<ComponentType> {
+public class ReferenceDefinition<P extends ModelObject> extends AbstractReference<P> {
     private static final long serialVersionUID = 4641581818938572132L;
 
     /**

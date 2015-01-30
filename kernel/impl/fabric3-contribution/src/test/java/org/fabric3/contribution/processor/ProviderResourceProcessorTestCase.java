@@ -29,10 +29,8 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.ProviderSymbol;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  *
@@ -44,7 +42,7 @@ public class ProviderResourceProcessorTestCase extends TestCase {
 
     public void testProvider() throws Exception {
         ProviderSymbol symbol = new ProviderSymbol(TestProvider.class.getName());
-        ResourceElement<ProviderSymbol, Class<?>> resourceElement = new ResourceElement<ProviderSymbol, Class<?>>(symbol, TestProvider.class);
+        ResourceElement<ProviderSymbol, Class<?>> resourceElement = new ResourceElement<>(symbol, TestProvider.class);
         resource.addResourceElement(resourceElement);
 
         processor.index(resource, context);
@@ -56,7 +54,7 @@ public class ProviderResourceProcessorTestCase extends TestCase {
 
     public void testExceptionProvider() throws Exception {
         ProviderSymbol symbol = new ProviderSymbol(BadTestProvider.class.getName());
-        ResourceElement<ProviderSymbol, Class<?>> resourceElement = new ResourceElement<ProviderSymbol, Class<?>>(symbol, BadTestProvider.class);
+        ResourceElement<ProviderSymbol, Class<?>> resourceElement = new ResourceElement<>(symbol, BadTestProvider.class);
         resource.addResourceElement(resourceElement);
 
         processor.index(resource, context);
@@ -68,12 +66,8 @@ public class ProviderResourceProcessorTestCase extends TestCase {
         super.setUp();
         ProcessorRegistry registry = EasyMock.createNiceMock(ProcessorRegistry.class);
         HostInfo info = EasyMock.createNiceMock(HostInfo.class);
-        LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
-        LogicalComponentManager lcm = EasyMock.createMock(LogicalComponentManager.class);
-        EasyMock.expect(lcm.getRootComponent()).andReturn(domain);
-        EasyMock.replay(lcm);
 
-        processor = new ProviderResourceProcessor(registry, lcm, info);
+        processor = new ProviderResourceProcessor(registry, info);
 
         Contribution contribution = new Contribution(URI.create("test"));
         resource = new Resource(contribution, null, Constants.DSL_CONTENT_TYPE);

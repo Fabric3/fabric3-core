@@ -33,7 +33,7 @@ import org.fabric3.spi.domain.generator.Deployment;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * A Deployer that sends DeploymentUnits to the local runtime instance.
+ *
  */
 public class LocalDeployer implements Deployer {
     private CommandExecutorRegistry executorRegistry;

@@ -27,10 +27,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentService;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -43,17 +43,15 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component service configuration.
  */
-public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<ComponentService> {
+public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<ServiceDefinition> {
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
 
-    private LoaderHelper loaderHelper;
     private boolean roundTrip;
 
-    public ComponentServiceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
+    public ComponentServiceLoader(@Reference LoaderRegistry registry) {
         super(registry);
         addAttributes("name", "requires", "policySets");
-        this.loaderHelper = loaderHelper;
     }
 
     @Property(required = false)
@@ -66,7 +64,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
         return SERVICE;
     }
 
-    public ComponentService load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public ServiceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -75,7 +73,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             context.addError(failure);
             return null;
         }
-        ComponentService definition = new ComponentService(name);
+        ServiceDefinition<ComponentDefinition> definition = new ServiceDefinition<>(name);
         if (roundTrip) {
             definition.enableRoundTrip();
         }

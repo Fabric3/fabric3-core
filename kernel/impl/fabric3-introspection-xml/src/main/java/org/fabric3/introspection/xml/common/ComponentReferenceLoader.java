@@ -27,12 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.ModelObject;
-import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -41,7 +40,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -50,12 +48,11 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 /**
  * Loads a component reference configuration.
  */
-public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<ComponentReference> {
+public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<ReferenceDefinition> {
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
 
     private LoaderHelper loaderHelper;
-    private boolean roundTrip;
 
     public ComponentReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
@@ -63,17 +60,11 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         this.loaderHelper = loaderHelper;
     }
 
-    @Property(required = false)
-    @Source("$systemConfig/f3:loader/@round.trip")
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
-    }
-
     public QName getXMLType() {
         return REFERENCE;
     }
 
-    public ComponentReference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    public ReferenceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
@@ -83,42 +74,14 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             return null;
         }
 
-        String autowire = reader.getAttributeValue(null, "autowire");
-
         Multiplicity multiplicity = parseMultiplicity(reader, startLocation, context);
 
-        ComponentReference reference = new ComponentReference(name, multiplicity);
-        if ("true".equalsIgnoreCase(autowire)) {
-            reference.setAutowire(Autowire.ON);
-        } else if ("false".equalsIgnoreCase(autowire)) {
-            reference.setAutowire(Autowire.OFF);
-        }
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>(name, multiplicity);
 
 
-        String targetAttribute = parseTargets(reference, reader, startLocation, context);
+        parseTargets(reference, reader, startLocation, context);
 
-        String nonOverridable = reader.getAttributeValue(null, "nonOverridable");
-        if (nonOverridable != null) {
-            reference.setNonOverridable(Boolean.parseBoolean(nonOverridable));
-        }
         validateAttributes(reader, context, reference);
-
-        if (roundTrip) {
-            reference.enableRoundTrip();
-            //noinspection VariableNotUsedInsideIf
-            if (autowire != null) {
-                reference.attributeSpecified("autowire");
-
-            }
-            //noinspection VariableNotUsedInsideIf
-            if (targetAttribute != null) {
-                reference.attributeSpecified("target");
-            }
-            //noinspection VariableNotUsedInsideIf
-            if (nonOverridable != null) {
-                reference.attributeSpecified("nonOverridable");
-            }
-        }
 
         boolean callback = false;
         boolean bindingError = false;  // used to avoid reporting multiple binding errors
@@ -188,7 +151,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         return multiplicity;
     }
 
-    private String parseTargets(ComponentReference reference, XMLStreamReader reader, Location location, IntrospectionContext context) {
+    private void parseTargets(ReferenceDefinition reference, XMLStreamReader reader, Location location, IntrospectionContext context) {
         String targetAttribute = reader.getAttributeValue(null, "target");
         List<Target> targets = new ArrayList<>();
         try {
@@ -205,10 +168,9 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             context.addError(failure);
         }
         reference.addTargets(targets);
-        return targetAttribute;
     }
 
-    private void configureBinding(ComponentReference reference,
+    private void configureBinding(ReferenceDefinition<ComponentDefinition> reference,
                                   BindingDefinition binding,
                                   boolean callback,
                                   Location location,

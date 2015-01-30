@@ -16,20 +16,18 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.domain.instantiator;
+package org.fabric3.fabric.domain;
 
-import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.api.host.domain.DeploymentException;
 
 /**
- * Calculates autowire settings for a component using SCA autowire inheritence rules.
+ * Denotes an error allocating a component to a service node.
  */
-public interface AutowireNormalizer {
+public class AllocationException extends DeploymentException {
+    private static final long serialVersionUID = 3960592897460184482L;
 
-    /**
-     * Calculates the autowire setting for a component.
-     *
-     * @param component the component
-     */
-    void normalize(LogicalComponent<?> component);
+    public AllocationException(String message) {
+        super(message);
+    }
 
 }

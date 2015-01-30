@@ -20,12 +20,11 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.component.AbstractReference;
-import org.fabric3.api.model.type.component.Autowire;
-import org.fabric3.api.model.type.component.ComponentReference;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 
 /**
  * A reference on an instantiated component in the domain.
@@ -34,9 +33,7 @@ public class LogicalReference extends Bindable {
     private static final long serialVersionUID = 2308698868251298609L;
 
     private AbstractReference definition;
-    private List<URI> promotedUris;
     private boolean resolved;
-    private Autowire autowire = Autowire.INHERITED;
     private LogicalReference leafReference;
 
     /**
@@ -49,7 +46,6 @@ public class LogicalReference extends Bindable {
     public LogicalReference(URI uri, AbstractReference<?> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
-        promotedUris = new ArrayList<>();
         leafReference = this;
     }
 
@@ -69,42 +65,6 @@ public class LogicalReference extends Bindable {
      */
     public List<LogicalWire> getWires() {
         return getComposite().getWires(this);
-    }
-
-    /**
-     * Returns the URIs of component references promoted by this reference.
-     *
-     * @return the URIs
-     */
-    public List<URI> getPromotedUris() {
-        return promotedUris;
-    }
-
-    /**
-     * Adds the URI of a component reference promoted by this reference.
-     *
-     * @param uri the promoted URI
-     */
-    public void addPromotedUri(URI uri) {
-        promotedUris.add(uri);
-    }
-
-    /**
-     * Sets the  URI of the reference promoted by this reference at the given index
-     *
-     * @param index the index
-     * @param uri   the  URI
-     */
-    public void setPromotedUri(int index, URI uri) {
-        promotedUris.set(index, uri);
-    }
-
-    public Autowire getAutowire() {
-        return autowire;
-    }
-
-    public void setAutowire(Autowire autowire) {
-        this.autowire = autowire;
     }
 
     /**
@@ -130,16 +90,12 @@ public class LogicalReference extends Bindable {
      *
      * @return Component reference if defined, otherwise null.
      */
-    public ComponentReference getComponentReference() {
+    public ReferenceDefinition<ComponentDefinition> getComponentReference() {
         return getParent().getDefinition().getReferences().get(getDefinition().getName());
     }
 
     public LogicalReference getLeafReference() {
         return leafReference;
-    }
-
-    public void setLeafReference(LogicalReference leafReference) {
-        this.leafReference = leafReference;
     }
 
     public boolean equals(Object obj) {

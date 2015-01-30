@@ -24,7 +24,6 @@ import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;
@@ -39,13 +38,13 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Implementation of LogicalComponentManager. The runtime domain configuration (created during bootstrap) defaults autowire to ON; the application
- * domain defaults autowire to OFF, which can be overridden by the runtime configuration.
+ * Implementation of LogicalComponentManager. The runtime domain configuration (created during bootstrap) defaults autowire to ON; the application domain
+ * defaults autowire to OFF, which can be overridden by the runtime configuration.
  */
 public class LogicalComponentManagerImpl implements LogicalComponentManager {
     private URI domainUri;
     private String autowireValue;
-    private Autowire autowire = Autowire.ON;
+    private boolean autowire = true;
     private LogicalCompositeComponent domain;
     private LCMMonitor monitor;
 
@@ -54,14 +53,12 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
      */
     public LogicalComponentManagerImpl() {
         this.domainUri = Names.RUNTIME_URI;
-        this.autowire = Autowire.ON; // autowire on by default in the runtime domain
         initializeDomainComposite();
     }
 
     @Constructor
     public LogicalComponentManagerImpl(@Reference HostInfo info) {
         domainUri = info.getDomain();
-        initializeDomainComposite();
     }
 
     @Property(required = false)
@@ -77,23 +74,20 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
 
     @Init
     public void init() {
-        if (autowireValue == null) {
-            return;
+        if (autowireValue != null) {
+            boolean autowire;
+            // can't use Enum.valueOf(..) as INHERITED is not a valid value for the domain composite
+            if ("ON".equalsIgnoreCase(autowireValue.trim())) {
+                autowire = true;
+            } else if ("OFF".equalsIgnoreCase(autowireValue.trim())) {
+                autowire = false;
+            } else {
+                monitor.invalidAutowireValue(autowireValue);
+                return;
+            }
+            this.autowire = autowire;
         }
-        Autowire autowire;
-        // can't use Enum.valueOf(..) as INHERITED is not a valid value for the domain composite
-        if ("ON".equalsIgnoreCase(autowireValue.trim())) {
-            autowire = Autowire.ON;
-        } else if ("OFF".equalsIgnoreCase(autowireValue.trim())) {
-            autowire = Autowire.OFF;
-        } else {
-            monitor.invalidAutowireValue(autowireValue);
-            autowire = Autowire.OFF;
-        }
-        this.autowire = autowire;
-        if (domain != null) {
-            domain.setAutowire(autowire);
-        }
+        initializeDomainComposite();
     }
 
     public LogicalComponent<?> getComponent(URI uri) {
@@ -130,10 +124,8 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
         ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<>(domainUri.toString());
         definition.setImplementation(impl);
         definition.setContributionUri(Names.BOOT_CONTRIBUTION);
-        type.setAutowire(autowire);
-        domain = new LogicalCompositeComponent(domainUri, definition, null);
+        domain = new LogicalCompositeComponent(domainUri, definition, autowire);
         domain.setState(LogicalState.PROVISIONED);
-        domain.setAutowire(autowire);
     }
 
 }

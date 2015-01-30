@@ -22,10 +22,6 @@ package org.fabric3.spi.introspection.xml;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Set;
 
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
@@ -65,15 +61,6 @@ public interface LoaderHelper {
     Document loadPropertyValue(String content) throws XMLStreamException;
 
     /**
-     * Convert a URI from a String form of <code>component/service</code> to a URI form of <code>component/service</code>.
-     *
-     * @param value the URI to convert
-     * @return a URI where the fragment represents the service name
-     * @throws URISyntaxException if the value is an invalid URI
-     */
-    URI parseUri(String value) throws URISyntaxException;
-
-    /**
      * Convert a URI from a String form of <code>component/service/binding</code> to a Target.
      *
      * @param target the URI to convert
@@ -84,16 +71,6 @@ public interface LoaderHelper {
     Target parseTarget(String target, XMLStreamReader reader) throws InvalidTargetException;
 
     /**
-     * Parses a list of qualified names.
-     *
-     * @param reader    XML stream reader.
-     * @param attribute Attribute that contains the list of qualified names.
-     * @return Set containing the qualified names.
-     * @throws InvalidPrefixException If the qualified name cannot be resolved.
-     */
-    Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException;
-
-    /**
      * Constructs a QName from the given name. If a namespace prefix is not specified in the name, the namespace context is used.
      *
      * @param name   the name to parse
@@ -102,16 +79,6 @@ public interface LoaderHelper {
      * @throws InvalidPrefixException if a specified namespace prefix is invalid
      */
     QName createQName(String name, XMLStreamReader reader) throws InvalidPrefixException;
-
-    /**
-     * Parses a list of URIs contained in a attribute.
-     *
-     * @param reader    the XML stream reader
-     * @param attribute the attribute to parse
-     * @return the list of URIs contained in that attribute, or null if the attribute is not present
-     * @throws URISyntaxException if the attribute contains an invalid URI
-     */
-    List<URI> parseListOfUris(XMLStreamReader reader, String attribute) throws URISyntaxException;
 
     /**
      * Determines if the first multiplicity setting can narrow the second.

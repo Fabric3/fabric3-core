@@ -40,14 +40,6 @@
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.IncludeLoader"/>
     </component>
 
-    <component name="CompositeReferenceLoader">
-        <f3:implementation.system class="org.fabric3.introspection.xml.composite.CompositeReferenceLoader"/>
-    </component>
-
-    <component name="CompositeServiceLoader">
-        <f3:implementation.system class="org.fabric3.introspection.xml.composite.CompositeServiceLoader"/>
-    </component>
-
     <component name="ChannelLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.ChannelLoader"/>
     </component>
@@ -58,10 +50,6 @@
 
     <component name="CompositeLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.CompositeLoader"/>
-        <!-- explicitly wire composite property, service and reference laoders -->
-        <reference name="service" target="CompositeServiceLoader"/>
-        <reference name="reference" target="CompositeReferenceLoader"/>
-        <reference name="property" target="PropertyLoader"/>
     </component>
 
     <component name="ImplementationCompositeLoader">

@@ -26,13 +26,13 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentProducer;
-import org.fabric3.api.model.type.component.ComponentReference;
-import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -90,7 +90,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             }
 
             // service is configured in the component definition
-            ComponentService componentService = definition.getServices().get(name);
+            ServiceDefinition<ComponentDefinition> componentService = definition.getServices().get(name);
             if (componentService != null) {
                 for (BindingDefinition binding : componentService.getBindings()) {
                     LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<>(binding, logicalService);
@@ -111,7 +111,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             URI referenceUri = component.getUri().resolve('#' + name);
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);
 
-            ComponentReference componentReference = definition.getReferences().get(name);
+            ReferenceDefinition<ComponentDefinition> componentReference = definition.getReferences().get(name);
             if (componentReference != null) {
                 // reference is configured in the component definition
                 for (BindingDefinition binding : componentReference.getBindings()) {

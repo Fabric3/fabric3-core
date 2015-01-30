@@ -106,7 +106,6 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         ComponentDefinition<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
         InstantiationContext context = new InstantiationContext();
         LogicalComponent<?> logical = instantiator.instantiate(definition, domain, context);
-        logical.setAutowire(domain.getAutowire());
         if (context.hasErrors()) {
             throw new AssemblyException(context.getErrors());
         }

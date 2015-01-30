@@ -28,7 +28,6 @@ import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.stream.Source;
-import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
@@ -52,10 +51,8 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes a Java component resource in two phases. During contribution indexing, the Java class is introspected. At contribution processing, the component
- * resource is added to its containing composite or a new composite is created if one is not found.
- * <p/>
- * Note adding the component to the composite must be done after the contribution is indexed so that composites loaded from XML and model providers are in
- * place.
+ * resource is added to its containing composite or a new composite is created if one is not found. <p/> Note adding the component to the composite must be done
+ * after the contribution is indexed so that composites loaded from XML and model providers are in place.
  */
 @EagerInit
 public class JavaResourceProcessor implements ResourceProcessor {
@@ -144,7 +141,6 @@ public class JavaResourceProcessor implements ResourceProcessor {
         }
         if (composite == null) {
             composite = new Composite(compositeName);
-            composite.setAutowire(Autowire.INHERITED);
             composite.setContributionUri(contribution.getUri());
             composite.setDeployable(true); // make the composite deployable if it has not been defined in either a composite file or via the DSL
             NullSource source = new NullSource(compositeName.toString());
@@ -161,11 +157,6 @@ public class JavaResourceProcessor implements ResourceProcessor {
             }
             composite.add(definition);
         } else {
-            if (definition.getAutowire() == Autowire.INHERITED) {
-                definition.setAutowire(composite.getAutowire());
-            } else if (definition.getAutowire() == null) {
-                definition.setAutowire(Autowire.INHERITED);
-            }
             composite.add(definition);
             updateIncludingComposites(contribution, composite);
         }
@@ -179,9 +170,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
 
     /**
      * Updates composites that include the given composite after a component has been added to the later. This is necessary since the including composite caches
-     * a view of the included components.
-     * <p/>
-     * Note only the current contribution needs to be searched as contributions are ordered on install.
+     * a view of the included components. <p/> Note only the current contribution needs to be searched as contributions are ordered on install.
      *
      * @param contribution the current contribution
      * @param composite    the composite

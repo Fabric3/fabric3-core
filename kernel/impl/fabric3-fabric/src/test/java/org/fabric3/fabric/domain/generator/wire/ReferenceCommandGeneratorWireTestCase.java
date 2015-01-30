@@ -24,9 +24,9 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -67,7 +67,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -109,7 +109,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -161,7 +161,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         referenceDefinition.setMultiplicity(Multiplicity.ONE_N);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);

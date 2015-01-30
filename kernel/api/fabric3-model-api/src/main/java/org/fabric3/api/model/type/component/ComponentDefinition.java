@@ -36,10 +36,9 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     private String key;
     private int order = Integer.MIN_VALUE;
     private URI contributionUri;
-    private Autowire autowire = Autowire.INHERITED;
 
-    private Map<String, ComponentService> services = new HashMap<>();
-    private Map<String, ComponentReference> references = new HashMap<>();
+    private Map<String, ServiceDefinition<ComponentDefinition>> services = new HashMap<>();
+    private Map<String, ReferenceDefinition<ComponentDefinition>> references = new HashMap<>();
     private Map<String, ComponentProducer> producers = new HashMap<>();
     private Map<String, ComponentConsumer> consumers = new HashMap<>();
     private Map<String, PropertyValue> propertyValues = new HashMap<>();
@@ -105,29 +104,11 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     }
 
     /**
-     * Returns the autowire status for the component.
-     *
-     * @return the autowire status for the component
-     */
-    public Autowire getAutowire() {
-        return autowire;
-    }
-
-    /**
-     * Sets the autowire status for the component.
-     *
-     * @param autowire the autowire status
-     */
-    public void setAutowire(Autowire autowire) {
-        this.autowire = autowire;
-    }
-
-    /**
      * Returns the references configured by this component.
      *
      * @return the component references
      */
-    public Map<String, ComponentReference> getReferences() {
+    public Map<String, ReferenceDefinition<ComponentDefinition>> getReferences() {
         return references;
     }
 
@@ -136,7 +117,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param reference the reference to add
      */
-    public void add(ComponentReference reference) {
+    public void add(ReferenceDefinition<ComponentDefinition> reference) {
         reference.setParent(this);
         pushElement(reference);
         references.put(reference.getName(), reference);
@@ -147,7 +128,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param reference the reference to remove
      */
-    public void remove(ComponentReference reference) {
+    public void remove(ReferenceDefinition<ComponentDefinition> reference) {
         reference.setParent(null);
         removeElement(reference);
         references.remove(reference.getName());
@@ -158,7 +139,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @return the services configured by this component
      */
-    public Map<String, ComponentService> getServices() {
+    public Map<String, ServiceDefinition<ComponentDefinition>> getServices() {
         return services;
     }
 
@@ -167,7 +148,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param service the service to add
      */
-    public void add(ComponentService service) {
+    public void add(ServiceDefinition<ComponentDefinition> service) {
         service.setParent(this);
         pushElement(service);
         services.put(service.getName(), service);
@@ -178,7 +159,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param service the service to remove
      */
-    public void remove(ComponentService service) {
+    public void remove(ServiceDefinition<ComponentDefinition> service) {
         service.setParent(null);
         removeElement(service);
         services.remove(service.getName());

@@ -34,13 +34,11 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.oasisopen.sca.Constants;
-import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  *
  */
 public class WireLoaderTestCase extends TestCase {
-    public static final QName COMPOSITE = new QName(SCA_NS, "composite");
     private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' "
             + "targetNamespace='http://example.com' name='composite'>"
             + "<wire source='source' target='target'/>"
@@ -79,6 +77,6 @@ public class WireLoaderTestCase extends TestCase {
         WireLoader wireLoader = new WireLoader(loaderHelper);
         LoaderRegistry registry = new LoaderRegistryImpl();
         registry.registerLoader(new QName(Constants.SCA_NS, "wire"), wireLoader);
-        loader = new CompositeLoader(registry, null, null, null, null, loaderHelper);
+        loader = new CompositeLoader(registry);
     }
 }

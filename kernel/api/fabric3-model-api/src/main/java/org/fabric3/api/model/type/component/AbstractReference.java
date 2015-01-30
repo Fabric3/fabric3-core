@@ -36,7 +36,6 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
 
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
-    private Autowire autowire = Autowire.INHERITED;
 
     private boolean keyed;
     private DataType keyDataType;
@@ -125,24 +124,6 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
      */
     public boolean isRequired() {
         return multiplicity == Multiplicity.ONE_ONE || multiplicity == Multiplicity.ONE_N;
-    }
-
-    /**
-     * Returns the autowire setting for the reference.
-     *
-     * @return true if autowire is enabled for the reference.
-     */
-    public Autowire getAutowire() {
-        return autowire;
-    }
-
-    /**
-     * Sets autowire for the reference.
-     *
-     * @param autowire true if autowire is enabled.
-     */
-    public void setAutowire(Autowire autowire) {
-        this.autowire = autowire;
     }
 
     /**

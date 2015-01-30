@@ -52,12 +52,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private static final QName SYNTHETIC_COMPOSITE = new QName(org.fabric3.api.Namespaces.F3, "SyntheticComposite");
 
     private ChannelInstantiator channelInstantiator;
-    private PromotionNormalizer promotionNormalizer;
     private AtomicComponentInstantiator atomicComponentInstantiator;
     private CompositeComponentInstantiator compositeComponentInstantiator;
     private WireInstantiator wireInstantiator;
-    private AutowireNormalizer autowireNormalizer;
-    private PromotionResolutionService promotionResolutionService;
     private AutowireInstantiator autowireInstantiator;
 
     @Constructor
@@ -65,35 +62,19 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                                         @Reference AtomicComponentInstantiator atomicComponentInstantiator,
                                         @Reference WireInstantiator wireInstantiator,
                                         @Reference AutowireInstantiator autowireInstantiator,
-                                        @Reference ChannelInstantiator channelInstantiator,
-                                        @Reference PromotionNormalizer promotionNormalizer,
-                                        @Reference AutowireNormalizer autowireNormalizer,
-                                        @Reference PromotionResolutionService promotionResolutionService) {
+                                        @Reference ChannelInstantiator channelInstantiator) {
         this.channelInstantiator = channelInstantiator;
-        this.promotionNormalizer = promotionNormalizer;
         this.atomicComponentInstantiator = atomicComponentInstantiator;
         this.compositeComponentInstantiator = compositeComponentInstantiator;
         this.wireInstantiator = wireInstantiator;
-        this.autowireNormalizer = autowireNormalizer;
-        this.promotionResolutionService = promotionResolutionService;
         this.autowireInstantiator = autowireInstantiator;
     }
 
     public LogicalModelInstantiatorImpl(CompositeComponentInstantiator compositeComponentInstantiator,
                                         AtomicComponentInstantiator atomicComponentInstantiator,
                                         WireInstantiator wireInstantiator,
-                                        AutowireInstantiator autowireInstantiator,
-                                        PromotionNormalizer promotionNormalizer,
-                                        AutowireNormalizer autowireNormalizer,
-                                        PromotionResolutionService promotionResolutionService) {
-        this(compositeComponentInstantiator,
-             atomicComponentInstantiator,
-             wireInstantiator,
-             autowireInstantiator,
-             null,
-             promotionNormalizer,
-             autowireNormalizer,
-             promotionResolutionService);
+                                        AutowireInstantiator autowireInstantiator) {
+        this(compositeComponentInstantiator, atomicComponentInstantiator, wireInstantiator, autowireInstantiator, null);
     }
 
     public InstantiationContext include(Composite composite, LogicalCompositeComponent domain) {
@@ -115,17 +96,13 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         includeResources(composite, domain, synthetic);
 
         // instantiate all the components in the composite and add them to the parent
-        List<LogicalComponent<?>> newComponents = instantiate(composite, domain, synthetic, context);
-
-        // normalize autowire settings and bindings for each new component - this must come before resolution since target URIs may be inherited
-        for (LogicalComponent<?> component : newComponents) {
-            normalize(component, context);
-        }
+        instantiate(composite, domain, synthetic, context);
 
         // resolve services and references - evaluate all references since reinjection may apply
-        for (LogicalComponent<?> component : domain.getComponents()) {
-            promotionResolutionService.resolve(component, context);
-            autowireInstantiator.instantiate(component, context);
+        if (domain.isAutowire()) {
+            for (LogicalComponent<?> component : domain.getComponents()) {
+                autowireInstantiator.instantiate(component, context);
+            }
         }
         return context;
     }
@@ -172,9 +149,8 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      * @param domain    the domain logical components
      * @param synthetic true if the composite is synthetic and its children should be treated as a single deployment unit
      * @param context   the instantiation context
-     * @return the newly instantiated domain-level components
      */
-    private List<LogicalComponent<?>> instantiate(Composite composite, LogicalCompositeComponent domain, boolean synthetic, InstantiationContext context) {
+    private void instantiate(Composite composite, LogicalCompositeComponent domain, boolean synthetic, InstantiationContext context) {
         // instantiate the declared components
         Collection<ComponentDefinition<? extends Implementation<?>>> definitions = composite.getDeclaredComponents().values();
         List<LogicalComponent<?>> newComponents = new ArrayList<>(definitions.size());
@@ -208,7 +184,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
             }
         }
-        return newComponents;
     }
 
     /**
@@ -264,30 +239,8 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     }
 
     /**
-     * Normalizes the component hierarchy by calculating autowire and promotion settings through a depth-first traversal of leaf/atomic components.
-     *
-     * @param component the component to normalize
-     * @param context   the instantiation context
-     */
-    private void normalize(LogicalComponent<?> component, InstantiationContext context) {
-
-        autowireNormalizer.normalize(component);
-
-        if (component instanceof LogicalCompositeComponent) {
-            LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
-            for (LogicalComponent<?> child : composite.getComponents()) {
-                normalize(child, context);
-            }
-        } else {
-            promotionNormalizer.normalize(component, context);
-        }
-    }
-
-    /**
-     * Synthesizes a composite from a collection of composites using inclusion.
-     * <p/>
-     * A counter is maintained for each include name and used to generate include names in situations where they may clash, e.g. when two composites from
-     * different contributions with the same name are depoyed together.
+     * Synthesizes a composite from a collection of composites using inclusion. <p/> A counter is maintained for each include name and used to generate include
+     * names in situations where they may clash, e.g. when two composites from different contributions with the same name are deployed together.
      *
      * @param composites the composites to synthesize
      * @return the synthesized composite

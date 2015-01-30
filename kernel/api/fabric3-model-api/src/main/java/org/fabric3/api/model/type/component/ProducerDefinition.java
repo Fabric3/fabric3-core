@@ -19,9 +19,6 @@
  */
 package org.fabric3.api.model.type.component;
 
-import java.net.URI;
-import java.util.List;
-
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
@@ -29,8 +26,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  */
 public class ProducerDefinition extends AbstractProducer<ComponentType> {
     private static final long serialVersionUID = -4222312633353056234L;
-
-    protected List<URI> targets;
 
 
     /**

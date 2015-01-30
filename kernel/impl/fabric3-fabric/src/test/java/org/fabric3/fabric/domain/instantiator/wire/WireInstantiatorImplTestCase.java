@@ -25,19 +25,19 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.domain.instantiator.AmbiguousService;
-import org.fabric3.fabric.domain.instantiator.InstantiationContext;
-import org.fabric3.fabric.domain.instantiator.ServiceNotFound;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
-import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.component.WireDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.fabric.domain.instantiator.AmbiguousService;
+import org.fabric3.fabric.domain.instantiator.InstantiationContext;
+import org.fabric3.fabric.domain.instantiator.ServiceNotFound;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -204,7 +204,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
     }
 
     private LogicalService createLogicalService(String name, LogicalComponent<?> logicalComponent) {
-        ComponentService service = new ComponentService(name);
+        ServiceDefinition<ComponentDefinition> service = new ServiceDefinition<>(name);
         logicalComponent.getDefinition().add(service);
 
         URI serviceUri = URI.create("composite/component#" + name);
@@ -215,7 +215,7 @@ public class WireInstantiatorImplTestCase extends TestCase {
     }
 
     private LogicalReference createLogicalReference(LogicalComponent<?> logicalComponent, Target target) {
-        ComponentReference reference = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
         reference.addTarget(target);
         logicalComponent.getDefinition().add(reference);
 
@@ -237,15 +237,15 @@ public class WireInstantiatorImplTestCase extends TestCase {
             URI uri = URI.create(nameStr);
             LogicalComponent logicalComponent = new LogicalComponent(uri, component, logicalComposite);
             logicalComposite.addComponent(logicalComponent);
-            Map<String, ComponentReference> references = component.getReferences();
-            for (ComponentReference reference : references.values()) {
+            Map<String, ReferenceDefinition> references = component.getReferences();
+            for (ReferenceDefinition reference : references.values()) {
                 URI referenceUri = URI.create(nameStr + "#" + reference.getName());
                 LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);
                 logicalReference.setServiceContract(new MockContract());
                 logicalComponent.addReference(logicalReference);
             }
-            Map<String, ComponentService> services = component.getServices();
-            for (ComponentService service : services.values()) {
+            Map<String, ServiceDefinition> services = component.getServices();
+            for (ServiceDefinition service : services.values()) {
                 URI serviceUri = URI.create(nameStr + "#" + service.getName());
                 LogicalService logicalService = new LogicalService(serviceUri, service, logicalComponent);
                 logicalService.setServiceContract(new MockContract());
@@ -261,12 +261,12 @@ public class WireInstantiatorImplTestCase extends TestCase {
         Composite composite = new Composite(name);
 
         ComponentDefinition fooComponent = new ComponentDefinition("foo");
-        ComponentReference reference = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition reference = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         fooComponent.add(reference);
         composite.add(fooComponent);
 
         ComponentDefinition barComponent = new ComponentDefinition("bar");
-        ComponentService service = new ComponentService("reference");
+        ServiceDefinition service = new ServiceDefinition("reference");
         barComponent.add(service);
         composite.add(barComponent);
 

@@ -61,7 +61,7 @@ public class ComponentLoaderNoServiceTestCase extends TestCase {
         super.setUp();
         LoaderRegistry registry = new LoaderRegistryImpl();
         LoaderHelper helper = new DefaultLoaderHelper();
-        ComponentServiceLoader serviceLoader = new ComponentServiceLoader(registry, helper);
+        ComponentServiceLoader serviceLoader = new ComponentServiceLoader(registry);
         serviceLoader.init();
 
         MockImplementationLoader implLoader = new MockImplementationLoader();

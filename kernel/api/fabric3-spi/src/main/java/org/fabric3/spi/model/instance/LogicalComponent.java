@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 
@@ -46,7 +45,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<>();
     private String zone = Names.LOCAL_ZONE;
     private QName deployable;
-    private Autowire autowire;
     private LogicalState state = LogicalState.NEW;
 
     /**
@@ -103,24 +101,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      */
     public void setDeployable(QName deployable) {
         this.deployable = deployable;
-    }
-
-    /**
-     * Returns the autowire value based on the component autowire inheritance hierarchy.
-     *
-     * @return the autowire value
-     */
-    public Autowire getAutowire() {
-        return autowire;
-    }
-
-    /**
-     * Sets the autowire value  based on the component autowire inheritance hierarchy.
-     *
-     * @param autowire the autowire value
-     */
-    public void setAutowire(Autowire autowire) {
-        this.autowire = autowire;
     }
 
     /**

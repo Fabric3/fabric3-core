@@ -39,23 +39,36 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     private Map<URI, LogicalComponent<?>> components = new HashMap<>();
     private Map<URI, LogicalChannel> channels = new HashMap<>();
     private List<LogicalResource<?>> resources = new ArrayList<>();
+    private boolean autowire;
 
     /**
      * Instantiates a composite component.
      *
-     * @param uri        URI of the component.
-     * @param definition Definition of the component.
-     * @param parent     Parent of the component.
+     * @param uri        the component URI
+     * @param definition the component definition
+     * @param parent     the component parent
      */
     public LogicalCompositeComponent(URI uri, ComponentDefinition<CompositeImplementation> definition, LogicalCompositeComponent parent) {
         super(uri, definition, parent);
     }
 
     /**
+     * Instantiates a composite component.
+     *
+     * @param uri        the component URI
+     * @param definition the component definition
+     * @param autowire   true if autowire is enabled
+     */
+    public LogicalCompositeComponent(URI uri, ComponentDefinition<CompositeImplementation> definition, boolean autowire) {
+        super(uri, definition, null);
+        this.autowire = autowire;
+    }
+
+    /**
      * Adds a wire to this composite component.
      *
      * @param logicalReference the wire source
-     * @param logicalWire      Wire to be added to this composite component.
+     * @param logicalWire      the wire to be added to this composite component
      */
     public void addWire(LogicalReference logicalReference, LogicalWire logicalWire) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
@@ -79,16 +92,6 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
             wires.put(logicalReference, logicalWires);
         }
         logicalWires.addAll(newWires);
-    }
-
-    /**
-     * Adds a set of wires to this composite component, overriding any existing ones.
-     *
-     * @param logicalReference the source for the wires
-     * @param logicalWires     the list of wires
-     */
-    public void overrideWires(LogicalReference logicalReference, List<LogicalWire> logicalWires) {
-        wires.put(logicalReference, logicalWires);
     }
 
     /**
@@ -209,4 +212,12 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
         }
     }
 
+    /**
+     * Returns true if autowire is enabled.
+     *
+     * @return true if autowire is enabled
+     */
+    public boolean isAutowire() {
+        return autowire;
+    }
 }

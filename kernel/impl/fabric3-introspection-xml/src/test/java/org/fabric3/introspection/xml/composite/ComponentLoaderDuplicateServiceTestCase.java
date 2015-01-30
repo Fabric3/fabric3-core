@@ -64,7 +64,7 @@ public class ComponentLoaderDuplicateServiceTestCase extends TestCase {
          super.setUp();
          LoaderRegistry registry = new LoaderRegistryImpl();
          LoaderHelper helper = new DefaultLoaderHelper();
-         ComponentServiceLoader referenceLoader = new ComponentServiceLoader(registry, helper);
+         ComponentServiceLoader referenceLoader = new ComponentServiceLoader(registry);
          referenceLoader.init();
 
          MockImplementationLoader implLoader = new MockImplementationLoader();

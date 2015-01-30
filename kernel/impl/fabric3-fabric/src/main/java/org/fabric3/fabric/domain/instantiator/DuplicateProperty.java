@@ -34,10 +34,6 @@ public class DuplicateProperty extends AssemblyFailure {
         this.propertyName = propertyName;
     }
 
-    public String getPropertyName() {
-        return propertyName;
-    }
-
     public String getMessage() {
         return "Duplicate property named " + propertyName + " configured on component " + getComponentUri();
     }

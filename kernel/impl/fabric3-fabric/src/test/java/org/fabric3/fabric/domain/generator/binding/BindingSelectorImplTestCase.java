@@ -29,9 +29,9 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
 import org.fabric3.spi.domain.generator.binding.BindingProvider;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -183,7 +183,7 @@ public class BindingSelectorImplTestCase extends TestCase {
         });
         LogicalComponent target = new LogicalComponent(URI.create("composite/target"), definition, composite);
         target.setZone(targetZone);
-        ComponentService componentService = new ComponentService("test");
+        ServiceDefinition componentService = new ServiceDefinition("test");
         componentService.setServiceContract(new JavaServiceContract());
         LogicalService service = new LogicalService(URI.create("composite/source#service"), componentService, target);
 

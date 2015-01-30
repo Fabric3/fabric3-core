@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.component.WireDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -95,7 +95,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
     private void instantiateReferenceWires(LogicalReference reference, InstantiationContext context) {
         LogicalCompositeComponent parent = reference.getParent().getParent();
-        ComponentReference componentReference = reference.getComponentReference();
+        ReferenceDefinition componentReference = reference.getComponentReference();
         AbstractReference<?> definition = reference.getDefinition();
         if (componentReference == null && definition.getTargets().isEmpty()) {
             // the reference is not configured on the component definition in the composite or in the component type so there are no wires

@@ -90,7 +90,7 @@ public class DistributedDomainVMTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testIncludeUris() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
-        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+        EasyMock.expect(instantiator.include(EasyMock.isA(List.class), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
 

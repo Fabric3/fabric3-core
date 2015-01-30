@@ -49,7 +49,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.LogicalComponentManager;
-import org.fabric3.spi.domain.allocator.AllocationException;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalChannel;

@@ -40,7 +40,6 @@ public class Composite extends ComponentType {
     private QName name;
     private URI contributionUri;
     private boolean local;
-    private Autowire autowire;
 
     private boolean deployable;
     private List<RuntimeMode> modes = Arrays.asList(RuntimeMode.VM, RuntimeMode.NODE);
@@ -53,9 +52,6 @@ public class Composite extends ComponentType {
     private List<ResourceDefinition> resources = new ArrayList<>();
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
-    private Map<String, Property> propertiesView = new HashMap<>();
-    private Map<String, ReferenceDefinition> referencesView = new HashMap<>();
-    private Map<String, AbstractService> servicesView = new HashMap<>();
     private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView = new HashMap<>();
     private Map<String, ChannelDefinition> channelsView = new HashMap<>();
     private List<WireDefinition> wiresView = new ArrayList<>();
@@ -135,24 +131,6 @@ public class Composite extends ComponentType {
     }
 
     /**
-     * Returns the autowire status for the composite.
-     *
-     * @return the autowire status for the composite
-     */
-    public Autowire getAutowire() {
-        return autowire;
-    }
-
-    /**
-     * Sets the autowire status for the composite.
-     *
-     * @param autowire the autowire status for the composite
-     */
-    public void setAutowire(Autowire autowire) {
-        this.autowire = autowire;
-    }
-
-    /**
      * Returns true if this composite is configured as a deployable.
      *
      * @return true if this composite is configured as a deployable
@@ -213,57 +191,6 @@ public class Composite extends ComponentType {
      */
     public boolean isPointer() {
         return pointer;
-    }
-
-    public Map<String, Property> getProperties() {
-        return propertiesView;
-    }
-
-    public void add(Property property) {
-        super.add(property);
-        propertiesView.put(property.getName(), property);
-    }
-
-    public Map<String, ReferenceDefinition> getReferences() {
-        return referencesView;
-    }
-
-    /**
-     * Returns all references including ones are included composites as a CompositeReference subtype.
-     *
-     * @return references
-     */
-    public Map<String, CompositeReference> getCompositeReferences() {
-        return cast(referencesView);
-    }
-
-    public void add(ReferenceDefinition reference) {
-        if (!(reference instanceof CompositeReference)) {
-            throw new IllegalArgumentException("Reference type must be " + CompositeReference.class.getName());
-        }
-        super.add(reference);
-        referencesView.put(reference.getName(), reference);
-    }
-
-    public Map<String, AbstractService> getServices() {
-        return servicesView;
-    }
-
-    /**
-     * Returns all services including ones from included composites as a CompositeService subtype.
-     *
-     * @return services
-     */
-    public Map<String, CompositeService> getCompositeServices() {
-        return cast(servicesView);
-    }
-
-    public void add(ServiceDefinition service) {
-        if (!(service instanceof CompositeService)) {
-            throw new IllegalArgumentException("Service type must be " + CompositeService.class.getName());
-        }
-        super.add(service);
-        servicesView.put(service.getName(), service);
     }
 
     /**
@@ -376,39 +303,9 @@ public class Composite extends ComponentType {
         include.setParent(this);
         includes.put(include.getName(), include);
         componentsView.putAll(include.getIncluded().getComponents());
-        referencesView.putAll(include.getIncluded().getReferences());
-        propertiesView.putAll(include.getIncluded().getProperties());
-        servicesView.putAll(include.getIncluded().getServices());
         wiresView.addAll(include.getIncluded().getWires());
         channelsView.putAll(include.getIncluded().getChannels());
         resourcesView.addAll(include.getIncluded().getResources());
-    }
-
-    /**
-     * Returns properties declared in this composite, except properties from included composites.
-     *
-     * @return properties
-     */
-    public Map<String, Property> getDeclaredProperties() {
-        return super.getProperties();
-    }
-
-    /**
-     * Returns references declared in this composite, except references from included composites.
-     *
-     * @return references
-     */
-    public Map<String, ReferenceDefinition> getDeclaredReferences() {
-        return super.getReferences();
-    }
-
-    /**
-     * Returns services declared in this composite, except services from included composites.
-     *
-     * @return services
-     */
-    public Map<String, AbstractService> getDeclaredServices() {
-        return super.getServices();
     }
 
     /**
@@ -475,11 +372,6 @@ public class Composite extends ComponentType {
 
         Composite that = (Composite) o;
         return name.equals(that.name);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private <T> T cast(Object o) {
-        return (T) o;
     }
 
 }

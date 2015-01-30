@@ -32,8 +32,6 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentProducer;
-import org.fabric3.api.model.type.component.ComponentReference;
-import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
@@ -228,7 +226,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         ReferenceDefinition definition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         component.getComponentType().add(definition);
 
-        ComponentReference reference = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition reference = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         Target target = new Target(REFERENCE_TARGET);
         reference.addTarget(target);
         reference.addBinding(new MockBinding());
@@ -240,7 +238,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         ServiceDefinition definition = new ServiceDefinition("service");
         component.getComponentType().add(definition);
 
-        ComponentService service = new ComponentService("service");
+        ServiceDefinition service = new ServiceDefinition("service");
         service.addBinding(new MockBinding());
         service.addCallbackBinding(new MockBinding());
         component.add(service);

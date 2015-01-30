@@ -24,9 +24,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
@@ -134,7 +134,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         componentDefinition.setParent(composite);
         NonManagedImplementation implementation = new NonManagedImplementation();
         componentDefinition.setImplementation(implementation);
-        ComponentReference reference = new ComponentReference("reference", Multiplicity.ONE_ONE);
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>("reference", Multiplicity.ONE_ONE);
         componentDefinition.add(reference);
 
         LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, componentDefinition, domainComponent);

@@ -69,18 +69,12 @@ import org.fabric3.fabric.domain.generator.wire.ResourceReferenceCommandGenerato
 import org.fabric3.fabric.domain.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.AutowireInstantiator;
-import org.fabric3.fabric.domain.instantiator.AutowireNormalizer;
 import org.fabric3.fabric.domain.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiatorImpl;
-import org.fabric3.fabric.domain.instantiator.PromotionNormalizer;
-import org.fabric3.fabric.domain.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.domain.instantiator.WireInstantiator;
 import org.fabric3.fabric.domain.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.domain.instantiator.component.AutowireNormalizerImpl;
 import org.fabric3.fabric.domain.instantiator.component.CompositeComponentInstantiatorImpl;
-import org.fabric3.fabric.domain.instantiator.promotion.PromotionNormalizerImpl;
-import org.fabric3.fabric.domain.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.domain.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
 import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
@@ -188,35 +182,19 @@ public class BootstrapAssemblyFactory {
         Collector collector = new CollectorImpl();
         ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore, info);
 
-        return new RuntimeDomain(metaDataStore,
-                                 generator,
-                                 logicalModelInstantiator,
-                                 logicalComponentManager,
-                                 deployer,
-                                 collector,
-                                 contributionHelper,
-                                 info);
+        return new RuntimeDomain(metaDataStore, generator, logicalModelInstantiator, logicalComponentManager, deployer, collector, contributionHelper, info);
     }
 
     private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
-        PromotionResolutionService promotionResolutionService = new PromotionResolutionServiceImpl();
         TypeAutowireResolver resolver = new TypeAutowireResolver(matcher);
         AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(resolver);
 
-        PromotionNormalizer promotionNormalizer = new PromotionNormalizerImpl();
-        AutowireNormalizer autowireNormalizer = new AutowireNormalizerImpl();
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
 
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
 
         CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
-        return new LogicalModelInstantiatorImpl(compositeInstantiator,
-                                                atomicInstantiator,
-                                                wireInstantiator,
-                                                autowireInstantiator,
-                                                promotionNormalizer,
-                                                autowireNormalizer,
-                                                promotionResolutionService);
+        return new LogicalModelInstantiatorImpl(compositeInstantiator, atomicInstantiator, wireInstantiator, autowireInstantiator);
     }
 
     private static CommandExecutorRegistry createCommandExecutorRegistry(MonitorProxyService monitorService,

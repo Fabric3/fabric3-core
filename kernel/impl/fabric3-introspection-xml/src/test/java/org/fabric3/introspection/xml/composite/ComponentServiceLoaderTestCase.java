@@ -25,13 +25,11 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.api.model.type.component.ComponentService;
-import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 /**
@@ -45,14 +43,14 @@ public class ComponentServiceLoaderTestCase extends TestCase {
     private IntrospectionContext ctx;
 
     public void testLoad() throws Exception {
-        ComponentService service = loader.load(reader, ctx);
+        ServiceDefinition service = loader.load(reader, ctx);
         assertEquals("service", service.getName());
         assertFalse(ctx.hasErrors());
     }
 
     public void testRoundTrip() throws Exception {
         loader.setRoundTrip(true);
-        ComponentService service = loader.load(reader, ctx);
+        ServiceDefinition service = loader.load(reader, ctx);
         assertEquals("service", service.getName());
         assertFalse(ctx.hasErrors());
     }
@@ -60,11 +58,10 @@ public class ComponentServiceLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         LoaderRegistry registry = new LoaderRegistryImpl();
-        LoaderHelper helper = new DefaultLoaderHelper();
 
         MockImplementationLoader implLoader = new MockImplementationLoader();
         registry.registerLoader(MockImplementation.TYPE, implLoader);
-        loader = new ComponentServiceLoader(registry, helper);
+        loader = new ComponentServiceLoader(registry);
 
         reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();

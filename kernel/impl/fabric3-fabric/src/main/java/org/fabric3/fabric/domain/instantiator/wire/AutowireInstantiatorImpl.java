@@ -21,25 +21,22 @@ package org.fabric3.fabric.domain.instantiator.wire;
 import javax.xml.namespace.QName;
 import java.util.List;
 
+import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.Target;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.ReferenceNotFound;
-import org.fabric3.api.model.type.component.AbstractReference;
-import org.fabric3.api.model.type.component.Autowire;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
-import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.api.model.type.component.Target;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.instantiator.AutowireResolver;
-import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -65,8 +62,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
     private void resolveReferences(LogicalComponent<?> component, InstantiationContext context) {
         LogicalCompositeComponent parent = component.getParent();
         for (LogicalReference reference : component.getReferences()) {
-            boolean scaTarget = isScaTarget(reference);
-            if (scaTarget || reference.isConcreteBound()) {
+            if (reference.isConcreteBound()) {
                 // reference is targeted using binding.sca or is explicitly bound so it should not be autowired
                 continue;
             }
@@ -81,27 +77,9 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         }
     }
 
-    /**
-     * Returns true if the reference is targeted through the binding.sca uri attribute.
-     *
-     * @param reference the reference
-     * @return true if the reference is targeted through the binding.sca uri attribute
-     */
-    private boolean isScaTarget(LogicalReference reference) {
-        boolean scaTarget = false;
-        for (LogicalBinding<?> binding : reference.getBindings()) {
-            BindingDefinition definition = binding.getDefinition();
-            if (definition instanceof SCABinding && ((SCABinding) definition).getTarget() != null) {
-                scaTarget = true;
-                break;
-            }
-        }
-        return scaTarget;
-    }
-
     private void resolveReference(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {
 
-        ComponentReference componentReference = logicalReference.getComponentReference();
+        ReferenceDefinition<ComponentDefinition> componentReference = logicalReference.getComponentReference();
         LogicalComponent<?> component = logicalReference.getParent();
 
         AbstractReference<?> referenceDefinition = logicalReference.getDefinition();
@@ -117,10 +95,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
             ServiceContract requiredContract = logicalReference.getServiceContract();
 
-            Autowire autowire = component.getAutowire();
-            if (autowire == Autowire.ON) {
-                instantiateWires(logicalReference, requiredContract, compositeComponent);
-            }
+            instantiateWires(logicalReference, requiredContract, compositeComponent);
 
         } else if (componentReference != null) {
             // The reference is explicitly configured on the component definition in the composite or in the component type
@@ -129,13 +104,10 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            if (componentReference.getAutowire() == Autowire.ON || (componentReference.getAutowire() == Autowire.INHERITED
-                                                                    && component.getAutowire() == Autowire.ON)) {
-                ServiceContract requiredContract = referenceDefinition.getServiceContract();
-                boolean resolved = instantiateWires(logicalReference, requiredContract, component.getParent());
-                if (!resolved) {
-                    instantiateWires(logicalReference, requiredContract, compositeComponent);
-                }
+            ServiceContract requiredContract = referenceDefinition.getServiceContract();
+            boolean resolved = instantiateWires(logicalReference, requiredContract, component.getParent());
+            if (!resolved) {
+                instantiateWires(logicalReference, requiredContract, compositeComponent);
             }
         }
 

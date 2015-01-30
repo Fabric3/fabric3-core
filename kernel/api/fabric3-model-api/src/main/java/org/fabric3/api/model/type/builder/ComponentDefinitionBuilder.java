@@ -19,10 +19,10 @@ package org.fabric3.api.model.type.builder;
 import org.fabric3.api.model.type.F3NamespaceContext;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentReference;
-import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.PropertyValue;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.component.Target;
 
 /**
@@ -40,9 +40,9 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
     public T binding(String serviceName, BindingDefinition bindingDefinition) {
         checkState();
         ComponentDefinition<?> definition = getDefinition();
-        ComponentService service = definition.getServices().get(serviceName);
+        ServiceDefinition<ComponentDefinition> service = definition.getServices().get(serviceName);
         if (service == null) {
-            service = new ComponentService(serviceName);
+            service = new ServiceDefinition<>(serviceName);
             definition.add(service);
         }
         service.addBinding(bindingDefinition);
@@ -58,7 +58,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
     public T reference(String name, String target) {
         checkState();
         ComponentDefinition<?> definition = getDefinition();
-        ComponentReference reference = new ComponentReference(name, Multiplicity.ONE_ONE);
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>(name, Multiplicity.ONE_ONE);
         reference.addTarget(new Target(target));
         definition.add(reference);
         return builder();
@@ -74,7 +74,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
         checkState();
         ComponentDefinition<?> definition = getDefinition();
         Multiplicity multiplicity = required ? Multiplicity.ONE_ONE : Multiplicity.ZERO_ONE;
-        ComponentReference reference = new ComponentReference(name, multiplicity);
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>(name, multiplicity);
         reference.addTarget(new Target(target));
         definition.add(reference);
         return builder();
@@ -90,7 +90,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
     public T reference(String name, String target, Multiplicity multiplicity) {
         checkState();
         ComponentDefinition<?> definition = getDefinition();
-        ComponentReference reference = new ComponentReference(name, multiplicity);
+        ReferenceDefinition<ComponentDefinition> reference = new ReferenceDefinition<>(name, multiplicity);
         reference.addTarget(new Target(target));
         definition.add(reference);
         return builder();

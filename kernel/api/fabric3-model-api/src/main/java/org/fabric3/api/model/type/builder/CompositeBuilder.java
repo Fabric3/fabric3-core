@@ -20,20 +20,14 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.CompositeReference;
-import org.fabric3.api.model.type.component.CompositeService;
 import org.fabric3.api.model.type.component.Include;
-import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.api.model.type.component.WireDefinition;
@@ -128,84 +122,6 @@ public class CompositeBuilder extends AbstractBuilder {
     }
 
     /**
-     * Promotes a service provided by a contained component.
-     *
-     * @param name     the promoted service name
-     * @param promoted the name of the service to promote. The name is specified as the component name/service name. If the component only provides one service
-     *                 (e.g. it implements one interface), the service name part may be omitted.
-     * @return the builder
-     */
-    public CompositeBuilder promoteService(String name, String promoted) {
-        checkState();
-        CompositeService compositeService = new CompositeService(name, URI.create(promoted));
-        composite.add(compositeService);
-        return this;
-    }
-
-    /**
-     * Promotes a reference on a contained component.
-     *
-     * @param name     the promoted reference name
-     * @param promoted the name of the reference to promote. The name is specified as the component name/reference name. If the component only provides one
-     *                 reference, the reference name part may be omitted.
-     * @return the builder
-     */
-    public CompositeBuilder promoteReference(String name, String promoted) {
-        checkState();
-        CompositeReference compositeService = new CompositeReference(name, Collections.singletonList(URI.create(promoted)), Multiplicity.ONE_ONE);
-        composite.add(compositeService);
-        return this;
-    }
-
-    /**
-     * Promotes multiple references provided by more than one contained component using a single promoted reference.
-     *
-     * @param name     the promoted reference name
-     * @param promoted the name of the references to promote. The name is specified as the component name/reference name. If the component only provides one
-     *                 reference, the reference name part may be omitted.
-     * @return the builder
-     */
-    public CompositeBuilder promoteReferences(String name, Multiplicity multiplicity, List<String> promoted) {
-        checkState();
-        List<URI> uris = new ArrayList<>();
-        for (String value : promoted) {
-            uris.add(URI.create(value));
-        }
-        CompositeReference compositeService = new CompositeReference(name, uris, multiplicity);
-        composite.add(compositeService);
-        return this;
-    }
-
-    /**
-     * Adds a property to the composite parsed from the XML source.
-     *
-     * @param name   the property name
-     * @param source the XML source
-     * @return the builder
-     * @throws ModelBuilderException if an error reading the source occurs
-     */
-    public CompositeBuilder property(String name, URL source) {
-        checkState();
-        try {
-            Document document = DOCUMENT_FACTORY.newDocumentBuilder().parse(source.openStream());
-            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
-            Element oldRoot = document.getDocumentElement();
-            Element newRoot = document.createElement("values");
-            document.removeChild(oldRoot);
-            document.appendChild(newRoot);
-            newRoot.appendChild(oldRoot);
-
-            Property property = new Property(name);
-            property.setDefaultValue(document);
-            composite.add(property);
-        } catch (IOException | ParserConfigurationException | SAXException e) {
-            throw new ModelBuilderException(e);
-        }
-        return this;
-
-    }
-
-    /**
      * Makes the composite a deployable composite.
      *
      * @return the builder
@@ -249,6 +165,35 @@ public class CompositeBuilder extends AbstractBuilder {
         checkState();
         freeze();
         return composite;
+    }
+
+    /**
+     * Adds a property to the composite parsed from the XML source.
+     *
+     * @param name   the property name
+     * @param source the XML source
+     * @return the builder
+     * @throws ModelBuilderException if an error reading the source occurs
+     */
+    public CompositeBuilder property(String name, URL source) {
+        checkState();
+        try {
+            Document document = DOCUMENT_FACTORY.newDocumentBuilder().parse(source.openStream());
+            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
+            Element oldRoot = document.getDocumentElement();
+            Element newRoot = document.createElement("values");
+            document.removeChild(oldRoot);
+            document.appendChild(newRoot);
+            newRoot.appendChild(oldRoot);
+
+            Property property = new Property(name);
+            property.setDefaultValue(document);
+            composite.add(property);
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            throw new ModelBuilderException(e);
+        }
+        return this;
+
     }
 
     protected CompositeBuilder(QName name) {

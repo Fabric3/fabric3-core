@@ -55,13 +55,6 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
         if (!componentType.getServices().isEmpty()) {
             for (AbstractService definition : componentType.getServices().values()) {
                 JavaServiceContract contract = (JavaServiceContract) definition.getServiceContract();
-                Class<?> serviceInterface;
-                try {
-                    serviceInterface = implClass.getClassLoader().loadClass(contract.getInterfaceClass());
-                } catch (ClassNotFoundException e) {
-                    // should not happen
-                    throw new AssertionError(e);
-                }
                 policyIntrospector.introspectPolicyOnOperations(contract, implClass, context);
             }
             return;

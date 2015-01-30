@@ -19,12 +19,13 @@
  */
 package org.fabric3.api.model.type.component;
 
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
- * A service introspected from a component type.
+ * A service.
  */
-public class ServiceDefinition extends AbstractService<ComponentType> {
+public class ServiceDefinition<P extends ModelObject> extends AbstractService<P> {
     private static final long serialVersionUID = -3331868180749278028L;
 
     public ServiceDefinition(String name) {
