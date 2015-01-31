@@ -112,7 +112,6 @@ public class ImplementationManagerImpl implements ImplementationManager {
                 Thread.currentThread().setContextClassLoader(oldCl);
             }
         }
-        throw new ContainerException("Error destroying instance for: " + componentUri);
     }
 
     public void reinject(Object instance) throws ContainerException {

@@ -247,7 +247,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     /**
      * Registers a primordial component.
      *
-     * @param name       the component name
+     * @param name       the component named
      * @param type       the service interface type
      * @param instance   the component instance
      * @param introspect true if the component should be introspected for references

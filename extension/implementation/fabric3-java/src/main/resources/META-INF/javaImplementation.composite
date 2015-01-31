@@ -6,7 +6,7 @@
            autowire="true">
 
 
-    <component name="JavaImplementationLoader" f3:key="sca:implementation.java">
+    <component name="JavaImplementationLoader">
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationLoader"/>
     </component>
 

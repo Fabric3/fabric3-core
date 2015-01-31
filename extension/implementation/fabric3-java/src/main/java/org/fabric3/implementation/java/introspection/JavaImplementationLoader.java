@@ -22,6 +22,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -29,6 +30,7 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -36,15 +38,14 @@ import org.oasisopen.sca.annotation.Reference;
  * Loads a Java component implementation in a composite.
  */
 @EagerInit
+@Key(Constants.SCA_PREFIX + "implementation.java")
 public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaImplementation> {
     private JavaImplementationIntrospector introspector;
-
 
     public JavaImplementationLoader(@Reference JavaImplementationIntrospector introspector, @Reference LoaderHelper loaderHelper) {
         this.introspector = introspector;
         addAttributes("class", "requires", "policySets");
     }
-
 
     public JavaImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
