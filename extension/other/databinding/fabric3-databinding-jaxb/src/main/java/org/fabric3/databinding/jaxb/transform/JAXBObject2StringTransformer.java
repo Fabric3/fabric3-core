@@ -21,7 +21,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**

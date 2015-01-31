@@ -23,7 +23,7 @@ import java.net.URI;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;

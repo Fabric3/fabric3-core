@@ -43,7 +43,7 @@ import org.fabric3.binding.zeromq.runtime.message.NonReliableSingleThreadPublish
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;

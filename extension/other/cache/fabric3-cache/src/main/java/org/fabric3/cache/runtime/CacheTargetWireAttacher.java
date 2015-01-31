@@ -18,7 +18,7 @@
 package org.fabric3.cache.runtime;
 
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;

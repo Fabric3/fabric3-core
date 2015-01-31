@@ -16,7 +16,7 @@
  */
 package org.fabric3.timer.runtime;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.timer.provision.PhysicalTimerPoolResource;
 import org.fabric3.timer.spi.TimerService;

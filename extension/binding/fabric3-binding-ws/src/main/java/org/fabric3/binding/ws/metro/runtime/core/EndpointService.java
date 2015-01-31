@@ -19,7 +19,7 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Activates and de-activates web service endpoints.

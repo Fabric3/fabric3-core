@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ContributionResolverExtension;

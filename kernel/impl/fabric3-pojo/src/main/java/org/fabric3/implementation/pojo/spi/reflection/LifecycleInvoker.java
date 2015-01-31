@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.pojo.spi.reflection;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Performs a lifecycle invocation on an instance.

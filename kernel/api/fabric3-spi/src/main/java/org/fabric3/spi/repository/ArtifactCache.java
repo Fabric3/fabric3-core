@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Temporarily stores artifacts locally to a runtime.

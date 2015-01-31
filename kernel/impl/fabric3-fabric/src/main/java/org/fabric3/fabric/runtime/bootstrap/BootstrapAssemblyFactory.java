@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.fabric.container.builder.ConnectorImpl;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.BuildComponentCommand;
@@ -162,7 +162,7 @@ public class BootstrapAssemblyFactory {
                                       LogicalComponentManager logicalComponentManager,
                                       MetaDataStore metaDataStore,
                                       ManagementService managementService,
-                                      HostInfo info) throws InitializationException {
+                                      HostInfo info) throws ContainerException {
 
         CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
                                                                                 classLoaderRegistry,

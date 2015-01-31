@@ -20,7 +20,7 @@
 package org.fabric3.implementation.proxy.jdk.channel;
 
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.EventStream;
 
 /**

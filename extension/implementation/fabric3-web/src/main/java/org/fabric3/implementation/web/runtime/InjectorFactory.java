@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 

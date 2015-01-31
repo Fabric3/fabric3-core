@@ -23,7 +23,7 @@ import java.rmi.server.ExportException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 

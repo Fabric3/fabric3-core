@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.timer.runtime;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;

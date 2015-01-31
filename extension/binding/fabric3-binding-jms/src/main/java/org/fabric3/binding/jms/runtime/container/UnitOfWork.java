@@ -19,7 +19,7 @@ package org.fabric3.binding.jms.runtime.container;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implements unit of work boundaries for a JMS operation. Implementations support JTA transactions, local transactions, session auto-acknowledge, and client

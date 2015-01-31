@@ -18,7 +18,7 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 
 import java.security.SecureClassLoader;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Utility methods for wire attachers.

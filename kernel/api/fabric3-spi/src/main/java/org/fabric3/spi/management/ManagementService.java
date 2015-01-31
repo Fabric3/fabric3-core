@@ -21,7 +21,7 @@ package org.fabric3.spi.management;
 import java.net.URI;
 
 import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**

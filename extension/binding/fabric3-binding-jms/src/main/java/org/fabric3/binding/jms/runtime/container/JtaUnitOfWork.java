@@ -27,7 +27,7 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implements unit of work boundaries for a JMS operation.

@@ -25,7 +25,7 @@ import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

@@ -17,7 +17,7 @@
 package org.fabric3.binding.jms.spi.runtime.provider;
 
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implemented by a JMS provider to resolve destinations.

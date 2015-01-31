@@ -20,7 +20,7 @@ package org.fabric3.jpa.runtime.proxy;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**

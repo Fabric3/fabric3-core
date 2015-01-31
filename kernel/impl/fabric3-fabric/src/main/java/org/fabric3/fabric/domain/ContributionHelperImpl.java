@@ -27,8 +27,8 @@ import java.util.Set;
 
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.DeployableNotFoundException;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
@@ -81,7 +81,7 @@ public class ContributionHelperImpl implements ContributionHelper {
         return deployables;
     }
 
-    public Composite findComposite(QName deployable) throws DeploymentException {
+    public Composite findComposite(QName deployable) throws ContainerException {
         QNameSymbol symbol = new QNameSymbol(deployable);
         ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
         if (element == null) {

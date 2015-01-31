@@ -38,7 +38,7 @@ import javax.transaction.TransactionManager;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**

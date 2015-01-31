@@ -27,7 +27,7 @@ import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;

@@ -34,7 +34,7 @@ import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;

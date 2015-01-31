@@ -19,7 +19,7 @@ package org.fabric3.fabric.container.builder.channel;
 import java.net.URI;
 
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;

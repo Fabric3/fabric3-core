@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.domain;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Thrown when an attempt is made to perform an operation on a contribution that is not in the required installed state.
  */
-public class ContributionNotInstalledException extends DeploymentException {
+public class ContributionNotInstalledException extends ContainerException {
     private static final long serialVersionUID = -4286636545614691532L;
 
     public ContributionNotInstalledException(String message) {

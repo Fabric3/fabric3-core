@@ -18,12 +18,12 @@
  */
 package org.fabric3.fabric.domain;
 
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Denotes an error allocating a component to a service node.
  */
-public class AllocationException extends DeploymentException {
+public class AllocationException extends ContainerException {
     private static final long serialVersionUID = 3960592897460184482L;
 
     public AllocationException(String message) {

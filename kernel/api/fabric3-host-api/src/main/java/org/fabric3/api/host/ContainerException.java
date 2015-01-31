@@ -13,17 +13,32 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
  */
-package org.fabric3.node.domain;
+package org.fabric3.api.host;
 
 /**
- *
+ * Denotes a failure during a runtime operation.
  */
-public class InterfaceException extends ResolverException {
-    private static final long serialVersionUID = -920225279945374537L;
+public class ContainerException extends Fabric3Exception {
+    private static final long serialVersionUID = 3208972591954615326L;
 
-    public InterfaceException(String message) {
+    public ContainerException() {
+        super();
+    }
+
+    public ContainerException(String message) {
         super(message);
+    }
+
+    public ContainerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ContainerException(Throwable cause) {
+        super(cause);
     }
 
 }

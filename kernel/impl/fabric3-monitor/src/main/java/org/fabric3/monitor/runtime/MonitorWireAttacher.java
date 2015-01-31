@@ -22,7 +22,7 @@ import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;

@@ -24,7 +24,7 @@ import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

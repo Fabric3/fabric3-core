@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime.proxy;
 import javax.persistence.EntityManager;
 import javax.transaction.Transaction;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Responsible for returning an EntityManager with a persitence context tied to an execution context.

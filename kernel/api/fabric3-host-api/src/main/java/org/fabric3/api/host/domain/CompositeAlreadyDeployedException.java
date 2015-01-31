@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.domain;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  *
  */
-public class CompositeAlreadyDeployedException extends DeploymentException {
+public class CompositeAlreadyDeployedException extends ContainerException {
     private static final long serialVersionUID = 7676009104144520572L;
 
     public CompositeAlreadyDeployedException(String message) {

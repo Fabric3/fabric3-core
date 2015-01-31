@@ -24,7 +24,7 @@ import java.util.List;
 import org.easymock.IMocksControl;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.EagerInit;

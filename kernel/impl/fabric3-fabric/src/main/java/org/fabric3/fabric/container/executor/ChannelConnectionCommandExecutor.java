@@ -24,7 +24,7 @@ import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;

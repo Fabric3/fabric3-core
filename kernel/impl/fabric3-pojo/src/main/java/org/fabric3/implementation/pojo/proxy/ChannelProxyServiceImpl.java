@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;

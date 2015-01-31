@@ -24,15 +24,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapService;
 import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -53,11 +52,11 @@ public class DefaultBootstrapService implements BootstrapService {
         systemConfigLoader = new SystemConfigLoader();
     }
 
-    public Document loadSystemConfig(File configDirectory) throws InitializationException {
+    public Document loadSystemConfig(File configDirectory) throws ContainerException {
         return systemConfigLoader.loadSystemConfig(configDirectory);
     }
 
-    public Document loadSystemConfig(Source source) throws InitializationException {
+    public Document loadSystemConfig(Source source) throws ContainerException {
         return systemConfigLoader.loadSystemConfig(source);
     }
 
@@ -65,15 +64,15 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.createDefaultSystemConfig();
     }
 
-    public URI parseDomainName(Document systemConfig) throws InitializationException {
+    public URI parseDomainName(Document systemConfig) throws ContainerException {
         return systemConfigLoader.parseDomainName(systemConfig);
     }
 
-    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws InitializationException {
+    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws ContainerException {
         return systemConfigLoader.parseZoneName(systemConfig, mode);
     }
 
-    public RuntimeMode parseRuntimeMode(Document systemConfig) throws InitializationException {
+    public RuntimeMode parseRuntimeMode(Document systemConfig) throws ContainerException {
         return systemConfigLoader.parseRuntimeMode(systemConfig);
     }
 
@@ -81,11 +80,11 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseEnvironment(systemConfig);
     }
 
-    public List<File> parseDeployDirectories(Document systemConfig) throws InitializationException {
+    public List<File> parseDeployDirectories(Document systemConfig) throws ContainerException {
         return systemConfigLoader.parseDeployDirectories(systemConfig);
     }
 
-    public String parseProductName(Document systemConfig) throws InitializationException {
+    public String parseProductName(Document systemConfig) throws ContainerException {
         return systemConfigLoader.parseProductName(systemConfig);
     }
 
@@ -93,7 +92,7 @@ public class DefaultBootstrapService implements BootstrapService {
         return RuntimeMode.NODE == mode ? domainName.getAuthority() + ":node:" + zoneName + ":" + runtimeId : "vm";
     }
 
-    public ScanResult scanRepository(HostInfo info) throws InitializationException {
+    public ScanResult scanRepository(HostInfo info) throws ContainerException {
         return scanner.scan(info);
     }
 

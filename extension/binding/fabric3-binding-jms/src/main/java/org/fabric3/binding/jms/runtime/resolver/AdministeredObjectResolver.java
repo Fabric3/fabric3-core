@@ -22,7 +22,7 @@ import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by {@link

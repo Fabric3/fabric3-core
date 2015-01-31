@@ -16,7 +16,7 @@
  */
 package org.fabric3.spi.security;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  *

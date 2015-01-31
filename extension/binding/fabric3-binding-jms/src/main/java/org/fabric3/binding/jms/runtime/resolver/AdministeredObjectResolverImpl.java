@@ -25,7 +25,7 @@ import java.util.Map;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

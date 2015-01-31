@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**

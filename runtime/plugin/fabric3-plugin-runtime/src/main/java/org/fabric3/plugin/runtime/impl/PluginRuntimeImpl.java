@@ -24,21 +24,19 @@ import java.util.List;
 
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.repository.Repository;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.runtime.DefaultRuntime;
 import org.fabric3.plugin.api.contribution.PluginContributionSource;
 import org.fabric3.plugin.api.runtime.PluginHostInfo;
 import org.fabric3.plugin.api.runtime.PluginRuntime;
 import org.fabric3.plugin.api.runtime.PluginRuntimeConfiguration;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -65,7 +63,7 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         return (T) super.getHostInfo();
     }
 
-    public void deploy(URL base, QName qName) throws ContributionException, DeploymentException {
+    public void deploy(URL base, QName qName) throws ContributionException, ContainerException {
         PluginContributionSource source = new PluginContributionSource(CONTRIBUTION_URI, base);
         // contribute the Maven project to the application domain
         ContributionService contributionService = getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);
@@ -97,16 +95,16 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         }
     }
 
-    public void startContext(QName deployable) throws DeploymentException {
+    public void startContext(QName deployable) throws ContainerException {
         WorkContextCache.getAndResetThreadWorkContext();
         try {
             getScopeContainer().startContext(deployable);
         } catch (ContainerException e) {
-            throw new DeploymentException(e);
+            throw new ContainerException(e);
         }
     }
 
-    protected Repository createRepository() throws InitializationException {
+    protected Repository createRepository() {
         return new AetherRepository(system, session);
     }
 }

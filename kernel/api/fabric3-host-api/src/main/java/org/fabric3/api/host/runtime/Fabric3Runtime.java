@@ -20,6 +20,7 @@ package org.fabric3.api.host.runtime;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.monitor.Monitorable;
 
 /**
@@ -49,9 +50,9 @@ public interface Fabric3Runtime extends Monitorable {
     /**
      * Boots core services in the runtime.
      *
-     * @throws InitializationException if there is an error initializing the runtime
+     * @throws ContainerException if there is an error initializing the runtime
      */
-    void boot() throws InitializationException;
+    void boot() throws ContainerException;
 
     /**
      * Destroy the runtime. Any further invocations should result in an error.

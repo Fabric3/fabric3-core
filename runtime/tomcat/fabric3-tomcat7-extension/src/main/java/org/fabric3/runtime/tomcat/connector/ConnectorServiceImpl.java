@@ -18,7 +18,7 @@ package org.fabric3.runtime.tomcat.connector;
 
 import org.apache.catalina.Service;
 import org.apache.catalina.connector.Connector;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;

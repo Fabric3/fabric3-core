@@ -21,7 +21,7 @@ package org.fabric3.transform.property;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Tests String to Date transform.

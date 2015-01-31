@@ -31,7 +31,7 @@ import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;

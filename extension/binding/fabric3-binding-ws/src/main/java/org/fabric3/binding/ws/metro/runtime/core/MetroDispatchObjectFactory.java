@@ -34,7 +34,7 @@ import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.

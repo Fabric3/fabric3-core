@@ -29,7 +29,7 @@ import org.fabric3.binding.jms.spi.runtime.connection.ConnectionMonitor;
 import org.fabric3.binding.jms.spi.runtime.connection.SingletonConnectionFactory;
 import org.fabric3.binding.jms.spi.runtime.connection.XaSingletonConnectionFactory;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

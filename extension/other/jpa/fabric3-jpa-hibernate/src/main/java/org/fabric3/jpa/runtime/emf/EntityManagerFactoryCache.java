@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime.emf;
 import javax.persistence.EntityManagerFactory;
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * A cache of EntityManagerFactory instances.

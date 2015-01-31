@@ -33,7 +33,7 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.merge.DomainMergeService;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.MessageReceiver;

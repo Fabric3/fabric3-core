@@ -20,7 +20,7 @@ package org.fabric3.spi.host;
 
 import java.util.Set;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Responsible for allocating ports for use by a binding transport or other extension.

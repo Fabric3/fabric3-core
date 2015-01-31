@@ -22,7 +22,7 @@ package org.fabric3.fabric.container.executor;
 import java.util.Map;
 
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;

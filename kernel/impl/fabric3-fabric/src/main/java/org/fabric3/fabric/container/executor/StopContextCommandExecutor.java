@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.fabric.container.command.StopContextCommand;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;

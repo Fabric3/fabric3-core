@@ -19,7 +19,7 @@ package org.fabric3.implementation.pojo.builder;
 
 import java.util.Collection;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.w3c.dom.Document;

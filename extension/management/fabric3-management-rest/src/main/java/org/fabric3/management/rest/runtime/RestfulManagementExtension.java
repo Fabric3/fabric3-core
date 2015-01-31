@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.runtime.InitializationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
@@ -44,7 +44,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.management.rest.transformer.TransformerPairService;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -81,11 +80,11 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws InitializationException {
+    public void setSecurity(String level) throws ContainerException {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InitializationException("Invalid management security setting:" + level);
+            throw new ContainerException("Invalid management security setting:" + level);
         }
     }
 

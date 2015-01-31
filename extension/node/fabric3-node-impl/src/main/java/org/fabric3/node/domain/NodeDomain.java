@@ -29,6 +29,7 @@ import org.fabric3.api.host.contribution.RemoveException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UninstallException;
 import org.fabric3.api.host.contribution.UrlContributionSource;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
@@ -61,7 +62,7 @@ public class NodeDomain implements Domain {
     public <T> T getService(Class<T> interfaze) {
         try {
             return serviceResolver.resolve(interfaze);
-        } catch (ResolverException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -69,7 +70,7 @@ public class NodeDomain implements Domain {
     public <T> T getChannel(Class<T> interfaze, String name) {
         try {
             return channelResolver.resolve(interfaze, name);
-        } catch (ResolverException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -128,7 +129,7 @@ public class NodeDomain implements Domain {
             contributionService.install(uri);
             domain.include(Collections.singletonList(uri));
             return this;
-        } catch (URISyntaxException | org.fabric3.api.host.domain.DeploymentException | InstallException | ContributionNotFoundException | StoreException e) {
+        } catch (URISyntaxException | ContainerException | InstallException | ContributionNotFoundException | StoreException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -140,7 +141,7 @@ public class NodeDomain implements Domain {
             contributionService.uninstall(uri);
             contributionService.remove(uri);
             return this;
-        } catch (URISyntaxException | RemoveException | UninstallException | org.fabric3.api.host.domain.DeploymentException | ContributionNotFoundException e) {
+        } catch (URISyntaxException | RemoveException | UninstallException | ContainerException | ContributionNotFoundException e) {
             throw new ServiceRuntimeException(e);
         }
     }

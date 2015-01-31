@@ -32,7 +32,7 @@ import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.JaxbInvoker;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;

@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.command.Response;
 import org.fabric3.spi.container.command.ResponseCommand;

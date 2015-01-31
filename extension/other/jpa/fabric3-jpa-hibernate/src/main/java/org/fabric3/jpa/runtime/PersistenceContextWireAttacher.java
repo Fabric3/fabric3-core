@@ -28,7 +28,7 @@ import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;

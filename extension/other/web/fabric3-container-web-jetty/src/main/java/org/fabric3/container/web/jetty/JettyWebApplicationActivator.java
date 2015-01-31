@@ -47,7 +47,7 @@ import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.management.ManagementService;

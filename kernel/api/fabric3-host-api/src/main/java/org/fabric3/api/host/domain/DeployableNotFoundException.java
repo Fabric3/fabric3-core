@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.domain;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  *
  */
-public class DeployableNotFoundException extends DeploymentException {
+public class DeployableNotFoundException extends ContainerException {
     private static final long serialVersionUID = -8572491242992185157L;
 
     public DeployableNotFoundException(String message) {

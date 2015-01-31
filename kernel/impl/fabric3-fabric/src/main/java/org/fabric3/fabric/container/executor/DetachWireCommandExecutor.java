@@ -19,7 +19,7 @@
 package org.fabric3.fabric.container.executor;
 
 import org.fabric3.fabric.container.command.DetachWireCommand;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;

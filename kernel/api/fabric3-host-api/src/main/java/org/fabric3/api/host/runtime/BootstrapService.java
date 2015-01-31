@@ -23,6 +23,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Environment;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -38,18 +39,18 @@ public interface BootstrapService {
      *
      * @param configDirectory the directory where the file is located
      * @return the loaded value
-     * @throws InitializationException if an error parsing the file contents is encountered
+     * @throws ContainerException if an error parsing the file contents is encountered
      */
-    public Document loadSystemConfig(File configDirectory) throws InitializationException;
+    public Document loadSystemConfig(File configDirectory) throws ContainerException;
 
     /**
      * Returns a configuration property value for the runtime domain from the given source.
      *
      * @param source the source to read
      * @return the domain configuration property
-     * @throws InitializationException if an error reading the source is encountered
+     * @throws ContainerException if an error reading the source is encountered
      */
-    Document loadSystemConfig(Source source) throws InitializationException;
+    Document loadSystemConfig(Source source) throws ContainerException;
 
     /**
      * Creates a default configuration property value for the runtime domain.
@@ -63,9 +64,9 @@ public interface BootstrapService {
      *
      * @param systemConfig the system configuration
      * @return the domain name
-     * @throws InitializationException if there is an error parsing the domain name
+     * @throws ContainerException if there is an error parsing the domain name
      */
-    URI parseDomainName(Document systemConfig) throws InitializationException;
+    URI parseDomainName(Document systemConfig) throws ContainerException;
 
     /**
      * Returns the configured zone name. If not configured, the default zone name will be returned.
@@ -73,18 +74,18 @@ public interface BootstrapService {
      * @param systemConfig the system configuration
      * @param mode         the current runtime mode
      * @return the zone name
-     * @throws InitializationException if there is an error parsing the zone name
+     * @throws ContainerException if there is an error parsing the zone name
      */
-    String parseZoneName(Document systemConfig, RuntimeMode mode) throws InitializationException;
+    String parseZoneName(Document systemConfig, RuntimeMode mode) throws ContainerException;
 
     /**
      * Returns the configured runtime mode. If not configured, {@link RuntimeMode#VM} will be returned.
      *
      * @param systemConfig the system configuration
      * @return the runtime mode
-     * @throws InitializationException if there is an error parsing the runtime mode
+     * @throws ContainerException if there is an error parsing the runtime mode
      */
-    public RuntimeMode parseRuntimeMode(Document systemConfig) throws InitializationException;
+    public RuntimeMode parseRuntimeMode(Document systemConfig) throws ContainerException;
 
     /**
      * Returns the runtime environment. If one is not explicitly configured, the default {@link Environment#PRODUCTION} will be returned.
@@ -99,18 +100,18 @@ public interface BootstrapService {
      *
      * @param systemConfig the system configuration
      * @return the deployment directories
-     * @throws InitializationException if there is an error parsing the deployment directories
+     * @throws ContainerException if there is an error parsing the deployment directories
      */
-    List<File> parseDeployDirectories(Document systemConfig) throws InitializationException;
+    List<File> parseDeployDirectories(Document systemConfig) throws ContainerException;
 
     /**
      * Returns the product name. If one is not explicitly configured, "Fabric3" will be returned.
      *
      * @param systemConfig the system configuration
      * @return the parsed runtime environment
-     * @throws InitializationException if there is an error parsing the product name
+     * @throws ContainerException if there is an error parsing the product name
      */
-    String parseProductName(Document systemConfig) throws InitializationException;
+    String parseProductName(Document systemConfig) throws ContainerException;
 
     /**
      * Returns the unique runtime name.
@@ -128,9 +129,9 @@ public interface BootstrapService {
      *
      * @param info the host info
      * @return the result
-     * @throws InitializationException if an error occurs during the scan operation
+     * @throws ContainerException if an error occurs during the scan operation
      */
-    ScanResult scanRepository(HostInfo info) throws InitializationException;
+    ScanResult scanRepository(HostInfo info) throws ContainerException;
 
     /**
      * Instantiates a default runtime implementation.

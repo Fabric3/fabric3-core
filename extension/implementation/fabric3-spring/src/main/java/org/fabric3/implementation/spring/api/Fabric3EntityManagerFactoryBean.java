@@ -22,7 +22,7 @@ import java.util.Collections;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;

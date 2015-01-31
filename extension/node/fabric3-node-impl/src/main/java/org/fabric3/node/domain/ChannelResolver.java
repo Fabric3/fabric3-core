@@ -16,6 +16,8 @@
  */
 package org.fabric3.node.domain;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Resolves a channel and returns a connection proxy to it.
  */
@@ -27,8 +29,8 @@ public interface ChannelResolver {
      * @param interfaze the service interface
      * @param name      the channel name
      * @return the connection proxy
-     * @throws ResolverException if there is a resolution exception
+     * @throws ContainerException if there is a resolution exception
      */
-    <T> T resolve(Class<T> interfaze, String name) throws ResolverException;
+    <T> T resolve(Class<T> interfaze, String name) throws ContainerException;
 
 }

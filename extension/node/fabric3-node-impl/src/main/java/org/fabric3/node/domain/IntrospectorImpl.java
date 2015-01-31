@@ -16,6 +16,7 @@
  */
 package org.fabric3.node.domain;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
@@ -32,7 +33,7 @@ public class IntrospectorImpl implements Introspector {
         this.contractProcessor = contractProcessor;
     }
 
-    public <T> JavaServiceContract introspect(Class<T> interfaze) throws InterfaceException {
+    public <T> JavaServiceContract introspect(Class<T> interfaze) throws ContainerException {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
         StringBuilder builder = new StringBuilder();
@@ -40,7 +41,7 @@ public class IntrospectorImpl implements Introspector {
             for (ValidationFailure failure : context.getErrors()) {
                 builder.append(failure.getMessage()).append("\n");
             }
-            throw new InterfaceException(builder.toString());
+            throw new ContainerException(builder.toString());
         }
         return contract;
     }

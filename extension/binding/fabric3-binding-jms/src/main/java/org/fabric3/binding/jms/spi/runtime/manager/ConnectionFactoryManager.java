@@ -21,7 +21,7 @@ package org.fabric3.binding.jms.spi.runtime.manager;
 import javax.jms.ConnectionFactory;
 import java.util.Map;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Manages JMS connection factories. Implementations are responsible for registering connection factories provided by a JMS provider with the runtime JTA

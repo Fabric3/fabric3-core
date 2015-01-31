@@ -30,9 +30,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Environment;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -61,9 +61,9 @@ public class SystemConfigLoader {
      *
      * @param configDirectory the directory where the file is located
      * @return the loaded value
-     * @throws InitializationException if an error parsing the file contents is encountered
+     * @throws ContainerException if an error parsing the file contents is encountered
      */
-    public Document loadSystemConfig(File configDirectory) throws InitializationException {
+    public Document loadSystemConfig(File configDirectory) throws ContainerException {
         File systemConfig = new File(configDirectory, "systemConfig.xml");
         if (systemConfig.exists()) {
             try {
@@ -71,7 +71,7 @@ public class SystemConfigLoader {
                 Source source = new UrlSource(url);
                 return loadSystemConfig(source);
             } catch (MalformedURLException e) {
-                throw new InitializationException(e);
+                throw new ContainerException(e);
             }
         }
         return createDefaultSystemConfig();
@@ -82,9 +82,9 @@ public class SystemConfigLoader {
      *
      * @param source the source to read
      * @return the domain configuration property
-     * @throws InitializationException if an error reading the source is encountered
+     * @throws ContainerException if an error reading the source is encountered
      */
-    public Document loadSystemConfig(Source source) throws InitializationException {
+    public Document loadSystemConfig(Source source) throws ContainerException {
         try {
             InputSource inputSource = new InputSource(source.openStream());
             Document document = loader.load(inputSource, true);
@@ -106,7 +106,7 @@ public class SystemConfigLoader {
             }
             return document;
         } catch (IOException | SAXException e) {
-            throw new InitializationException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -135,9 +135,9 @@ public class SystemConfigLoader {
      *
      * @param systemConfig the system configuration
      * @return the domain name
-     * @throws InitializationException if there is an error parsing the domain name
+     * @throws ContainerException if there is an error parsing the domain name
      */
-    public URI parseDomainName(Document systemConfig) throws InitializationException {
+    public URI parseDomainName(Document systemConfig) throws ContainerException {
         Element root = systemConfig.getDocumentElement();
         NodeList nodes = root.getElementsByTagName("runtime");
         if (nodes.getLength() == 1) {
@@ -147,11 +147,11 @@ public class SystemConfigLoader {
                 try {
                     URI uri = new URI("fabric3://" + name);
                     if (uri.getHost() == null) {
-                        throw new InitializationException("Invalid domain name specified in system configuration. Domain names must be a valid URI host.");
+                        throw new ContainerException("Invalid domain name specified in system configuration. Domain names must be a valid URI host.");
                     }
                     return uri;
                 } catch (URISyntaxException e) {
-                    throw new InitializationException("Invalid domain name specified in system configuration", e);
+                    throw new ContainerException("Invalid domain name specified in system configuration", e);
                 }
             } else {
                 return DEFAULT_DOMAIN;
@@ -159,7 +159,7 @@ public class SystemConfigLoader {
         } else if (nodes.getLength() == 0) {
             return DEFAULT_DOMAIN;
         }
-        throw new InitializationException("Invalid system configuration: more than one <runtime> element specified");
+        throw new ContainerException("Invalid system configuration: more than one <runtime> element specified");
     }
 
     /**
@@ -167,9 +167,9 @@ public class SystemConfigLoader {
      *
      * @param systemConfig the system configuration
      * @return the product name
-     * @throws InitializationException if there is an error parsing the domain name
+     * @throws ContainerException if there is an error parsing the domain name
      */
-    public String parseProductName(Document systemConfig) throws InitializationException {
+    public String parseProductName(Document systemConfig) throws ContainerException {
         Element root = systemConfig.getDocumentElement();
         NodeList nodes = root.getElementsByTagName("runtime");
         if (nodes.getLength() == 1) {
@@ -183,10 +183,10 @@ public class SystemConfigLoader {
         } else if (nodes.getLength() == 0) {
             return "Fabric3";
         }
-        throw new InitializationException("Invalid system configuration: more than one <runtime> element specified");
+        throw new ContainerException("Invalid system configuration: more than one <runtime> element specified");
     }
 
-    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws InitializationException {
+    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws ContainerException {
         if (RuntimeMode.VM == mode) {
             return Names.LOCAL_ZONE;
         }
@@ -202,7 +202,7 @@ public class SystemConfigLoader {
         } else if (nodes.getLength() == 0) {
             return Names.DEFAULT_ZONE;
         }
-        throw new InitializationException("Invalid system configuration: more than one <runtime> element specified");
+        throw new ContainerException("Invalid system configuration: more than one <runtime> element specified");
     }
 
     /**
@@ -210,9 +210,9 @@ public class SystemConfigLoader {
      *
      * @param systemConfig the system configuration
      * @return the domain name
-     * @throws InitializationException if there is an error parsing the domain name
+     * @throws ContainerException if there is an error parsing the domain name
      */
-    public RuntimeMode parseRuntimeMode(Document systemConfig) throws InitializationException {
+    public RuntimeMode parseRuntimeMode(Document systemConfig) throws ContainerException {
         Element root = systemConfig.getDocumentElement();
         NodeList nodes = root.getElementsByTagName("runtime");
         if (nodes.getLength() == 1) {

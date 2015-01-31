@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 
@@ -46,9 +46,9 @@ public interface ContributionHelper {
      *
      * @param deployable the deployable name
      * @return the deployable
-     * @throws DeploymentException if the deployable cannot be resolved
+     * @throws ContainerException if the deployable cannot be resolved
      */
-    Composite findComposite(QName deployable) throws DeploymentException;
+    Composite findComposite(QName deployable) throws ContainerException;
 
     /**
      * Resolves the contributions from the list of URIs.

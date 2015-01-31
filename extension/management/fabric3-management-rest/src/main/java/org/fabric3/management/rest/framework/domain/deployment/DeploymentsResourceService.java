@@ -31,9 +31,9 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.ContributionNotFoundException;
 import org.fabric3.api.host.domain.DeployableNotFoundException;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.management.rest.framework.ResourceHelper;
@@ -120,7 +120,7 @@ public class DeploymentsResourceService {
                     return new Response(HttpStatus.CONFLICT, "Composite already deployed: " + deployableName);
                 } catch (DeployableNotFoundException e) {
                     return new Response(HttpStatus.NOT_FOUND, "Composite not found: " + deployableName);
-                } catch (DeploymentException e) {
+                } catch (ContainerException e) {
                     monitor.error("Error deploying composite " + deployableName, e);
                     return new Response(HttpStatus.INTERNAL_SERVER_ERROR, "Error deploying composite " + deployableName + ": " + e.getMessage());
                 }
@@ -143,7 +143,7 @@ public class DeploymentsResourceService {
             domain.undeploy(contributionUri, false);
         } catch (ContributionNotFoundException e) {
             throw new ResourceException(HttpStatus.NOT_FOUND);
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Error removing contribution " + uri + ": " + e.getMessage());
         }

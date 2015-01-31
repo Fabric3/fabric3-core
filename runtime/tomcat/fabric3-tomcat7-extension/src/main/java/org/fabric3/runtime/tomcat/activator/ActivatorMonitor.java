@@ -18,7 +18,7 @@ package org.fabric3.runtime.tomcat.activator;
 
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  *

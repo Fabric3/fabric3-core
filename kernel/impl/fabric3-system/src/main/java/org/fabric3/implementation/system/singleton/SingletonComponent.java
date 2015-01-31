@@ -42,7 +42,7 @@ import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFacto
 import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

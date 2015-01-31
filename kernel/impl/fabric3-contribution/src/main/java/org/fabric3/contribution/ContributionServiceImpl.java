@@ -32,6 +32,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
 import org.fabric3.api.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.api.host.contribution.ContributionLockedException;
@@ -48,7 +49,6 @@ import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UninstallException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.host.repository.Repository;
-import org.fabric3.api.host.repository.RepositoryException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.Composite;
@@ -213,7 +213,7 @@ public class ContributionServiceImpl implements ContributionService {
             if (contribution.isPersistent()) {
                 getRepository().remove(uri);
             }
-        } catch (RepositoryException e) {
+        } catch (ContainerException e) {
             throw new RemoveException("Error removing contribution archive", e);
         }
         for (ContributionServiceListener listener : listeners) {
@@ -654,7 +654,7 @@ public class ContributionServiceImpl implements ContributionService {
                 boolean extension = contributionSource.isExtension();
                 locationUrl = getRepository().store(contributionUri, stream, extension);
                 source = new UrlSource(locationUrl);
-            } catch (IOException | RepositoryException e) {
+            } catch (IOException | ContainerException e) {
                 throw new StoreException(e);
             } finally {
                 try {

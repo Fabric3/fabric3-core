@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 

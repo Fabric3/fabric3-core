@@ -21,9 +21,8 @@ package org.fabric3.fabric.domain;
 
 import java.util.List;
 
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
@@ -43,15 +42,11 @@ public class LocalDeployer implements Deployer {
         this.scopeRegistry = scopeRegistry;
     }
 
-    public void deploy(Deployment deployment) throws DeploymentException {
+    public void deploy(Deployment deployment) throws ContainerException {
         List<Command> commands = deployment.getCommands();
         execute(commands);
-        try {
-            if (scopeRegistry != null) {
-                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-            }
-        } catch (ContainerException e) {
-            throw new DeploymentException(e);
+        if (scopeRegistry != null) {
+            scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
         }
     }
 
@@ -59,15 +54,11 @@ public class LocalDeployer implements Deployer {
      * Executes the commands, performing a rollback on error.
      *
      * @param commands the commands
-     * @throws DeploymentException if a deployment error occurs
+     * @throws ContainerException if a deployment error occurs
      */
-    private void execute(List<Command> commands) throws DeploymentException {
+    private void execute(List<Command> commands) throws ContainerException {
         for (Command command : commands) {
-            try {
-                executorRegistry.execute(command);
-            } catch (ContainerException e) {
-                throw new DeploymentException(e);
-            }
+            executorRegistry.execute(command);
         }
     }
 

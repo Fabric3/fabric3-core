@@ -21,7 +21,7 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;

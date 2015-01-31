@@ -21,7 +21,7 @@ package org.fabric3.implementation.bytecode.proxy.common;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Creates a bytecode generated proxy that dispatches to a target. <p/> Bytecode proxies are designed to be more performant than traditional JDK proxies as they

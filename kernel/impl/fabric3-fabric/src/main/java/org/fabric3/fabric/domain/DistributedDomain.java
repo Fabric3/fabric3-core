@@ -20,7 +20,7 @@ package org.fabric3.fabric.domain;
 
 import java.util.List;
 
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.fabric.domain.collector.Collector;
@@ -84,11 +84,11 @@ public class DistributedDomain extends AbstractDomain implements Domain {
         this.listeners = listeners;
     }
 
-    protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {
+    protected void selectBinding(LogicalCompositeComponent domain) throws ContainerException {
         try {
             bindingSelector.selectBindings(domain);
         } catch (BindingSelectionException e) {
-            throw new DeploymentException(e);
+            throw new ContainerException(e);
         }
     }
 

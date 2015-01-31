@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.transform;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Base interface for data format conversions.

@@ -23,7 +23,7 @@ import java.util.Map;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 import org.oasisopen.sca.annotation.EagerInit;

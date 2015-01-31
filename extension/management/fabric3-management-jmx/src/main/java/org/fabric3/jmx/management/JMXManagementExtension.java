@@ -44,7 +44,7 @@ import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
 import org.fabric3.api.model.type.java.Signature;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;

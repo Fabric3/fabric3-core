@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Returns an injected component instance. This is used by a Component implementation to create new instances of application implementation objects as

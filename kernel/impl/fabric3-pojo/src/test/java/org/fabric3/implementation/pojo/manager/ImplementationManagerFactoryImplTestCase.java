@@ -36,7 +36,7 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;

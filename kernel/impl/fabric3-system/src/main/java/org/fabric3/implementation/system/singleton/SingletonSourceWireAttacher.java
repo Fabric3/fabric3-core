@@ -22,7 +22,7 @@ package org.fabric3.implementation.system.singleton;
 import java.net.URI;
 
 import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;

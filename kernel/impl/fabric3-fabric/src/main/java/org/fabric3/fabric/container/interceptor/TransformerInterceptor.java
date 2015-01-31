@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.container.interceptor;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.transform.Transformer;

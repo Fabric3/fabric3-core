@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.fabric3.fabric.container.wire.InvocationChainImpl;
 import org.fabric3.fabric.container.wire.WireImpl;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;

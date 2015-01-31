@@ -20,7 +20,7 @@
 package org.fabric3.implementation.pojo.manager;
 
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Creates {@link ImplementationManagerFactory}s.

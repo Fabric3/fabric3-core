@@ -19,7 +19,7 @@ package org.fabric3.implementation.web.runtime;
 import java.net.URI;
 
 import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;

@@ -38,7 +38,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;

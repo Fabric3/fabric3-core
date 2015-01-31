@@ -22,7 +22,7 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Field;
 
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

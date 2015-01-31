@@ -17,7 +17,7 @@
 package org.fabric3.binding.zeromq.builder;
 
 import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
 

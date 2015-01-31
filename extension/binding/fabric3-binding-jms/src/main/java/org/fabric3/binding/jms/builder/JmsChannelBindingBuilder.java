@@ -17,7 +17,7 @@
 package org.fabric3.binding.jms.builder;
 
 import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
 

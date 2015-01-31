@@ -21,7 +21,7 @@ package org.fabric3.implementation.web.runtime;
 import javax.servlet.http.HttpSession;
 
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

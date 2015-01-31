@@ -32,7 +32,7 @@ import org.fabric3.binding.rs.runtime.container.RsContainerManager;
 import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;

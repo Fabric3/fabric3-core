@@ -50,7 +50,7 @@ import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;

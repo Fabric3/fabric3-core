@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionOrder;
@@ -29,11 +30,9 @@ import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.contribution.StoreException;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.RuntimeState;
 import org.fabric3.api.host.runtime.ShutdownException;
@@ -66,13 +65,13 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         return state;
     }
 
-    public void start() throws InitializationException {
+    public void start() throws ContainerException {
         boot();
         load();
         joinDomain();
     }
 
-    public void boot() throws InitializationException {
+    public void boot() throws ContainerException {
         runtime.boot();
         Bootstrapper bootstrapper = new DefaultBootstrapper(configuration);
 
@@ -84,7 +83,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
     }
 
-    public void load() throws InitializationException {
+    public void load() throws ContainerException {
         // load and initialize runtime extension components and the local runtime domain
         loadExtensions();
 
@@ -120,9 +119,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     /**
      * Loads runtime extensions.
      *
-     * @throws InitializationException if an error loading runtime extensions
+     * @throws ContainerException if an error loading runtime extensions
      */
-    private void loadExtensions() throws InitializationException {
+    private void loadExtensions() throws ContainerException {
         List<ContributionSource> contributions = configuration.getExtensionContributions();
         ContributionService contributionService = runtime.getComponent(ContributionService.class);
         Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
@@ -142,10 +141,10 @@ public class DefaultCoordinator implements RuntimeCoordinator {
                 domain.include(Collections.singletonList(uri));
             }
         } catch (InstallException | ContributionNotFoundException | StoreException e) {
-            throw new InitializationException(e);
-        } catch (DeploymentException e) {
+            throw new ContainerException(e);
+        } catch (ContainerException e) {
             state = RuntimeState.ERROR;
-            throw new InitializationException("Error deploying extensions", e);
+            throw new ContainerException("Error deploying extensions", e);
         }
     }
 
@@ -153,14 +152,14 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      * Performs local runtime recovery operations, such as controller recovery and transaction recovery.
      *
      * @param eventService the event service
-     * @throws InitializationException if an error performing recovery is encountered
+     * @throws ContainerException if an error performing recovery is encountered
      */
-    private void recover(EventService eventService) throws InitializationException {
+    private void recover(EventService eventService) throws ContainerException {
         Domain domain = runtime.getComponent(Domain.class, APPLICATION_DOMAIN_URI);
         if (domain == null) {
             state = RuntimeState.ERROR;
             String name = APPLICATION_DOMAIN_URI.toString();
-            throw new InitializationException("Domain not found: " + name);
+            throw new ContainerException("Domain not found: " + name);
         }
         // install user contributions - they will be deployed when the domain recovers
         List<ContributionSource> contributions = configuration.getUserContributions();
@@ -175,9 +174,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      *
      * @param sources the contribution sources
      * @return the list of installed contribution URIs
-     * @throws InitializationException if an installation error occurs
+     * @throws ContainerException if an installation error occurs
      */
-    private List<URI> installContributions(List<ContributionSource> sources) throws InitializationException {
+    private List<URI> installContributions(List<ContributionSource> sources) throws ContainerException {
         try {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
             // install the contributions
@@ -185,7 +184,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             return contributionService.install(stored);
         } catch (ContributionException e) {
             state = RuntimeState.ERROR;
-            throw new InitializationException("Error contributing extensions", e);
+            throw new ContainerException("Error contributing extensions", e);
         }
     }
 }

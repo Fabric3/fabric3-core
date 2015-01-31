@@ -35,7 +35,7 @@ import java.util.Set;
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.oasisopen.sca.annotation.Destroy;

@@ -25,7 +25,7 @@ import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.federation.topology.NodeTopologyService;

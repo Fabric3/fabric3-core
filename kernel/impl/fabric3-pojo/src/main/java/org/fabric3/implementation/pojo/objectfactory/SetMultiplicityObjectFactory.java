@@ -21,7 +21,7 @@ package org.fabric3.implementation.pojo.objectfactory;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**

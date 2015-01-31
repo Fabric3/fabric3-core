@@ -19,7 +19,7 @@ package org.fabric3.datasource.runtime;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.datasource.spi.DataSourceFactory;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

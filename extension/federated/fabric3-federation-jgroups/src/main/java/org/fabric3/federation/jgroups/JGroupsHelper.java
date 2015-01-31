@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.jgroups.Address;
 import org.jgroups.View;
 

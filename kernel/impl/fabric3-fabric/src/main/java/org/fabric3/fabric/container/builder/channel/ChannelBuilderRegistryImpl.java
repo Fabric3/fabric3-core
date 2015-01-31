@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;

@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime

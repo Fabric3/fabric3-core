@@ -31,7 +31,7 @@ import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.writer.EventWriter;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;

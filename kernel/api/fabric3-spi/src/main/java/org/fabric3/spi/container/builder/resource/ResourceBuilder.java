@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder.resource;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**

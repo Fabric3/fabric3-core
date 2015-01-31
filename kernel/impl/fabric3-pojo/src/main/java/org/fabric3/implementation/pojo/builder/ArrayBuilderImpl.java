@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.physical.ParamTypes;

@@ -18,7 +18,7 @@ package org.fabric3.transform.java;
 
 import java.io.Serializable;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Deserializes a Java object.

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;

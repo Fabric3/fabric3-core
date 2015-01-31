@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

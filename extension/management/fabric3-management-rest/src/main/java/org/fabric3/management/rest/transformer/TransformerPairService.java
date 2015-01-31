@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Returns a transformer pair for (de)serializing request/response types.

@@ -21,7 +21,7 @@ package org.fabric3.binding.jms.spi.runtime.connection;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Creates connection factory instances.

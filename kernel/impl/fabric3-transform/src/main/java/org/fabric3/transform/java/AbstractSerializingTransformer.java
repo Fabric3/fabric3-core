@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.fabric3.spi.classloader.ClassLoaderObjectInputStream;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**

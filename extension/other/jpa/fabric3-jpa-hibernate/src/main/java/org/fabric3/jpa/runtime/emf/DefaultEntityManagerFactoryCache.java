@@ -29,7 +29,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.management.ManagementService;
@@ -119,11 +119,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         }
         Statistics statistics = ((HibernateEntityManagerFactory) factory).getSessionFactory().getStatistics();
         statistics.setStatisticsEnabled(true);
-        try {
-            managementService.export(encodeName(unitName), "Hibernate", "Hibernate session factory MBeans", statistics);
-        } catch (ContainerException e) {
-            throw new ContainerException("Error exporting management bean for persistence unit: " + unitName, e);
-        }
+        managementService.export(encodeName(unitName), "Hibernate", "Hibernate session factory MBeans", statistics);
     }
 
     private void remove(String unitName) {

@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 import java.net.URL;
 
 import org.fabric3.api.host.contribution.ContributionException;
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 
 /**
@@ -37,8 +37,8 @@ public interface PluginRuntime extends Fabric3Runtime {
      * @param composite the composite qualified name to activate
      * @throws ContributionException if a contribution is thrown. The cause may a ValidationException resulting from  errors in the contribution. In this case
      *                               the errors should be reported back to the user.
-     * @throws DeploymentException   if there is an error activating the test composite
+     * @throws ContainerException    if there is an error activating the test composite
      */
-    void deploy(URL base, QName composite) throws ContributionException, DeploymentException;
+    void deploy(URL base, QName composite) throws ContributionException, ContainerException;
 
 }

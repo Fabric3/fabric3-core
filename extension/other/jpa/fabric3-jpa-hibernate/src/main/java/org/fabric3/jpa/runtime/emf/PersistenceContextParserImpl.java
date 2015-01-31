@@ -38,7 +38,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.persistence.spi.PersistenceUnitTransactionType.JTA;
 import static javax.persistence.spi.PersistenceUnitTransactionType.RESOURCE_LOCAL;

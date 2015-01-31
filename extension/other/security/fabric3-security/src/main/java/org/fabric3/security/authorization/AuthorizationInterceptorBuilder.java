@@ -18,7 +18,7 @@
  */
 package org.fabric3.security.authorization;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.security.AuthorizationService;

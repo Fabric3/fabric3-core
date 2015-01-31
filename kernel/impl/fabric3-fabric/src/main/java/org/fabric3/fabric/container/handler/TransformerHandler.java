@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.container.handler;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.transform.Transformer;
 import org.oasisopen.sca.ServiceRuntimeException;

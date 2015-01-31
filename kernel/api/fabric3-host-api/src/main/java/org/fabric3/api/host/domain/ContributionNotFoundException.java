@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.domain;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Thrown when an attempt is made to perform an operation on a contribution that is not found.
  */
-public class ContributionNotFoundException extends DeploymentException {
+public class ContributionNotFoundException extends ContainerException {
     private static final long serialVersionUID = 4732039580541746144L;
 
     public ContributionNotFoundException(String message) {

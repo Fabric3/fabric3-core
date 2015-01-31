@@ -19,7 +19,7 @@ package org.fabric3.binding.rs.runtime.provider;
 import javax.ws.rs.ext.Provider;
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopedComponent;

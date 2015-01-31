@@ -29,7 +29,7 @@ import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.runtime.channel.JmsEventStreamHandler;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;

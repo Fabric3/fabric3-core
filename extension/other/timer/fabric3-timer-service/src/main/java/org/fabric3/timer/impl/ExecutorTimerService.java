@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;

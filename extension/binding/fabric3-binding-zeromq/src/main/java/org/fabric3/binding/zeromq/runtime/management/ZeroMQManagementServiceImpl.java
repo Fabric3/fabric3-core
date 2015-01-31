@@ -29,7 +29,7 @@ import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.management.ManagementService;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

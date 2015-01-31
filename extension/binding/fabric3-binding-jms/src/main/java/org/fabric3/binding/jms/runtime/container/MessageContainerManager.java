@@ -18,7 +18,7 @@ package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Manages {@link AdaptiveMessageContainer}s used to receive messages from a JMS provider.

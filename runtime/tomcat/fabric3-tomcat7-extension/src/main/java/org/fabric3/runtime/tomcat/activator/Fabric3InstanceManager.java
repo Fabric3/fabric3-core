@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tomcat.InstanceManager;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 
 /**

@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
 import org.oasisopen.sca.annotation.Init;

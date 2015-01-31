@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.host.HostNamespaces;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -31,10 +32,8 @@ import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.domain.LogicalComponentManager;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.domain.instantiator.AutowireResolver;
@@ -77,34 +76,30 @@ public class ServiceResolverImpl implements ServiceResolver {
         this.info = info;
     }
 
-    public <T> T resolve(Class<T> interfaze) throws ResolverException {
+    public <T> T resolve(Class<T> interfaze) throws ContainerException {
         LogicalWire wire = createWire(interfaze);
-        try {
-            boolean remote = !wire.getSource().getParent().getZone().equals(wire.getTarget().getParent().getZone());
+        boolean remote = !wire.getSource().getParent().getZone().equals(wire.getTarget().getParent().getZone());
 
-            PhysicalWireDefinition pwd;
+        PhysicalWireDefinition pwd;
 
-            if (remote) {
-                bindingSelector.selectBinding(wire);
-                pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
-                pwd.getSource().setUri(wire.getSource().getParent().getUri());
-            } else {
-                pwd = wireGenerator.generateWire(wire);
-            }
-
-            NonManagedPhysicalWireSourceDefinition source = (NonManagedPhysicalWireSourceDefinition) pwd.getSource();
-            URI uri = ContributionResolver.getContribution(interfaze);
-            pwd.getTarget().setClassLoaderId(uri);
-            source.setClassLoaderId(uri);
-
-            connector.connect(pwd);
-            return interfaze.cast(source.getProxy());
-        } catch (GenerationException | ContainerException e) {
-            throw new ResolverException(e);
+        if (remote) {
+            bindingSelector.selectBinding(wire);
+            pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
+            pwd.getSource().setUri(wire.getSource().getParent().getUri());
+        } else {
+            pwd = wireGenerator.generateWire(wire);
         }
+
+        NonManagedPhysicalWireSourceDefinition source = (NonManagedPhysicalWireSourceDefinition) pwd.getSource();
+        URI uri = ContributionResolver.getContribution(interfaze);
+        pwd.getTarget().setClassLoaderId(uri);
+        source.setClassLoaderId(uri);
+
+        connector.connect(pwd);
+        return interfaze.cast(source.getProxy());
     }
 
-    private <T> LogicalWire createWire(Class<T> interfaze) throws ResolverException {
+    private <T> LogicalWire createWire(Class<T> interfaze) throws ContainerException {
         JavaServiceContract contract = introspector.introspect(interfaze);
 
         LogicalReference logicalReference = createReference(contract);

@@ -33,7 +33,7 @@ import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

@@ -16,7 +16,7 @@
  */
 package org.fabric3.management.rest.spi;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Responsible for dispatching requests to a managed resource.

@@ -44,7 +44,7 @@ import org.fabric3.api.host.contribution.RemoveException;
 import org.fabric3.api.host.contribution.UninstallException;
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
@@ -146,7 +146,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         } else if (event instanceof RuntimeStart) {
             try {
                 domain.include(notSeen);
-            } catch (DeploymentException e) {
+            } catch (ContainerException e) {
                 monitor.error(e);
             }
             notSeen.clear();
@@ -270,7 +270,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 // undeploy any deployed composites in the reverse order that they were deployed in
                 try {
                     domain.undeploy(artifactUri, false);
-                } catch (DeploymentException e) {
+                } catch (ContainerException e) {
                     monitor.error(e);
                     return;
                 }
@@ -308,7 +308,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 resource.setState(FileSystemResourceState.ERROR);
             }
             monitor.error(e);
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             for (FileSystemResource resource : updatedResources) {
                 resource.setState(FileSystemResourceState.ERROR);
             }
@@ -390,7 +390,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 for (FileSystemResource resource : addedResources) {
                     resource.setState(FileSystemResourceState.ERROR);
                 }
-            } catch (ContributionException | NoClassDefFoundError | DeploymentException e) {
+            } catch (ContributionException | NoClassDefFoundError | ContainerException e) {
                 handleError(e, addedResources);
             } catch (Error | RuntimeException e) {
                 for (FileSystemResource resource : addedResources) {
@@ -431,7 +431,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                         contributionService.remove(uri);
                     }
                     monitor.removed(name);
-                } catch (ContributionException | DeploymentException e) {
+                } catch (ContributionException | ContainerException e) {
                     monitor.removalError(name, e);
                 }
             }

@@ -30,7 +30,7 @@ import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.store.amq.AMQPersistenceAdapter;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.oasisopen.sca.annotation.Destroy;

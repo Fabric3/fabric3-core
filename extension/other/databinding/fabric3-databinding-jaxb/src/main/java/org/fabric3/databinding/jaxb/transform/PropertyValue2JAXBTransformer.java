@@ -19,7 +19,7 @@ package org.fabric3.databinding.jaxb.transform;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

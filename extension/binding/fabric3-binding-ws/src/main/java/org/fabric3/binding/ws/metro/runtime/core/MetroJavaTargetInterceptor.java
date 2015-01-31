@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.ServiceRuntimeException;

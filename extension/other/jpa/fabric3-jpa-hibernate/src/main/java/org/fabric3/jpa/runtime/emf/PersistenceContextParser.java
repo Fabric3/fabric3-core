@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime.emf;
 import javax.persistence.spi.PersistenceUnitInfo;
 import java.util.List;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Parses a persistence.xml file located at /META-INF/persistence.xml for a provided classloader.

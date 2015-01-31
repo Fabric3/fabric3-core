@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.monitor.DestinationRouter;
@@ -38,7 +39,6 @@ import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapFactory;
 import org.fabric3.api.host.runtime.BootstrapService;
 import org.fabric3.api.host.runtime.ComponentRegistration;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.stream.InputStreamSource;
@@ -78,7 +78,7 @@ public abstract class AbstractPluginRuntimeBooter {
         buildDir = configuration.getBuildDir();
     }
 
-    public PluginRuntime boot() throws InitializationException {
+    public PluginRuntime boot() throws ContainerException {
         BootstrapService bootstrapService = BootstrapFactory.getService(bootClassLoader);
         Document systemConfig = getSystemConfig(bootstrapService);
 
@@ -119,7 +119,7 @@ public abstract class AbstractPluginRuntimeBooter {
     protected abstract PluginHostInfo createHostInfo(String environment, Set<URL> moduleDependencies, File outputDirectory, File buildDir);
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private PluginRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig, File buildDir) throws InitializationException {
+    private PluginRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig, File buildDir) throws ContainerException {
         String environment = bootstrapService.parseEnvironment(systemConfig);
 
         PluginHostInfo hostInfo = createHostInfo(environment, moduleDependencies, outputDirectory, buildDir);
@@ -134,14 +134,14 @@ public abstract class AbstractPluginRuntimeBooter {
         return instantiateRuntime(configuration, bootClassLoader);
     }
 
-    private Document getSystemConfig(BootstrapService bootstrapService) throws InitializationException {
+    private Document getSystemConfig(BootstrapService bootstrapService) throws ContainerException {
         Source source = null;
         if (systemConfig != null) {
             try {
                 InputStream stream = new ByteArrayInputStream(systemConfig.getBytes("UTF-8"));
                 source = new InputStreamSource("systemConfig", stream);
             } catch (UnsupportedEncodingException e) {
-                throw new InitializationException("Error loading system configuration", e);
+                throw new ContainerException("Error loading system configuration", e);
             }
         }
         Document systemConfig;

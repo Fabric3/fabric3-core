@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.synthesizer;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Synthesizes and registers a component from an existing object instance in the runtime domain.

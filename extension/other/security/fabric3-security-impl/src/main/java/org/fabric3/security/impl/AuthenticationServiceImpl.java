@@ -20,7 +20,7 @@ import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;

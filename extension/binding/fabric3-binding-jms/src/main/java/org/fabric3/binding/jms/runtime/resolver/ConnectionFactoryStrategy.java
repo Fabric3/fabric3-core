@@ -22,7 +22,7 @@ package org.fabric3.binding.jms.runtime.resolver;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Strategy for looking up connection factories.

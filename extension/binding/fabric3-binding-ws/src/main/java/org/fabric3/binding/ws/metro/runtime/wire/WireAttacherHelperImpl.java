@@ -21,7 +21,7 @@ import java.security.SecureClassLoader;
 
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

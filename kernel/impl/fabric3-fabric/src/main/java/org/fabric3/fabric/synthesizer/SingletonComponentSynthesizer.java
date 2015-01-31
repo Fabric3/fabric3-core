@@ -32,7 +32,7 @@ import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -89,16 +89,12 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     }
 
     public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ContainerException {
-        try {
-            LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
-            ScopedComponent physical = createPhysicalComponent(logical, instance);
-            componentManager.register(physical);
-            scopeContainer.register(physical);
-            // initialize the component - needed for reinjection to work
-            scopeContainer.getInstance(physical);
-        } catch (ContainerException | AssemblyException e) {
-            throw new ContainerException(e);
-        }
+        LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
+        ScopedComponent physical = createPhysicalComponent(logical, instance);
+        componentManager.register(physical);
+        scopeContainer.register(physical);
+        // initialize the component - needed for reinjection to work
+        scopeContainer.getInstance(physical);
     }
 
     private <S, I extends S> LogicalComponent<?> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)

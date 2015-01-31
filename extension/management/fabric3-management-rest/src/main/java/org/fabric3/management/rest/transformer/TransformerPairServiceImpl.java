@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;

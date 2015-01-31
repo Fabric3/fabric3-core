@@ -22,7 +22,7 @@ package org.fabric3.implementation.pojo.component;
 import java.lang.reflect.InvocationTargetException;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.invocation.WorkContextCache;

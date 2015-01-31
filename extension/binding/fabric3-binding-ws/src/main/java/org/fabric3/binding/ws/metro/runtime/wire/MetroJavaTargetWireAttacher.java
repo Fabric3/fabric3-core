@@ -38,7 +38,7 @@ import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;

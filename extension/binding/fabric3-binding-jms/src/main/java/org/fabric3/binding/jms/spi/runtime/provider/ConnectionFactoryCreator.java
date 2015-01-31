@@ -19,7 +19,7 @@ package org.fabric3.binding.jms.spi.runtime.provider;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implemented by a JMS provider to create connection factories on demand.

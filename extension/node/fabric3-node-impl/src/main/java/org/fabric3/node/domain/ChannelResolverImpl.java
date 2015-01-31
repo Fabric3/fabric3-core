@@ -29,7 +29,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -75,37 +75,33 @@ public class ChannelResolverImpl implements ChannelResolver {
         this.channelConnector = channelConnector;
     }
 
-    public <T> T resolve(Class<T> interfaze, String name) throws ResolverException {
-        try {
-            LogicalChannel logicalChannel = getChannel(name);
-            LogicalProducer producer = createProducer(interfaze, logicalChannel.getUri());
-            PhysicalChannelDefinition channelDefinition = channelGenerator.generateChannelDefinition(logicalChannel,
-                                                                                                     SYNTHETIC_DEPLOYABLE,
-                                                                                                     ChannelDirection.PRODUCER);
+    public <T> T resolve(Class<T> interfaze, String name) throws ContainerException {
+        LogicalChannel logicalChannel = getChannel(name);
+        LogicalProducer producer = createProducer(interfaze, logicalChannel.getUri());
+        PhysicalChannelDefinition channelDefinition = channelGenerator.generateChannelDefinition(logicalChannel,
+                                                                                                 SYNTHETIC_DEPLOYABLE,
+                                                                                                 ChannelDirection.PRODUCER);
 
-            channelBuilderRegistry.build(channelDefinition);
+        channelBuilderRegistry.build(channelDefinition);
 
-            Map<LogicalChannel, ChannelDeliveryType> channels = Collections.singletonMap(logicalChannel, ChannelDeliveryType.DEFAULT);
-            List<PhysicalChannelConnectionDefinition> physicalDefinitions = connectionGenerator.generateProducer(producer, channels);
-            for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
-                channelConnector.connect(physicalDefinition);
-            }
-            for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
-                PhysicalConnectionSourceDefinition source = physicalDefinition.getSource();
-                if (!(source instanceof NonManagedPhysicalConnectionSourceDefinition)) {
-                    continue;
-                }
-                NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
-                return interfaze.cast(sourceDefinition.getProxy());
-            }
-            throw new GenerationException("Source generator not found");
-
-        } catch (GenerationException | ContainerException e) {
-            throw new ResolverException(e);
+        Map<LogicalChannel, ChannelDeliveryType> channels = Collections.singletonMap(logicalChannel, ChannelDeliveryType.DEFAULT);
+        List<PhysicalChannelConnectionDefinition> physicalDefinitions = connectionGenerator.generateProducer(producer, channels);
+        for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
+            channelConnector.connect(physicalDefinition);
         }
+        for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
+            PhysicalConnectionSourceDefinition source = physicalDefinition.getSource();
+            if (!(source instanceof NonManagedPhysicalConnectionSourceDefinition)) {
+                continue;
+            }
+            NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
+            return interfaze.cast(sourceDefinition.getProxy());
+        }
+        throw new GenerationException("Source generator not found");
+
     }
 
-    private LogicalChannel getChannel(String name) throws ResolverException {
+    private LogicalChannel getChannel(String name) throws ContainerException {
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();
         String domainRoot = domainComponent.getUri().toString();
         URI channelUri = URI.create(domainRoot + "/" + name);
@@ -116,7 +112,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         return logicalChannel;
     }
 
-    private <T> LogicalProducer createProducer(Class<T> interfaze, URI channelUri) throws InterfaceException {
+    private <T> LogicalProducer createProducer(Class<T> interfaze, URI channelUri) throws ContainerException {
         JavaServiceContract contract = introspector.introspect(interfaze);
 
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();

@@ -19,7 +19,7 @@ package org.fabric3.federation.node.executor;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.merge.DomainMergeService;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;

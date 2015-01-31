@@ -16,7 +16,7 @@
  */
 package org.fabric3.databinding.jaxb.transform;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.transform.Transformer;
 
 /**

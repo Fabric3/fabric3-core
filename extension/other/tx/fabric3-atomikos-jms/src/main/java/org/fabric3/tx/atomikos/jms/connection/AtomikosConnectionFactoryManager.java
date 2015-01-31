@@ -24,7 +24,7 @@ import java.util.Map;
 
 import com.atomikos.jms.AtomikosConnectionFactoryBean;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.management.ManagementService;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;

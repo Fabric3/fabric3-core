@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.Role;
-import org.fabric3.api.host.runtime.InitializationException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
@@ -41,11 +41,11 @@ public class DelegatingJmxAuthenticator implements JMXAuthenticator {
     private JMXAuthenticator delegate;
 
     @Property(required = false)
-    public void setSecurity(String level) throws InitializationException {
+    public void setSecurity(String level) throws ContainerException {
         try {
             security = JmxSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InitializationException("Invalid JMX security setting:" + level);
+            throw new ContainerException("Invalid JMX security setting:" + level);
         }
     }
 

@@ -25,7 +25,7 @@ import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.fabric.container.channel.FilterHandler;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;

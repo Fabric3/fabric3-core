@@ -19,12 +19,12 @@
  */
 package org.fabric3.spi.domain.generator;
 
-import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Base generation exception.
  */
-public class GenerationException extends DeploymentException {
+public class GenerationException extends ContainerException {
     private static final long serialVersionUID = -1307164947930260525L;
 
     public GenerationException() {

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.fabric3.api.binding.file.InvalidDataException;
 import org.fabric3.api.binding.file.ServiceAdapter;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.oasisopen.sca.ServiceRuntimeException;
 

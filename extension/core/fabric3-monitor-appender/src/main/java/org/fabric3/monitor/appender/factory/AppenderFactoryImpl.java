@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.appender.console.ConsoleAppender;
@@ -37,8 +38,6 @@ import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.spi.container.ContainerException;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -135,12 +134,8 @@ public class AppenderFactoryImpl implements AppenderFactory {
             if (generator == null) {
                 throw new ContainerException("Unknown appender type: " + definition.getClass());
             }
-            try {
-                PhysicalAppenderDefinition physicalDefinition = generator.generateResource(definition);
-                physicalDefinitions.add(physicalDefinition);
-            } catch (GenerationException e) {
-                throw new ContainerException(e);
-            }
+            PhysicalAppenderDefinition physicalDefinition = generator.generateResource(definition);
+            physicalDefinitions.add(physicalDefinition);
         }
         return physicalDefinitions;
     }

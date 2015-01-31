@@ -30,9 +30,9 @@ import java.util.Set;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.ContributionNotFoundException;
 import org.fabric3.api.host.domain.ContributionNotInstalledException;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -108,7 +108,7 @@ public abstract class AbstractDomain implements Domain {
         listeners = Collections.emptyList();
     }
 
-    public synchronized void include(QName deployable) throws DeploymentException {
+    public synchronized void include(QName deployable) throws ContainerException {
         Composite wrapper = createWrapper(deployable);
         for (DeployListener listener : listeners) {
             listener.onDeploy(deployable);
@@ -119,7 +119,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void include(Composite composite, boolean simulated) throws DeploymentException {
+    public synchronized void include(Composite composite, boolean simulated) throws ContainerException {
         QName name = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onDeploy(name);
@@ -130,11 +130,11 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void include(List<URI> uris) throws DeploymentException {
+    public synchronized void include(List<URI> uris) throws ContainerException {
         include(uris, false);
     }
 
-    public synchronized void undeploy(URI uri, boolean force) throws DeploymentException {
+    public synchronized void undeploy(URI uri, boolean force) throws ContainerException {
         Contribution contribution = metadataStore.find(uri);
         if (contribution == null) {
             throw new ContributionNotFoundException("Contribution not found: " + uri);
@@ -171,7 +171,7 @@ public abstract class AbstractDomain implements Domain {
         collector.collect(domain);
         try {
             deployer.deploy(deployment);
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             if (!force) {
                 throw e;
             }
@@ -191,7 +191,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void undeploy(Composite composite, boolean simulated) throws DeploymentException {
+    public synchronized void undeploy(Composite composite, boolean simulated) throws ContainerException {
         QName deployable = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onUndeploy(deployable);
@@ -215,7 +215,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void deactivateDefinitions(URI uri) throws DeploymentException {
+    public synchronized void deactivateDefinitions(URI uri) throws ContainerException {
         Contribution contribution = metadataStore.find(uri);
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
@@ -226,9 +226,8 @@ public abstract class AbstractDomain implements Domain {
      * Selects bindings for references targeted to remote services for a set of components being deployed by delegating to a BindingSelector.
      *
      * @param domain the domain component
-     * @throws DeploymentException if an error occurs during binding selection
      */
-    protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {
+    protected void selectBinding(LogicalCompositeComponent domain) throws ContainerException {
         // no-op
     }
 
@@ -237,9 +236,9 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param uris    the contributions to deploy
      * @param recover true if this is a recovery operation
-     * @throws DeploymentException if an error is encountered during inclusion
+     * @throws ContainerException if an error is encountered during inclusion
      */
-    private synchronized void include(List<URI> uris, boolean recover) throws DeploymentException {
+    private synchronized void include(List<URI> uris, boolean recover) throws ContainerException {
         Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
         // notify listeners
@@ -271,9 +270,9 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param deployable the deployable being included
      * @return the composite wrapper
-     * @throws DeploymentException if there is an error creating the composite wrapper
+     * @throws ContainerException if there is an error creating the composite wrapper
      */
-    private Composite createWrapper(QName deployable) throws DeploymentException {
+    private Composite createWrapper(QName deployable) throws ContainerException {
         Composite composite = contributionHelper.findComposite(deployable);
         // In order to include a composite at the domain level, it must first be wrapped in a composite that includes it.
         // This wrapper is thrown away during the inclusion.
@@ -293,9 +292,9 @@ public abstract class AbstractDomain implements Domain {
      * @param deployables   the deployables
      * @param contributions the contributions to deploy
      * @param recover       true if recovery mode is enabled
-     * @throws DeploymentException if an error occurs during instantiation or deployment
+     * @throws ContainerException if an error occurs during instantiation or deployment
      */
-    private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, boolean recover) throws DeploymentException {
+    private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, boolean recover) throws ContainerException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         for (Contribution contribution : contributions) {
@@ -324,7 +323,7 @@ public abstract class AbstractDomain implements Domain {
 
             logicalComponentManager.replaceRootComponent(domain);
 
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw e;
@@ -336,16 +335,16 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param composite the composite to instantiate and deploy
      * @param simulated true if the deployment is simulated
-     * @throws DeploymentException if a deployment error occurs
+     * @throws ContainerException if a deployment error occurs
      */
-    private void instantiateAndDeploy(Composite composite, boolean simulated) throws DeploymentException {
+    private void instantiateAndDeploy(Composite composite, boolean simulated) throws ContainerException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         QName name = composite.getName();
         QNameSymbol symbol = new QNameSymbol(name);
         ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
         if (element == null) {
-            throw new DeploymentException("Composite not found in metadata store: " + name);
+            throw new ContainerException("Composite not found in metadata store: " + name);
         }
         Contribution contribution = element.getResource().getContribution();
         if (ContributionState.INSTALLED != contribution.getState()) {
@@ -368,7 +367,7 @@ public abstract class AbstractDomain implements Domain {
         if (!simulated) {
             try {
                 allocateAndDeploy(domain);
-            } catch (DeploymentException e) {
+            } catch (ContainerException e) {
                 // release the contribution lock if there was an error
                 if (contribution.getLockOwners().contains(name)) {
                     contribution.releaseLock(name);
@@ -389,9 +388,9 @@ public abstract class AbstractDomain implements Domain {
      * Allocates and deploys new components in the domain.
      *
      * @param domain the domain component
-     * @throws DeploymentException if an error is encountered during deployment
+     * @throws ContainerException if an error is encountered during deployment
      */
-    private void allocateAndDeploy(LogicalCompositeComponent domain) throws DeploymentException {
+    private void allocateAndDeploy(LogicalCompositeComponent domain) throws ContainerException {
         // Allocate the components to runtime nodes
         allocate(domain);
         // Select bindings
@@ -430,6 +429,5 @@ public abstract class AbstractDomain implements Domain {
             }
         }
     }
-
 
 }

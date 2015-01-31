@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.container.component;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * A component whose implementation instances are managed by a {@link ScopeContainer}. This interface defines callbacks used by the scope container to change

@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.objectfactory;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Creates new instances of a type.

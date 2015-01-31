@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.fabric3.api.binding.file.ReferenceAdapter;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.oasisopen.sca.ServiceRuntimeException;
 

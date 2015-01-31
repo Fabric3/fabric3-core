@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  *

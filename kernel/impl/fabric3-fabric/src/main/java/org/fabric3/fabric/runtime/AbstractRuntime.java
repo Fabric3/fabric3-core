@@ -25,15 +25,14 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.repository.Repository;
-import org.fabric3.api.host.repository.RepositoryException;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.contribution.MetaDataStoreImpl;
@@ -50,7 +49,6 @@ import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.monitor.proxy.JDKMonitorProxyService;
 import org.fabric3.monitor.proxy.MonitorProxyServiceImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
@@ -115,7 +113,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         this.level = level;
     }
 
-    public void boot() throws InitializationException {
+    public void boot() throws ContainerException {
         logicalComponentManager = new LogicalComponentManagerImpl();
         componentManager = new ComponentManagerImpl();
         channelManager = new ChannelManagerImpl();
@@ -130,7 +128,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         try {
             monitor = monitorService.createMonitor(ScopeContainerMonitor.class);
         } catch (MonitorCreationException e) {
-            throw new InitializationException(e);
+            throw new ContainerException(e);
         }
         scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
@@ -150,7 +148,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         try {
             repository.shutdown();
             classLoaderRegistry.close();
-        } catch (RepositoryException | IOException e) {
+        } catch (ContainerException | IOException e) {
             throw new ShutdownException(e);
         }
     }
@@ -221,16 +219,12 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
      * Creates a default repository which may be overridden by subclasses.
      *
      * @return an initialized repository
-     * @throws InitializationException if an error is encountered initializing a repository
+     * @throws ContainerException if an error is encountered initializing a repository
      */
-    protected Repository createRepository() throws InitializationException {
-        try {
-            RepositoryImpl repository = new RepositoryImpl(hostInfo);
-            repository.init();
-            return repository;
-        } catch (RepositoryException e) {
-            throw new InitializationException(e);
-        }
+    protected Repository createRepository() throws ContainerException {
+        RepositoryImpl repository = new RepositoryImpl(hostInfo);
+        repository.init();
+        return repository;
     }
 
 }

@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.failure.AssemblyFailure;
 
 /**
- * Denotes a recoverable failure updating the domain assembly during deployment. For example, a failure may be a reference targeted to a non-existent
- * service.
+ * Denotes a failure updating the domain assembly during deployment. For example, a failure may be a reference targeted to a non-existent service.
  */
-public class AssemblyException extends DeploymentException {
+public class AssemblyException extends ContainerException {
     private static final long serialVersionUID = 3957908169593535300L;
     private static final Comparator<AssemblyFailure> COMPARATOR = new Comparator<AssemblyFailure>() {
         public int compare(AssemblyFailure first, AssemblyFailure second) {

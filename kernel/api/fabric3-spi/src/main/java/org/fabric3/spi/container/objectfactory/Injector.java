@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.objectfactory;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implementations inject an ObjectFactory value on an object instance

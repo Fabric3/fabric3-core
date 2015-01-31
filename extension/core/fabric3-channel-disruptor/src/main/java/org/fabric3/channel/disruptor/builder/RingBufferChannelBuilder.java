@@ -30,7 +30,7 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.channel.disruptor.impl.RingBufferChannel;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.ChannelSide;

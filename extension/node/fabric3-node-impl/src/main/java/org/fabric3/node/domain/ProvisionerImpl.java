@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.HostNamespaces;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.builder.JavaComponentBuilder;
@@ -101,7 +102,7 @@ public class ProvisionerImpl implements Provisioner {
         try {
             addCompositeToContribution(composite);
             domain.include(composite, false);
-        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+        } catch (ContainerException e) {
             // TODO remove the contribution
             throw new DeploymentException(e);
         }
@@ -120,7 +121,7 @@ public class ProvisionerImpl implements Provisioner {
             wrapper.add(component);
 
             domain.include(wrapper, false);
-        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+        } catch (ContainerException e) {
             throw new DeploymentException(e);
         }
     }
@@ -131,7 +132,7 @@ public class ProvisionerImpl implements Provisioner {
             Composite wrapper = createWrapperComposite(channel.getName());
             wrapper.add(channel);
             domain.include(wrapper, false);
-        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+        } catch (ContainerException e) {
             throw new DeploymentException(e);
         }
     }
@@ -151,7 +152,7 @@ public class ProvisionerImpl implements Provisioner {
             Contribution contribution = resource.getContribution();
             contribution.getResources().remove(resource);
 
-        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+        } catch (ContainerException e) {
             throw new DeploymentException(e);
         }
     }

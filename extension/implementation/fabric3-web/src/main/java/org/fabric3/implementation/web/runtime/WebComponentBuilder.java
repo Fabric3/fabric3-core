@@ -29,7 +29,7 @@ import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.EagerInit;

@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Version;
 import org.fabric3.api.host.contribution.ContributionException;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -38,7 +38,6 @@ import org.fabric3.api.host.runtime.BootExports;
 import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.fabric.domain.instantiator.component.AtomicComponentInstantiatorImpl;
@@ -51,7 +50,6 @@ import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
@@ -128,7 +126,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         implementationIntrospector = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
-    public void bootRuntimeDomain() throws InitializationException {
+    public void bootRuntimeDomain() throws ContainerException {
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
         hostInfo = runtimeServices.getHostInfo();
         monitorService = runtimeServices.getMonitorProxyService();
@@ -167,7 +165,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         synthesizeContributions();
     }
 
-    public void bootSystem() throws InitializationException {
+    public void bootSystem() throws ContainerException {
         try {
             // load the system composite
             Composite composite = BootstrapCompositeFactory.createSystemComposite(bootContribution, hostInfo, bootClassLoader, implementationIntrospector);
@@ -178,8 +176,8 @@ public class DefaultBootstrapper implements Bootstrapper {
 
             // deploy the composite to the runtime domain
             runtimeDomain.include(composite, false);
-        } catch (DeploymentException e) {
-            throw new InitializationException(e);
+        } catch (ContainerException e) {
+            throw new ContainerException(e);
         }
     }
 
@@ -187,10 +185,10 @@ public class DefaultBootstrapper implements Bootstrapper {
      * Registers the primordial runtime components.
      *
      * @param registrations host components to register
-     * @throws InitializationException if there is an error during registration
+     * @throws ContainerException if there is an error during registration
      */
     @SuppressWarnings({"unchecked"})
-    private <S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations) throws InitializationException {
+    private <S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations) throws ContainerException {
 
         // services available through the outward facing Fabric3Runtime API
         registerComponent("MonitorProxyService", MonitorProxyService.class, monitorService, true);
@@ -251,22 +249,18 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param type       the service interface type
      * @param instance   the component instance
      * @param introspect true if the component should be introspected for references
-     * @throws InitializationException if there is an error during registration
+     * @throws ContainerException if there is an error during registration
      */
-    private <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws InitializationException {
-        try {
-            synthesizer.registerComponent(name, type, instance, introspect);
-        } catch (ContainerException e) {
-            throw new InitializationException(e);
-        }
+    private <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ContainerException {
+        synthesizer.registerComponent(name, type, instance, introspect);
     }
 
     /**
      * Creates contributions for the host and boot classloaders. These contributions may be imported by extensions and user contributions.
      *
-     * @throws InitializationException if there is an error synthesizing the contributions
+     * @throws ContainerException if there is an error synthesizing the contributions
      */
-    private void synthesizeContributions() throws InitializationException {
+    private void synthesizeContributions() throws ContainerException {
         try {
             // export packages included in JDK 6
             synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader, true);
@@ -274,7 +268,7 @@ public class DefaultBootstrapper implements Bootstrapper {
             exportedPackages.putAll(BootExports.getExports());
             bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, Collections.<String>emptyList(), bootClassLoader, true);
         } catch (ContributionException e) {
-            throw new InitializationException(e);
+            throw new ContainerException(e);
         }
     }
 

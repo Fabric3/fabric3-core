@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;

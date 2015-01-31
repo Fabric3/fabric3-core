@@ -18,7 +18,7 @@ package org.fabric3.spi.federation.topology;
 
 import java.io.Serializable;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.command.Command;
 
 /**

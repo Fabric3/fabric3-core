@@ -31,7 +31,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuild
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;

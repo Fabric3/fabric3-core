@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;

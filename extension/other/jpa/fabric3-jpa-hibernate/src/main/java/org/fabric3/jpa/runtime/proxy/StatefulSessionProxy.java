@@ -25,7 +25,7 @@ import javax.transaction.TransactionManager;
 import java.io.Serializable;
 import java.sql.Connection;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Filter;

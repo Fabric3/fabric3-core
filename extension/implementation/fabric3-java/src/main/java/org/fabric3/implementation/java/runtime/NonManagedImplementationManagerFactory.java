@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;

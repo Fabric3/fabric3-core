@@ -16,7 +16,7 @@
  */
 package org.fabric3.cache.spi;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implementations manage cache resources for a provider on a runtime.

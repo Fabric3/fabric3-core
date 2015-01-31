@@ -30,14 +30,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.runtime.InitializationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.container.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -90,11 +89,11 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws InitializationException {
+    public void setSecurity(String level) throws ContainerException {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InitializationException("Invalid management security setting:" + level);
+            throw new ContainerException("Invalid management security setting:" + level);
         }
     }
 

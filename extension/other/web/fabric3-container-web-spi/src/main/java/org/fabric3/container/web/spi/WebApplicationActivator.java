@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.oasisopen.sca.ComponentContext;
 

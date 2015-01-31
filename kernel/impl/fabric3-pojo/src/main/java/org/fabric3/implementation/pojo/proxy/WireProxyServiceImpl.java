@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.ServiceReference;

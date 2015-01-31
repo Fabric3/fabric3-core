@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.Role;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

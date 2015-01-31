@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.host.ServletHost;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;

@@ -28,7 +28,7 @@ import org.fabric3.api.Fabric3ComponentContext;
 import org.fabric3.api.host.Fabric3RuntimeException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.container.web.spi.WebRequestTunnel;
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;

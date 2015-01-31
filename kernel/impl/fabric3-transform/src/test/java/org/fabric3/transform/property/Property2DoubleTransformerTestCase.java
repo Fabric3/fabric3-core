@@ -18,7 +18,7 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.spi.container.ContainerException;
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Tests String to Double transform.
