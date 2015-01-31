@@ -30,7 +30,6 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -58,7 +57,7 @@ public class DefaultContributionResolver implements ContributionResolver {
         this.extensions = extensions;
     }
 
-    public URL resolve(URI contributionUri) throws ResolutionException {
+    public URL resolve(URI contributionUri) throws ContainerException {
         Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             return contribution.getLocation();
@@ -73,17 +72,13 @@ public class DefaultContributionResolver implements ContributionResolver {
             // provision and cache the contribution
             InputStream stream = extension.resolve(contributionUri);
             if (stream != null) {
-                try {
-                    return cache.cache(contributionUri, stream);
-                } catch (ContainerException e) {
-                    throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
-                }
+                return cache.cache(contributionUri, stream);
             }
         }
-        throw new ResolutionException("Contribution not found: " + contributionUri);
+        throw new ContainerException("Contribution not found: " + contributionUri);
     }
 
-    public List<URL> resolveAllLocations(URI contributionUri) throws ResolutionException {
+    public List<URL> resolveAllLocations(URI contributionUri) throws ContainerException {
         Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             List<URL> locations = new ArrayList<>();
@@ -101,22 +96,14 @@ public class DefaultContributionResolver implements ContributionResolver {
             // provision and cache the contribution
             InputStream stream = extension.resolve(contributionUri);
             if (stream != null) {
-                try {
-                    return Collections.singletonList(cache.cache(contributionUri, stream));
-                } catch (ContainerException e) {
-                    throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
-                }
+                return Collections.singletonList(cache.cache(contributionUri, stream));
             }
         }
-        throw new ResolutionException("Contribution not found: " + contributionUri);
+        throw new ContainerException("Contribution not found: " + contributionUri);
     }
 
-    public void release(URI contributionUri) throws ResolutionException {
-        try {
-            cache.remove(contributionUri);
-        } catch (ContainerException e) {
-            throw new ResolutionException("Error releasing artifact: " + contributionUri, e);
-        }
+    public void release(URI contributionUri) throws ContainerException {
+        cache.remove(contributionUri);
     }
 
 }

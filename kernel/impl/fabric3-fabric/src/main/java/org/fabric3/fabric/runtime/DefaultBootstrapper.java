@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Version;
-import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -261,15 +260,11 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @throws ContainerException if there is an error synthesizing the contributions
      */
     private void synthesizeContributions() throws ContainerException {
-        try {
-            // export packages included in JDK 6
-            synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader, true);
-            // add default boot exports
-            exportedPackages.putAll(BootExports.getExports());
-            bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, Collections.<String>emptyList(), bootClassLoader, true);
-        } catch (ContributionException e) {
-            throw new ContainerException(e);
-        }
+        // export packages included in JDK 6
+        synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader, true);
+        // add default boot exports
+        exportedPackages.putAll(BootExports.getExports());
+        bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, Collections.<String>emptyList(), bootClassLoader, true);
     }
 
     /**
@@ -281,13 +276,13 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param loader           the classloader
      * @param extension        true if the contribution is an extension
      * @return the synthesized contribution
-     * @throws ContributionException if there is an error synthesizing the contribution
+     * @throws ContainerException if there is an error synthesizing the contribution
      */
     private Contribution synthesizeContribution(URI contributionUri,
                                                 Map<String, String> exportedPackages,
                                                 List<String> hostCapabilities,
                                                 ClassLoader loader,
-                                                boolean extension) throws ContributionException {
+                                                boolean extension) throws ContainerException {
         Contribution contribution = new Contribution(contributionUri);
         contribution.setState(ContributionState.INSTALLED);
         ContributionManifest manifest = contribution.getManifest();

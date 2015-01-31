@@ -35,13 +35,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.contribution.ContributionException;
-import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
-import org.fabric3.api.host.contribution.RemoveException;
-import org.fabric3.api.host.contribution.UninstallException;
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.ContainerException;
@@ -303,17 +299,10 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     monitor.processed(resource.getName());
                 }
             }
-        } catch (ContributionException e) {
-            for (FileSystemResource resource : updatedResources) {
-                resource.setState(FileSystemResourceState.ERROR);
-            }
-            monitor.error(e);
         } catch (ContainerException e) {
             for (FileSystemResource resource : updatedResources) {
                 resource.setState(FileSystemResourceState.ERROR);
             }
-            // back out installation
-            revertInstallation(uris);
             monitor.error(e);
         }
     }
@@ -322,7 +311,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         try {
             contributionService.uninstall(uris);
             contributionService.remove(uris);
-        } catch (UninstallException | RemoveException | ContributionNotFoundException e) {
+        } catch (ContainerException e) {
             monitor.error(e);
         }
     }
@@ -390,7 +379,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 for (FileSystemResource resource : addedResources) {
                     resource.setState(FileSystemResourceState.ERROR);
                 }
-            } catch (ContributionException | NoClassDefFoundError | ContainerException e) {
+            } catch (NoClassDefFoundError | ContainerException e) {
                 handleError(e, addedResources);
             } catch (Error | RuntimeException e) {
                 for (FileSystemResource resource : addedResources) {
@@ -431,7 +420,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                         contributionService.remove(uri);
                     }
                     monitor.removed(name);
-                } catch (ContributionException | ContainerException e) {
+                } catch (ContainerException e) {
                     monitor.removalError(name, e);
                 }
             }

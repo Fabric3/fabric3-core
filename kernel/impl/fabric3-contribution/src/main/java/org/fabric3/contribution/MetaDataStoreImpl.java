@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.model.type.ModelObject;
@@ -177,7 +177,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return elements;
     }
 
-    public <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws StoreException {
+    public <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws ContainerException {
         ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
@@ -188,7 +188,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return updater.update(value, contribution, dependentContributions);
     }
 
-    public <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws StoreException {
+    public <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws ContainerException {
         ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
@@ -453,7 +453,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
                     } else if (ResourceState.UNPROCESSED == resource.getState() && context != null) {
                         try {
                             processorRegistry.processResource(resource, context);
-                        } catch (ContributionException e) {
+                        } catch (ContainerException e) {
                             String identifier = resource.getSource().getSystemId();
                             throw new StoreException("Error resolving resource: " + identifier, e);
                         }
@@ -470,12 +470,12 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <V extends Serializable> ResourceElementUpdater<V> getUpdater(URI uri, V value) throws ContributionUpdateException {
+    private <V extends Serializable> ResourceElementUpdater<V> getUpdater(URI uri, V value) throws ContainerException {
         String clazz = value.getClass().getName();
         ResourceElementUpdater<V> updater = (ResourceElementUpdater<V>) updaters.get(clazz);
         if (updater == null) {
             String identifier = uri.toString();
-            throw new ContributionUpdateException("Updater not found: " + identifier);
+            throw new ContainerException("Updater not found: " + identifier);
         }
         return updater;
     }

@@ -22,6 +22,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Implementations resolve contribution artifacts in a domain.
  */
@@ -32,9 +34,9 @@ public interface ContributionResolver {
      *
      * @param contributionUri the contribution URI
      * @return the local dereferenceable URL for the artifact
-     * @throws ResolutionException if an error occurs resolving the artifact
+     * @throws ContainerException if an error occurs resolving the artifact
      */
-    URL resolve(URI contributionUri) throws ResolutionException;
+    URL resolve(URI contributionUri) throws ContainerException;
 
     /**
      * Resolves the contribution artifact associated with the URI, returning a set of local URLs by which it may be dereferenced. Multiple URLs are returned for
@@ -42,16 +44,16 @@ public interface ContributionResolver {
      *
      * @param contributionUri the contribution URI
      * @return the local dereferenceable URL for the artifact
-     * @throws ResolutionException if an error occurs resolving the artifact
+     * @throws ContainerException if an error occurs resolving the artifact
      */
-    List<URL> resolveAllLocations(URI contributionUri) throws ResolutionException;
+    List<URL> resolveAllLocations(URI contributionUri) throws ContainerException;
 
     /**
      * Releases a previously resolved contribution.
      *
      * @param contributionUri the contribution  URI.
-     * @throws ResolutionException if an error occurs releasing the artifact
+     * @throws ContainerException if an error occurs releasing the artifact
      */
-    void release(URI contributionUri) throws ResolutionException;
+    void release(URI contributionUri) throws ContainerException;
 
 }

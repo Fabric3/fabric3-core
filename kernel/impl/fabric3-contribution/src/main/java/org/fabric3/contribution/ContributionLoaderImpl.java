@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.contribution.ContributionInUseException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.manifest.ContributionExport;
@@ -160,7 +160,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         return loader;
     }
 
-    public void unload(Contribution contribution) throws ContributionInUseException {
+    public void unload(Contribution contribution) throws ContainerException {
         URI uri = contribution.getUri();
         Set<Contribution> contributions = store.resolveDependentContributions(uri);
         if (!contributions.isEmpty()) {
@@ -168,7 +168,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
             dependents.addAll(contributions.stream().filter(dependent -> ContributionState.INSTALLED == dependent.getState()).map(Contribution::getUri).collect(
                     Collectors.toList()));
             if (!dependents.isEmpty()) {
-                throw new ContributionInUseException("Contribution is in use: " + uri, uri, dependents);
+                throw new ContainerException("Contribution is in use: " + uri);
             }
         }
         classLoaderRegistry.unregister(uri);

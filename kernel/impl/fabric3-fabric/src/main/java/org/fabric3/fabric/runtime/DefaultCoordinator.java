@@ -23,13 +23,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.host.ContainerException;
-import org.fabric3.api.host.contribution.ContributionException;
-import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
-import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
@@ -140,11 +136,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
                 contributionService.processContents(uri);
                 domain.include(Collections.singletonList(uri));
             }
-        } catch (InstallException | ContributionNotFoundException | StoreException e) {
-            throw new ContainerException(e);
-        } catch (ContainerException e) {
+        } finally {
             state = RuntimeState.ERROR;
-            throw new ContainerException("Error deploying extensions", e);
         }
     }
 
@@ -182,9 +175,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             // install the contributions
             List<URI> stored = contributionService.store(sources);
             return contributionService.install(stored);
-        } catch (ContributionException e) {
+        } finally {
             state = RuntimeState.ERROR;
-            throw new ContainerException("Error contributing extensions", e);
         }
     }
 }

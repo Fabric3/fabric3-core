@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.model.type.ModelObject;
@@ -94,28 +95,26 @@ public interface MetaDataStore {
     <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws StoreException;
 
     /**
-     * Updates a resource element contained in a contribution. All references to the resource will be updated in the containing and dependent
-     * contributions.
+     * Updates a resource element contained in a contribution. All references to the resource will be updated in the containing and dependent contributions.
      *
      * @param uri   the contribution URI
      * @param value the new resource element value
-     * @return the collection of model object that have been changed by the update. For example, an update to a composite will cause changes in other
-     *         composites that reference it
-     * @throws StoreException if an error occurs during update
+     * @return the collection of model object that have been changed by the update. For example, an update to a composite will cause changes in other composites
+     * that reference it
+     * @throws ContainerException if an error occurs during update
      */
-    <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws StoreException;
+    <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws ContainerException;
 
     /**
-     * Removes a resource element from a contribution. References to the element may be replaced by unresolved pointers depending on the resource
-     * type.
+     * Removes a resource element from a contribution. References to the element may be replaced by unresolved pointers depending on the resource type.
      *
      * @param uri   the contribution URI
      * @param value the new resource element value
-     * @return the collection of model object that have been changed by the removal. For example, a deleted composite will cause changes in other
-     *         composites that reference it. References to deleted elements may be replaced with pointers.
-     * @throws StoreException if an error occurs during update
+     * @return the collection of model object that have been changed by the removal. For example, a deleted composite will cause changes in other composites
+     * that reference it. References to deleted elements may be replaced with pointers.
+     * @throws ContainerException if an error occurs during update
      */
-    <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws StoreException;
+    <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws ContainerException;
 
     /**
      * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.
@@ -127,10 +126,8 @@ public interface MetaDataStore {
      * @return the resource element or null if not found
      * @throws StoreException if an error occurs during resolution
      */
-    <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri,
-                                                                             Class<V> type,
-                                                                             S symbol,
-                                                                             IntrospectionContext context) throws StoreException;
+    <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
+            throws StoreException;
 
     /**
      * Resolves resource elements for a given type that are visible to the contribution.
@@ -156,8 +153,8 @@ public interface MetaDataStore {
      *
      * @param uri   the importing contribution  URI
      * @param imprt the import to resolve @return a ContributionWire or null
-     * @return a collection of ContributionWires matching the import. For multiplicity imports, the collection may contain 0..N wires. For
-     *         non-multiplicity imports (e.g. import.java), the collection will contain 0..1 wires.
+     * @return a collection of ContributionWires matching the import. For multiplicity imports, the collection may contain 0..N wires. For non-multiplicity
+     * imports (e.g. import.java), the collection will contain 0..1 wires.
      * @throws UnresolvedImportException if the import cannot be resolved
      */
     List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws UnresolvedImportException;
@@ -179,8 +176,8 @@ public interface MetaDataStore {
     List<Contribution> resolveExtensionProviders(String name);
 
     /**
-     * Resolves a contribution that provides an extension point. Multiple contributions can provide the same extension point, e.g. contributions that
-     * represent different versions of a set of services.
+     * Resolves a contribution that provides an extension point. Multiple contributions can provide the same extension point, e.g. contributions that represent
+     * different versions of a set of services.
      *
      * @param name the extension point name
      * @return the URIs of the contributions that provide the extension points

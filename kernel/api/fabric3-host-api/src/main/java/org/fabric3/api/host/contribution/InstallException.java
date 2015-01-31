@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.contribution;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Denotes an error installing a contribution.
  */
-public class InstallException extends ContributionException {
+public class InstallException extends ContainerException {
     private static final long serialVersionUID = 3609176062577063255L;
 
     public InstallException(String message) {

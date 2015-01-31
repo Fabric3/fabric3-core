@@ -26,7 +26,6 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.Domain;
@@ -63,7 +62,7 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         return (T) super.getHostInfo();
     }
 
-    public void deploy(URL base, QName qName) throws ContributionException, ContainerException {
+    public void deploy(URL base, QName qName) throws ContainerException {
         PluginContributionSource source = new PluginContributionSource(CONTRIBUTION_URI, base);
         // contribute the Maven project to the application domain
         ContributionService contributionService = getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);

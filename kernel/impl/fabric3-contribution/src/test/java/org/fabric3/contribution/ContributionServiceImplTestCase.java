@@ -28,13 +28,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.contribution.ContributionLockedException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.FileContributionSource;
-import org.fabric3.api.host.contribution.RemoveException;
-import org.fabric3.api.host.contribution.UninstallException;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
@@ -85,30 +83,11 @@ public class ContributionServiceImplTestCase extends TestCase {
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
     }
 
-    public void testGetTimeStamp() throws Exception {
-        EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        assertEquals(1, service.getContributionTimestamp(contributionUri));
-
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
     public void testGetDeployables() throws Exception {
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
 
         assertTrue(service.getDeployables(contributionUri).contains(deployable));
-
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    public void testGetDeployedComposites() throws Exception {
-        contribution.acquireLock(deployable.getName());
-        EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        assertTrue(service.getDeployedComposites(contributionUri).contains(deployable.getName()));
 
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
     }
@@ -189,7 +168,7 @@ public class ContributionServiceImplTestCase extends TestCase {
         try {
             service.uninstall(contributionUri);
             fail();
-        } catch (ContributionLockedException e) {
+        } catch (ContainerException e) {
             // expected
         }
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
@@ -202,7 +181,7 @@ public class ContributionServiceImplTestCase extends TestCase {
         try {
             service.uninstall(contributionUri);
             fail();
-        } catch (UninstallException e) {
+        } catch (ContainerException e) {
             // expected
         }
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
@@ -230,111 +209,6 @@ public class ContributionServiceImplTestCase extends TestCase {
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver, repository);
         service.remove(Collections.singletonList(contributionUri));
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver, repository);
-    }
-
-    public void testProfileExists() throws Exception {
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        assertTrue(service.profileExists(profileUri));
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    public void testGetContributionsInProfile() throws Exception {
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        assertTrue(service.getContributionsInProfile(profileUri).contains(contribution.getUri()));
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testGetSortedContributionsInProfile() throws Exception {
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-        List<Contribution> list = Collections.singletonList(contribution);
-        EasyMock.expect(dependencyResolver.orderForUninstall(EasyMock.isA(List.class))).andReturn(list);
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        assertTrue(service.getSortedContributionsInProfile(profileUri).contains(contribution.getUri()));
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testRegisterProfiles() throws Exception {
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-        EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        URI newProfile = URI.create("newProfile");
-        service.registerProfile(newProfile, Collections.<URI>singletonList(contributionUri));
-        assertTrue(contribution.getProfiles().contains(newProfile));
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testInstallProfile() throws Exception {
-        createResourceWithComposite();
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-        List<Contribution> list = Collections.singletonList(contribution);
-        EasyMock.expect(dependencyResolver.resolve(EasyMock.isA(List.class))).andReturn(list);
-        processorRegistry.processManifest(EasyMock.eq(contribution), EasyMock.isA(IntrospectionContext.class));
-        processorRegistry.indexContribution(EasyMock.eq(contribution), EasyMock.isA(IntrospectionContext.class));
-        processorRegistry.processContribution(EasyMock.eq(contribution), EasyMock.isA(IntrospectionContext.class));
-        EasyMock.expect(loader.load(contribution)).andReturn(getClass().getClassLoader());
-        store.store(contribution);
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        service.installProfile(profileUri);
-        assertTrue(ContributionState.INSTALLED == contribution.getState());
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testUnInstallProfile() throws Exception {
-        contribution.setState(ContributionState.INSTALLED);
-        EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-        List<Contribution> list = Collections.singletonList(contribution);
-        EasyMock.expect(dependencyResolver.orderForUninstall(EasyMock.isA(List.class))).andReturn(list);
-        loader.unload(contribution);
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        service.uninstallProfile(profileUri);
-        assertTrue(ContributionState.STORED == contribution.getState());
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
-    }
-
-    public void testRemoveProfile() throws Exception {
-        contribution.setState(ContributionState.STORED);
-        EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-        store.remove(contributionUri);
-        Repository repository = EasyMock.createMock(Repository.class);
-        repository.remove(contributionUri);
-        service.setRepository(repository);
-
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver, repository);
-
-        service.removeProfile(profileUri);
-        assertTrue(ContributionState.STORED == contribution.getState());
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver, repository);
-    }
-
-    public void testErrorRemoveProfileInInstalledState() throws Exception {
-        contribution.setState(ContributionState.INSTALLED);
-        EasyMock.expect(store.getContributions()).andReturn(Collections.<Contribution>singleton(contribution));
-
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
-
-        try {
-            service.removeProfile(profileUri);
-            fail();
-        } catch (RemoveException e) {
-            // expected
-        }
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
     }
 
     @SuppressWarnings({"unchecked"})

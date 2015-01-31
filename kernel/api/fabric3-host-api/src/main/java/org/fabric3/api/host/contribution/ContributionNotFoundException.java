@@ -19,10 +19,12 @@
  */
 package org.fabric3.api.host.contribution;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  *
  */
-public class ContributionNotFoundException extends ContributionException {
+public class ContributionNotFoundException extends ContainerException {
     private static final long serialVersionUID = 6082773638859168837L;
 
     public ContributionNotFoundException(String message) {

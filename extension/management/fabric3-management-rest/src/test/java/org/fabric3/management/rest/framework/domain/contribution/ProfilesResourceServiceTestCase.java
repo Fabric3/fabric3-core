@@ -23,17 +23,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.contribution.ContributionService;
-import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
-import org.fabric3.management.rest.model.Response;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -44,7 +39,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 public class ProfilesResourceServiceTestCase extends TestCase {
     private static final URI PROFILE_URI = URI.create("profile");
     private ProfilesResourceService service;
-    private ContributionService contributionService;
     private MetaDataStore store;
 
     @SuppressWarnings({"unchecked"})
@@ -56,67 +50,21 @@ public class ProfilesResourceServiceTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http:/localhost/management/domain/contributions")).atLeastOnce();
-        EasyMock.replay(contributionService, store, request);
-
+        EasyMock.replay(store, request);
 
         Resource resource = service.getProfiles(request);
         Set<URI> profiles = (Set<URI>) resource.getProperties().get("profiles");
         assertTrue(profiles.contains(PROFILE_URI));
-        EasyMock.verify(contributionService, store, request);
+        EasyMock.verify(store, request);
     }
-
-    @SuppressWarnings({"unchecked"})
-    public void testCreateProfile() throws Exception {
-        URI profileUri = URI.create("theprofile");
-        URI contributionUri = URI.create("contribution1.jar");
-
-        EasyMock.expect(contributionService.exists(EasyMock.eq(contributionUri))).andReturn(false);
-        EasyMock.expect(contributionService.store(EasyMock.isA(ContributionSource.class))).andReturn(contributionUri);
-        contributionService.registerProfile(EasyMock.eq(profileUri), EasyMock.isA(List.class));
-        contributionService.installProfile(profileUri);
-
-        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(request.getPathInfo()).andReturn("/theprofile").atLeastOnce();
-        ClassLoader loader = getClass().getClassLoader();
-        InputStream resourceStream = loader.getResourceAsStream("org/fabric3/management/rest/framework/domain/contribution/test.jar");
-        MockStream mockStream = new MockStream(resourceStream);
-        EasyMock.expect(request.getInputStream()).andReturn(mockStream).atLeastOnce();
-
-        EasyMock.replay(contributionService, store, request);
-
-        Response response = service.createProfile(request);
-        assertEquals(HttpStatus.CREATED, response.getStatus());
-        assertEquals("/theprofile", response.getHeaders().get("Location"));
-        EasyMock.verify(contributionService, store, request);
-
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testDeleteProfile() throws Exception {
-        URI profileUri = URI.create("theprofile");
-
-        contributionService.uninstallProfile(profileUri);
-        contributionService.removeProfile(profileUri);
-
-        EasyMock.replay(contributionService, store);
-
-        service.deleteProfile("theprofile");
-        EasyMock.verify(contributionService, store);
-
-    }
-
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        ContributionsResourceMonitor monitor = EasyMock.createNiceMock(ContributionsResourceMonitor.class);
-        EasyMock.replay(monitor);
-
-        contributionService = EasyMock.createMock(ContributionService.class);
         store = EasyMock.createMock(MetaDataStore.class);
 
-        service = new ProfilesResourceService(contributionService, store, monitor);
+        service = new ProfilesResourceService(store);
     }
 
     private Contribution createContribution(URI contributionUri) {
@@ -128,7 +76,6 @@ public class ProfilesResourceServiceTestCase extends TestCase {
         contribution.addProfile(PROFILE_URI);
         return contribution;
     }
-
 
     private class MockStream extends ServletInputStream {
         private InputStream stream;
@@ -182,6 +129,5 @@ public class ProfilesResourceServiceTestCase extends TestCase {
             return stream.markSupported();
         }
     }
-
 
 }

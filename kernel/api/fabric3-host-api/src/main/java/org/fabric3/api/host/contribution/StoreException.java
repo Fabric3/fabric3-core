@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.contribution;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Denotes an error storing a contribution.
  */
-public class StoreException extends ContributionException {
+public class StoreException extends ContainerException {
     private static final long serialVersionUID = 5509464593295262830L;
 
     public StoreException(String message) {

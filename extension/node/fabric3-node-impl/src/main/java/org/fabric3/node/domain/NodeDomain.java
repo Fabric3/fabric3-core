@@ -22,14 +22,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 
-import org.fabric3.api.host.contribution.ContributionNotFoundException;
-import org.fabric3.api.host.contribution.ContributionService;
-import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.api.host.contribution.RemoveException;
-import org.fabric3.api.host.contribution.StoreException;
-import org.fabric3.api.host.contribution.UninstallException;
-import org.fabric3.api.host.contribution.UrlContributionSource;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.UrlContributionSource;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
@@ -84,7 +79,6 @@ public class NodeDomain implements Domain {
         }
     }
 
-
     public Domain deploy(String name, Object instance, Class<?>... interfaces) {
         try {
             provisioner.deploy(name, instance, interfaces);
@@ -129,7 +123,7 @@ public class NodeDomain implements Domain {
             contributionService.install(uri);
             domain.include(Collections.singletonList(uri));
             return this;
-        } catch (URISyntaxException | ContainerException | InstallException | ContributionNotFoundException | StoreException e) {
+        } catch (URISyntaxException | ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -141,7 +135,7 @@ public class NodeDomain implements Domain {
             contributionService.uninstall(uri);
             contributionService.remove(uri);
             return this;
-        } catch (URISyntaxException | RemoveException | UninstallException | ContainerException | ContributionNotFoundException e) {
+        } catch (URISyntaxException | ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

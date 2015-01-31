@@ -18,10 +18,12 @@
  */
 package org.fabric3.api.host.contribution;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  *
  */
-public class RemoveException extends ContributionException {
+public class RemoveException extends ContainerException {
     private static final long serialVersionUID = 7255116521255472730L;
 
     public RemoveException(String message) {

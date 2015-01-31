@@ -21,6 +21,7 @@ package org.fabric3.spi.contribution;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 
 /**
  * Implementations resolve contribution artifacts in a domain.
@@ -32,8 +33,8 @@ public interface ContributionResolverExtension {
      *
      * @param contributionUri the contribution URI
      * @return an input stream for the artifact
-     * @throws ResolutionException if an error occurs resolving the artifact
+     * @throws ContainerException if an error occurs resolving the artifact
      */
-    InputStream resolve(URI contributionUri) throws ResolutionException;
+    InputStream resolve(URI contributionUri) throws ContainerException;
 
 }

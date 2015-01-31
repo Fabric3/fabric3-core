@@ -18,8 +18,7 @@
  */
 package org.fabric3.contribution;
 
-import org.fabric3.api.host.contribution.ContributionInUseException;
-import org.fabric3.api.host.contribution.UnresolvedImportException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 
 /**
@@ -34,15 +33,15 @@ public interface ContributionLoader {
      * @param contribution the contribution to load
      * @return the classloader with access to the contribution and dependent resources
      * @throws ContributionLoadException if an error occurs during load
-     * @throws UnresolvedImportException if the contribution contains an unresolvable import
+     * @throws ContainerException if the contribution contains an unresolvable import
      */
-    ClassLoader load(Contribution contribution) throws ContributionLoadException, UnresolvedImportException;
+    ClassLoader load(Contribution contribution) throws ContainerException;
 
     /**
      * Unloads a contribution from memory.
      *
      * @param contribution the contribution to unload
-     * @throws ContributionInUseException if the contribution cannot be unloaded because it is referenced by another loaded contribution
+     * @throws ContainerException if the contribution cannot be unloaded because it is referenced by another loaded contribution
      */
-    void unload(Contribution contribution) throws ContributionInUseException;
+    void unload(Contribution contribution) throws ContainerException;
 }
