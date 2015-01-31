@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
@@ -75,11 +75,11 @@ public class XmlContributionProcessor implements ContributionProcessor {
         return CONTENT_TYPE.equals(contribution.getContentType());
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         // no-op as XML contributions do not contain manifest headers
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, IntrospectionContext context) throws ContainerException {
         InputStream stream = null;
         XMLStreamReader reader = null;
         try {
@@ -94,21 +94,21 @@ public class XmlContributionProcessor implements ContributionProcessor {
             contribution.addResource(resource);
         } catch (IOException e) {
             String uri = contribution.getUri().toString();
-            throw new InstallException("Error processing contribution " + uri, e);
+            throw new ContainerException("Error processing contribution " + uri, e);
         } catch (XMLStreamException e) {
             String uri = contribution.getUri().toString();
             if (e.getLocation() == null) {
-                throw new InstallException("Error processing contribution " + uri, e);
+                throw new ContainerException("Error processing contribution " + uri, e);
             }
             int line = e.getLocation().getLineNumber();
             int col = e.getLocation().getColumnNumber();
-            throw new InstallException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
+            throw new ContainerException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
         } finally {
             close(stream, reader);
         }
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
         URL locationURL = contribution.getLocation();
         InputStream stream = null;
         XMLStreamReader reader = null;
@@ -119,12 +119,12 @@ public class XmlContributionProcessor implements ContributionProcessor {
             xmlProcessorRegistry.process(contribution, reader, context);
         } catch (IOException e) {
             String uri = contribution.getUri().toString();
-            throw new InstallException("Error processing contribution " + uri, e);
+            throw new ContainerException("Error processing contribution " + uri, e);
         } catch (XMLStreamException e) {
             String uri = contribution.getUri().toString();
             int line = e.getLocation().getLineNumber();
             int col = e.getLocation().getColumnNumber();
-            throw new InstallException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
+            throw new ContainerException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
         } finally {
             close(stream, reader);
         }

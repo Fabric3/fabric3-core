@@ -16,11 +16,11 @@
  */
 package org.fabric3.binding.jms.spi.generator;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  * Called by the JMS binding after generation has run to allow a host environment to provision JMS resources such as destinations. Implementations may
@@ -34,32 +34,32 @@ public interface JmsResourceProvisioner {
      * Called after a source definition has been generated.
      *
      * @param definition the source definition
-     * @throws GenerationException if an error occurs provisioning a required JMS artifact.
+     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
      */
-    void generateSource(JmsWireSourceDefinition definition) throws GenerationException;
+    void generateSource(JmsWireSourceDefinition definition) throws ContainerException;
 
     /**
      * Called after a target definition has been generated.
      *
      * @param definition the target definition
-     * @throws GenerationException if an error occurs provisioning a required JMS artifact.
+     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
      */
-    void generateTarget(JmsWireTargetDefinition definition) throws GenerationException;
+    void generateTarget(JmsWireTargetDefinition definition) throws ContainerException;
 
     /**
      * Called after a source connection definition has been generated.
      *
      * @param definition the source definition
-     * @throws GenerationException if an error occurs provisioning a required JMS artifact.
+     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionSource(JmsConnectionSource definition) throws GenerationException ;
+    public void generateConnectionSource(JmsConnectionSource definition) throws ContainerException ;
 
     /**
      * Called after a target connection definition has been generated.
      *
      * @param definition the target definition
-     * @throws GenerationException if an error occurs provisioning a required JMS artifact.
+     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionTarget(JmsConnectionTarget definition) throws GenerationException;
+    public void generateConnectionTarget(JmsConnectionTarget definition) throws ContainerException;
     
 }

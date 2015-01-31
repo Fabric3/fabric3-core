@@ -18,9 +18,9 @@ package org.fabric3.fabric.domain.generator.channel;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -39,12 +39,12 @@ public class ChannelCommandGeneratorImpl implements ChannelCommandGenerator {
         this.channelGenerator = channelGenerator;
     }
 
-    public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException {
+    public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws ContainerException {
         PhysicalChannelDefinition definition = channelGenerator.generateChannelDefinition(channel, deployable, direction);
         return new BuildChannelCommand(definition);
     }
 
-    public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException {
+    public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws ContainerException {
         PhysicalChannelDefinition definition = channelGenerator.generateChannelDefinition(channel, deployable, direction);
         return new DisposeChannelCommand(definition);
     }

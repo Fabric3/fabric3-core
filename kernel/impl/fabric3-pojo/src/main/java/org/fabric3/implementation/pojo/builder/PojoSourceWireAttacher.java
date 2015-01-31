@@ -23,10 +23,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;

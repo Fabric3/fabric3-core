@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.contribution;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -58,44 +58,44 @@ public interface ProcessorRegistry {
      *
      * @param contribution the contribution
      * @param context      the context to which validation errors and warnings are reported
-     * @throws InstallException if there was a problem processing the manifest
+     * @throws ContainerException if there was a problem processing the manifest
      */
-    void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException;
+    void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException;
 
     /**
      * Dispatches to a {@link ContributionProcessor} to index a contribution.
      *
      * @param contribution the contribution to index
      * @param context      the context to which validation errors and warnings are reported
-     * @throws InstallException if there was a problem indexing the contribution
+     * @throws ContainerException if there was a problem indexing the contribution
      */
-    void indexContribution(Contribution contribution, IntrospectionContext context) throws InstallException;
+    void indexContribution(Contribution contribution, IntrospectionContext context) throws ContainerException;
 
     /**
      * Dispatches to a {@link ResourceProcessor} to index a resource contained in a contribution.
      *
      * @param resource    the resource to index
      * @param context     the context to which validation errors and warnings are reported
-     * @throws InstallException if there was a problem indexing the contribution
+     * @throws ContainerException if there was a problem indexing the contribution
      */
-    void indexResource(Resource resource, IntrospectionContext context) throws InstallException;
+    void indexResource(Resource resource, IntrospectionContext context) throws ContainerException;
 
     /**
      * Loads all indexed resources in a contribution.
      *
      * @param contribution The contribution
      * @param context      the context to which validation errors and warnings are reported
-     * @throws InstallException if there was a problem loading resources in the contribution
+     * @throws ContainerException if there was a problem loading resources in the contribution
      */
-    void processContribution(Contribution contribution, IntrospectionContext context) throws InstallException;
+    void processContribution(Contribution contribution, IntrospectionContext context) throws ContainerException;
 
     /**
      * Loads a contained resource in a contribution.
      *
      * @param resource the resource to process
      * @param context  the context to which validation errors and warnings are reported
-     * @throws InstallException if there was a problem loading the resoure
+     * @throws ContainerException if there was a problem loading the resoure
      */
-    void processResource(Resource resource, IntrospectionContext context) throws InstallException;
+    void processResource(Resource resource, IntrospectionContext context) throws ContainerException;
 
 }

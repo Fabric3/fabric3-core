@@ -26,6 +26,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
@@ -71,7 +72,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         try {
             generator.generate(component);
             fail();
-        } catch (ChannelNotFoundException e) {
+        } catch (ContainerException e) {
             // expected;
         }
         EasyMock.verify(connectionGenerator, channelGenerator);

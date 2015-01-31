@@ -18,12 +18,12 @@
  */
 package org.fabric3.implementation.mock.generator;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
 import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -42,14 +42,14 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class MockComponentGenerator implements ComponentGenerator<LogicalComponent<ImplementationMock>> {
 
-    public MockComponentDefinition generate(LogicalComponent<ImplementationMock> component) throws GenerationException {
+    public MockComponentDefinition generate(LogicalComponent<ImplementationMock> component) throws ContainerException {
         MockComponentDefinition componentDefinition = new MockComponentDefinition();
         ImplementationMock implementationMock = component.getDefinition().getImplementation();
         componentDefinition.setInterfaces(implementationMock.getMockedInterfaces());
         return componentDefinition;
     }
 
-    public MockWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
+    public MockWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
         MockWireTargetDefinition definition = new MockWireTargetDefinition();
         definition.setUri(service.getUri());
         ServiceContract serviceContract = service.getDefinition().getServiceContract();
@@ -69,11 +69,11 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
         return new MockWireSourceDefinition();
     }
 

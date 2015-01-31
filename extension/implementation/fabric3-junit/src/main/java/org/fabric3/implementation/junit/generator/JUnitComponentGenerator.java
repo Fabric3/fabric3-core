@@ -20,6 +20,7 @@ package org.fabric3.implementation.junit.generator;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
@@ -36,7 +37,6 @@ import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -65,7 +65,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         this.javaHelper = javaHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws GenerationException {
+    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws ContainerException {
 
         Component<JUnitImplementation> definition = component.getDefinition();
         JUnitImplementation implementation = definition.getImplementation();
@@ -89,7 +89,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = getInterfaceName(serviceContract);
@@ -112,24 +112,24 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return wireDefinition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
         JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
         javaHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
         JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
         javaHelper.generateConnectionTarget(definition, consumer);
         return definition;
     }
 
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
 
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
@@ -146,7 +146,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return contract.getQualifiedInterfaceName();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
         JUnitWireTargetDefinition wireDefinition = new JUnitWireTargetDefinition();
         wireDefinition.setUri(service.getUri());
         return wireDefinition;

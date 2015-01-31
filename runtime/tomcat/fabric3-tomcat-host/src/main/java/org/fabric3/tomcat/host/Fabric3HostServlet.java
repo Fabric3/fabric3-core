@@ -38,6 +38,7 @@ import org.apache.catalina.Realm;
 import org.apache.catalina.Service;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.mbeans.MBeanUtils;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
@@ -53,7 +54,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ScanResult;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
@@ -223,7 +223,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
                 monitor.stopped();
                 coordinator.shutdown();
             }
-        } catch (ShutdownException e) {
+        } catch (ContainerException e) {
             monitor.runError(e);
         }
     }

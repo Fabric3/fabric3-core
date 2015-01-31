@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.api.model.type.component.ResourceReference;
-import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
@@ -94,38 +94,37 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws ContainerException {
         ComponentGenerator<LogicalComponent<T>> generator = (ComponentGenerator<LogicalComponent<T>>) componentGenerators.get(clazz);
         if (generator == null) {
-            throw new GeneratorNotFoundException(clazz);
+            throw new ContainerException("Component generator not found for " + clazz.getName());
         }
         return generator;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws ContainerException {
         WireBindingGenerator<T> generator = (WireBindingGenerator<T>) bindingGenerators.get(clazz);
         if (generator == null) {
-            throw new GeneratorNotFoundException(clazz);
+            throw new ContainerException("Wire binding generator not found for " + clazz.getName());
         }
         return generator;
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends Binding> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Binding> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) throws ContainerException {
         ConnectionBindingGenerator<T> generator = (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
         if (generator == null) {
-            throw new GeneratorNotFoundException(clazz);
+            throw new ContainerException("Connection binding generator not found for " + clazz.getName());
         }
         return generator;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz)
-            throws GeneratorNotFoundException {
+    public <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws ContainerException {
         ResourceReferenceGenerator<T> generator = (ResourceReferenceGenerator<T>) resourceReferenceGenerators.get(clazz);
         if (generator == null) {
-            throw new GeneratorNotFoundException(clazz);
+            throw new ContainerException("Resource reference generator not found for " + clazz.getName());
         }
         return generator;
     }
@@ -135,10 +134,10 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws ContainerException {
         ResourceGenerator<T> generator = (ResourceGenerator<T>) resourceGenerators.get(clazz);
         if (generator == null) {
-            throw new GeneratorNotFoundException(clazz);
+            throw new ContainerException("Resource generator not found for " + clazz.getName());
         }
         return generator;
     }

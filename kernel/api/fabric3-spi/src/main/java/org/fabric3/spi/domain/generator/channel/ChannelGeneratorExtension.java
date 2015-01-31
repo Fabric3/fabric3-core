@@ -18,7 +18,7 @@ package org.fabric3.spi.domain.generator.channel;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -34,7 +34,7 @@ public interface ChannelGeneratorExtension {
      * @param deployable the deployable this channel is being provisioned under. This may be different than the deployable where the channel is defined, e.g. if
      *                   the channel is provisioned for a producer or consumer in another deployable
      * @return the physical channel definition
-     * @throws GenerationException if there is an error generating the channel
+     * @throws ContainerException if there is an error generating the channel
      */
-    PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException;
+    PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws ContainerException;
 }

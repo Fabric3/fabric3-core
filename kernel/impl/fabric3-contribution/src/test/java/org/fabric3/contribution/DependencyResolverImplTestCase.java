@@ -25,11 +25,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
-import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
@@ -95,7 +95,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (DependencyException e) {
+        } catch (ContainerException e) {
             // expected
         }
 
@@ -114,7 +114,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (DependencyException e) {
+        } catch (ContainerException e) {
             // expected
         }
 
@@ -149,7 +149,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (DependencyException e) {
+        } catch (ContainerException e) {
             // expected
         }
 
@@ -167,7 +167,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (DependencyException e) {
+        } catch (ContainerException e) {
             // expected
         }
 

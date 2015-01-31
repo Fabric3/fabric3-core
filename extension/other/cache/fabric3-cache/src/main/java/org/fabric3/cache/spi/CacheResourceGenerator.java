@@ -19,7 +19,7 @@
 
 package org.fabric3.cache.spi;
 
-import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.api.host.ContainerException;
 
 
 /**
@@ -32,7 +32,7 @@ public interface CacheResourceGenerator<D extends CacheResource> {
      *
      * @param resource the cache configuration
      * @return the physical definition
-     * @throws GenerationException if an error is encountered during generation
+     * @throws ContainerException if an error is encountered during generation
      */
-    PhysicalCacheResourceDefinition generateResource(D resource) throws GenerationException;
+    PhysicalCacheResourceDefinition generateResource(D resource) throws ContainerException;
 }

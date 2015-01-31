@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
@@ -43,7 +43,7 @@ public class XmlIndexerRegistryImpl implements XmlIndexerRegistry {
         cache.remove(name);
     }
 
-    public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) throws ContainerException {
         QName name = reader.getName();
         XmlIndexer indexer = cache.get(name);
         if (indexer == null) {

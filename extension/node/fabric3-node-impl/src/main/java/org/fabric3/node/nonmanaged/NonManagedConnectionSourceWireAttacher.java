@@ -16,9 +16,9 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;

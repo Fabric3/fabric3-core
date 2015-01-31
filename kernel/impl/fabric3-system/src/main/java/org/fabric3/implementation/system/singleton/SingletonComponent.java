@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -42,7 +43,6 @@ import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFacto
 import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

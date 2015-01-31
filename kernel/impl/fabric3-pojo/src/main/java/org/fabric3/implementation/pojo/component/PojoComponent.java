@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.objectfactory.ComponentObjectFactory;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;

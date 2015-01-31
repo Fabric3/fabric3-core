@@ -31,7 +31,6 @@ import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.RuntimeState;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.runtime.event.JoinDomain;
@@ -101,7 +100,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         state = RuntimeState.STARTED;
     }
 
-    public void shutdown() throws ShutdownException {
+    public void shutdown() throws ContainerException {
         if (state == RuntimeState.STARTED) {
             EventService eventService = runtime.getComponent(EventService.class);
             eventService.publish(new RuntimeStop());

@@ -19,9 +19,9 @@
 package org.fabric3.binding.zeromq.runtime;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;

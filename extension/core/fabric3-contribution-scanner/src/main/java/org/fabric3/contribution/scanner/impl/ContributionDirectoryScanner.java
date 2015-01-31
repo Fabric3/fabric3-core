@@ -35,12 +35,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;

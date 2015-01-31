@@ -16,9 +16,9 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;

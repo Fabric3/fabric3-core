@@ -18,6 +18,7 @@ package org.fabric3.implementation.system.generator;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
@@ -31,7 +32,6 @@ import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinit
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -60,7 +60,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         this.helper = helper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<SystemImplementation> component) throws GenerationException {
+    public PhysicalComponentDefinition generate(LogicalComponent<SystemImplementation> component) throws ContainerException {
         Component<SystemImplementation> definition = component.getDefinition();
         SystemImplementation implementation = definition.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
@@ -87,7 +87,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
         URI uri = reference.getUri();
         SystemWireSourceDefinition definition = new SystemWireSourceDefinition();
         definition.setOptimizable(true);
@@ -106,11 +106,11 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
         SystemWireTargetDefinition definition = new SystemWireTargetDefinition();
         definition.setOptimizable(true);
         definition.setUri(service.getUri());
@@ -129,7 +129,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
         SystemConnectionTargetDefinition definition = new SystemConnectionTargetDefinition();
         LogicalComponent<? extends SystemImplementation> component = (LogicalComponent<? extends SystemImplementation>) consumer.getParent();
         URI uri = component.getUri();
@@ -138,13 +138,13 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
         if (signature == null) {
             // programming error
-            throw new GenerationException("Consumer signature not found on: " + consumer.getUri());
+            throw new ContainerException("Consumer signature not found on: " + consumer.getUri());
         }
         definition.setConsumerSignature(signature);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
         URI uri = resourceReference.getUri();
         SystemWireSourceDefinition definition = new SystemWireSourceDefinition();
         definition.setOptimizable(true);

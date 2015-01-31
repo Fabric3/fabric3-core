@@ -2,8 +2,8 @@ package org.fabric3.contribution.processor;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
@@ -54,15 +54,15 @@ public class CompositeContributionProcessor implements ContributionProcessor {
         return sourceUrl.endsWith(".composite");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
         // no-op
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, IntrospectionContext context) throws ContainerException {
         // no-op
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
         try {
             Source source = contribution.getSource();
             Composite composite = loaderRegistry.load(source, Composite.class, context);
@@ -84,7 +84,7 @@ public class CompositeContributionProcessor implements ContributionProcessor {
             QNameExport export = new QNameExport(name.getNamespaceURI());
             manifest.addExport(export);
         } catch (LoaderException e) {
-            throw new InstallException(e);
+            throw new ContainerException(e);
         }
     }
 }

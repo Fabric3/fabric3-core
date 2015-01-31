@@ -25,12 +25,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.api.host.ContainerException;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
 import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;

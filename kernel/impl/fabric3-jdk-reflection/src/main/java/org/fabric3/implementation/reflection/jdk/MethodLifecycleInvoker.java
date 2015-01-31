@@ -22,8 +22,8 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 
 /**
  * Performs an invocation on a method of a given instance

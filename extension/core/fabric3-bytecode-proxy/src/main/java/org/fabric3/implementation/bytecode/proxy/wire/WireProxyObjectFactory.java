@@ -21,8 +21,8 @@ package org.fabric3.implementation.bytecode.proxy.wire;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 

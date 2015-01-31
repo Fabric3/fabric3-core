@@ -18,8 +18,8 @@
  */
 package org.fabric3.spi.domain.generator.resource;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.ResourceReference;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
@@ -33,8 +33,8 @@ public interface ResourceReferenceGenerator<R extends ResourceReference> {
      *
      * @param logicalResourceReference the resource being wired to
      * @return Source wire definition.
-     * @throws GenerationException if there was a problem generating the wire
+     * @throws ContainerException if there was a problem generating the wire
      */
-    PhysicalWireTargetDefinition generateWireTarget(LogicalResourceReference<R> logicalResourceReference) throws GenerationException;
+    PhysicalWireTargetDefinition generateWireTarget(LogicalResourceReference<R> logicalResourceReference) throws ContainerException;
 
 }

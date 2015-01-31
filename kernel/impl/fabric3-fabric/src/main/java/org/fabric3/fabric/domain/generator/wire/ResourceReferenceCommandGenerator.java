@@ -18,10 +18,10 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -44,7 +44,7 @@ public class ResourceReferenceCommandGenerator implements CommandGenerator {
         return ATTACH;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws GenerationException {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws ContainerException {
         if (component instanceof LogicalCompositeComponent || component.getResourceReferences().isEmpty() || (component.getState() != LogicalState.NEW)) {
             return null;
         }

@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.ContributionNotFoundException;
 import org.fabric3.api.host.domain.ContributionNotInstalledException;
 import org.fabric3.api.host.domain.Domain;
@@ -51,10 +51,8 @@ import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
 
 /**
@@ -151,7 +149,7 @@ public abstract class AbstractDomain implements Domain {
         }
         for (QName deployable : names) {
             if (!contribution.getLockOwners().contains(deployable)) {
-                throw new CompositeNotDeployedException("Composite is not deployed: " + deployable);
+                throw new ContainerException("Composite is not deployed: " + deployable);
             }
         }
 
@@ -177,9 +175,7 @@ public abstract class AbstractDomain implements Domain {
             }
             // force undeployment in effect: ignore deployment exceptions
         }
-        for (QName deployable : names) {
-            contribution.releaseLock(deployable);
-        }
+        names.forEach(contribution::releaseLock);
         logicalComponentManager.replaceRootComponent(domain);
         for (QName deployable : names) {
             for (DeployListener listener : listeners) {
@@ -212,13 +208,6 @@ public abstract class AbstractDomain implements Domain {
         logicalComponentManager.replaceRootComponent(domain);
         for (DeployListener listener : listeners) {
             listener.onUndeployCompleted(deployable);
-        }
-    }
-
-    public synchronized void deactivateDefinitions(URI uri) throws ContainerException {
-        Contribution contribution = metadataStore.find(uri);
-        if (ContributionState.INSTALLED != contribution.getState()) {
-            throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
     }
 
@@ -405,29 +394,17 @@ public abstract class AbstractDomain implements Domain {
      * Delegates to the Allocator to determine which runtimes to deploy the given collection of components to.
      *
      * @param domain the domain component
-     * @throws AllocationException if an allocation error occurs
+     * @throws ContainerException if an allocation error occurs
      */
-    private void allocate(LogicalCompositeComponent domain) throws AllocationException {
+    private void allocate(LogicalCompositeComponent domain) throws ContainerException {
         if (allocator == null) {
             // allocator is an optional extension
             return;
         }
-        for (LogicalResource<?> resource : domain.getResources()) {
-            if (resource.getState() == LogicalState.NEW) {
-                allocator.allocate(resource);
-            }
-        }
-        for (LogicalChannel channel : domain.getChannels()) {
-            if (channel.getState() == LogicalState.NEW) {
-                allocator.allocate(channel);
-            }
-        }
+        domain.getResources().stream().filter(resource -> resource.getState() == LogicalState.NEW).forEach(allocator::allocate);
+        domain.getChannels().stream().filter(channel -> channel.getState() == LogicalState.NEW).forEach(allocator::allocate);
         Collection<LogicalComponent<?>> components = domain.getComponents();
-        for (LogicalComponent<?> component : components) {
-            if (component.getState() == LogicalState.NEW) {
-                allocator.allocate(component);
-            }
-        }
+        components.stream().filter(component -> component.getState() == LogicalState.NEW).forEach(allocator::allocate);
     }
 
 }

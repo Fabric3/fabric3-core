@@ -21,8 +21,8 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import java.net.URI;
 
-import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.binding.jms.runtime.common.JmsHelper;
 
 /**
  * Maintains shared JMS connection state for an {@link AdaptiveMessageContainer}.

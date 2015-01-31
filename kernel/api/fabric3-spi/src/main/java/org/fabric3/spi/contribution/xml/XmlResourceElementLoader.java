@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -44,9 +44,9 @@ public interface XmlResourceElementLoader {
      * @param reader   the reader positioned on the first element
      * @param resource the resource that contains the element
      * @param context  the context to which validation errors and warnings are reported
-     * @throws InstallException   if a general load error occurs
+     * @throws ContainerException   if a general load error occurs
      * @throws XMLStreamException if there is an error reading the XML stream
      */
-    void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws InstallException, XMLStreamException;
+    void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws ContainerException, XMLStreamException;
 
 }

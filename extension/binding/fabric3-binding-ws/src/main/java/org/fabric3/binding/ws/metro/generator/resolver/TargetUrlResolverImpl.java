@@ -20,9 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.fabric3.api.binding.ws.model.WsBinding;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.oasisopen.sca.annotation.Reference;
@@ -45,7 +45,7 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
         this.hostInfo = hostInfo;
     }
 
-    public URL resolveUrl(LogicalBinding<WsBinding> binding) throws GenerationException {
+    public URL resolveUrl(LogicalBinding<WsBinding> binding) throws ContainerException {
         try {
             URL targetUrl;
             String path = binding.getDefinition().getTargetUri().toString();
@@ -62,11 +62,11 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
                 }
 
             } else {
-                throw new GenerationException("Resolve URL not supported in distributed configuration");
+                throw new ContainerException("Resolve URL not supported in distributed configuration");
             }
             return targetUrl;
         } catch (MalformedURLException e) {
-            throw new GenerationException(e);
+            throw new ContainerException(e);
         }
 
     }

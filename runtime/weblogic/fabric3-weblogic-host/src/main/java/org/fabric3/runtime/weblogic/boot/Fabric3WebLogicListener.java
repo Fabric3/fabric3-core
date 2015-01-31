@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -47,7 +48,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ScanResult;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.runtime.weblogic.api.Constants;
@@ -104,7 +104,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             if (monitor != null) {
                 monitor.stopped();
             }
-        } catch (ShutdownException e) {
+        } catch (ContainerException e) {
             context.log("Error shutting down Fabric3", e);
         }
     }

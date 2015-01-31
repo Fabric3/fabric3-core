@@ -22,10 +22,10 @@ import java.net.URI;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -45,7 +45,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<ZeroMQBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
+                                                                       ChannelDeliveryType deliveryType) throws ContainerException {
         URI uri = consumer.getUri();
 
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
@@ -56,7 +56,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<ZeroMQBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
+                                                                       ChannelDeliveryType deliveryType) throws ContainerException {
         ZeroMQBinding bindingDefinition = binding.getDefinition();
         URI targetUri = bindingDefinition.getTargetUri();
         if (targetUri == null) {
@@ -71,7 +71,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
     }
 
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBinding> binding, ChannelDeliveryType deliveryType)
-            throws GenerationException {
+            throws ContainerException {
         return new ZeroMQChannelBindingDefinition(deliveryType);
     }
 

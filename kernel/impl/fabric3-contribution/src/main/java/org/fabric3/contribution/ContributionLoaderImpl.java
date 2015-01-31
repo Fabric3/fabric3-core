@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.ContainerException;
-import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
@@ -90,7 +89,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         }
     }
 
-    public ClassLoader load(Contribution contribution) throws ContributionLoadException, UnresolvedImportException {
+    public ClassLoader load(Contribution contribution) throws ContainerException {
         URI contributionUri = contribution.getUri();
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
         // all contributions implicitly import the host contribution
@@ -112,7 +111,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
                 classpath.forEach(loader::addURL);
                 setSysPathsField(loader);
             } catch (IOException e) {
-                throw new ContributionLoadException(e);
+                throw new ContainerException(e);
             }
 
         }
@@ -174,7 +173,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         classLoaderRegistry.unregister(uri);
     }
 
-    private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws UnresolvedImportException {
+    private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws ContainerException {
         // clear the wires as the contribution may have been loaded previously
         contribution.getWires().clear();
         List<ContributionWire<?, ?>> resolved = new ArrayList<>();
@@ -188,7 +187,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
                     contribution.addWire(wire);
                     resolved.add(wire);
                 }
-            } catch (UnresolvedImportException e) {
+            } catch (ContainerException e) {
                 if (!imprt.isRequired()) {
                     // not required, ignore
                     continue;

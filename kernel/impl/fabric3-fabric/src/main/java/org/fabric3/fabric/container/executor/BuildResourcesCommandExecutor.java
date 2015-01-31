@@ -21,8 +21,8 @@ package org.fabric3.fabric.container.executor;
 
 import java.util.Map;
 
-import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;

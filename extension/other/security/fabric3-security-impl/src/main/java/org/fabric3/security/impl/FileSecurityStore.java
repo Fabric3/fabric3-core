@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.Role;
-import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.oasisopen.sca.annotation.Init;
@@ -52,13 +52,13 @@ public class FileSecurityStore implements SecurityStore {
     }
 
     @Property(required = false)
-    public void setSecurityConfiguration(XMLStreamReader reader) throws XMLStreamException, StoreException {
+    public void setSecurityConfiguration(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         cache = new ConcurrentHashMap<>();
         parse(reader);
     }
 
     @Init
-    public void init() throws FileNotFoundException, XMLStreamException, StoreException {
+    public void init() throws FileNotFoundException, XMLStreamException, ContainerException {
         if (cache != null) {
             // initialized from a system property
             return;
@@ -83,7 +83,7 @@ public class FileSecurityStore implements SecurityStore {
         return cache.get(username);
     }
 
-    private void parse(XMLStreamReader reader) throws XMLStreamException, StoreException {
+    private void parse(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         reader.nextTag();
         String username = null;
         String password = null;
@@ -121,7 +121,7 @@ public class FileSecurityStore implements SecurityStore {
 
     }
 
-    private Set<Role> parseRoles(XMLStreamReader reader, Set<Role> roles) throws XMLStreamException, StoreException {
+    private Set<Role> parseRoles(XMLStreamReader reader, Set<Role> roles) throws XMLStreamException, ContainerException {
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
@@ -142,14 +142,14 @@ public class FileSecurityStore implements SecurityStore {
     }
 
 
-    private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws StoreException {
+    private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws ContainerException {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new StoreException(message);
+            throw new ContainerException(message);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new StoreException(message + " [" + line + "," + col + "]");
+        throw new ContainerException(message + " [" + line + "," + col + "]");
     }
 
 }

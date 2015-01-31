@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.ContributionWire;
-import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
@@ -58,14 +58,13 @@ public class DependencyResolverImpl implements DependencyResolver {
     private TopologicalSorter<Contribution> sorter;
     private MetaDataStore store;
 
-
     public DependencyResolverImpl(@Reference MetaDataStore store) {
         this.store = store;
         detector = new CycleDetectorImpl<>();
         sorter = new TopologicalSorterImpl<>();
     }
 
-    public List<Contribution> resolve(List<Contribution> contributions) throws DependencyException {
+    public List<Contribution> resolve(List<Contribution> contributions) throws ContainerException {
         DirectedGraph<Contribution> dag = new DirectedGraphImpl<>();
         // add the contributions as vertices
         for (Contribution contribution : contributions) {
@@ -131,18 +130,18 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     /**
-     * Resolves imports for the contribution represented by the current DAG vertex. Resolution will be performed against contributions loaded
-     * previously in the <code>MetaDataStore</code> and against contributions being loaded from the DAG. When an import is resolved by an export from
-     * a contribution in the DAG, the later will be updated with an edge from the source contribution vertex to the target contribution vertex.
+     * Resolves imports for the contribution represented by the current DAG vertex. Resolution will be performed against contributions loaded previously in the
+     * <code>MetaDataStore</code> and against contributions being loaded from the DAG. When an import is resolved by an export from a contribution in the DAG,
+     * the later will be updated with an edge from the source contribution vertex to the target contribution vertex.
      *
      * @param source the contribution to resolve imports for
      * @param dag    the current contribution dag
-     * @throws DependencyException if a resolution error occurs
+     * @throws ContainerException if a resolution error occurs
      */
-    private void resolveImports(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws DependencyException {
+    private void resolveImports(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws ContainerException {
         Contribution contribution = source.getEntity();
         ContributionManifest manifest = contribution.getManifest();
-        for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext();) {
+        for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext(); ) {
             Import imprt = iterator.next();
             boolean hasExport = hasMatchingExport(contribution, imprt);
             if (hasExport) {
@@ -155,16 +154,16 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     /**
-     * Resolves an import against other contributions loaded previously in the <code>MetaDataStore</code> and against contributions being loaded from
-     * the DAG. When an import is resolved by an export from a contribution in the DAG, the later will be updated with an edge from the source
-     * contribution vertex to the target contribution vertex.
+     * Resolves an import against other contributions loaded previously in the <code>MetaDataStore</code> and against contributions being loaded from the DAG.
+     * When an import is resolved by an export from a contribution in the DAG, the later will be updated with an edge from the source contribution vertex to the
+     * target contribution vertex.
      *
      * @param imprt  the import to resolve
      * @param source the contribution to resolve imports for
      * @param dag    the current contribution dag
-     * @throws DependencyException if a resolution error occurs
+     * @throws ContainerException if a resolution error occurs
      */
-    private void resolveExternalImport(Import imprt, Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws DependencyException {
+    private void resolveExternalImport(Import imprt, Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws ContainerException {
         // See if the import is already stored. Extension imports do not need to be checked since we assume extensions are installed prior
         Contribution contribution = source.getEntity();
         URI uri = contribution.getUri();
@@ -173,7 +172,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             List<Contribution> resolvedContributions = store.resolve(uri, imprt);
             checkInstalled(contribution, resolvedContributions);
             if (resolvedContributions.isEmpty() && imprt.isRequired()) {
-                throw new UnresolvableImportException("Unable to resolve import " + imprt + " in " + uri, imprt);
+                throw new ContainerException("Unable to resolve import " + imprt + " in " + uri);
             }
         } else {
             for (Vertex<Contribution> sink : sinks) {
@@ -184,31 +183,20 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     /**
-     * Resolves an import where the contribution also exports the same symbol as the import (e.g. a Java package or qualified name).
-     * <p/>
-     * The following OSGi resolution algorithm defined in R4 Section 3.1 is followed:
-     * <p/>
-     * <p/>
-     * <strong>External</strong> If the import resolves to an export statement in another bundle, then the overlapping export definition in this
-     * contribution is discarded.
-     * <p/>
-     * <p/>
-     * <strong>Internal</strong>  If the import is resolved to an export statement in this module, then the overlapping import definition in this
-     * contribution is discarded.
-     * <p/>
-     * <p/>
-     * When an import is resolved by an export from a contribution in the DAG, the later will be updated with an edge from the source contribution
-     * vertex to the target contribution vertex.
+     * Resolves an import where the contribution also exports the same symbol as the import (e.g. a Java package or qualified name). <p/> The following OSGi
+     * resolution algorithm defined in R4 Section 3.1 is followed: <p/> <p/> <strong>External</strong> If the import resolves to an export statement in another
+     * bundle, then the overlapping export definition in this contribution is discarded. <p/> <p/> <strong>Internal</strong>  If the import is resolved to an
+     * export statement in this module, then the overlapping import definition in this contribution is discarded. <p/> <p/> When an import is resolved by an
+     * export from a contribution in the DAG, the later will be updated with an edge from the source contribution vertex to the target contribution vertex.
      *
      * @param imprt    the import to resolve
-     * @param iterator the import iterator - used to remove the import from the containing manifest if it is resolved by the export in the same
-     *                 contribution
+     * @param iterator the import iterator - used to remove the import from the containing manifest if it is resolved by the export in the same contribution
      * @param source   the source contribution
      * @param dag      the current DAG to resolve against
-     * @throws DependencyException if there is a resolution error
+     * @throws ContainerException if there is a resolution error
      */
     private void resolveOverlappingImport(Import imprt, Iterator<Import> iterator, Vertex<Contribution> source, DirectedGraph<Contribution> dag)
-            throws DependencyException {
+            throws ContainerException {
         Contribution contribution = source.getEntity();
         ContributionManifest manifest = contribution.getManifest();
         URI uri = contribution.getUri();
@@ -234,7 +222,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
     }
 
-    private void resolveCapabilities(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws DependencyException {
+    private void resolveCapabilities(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws ContainerException {
         Contribution contribution = source.getEntity();
         URI uri = contribution.getUri();
         for (Capability capability : contribution.getManifest().getRequiredCapabilities()) {
@@ -244,12 +232,12 @@ public class DependencyResolverImpl implements DependencyResolver {
                 Set<Contribution> resolvedContributions = store.resolveCapability(capability.getName());
                 for (Contribution resolved : resolvedContributions) {
                     if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
-                        throw new DependencyException("Contribution " + contribution.getUri() + " requires a capability provided by "
-                                + resolved.getUri() + " which is not installed");
+                        throw new ContainerException("Contribution " + contribution.getUri() + " requires a capability provided by " + resolved.getUri()
+                                                     + " which is not installed");
                     }
                 }
                 if (resolvedContributions.isEmpty()) {
-                    throw new UnresolvableCapabilityException("Unable to resolve capability " + capability + " required by " + uri);
+                    throw new ContainerException("Unable to resolve capability " + capability + " required by " + uri);
                 }
 
             } else {
@@ -262,8 +250,8 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     /**
-     * Resolve the import against the graph of contributions being loaded, returning the vertices in the graph with a matching export. Per OSGi, all
-     * exports must be scanned to ensure that if a resolved export exists, it is used instead of an unresolved on.
+     * Resolve the import against the graph of contributions being loaded, returning the vertices in the graph with a matching export. Per OSGi, all exports
+     * must be scanned to ensure that if a resolved export exists, it is used instead of an unresolved on.
      *
      * @param imprt           the import to resolve
      * @param contributionUri the importing contribution URI
@@ -375,14 +363,20 @@ public class DependencyResolverImpl implements DependencyResolver {
      *
      * @param dag the DAG
      * @return the sorted contributions
-     * @throws DependencyException if there is an error sorting the DAG
+     * @throws ContainerException if there is an error sorting the DAG
      */
-    private List<Contribution> sort(DirectedGraph<Contribution> dag) throws DependencyException {
+    private List<Contribution> sort(DirectedGraph<Contribution> dag) throws ContainerException {
         // detect cycles
         List<Cycle<Contribution>> cycles = detector.findCycles(dag);
         if (!cycles.isEmpty()) {
             // cycles were detected
-            throw new CyclicDependencyException(cycles);
+            StringBuilder builder = new StringBuilder();
+            for (Cycle<Contribution> cycle : cycles) {
+                for (Vertex<Contribution> vertex : cycle.getOriginPath()) {
+                    builder.append(vertex.getEntity().getUri()).append("\n");
+                }
+            }
+            throw new ContainerException("Cyclic dependencies found:\n" + builder);
         }
         try {
             List<Vertex<Contribution>> vertices = sorter.reverseSort(dag);
@@ -392,7 +386,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             }
             return ordered;
         } catch (GraphException e) {
-            throw new DependencyException(e);
+            throw new ContainerException(e);
         }
     }
 
@@ -420,7 +414,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         if (imprt.isMultiplicity()) {
             return; // multiplicity imports do not drop exports
         }
-        for (Iterator<Export> iterator = manifest.getExports().iterator(); iterator.hasNext();) {
+        for (Iterator<Export> iterator = manifest.getExports().iterator(); iterator.hasNext(); ) {
             Export export = iterator.next();
             if (export.match(imprt)) {
                 iterator.remove();
@@ -430,7 +424,7 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     private void dropImport(Export export, ContributionManifest manifest) {
-        for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext();) {
+        for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext(); ) {
             Import imprt = iterator.next();
             if (imprt.isMultiplicity()) {
                 return; // multiplicity imports do not drop exports
@@ -442,14 +436,12 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
     }
 
-    private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) throws DependencyException {
+    private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) throws ContainerException {
         for (Contribution resolved : resolvedContributions) {
             if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
-                throw new DependencyException("Contribution " + contribution.getUri() + " imports "
-                        + resolved.getUri() + " which is not installed");
+                throw new ContainerException("Contribution " + contribution.getUri() + " imports " + resolved.getUri() + " which is not installed");
             }
         }
     }
-
 
 }

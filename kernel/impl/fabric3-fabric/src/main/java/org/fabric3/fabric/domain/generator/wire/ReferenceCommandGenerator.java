@@ -22,13 +22,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -66,7 +66,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         return ATTACH;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws GenerationException {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws ContainerException {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -86,7 +86,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) throws GenerationException {
+    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) throws ContainerException {
         boolean reinjection = isBoundReinjection(reference);
 
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
@@ -115,7 +115,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
                                  LogicalBinding<?> logicalBinding,
                                  ConnectionCommand command,
                                  boolean reinjection,
-                                 boolean callback) throws GenerationException {
+                                 boolean callback) throws ContainerException {
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
@@ -141,7 +141,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
 
     }
 
-    private void generateWires(LogicalReference reference, ConnectionCommand command) throws GenerationException {
+    private void generateWires(LogicalReference reference, ConnectionCommand command) throws ContainerException {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
         boolean reinjection = isWireReinjection(reference);
@@ -204,11 +204,11 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private void generateCallbackBindings(LogicalReference reference) throws GenerationException {
+    private void generateCallbackBindings(LogicalReference reference) throws ContainerException {
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {
-                throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
+                throw new ContainerException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
             Binding definition = generator.generateReferenceCallback(logicalBinding);
             definition.setParent(reference.getDefinition());

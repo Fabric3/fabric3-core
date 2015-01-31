@@ -20,6 +20,7 @@ package org.fabric3.implementation.java.generator;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Callback;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
@@ -39,7 +40,6 @@ import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -60,7 +60,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         this.matcher = matcher;
     }
 
-    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws GenerationException {
+    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws ContainerException {
         Component<? extends JavaImplementation> logical = component.getDefinition();
         JavaImplementation implementation = logical.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
@@ -87,7 +87,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         helper.processPropertyValues(component, definition);
     }
 
-    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws GenerationException {
+    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws ContainerException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -106,7 +106,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
     }
 
-    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws GenerationException {
+    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws ContainerException {
         URI uri = producer.getUri();
         ServiceContract serviceContract = producer.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -116,7 +116,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws GenerationException {
+    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws ContainerException {
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
         // TODO support promotion by returning the leaf component URI instead of the parent component URI
         URI uri = component.getUri();
@@ -125,14 +125,14 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
         if (signature == null) {
             // programming error
-            throw new GenerationException("Consumer signature not found on: " + consumer.getUri());
+            throw new ContainerException("Consumer signature not found on: " + consumer.getUri());
         }
         definition.setConsumerSignature(signature);
     }
 
     public void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                            LogicalComponent<? extends JavaImplementation> component,
-                                           ServiceContract serviceContract) throws GenerationException {
+                                           ServiceContract serviceContract) throws ContainerException {
         String interfaceName = serviceContract.getQualifiedInterfaceName();
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         String name = null;
@@ -148,7 +148,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
         if (name == null) {
             String interfaze = serviceContract.getQualifiedInterfaceName();
-            throw new CallbackSiteNotFoundException("Callback injection site not found for type: " + interfaze);
+            throw new ContainerException("Callback injection site not found for type: " + interfaze);
         }
 
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);
@@ -159,7 +159,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) throws ContainerException {
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -170,7 +170,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws GenerationException {
+    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws ContainerException {
         LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);

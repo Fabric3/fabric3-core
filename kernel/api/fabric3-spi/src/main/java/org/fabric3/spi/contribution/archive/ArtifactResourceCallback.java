@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.contribution.archive;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Resource;
 
 /**
@@ -29,7 +29,7 @@ public interface ArtifactResourceCallback {
      * Called when an artifact is reached during iteration.
      *
      * @param resource the resource
-     * @throws InstallException if an error occurs processing the artifact
+     * @throws ContainerException if an error occurs processing the artifact
      */
-    void onResource(Resource resource) throws InstallException;
+    void onResource(Resource resource) throws ContainerException;
 }

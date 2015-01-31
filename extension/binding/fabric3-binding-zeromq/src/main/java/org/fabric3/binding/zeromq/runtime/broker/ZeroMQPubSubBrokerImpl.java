@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -43,7 +44,6 @@ import org.fabric3.binding.zeromq.runtime.message.NonReliableSingleThreadPublish
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;

@@ -20,8 +20,8 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.builder.JavaComponentBuilder;

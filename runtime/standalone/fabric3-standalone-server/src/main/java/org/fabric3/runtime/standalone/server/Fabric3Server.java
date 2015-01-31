@@ -30,6 +30,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
@@ -45,7 +46,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.ScanResult;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
@@ -80,9 +80,9 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
      *
      * @param params the runtime parameters
-     * @throws Fabric3ServerException if catastrophic exception was encountered leaving the runtime in an unstable state
+     * @throws ContainerException if catastrophic exception was encountered leaving the runtime in an unstable state
      */
-    public void start(Params params) throws Fabric3ServerException {
+    public void start(Params params) throws ContainerException {
 
         DelegatingDestinationRouter router = new DelegatingDestinationRouter();
 
@@ -200,7 +200,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 }
                 coordinator.shutdown();
             }
-        } catch (ShutdownException ex) {
+        } catch (ContainerException ex) {
             if (monitor != null) {
                 monitor.shutdownError(ex);
             } else {
@@ -209,7 +209,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         }
     }
 
-    private File getRuntimeDirectory(Params params, File installDirectory) throws Fabric3ServerException, IOException {
+    private File getRuntimeDirectory(Params params, File installDirectory) throws ContainerException, IOException {
         File rootRuntimeDir;
         if (params.directory != null) {
             rootRuntimeDir = params.directory;
@@ -222,7 +222,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 File templateDir = BootstrapHelper.getDirectory(rootRuntimeDir, params.clone);
                 File configDir = BootstrapHelper.getDirectory(templateDir, "config");
                 if (!configDir.exists()) {
-                    throw new Fabric3ServerException("Unable to create runtime directory: " + runtimeDir);
+                    throw new ContainerException("Unable to create runtime directory: " + runtimeDir);
                 }
                 BootstrapHelper.cloneRuntimeImage(configDir, runtimeDir);
             } else {

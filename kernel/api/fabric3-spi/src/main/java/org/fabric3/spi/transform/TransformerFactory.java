@@ -20,8 +20,8 @@ package org.fabric3.spi.transform;
 
 import java.util.List;
 
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Creates a transformer capable of converting a set of classes from a source to target data type.

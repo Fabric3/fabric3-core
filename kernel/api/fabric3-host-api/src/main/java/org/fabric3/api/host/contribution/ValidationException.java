@@ -20,13 +20,14 @@ package org.fabric3.api.host.contribution;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  * Base class for exceptions indicating a contribution has failed validation.
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
-public abstract class ValidationException extends InstallException {
+public abstract class ValidationException extends ContainerException {
     private static final long serialVersionUID = -9097590343387033730L;
 
     private final List<ValidationFailure> errors;

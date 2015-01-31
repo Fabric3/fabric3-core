@@ -64,9 +64,9 @@ public interface RuntimeCoordinator {
      * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed to proceed
      * to completion.
      *
-     * @throws ShutdownException if an error occurs shutting down the runtime
+     * @throws ContainerException if an error occurs shutting down the runtime
      */
-    void shutdown() throws ShutdownException;
+    void shutdown() throws ContainerException;
 }
 
 

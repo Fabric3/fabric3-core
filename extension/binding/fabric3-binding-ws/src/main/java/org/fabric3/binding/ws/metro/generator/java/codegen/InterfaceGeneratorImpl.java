@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.SecureClassLoader;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Reference;
@@ -60,9 +61,9 @@ public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
     }
 
     public GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName)
-            throws InterfaceGenerationException {
+            throws ContainerException {
         if (!(interfaze.getClassLoader() instanceof SecureClassLoader)) {
-            throw new InterfaceGenerationException("Classloader for " + interfaze.getName() + " must be a SecureClassLoader");
+            throw new ContainerException("Classloader for " + interfaze.getName() + " must be a SecureClassLoader");
         }
         SecureClassLoader loader = (SecureClassLoader) interfaze.getClassLoader();
         String name = interfaze.getName();
@@ -76,7 +77,7 @@ public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
             Class<?> clazz = definer.defineClass(generatedName, bytes, loader);
             return new GeneratedInterface(clazz, bytes);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new InterfaceGenerationException(e);
+            throw new ContainerException(e);
         }
     }
 

@@ -19,8 +19,8 @@
  */
 package org.fabric3.fabric.domain.generator;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
@@ -52,8 +52,8 @@ public interface CommandGenerator {
      *
      * @param logicalComponent the logical component to generate the command from
      * @return the generated command or null if no changes were detected
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    Command generate(LogicalComponent<?> logicalComponent) throws GenerationException;
+    Command generate(LogicalComponent<?> logicalComponent) throws ContainerException;
 
 }

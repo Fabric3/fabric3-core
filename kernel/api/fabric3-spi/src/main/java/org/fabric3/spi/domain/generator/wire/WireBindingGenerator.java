@@ -21,9 +21,9 @@ package org.fabric3.spi.domain.generator.wire;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -41,9 +41,10 @@ public interface WireBindingGenerator<BD extends Binding> {
      * @param contract       the service contract
      * @param operations     the operations to generate the wire for
      * @return Physical wire source definition.
-     * @throws GenerationException if an error is raised during generation
+     * @throws ContainerException if an error is raised during generation
      */
-    PhysicalWireSourceDefinition generateSource(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException;
+    PhysicalWireSourceDefinition generateSource(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations)
+            throws ContainerException;
 
     /**
      * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when a reference is
@@ -53,9 +54,10 @@ public interface WireBindingGenerator<BD extends Binding> {
      * @param contract         the service contract
      * @param operations       the operations to generate the wire for
      * @return Physical wire target definition.
-     * @throws GenerationException if an error is raised during generation
+     * @throws ContainerException if an error is raised during generation
      */
-    PhysicalWireTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException;
+    PhysicalWireTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding, ServiceContract contract, List<LogicalOperation> operations)
+            throws ContainerException;
 
     /**
      * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the reference is
@@ -66,8 +68,9 @@ public interface WireBindingGenerator<BD extends Binding> {
      * @param contract       the service contract
      * @param operations     the operations to generate the wire for
      * @return Physical wire target definition.
-     * @throws GenerationException if an error is raised during generation
+     * @throws ContainerException if an error is raised during generation
      */
-    PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations) throws GenerationException;
+    PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations)
+            throws ContainerException;
 
 }

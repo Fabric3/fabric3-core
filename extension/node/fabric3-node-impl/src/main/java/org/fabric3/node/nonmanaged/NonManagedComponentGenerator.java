@@ -16,7 +16,7 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -35,33 +35,33 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  */
 public class NonManagedComponentGenerator implements ComponentGenerator<LogicalComponent<NonManagedImplementation>> {
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
         String interfaze = reference.getServiceContract().getQualifiedInterfaceName();
         return new NonManagedPhysicalWireSourceDefinition(interfaze);
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<NonManagedImplementation> component) throws GenerationException {
+    public PhysicalComponentDefinition generate(LogicalComponent<NonManagedImplementation> component) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
         String interfaze = producer.getServiceContract().getQualifiedInterfaceName();
         return new NonManagedPhysicalConnectionSourceDefinition(interfaze);
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 }

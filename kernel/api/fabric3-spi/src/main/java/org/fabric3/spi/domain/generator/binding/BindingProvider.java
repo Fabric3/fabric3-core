@@ -20,6 +20,7 @@ package org.fabric3.spi.domain.generator.binding;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
@@ -67,24 +68,24 @@ public interface BindingProvider {
      * Configures binding information for a wire.
      *
      * @param wire the wire
-     * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
+     * @throws ContainerException if some error is encountered that inhibits binding configuration from being generated
      */
-    void bind(LogicalWire wire) throws BindingSelectionException;
+    void bind(LogicalWire wire) throws ContainerException;
 
     /**
      * Configures binding information for a service.
      *
      * @param service the service
-     * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
+     * @throws ContainerException if some error is encountered that inhibits binding configuration from being generated
      */
-    void bind(LogicalService service) throws BindingSelectionException;
+    void bind(LogicalService service) throws ContainerException;
 
     /**
      * Configures binding information for a channel.
      *
      * @param channel the channel
-     * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
+     * @throws ContainerException if some error is encountered that inhibits binding configuration from being generated
      */
-    void bind(LogicalChannel channel) throws BindingSelectionException;
+    void bind(LogicalChannel channel) throws ContainerException;
 
 }

@@ -22,11 +22,11 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -50,7 +50,7 @@ public class BuildResourceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public BuildResourcesCommand generate(LogicalComponent<?> component) throws GenerationException {
+    public BuildResourcesCommand generate(LogicalComponent<?> component) throws ContainerException {
         if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.NEW)) {
             return null;
         }

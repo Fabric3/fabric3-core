@@ -19,9 +19,9 @@
  */
 package org.fabric3.spi.domain.generator.component;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -45,9 +45,9 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      *
      * @param component the logical component to evaluate
      * @return the physical component definition
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalComponentDefinition generate(C component) throws GenerationException;
+    PhysicalComponentDefinition generate(C component) throws ContainerException;
 
     /**
      * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
@@ -55,9 +55,9 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      *
      * @param reference the source logical reference
      * @return the metadata used to attach the wire to its source on the service node
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException;
+    PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException;
 
     /**
      * Generates a {@link PhysicalWireTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
@@ -65,9 +65,9 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      *
      * @param service the target logical service
      * @return the metadata used to attach the wire to its target on the service node
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException;
+    PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException;
 
     /**
      * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in the
@@ -75,27 +75,27 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      *
      * @param service the forward service the callback is being generated for
      * @return the metadata used to attach the wire to its source on the service node
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException;
+    PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException;
 
     /**
      * Generates a {@link PhysicalConnectionSourceDefinition} used to attach an event connection to its source producer.
      *
      * @param producer the producer
      * @return the connection metadata
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException;
+    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException;
 
     /**
      * Generates a {@link PhysicalConnectionTargetDefinition} used to attach an event connection to its target consumer.
      *
      * @param consumer the consumer
      * @return the connection metadata
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException;
+    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException;
 
     /**
      * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
@@ -103,8 +103,8 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      *
      * @param resourceReference the source logical resource
      * @return the metadata used to attach the wire to its source on the service node
-     * @throws GenerationException if an error occurs during the generation process
+     * @throws ContainerException if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException;
+    PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException;
 
 }

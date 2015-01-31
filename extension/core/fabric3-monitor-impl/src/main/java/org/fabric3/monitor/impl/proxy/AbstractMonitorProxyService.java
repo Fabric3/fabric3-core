@@ -22,7 +22,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -54,7 +54,7 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
         this.enabled = enabled;
     }
 
-    public <T> T createMonitor(Class<T> type) throws MonitorCreationException {
+    public <T> T createMonitor(Class<T> type) throws ContainerException {
         return createMonitor(type, defaultMonitorable, DEFAULT_DESTINATION);
     }
 

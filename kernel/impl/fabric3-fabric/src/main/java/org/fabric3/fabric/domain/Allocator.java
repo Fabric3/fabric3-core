@@ -31,24 +31,21 @@ public interface Allocator {
      * Allocates a component. Composites are recursed and their children are allocated.
      *
      * @param component the component to allocate
-     * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalComponent<?> component) throws AllocationException;
+    void allocate(LogicalComponent<?> component);
 
     /**
      * Allocates a channel. Composites are recursed and their children are allocated.
      *
      * @param channel the channel to allocate
-     * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalChannel channel) throws AllocationException;
+    void allocate(LogicalChannel channel);
 
     /**
      * Allocates a resource. Composites are recursed and their children are allocated.
      *
      * @param resource the resource to allocate
-     * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalResource<?> resource) throws AllocationException;
+    void allocate(LogicalResource<?> resource);
 
 }

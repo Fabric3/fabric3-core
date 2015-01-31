@@ -21,10 +21,10 @@ package org.fabric3.fabric.container.executor;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.DetachWireCommand;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.executor.CommandExecutor;

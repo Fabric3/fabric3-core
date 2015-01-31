@@ -18,6 +18,7 @@ package org.fabric3.spi.contract;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
@@ -32,8 +33,8 @@ public interface OperationResolver {
      * @param source  the source operation to resolve
      * @param targets the target operations to resolve against
      * @return the resolved operation
-     * @throws OperationNotFoundException if a target operation cannot be found
+     * @throws ContainerException if a target operation cannot be found
      */
-    LogicalOperation resolve(LogicalOperation source, List<LogicalOperation> targets) throws OperationNotFoundException;
+    LogicalOperation resolve(LogicalOperation source, List<LogicalOperation> targets) throws ContainerException;
 
 }

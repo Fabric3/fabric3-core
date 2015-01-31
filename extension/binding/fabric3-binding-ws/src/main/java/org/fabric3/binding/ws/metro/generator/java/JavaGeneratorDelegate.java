@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.ws.model.WsBinding;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.ws.metro.generator.GenerationHelper;
 import org.fabric3.binding.ws.metro.generator.MetroGeneratorDelegate;
@@ -43,7 +44,6 @@ import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -78,7 +78,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     }
 
     public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, JavaServiceContract contract)
-            throws GenerationException {
+            throws ContainerException {
 
         URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
         Class<?> serviceClass = loadServiceClass(contract, contributionUri);
@@ -127,7 +127,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                         try {
                             serviceUri = new URI(component.getUri() + "#" + service.getDefinition().getName());
                         } catch (URISyntaxException e) {
-                            throw new GenerationException(e);
+                            throw new ContainerException(e);
                         }
                         break;
                     }
@@ -155,39 +155,39 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     }
 
     public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, JavaServiceContract contract)
-            throws GenerationException {
+            throws ContainerException {
         URL targetUrl = null;
         WsBinding bindingDefinition = binding.getDefinition();
         URI targetUri = bindingDefinition.getTargetUri();
 
         if (binding.isCallback() && targetUri != null) {
-            throw new GenerationException("A web services callback binding cannot be used with a binding URI on a service: " + binding.getParent().getUri());
+            throw new ContainerException("A web services callback binding cannot be used with a binding URI on a service: " + binding.getParent().getUri());
         }
 
         if (targetUri != null) {
             if (!targetUri.isAbsolute() && !binding.isCallback()) {
-                throw new GenerationException("Web service binding URI must be absolute on reference: " + binding.getParent().getUri());
+                throw new ContainerException("Web service binding URI must be absolute on reference: " + binding.getParent().getUri());
             }
             try {
                 targetUrl = targetUri.toURL();
             } catch (MalformedURLException e) {
-                throw new GenerationException(e);
+                throw new ContainerException(e);
             }
         } else if (bindingDefinition.getWsdlElement() == null && bindingDefinition.getWsdlLocation() == null && !binding.isCallback()) {
-            throw new GenerationException("A web service binding URI must be specified: " + binding.getParent().getUri());
+            throw new ContainerException("A web service binding URI must be specified: " + binding.getParent().getUri());
         }
 
         return generateTarget(binding, targetUrl, contract);
     }
 
     public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, JavaServiceContract contract)
-            throws GenerationException {
+            throws ContainerException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding);
         return generateTarget(serviceBinding, targetUrl, contract);
     }
 
     private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, URL targetUrl, JavaServiceContract contract)
-            throws GenerationException {
+            throws ContainerException {
         URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
         Class<?> serviceClass = loadServiceClass(contract, contributionUri);
         WsBinding bindingDefinition = binding.getDefinition();
@@ -261,9 +261,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
      * @param definition   the binding configuration
      * @param serviceClass the service endpoint interface
      * @return the WSDL location or null
-     * @throws GenerationException if the WSDL location is invalid
+     * @throws ContainerException if the WSDL location is invalid
      */
-    private URL getWsdlLocation(WsBinding definition, Class<?> serviceClass) throws GenerationException {
+    private URL getWsdlLocation(WsBinding definition, Class<?> serviceClass) throws ContainerException {
         try {
             String location = definition.getWsdlLocation();
             if (location != null) {
@@ -279,7 +279,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 }
             }
         } catch (MalformedURLException e) {
-            throw new GenerationException(e);
+            throw new ContainerException(e);
         }
         return null;
 
@@ -292,18 +292,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
      * @param contributionUri the          contribution URI the contract class is loaded in
      * @return the loaded class
      */
-    private Class<?> loadServiceClass(JavaServiceContract javaContract, URI contributionUri) throws GenerationException {
+    private Class<?> loadServiceClass(JavaServiceContract javaContract, URI contributionUri) throws ContainerException {
         ClassLoader loader = classLoaderRegistry.getClassLoader(contributionUri);
         try {
             return loader.loadClass(javaContract.getInterfaceClass());
         } catch (ClassNotFoundException e) {
-            throw new GenerationException(e);
+            throw new ContainerException(e);
         }
     }
 
     private ServiceEndpointDefinition createServiceEndpointDefinition(LogicalBinding<WsBinding> binding,
                                                                       JavaServiceContract contract,
-                                                                      Class<?> serviceClass) throws GenerationException {
+                                                                      Class<?> serviceClass) throws ContainerException {
         URI targetUri = binding.getDefinition().getTargetUri();
         if (targetUri == null) {
             targetUri = URI.create(binding.getParent().getUri().getFragment());  // use the service URI fragment
@@ -314,7 +314,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     private ReferenceEndpointDefinition createReferenceEndpointDefinition(LogicalBinding<WsBinding> binding,
                                                                           JavaServiceContract contract,
                                                                           Class<?> serviceClass,
-                                                                          URL targetUrl) throws GenerationException {
+                                                                          URL targetUrl) throws ContainerException {
         if (binding.isCallback()) {
             targetUrl = ReferenceEndpointDefinition.DYNAMIC_URL;
         }
@@ -322,7 +322,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         if (targetUrl != null) {
             return synthesizer.synthesizeReferenceEndpoint(contract, serviceClass, targetUrl);
         } else {
-            throw new GenerationException("Target URL must be specified");
+            throw new ContainerException("Target URL must be specified");
         }
     }
 

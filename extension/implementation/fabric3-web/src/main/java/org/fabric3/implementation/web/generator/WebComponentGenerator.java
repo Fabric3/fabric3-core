@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -38,7 +39,6 @@ import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefi
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -73,7 +73,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         this.info = info;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws GenerationException {
+    public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws ContainerException {
         Component<WebImplementation> definition = component.getDefinition();
         WebComponentType componentType = definition.getImplementation().getComponentType();
 
@@ -87,22 +87,22 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return physical;
     }
 
-    public WebComponentWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
+    public WebComponentWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
         WebComponentWireSourceDefinition definition = new WebComponentWireSourceDefinition();
         definition.setUri(reference.getUri());
         definition.setOptimizable(true);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
         return null;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
         WebComponentWireSourceDefinition definition = new WebComponentWireSourceDefinition();
         definition.setUri(resourceReference.getUri());
         return definition;
@@ -114,7 +114,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 

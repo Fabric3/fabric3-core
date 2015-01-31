@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

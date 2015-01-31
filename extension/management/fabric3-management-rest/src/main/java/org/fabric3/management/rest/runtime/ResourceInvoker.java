@@ -25,13 +25,13 @@ import java.util.List;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

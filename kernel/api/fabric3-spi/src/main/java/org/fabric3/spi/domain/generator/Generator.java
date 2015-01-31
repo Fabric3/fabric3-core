@@ -19,6 +19,7 @@
  */
 package org.fabric3.spi.domain.generator;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
@@ -31,8 +32,8 @@ public interface Generator {
      *
      * @param domain      the logical domain composite
      * @return the deployment
-     * @throws GenerationException If unable to generate the deployment
+     * @throws ContainerException If unable to generate the deployment
      */
-    Deployment generate(LogicalCompositeComponent domain) throws GenerationException;
+    Deployment generate(LogicalCompositeComponent domain) throws ContainerException;
 
 }

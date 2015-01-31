@@ -3,7 +3,6 @@ package org.fabric3.contribution.processor;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
@@ -35,12 +34,11 @@ public class ConfigIndexer implements XmlIndexer {
         this.registry = registry;
     }
 
-
     public QName getType() {
         return TYPE;
     }
 
-    public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) {
         // no-op
     }
 }

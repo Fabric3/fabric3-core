@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -67,11 +67,11 @@ public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServic
 
     }
 
-    public <T> T createMonitor(Class<T> type) throws MonitorCreationException {
+    public <T> T createMonitor(Class<T> type) throws ContainerException {
         return delegate.createMonitor(type);
     }
 
-    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException {
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException {
         return delegate.createMonitor(type, monitorable, destination);
     }
 }

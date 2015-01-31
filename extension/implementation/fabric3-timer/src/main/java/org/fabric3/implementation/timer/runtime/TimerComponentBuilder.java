@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
@@ -34,7 +35,6 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuild
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.federation.topology.NodeTopologyService;

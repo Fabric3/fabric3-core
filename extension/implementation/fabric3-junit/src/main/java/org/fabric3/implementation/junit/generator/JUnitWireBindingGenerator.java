@@ -20,12 +20,12 @@ package org.fabric3.implementation.junit.generator;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBinding;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -40,7 +40,7 @@ public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBind
 
     public JUnitWireSourceDefinition generateSource(LogicalBinding<JUnitBinding> bindingDefinition,
                                                     ServiceContract contract,
-                                                    List<LogicalOperation> operations) throws GenerationException {
+                                                    List<LogicalOperation> operations) throws ContainerException {
         Component<?> definition = bindingDefinition.getParent().getParent().getDefinition();
         String testName = definition.getImplementation().getImplementationName();
         ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
@@ -49,13 +49,13 @@ public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBind
 
     public PhysicalWireTargetDefinition generateTarget(LogicalBinding<JUnitBinding> bindingDefinition,
                                                        ServiceContract contract,
-                                                       List<LogicalOperation> operations) throws GenerationException {
+                                                       List<LogicalOperation> operations) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JUnitBinding> serviceBinding,
                                                                      ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws GenerationException {
+                                                                     List<LogicalOperation> operations) throws ContainerException {
         throw new UnsupportedOperationException();
     }
 }

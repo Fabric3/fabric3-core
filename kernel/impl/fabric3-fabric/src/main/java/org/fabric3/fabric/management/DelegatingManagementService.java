@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.management.ManagementService;

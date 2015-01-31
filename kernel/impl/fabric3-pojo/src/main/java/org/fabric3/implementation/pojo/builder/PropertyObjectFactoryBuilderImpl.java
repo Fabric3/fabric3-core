@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.oasisopen.sca.annotation.Reference;

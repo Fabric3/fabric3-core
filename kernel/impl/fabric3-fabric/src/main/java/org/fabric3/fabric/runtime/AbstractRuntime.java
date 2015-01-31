@@ -28,13 +28,11 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.monitor.DestinationRouter;
-import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.contribution.MetaDataStoreImpl;
 import org.fabric3.contribution.ProcessorRegistryImpl;
 import org.fabric3.fabric.classloader.ClassLoaderRegistryImpl;
@@ -124,12 +122,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
         monitorService = new MonitorProxyServiceImpl(new JDKMonitorProxyService(this, router));
 
-        ScopeContainerMonitor monitor;
-        try {
-            monitor = monitorService.createMonitor(ScopeContainerMonitor.class);
-        } catch (MonitorCreationException e) {
-            throw new ContainerException(e);
-        }
+        ScopeContainerMonitor monitor = monitorService.createMonitor(ScopeContainerMonitor.class);
         scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         scopeRegistry = new ScopeRegistryImpl();
@@ -141,15 +134,15 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         }
     }
 
-    public void destroy() throws ShutdownException {
+    public void destroy() throws ContainerException {
         // destroy system components
         WorkContextCache.getAndResetThreadWorkContext();
         scopeContainer.stopAllContexts();
         try {
             repository.shutdown();
             classLoaderRegistry.close();
-        } catch (ContainerException | IOException e) {
-            throw new ShutdownException(e);
+        } catch (IOException e) {
+            throw new ContainerException(e);
         }
     }
 

@@ -42,9 +42,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.glassfish.jersey.jackson.JacksonFeature;

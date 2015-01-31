@@ -22,10 +22,10 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Names;
 import org.fabric3.fabric.container.command.StopContextCommand;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
@@ -34,7 +34,7 @@ import org.fabric3.spi.model.instance.LogicalState;
  */
 public class StopContextCommandGeneratorImpl implements StopContextCommandGenerator {
 
-    public List<Command> generate(List<LogicalComponent<?>> components) throws GenerationException {
+    public List<Command> generate(List<LogicalComponent<?>> components) throws ContainerException {
         List<Command> commands = new ArrayList<>();
         // only log application composite deployments
         components.stream().filter(component -> component.getState() == LogicalState.MARKED).forEach(component -> {

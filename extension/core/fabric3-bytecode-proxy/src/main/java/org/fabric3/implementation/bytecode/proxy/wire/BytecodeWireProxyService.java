@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;

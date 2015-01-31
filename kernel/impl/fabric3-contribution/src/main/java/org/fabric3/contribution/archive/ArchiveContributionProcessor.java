@@ -21,13 +21,11 @@ package org.fabric3.contribution.archive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -51,21 +49,19 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         return false;
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
         ArchiveContributionHandler handler = getHandler(contribution);
         handler.processManifest(contribution, context);
     }
 
-    public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, final IntrospectionContext context) throws ContainerException {
         ArchiveContributionHandler handler = getHandler(contribution);
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            handler.iterateArtifacts(contribution, new ArtifactResourceCallback() {
-                public void onResource(Resource resource) throws InstallException {
-                    registry.indexResource(resource, context);
-                }
+            handler.iterateArtifacts(contribution, resource -> {
+                registry.indexResource(resource, context);
             }, context);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
@@ -73,7 +69,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
 
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
         try {
@@ -89,14 +85,14 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         }
     }
 
-    private ArchiveContributionHandler getHandler(Contribution contribution) throws UnsupportedContentTypeException {
+    private ArchiveContributionHandler getHandler(Contribution contribution) throws ContainerException {
         for (ArchiveContributionHandler handler : handlers) {
             if (handler.canProcess(contribution)) {
                 return handler;
             }
         }
         String source = contribution.getUri().toString();
-        throw new UnsupportedContentTypeException("Contribution type not supported: " + source);
+        throw new ContainerException("Contribution type not supported: " + source);
     }
 
 }

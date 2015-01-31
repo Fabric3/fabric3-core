@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -48,7 +48,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
 
     public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBinding> binding,
                                                      ServiceContract contract,
-                                                     List<LogicalOperation> operations) throws GenerationException {
+                                                     List<LogicalOperation> operations) throws ContainerException {
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         if (binding.isCallback()) {
             URI uri = URI.create("zmq://" + contract.getInterfaceName());
@@ -60,7 +60,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
 
     public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBinding> binding,
                                                      ServiceContract contract,
-                                                     List<LogicalOperation> operations) throws GenerationException {
+                                                     List<LogicalOperation> operations) throws ContainerException {
         validateServiceContract(contract);
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
 
@@ -84,7 +84,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
 
     public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding,
                                                                    ServiceContract contract,
-                                                                   List<LogicalOperation> operations) throws GenerationException {
+                                                                   List<LogicalOperation> operations) throws ContainerException {
         URI targetUri = binding.getParent().getUri();
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         return generateTarget(contract, targetUri, metadata);
@@ -104,9 +104,9 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
      *
      * @param binding the binding
      * @return the URI or null
-     * @throws GenerationException if there is a parsing error
+     * @throws ContainerException if there is a parsing error
      */
-    private URI parseTargetUri(LogicalBinding<ZeroMQBinding> binding) throws GenerationException {
+    private URI parseTargetUri(LogicalBinding<ZeroMQBinding> binding) throws ContainerException {
         URI bindingTargetUri = binding.getDefinition().getTargetUri();
         if (bindingTargetUri == null) {
             // create a synthetic name
@@ -121,16 +121,16 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         if (bindingTarget.contains("/")) {
             String[] tokens = bindingTarget.split("/");
             if (tokens.length != 2) {
-                throw new GenerationException("Invalid target specified on binding: " + bindingTarget);
+                throw new ContainerException("Invalid target specified on binding: " + bindingTarget);
             }
             targetUri = URI.create(parent.toString() + "/" + tokens[0]);
             LogicalComponent<?> component = composite.getComponent(targetUri);
             if (component == null) {
-                throw new GenerationException("Target component not found: " + targetUri);
+                throw new ContainerException("Target component not found: " + targetUri);
             }
             LogicalService service = component.getService(tokens[1]);
             if (service == null) {
-                throw new GenerationException("Target service not found on component " + targetUri + ": " + tokens[1]);
+                throw new ContainerException("Target service not found on component " + targetUri + ": " + tokens[1]);
             }
             // get the leaf service as the target may be a promotion
             targetUri = service.getLeafService().getUri();
@@ -139,10 +139,10 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
             if (targetUri.getFragment() == null) {
                 LogicalComponent<?> component = composite.getComponent(targetUri);
                 if (component == null) {
-                    throw new GenerationException("Target component not found: " + targetUri);
+                    throw new ContainerException("Target component not found: " + targetUri);
                 }
                 if (component.getServices().size() != 1) {
-                    throw new GenerationException("Target component must have exactly one service if the service is not specified in the target URI");
+                    throw new ContainerException("Target component must have exactly one service if the service is not specified in the target URI");
                 }
                 Collection<LogicalService> services = component.getServices();
                 LogicalService service = services.iterator().next();
@@ -152,7 +152,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
                 URI defragmented = UriHelper.getDefragmentedName(targetUri);
                 LogicalComponent component = composite.getComponent(defragmented);
                 if (component == null) {
-                    throw new GenerationException("Target component not found: " + targetUri);
+                    throw new ContainerException("Target component not found: " + targetUri);
                 }
 
             }
@@ -160,7 +160,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         return targetUri;
     }
 
-    private void validateServiceContract(ServiceContract contract) throws InvalidContractException {
+    private void validateServiceContract(ServiceContract contract) throws ContainerException {
         boolean oneway = false;
         boolean first = true;
         for (Operation operation : contract.getOperations()) {
@@ -170,7 +170,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
             } else {
                 if ((!oneway && operation.isOneWay()) || (oneway && !operation.isOneWay())) {
                     String name = contract.getInterfaceName();
-                    throw new InvalidContractException("The ZeroMQ binding does not support mixing one-way and request-response operations: " + name);
+                    throw new ContainerException("The ZeroMQ binding does not support mixing one-way and request-response operations: " + name);
                 }
             }
         }

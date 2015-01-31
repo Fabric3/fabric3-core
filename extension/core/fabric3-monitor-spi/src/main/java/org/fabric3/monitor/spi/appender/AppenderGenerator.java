@@ -16,15 +16,15 @@
  */
 package org.fabric3.monitor.spi.appender;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  *
  */
 public interface AppenderGenerator<D extends AppenderDefinition> {
 
-    PhysicalAppenderDefinition generateResource(D definition) throws GenerationException;
+    PhysicalAppenderDefinition generateResource(D definition) throws ContainerException;
 
 }

@@ -39,7 +39,7 @@ public class NodeAllocator implements Allocator {
         enabled = RuntimeMode.NODE == info.getRuntimeMode();
     }
 
-    public void allocate(LogicalComponent<?> component) throws AllocationException {
+    public void allocate(LogicalComponent<?> component) {
         if (!enabled) {
             return;
         }
@@ -60,14 +60,14 @@ public class NodeAllocator implements Allocator {
         }
     }
 
-    public void allocate(LogicalChannel channel) throws AllocationException {
+    public void allocate(LogicalChannel channel) {
         if (!enabled) {
             return;
         }
         channel.setZone(zoneName);
     }
 
-    public void allocate(LogicalResource<?> resource) throws AllocationException {
+    public void allocate(LogicalResource<?> resource) {
         if (!enabled) {
             return;
         }

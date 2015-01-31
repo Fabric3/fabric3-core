@@ -18,10 +18,10 @@ package org.fabric3.monitor.impl.builder;
 
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

@@ -30,7 +30,6 @@ import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.binding.BindingSelectionException;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.oasisopen.sca.annotation.Reference;
@@ -85,11 +84,7 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     }
 
     protected void selectBinding(LogicalCompositeComponent domain) throws ContainerException {
-        try {
-            bindingSelector.selectBindings(domain);
-        } catch (BindingSelectionException e) {
-            throw new ContainerException(e);
-        }
+        bindingSelector.selectBindings(domain);
     }
 
 }

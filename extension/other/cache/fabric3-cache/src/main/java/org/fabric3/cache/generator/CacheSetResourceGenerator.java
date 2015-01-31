@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.cache.model.CacheSetResource;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.cache.spi.CacheResourceGenerator;
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -44,7 +44,7 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResource> resource) throws GenerationException {
+    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResource> resource) throws ContainerException {
         PhysicalCacheSetDefinition definitions = new PhysicalCacheSetDefinition();
         List<CacheResource> configurations = resource.getDefinition().getDefinitions();
         for (CacheResource definition : configurations) {
@@ -55,11 +55,11 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
         return definitions;
     }
 
-    private CacheResourceGenerator getGenerator(CacheResource configuration) throws GenerationException {
+    private CacheResourceGenerator getGenerator(CacheResource configuration) throws ContainerException {
         Class<? extends CacheResource> type = configuration.getClass();
         CacheResourceGenerator generator = generators.get(type);
         if (generator == null) {
-            throw new GenerationException("Cache resource generator not found for type : " + type);
+            throw new ContainerException("Cache resource generator not found for type : " + type);
         }
         return generator;
     }

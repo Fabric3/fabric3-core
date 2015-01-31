@@ -18,7 +18,7 @@ package org.fabric3.spi.domain.generator.channel;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -34,7 +34,7 @@ public interface ChannelGenerator {
      * @param deployable the deployable the channel is contained in
      * @param direction  whether the channel will connect a consumer or producer
      * @return the definition
-     * @throws GenerationException if there is a generation error
+     * @throws ContainerException if there is a generation error
      */
-    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws ContainerException;
 }

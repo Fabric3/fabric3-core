@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.host.ContainerException;
-import org.fabric3.api.host.contribution.StoreException;
-import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -45,9 +43,9 @@ public interface MetaDataStore {
      * Stores the contribution metadata
      *
      * @param contribution the contribution metadata
-     * @throws StoreException if an error storing the metadata occurs
+     * @throws ContainerException if an error storing the metadata occurs
      */
-    void store(Contribution contribution) throws StoreException;
+    void store(Contribution contribution) throws ContainerException;
 
     /**
      * Removes the contribution metadata.
@@ -80,9 +78,9 @@ public interface MetaDataStore {
      * @param type   the class representing the resource
      * @param symbol the symbol used to represent the resource element.
      * @return the resource element or null if not found
-     * @throws StoreException if an error occurs during resolution
+     * @throws ContainerException if an error occurs during resolution
      */
-    <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws StoreException;
+    <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws ContainerException;
 
     /**
      * Returns a collection of resource elements that reference the artifact represented by the given symbol.
@@ -90,9 +88,9 @@ public interface MetaDataStore {
      * @param uri    the URI of the contribution to use as the search context
      * @param symbol the artifact symbol
      * @return the set of resources that reference the artifact
-     * @throws StoreException if an error occurs during resolution
+     * @throws ContainerException if an error occurs during resolution
      */
-    <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws StoreException;
+    <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws ContainerException;
 
     /**
      * Updates a resource element contained in a contribution. All references to the resource will be updated in the containing and dependent contributions.
@@ -124,10 +122,10 @@ public interface MetaDataStore {
      * @param symbol  the symbol used to represent the resource element.
      * @param context the context to which validation errors and warnings are reported
      * @return the resource element or null if not found
-     * @throws StoreException if an error occurs during resolution
+     * @throws ContainerException if an error occurs during resolution
      */
     <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
-            throws StoreException;
+            throws ContainerException;
 
     /**
      * Resolves resource elements for a given type that are visible to the contribution.
@@ -135,9 +133,9 @@ public interface MetaDataStore {
      * @param uri  the contribution to search
      * @param type the resource element type
      * @return the collection of resource elements
-     * @throws StoreException if there is an error resolving the resource elements
+     * @throws ContainerException if there is an error resolving the resource elements
      */
-    <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws StoreException;
+    <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws ContainerException;
 
     /**
      * Resolves an import or returns an empty list if it cannot be satisfied.
@@ -155,9 +153,8 @@ public interface MetaDataStore {
      * @param imprt the import to resolve @return a ContributionWire or null
      * @return a collection of ContributionWires matching the import. For multiplicity imports, the collection may contain 0..N wires. For non-multiplicity
      * imports (e.g. import.java), the collection will contain 0..1 wires.
-     * @throws UnresolvedImportException if the import cannot be resolved
      */
-    List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws UnresolvedImportException;
+    List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws ContainerException;
 
     /**
      * Resolves contributions that import the contribution represented by the given URI.

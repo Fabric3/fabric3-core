@@ -27,11 +27,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -74,7 +73,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
         ContributionManifest manifest;
         try {
             String sourceUrl = contribution.getLocation().toString();
@@ -100,20 +99,20 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new InstallException(e);
+                throw new ContainerException(e);
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException {
         File root = FileHelper.toFile(contribution.getLocation());
         iterateArtifactsRecursive(root, root, contribution, callback, context);
     }
 
     protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context)
-            throws InstallException {
+            throws ContainerException {
         File[] files = dir.listFiles();
         ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {
@@ -168,8 +167,8 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         contribution.addResource(resource);
                         callback.onResource(resource);
                     }
-                } catch (MalformedURLException | ContentTypeResolutionException e) {
-                    throw new InstallException(e);
+                } catch (MalformedURLException e) {
+                    throw new ContainerException(e);
                 }
             }
         }

@@ -25,9 +25,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
-import org.fabric3.api.host.ContainerException;
 
 /**
  *

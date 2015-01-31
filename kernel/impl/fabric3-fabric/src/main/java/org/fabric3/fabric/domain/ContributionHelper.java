@@ -23,8 +23,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 

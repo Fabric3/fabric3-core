@@ -93,8 +93,7 @@ public interface ContributionService {
      *
      * @param uris the contribution URIs
      * @return the list of installed URIs ordered by dependencies
-     * @throws InstallException   if there an error reading, introspecting or loading the contribution
-     * @throws ContainerException if a contribution is not found
+     * @throws ContainerException   if there an error reading, introspecting or loading the contribution
      */
     List<URI> install(List<URI> uris) throws ContainerException;
 
@@ -103,16 +102,14 @@ public interface ContributionService {
      *
      * @param sources the contribution sources
      * @return metadata representing the dependency ordering of the contributions
-     * @throws StoreException   if there is an error storing the contribution
-     * @throws InstallException if there an error reading, introspecting or loading the contribution
+     * @throws ContainerException   if there is an error storing the contribution
      */
-    ContributionOrder processManifests(List<ContributionSource> sources) throws StoreException, InstallException;
+    ContributionOrder processManifests(List<ContributionSource> sources) throws ContainerException;
 
     /**
      * Introspects the contents of a contribution.
      *
      * @param uri the contribution URI
-     * @throws InstallException   if there is an error introspecting the contribution
      * @throws ContainerException if there is an error
      */
     void processContents(URI uri) throws ContainerException;

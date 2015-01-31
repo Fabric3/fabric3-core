@@ -20,7 +20,6 @@ import java.net.URI;
 
 import org.fabric3.binding.rs.model.ProviderResource;
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
@@ -32,7 +31,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ProviderResourceGenerator implements ResourceGenerator<ProviderResource> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResource> resource) throws GenerationException {
+    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResource> resource) {
         ProviderResource definition = resource.getDefinition();
         String providerName = definition.getProviderName();
         URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);

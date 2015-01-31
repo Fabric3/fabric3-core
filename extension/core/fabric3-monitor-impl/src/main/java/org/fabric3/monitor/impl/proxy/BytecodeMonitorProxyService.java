@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -42,17 +42,12 @@ import org.objectweb.asm.Type;
 import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
- * Performs bytecode generation at runtime to create a monitor proxy.
- * <p/>
- * The monitor proxy avoids object creation such as auto-boxing and varargs for highly performant environments. This is done by dynamically generating
- * writeParameters method with a specific number of arguments for each proxy interface method. The implementation of the proxy interface method invokes this
- * writeParameters method. Performance characteristics should therefore be the same as hand-implementing the proxy interface.
- * <p/>
- * As a further optimization, the {@link DispatchInfo} for an invoked proxy method will be looked up in an array based on the method index. This will be
- * noticeably faster than looking up the DispatchInfo in a Map keyed by Method as required by JDK proxies.
- * <p/>
- * The implementation creates code similar to the following:
- * <p/>
+ * Performs bytecode generation at runtime to create a monitor proxy. <p/> The monitor proxy avoids object creation such as auto-boxing and varargs for highly
+ * performant environments. This is done by dynamically generating writeParameters method with a specific number of arguments for each proxy interface method.
+ * The implementation of the proxy interface method invokes this writeParameters method. Performance characteristics should therefore be the same as
+ * hand-implementing the proxy interface. <p/> As a further optimization, the {@link DispatchInfo} for an invoked proxy method will be looked up in an array
+ * based on the method index. This will be noticeably faster than looking up the DispatchInfo in a Map keyed by Method as required by JDK proxies. <p/> The
+ * implementation creates code similar to the following: <p/>
  * <pre>
  * <code>
  *      public void invoke([Type]arg1, [Type]arg2...) throws Throwable {
@@ -122,7 +117,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         super(router, monitorable);
     }
 
-    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException {
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException {
         if (destination == null) {
             destination = DEFAULT_DESTINATION;
         }
@@ -150,7 +145,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
             handler.init(destinationIndex, monitorable, router, infos, enabled);
             return type.cast(handler);
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
-            throw new MonitorCreationException(e);
+            throw new ContainerException(e);
         }
     }
 

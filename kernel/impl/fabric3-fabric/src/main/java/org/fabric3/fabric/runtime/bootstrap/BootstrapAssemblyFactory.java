@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.Domain;
-import org.fabric3.api.host.monitor.MonitorCreationException;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.fabric.container.builder.ConnectorImpl;
@@ -223,7 +222,7 @@ public class BootstrapAssemblyFactory {
             commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
             commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
 
-        } catch (MonitorCreationException e) {
+        } catch (ContainerException e) {
             throw new AssertionError(e);
         }
 

@@ -21,12 +21,12 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringInvoker;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

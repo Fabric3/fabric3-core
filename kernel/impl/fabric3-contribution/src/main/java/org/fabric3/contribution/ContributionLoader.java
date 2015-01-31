@@ -32,8 +32,7 @@ public interface ContributionLoader {
      *
      * @param contribution the contribution to load
      * @return the classloader with access to the contribution and dependent resources
-     * @throws ContributionLoadException if an error occurs during load
-     * @throws ContainerException if the contribution contains an unresolvable import
+     * @throws ContainerException if an error occurs during load
      */
     ClassLoader load(Contribution contribution) throws ContainerException;
 

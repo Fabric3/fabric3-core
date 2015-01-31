@@ -18,7 +18,6 @@ package org.fabric3.binding.jms.generator;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -29,7 +28,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ConnectionFactoryResourceGenerator implements ResourceGenerator<ConnectionFactoryResource> {
 
-    public PhysicalConnectionFactoryResource generateResource(LogicalResource<ConnectionFactoryResource> resource) throws GenerationException {
+    public PhysicalConnectionFactoryResource generateResource(LogicalResource<ConnectionFactoryResource> resource) {
         return new PhysicalConnectionFactoryResource(resource.getDefinition().getConfiguration());
     }
 }

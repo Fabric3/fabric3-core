@@ -22,7 +22,6 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -37,7 +36,7 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
 
     public TestBindingWireSourceDefinition generateSource(LogicalBinding<TestBinding> logicalBinding,
                                                           ServiceContract contract,
-                                                          List<LogicalOperation> operations) throws GenerationException {
+                                                          List<LogicalOperation> operations) {
         TestBindingWireSourceDefinition definition = new TestBindingWireSourceDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
         return definition;
@@ -45,7 +44,7 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
 
     public TestBindingWireTargetDefinition generateTarget(LogicalBinding<TestBinding> logicalBinding,
                                                           ServiceContract contract,
-                                                          List<LogicalOperation> operations) throws GenerationException {
+                                                          List<LogicalOperation> operations) {
 
         TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
@@ -54,7 +53,7 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBinding> serviceBinding,
                                                                      ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws GenerationException {
+                                                                     List<LogicalOperation> operations) {
 
         TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
 

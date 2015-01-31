@@ -21,11 +21,11 @@ import javax.naming.NamingException;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
 import org.fabric3.jndi.spi.JndiContextManager;
-import org.fabric3.api.host.ContainerException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

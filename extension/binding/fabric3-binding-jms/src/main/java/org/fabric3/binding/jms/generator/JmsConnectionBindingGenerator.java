@@ -25,6 +25,7 @@ import java.util.List;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
@@ -32,7 +33,6 @@ import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -52,7 +52,6 @@ import org.oasisopen.sca.annotation.Reference;
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBinding> {
     private static final String JAXB = "JAXB";
 
-
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
@@ -63,7 +62,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<JmsBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
+                                                                       ChannelDeliveryType deliveryType) throws ContainerException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         SessionType sessionType = getSessionType(binding);
@@ -94,7 +93,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<JmsBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
+                                                                       ChannelDeliveryType deliveryType) throws ContainerException {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
@@ -109,8 +108,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return connectionTarget;
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBinding> binding, ChannelDeliveryType deliveryType)
-            throws GenerationException {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBinding> binding, ChannelDeliveryType deliveryType) {
         // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
         return new JmsChannelBindingDefinition();
     }

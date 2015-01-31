@@ -22,8 +22,8 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**

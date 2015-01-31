@@ -21,7 +21,7 @@ package org.fabric3.fabric.domain.generator.wire;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.spi.domain.generator.GenerationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 
@@ -33,9 +33,9 @@ public interface PhysicalOperationGenerator {
     /**
      * @param operations the logical operations to generate from
      * @return the PhysicalOperationDefinition
-     * @throws GenerationException if there is an error generating the operations
+     * @throws ContainerException if there is an error generating the operations
      */
-    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws GenerationException;
+    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws ContainerException;
 
     /**
      * Generates a PhysicalOperationDefinition when the source reference and target service contracts are different.
@@ -44,9 +44,9 @@ public interface PhysicalOperationGenerator {
      * @param targets the target logical operations to generate from
      * @param remote  true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process wire.
      * @return the PhysicalOperationDefinition
-     * @throws GenerationException if there is an error generating the operations
+     * @throws ContainerException if there is an error generating the operations
      */
     Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote)
-            throws GenerationException;
+            throws ContainerException;
 
 }

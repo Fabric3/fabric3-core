@@ -18,9 +18,9 @@ package org.fabric3.fabric.domain.generator.channel;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
@@ -36,9 +36,9 @@ public interface ChannelCommandGenerator {
      * @param deployable the deployable this channel is provisioned for. This may be different than the deployable the channel is defined in as a producer or
      *                   consumer may be connected to a channel from another composite.
      * @return the command
-     * @throws GenerationException if a generation error is encountered
+     * @throws ContainerException if a generation error is encountered
      */
-    BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws ContainerException;
 
     /**
      * Generates an dispose command.
@@ -47,8 +47,8 @@ public interface ChannelCommandGenerator {
      * @param deployable the deployable this channel is provisioned for. This may be different than the deployable the channel is defined in as a producer or
      *                   consumer may be connected to a channel from another composite.
      * @return the command
-     * @throws GenerationException if a generation error is encountered
+     * @throws ContainerException if a generation error is encountered
      */
-    DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws ContainerException;
 
 }

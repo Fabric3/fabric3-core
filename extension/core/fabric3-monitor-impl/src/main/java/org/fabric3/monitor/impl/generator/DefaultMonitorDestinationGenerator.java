@@ -19,13 +19,13 @@ package org.fabric3.monitor.impl.generator;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -40,7 +40,7 @@ public class DefaultMonitorDestinationGenerator implements MonitorDestinationGen
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalDefaultMonitorDestinationDefinition generateResource(DefaultMonitorDestinationDefinition definition) throws GenerationException {
+    public PhysicalDefaultMonitorDestinationDefinition generateResource(DefaultMonitorDestinationDefinition definition) throws ContainerException {
         String name = definition.getParent().getName();
         PhysicalDefaultMonitorDestinationDefinition physicalDefinition = new PhysicalDefaultMonitorDestinationDefinition(name);
         List<AppenderDefinition> appenderDefinitions = definition.getAppenderDefinitions();
@@ -53,10 +53,10 @@ public class DefaultMonitorDestinationGenerator implements MonitorDestinationGen
         return physicalDefinition;
     }
 
-    private AppenderGenerator getAppenderGenerator(AppenderDefinition definition) throws GenerationException {
+    private AppenderGenerator getAppenderGenerator(AppenderDefinition definition) throws ContainerException {
         AppenderGenerator generator = appenderGenerators.get(definition.getClass());
         if (generator == null) {
-            throw new GenerationException("Unknown appender type: " + definition.getClass());
+            throw new ContainerException("Unknown appender type: " + definition.getClass());
         }
         return generator;
     }

@@ -29,10 +29,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -73,7 +72,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".war");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
         ContributionManifest manifest;
         try {
             URL sourceUrl = contribution.getLocation();
@@ -94,14 +93,14 @@ public class WarContributionHandler implements ArchiveContributionHandler {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new InstallException(e);
+                throw new ContainerException(e);
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -163,8 +162,8 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     callback.onResource(resource);
                 }
             }
-        } catch (ContentTypeResolutionException | IOException e) {
-            throw new InstallException(e);
+        } catch (IOException e) {
+            throw new ContainerException(e);
         } finally {
             try {
                 if (zipStream != null) {

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.monitor.impl.common.MonitorConstants;
 import org.fabric3.monitor.impl.destination.DefaultMonitorDestination;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -31,7 +32,6 @@ import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.writer.EventWriter;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.xml.LocationAwareXMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;

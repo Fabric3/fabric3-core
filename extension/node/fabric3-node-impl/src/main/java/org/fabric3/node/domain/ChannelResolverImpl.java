@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Producer;
@@ -29,11 +30,9 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
@@ -97,7 +96,7 @@ public class ChannelResolverImpl implements ChannelResolver {
             NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
             return interfaze.cast(sourceDefinition.getProxy());
         }
-        throw new GenerationException("Source generator not found");
+        throw new ContainerException("Source generator not found");
 
     }
 

@@ -27,9 +27,9 @@ import javax.jms.Session;
 import javax.jms.TopicConnection;
 
 import org.fabric3.api.binding.jms.model.Destination;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.api.host.ContainerException;
 
 /**
  * Implementation that attempts to always create the destination.

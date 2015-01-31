@@ -16,8 +16,8 @@
  */
 package org.fabric3.monitor.spi.destination;
 
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 
 /**
  * Builds {@link MonitorDestination}s.

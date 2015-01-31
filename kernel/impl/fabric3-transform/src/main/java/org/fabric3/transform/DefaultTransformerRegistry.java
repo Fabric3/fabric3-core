@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;

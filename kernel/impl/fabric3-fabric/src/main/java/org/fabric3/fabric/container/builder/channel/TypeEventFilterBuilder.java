@@ -18,9 +18,9 @@ package org.fabric3.fabric.container.builder.channel;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.model.type.java.JavaType;

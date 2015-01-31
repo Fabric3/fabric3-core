@@ -18,6 +18,7 @@ package org.fabric3.fabric.domain.generator.channel;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalInvocable;
@@ -33,9 +34,9 @@ public class InvocableGeneratorHelper {
      * @param channelUri the channel uri
      * @param invocable  the invocable
      * @return the channel
-     * @throws ChannelNotFoundException if the channel is not found
+     * @throws ContainerException if the channel is not found
      */
-    public static LogicalChannel getChannelInHierarchy(URI channelUri, LogicalInvocable invocable) throws ChannelNotFoundException {
+    public static LogicalChannel getChannelInHierarchy(URI channelUri, LogicalInvocable invocable) throws ContainerException {
         LogicalChannel channel = null;
         LogicalCompositeComponent parent = invocable.getParent().getParent();
         while (true) {
@@ -50,7 +51,7 @@ public class InvocableGeneratorHelper {
             }
         }
         if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channelUri);
+            throw new ContainerException("Channel not found: " + channelUri);
         }
         return channel;
     }

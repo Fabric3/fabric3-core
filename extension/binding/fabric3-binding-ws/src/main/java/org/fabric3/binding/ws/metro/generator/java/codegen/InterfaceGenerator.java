@@ -16,16 +16,17 @@
  */
 package org.fabric3.binding.ws.metro.generator.java.codegen;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
- * Generates an interface with JAX-WS annotations from another interface. This allows classes with non-annotated interfaces to be used with Metro,
- * which requires interfaces that define service endpoints to be annotated. Specifically, adds @WebService to the generated interface, @WebMethod to
- * all methods, and @Oneway to methods marked with the SCA @OneWay annotation.
+ * Generates an interface with JAX-WS annotations from another interface. This allows classes with non-annotated interfaces to be used with Metro, which
+ * requires interfaces that define service endpoints to be annotated. Specifically, adds @WebService to the generated interface, @WebMethod to all methods, and
+ * @Oneway to methods marked with the SCA @OneWay annotation.
  */
 public interface InterfaceGenerator {
 
     /**
-     * Determines if a service interface or class needs to be enhanced with JAX-WS annotations. Enhancement via bytecode generation will need to be
-     * done if:
+     * Determines if a service interface or class needs to be enhanced with JAX-WS annotations. Enhancement via bytecode generation will need to be done if:
      * <pre>
      * <ul>
      * <li> The class does not contain a <code>WebService</code> annotation
@@ -47,9 +48,8 @@ public interface InterfaceGenerator {
      * @param serviceName     the service name to use with the @WebService annotation or null.
      * @param portName        the port name to use with the @WebService annotation or null.
      * @return the generated interface result
-     * @throws InterfaceGenerationException if an error generating the exception occurs
+     * @throws ContainerException if an error generating the exception occurs
      */
-    GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName)
-            throws InterfaceGenerationException;
+    GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName) throws ContainerException;
 
 }

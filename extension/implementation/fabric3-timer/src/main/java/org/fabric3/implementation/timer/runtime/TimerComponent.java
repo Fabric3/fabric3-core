@@ -24,13 +24,13 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;

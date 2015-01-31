@@ -21,6 +21,7 @@ package org.fabric3.fabric.domain.generator;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Resource;
@@ -44,45 +45,45 @@ public interface GeneratorRegistry {
      *
      * @param clazz the implementation type the generator handles.
      * @return a the component generator for that implementation type
-     * @throws GeneratorNotFoundException if no generator is registered for the implementation type
+     * @throws ContainerException if no generator is registered for the implementation type
      */
-    <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws ContainerException;
 
     /**
      * Returns a {@link WireBindingGenerator} for the specified binding class.
      *
      * @param clazz The binding type type the generator handles.
      * @return The registered binding generator.
-     * @throws GeneratorNotFoundException if no generator is registered for the binding type
+     * @throws ContainerException if no generator is registered for the binding type
      */
-    <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws ContainerException;
 
     /**
      * Returns a {@link ConnectionBindingGenerator} for the specified binding class.
      *
      * @param clazz The binding type type the generator handles.
      * @return The registered binding generator.
-     * @throws GeneratorNotFoundException if no generator is registered for the binding type
+     * @throws ContainerException if no generator is registered for the binding type
      */
-    <T extends Binding> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Binding> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws ContainerException;
 
     /**
      * Returns the {@link ResourceReferenceGenerator} for the resource type.
      *
      * @param clazz the resource type the generator handles
      * @return the resource reference generator
-     * @throws GeneratorNotFoundException if no generator is registered for the resource type
+     * @throws ContainerException if no generator is registered for the resource type
      */
-    <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws ContainerException;
 
     /**
      * Returns the {@link ResourceGenerator} for the resource type.
      *
      * @param clazz the resource type the generator handles
      * @return the resource generator
-     * @throws GeneratorNotFoundException if no generator is registered for the resource type
+     * @throws ContainerException if no generator is registered for the resource type
      */
-    <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws ContainerException;
 
     /**
      * Returns registered {@link InterceptorGenerator}s.

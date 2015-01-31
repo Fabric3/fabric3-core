@@ -21,8 +21,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;

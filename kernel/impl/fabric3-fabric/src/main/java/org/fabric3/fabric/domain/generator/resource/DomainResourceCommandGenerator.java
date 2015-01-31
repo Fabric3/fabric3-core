@@ -16,8 +16,8 @@
  */
 package org.fabric3.fabric.domain.generator.resource;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
@@ -31,17 +31,17 @@ public interface DomainResourceCommandGenerator {
      *
      * @param resource the resource to build
      * @return the command
-     * @throws GenerationException if a generation error is encountered
+     * @throws ContainerException if a generation error is encountered
      */
-    Command generateBuild(LogicalResource resource) throws GenerationException;
+    Command generateBuild(LogicalResource resource) throws ContainerException;
 
     /**
      * Generates an un-build command.
      *
      * @param resource the resource to build
      * @return the command
-     * @throws GenerationException if a generation error is encountered
+     * @throws ContainerException if a generation error is encountered
      */
-    Command generateDispose(LogicalResource resource) throws GenerationException;
+    Command generateDispose(LogicalResource resource) throws ContainerException;
 
 }

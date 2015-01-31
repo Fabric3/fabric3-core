@@ -19,10 +19,9 @@ package org.fabric3.fabric.domain.generator.channel;
 import javax.xml.namespace.QName;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
-import org.fabric3.fabric.domain.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
@@ -53,13 +52,13 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
 
     @SuppressWarnings("unchecked")
     public PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction)
-            throws GenerationException {
+            throws ContainerException {
 
         LogicalBinding<?> binding = channel.getBinding();
         String type = channel.getDefinition().getType();
         ChannelGeneratorExtension generator = extensions.get(type);
         if (generator == null) {
-            throw new GenerationException("Channel generator not found: " + type);
+            throw new ContainerException("Channel generator not found: " + type);
         }
         PhysicalChannelDefinition definition = generator.generate(channel, deployable);
         if (!channel.getBindings().isEmpty()) {
@@ -76,7 +75,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws ContainerException {
         return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 

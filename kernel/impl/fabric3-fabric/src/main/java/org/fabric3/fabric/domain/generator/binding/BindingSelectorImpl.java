@@ -25,11 +25,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fabric3.api.annotation.Source;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
 import org.fabric3.spi.domain.generator.binding.BindingProvider;
-import org.fabric3.spi.domain.generator.binding.BindingSelectionException;
 import org.fabric3.spi.domain.generator.binding.BindingSelectionStrategy;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -93,7 +93,7 @@ public class BindingSelectorImpl implements BindingSelector {
         }
     }
 
-    public void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException {
+    public void selectBindings(LogicalCompositeComponent domain) throws ContainerException {
         if (RuntimeMode.NODE != info.getRuntimeMode() || disable) {
             // there are no remote wires when the domain is contained withing a single VM (including Participant mode, which has a runtime domain)
             return;
@@ -109,7 +109,7 @@ public class BindingSelectorImpl implements BindingSelector {
         }
     }
 
-    public void selectBinding(LogicalWire wire) throws BindingSelectionException {
+    public void selectBinding(LogicalWire wire) throws ContainerException {
         List<BindingMatchResult> results = new ArrayList<>();
         LogicalReference source = wire.getSource();
         LogicalService target = wire.getTarget();
@@ -122,13 +122,13 @@ public class BindingSelectorImpl implements BindingSelector {
                 provider.bind(wire);
                 if (source.getLeafReference().getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: " + type);
+                    throw new ContainerException("Binding provider error. Provider did not set a binding for the reference: " + type);
                 }
                 wire.setSourceBinding(source.getBindings().get(0));
                 if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
                     if (target.getLeafService().getBindings().isEmpty()) {
                         QName type = result.getType();
-                        throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: " + type);
+                        throw new ContainerException("Binding provider error. Provider did not set a binding for the service: " + type);
                     }
                     if (!target.getBindings().isEmpty()) {
                         wire.setTargetBinding(target.getBindings().get(0));
@@ -150,9 +150,9 @@ public class BindingSelectorImpl implements BindingSelector {
      * Selects and configures bindings for wires sourced from the given component.
      *
      * @param component the component
-     * @throws BindingSelectionException if an error occurs selecting a binding
+     * @throws ContainerException if an error occurs selecting a binding
      */
-    private void selectBindings(LogicalComponent<?> component) throws BindingSelectionException {
+    private void selectBindings(LogicalComponent<?> component) throws ContainerException {
         // bind remote wires
         for (LogicalReference reference : component.getReferences()) {
             for (LogicalWire wire : reference.getWires()) {
@@ -190,9 +190,9 @@ public class BindingSelectorImpl implements BindingSelector {
      * Selects and configures a binding for a channel.
      *
      * @param channel the channel
-     * @throws BindingSelectionException if an error occurs selecting a binding
+     * @throws ContainerException if an error occurs selecting a binding
      */
-    private void selectBinding(LogicalChannel channel) throws BindingSelectionException {
+    private void selectBinding(LogicalChannel channel) throws ContainerException {
         if (channel.isBound() || channel.getDefinition().isLocal()) {
             return;
         }
@@ -203,7 +203,7 @@ public class BindingSelectorImpl implements BindingSelector {
                 provider.bind(channel);
                 if (channel.getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the channel: " + type);
+                    throw new ContainerException("Binding provider error. Provider did not set a binding for the channel: " + type);
                 }
                 return;
             }

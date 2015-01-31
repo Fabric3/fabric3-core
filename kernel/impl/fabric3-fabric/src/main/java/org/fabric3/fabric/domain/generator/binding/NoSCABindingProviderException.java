@@ -20,13 +20,13 @@ package org.fabric3.fabric.domain.generator.binding;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
-import org.fabric3.spi.domain.generator.binding.BindingSelectionException;
 
 /**
  *
  */
-public class NoSCABindingProviderException extends BindingSelectionException {
+public class NoSCABindingProviderException extends ContainerException {
     private static final long serialVersionUID = -7797860974206005955L;
     private transient List<BindingMatchResult> results;
 

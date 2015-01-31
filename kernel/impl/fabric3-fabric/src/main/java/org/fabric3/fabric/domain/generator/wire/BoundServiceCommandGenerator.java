@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -62,7 +62,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         this.generators = generators;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws GenerationException {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws ContainerException {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -89,7 +89,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command) throws GenerationException {
+    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command) throws ContainerException {
         for (LogicalService service : component.getServices()) {
             if (service.getBindings().isEmpty()) {
                 continue;
@@ -146,11 +146,11 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private void generateCallbackBindings(LogicalService service) throws GenerationException {
+    private void generateCallbackBindings(LogicalService service) throws ContainerException {
         for (LogicalBinding<?> logicalBinding : service.getBindings()) {
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {
-                throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
+                throw new ContainerException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
             Binding definition = generator.generateServiceCallback(logicalBinding);
             definition.setParent(service.getDefinition());

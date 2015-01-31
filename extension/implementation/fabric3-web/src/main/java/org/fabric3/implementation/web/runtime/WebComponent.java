@@ -26,12 +26,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.objectfactory.Injector;

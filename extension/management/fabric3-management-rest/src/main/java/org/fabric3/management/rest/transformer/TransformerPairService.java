@@ -19,8 +19,8 @@ package org.fabric3.management.rest.transformer;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Returns a transformer pair for (de)serializing request/response types.

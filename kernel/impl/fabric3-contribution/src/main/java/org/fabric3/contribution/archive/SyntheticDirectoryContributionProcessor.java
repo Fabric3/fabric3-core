@@ -21,7 +21,6 @@ package org.fabric3.contribution.archive;
 import java.io.File;
 import java.net.URL;
 
-import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -40,7 +39,7 @@ public class SyntheticDirectoryContributionProcessor extends AbstractContributio
         return CONTENT_TYPE.equals(contribution.getContentType());
     }
 
-    public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, final IntrospectionContext context) {
         URL sourceUrl = contribution.getLocation();
         File root = FileHelper.toFile(sourceUrl);
         assert root.isDirectory();
@@ -49,11 +48,11 @@ public class SyntheticDirectoryContributionProcessor extends AbstractContributio
         manifest.addExtend(root.getName());
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, IntrospectionContext context) {
 
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void process(Contribution contribution, IntrospectionContext context) {
 
     }
 

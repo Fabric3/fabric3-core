@@ -22,8 +22,8 @@ package org.fabric3.spi.container.component;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.component.Scope;
 
 /**
  * Manages the lifecycle and visibility component implementations instances.

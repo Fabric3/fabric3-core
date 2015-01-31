@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.xml.XmlProcessor;
 import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
@@ -43,12 +43,12 @@ public class XmlProcessorRegistryImpl implements XmlProcessorRegistry {
         cache.remove(name);
     }
 
-    public void process(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws InstallException {
+    public void process(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws ContainerException {
         QName name = reader.getName();
         XmlProcessor processor = cache.get(name);
         if (processor == null) {
             String id = name.toString();
-            throw new XmlProcessorTypeNotFoundException("XML processor not found for: " + id);
+            throw new ContainerException("XML processor not found for: " + id);
         }
         processor.processContent(contribution, reader, context);
     }

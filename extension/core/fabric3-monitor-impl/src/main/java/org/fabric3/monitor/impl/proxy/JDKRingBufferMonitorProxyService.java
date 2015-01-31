@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.MonitorChannel;
-import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
@@ -39,7 +39,7 @@ public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyServic
         super(router, monitorable);
     }
 
-    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException {
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException {
         if (destination == null) {
             destination = DEFAULT_DESTINATION;
         }

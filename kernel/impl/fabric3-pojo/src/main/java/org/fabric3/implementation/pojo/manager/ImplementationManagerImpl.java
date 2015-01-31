@@ -23,9 +23,9 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.objectfactory.Injector;

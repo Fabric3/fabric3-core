@@ -17,8 +17,8 @@
 
 package org.fabric3.implementation.pojo.builder;
 
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.w3c.dom.Document;
 

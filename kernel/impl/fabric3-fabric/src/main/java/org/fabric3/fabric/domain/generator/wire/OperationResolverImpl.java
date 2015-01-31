@@ -20,9 +20,9 @@ package org.fabric3.fabric.domain.generator.wire;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
-import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.model.instance.LogicalInvocable;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -32,7 +32,7 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  */
 public class OperationResolverImpl implements OperationResolver {
 
-    public LogicalOperation resolve(LogicalOperation source, List<LogicalOperation> targets) throws OperationNotFoundException {
+    public LogicalOperation resolve(LogicalOperation source, List<LogicalOperation> targets) throws ContainerException {
         Operation sourceDefinition = source.getDefinition();
         for (LogicalOperation target : targets) {
             Operation targetDefinition = target.getDefinition();
@@ -49,9 +49,9 @@ public class OperationResolverImpl implements OperationResolver {
         LogicalInvocable parent = source.getParent();
         if (parent != null) {
             String sourceComponent = parent.getParent().getUri().toString();
-            throw new OperationNotFoundException("Target operation not found for " + sourceDefinition.getName() + " on source component " + sourceComponent);
+            throw new ContainerException("Target operation not found for " + sourceDefinition.getName() + " on source component " + sourceComponent);
         } else {
-            throw new OperationNotFoundException("Target operation not found for " + sourceDefinition.getName());
+            throw new ContainerException("Target operation not found for " + sourceDefinition.getName());
         }
     }
 

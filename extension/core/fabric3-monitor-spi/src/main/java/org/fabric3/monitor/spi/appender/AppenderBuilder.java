@@ -16,8 +16,8 @@
  */
 package org.fabric3.monitor.spi.appender;
 
-import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 
 /**
  * Instantiates an {@link Appender} from a definition.

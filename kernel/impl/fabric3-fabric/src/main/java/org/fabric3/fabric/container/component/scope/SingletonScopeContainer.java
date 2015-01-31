@@ -35,8 +35,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.oasisopen.sca.annotation.Destroy;

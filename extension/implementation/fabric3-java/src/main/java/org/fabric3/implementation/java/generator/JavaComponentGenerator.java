@@ -18,6 +18,7 @@
  */
 package org.fabric3.implementation.java.generator;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
@@ -26,7 +27,6 @@ import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -55,7 +55,7 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         this.ifHelper = ifHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JavaImplementation> component) throws GenerationException {
+    public PhysicalComponentDefinition generate(LogicalComponent<JavaImplementation> component) throws ContainerException {
         Object instance = component.getDefinition().getImplementation().getInstance();
         if (instance != null) {
             // deploying an un managed instance
@@ -68,14 +68,14 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         generationHelper.generateWireSource(definition, reference);
         return definition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws GenerationException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
@@ -83,25 +83,25 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws GenerationException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
         JavaWireTargetDefinition definition = new JavaWireTargetDefinition();
         generationHelper.generateWireTarget(definition, service);
         return definition;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
         JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
         generationHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
         JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
         generationHelper.generateConnectionTarget(definition, consumer);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         generationHelper.generateResourceWireSource(definition, resourceReference);
         return definition;

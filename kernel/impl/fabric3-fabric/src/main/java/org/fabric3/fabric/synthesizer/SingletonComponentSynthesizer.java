@@ -20,6 +20,7 @@ package org.fabric3.fabric.synthesizer;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -32,7 +33,6 @@ import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;

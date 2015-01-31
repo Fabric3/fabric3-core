@@ -23,8 +23,8 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3RuntimeException;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3RuntimeException;
 import org.fabric3.spi.container.objectfactory.Injector;
 
 /**

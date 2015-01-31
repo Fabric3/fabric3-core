@@ -22,8 +22,8 @@ package org.fabric3.spi.container.component;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.monitor.Monitorable;
 
 /**
  * The runtime instantiation of an SCA component

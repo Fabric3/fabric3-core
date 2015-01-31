@@ -51,7 +51,6 @@ import org.fabric3.api.host.runtime.HiddenPackages;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -219,7 +218,7 @@ public class DefaultFabric implements Fabric {
                 }
             }
             return this;
-        } catch (ShutdownException | IOException e) {
+        } catch (ContainerException | IOException e) {
             throw new FabricException(e);
         }
     }

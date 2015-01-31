@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
-import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
@@ -48,7 +47,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws GenerationException {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws ContainerException {
 
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(operations.size());
 
@@ -59,14 +58,14 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         return physicalOperations;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) throws GenerationException {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) throws ContainerException {
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(sources.size());
         for (LogicalOperation source : sources) {
             LogicalOperation target;
             try {
                 target = operationResolver.resolve(source, targets);
-            } catch (OperationNotFoundException e) {
-                throw new GenerationException(e);
+            } catch (ContainerException e) {
+                throw new ContainerException(e);
             }
             PhysicalOperationDefinition physicalOperation = generate(source, target);
             physicalOperations.add(physicalOperation);
@@ -84,9 +83,9 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param source the operation
      * @param target the target operation
      * @return the interceptor definitions
-     * @throws GenerationException if a generation error occurs
+     * @throws ContainerException if a generation error occurs
      */
-    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) throws GenerationException {
+    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) throws ContainerException {
         Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<>();
         for (InterceptorGenerator interceptorGenerator : generatorRegistry.getInterceptorGenerators()) {
             Optional<PhysicalInterceptorDefinition> optional = interceptorGenerator.generate(source, target);

@@ -20,6 +20,8 @@ package org.fabric3.spi.contribution;
 
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Resolves contribution dependencies.
  */
@@ -31,9 +33,9 @@ public interface DependencyResolver {
      *
      * @param contributions the  list of contributions to order
      * @return the ordered list of contributions
-     * @throws DependencyException if an error occurs ordering the contributions such as an unresolvable import or dependency cycle
+     * @throws ContainerException if an error occurs ordering the contributions such as an unresolvable import or dependency cycle
      */
-    List<Contribution> resolve(List<Contribution> contributions) throws DependencyException;
+    List<Contribution> resolve(List<Contribution> contributions) throws ContainerException;
 
     /**
      * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on resolved contribution imports

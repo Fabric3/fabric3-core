@@ -27,8 +27,8 @@ import javax.transaction.Transaction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

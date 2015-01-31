@@ -57,8 +57,8 @@ public interface Fabric3Runtime extends Monitorable {
     /**
      * Destroy the runtime. Any further invocations should result in an error.
      *
-     * @throws ShutdownException if there is an error destroying the runtime
+     * @throws ContainerException if there is an error destroying the runtime
      */
-    void destroy() throws ShutdownException;
+    void destroy() throws ContainerException;
 
 }

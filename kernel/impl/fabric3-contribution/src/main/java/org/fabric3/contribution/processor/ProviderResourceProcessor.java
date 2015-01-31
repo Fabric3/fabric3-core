@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.model.Environment;
 import org.fabric3.api.annotation.model.Provides;
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
@@ -69,7 +69,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
         return Constants.DSL_CONTENT_TYPE;
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, IntrospectionContext context) throws ContainerException {
         ResourceElement<?, ?> element = resource.getResourceElements().get(0); // safe as the provider is always the first element
         ProviderSymbol symbol = (ProviderSymbol) element.getSymbol();
 
@@ -169,7 +169,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
         resource.setState(ResourceState.PROCESSED);
     }
 
-    public void process(Resource resource, IntrospectionContext context) throws InstallException {
+    public void process(Resource resource, IntrospectionContext context) {
         // no-op
     }
 

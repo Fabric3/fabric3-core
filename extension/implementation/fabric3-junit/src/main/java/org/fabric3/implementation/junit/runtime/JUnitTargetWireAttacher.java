@@ -21,6 +21,7 @@ package org.fabric3.implementation.junit.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
@@ -29,7 +30,6 @@ import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;

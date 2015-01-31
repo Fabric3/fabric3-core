@@ -31,10 +31,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -80,7 +79,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".jar") || sourceUrl.endsWith(".zip");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
         URL sourceUrl = contribution.getLocation();
         try {
             URL manifestUrl = new URL("jar:" + sourceUrl.toExternalForm() + "!/META-INF/sca-contribution.xml");
@@ -103,7 +102,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new InstallException(e);
+                throw new ContainerException(e);
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
@@ -119,7 +118,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         } catch (MalformedURLException | FileNotFoundException e) {
             // ignore no manifest found
         } catch (IOException e) {
-            throw new InstallException(e);
+            throw new ContainerException(e);
         } finally {
             try {
                 if (manifestStream != null) {
@@ -132,7 +131,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -195,8 +194,8 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                     callback.onResource(resource);
                 }
             }
-        } catch (ContentTypeResolutionException | IOException e) {
-            throw new InstallException(e);
+        } catch (IOException e) {
+            throw new ContainerException(e);
         } finally {
             try {
                 if (zipStream != null) {

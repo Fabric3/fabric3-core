@@ -20,9 +20,9 @@ package org.fabric3.spi.domain.generator.wire;
 
 import java.net.URI;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ResourceReference;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalWire;
@@ -62,63 +62,63 @@ public interface WireGenerator {
      * @param binding     the service binding
      * @param callbackUri the callback URI associated with this wire or null if the service is unidirectional
      * @return the physical wire definition.
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri)  throws GenerationException;
+    <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri)  throws ContainerException;
 
     /**
      * Generates a PhysicalWireDefinition for callback wire from a component to the callback service provided by a forward service
      *
      * @param binding the callback service binding
      * @return the physical wire definition.
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws GenerationException;
+    <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws ContainerException;
 
     /**
      * Generates a PhysicalWireDefinition for a bound reference.
      *
      * @param binding the reference binding
      * @return the physical wire definition.
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws GenerationException;
+    <T extends Binding> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws ContainerException;
 
     /**
      * Generates a PhysicalWireDefinition for callback wire for a bound reference
      *
      * @param binding the callback binding
      * @return the physical wire definition.
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws GenerationException;
+    <T extends Binding> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws ContainerException;
 
     /**
      * Generates a PhysicalWireDefinition for a wire.
      *
      * @param wire the logical wire
      * @return the physical wire definition.
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    PhysicalWireDefinition generateWire(LogicalWire wire) throws GenerationException;
+    PhysicalWireDefinition generateWire(LogicalWire wire) throws ContainerException;
 
     /**
      * Generates a PhysicalWireDefinition for a callback wire.
      *
      * @param wire the logical wire
      * @return the physical wire definition.
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws GenerationException;
+    PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws ContainerException;
 
     /**
      * Generates a PhysicalWireDefinition for the resource.
      *
      * @param resourceReference the resource
      * @return the physical wire definition
-     * @throws GenerationException if an error occurs during generation
+     * @throws ContainerException if an error occurs during generation
      */
-    <T extends ResourceReference> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws GenerationException;
+    <T extends ResourceReference> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws ContainerException;
 
 
 }

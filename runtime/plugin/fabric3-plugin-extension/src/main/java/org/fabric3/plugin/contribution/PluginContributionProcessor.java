@@ -25,12 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.plugin.api.runtime.PluginHostInfo;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -84,7 +83,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
         registry.register(this);
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws InstallException {
+    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
         try {
@@ -100,7 +99,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
         }
     }
 
-    public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, final IntrospectionContext context) throws ContainerException {
         ClassLoader cl = getClass().getClassLoader();
         URI uri = contribution.getUri();
         IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
@@ -133,16 +132,14 @@ public class PluginContributionProcessor implements ContributionProcessor {
 
     }
 
-    public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, final IntrospectionContext context) throws ContainerException {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
 
-            iterateArtifacts(contribution, context, new ArtifactResourceCallback() {
-                public void onResource(Resource resource) throws InstallException {
-                    registry.indexResource(resource, context);
-                }
+            iterateArtifacts(contribution, context, resource -> {
+                registry.indexResource(resource, context);
             });
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
@@ -155,9 +152,9 @@ public class PluginContributionProcessor implements ContributionProcessor {
      * @param manifestUrl  the manifest location
      * @param childContext the current context
      * @return the manifest or null if not found
-     * @throws InstallException if there is an error loading the manifest
+     * @throws ContainerException if there is an error loading the manifest
      */
-    private ContributionManifest loadManifest(URL manifestUrl, IntrospectionContext childContext) throws InstallException {
+    private ContributionManifest loadManifest(URL manifestUrl, IntrospectionContext childContext) throws ContainerException {
         try {
             Source source = new UrlSource(manifestUrl);
             return loader.load(source, ContributionManifest.class, childContext);
@@ -165,20 +162,20 @@ public class PluginContributionProcessor implements ContributionProcessor {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new InstallException(e);
+                throw new ContainerException(e);
             }
         }
         return null;
     }
 
-    private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback) throws InstallException {
+    private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback) throws ContainerException {
         File root = FileHelper.toFile(contribution.getLocation());
         assert root.isDirectory();
         iterateArtifactsRecursive(contribution, context, callback, root);
     }
 
     private void iterateArtifactsRecursive(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback, File dir)
-            throws InstallException {
+            throws ContainerException {
         File[] files = dir.listFiles();
         if (files == null) {
             return;
@@ -227,7 +224,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
                         contribution.addResource(resource);
                         callback.onResource(resource);
                     }
-                } catch (MalformedURLException | ContentTypeResolutionException e) {
+                } catch (MalformedURLException e) {
                     context.addWarning(new ContributionIndexingFailure(file, e));
                 }
             }

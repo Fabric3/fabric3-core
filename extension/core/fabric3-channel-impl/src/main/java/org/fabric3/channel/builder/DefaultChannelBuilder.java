@@ -22,11 +22,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.channel.impl.AsyncFanOutHandler;
 import org.fabric3.channel.impl.DefaultChannelImpl;
 import org.fabric3.channel.impl.FanOutHandler;
 import org.fabric3.channel.impl.SyncFanOutHandler;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;

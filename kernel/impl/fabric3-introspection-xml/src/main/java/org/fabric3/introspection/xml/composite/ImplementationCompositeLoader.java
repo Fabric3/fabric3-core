@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.Composite;
@@ -147,7 +147,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
             }
             impl.setComponentType(element.getValue());
             return impl;
-        } catch (StoreException e) {
+        } catch (ContainerException e) {
             ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, startLocation);
             context.addError(failure);
             return null;

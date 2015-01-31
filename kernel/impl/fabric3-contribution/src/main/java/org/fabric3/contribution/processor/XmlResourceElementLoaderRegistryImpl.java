@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoader;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
@@ -45,7 +45,7 @@ public class XmlResourceElementLoaderRegistryImpl implements XmlResourceElementL
     }
 
     @SuppressWarnings({"unchecked"})
-    public void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws InstallException, XMLStreamException {
+    public void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws ContainerException, XMLStreamException {
         try {
             QName name = reader.getName();
             XmlResourceElementLoader elementLoader = cache.get(name);

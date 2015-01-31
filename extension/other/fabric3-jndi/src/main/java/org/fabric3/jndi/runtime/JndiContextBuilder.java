@@ -20,9 +20,9 @@ import javax.naming.NamingException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.jndi.spi.JndiContextManager;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

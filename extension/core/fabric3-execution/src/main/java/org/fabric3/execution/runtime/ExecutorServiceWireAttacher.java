@@ -20,8 +20,8 @@ package org.fabric3.execution.runtime;
 
 import java.util.concurrent.ExecutorService;
 
-import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;

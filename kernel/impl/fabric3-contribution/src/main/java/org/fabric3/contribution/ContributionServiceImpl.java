@@ -34,29 +34,23 @@ import java.util.Set;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
-import org.fabric3.api.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.contribution.DuplicateContributionException;
-import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.contribution.RemoveException;
-import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.ContributionState;
-import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -138,7 +132,7 @@ public class ContributionServiceImpl implements ContributionService {
         return list;
     }
 
-    public URI store(ContributionSource contributionSource) throws StoreException {
+    public URI store(ContributionSource contributionSource) throws ContainerException {
         Contribution contribution = persist(contributionSource);
         metaDataStore.store(contribution);
         for (ContributionServiceListener listener : listeners) {
@@ -147,7 +141,7 @@ public class ContributionServiceImpl implements ContributionService {
         return contribution.getUri();
     }
 
-    public List<URI> store(List<ContributionSource> contributionSources) throws StoreException {
+    public List<URI> store(List<ContributionSource> contributionSources) throws ContainerException {
         List<URI> uris = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             URI uri = store(contributionSource);
@@ -210,7 +204,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    public ContributionOrder processManifests(List<ContributionSource> contributionSources) throws InstallException, StoreException {
+    public ContributionOrder processManifests(List<ContributionSource> contributionSources) throws ContainerException {
         List<Contribution> contributions = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             // store the contributions
@@ -234,7 +228,7 @@ public class ContributionServiceImpl implements ContributionService {
             for (ContributionServiceListener listener : listeners) {
                 listener.onInstall(contribution);
             }
-        } catch (InstallException e) {
+        } catch (ContainerException e) {
             try {
                 revertInstall(Collections.singletonList(contribution));
             } catch (RuntimeException ex) {
@@ -248,11 +242,11 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    private ContributionOrder introspectManifests(List<Contribution> contributions) throws InstallException {
+    private ContributionOrder introspectManifests(List<Contribution> contributions) throws ContainerException {
         ContributionOrder order = new ContributionOrder();
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED != contribution.getState()) {
-                throw new ContributionAlreadyInstalledException("Contribution is already installed: " + contribution.getUri());
+                throw new ContainerException("Contribution is already installed: " + contribution.getUri());
             }
         }
         for (Contribution contribution : contributions) {
@@ -260,11 +254,7 @@ public class ContributionServiceImpl implements ContributionService {
             processManifest(contribution);
         }
         // order the contributions based on their dependencies
-        try {
-            contributions = dependencyResolver.resolve(contributions);
-        } catch (DependencyException e) {
-            throw new InstallException(e);
-        }
+        contributions = dependencyResolver.resolve(contributions);
         for (Contribution contribution : contributions) {
             boolean requiresLoad = false;
             ContributionManifest manifest = contribution.getManifest();
@@ -308,7 +298,7 @@ public class ContributionServiceImpl implements ContributionService {
     private List<URI> installInOrder(List<Contribution> contributions) throws ContainerException {
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED != contribution.getState()) {
-                throw new ContributionAlreadyInstalledException("Contribution is already installed: " + contribution.getUri());
+                throw new ContainerException("Contribution is already installed: " + contribution.getUri());
             }
         }
         for (Contribution contribution : contributions) {
@@ -316,11 +306,7 @@ public class ContributionServiceImpl implements ContributionService {
             processManifest(contribution);
         }
         // order the contributions based on their dependencies
-        try {
-            contributions = dependencyResolver.resolve(contributions);
-        } catch (DependencyException e) {
-            throw new InstallException(e);
-        }
+        contributions = dependencyResolver.resolve(contributions);
         try {
             for (Contribution contribution : contributions) {
                 ClassLoader loader = contributionLoader.load(contribution);
@@ -331,7 +317,7 @@ public class ContributionServiceImpl implements ContributionService {
                     listener.onInstall(contribution);
                 }
             }
-        } catch (InstallException e) {
+        } catch (ContainerException e) {
             try {
                 revertInstall(contributions);
             } catch (RuntimeException ex) {
@@ -396,9 +382,9 @@ public class ContributionServiceImpl implements ContributionService {
      * Processes the contribution manifest.
      *
      * @param contribution the contribution
-     * @throws InstallException if there is an error during introspection such as an invalid contribution
+     * @throws ContainerException if there is an error during introspection
      */
-    private void processManifest(Contribution contribution) throws InstallException {
+    private void processManifest(Contribution contribution) throws ContainerException {
         IntrospectionContext context = new DefaultIntrospectionContext();
         processorRegistry.processManifest(contribution, context);
         if (context.hasErrors()) {
@@ -424,33 +410,29 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param contribution the contribution to process
      * @param loader       the classloader to load resources in
-     * @throws InstallException if an error occurs during processing
+     * @throws ContainerException if an error occurs during processing
      */
-    private void processContents(Contribution contribution, ClassLoader loader) throws InstallException {
-        try {
-            URI contributionUri = contribution.getUri();
-            IntrospectionContext context = new DefaultIntrospectionContext(contributionUri, loader);
-            processorRegistry.indexContribution(contribution, context);
-            if (context.hasErrors()) {
-                throw new InvalidContributionException(context.getErrors(), context.getWarnings());
-            } else if (context.hasWarnings()) {
-                // there were just warnings, report them
-                monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
-            }
-            metaDataStore.store(contribution);
-            context = new DefaultIntrospectionContext(contributionUri, loader);
-            processorRegistry.processContribution(contribution, context);
-            validateContribution(contribution, context);
-            if (context.hasErrors()) {
-                throw new InvalidContributionException(context.getErrors(), context.getWarnings());
-            } else if (context.hasWarnings()) {
-                // there were just warnings, report them
-                monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
-            }
-            addDeployableEntries(contribution);
-        } catch (StoreException e) {
-            throw new InstallException(e);
+    private void processContents(Contribution contribution, ClassLoader loader) throws ContainerException {
+        URI contributionUri = contribution.getUri();
+        IntrospectionContext context = new DefaultIntrospectionContext(contributionUri, loader);
+        processorRegistry.indexContribution(contribution, context);
+        if (context.hasErrors()) {
+            throw new InvalidContributionException(context.getErrors(), context.getWarnings());
+        } else if (context.hasWarnings()) {
+            // there were just warnings, report them
+            monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
         }
+        metaDataStore.store(contribution);
+        context = new DefaultIntrospectionContext(contributionUri, loader);
+        processorRegistry.processContribution(contribution, context);
+        validateContribution(contribution, context);
+        if (context.hasErrors()) {
+            throw new InvalidContributionException(context.getErrors(), context.getWarnings());
+        } else if (context.hasWarnings()) {
+            // there were just warnings, report them
+            monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
+        }
+        addDeployableEntries(contribution);
     }
 
     /**
@@ -507,12 +489,12 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param contributionSource the contribution source
      * @return the contribution
-     * @throws StoreException if an error occurs during the store operation
+     * @throws ContainerException if an error occurs during the store operation
      */
-    private Contribution persist(ContributionSource contributionSource) throws StoreException {
+    private Contribution persist(ContributionSource contributionSource) throws ContainerException {
         URI contributionUri = contributionSource.getUri();
         if (metaDataStore.find(contributionUri) != null) {
-            throw new DuplicateContributionException("Contribution already exists: " + contributionUri);
+            throw new ContainerException("Contribution already exists: " + contributionUri);
         }
         URL locationUrl;
         boolean persistent = contributionSource.persist();
@@ -528,8 +510,8 @@ public class ContributionServiceImpl implements ContributionService {
                 boolean extension = contributionSource.isExtension();
                 locationUrl = getRepository().store(contributionUri, stream, extension);
                 source = new UrlSource(locationUrl);
-            } catch (IOException | ContainerException e) {
-                throw new StoreException(e);
+            } catch (IOException e) {
+                throw new ContainerException(e);
             } finally {
                 try {
                     if (stream != null) {
@@ -542,14 +524,10 @@ public class ContributionServiceImpl implements ContributionService {
         }
         String type = contributionSource.getContentType();
         if (type == null && locationUrl == null) {
-            throw new StoreException("Content type could not be determined for contribution: " + contributionUri);
+            throw new ContainerException("Content type could not be determined for contribution: " + contributionUri);
         }
         if (type == null) {
-            try {
-                type = contentTypeResolver.getContentType(locationUrl);
-            } catch (ContentTypeResolutionException e) {
-                throw new StoreException(e);
-            }
+            type = contentTypeResolver.getContentType(locationUrl);
         }
         long timestamp = contributionSource.getTimestamp();
         return new Contribution(contributionUri, source, locationUrl, timestamp, type, persistent);

@@ -19,12 +19,12 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -41,7 +41,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Command generateBuild(LogicalResource resource) throws GenerationException {
+    public Command generateBuild(LogicalResource resource) throws ContainerException {
         if (resource.getState() != LogicalState.NEW) {
             return null;
         }
@@ -53,7 +53,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         return new BuildResourcesCommand(definitions);
     }
 
-    public Command generateDispose(LogicalResource resource) throws GenerationException {
+    public Command generateDispose(LogicalResource resource) throws ContainerException {
         if (resource.getState() != LogicalState.MARKED) {
             return null;
         }
@@ -65,7 +65,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws GenerationException {
+    private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws ContainerException {
         List<PhysicalResourceDefinition> definitions = new ArrayList<>();
         Resource resourceDefinition = resource.getDefinition();
         ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());

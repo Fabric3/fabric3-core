@@ -23,8 +23,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 

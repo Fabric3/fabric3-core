@@ -23,9 +23,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
@@ -75,7 +74,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         return Constants.JAVA_COMPONENT_CONTENT_TYPE;
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, IntrospectionContext context) throws ContainerException {
         // create component definition
         ResourceElement<?, ?> resourceElement = resource.getResourceElements().get(0);
         Class<?> clazz = (Class<?>) resourceElement.getValue();
@@ -116,7 +115,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
     }
 
     @SuppressWarnings("unchecked")
-    public void process(Resource resource, IntrospectionContext context) throws InstallException {
+    public void process(Resource resource, IntrospectionContext context) throws ContainerException {
         ResourceElement<ParsedComponentSymbol, QName> resourceElement = null;
         for (ResourceElement<?, ?> element : resource.getResourceElements()) {
             if (element.getSymbol() instanceof ParsedComponentSymbol) {
@@ -130,13 +129,9 @@ public class JavaResourceProcessor implements ResourceProcessor {
         Contribution contribution = resource.getContribution();
 
         Composite composite = null;
-        try {
-            ResourceElement<QNameSymbol, Composite> element = store.resolve(context.getContributionUri(), Composite.class, compositeSymbol, context);
-            if (element != null) {
-                composite = element.getValue();
-            }
-        } catch (StoreException e) {
-            throw new InstallException(e);
+        ResourceElement<QNameSymbol, Composite> element = store.resolve(context.getContributionUri(), Composite.class, compositeSymbol, context);
+        if (element != null) {
+            composite = element.getValue();
         }
         if (composite == null) {
             composite = new Composite(compositeName);

@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -38,7 +38,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class AuthorizationInterceptorGenerator implements InterceptorGenerator {
     private static final QName AUTHORIZATION = new QName("urn:fabric3.org", "authorization");
 
-    public Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws GenerationException {
+    public Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws ContainerException {
         List<String> operationPolicies = target.getDefinition().getPolicies();
         ComponentType componentType = target.getParent().getParent().getDefinition().getComponentType();
         List<String> targetPolicies = componentType.getPolicies();
@@ -52,7 +52,7 @@ public class AuthorizationInterceptorGenerator implements InterceptorGenerator {
             roles = target.getDefinition().getMetadata(AUTHORIZATION, String[].class);
             if (roles == null) {
                 LogicalComponent component = source.getParent().getParent();
-                throw new GenerationException("No roles specified for authorization annotation on component: " + component.getUri());
+                throw new ContainerException("No roles specified for authorization annotation on component: " + component.getUri());
             }
         }
         return Optional.of(new AuthorizationInterceptorDefinition(Arrays.asList(roles)));

@@ -18,12 +18,12 @@ package org.fabric3.monitor.impl.generator;
 
 import java.util.Map;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorResource;
-import org.fabric3.spi.domain.generator.GenerationException;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -42,7 +42,7 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResource> logicalResource) throws GenerationException {
+    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResource> logicalResource) throws ContainerException {
         MonitorResource resourceDefinition = logicalResource.getDefinition();
 
         PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition(resourceDefinition.getName());
@@ -54,10 +54,10 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
         return physicalDefinition;
     }
 
-    private MonitorDestinationGenerator getDestinationGenerator(MonitorDestinationDefinition definition) throws GenerationException {
+    private MonitorDestinationGenerator getDestinationGenerator(MonitorDestinationDefinition definition) throws ContainerException {
         MonitorDestinationGenerator generator = destinationGenerators.get(definition.getClass());
         if (generator == null) {
-            throw new GenerationException("Unknown monitor destination type: " + definition.getClass());
+            throw new ContainerException("Unknown monitor destination type: " + definition.getClass());
         }
         return generator;
     }

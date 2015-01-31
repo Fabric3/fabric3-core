@@ -21,8 +21,8 @@ package org.fabric3.fabric.container.executor;
 
 import java.net.URI;
 
-import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.executor.CommandExecutor;

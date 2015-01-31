@@ -40,7 +40,6 @@ import org.fabric3.api.host.runtime.BootstrapFactory;
 import org.fabric3.api.host.runtime.BootstrapService;
 import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.stream.InputStreamSource;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.plugin.api.runtime.PluginHostInfo;
@@ -108,7 +107,7 @@ public abstract class AbstractPluginRuntimeBooter {
         return runtime;
     }
 
-    public void shutdown() throws ShutdownException, InterruptedException, ExecutionException {
+    public void shutdown() throws ContainerException, InterruptedException, ExecutionException {
         coordinator.shutdown();
     }
 

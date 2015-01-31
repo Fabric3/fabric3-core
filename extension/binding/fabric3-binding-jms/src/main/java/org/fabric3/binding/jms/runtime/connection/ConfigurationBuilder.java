@@ -14,12 +14,12 @@ import java.util.Properties;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.DefaultConnectionFactoryBuilder;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;

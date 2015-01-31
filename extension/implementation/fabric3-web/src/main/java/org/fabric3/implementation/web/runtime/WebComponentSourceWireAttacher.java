@@ -20,8 +20,8 @@ package org.fabric3.implementation.web.runtime;
 
 import java.net.URI;
 
-import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

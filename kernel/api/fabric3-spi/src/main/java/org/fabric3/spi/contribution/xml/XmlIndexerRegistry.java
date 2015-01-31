@@ -21,7 +21,7 @@ package org.fabric3.spi.contribution.xml;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -49,8 +49,8 @@ public interface XmlIndexerRegistry {
      * @param resource the resource being indexed
      * @param reader   the reader positioned on the start element of the first tag
      * @param context  the context to which validation errors and warnings are reported
-     * @throws InstallException if an error occurs during indexing
+     * @throws ContainerException if an error occurs during indexing
      */
-    void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) throws InstallException;
+    void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) throws ContainerException;
 
 }

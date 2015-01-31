@@ -16,9 +16,9 @@
  */
 package org.fabric3.monitor.spi.destination;
 
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
-import org.fabric3.spi.domain.generator.GenerationException;
 
 /**
  * Generates physical definitions for a monitor destination.
@@ -30,7 +30,7 @@ public interface MonitorDestinationGenerator<D extends MonitorDestinationDefinit
      *
      * @param definition the configuration
      * @return the physical definition
-     * @throws GenerationException if there is a generation error
+     * @throws ContainerException if there is a generation error
      */
-    PhysicalMonitorDestinationDefinition generateResource(D definition) throws GenerationException;
+    PhysicalMonitorDestinationDefinition generateResource(D definition) throws ContainerException;
 }
