@@ -16,12 +16,12 @@
  */
 package org.fabric3.federation.jgroups;
 
-import org.fabric3.api.host.Fabric3RuntimeException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
  */
-public class MessageRuntimeException extends Fabric3RuntimeException{
+public class MessageRuntimeException extends Fabric3Exception {
     private static final long serialVersionUID = 7223560861610277314L;
 
     public MessageRuntimeException(String message) {

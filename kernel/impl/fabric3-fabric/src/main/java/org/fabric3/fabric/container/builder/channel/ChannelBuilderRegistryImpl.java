@@ -45,7 +45,7 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
         this.builders = builders;
     }
 
-    public Channel build(PhysicalChannelDefinition definition) throws ContainerException {
+    public Channel build(PhysicalChannelDefinition definition) {
         URI uri = definition.getUri();
         ChannelSide channelSide = definition.getChannelSide();
         Channel channel = channelManager.getAndIncrementChannel(uri, channelSide);
@@ -58,7 +58,7 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
         return channel;
     }
 
-    public void dispose(PhysicalChannelDefinition definition) throws ContainerException {
+    public void dispose(PhysicalChannelDefinition definition) {
         ChannelBuilder builder = getBuilder(definition);
         URI uri = definition.getUri();
         ChannelSide channelSide = definition.getChannelSide();
@@ -69,7 +69,7 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
         }
     }
 
-    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws ContainerException {
+    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) {
         ChannelBuilder builder = builders.get(definition.getType());
         if (builder == null) {
             throw new ContainerException("Channel builder not found for type " + definition.getType());

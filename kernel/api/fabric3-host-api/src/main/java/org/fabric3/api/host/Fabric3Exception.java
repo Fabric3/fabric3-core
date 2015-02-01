@@ -20,47 +20,23 @@
 package org.fabric3.api.host;
 
 /**
- * The root checked exception for the Fabric3 runtime.
+ * The root exception for the Fabric3 runtime.
  */
-public abstract class Fabric3Exception extends Exception {
+public abstract class Fabric3Exception extends RuntimeException {
     private static final long serialVersionUID = -7847121698339635268L;
 
-    /**
-     * Override constructor from Exception.
-     *
-     * @see Exception
-     */
     protected Fabric3Exception() {
         super();
     }
 
-    /**
-     * Override constructor from Exception.
-     *
-     * @param message passed to Exception
-     * @see Exception
-     */
     public Fabric3Exception(String message) {
         super(message);
     }
 
-    /**
-     * Override constructor from Exception.
-     *
-     * @param message passed to Exception
-     * @param cause   passed to Exception
-     * @see Exception
-     */
     public Fabric3Exception(String message, Throwable cause) {
         super(message, cause);
     }
 
-    /**
-     * Override constructor from Exception.
-     *
-     * @param cause passed to Exception
-     * @see Exception
-     */
     public Fabric3Exception(Throwable cause) {
         super(cause);
     }

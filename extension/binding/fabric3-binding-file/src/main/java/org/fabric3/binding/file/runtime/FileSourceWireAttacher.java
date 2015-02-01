@@ -70,7 +70,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "inbox");
     }
 
-    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         String id = source.getUri().toString();
 
         File location = getLocation(source);
@@ -102,7 +102,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         receiverManager.create(configuration);
     }
 
-    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         String id = source.getUri().toString();
         receiverManager.remove(id);
     }

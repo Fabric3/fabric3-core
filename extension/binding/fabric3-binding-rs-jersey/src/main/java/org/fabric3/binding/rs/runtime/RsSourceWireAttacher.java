@@ -64,7 +64,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
                                 @Reference RsContainerManager containerManager,
                                 @Reference ProviderRegistry providerRegistry,
                                 @Reference NameBindingFilterProvider provider,
-                                @Monitor RsWireAttacherMonitor monitor) throws NoSuchFieldException, IllegalAccessException {
+                                @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
@@ -103,7 +103,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         }
     }
 
-    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
@@ -111,8 +111,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         monitor.removedEndpoint(sourceUri);
     }
 
-    public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+    public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
         throw new AssertionError();
     }
 
@@ -150,7 +149,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         }
     }
 
-    private Resource createResource(F3ResourceHandler handler) throws ContainerException {
+    private Resource createResource(F3ResourceHandler handler) {
         Resource template = Resource.from(handler.getInterface());
         if (template == null) {
             throw new ContainerException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());

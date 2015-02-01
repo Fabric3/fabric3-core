@@ -18,12 +18,12 @@
  */
 package org.fabric3.fabric.domain.instantiator.component;
 
-import org.fabric3.api.host.Fabric3RuntimeException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
  */
-public class PropertyTypeException extends Fabric3RuntimeException {
+public class PropertyTypeException extends Fabric3Exception {
     private static final long serialVersionUID = 6489030033559335936L;
 
     public PropertyTypeException(String message) {

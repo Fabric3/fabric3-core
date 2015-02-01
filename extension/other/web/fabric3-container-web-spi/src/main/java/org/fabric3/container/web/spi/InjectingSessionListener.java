@@ -23,8 +23,6 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
-import org.fabric3.api.host.Fabric3RuntimeException;
 import org.fabric3.spi.container.objectfactory.Injector;
 
 /**
@@ -40,11 +38,7 @@ public class InjectingSessionListener implements HttpSessionListener {
     public void sessionCreated(HttpSessionEvent se) {
         HttpSession session = se.getSession();
         for (Injector<HttpSession> injector : injectors) {
-            try {
-                injector.inject(session);
-            } catch (ContainerException e) {
-                throw new Fabric3RuntimeException(e);
-            }
+            injector.inject(session);
         }
     }
 

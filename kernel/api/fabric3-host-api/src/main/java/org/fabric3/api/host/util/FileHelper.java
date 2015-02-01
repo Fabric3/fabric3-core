@@ -20,7 +20,6 @@
 package org.fabric3.api.host.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,7 +31,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
 /**
  * Helper methods for working with files.
@@ -252,52 +250,6 @@ public class FileHelper {
             }
             return filename;
         }
-    }
-
-    public static FileFilter getFileFilter(String regExp, boolean ignoreCase) {
-        return new RegExpFilter(regExp, ignoreCase);
-    }
-
-    /**
-     * A regular-expression based resource filter
-     */
-    public static class RegExpFilter implements FileFilter {
-        private Pattern pattern;
-
-        public RegExpFilter(Pattern pattern) {
-            this.pattern = pattern;
-        }
-
-        public RegExpFilter(String patternStr, boolean ignoreCase) {
-            this.pattern = Pattern.compile(patternStr, ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
-        }
-
-        public boolean accept(File file) {
-            return pattern.matcher(file.getName()).matches();
-        }
-
-        /**
-         * Convert wildcard into a regex pattern
-         *
-         * @param str        the expression
-         * @param ignoreCase true if case sensitivity should be ignored
-         * @return the regex filter
-         */
-        public static RegExpFilter getWildcardFilter(String str, boolean ignoreCase) {
-            StringBuilder buffer = new StringBuilder();
-            for (int i = 0; i < str.length(); i++) {
-                char ch = str.charAt(i);
-                if (ch == '?') {
-                    buffer.append('.');
-                } else if (ch == '*') {
-                    buffer.append(".*");
-                } else {
-                    buffer.append(ch);
-                }
-            }
-            return new RegExpFilter(buffer.toString(), ignoreCase);
-        }
-
     }
 
     /**
@@ -703,9 +655,6 @@ public class FileHelper {
     /**
      * Given a parentLocation as a base, returns the absolute path to the childLocation. The childLocation may be absolute or relative.  If the child is
      * absolute, it is simply returned unchanged.  If it is relative, this method then resolves the location of the child from the parent location.
-     *
-     * @param parentLocation
-     * @param childLocation
      */
     public static String resolveRelativePath(String parentLocation, String childLocation) {
         String path = childLocation;
@@ -775,7 +724,6 @@ public class FileHelper {
     /**
      * Determine if the given String represents an absolute path by checking if the string starts with a '/' or is a URI that starts with a scheme 'scheme:/'.
      *
-     * @param aPath
      * @return true if path is absolute, otherwise false.
      */
     public static boolean isAbsolute(String aPath) {

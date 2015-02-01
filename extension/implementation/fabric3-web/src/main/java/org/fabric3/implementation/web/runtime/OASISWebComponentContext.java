@@ -25,8 +25,7 @@ import java.net.URI;
 import java.util.Collection;
 
 import org.fabric3.api.Fabric3ComponentContext;
-import org.fabric3.api.host.ContainerException;
-import org.fabric3.api.host.Fabric3RuntimeException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.container.web.spi.WebRequestTunnel;
 import org.oasisopen.sca.RequestContext;
@@ -48,7 +47,7 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
     public String getURI() {
         try {
             return component.getUri().toString();
-        } catch (Fabric3RuntimeException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -57,7 +56,7 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
     public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         try {
             return (R) component.cast(target);
-        } catch (Fabric3RuntimeException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -65,7 +64,7 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
     public <B> B getService(Class<B> interfaze, String referenceName) {
         try {
             return interfaze.cast(getSession().getAttribute(referenceName));
-        } catch (Fabric3RuntimeException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -74,7 +73,7 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
     public <B> ServiceReference<B> getServiceReference(Class<B> interfaze, String referenceName) {
         try {
             return ServiceReference.class.cast(getSession().getAttribute(referenceName));
-        } catch (Fabric3RuntimeException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -90,7 +89,7 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
     public <B> B getProperty(Class<B> type, String propertyName) {
         try {
             return component.getProperty(type, propertyName);
-        } catch (ContainerException | Fabric3RuntimeException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }

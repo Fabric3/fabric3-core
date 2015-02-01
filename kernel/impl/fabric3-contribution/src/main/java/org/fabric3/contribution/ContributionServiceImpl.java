@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.ContainerException;
@@ -109,9 +110,7 @@ public class ContributionServiceImpl implements ContributionService {
     public Set<URI> getContributions() {
         Set<Contribution> contributions = metaDataStore.getContributions();
         Set<URI> uris = new HashSet<>(contributions.size());
-        for (Contribution contribution : contributions) {
-            uris.add(contribution.getUri());
-        }
+        uris.addAll(contributions.stream().map(Contribution::getUri).collect(Collectors.toList()));
         return uris;
     }
 
@@ -119,18 +118,16 @@ public class ContributionServiceImpl implements ContributionService {
         return metaDataStore.find(uri) != null;
     }
 
-    public List<Deployable> getDeployables(URI uri) throws ContainerException {
+    public List<Deployable> getDeployables(URI uri) {
         Contribution contribution = find(uri);
         List<Deployable> list = new ArrayList<>();
         if (contribution.getManifest() != null) {
-            for (Deployable deployable : contribution.getManifest().getDeployables()) {
-                list.add(deployable);
-            }
+            list.addAll(contribution.getManifest().getDeployables().stream().collect(Collectors.toList()));
         }
         return list;
     }
 
-    public URI store(ContributionSource contributionSource) throws ContainerException {
+    public URI store(ContributionSource contributionSource) {
         Contribution contribution = persist(contributionSource);
         metaDataStore.store(contribution);
         for (ContributionServiceListener listener : listeners) {
@@ -139,7 +136,7 @@ public class ContributionServiceImpl implements ContributionService {
         return contribution.getUri();
     }
 
-    public List<URI> store(List<ContributionSource> contributionSources) throws ContainerException {
+    public List<URI> store(List<ContributionSource> contributionSources) {
         List<URI> uris = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             URI uri = store(contributionSource);
@@ -148,11 +145,11 @@ public class ContributionServiceImpl implements ContributionService {
         return uris;
     }
 
-    public void install(URI uri) throws ContainerException {
+    public void install(URI uri) {
         install(Collections.singletonList(uri));
     }
 
-    public List<URI> install(List<URI> uris) throws ContainerException {
+    public List<URI> install(List<URI> uris) {
         List<Contribution> contributions = new ArrayList<>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = find(uri);
@@ -161,12 +158,12 @@ public class ContributionServiceImpl implements ContributionService {
         return installInOrder(contributions);
     }
 
-    public void uninstall(URI uri) throws ContainerException, ContainerException {
+    public void uninstall(URI uri) {
         Contribution contribution = find(uri);
         uninstall(contribution);
     }
 
-    public void uninstall(List<URI> uris) throws ContainerException, ContainerException {
+    public void uninstall(List<URI> uris) {
         List<Contribution> contributions = new ArrayList<>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = find(uri);
@@ -178,7 +175,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    public void remove(URI uri) throws ContainerException {
+    public void remove(URI uri) {
         Contribution contribution = find(uri);
         if (contribution.getState() != ContributionState.STORED) {
             throw new ContainerException("Contribution must first be uninstalled: " + uri);
@@ -192,13 +189,13 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    public void remove(List<URI> uris) throws ContainerException {
+    public void remove(List<URI> uris) {
         for (URI uri : uris) {
             remove(uri);
         }
     }
 
-    public ContributionOrder processManifests(List<ContributionSource> contributionSources) throws ContainerException {
+    public ContributionOrder processManifests(List<ContributionSource> contributionSources) {
         List<Contribution> contributions = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             // store the contributions
@@ -212,7 +209,7 @@ public class ContributionServiceImpl implements ContributionService {
         return introspectManifests(contributions);
     }
 
-    public void processContents(URI uri) throws ContainerException {
+    public void processContents(URI uri) {
         Contribution contribution = find(uri);
         try {
             ClassLoader loader = contributionLoader.load(contribution);
@@ -236,7 +233,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    private ContributionOrder introspectManifests(List<Contribution> contributions) throws ContainerException {
+    private ContributionOrder introspectManifests(List<Contribution> contributions) {
         ContributionOrder order = new ContributionOrder();
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED != contribution.getState()) {
@@ -272,9 +269,9 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param uri the contribution URI
      * @return the contribution
-     * @throws ContainerException if the contribution does not exist
+     * @ if the contribution does not exist
      */
-    private Contribution find(URI uri) throws ContainerException {
+    private Contribution find(URI uri) {
         Contribution contribution = metaDataStore.find(uri);
         if (contribution == null) {
             throw new ContainerException("Contribution not found: " + uri);
@@ -287,9 +284,9 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param contributions the contributions
      * @return the ordered list of contribution URIs
-     * @throws ContainerException if there is an error installing the contributions
+     * @ if there is an error installing the contributions
      */
-    private List<URI> installInOrder(List<Contribution> contributions) throws ContainerException {
+    private List<URI> installInOrder(List<Contribution> contributions) {
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED != contribution.getState()) {
                 throw new ContainerException("Contribution is already installed: " + contribution.getUri());
@@ -349,7 +346,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    private void uninstall(Contribution contribution) throws ContainerException {
+    private void uninstall(Contribution contribution) {
         URI uri = contribution.getUri();
         if (contribution.getState() != ContributionState.INSTALLED) {
             throw new ContainerException("Contribution not installed: " + uri);
@@ -376,9 +373,9 @@ public class ContributionServiceImpl implements ContributionService {
      * Processes the contribution manifest.
      *
      * @param contribution the contribution
-     * @throws ContainerException if there is an error during introspection
+     * @ if there is an error during introspection
      */
-    private void processManifest(Contribution contribution) throws ContainerException {
+    private void processManifest(Contribution contribution) {
         IntrospectionContext context = new DefaultIntrospectionContext();
         processorRegistry.processManifest(contribution, context);
         if (context.hasErrors()) {
@@ -404,9 +401,9 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param contribution the contribution to process
      * @param loader       the classloader to load resources in
-     * @throws ContainerException if an error occurs during processing
+     * @ if an error occurs during processing
      */
-    private void processContents(Contribution contribution, ClassLoader loader) throws ContainerException {
+    private void processContents(Contribution contribution, ClassLoader loader) {
         URI contributionUri = contribution.getUri();
         IntrospectionContext context = new DefaultIntrospectionContext(contributionUri, loader);
         processorRegistry.indexContribution(contribution, context);
@@ -483,9 +480,9 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param contributionSource the contribution source
      * @return the contribution
-     * @throws ContainerException if an error occurs during the store operation
+     * @ if an error occurs during the store operation
      */
-    private Contribution persist(ContributionSource contributionSource) throws ContainerException {
+    private Contribution persist(ContributionSource contributionSource) {
         URI contributionUri = contributionSource.getUri();
         if (metaDataStore.find(contributionUri) != null) {
             throw new ContainerException("Contribution already exists: " + contributionUri);

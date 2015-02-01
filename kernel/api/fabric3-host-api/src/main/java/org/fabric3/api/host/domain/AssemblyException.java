@@ -33,11 +33,7 @@ import org.fabric3.api.host.failure.AssemblyFailure;
  */
 public class AssemblyException extends ContainerException {
     private static final long serialVersionUID = 3957908169593535300L;
-    private static final Comparator<AssemblyFailure> COMPARATOR = new Comparator<AssemblyFailure>() {
-        public int compare(AssemblyFailure first, AssemblyFailure second) {
-            return first.getComponentUri().compareTo(second.getComponentUri());
-        }
-    };
+    private static final Comparator<AssemblyFailure> COMPARATOR = (first, second) -> first.getComponentUri().compareTo(second.getComponentUri());
 
     private transient final List<AssemblyFailure> errors;
 
