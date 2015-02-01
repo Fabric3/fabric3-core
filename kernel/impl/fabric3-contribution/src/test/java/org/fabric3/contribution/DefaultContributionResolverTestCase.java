@@ -25,36 +25,24 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.repository.ArtifactCache;
 
 /**
  *
  */
 public class DefaultContributionResolverTestCase extends TestCase {
     private MetaDataStore store;
-    private ArtifactCache cache;
     private DefaultContributionResolver resolver;
     private URI uri;
     private URL location;
 
     public void testResolveAgainstStore() throws Exception {
-        Contribution contribution = new Contribution(uri, null, location, -1, null, false);
+        Contribution contribution = new Contribution(uri, null, location, -1, null);
         EasyMock.expect(store.find(uri)).andReturn(contribution);
-        EasyMock.replay(store, cache);
+        EasyMock.replay(store);
 
         assertEquals(location, resolver.resolve(uri));
 
-        EasyMock.verify(store, cache);
-    }
-
-    public void testResolveAgainstCache() throws Exception {
-        EasyMock.expect(store.find(uri)).andReturn(null);
-        EasyMock.expect(cache.get(uri)).andReturn(location);
-        EasyMock.replay(store, cache);
-
-        assertEquals(location, resolver.resolve(uri));
-
-        EasyMock.verify(store, cache);
+        EasyMock.verify(store);
     }
 
     @Override
@@ -64,8 +52,7 @@ public class DefaultContributionResolverTestCase extends TestCase {
         location = new URL("file://test");
 
         store = EasyMock.createMock(MetaDataStore.class);
-        cache = EasyMock.createMock(ArtifactCache.class);
 
-        resolver = new DefaultContributionResolver(store, cache);
+        resolver = new DefaultContributionResolver(store);
     }
 }

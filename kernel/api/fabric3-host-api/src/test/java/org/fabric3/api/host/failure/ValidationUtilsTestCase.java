@@ -16,19 +16,18 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.introspection.validation;
+package org.fabric3.api.host.failure;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  *
  */
 public class ValidationUtilsTestCase extends TestCase {
-    private List<ValidationFailure> failures;
+    private List<Failure> failures;
 
     public void testWriteErrors() throws Exception {
         String output = ValidationUtils.outputErrors(failures);
@@ -43,12 +42,12 @@ public class ValidationUtilsTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         failures = new ArrayList<>();
-        failures.add(new Failure());
+        failures.add(new TestFailure());
     }
 
-    private static class Failure extends ValidationFailure {
+    private static class TestFailure extends ValidationFailure {
 
-        public Failure() {
+        public TestFailure() {
             super();
         }
 

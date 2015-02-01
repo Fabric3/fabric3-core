@@ -19,7 +19,6 @@ package org.fabric3.api.host.runtime;
 import javax.management.MBeanServer;
 
 import org.fabric3.api.host.monitor.DestinationRouter;
-import org.fabric3.api.host.repository.Repository;
 
 /**
  * Contains host dependencies required to boot a runtime instance.
@@ -27,7 +26,6 @@ import org.fabric3.api.host.repository.Repository;
 public class RuntimeConfiguration {
     private HostInfo hostInfo;
     private MBeanServer mBeanServer;
-    private Repository repository;
     private DestinationRouter router;
 
     /**
@@ -42,22 +40,6 @@ public class RuntimeConfiguration {
         this.mBeanServer = mBeanServer;
         this.router = router;
     }
-
-    /**
-     * Constructor taking all configurable dependencies to boot a runtime.
-     *
-     * @param hostInfo    the host info instance
-     * @param mBeanServer the JMX MBean server
-     * @param router      the destination router
-     * @param repository  the artifact repository
-     */
-    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, DestinationRouter router, Repository repository) {
-        this.hostInfo = hostInfo;
-        this.mBeanServer = mBeanServer;
-        this.router = router;
-        this.repository = repository;
-    }
-
     /**
      * Returns the runtime host info.
      *
@@ -74,15 +56,6 @@ public class RuntimeConfiguration {
      */
     public MBeanServer getMBeanServer() {
         return mBeanServer;
-    }
-
-    /**
-     * Returns the runtime repository
-     *
-     * @return the runtime repository
-     */
-    public Repository getRepository() {
-        return repository;
     }
 
     /**

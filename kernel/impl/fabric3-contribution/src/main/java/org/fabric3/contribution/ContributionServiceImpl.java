@@ -20,8 +20,6 @@
 package org.fabric3.contribution;
 
 import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,9 +39,7 @@ import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.failure.ValidationFailure;
-import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.stream.Source;
-import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -59,7 +55,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.validation.ValidationUtils;
+import org.fabric3.api.host.failure.ValidationUtils;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -69,7 +65,6 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ContributionServiceImpl implements ContributionService {
     private ProcessorRegistry processorRegistry;
-    private Repository repository;
     private MetaDataStore metaDataStore;
     private ContributionLoader contributionLoader;
     private ContentTypeResolver contentTypeResolver;
@@ -97,15 +92,6 @@ public class ContributionServiceImpl implements ContributionService {
         this.listeners = listeners;
     }
 
-    /**
-     * Lazily injects the repository. Some environments may inject the repository via an extension loaded after bootstrap.
-     *
-     * @param repository the store to inject
-     */
-    @Reference(required = false)
-    public void setRepository(Repository repository) {
-        this.repository = repository;
-    }
 
     public Set<URI> getContributions() {
         Set<Contribution> contributions = metaDataStore.getContributions();
@@ -128,7 +114,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public URI store(ContributionSource contributionSource) {
-        Contribution contribution = persist(contributionSource);
+        Contribution contribution = create(contributionSource);
         metaDataStore.store(contribution);
         for (ContributionServiceListener listener : listeners) {
             listener.onStore(contribution);
@@ -179,9 +165,6 @@ public class ContributionServiceImpl implements ContributionService {
             throw new Fabric3Exception("Contribution must first be uninstalled: " + uri);
         }
         metaDataStore.remove(uri);
-        if (contribution.isPersistent()) {
-            getRepository().remove(uri);
-        }
         for (ContributionServiceListener listener : listeners) {
             listener.onRemove(contribution);
         }
@@ -195,7 +178,7 @@ public class ContributionServiceImpl implements ContributionService {
         List<Contribution> contributions = new ArrayList<>();
         for (ContributionSource contributionSource : contributionSources) {
             // store the contributions
-            Contribution contribution = persist(contributionSource);
+            Contribution contribution = create(contributionSource);
             metaDataStore.store(contribution);
             for (ContributionServiceListener listener : listeners) {
                 listener.onStore(contribution);
@@ -465,43 +448,21 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     /**
-     * Stores the contents of a contribution in the archive store if it is not local
+     * Creates a contribution in the archive store
      *
      * @param contributionSource the contribution source
      * @return the contribution
      * @ if an error occurs during the store operation
      */
-    private Contribution persist(ContributionSource contributionSource) {
+    private Contribution create(ContributionSource contributionSource) {
         URI contributionUri = contributionSource.getUri();
         if (metaDataStore.find(contributionUri) != null) {
             throw new Fabric3Exception("Contribution already exists: " + contributionUri);
         }
-        URL locationUrl;
-        boolean persistent = contributionSource.persist();
         Source source;
-        if (!persistent) {
-            locationUrl = contributionSource.getLocation();
-            // reuse the source as the contribution is locally resolvable
-            source = contributionSource.getSource();
-        } else {
-            InputStream stream = null;
-            try {
-                stream = contributionSource.getSource().openStream();
-                boolean extension = contributionSource.isExtension();
-                locationUrl = getRepository().store(contributionUri, stream, extension);
-                source = new UrlSource(locationUrl);
-            } catch (IOException e) {
-                throw new Fabric3Exception(e);
-            } finally {
-                try {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                } catch (IOException e) {
-                    monitor.error("Error closing contribution stream", e);
-                }
-            }
-        }
+        URL locationUrl = contributionSource.getLocation();
+        // reuse the source as the contribution is locally resolvable
+        source = contributionSource.getSource();
         String type = contributionSource.getContentType();
         if (type == null && locationUrl == null) {
             throw new Fabric3Exception("Content type could not be determined for contribution: " + contributionUri);
@@ -510,13 +471,7 @@ public class ContributionServiceImpl implements ContributionService {
             type = contentTypeResolver.getContentType(locationUrl);
         }
         long timestamp = contributionSource.getTimestamp();
-        return new Contribution(contributionUri, source, locationUrl, timestamp, type, persistent);
+        return new Contribution(contributionUri, source, locationUrl, timestamp, type);
     }
 
-    private Repository getRepository() {
-        if (repository == null) {
-            throw new UnsupportedOperationException(Repository.class.getSimpleName() + " not configured");
-        }
-        return repository;
-    }
 }

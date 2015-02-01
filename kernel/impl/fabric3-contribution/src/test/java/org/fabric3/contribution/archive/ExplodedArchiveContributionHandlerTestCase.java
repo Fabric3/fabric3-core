@@ -121,7 +121,7 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         URL location = cl.getResource("./exploded");
         URI uri = URI.create("test");
         UrlSource source = new UrlSource(location);
-        Contribution contribution = new Contribution(uri, source, location, -1, EXPLODED_CONTENT_TYPE, false);
+        Contribution contribution = new Contribution(uri, source, location, -1, EXPLODED_CONTENT_TYPE);
         ContributionManifest manifest = new ContributionManifest();
         contribution.setManifest(manifest);
         return contribution;

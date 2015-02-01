@@ -92,7 +92,7 @@ public class XmlContributionProcessorTestCase extends TestCase {
         xmlIndexerRegistry = EasyMock.createMock(XmlIndexerRegistry.class);
         processor = new XmlContributionProcessor(registry, xmlProcessorRegistry, xmlIndexerRegistry);
         URL file = getClass().getResource("test.composite");
-        contribution = new Contribution(URI.create("contribution"), new UrlSource(file), file, -1, "application/xml", false);
+        contribution = new Contribution(URI.create("contribution"), new UrlSource(file), file, -1, "application/xml");
         context = new DefaultIntrospectionContext();
     }
 }

@@ -95,7 +95,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
     public void testFindBySymbolUriNotFound() throws Exception {
         store.store(contribution);
         store.store(otherContribution);
-        Contribution otherContribution = new Contribution(otherContributionUri, null, null, 1, "application/xml", false);
+        Contribution otherContribution = new Contribution(otherContributionUri, null, null, 1, "application/xml");
         store.store(otherContribution);
         QNameSymbol symbol = new QNameSymbol(deployableName);
         assertNull(store.find(otherContributionUri, Composite.class, symbol));
@@ -168,9 +168,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
 
         contributionUri = URI.create("contribution");
         URL locationUrl = new URL("file://test");
-        contribution = new Contribution(contributionUri, null, locationUrl, 1, "application/xml", false);
-        URI profileUri = URI.create("profile");
-        contribution.addProfile(profileUri);
+        contribution = new Contribution(contributionUri, null, locationUrl, 1, "application/xml");
         contribution.getManifest().addExtend("extension");
         contribution.getManifest().addRequiredCapability(capability);
         deployableName = new QName("test", "composite");
@@ -179,7 +177,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
 
         otherContributionUri = URI.create("otherContribution");
         URL otherLocationUrl = new URL("file://test");
-        otherContribution = new Contribution(otherContributionUri, null, otherLocationUrl, 1, "application/xml", false);
+        otherContribution = new Contribution(otherContributionUri, null, otherLocationUrl, 1, "application/xml");
         otherContribution.getManifest().addExtensionPoint("extension");
         otherContribution.getManifest().addProvidedCapability(capability);
         otherDeployableName = new QName("test", "otherComposite");

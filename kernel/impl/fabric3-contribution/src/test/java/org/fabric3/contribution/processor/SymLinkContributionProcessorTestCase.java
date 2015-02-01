@@ -89,7 +89,7 @@ public class SymLinkContributionProcessorTestCase extends TestCase {
         registry = EasyMock.createMock(ProcessorRegistry.class);
         processor = new SymLinkContributionProcessor(registry);
         file = getClass().getResource("sym.contribution");
-        contribution = new Contribution(URI.create("contribution"), new UrlSource(file), file, -1, "application/xml", false);
+        contribution = new Contribution(URI.create("contribution"), new UrlSource(file), file, -1, "application/xml");
         context = new DefaultIntrospectionContext();
     }
 }

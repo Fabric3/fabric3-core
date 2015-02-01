@@ -121,7 +121,7 @@ public class ZipContributionHandlerTestCase extends TestCase {
         URL location = cl.getResource("./repository/2/testWithLibraries.jar");
         URI uri = URI.create("test");
         UrlSource source = new UrlSource(location);
-        Contribution contribution = new Contribution(uri, source, location, -1, null, false);
+        Contribution contribution = new Contribution(uri, source, location, -1, null);
         ContributionManifest manifest = new ContributionManifest();
         contribution.setManifest(manifest);
         return contribution;

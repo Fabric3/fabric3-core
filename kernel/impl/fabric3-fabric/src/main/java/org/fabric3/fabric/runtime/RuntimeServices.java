@@ -22,7 +22,6 @@ import javax.management.MBeanServer;
 
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
-import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.channel.ChannelManager;
@@ -69,23 +68,23 @@ public interface RuntimeServices {
     MBeanServer getMBeanServer();
 
     /**
-     * Returns this runtime's logical component manager.
+     * Returns the runtime logical component manager.
      *
-     * @return this runtime's logical component manager
+     * @return the runtime logical component manager
      */
     LogicalComponentManager getLogicalComponentManager();
 
     /**
-     * Returns this runtime's physical component manager.
+     * Returns the runtime component manager.
      *
-     * @return this runtime's physical component manager
+     * @return the runtime component manager
      */
     ComponentManager getComponentManager();
 
     /**
-     * Returns this runtime's channel manager.
+     * Returns the runtime channel manager.
      *
-     * @return this runtime's channel manager
+     * @return the runtime channel manager
      */
     ChannelManager getChannelManager();
 
@@ -116,13 +115,6 @@ public interface RuntimeServices {
      * @return the MetaDataStore used to index contribution resources
      */
     MetaDataStore getMetaDataStore();
-
-    /**
-     * Returns the runtime repository.
-     *
-     * @return the runtime repository.
-     */
-    Repository getRepository();
 
     /**
      * Returns the default monitor destination router.

@@ -29,7 +29,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
-import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
@@ -43,7 +42,6 @@ import org.fabric3.fabric.container.component.scope.ScopeContainerMonitor;
 import org.fabric3.fabric.container.component.scope.ScopeRegistryImpl;
 import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
 import org.fabric3.fabric.management.DelegatingManagementService;
-import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.monitor.proxy.JDKMonitorProxyService;
 import org.fabric3.monitor.proxy.MonitorProxyServiceImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -75,7 +73,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private ScopeRegistry scopeRegistry;
     private ManagementService managementService;
     private MBeanServer mbServer;
-    private Repository repository;
     private DestinationRouter router;
     private MonitorLevel level = MonitorLevel.INFO;
 
@@ -83,7 +80,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         hostInfo = configuration.getHostInfo();
         mbServer = configuration.getMBeanServer();
         router = configuration.getDestinationRouter();
-        repository = configuration.getRepository();
         System.setProperty(JAVA_LIBRARY_PATH, new File(hostInfo.getTempDir(), "native").getAbsolutePath());
     }
 
@@ -128,10 +124,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         scopeRegistry = new ScopeRegistryImpl();
         scopeRegistry.register(scopeContainer);
         managementService = new DelegatingManagementService();
-        if (repository == null) {
-            // if the runtime has not been configured with a repository, create one
-            repository = createRepository();
-        }
     }
 
     public void destroy() throws Fabric3Exception {
@@ -139,7 +131,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         WorkContextCache.getAndResetThreadWorkContext();
         scopeContainer.stopAllContexts();
         try {
-            repository.shutdown();
             classLoaderRegistry.close();
         } catch (IOException e) {
             throw new Fabric3Exception(e);
@@ -195,24 +186,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         return managementService;
     }
 
-    public Repository getRepository() {
-        return repository;
-    }
-
     public DestinationRouter getDestinationRouter() {
         return router;
-    }
-
-    /**
-     * Creates a default repository which may be overridden by subclasses.
-     *
-     * @return an initialized repository
-     * @throws Fabric3Exception if an error is encountered initializing a repository
-     */
-    protected Repository createRepository() throws Fabric3Exception {
-        RepositoryImpl repository = new RepositoryImpl(hostInfo);
-        repository.init();
-        return repository;
     }
 
 }

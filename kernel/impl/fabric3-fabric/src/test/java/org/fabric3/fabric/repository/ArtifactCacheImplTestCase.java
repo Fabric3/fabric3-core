@@ -32,8 +32,8 @@ import org.fabric3.api.host.util.FileHelper;
 /**
  *
  */
-public class FSArtifactCacheTestCase extends TestCase {
-    private FSArtifactCache cache;
+public class ArtifactCacheImplTestCase extends TestCase {
+    private ArtifactCacheImpl cache;
 
     public void testCache() throws Exception {
         URI uri = URI.create("test");
@@ -54,7 +54,7 @@ public class FSArtifactCacheTestCase extends TestCase {
         HostInfo info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.getTempDir()).andReturn(new File("tmp_cache"));
         EasyMock.replay(info);
-        cache = new FSArtifactCache(info);
+        cache = new ArtifactCacheImpl(info);
         cache.init();
     }
 

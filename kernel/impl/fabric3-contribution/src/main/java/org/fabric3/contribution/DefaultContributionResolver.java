@@ -21,14 +21,12 @@ package org.fabric3.contribution;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -40,12 +38,10 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class DefaultContributionResolver implements ContributionResolver {
     private MetaDataStore store;
-    private ArtifactCache cache;
 
     @Constructor
-    public DefaultContributionResolver(@Reference MetaDataStore store, @Reference ArtifactCache cache) {
+    public DefaultContributionResolver(@Reference MetaDataStore store) {
         this.store = store;
-        this.cache = cache;
     }
 
     public URL resolve(URI contributionUri) {
@@ -53,12 +49,6 @@ public class DefaultContributionResolver implements ContributionResolver {
         if (contribution != null) {
             return contribution.getLocation();
         }
-
-        URL url = cache.get(contributionUri);
-        if (url != null) {
-            return url;
-        }
-
         throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
@@ -71,13 +61,7 @@ public class DefaultContributionResolver implements ContributionResolver {
             return locations;
         }
 
-        URL url = cache.get(contributionUri);
-        if (url != null) {
-            return Collections.singletonList(url);
-        }
-
         throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
-
 
 }

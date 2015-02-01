@@ -33,7 +33,6 @@ import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.FileContributionSource;
-import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -63,7 +62,6 @@ public class ContributionServiceImplTestCase extends TestCase {
     private Contribution contribution;
 
     private ContributionServiceImpl service;
-    private URI profileUri;
 
     public void testExists() throws Exception {
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
@@ -190,25 +188,19 @@ public class ContributionServiceImplTestCase extends TestCase {
     public void testRemoveContribution() throws Exception {
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
         store.remove(contributionUri);
-        Repository repository = EasyMock.createMock(Repository.class);
-        repository.remove(contributionUri);
-        service.setRepository(repository);
 
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver, repository);
+        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
         service.remove(contributionUri);
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver, repository);
+        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
     }
 
     public void testRemoveContributionsMultiple() throws Exception {
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
         store.remove(contributionUri);
-        Repository repository = EasyMock.createMock(Repository.class);
-        repository.remove(contributionUri);
-        service.setRepository(repository);
 
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver, repository);
+        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
         service.remove(Collections.singletonList(contributionUri));
-        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver, repository);
+        EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -274,12 +266,10 @@ public class ContributionServiceImplTestCase extends TestCase {
 
         contributionUri = URI.create("contribution");
         URL locationUrl = new URL("file://test");
-        contribution = new Contribution(contributionUri, null, locationUrl, 1, "application/xml", true);
+        contribution = new Contribution(contributionUri, null, locationUrl, 1, "application/xml");
         deployableName = new QName("test", "composite");
         deployable = new Deployable(deployableName);
         contribution.getManifest().addDeployable(deployable);
-        profileUri = URI.create("profile");
-        contribution.addProfile(profileUri);
         service = new ContributionServiceImpl(processorRegistry, store, loader, resolver, dependencyResolver, monitor);
     }
 

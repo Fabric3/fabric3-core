@@ -60,7 +60,7 @@ public class SyntheticDirectoryContributionProcessorTestCase extends TestCase {
         URI uri = URI.create("contribution");
         URL url = getClass().getResource("/repository/1");
         Source source = new UrlSource(url);
-        contribution = new Contribution(uri, source, url, -1, "application/vnd.fabric3.synthetic", false);
+        contribution = new Contribution(uri, source, url, -1, "application/vnd.fabric3.synthetic");
 
         processor = new SyntheticDirectoryContributionProcessor();
         context = new DefaultIntrospectionContext();

@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.ValidationFailure;
-import org.fabric3.spi.introspection.validation.ValidationUtils;
+import org.fabric3.api.host.failure.ValidationUtils;
 
 /**
  *
@@ -46,4 +46,5 @@ public class ValidationDeploymentException extends Fabric3Exception {
         ValidationUtils.writeWarnings(writer, warnings);
         return bas.toString();
     }
+
 }

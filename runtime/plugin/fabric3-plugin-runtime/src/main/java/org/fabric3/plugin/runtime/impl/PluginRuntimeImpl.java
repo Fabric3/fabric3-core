@@ -29,7 +29,6 @@ import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.Domain;
-import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.runtime.DefaultRuntime;
 import org.fabric3.plugin.api.contribution.PluginContributionSource;
@@ -99,7 +98,4 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         getScopeContainer().startContext(deployable);
     }
 
-    protected Repository createRepository() {
-        return new AetherRepository(system, session);
-    }
 }

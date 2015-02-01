@@ -160,7 +160,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
     private void createContribution() throws MalformedURLException {
         contributionUri = URI.create("contribution");
         locationUrl = new URL("file://test");
-        contribution = new Contribution(contributionUri, null, locationUrl, -1, null, false);
+        contribution = new Contribution(contributionUri, null, locationUrl, -1, null);
         ContributionManifest manifest = contribution.getManifest();
 
         // setup imports

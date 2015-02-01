@@ -38,11 +38,11 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class FSArtifactCache implements ArtifactCache {
+public class ArtifactCacheImpl implements ArtifactCache {
     private File tempDir;
     private Map<URI, Entry> entries;
 
-    public FSArtifactCache(@Reference HostInfo info) {
+    public ArtifactCacheImpl(@Reference HostInfo info) {
         tempDir = new File(info.getTempDir(), "cache");
         entries = new HashMap<>();
     }

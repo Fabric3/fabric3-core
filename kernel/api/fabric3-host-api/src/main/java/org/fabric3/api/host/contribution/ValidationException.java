@@ -18,10 +18,13 @@
  */
 package org.fabric3.api.host.contribution;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationUtils;
 
 /**
  * Base class for exceptions indicating a contribution has failed validation.
@@ -74,6 +77,15 @@ public class ValidationException extends Fabric3Exception {
      */
     public List<ValidationFailure> getWarnings() {
         return warnings;
+    }
+
+    public String getMessage() {
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(bas);
+        ValidationUtils.writeErrors(writer, errors);
+        writer.write("\n");
+        ValidationUtils.writeWarnings(writer, warnings);
+        return bas.toString();
     }
 
 }

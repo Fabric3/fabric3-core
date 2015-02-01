@@ -31,7 +31,6 @@ import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.monitor.Monitorable;
-import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootExports;
 import org.fabric3.api.host.runtime.ComponentRegistration;
@@ -92,7 +91,6 @@ public class DefaultBootstrapper implements Bootstrapper {
     private ComponentManager componentManager;
     private ChannelManager channelManager;
     private ScopeContainer scopeContainer;
-    private Repository repository;
     private MBeanServer mbeanServer;
     private ManagementService managementService;
     private HostInfo hostInfo;
@@ -138,7 +136,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         metaDataStore = runtimeServices.getMetaDataStore();
         scopeRegistry = runtimeServices.getScopeRegistry();
         scopeContainer = runtimeServices.getScopeContainer();
-        repository = runtimeServices.getRepository();
         mbeanServer = runtimeServices.getMBeanServer();
         managementService = runtimeServices.getManagementService();
         hostInfo = runtimeServices.getHostInfo();
@@ -204,7 +201,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         registerComponent("ClassLoaderRegistry", ClassLoaderRegistry.class, classLoaderRegistry, true);
         registerComponent("ScopeRegistry", ScopeRegistry.class, scopeRegistry, true);
         registerComponent("MetaDataStore", MetaDataStore.class, metaDataStore, true);
-        registerComponent("Repository", Repository.class, repository, true);
         registerComponent("Monitorable", Monitorable.class, runtime, false);
 
         // register other components provided by the host environment

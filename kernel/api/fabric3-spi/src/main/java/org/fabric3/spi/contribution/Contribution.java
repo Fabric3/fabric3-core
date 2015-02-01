@@ -38,11 +38,9 @@ public class Contribution implements Serializable {
     private URI uri;
     private transient Source source;
     private ContributionState state = ContributionState.STORED;
-    private List<URI> profiles;
     private URL location;
     private long timestamp;
     private String contentType;
-    private boolean persistent;
     private ContributionManifest manifest = new ContributionManifest();
     private transient List<Resource> resources = new ArrayList<>();
     private transient Map<Object, Object> metadata = new HashMap<>();
@@ -55,27 +53,22 @@ public class Contribution implements Serializable {
 
     public Contribution(URI uri) {
         this.uri = uri;
-        profiles = new ArrayList<>();
     }
 
     /**
      * Constructor.
-     *
-     * @param uri         the contribution URI
+     *  @param uri         the contribution URI
      * @param source      the source for reading the contribution contents
      * @param location    the URL for the contribution archive. This can be null for contributions that are not physical archives.
      * @param timestamp   the contribution artifact time stamp
      * @param contentType the contribution MIME type
-     * @param persistent  true if the contribution is persistent
      */
-    public Contribution(URI uri, Source source, URL location, long timestamp, String contentType, boolean persistent) {
+    public Contribution(URI uri, Source source, URL location, long timestamp, String contentType) {
         this.uri = uri;
         this.source = source;
-        this.profiles = new ArrayList<>();
         this.location = location;
         this.timestamp = timestamp;
         this.contentType = contentType;
-        this.persistent = persistent;
     }
 
     /**
@@ -103,15 +96,6 @@ public class Contribution implements Serializable {
      */
     public void setState(ContributionState state) {
         this.state = state;
-    }
-
-    /**
-     * Returns true if the contribution is persistent.
-     *
-     * @return true if the contribution is persistent.
-     */
-    public boolean isPersistent() {
-        return persistent;
     }
 
     /**
@@ -212,42 +196,6 @@ public class Contribution implements Serializable {
      */
     public List<Resource> getResources() {
         return resources;
-    }
-
-    /**
-     * Returns the profiles this contribution is associated with.
-     *
-     * @return the profiles this contribution is associated with
-     */
-    public List<URI> getProfiles() {
-        return profiles;
-    }
-
-    /**
-     * Adds an associated profile.
-     *
-     * @param uri the profile URI
-     */
-    public void addProfile(URI uri) {
-        profiles.add(uri);
-    }
-
-    /**
-     * Adds associated profiles.
-     *
-     * @param uris the profile URIs
-     */
-    public void addProfiles(List<URI> uris) {
-        profiles.addAll(uris);
-    }
-
-    /**
-     * Removes the profile from the contribution. Contributions track the profiles they are members of.
-     *
-     * @param uri the profile URI
-     */
-    public void removeProfile(URI uri) {
-        profiles.remove(uri);
     }
 
     /**

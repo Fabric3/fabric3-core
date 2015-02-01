@@ -123,7 +123,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             Source source = new UrlSource(dereferencedLocation);
             long timestamp = System.currentTimeMillis();
 
-            Contribution syntheticContribution = new Contribution(contributionUri, source, dereferencedLocation, timestamp, EXPLODED_CONTENT_TYPE, false);
+            Contribution syntheticContribution = new Contribution(contributionUri, source, dereferencedLocation, timestamp, EXPLODED_CONTENT_TYPE);
 
             if (paths.size() > 1) {
                 for (int i = 1; i < paths.size(); i++) {

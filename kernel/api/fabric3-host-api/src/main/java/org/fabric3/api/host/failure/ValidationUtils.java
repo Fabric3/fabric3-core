@@ -16,23 +16,31 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.introspection.validation;
+package org.fabric3.api.host.failure;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
-import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  * Utility methods for outputting validation errors.
  */
 public final class ValidationUtils {
-    private static ValidationExceptionComparator COMPARATOR = new ValidationExceptionComparator();
+    private static Comparator<Failure> COMPARATOR = (first, second) -> {
+        if (first instanceof Failure && !(second instanceof Failure)) {
+            return -1;
+        } else if (!(first instanceof Failure) && second instanceof Failure) {
+            return 1;
+        } else {
+            return 0;
+        }
+    };
 
     private static enum TYPE {
         WARNING,
@@ -48,7 +56,7 @@ public final class ValidationUtils {
      * @param failures the collection of failures to write
      * @return the string containing the validation messages
      */
-    public static String outputErrors(List<ValidationFailure> failures) {
+    public static String outputErrors(List<? extends Failure> failures) {
         return output(failures, TYPE.ERROR);
     }
 
@@ -58,7 +66,7 @@ public final class ValidationUtils {
      * @param failures the collection of failures to write
      * @return the string containing the validation messages
      */
-    public static String outputWarnings(List<ValidationFailure> failures) {
+    public static String outputWarnings(List<? extends Failure> failures) {
         return output(failures, TYPE.WARNING);
     }
 
@@ -68,7 +76,7 @@ public final class ValidationUtils {
      * @param writer   the writer
      * @param failures the collection of failures to write
      */
-    public static void writeErrors(PrintWriter writer, List<ValidationFailure> failures) {
+    public static void writeErrors(PrintWriter writer, List<? extends Failure> failures) {
         write(writer, failures, TYPE.ERROR);
     }
 
@@ -78,26 +86,26 @@ public final class ValidationUtils {
      * @param writer   the writer
      * @param failures the collection of failures to write
      */
-    public static void writeWarnings(PrintWriter writer, List<ValidationFailure> failures) {
+    public static void writeWarnings(PrintWriter writer, List<? extends Failure> failures) {
         write(writer, failures, TYPE.WARNING);
     }
 
-    private static String output(List<ValidationFailure> failures, TYPE type) {
+    private static String output(List<? extends Failure> failures, TYPE type) {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(bas);
         write(writer, failures, type);
         return bas.toString();
     }
 
-    private static void write(PrintWriter writer, List<ValidationFailure> failures, TYPE type) {
+    private static void write(PrintWriter writer, List<? extends Failure> failures, TYPE type) {
         int count = 0;
-        List<ValidationFailure> sorted = new ArrayList<>(failures);
+        List<Failure> sorted = new ArrayList<>(failures);
         // sort the errors so that ArtifactValidationFailures are evaluated last. This is done so that nested failures are printed after all
         // failures in the parent artifact.
         Collections.sort(sorted, COMPARATOR);
         // if a composite is used multiple times, only report errors contained in it once
         HashSet<String> reported = new HashSet<>();
-        for (ValidationFailure failure : sorted) {
+        for (Failure failure : sorted) {
             count = writerError(failure, writer, count, type, reported);
         }
         if (count == 1) {
@@ -118,7 +126,7 @@ public final class ValidationUtils {
         writer.flush();
     }
 
-    private static int writerError(ValidationFailure failure, PrintWriter writer, int count, TYPE type, HashSet<String> reported) {
+    private static int writerError(Failure failure, PrintWriter writer, int count, TYPE type, HashSet<String> reported) {
         if (failure instanceof ArtifactValidationFailure) {
             ArtifactValidationFailure artifactFailure = (ArtifactValidationFailure) failure;
             if (reported.contains(artifactFailure.getArtifactName())) {

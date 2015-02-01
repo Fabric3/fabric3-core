@@ -80,7 +80,7 @@ public class XmlResourceProcessorTestCase extends TestCase {
         processor = new XmlResourceProcessor(registry, xmlIndexerRegistry, elementLoaderRegistry);
         URL file = getClass().getResource("test.composite");
         UrlSource source = new UrlSource(file);
-        Contribution contribution = new Contribution(URI.create("contribution"), source, file, -1, "application/xml", false);
+        Contribution contribution = new Contribution(URI.create("contribution"), source, file, -1, "application/xml");
         resource = new Resource(contribution, source, "application/xml");
         contribution.addResource(resource);
         context = new DefaultIntrospectionContext();

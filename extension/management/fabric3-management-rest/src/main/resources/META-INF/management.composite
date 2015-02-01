@@ -49,13 +49,8 @@
         <f3:implementation.system class="org.fabric3.management.rest.framework.domain.contribution.ContributionsResourceService"/>
     </component>
 
-    <component name="ProfilesResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.contribution.ProfilesResourceService"/>
-    </component>
-
     <component name="DeploymentsResourceService">
         <f3:implementation.system class="org.fabric3.management.rest.framework.domain.deployment.DeploymentsResourceService"/>
-        <reference name="domain" target="ApplicationDomain"/>
     </component>
 
     <component name="ComponentsResourceService">

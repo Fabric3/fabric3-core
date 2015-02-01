@@ -99,7 +99,7 @@ import org.fabric3.fabric.host.PortAllocatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
-import org.fabric3.fabric.repository.FSArtifactCache;
+import org.fabric3.fabric.repository.ArtifactCacheImpl;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
@@ -158,7 +158,7 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(AddressCacheImpl.class).build());
 
-        compositeBuilder.component(newBuilder(FSArtifactCache.class).build());
+        compositeBuilder.component(newBuilder(ArtifactCacheImpl.class).build());
 
     }
 

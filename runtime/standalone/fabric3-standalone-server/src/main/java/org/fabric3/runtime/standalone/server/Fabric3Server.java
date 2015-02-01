@@ -142,7 +142,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, router, null);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, router);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
