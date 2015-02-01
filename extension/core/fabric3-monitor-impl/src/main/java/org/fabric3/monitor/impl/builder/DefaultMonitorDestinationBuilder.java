@@ -16,7 +16,6 @@
  */
 package org.fabric3.monitor.impl.builder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,22 +78,13 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
 
         String name = definition.getName();
         MonitorDestination destination = new DefaultMonitorDestination(name, eventWriter, capacity, appenders);
-        try {
-            destination.start();
-        } catch (IOException e) {
-            throw new Fabric3Exception(e);
-        }
+        destination.start();
         registry.register(destination);
     }
 
     public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws Fabric3Exception {
         MonitorDestination destination = registry.unregister(definition.getName());
-        try {
-            destination.stop();
-        } catch (IOException e) {
-            throw new Fabric3Exception(e);
-        }
-
+        destination.stop();
     }
 
 }

@@ -16,8 +16,9 @@
  */
 package org.fabric3.monitor.spi.appender;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Writes monitor events to a sink such as a file or stream.
@@ -27,23 +28,23 @@ public interface Appender {
     /**
      * Initializes the appender to record events.
      *
-     * @throws IOException if an initialization error occurs
+     * @throws Fabric3Exception if an initialization error occurs
      */
-    void start() throws IOException;
+    void start();
 
     /**
      * Closes any open resources used by the appender.
      *
-     * @throws IOException if an exception occurs closing resources
+     * @throws Fabric3Exception if an exception occurs closing resources
      */
-    void stop() throws IOException;
+    void stop();
 
     /**
      * Writes an event to the sink.
      *
      * @param buffer the event buffer
-     * @throws IOException if a writePrefix error occurs
+     * @throws Fabric3Exception if a writePrefix error occurs
      */
-    void write(ByteBuffer buffer) throws IOException;
+    void write(ByteBuffer buffer) throws Fabric3Exception;
 
 }

@@ -16,9 +16,7 @@
  */
 package org.fabric3.monitor.impl.extension;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.IOException;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -100,7 +98,7 @@ public class ExtensionProvider {
             defaultDestination.start();
             registry.register(defaultDestination);
             systemReader = null;
-        } catch (Fabric3Exception | XMLStreamException | IOException e) {
+        } catch (Fabric3Exception e) {
             monitor.error(e);
         }
     }

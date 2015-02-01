@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.monitor.spi.appender.Appender;
 
@@ -43,30 +44,41 @@ public class FileAppender implements Appender {
         this.reliable = reliable;
     }
 
-    public void start() throws FileNotFoundException {
+    public void start() {
         initializeChannel();
     }
 
-    public void stop() throws IOException {
-        if (stream != null) {
-            stream.close();
-            stream = null;
+    public void stop() {
+        try {
+            if (stream != null) {
+                stream.close();
+                stream = null;
+            }
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void write(ByteBuffer buffer) throws IOException {
-        roll();
-        fileChannel.write(buffer);
-        if (reliable) {
-            fileChannel.force(false);
+    public void write(ByteBuffer buffer) {
+        try {
+            roll();
+            fileChannel.write(buffer);
+            if (reliable) {
+                fileChannel.force(false);
+            }
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
     }
 
-    private void initializeChannel() throws FileNotFoundException {
-        stream = new FileOutputStream(file, true);
-        fileChannel = stream.getChannel();
+    private void initializeChannel() {
+        try {
+            stream = new FileOutputStream(file, true);
+            fileChannel = stream.getChannel();
+        } catch (FileNotFoundException e) {
+            throw new Fabric3Exception(e);
+        }
     }
-
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void roll() throws IOException {

@@ -68,66 +68,69 @@ public class AppenderFactoryImpl implements AppenderFactory {
         this.appenderBuilders = appenderBuilders;
     }
 
-    public List<Appender> instantiateDefaultAppenders() throws Fabric3Exception {
+    public List<Appender> instantiateDefaultAppenders() {
         return Collections.<Appender>singletonList(new ConsoleAppender());
     }
 
-    public List<Appender> instantiate(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException {
+    public List<Appender> instantiate(XMLStreamReader reader) {
         List<AppenderDefinition> definitions = load(reader);
         List<PhysicalAppenderDefinition> physicalDefinitions = generate(definitions);
         return build(definitions, physicalDefinitions);
     }
 
-    private List<AppenderDefinition> load(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException {
+    private List<AppenderDefinition> load(XMLStreamReader reader) throws Fabric3Exception {
         List<AppenderDefinition> appenderDefinitions = new ArrayList<>();
         Set<String> definedTypes = new HashSet<>();
-
-        while (true) {
-            switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (reader.getName().getLocalPart().startsWith("appender.")) {
-                        IntrospectionContext context = new DefaultIntrospectionContext();
-                        ModelObject modelObject = registry.load(reader, ModelObject.class, context);
-                        if (context.hasErrors()) {
-                            monitor.configurationError();
-                            for (ValidationFailure error : context.getErrors()) {
-                                monitor.configurationErrorDetail("Error reported: " + error.getMessage());
+        try {
+            while (true) {
+                switch (reader.next()) {
+                    case XMLStreamConstants.START_ELEMENT:
+                        if (reader.getName().getLocalPart().startsWith("appender.")) {
+                            IntrospectionContext context = new DefaultIntrospectionContext();
+                            ModelObject modelObject = registry.load(reader, ModelObject.class, context);
+                            if (context.hasErrors()) {
+                                monitor.configurationError();
+                                for (ValidationFailure error : context.getErrors()) {
+                                    monitor.configurationErrorDetail("Error reported: " + error.getMessage());
+                                }
+                                if (!definedTypes.contains(ConsoleAppenderDefinition.TYPE)) {
+                                    ConsoleAppenderDefinition appenderDefinition = new ConsoleAppenderDefinition();
+                                    appenderDefinitions.add(appenderDefinition);
+                                }
+                                return appenderDefinitions;
                             }
-                            if (!definedTypes.contains(ConsoleAppenderDefinition.TYPE)) {
-                                ConsoleAppenderDefinition appenderDefinition = new ConsoleAppenderDefinition();
+                            if (modelObject instanceof AppenderDefinition) {
+                                AppenderDefinition appenderDefinition = (AppenderDefinition) modelObject;
+                                if (definedTypes.contains(appenderDefinition.getType())) {
+                                    monitor.multipleAppenders(appenderDefinition.getType());
+                                    continue;
+                                }
+                                definedTypes.add(appenderDefinition.getType());
                                 appenderDefinitions.add(appenderDefinition);
+
+                            } else {
+                                throw new Fabric3Exception("Unexpected type: " + modelObject);
                             }
+                        }
+
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if ("appenders".equals(reader.getName().getLocalPart())) {
                             return appenderDefinitions;
                         }
-                        if (modelObject instanceof AppenderDefinition) {
-                            AppenderDefinition appenderDefinition = (AppenderDefinition) modelObject;
-                            if (definedTypes.contains(appenderDefinition.getType())) {
-                                monitor.multipleAppenders(appenderDefinition.getType());
-                                continue;
-                            }
-                            definedTypes.add(appenderDefinition.getType());
-                            appenderDefinitions.add(appenderDefinition);
+                        break;
+                    case XMLStreamConstants.END_DOCUMENT:
+                        throw new AssertionError("End of document encountered");
+                }
 
-                        } else {
-                            throw new Fabric3Exception("Unexpected type: " + modelObject);
-                        }
-                    }
-
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if ("appenders".equals(reader.getName().getLocalPart())) {
-                        return appenderDefinitions;
-                    }
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    throw new AssertionError("End of document encountered");
             }
-
+        } catch (XMLStreamException e) {
+            throw new Fabric3Exception(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) throws Fabric3Exception {
+    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) {
         List<PhysicalAppenderDefinition> physicalDefinitions = new ArrayList<>(definitions.size());
         for (AppenderDefinition definition : definitions) {
             AppenderGenerator generator = appenderGenerators.get(definition.getClass());
@@ -141,7 +144,7 @@ public class AppenderFactoryImpl implements AppenderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) throws Fabric3Exception {
+    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) {
         List<Appender> appenders = new ArrayList<>(definitions.size());
         for (PhysicalAppenderDefinition definition : physicalDefinitions) {
             AppenderBuilder builder = appenderBuilders.get(definition.getClass());

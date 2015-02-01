@@ -16,7 +16,6 @@
  */
 package org.fabric3.monitor.spi.appender;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.List;
 
@@ -41,8 +40,7 @@ public interface AppenderFactory {
      * @param reader the configuration source
      * @return the appenders
      * @throws Fabric3Exception if there is an error instantiating the appenders
-     * @throws XMLStreamException if there is an error parsing the configuration
      */
-    List<Appender> instantiate(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException;
+    List<Appender> instantiate(XMLStreamReader reader) throws Fabric3Exception;
 
 }

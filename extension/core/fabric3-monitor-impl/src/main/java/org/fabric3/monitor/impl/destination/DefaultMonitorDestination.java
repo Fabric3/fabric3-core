@@ -16,7 +16,6 @@
  */
 package org.fabric3.monitor.impl.destination;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -49,19 +48,19 @@ public class DefaultMonitorDestination implements MonitorDestination {
         return name;
     }
 
-    public void start() throws IOException {
+    public void start() {
         for (Appender appender : appenders) {
             appender.start();
         }
     }
 
-    public void stop() throws IOException {
+    public void stop() {
         for (Appender appender : appenders) {
             appender.stop();
         }
     }
 
-    public void write(MonitorEventEntry entry) throws IOException {
+    public void write(MonitorEventEntry entry) {
         ResizableByteBuffer buffer = entry.getBuffer();
         MonitorLevel level = entry.getLevel();
 
@@ -75,14 +74,14 @@ public class DefaultMonitorDestination implements MonitorDestination {
         write(buffer);
     }
 
-    public void write(MonitorLevel level, long timestamp, String source, String template, Object... args) throws IOException {
+    public void write(MonitorLevel level, long timestamp, String source, String template, Object... args) {
         ByteBuffer buffer = ByteBuffer.allocate(capacity);
         ResizableByteBuffer wrapper = new ResizableByteBuffer(buffer);
         eventWriter.write(level, timestamp, template, wrapper, args);
         write(wrapper);
     }
 
-    private void write(ResizableByteBuffer buffer) throws IOException {
+    private void write(ResizableByteBuffer buffer)  {
         for (Appender appender : appenders) {
             buffer.position(0);
             appender.write(buffer.getByteBuffer());

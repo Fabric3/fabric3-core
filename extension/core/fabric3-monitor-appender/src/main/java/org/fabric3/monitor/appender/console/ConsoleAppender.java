@@ -16,7 +16,6 @@
  */
 package org.fabric3.monitor.appender.console;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.fabric3.monitor.spi.appender.Appender;
@@ -26,17 +25,17 @@ import org.fabric3.monitor.spi.appender.Appender;
  */
 public class ConsoleAppender implements Appender {
 
-    public void write(ByteBuffer buffer) throws IOException {
+    public void write(ByteBuffer buffer) {
         for (int i = 0; i < buffer.limit(); i++) {
             System.out.write(buffer.get(i));
         }
     }
 
-    public void start() throws IOException {
+    public void start() {
         // no-op
     }
 
-    public void stop() throws IOException {
+    public void stop() {
         // no-op
     }
 

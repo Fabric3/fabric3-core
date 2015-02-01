@@ -16,7 +16,6 @@
  */
 package org.fabric3.monitor.appender.component;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 
@@ -74,10 +73,10 @@ public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalCompone
             delegate = (Appender) instance;
         }
 
-        public void stop() throws IOException {
+        public void stop() {
         }
 
-        public void write(ByteBuffer buffer) throws IOException {
+        public void write(ByteBuffer buffer) {
             delegate.write(buffer);
         }
     }

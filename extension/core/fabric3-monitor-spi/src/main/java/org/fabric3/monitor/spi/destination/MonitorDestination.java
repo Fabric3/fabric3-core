@@ -16,9 +16,8 @@
  */
 package org.fabric3.monitor.spi.destination;
 
-import java.io.IOException;
-
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
@@ -36,24 +35,24 @@ public interface MonitorDestination {
     /**
      * Initializes the destination to record events.
      *
-     * @throws IOException if an initialization error occurs
+     * @throws Fabric3Exception if an initialization error occurs
      */
-    void start() throws IOException;
+    void start() throws Fabric3Exception;
 
     /**
      * Closes any open resources used by the destination.
      *
-     * @throws IOException if an exception occurs closing resources
+     * @throws Fabric3Exception if an exception occurs closing resources
      */
-    void stop() throws IOException;
+    void stop() throws Fabric3Exception;
 
     /**
      * Writes the entry to the destination.
      *
      * @param entry the entry
-     * @throws IOException if there is a dispatch error
+     * @throws Fabric3Exception if there is a dispatch error
      */
-    void write(MonitorEventEntry entry) throws IOException;
+    void write(MonitorEventEntry entry) throws Fabric3Exception;
 
     /**
      * Writes the event data to a destination.
@@ -62,7 +61,7 @@ public interface MonitorDestination {
      * @param timestamp the timestamp
      * @param source    the event source
      * @param args      the arguments
-     * @throws IOException if there is a dispatch error
+     * @throws Fabric3Exception if there is a dispatch error
      */
-    void write(MonitorLevel level, long timestamp, String source, String template, Object[] args) throws IOException;
+    void write(MonitorLevel level, long timestamp, String source, String template, Object[] args) throws Fabric3Exception;
 }
