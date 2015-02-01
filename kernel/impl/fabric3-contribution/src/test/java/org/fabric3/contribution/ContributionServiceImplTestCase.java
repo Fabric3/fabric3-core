@@ -234,9 +234,8 @@ public class ContributionServiceImplTestCase extends TestCase {
         processorRegistry.processManifest(EasyMock.eq(contribution), EasyMock.isA(IntrospectionContext.class));
         processorRegistry.processManifest(EasyMock.eq(otherContribution), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expect(dependencyResolver.resolve(EasyMock.isA(List.class))).andReturn(contributions);
-        
-        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
 
+        EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
 
         ContributionOrder order = service.processManifests(sources);
         assertTrue(order.getBaseContributions().contains(contributionUri));

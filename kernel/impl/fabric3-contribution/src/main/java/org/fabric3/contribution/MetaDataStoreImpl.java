@@ -21,8 +21,6 @@ package org.fabric3.contribution;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
@@ -40,10 +37,8 @@ import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.contribution.ReferenceIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.ResourceElementUpdater;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -55,8 +50,6 @@ import org.oasisopen.sca.annotation.Reference;
 public class MetaDataStoreImpl implements MetaDataStore {
     private ProcessorRegistry processorRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
-    private Map<String, ReferenceIntrospector> referenceIntrospectors = new HashMap<>();
-    private Map<String, ResourceElementUpdater<?>> updaters = new HashMap<>();
 
     private Map<URI, Contribution> cache = new ConcurrentHashMap<>();
 
@@ -79,27 +72,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         this.instantiatorRegistry = instantiatorRegistry;
     }
 
-    /**
-     * Sets the reference introspectors, keyed by class name. Class name is used since singleton components only support String-based keys.
-     *
-     * @param introspectors the introspectors.
-     */
-    @Reference(required = false)
-    public void setReferenceIntrospectors(Map<String, ReferenceIntrospector> introspectors) {
-        this.referenceIntrospectors = introspectors;
-    }
-
-    /**
-     * Sets the element updaters, keyed by class name. Class name is used since singleton components only support String-based keys.
-     *
-     * @param updaters the updaters.
-     */
-    @Reference(required = false)
-    public void setUpdaters(Map<String, ResourceElementUpdater<?>> updaters) {
-        this.updaters = updaters;
-    }
-
-    public void store(Contribution contribution) throws Fabric3Exception {
+    public void store(Contribution contribution) {
         cache.put(contribution.getUri(), contribution);
     }
 
@@ -133,72 +106,11 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws Fabric3Exception {
+    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) {
         return resolve(uri, type, symbol, null);
     }
 
-    public <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws Fabric3Exception {
-        Contribution contribution = find(uri);
-        if (contribution == null) {
-            String identifier = uri.toString();
-            throw new Fabric3Exception("Contribution not found: " + identifier);
-        }
-
-        ResourceElement<S, ?> referred = find(uri, Serializable.class, symbol);
-        if (referred == null) {
-            return Collections.emptySet();
-        }
-        ReferenceIntrospector introspector = referenceIntrospectors.get(referred.getValue().getClass().getName());
-        if (introspector == null) {
-            return Collections.emptySet();
-        }
-
-        Set<ResourceElement<S, ?>> elements = new HashSet<>();
-
-        // check the contribution for referring artifacts
-        findReferences(contribution, referred, elements, introspector);
-
-        // check dependent contributions
-        for (ContributionWire<?, ?> wire : contribution.getWires()) {
-            if (!wire.resolves(symbol)) {
-                // the wire doesn't resolve the specific resource
-                continue;
-            }
-            URI resolvedUri = wire.getExportContributionUri();
-            Contribution resolved = cache.get(resolvedUri);
-            if (resolved == null) {
-                // programming error
-                throw new AssertionError("Dependent contribution not found: " + resolvedUri);
-            }
-            findReferences(resolved, referred, elements, introspector);
-        }
-        return elements;
-    }
-
-    public <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws Fabric3Exception {
-        ResourceElementUpdater<V> updater = getUpdater(uri, value);
-        Contribution contribution = find(uri);
-        if (contribution == null) {
-            String identifier = uri.toString();
-            throw new Fabric3Exception("Contribution not found: " + identifier);
-        }
-        Set<Contribution> dependentContributions = resolveDependentContributions(uri);
-        return updater.update(value, contribution, dependentContributions);
-    }
-
-    public <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws Fabric3Exception {
-        ResourceElementUpdater<V> updater = getUpdater(uri, value);
-        Contribution contribution = find(uri);
-        if (contribution == null) {
-            String identifier = uri.toString();
-            throw new Fabric3Exception("Contribution not found: " + identifier);
-        }
-        Set<Contribution> dependentContributions = resolveDependentContributions(uri);
-        return updater.remove(value, contribution, dependentContributions);
-    }
-
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
-            throws Fabric3Exception {
+    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context) {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
@@ -209,7 +121,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws Fabric3Exception {
+    public <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
@@ -291,7 +203,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return resolved;
     }
 
-    public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws Fabric3Exception {
+    public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) {
         List<ContributionWire<?, ?>> wires = new ArrayList<>();
         for (Map.Entry<URI, Export> entry : imprt.getResolved().entrySet()) {
             ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, entry.getValue(), uri, entry.getKey());
@@ -363,7 +275,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(Contribution contribution,
                                                                                      Class<V> type,
                                                                                      S symbol,
-                                                                                     IntrospectionContext context) throws Fabric3Exception {
+                                                                                     IntrospectionContext context) {
         ResourceElement<S, V> element;
         // resolve by delegating to exporting contributions first
         for (ContributionWire<?, ?> wire : contribution.getWires()) {
@@ -390,30 +302,14 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    @SuppressWarnings({"unchecked"})
-    private <S extends Symbol> void findReferences(Contribution contribution,
-                                                   ResourceElement<S, ?> referred,
-                                                   Set<ResourceElement<S, ?>> elements,
-                                                   ReferenceIntrospector introspector) {
-
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (introspector.references(referred, element)) {
-                    elements.add((ResourceElement<S, ?>) element);
-                }
-            }
-        }
-    }
-
     private Set<Contribution> resolveCapabilities(Contribution contribution, Set<Contribution> extensions) {
         Set<Capability> required = contribution.getManifest().getRequiredCapabilities();
         for (Capability capability : required) {
-            for (Contribution entry : cache.values()) {
-                if (entry.getManifest().getProvidedCapabilities().contains(capability) && !extensions.contains(entry)) {
-                    extensions.add(entry);
-                    resolveCapabilities(entry, extensions);
-                }
-            }
+            cache.values().stream().filter(entry -> entry.getManifest().getProvidedCapabilities().contains(capability) && !extensions.contains(entry)).forEach(
+                    entry -> {
+                        extensions.add(entry);
+                        resolveCapabilities(entry, extensions);
+                    });
         }
         for (ContributionWire<?, ?> wire : contribution.getWires()) {
             Contribution imported = cache.get(wire.getExportContributionUri());
@@ -441,7 +337,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolveInternal(Contribution contribution,
                                                                                              Class<V> type,
                                                                                              S symbol,
-                                                                                             IntrospectionContext context) throws Fabric3Exception {
+                                                                                             IntrospectionContext context) {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol().equals(symbol)) {
@@ -460,17 +356,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
         }
         return null;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private <V extends Serializable> ResourceElementUpdater<V> getUpdater(URI uri, V value) throws Fabric3Exception {
-        String clazz = value.getClass().getName();
-        ResourceElementUpdater<V> updater = (ResourceElementUpdater<V>) updaters.get(clazz);
-        if (updater == null) {
-            String identifier = uri.toString();
-            throw new Fabric3Exception("Updater not found: " + identifier);
-        }
-        return updater;
     }
 
 }

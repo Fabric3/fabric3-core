@@ -26,8 +26,8 @@ import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Symbol;
 
 /**
- * Wires two contributions using an explicit target contribution reference, making all artifacts exported from one contribution visible to the other
- * importing contribution.
+ * Wires two contributions using an explicit target contribution reference, making all artifacts exported from one contribution visible to the other importing
+ * contribution.
  */
 public class LocationContributionWire implements ContributionWire<ContributionImport, ContributionExport> {
     private static final long serialVersionUID = -2724694051340291455L;
@@ -63,6 +63,5 @@ public class LocationContributionWire implements ContributionWire<ContributionIm
         // return false as this wire type is used to resolve classes, which are done via a classloader
         return false;
     }
-
 
 }

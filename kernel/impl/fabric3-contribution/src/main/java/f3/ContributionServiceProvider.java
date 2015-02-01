@@ -37,7 +37,6 @@ import org.fabric3.contribution.archive.JarClasspathProcessor;
 import org.fabric3.contribution.archive.ZipContributionHandler;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
-import org.fabric3.contribution.introspector.CompositeReferenceIntrospector;
 import org.fabric3.contribution.listener.APIImportListener;
 import org.fabric3.contribution.manifest.ContributionElementLoader;
 import org.fabric3.contribution.manifest.ContributionExportLoader;
@@ -63,7 +62,6 @@ import org.fabric3.contribution.processor.XmlIndexerRegistryImpl;
 import org.fabric3.contribution.processor.XmlProcessorRegistryImpl;
 import org.fabric3.contribution.processor.XmlResourceElementLoaderRegistryImpl;
 import org.fabric3.contribution.processor.XmlResourceProcessor;
-import org.fabric3.contribution.updater.CompositeResourceElementUpdater;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.JavaContributionWireInstantiator;
@@ -165,10 +163,6 @@ public class ContributionServiceProvider {
         compositeBuilder.component(newBuilder(ExtensionMapContentTypeResolver.class).build());
 
         compositeBuilder.component(newBuilder(LibraryLoader.class).key(Namespaces.F3_PREFIX + "library").build());
-
-        compositeBuilder.component(newBuilder(CompositeReferenceIntrospector.class).key(Composite.class.getName()).build());
-
-        compositeBuilder.component(newBuilder(CompositeResourceElementUpdater.class).key(Composite.class.getName()).build());
 
         compositeBuilder.component(newBuilder(ComponentJavaArtifactIntrospector.class).build());
 

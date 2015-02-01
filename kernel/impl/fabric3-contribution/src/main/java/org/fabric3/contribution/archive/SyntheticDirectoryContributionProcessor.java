@@ -28,8 +28,8 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Synthesizes a special contribution from a directory that is configured to extend an extension point derived from the name of the directory. For
- * example, a contribution can be synthesized that extends an extension point provided by a datasource extension by making JDBC drivers available.
+ * Synthesizes a special contribution from a directory that is configured to extend an extension point derived from the name of the directory. For example, a
+ * contribution can be synthesized that extends an extension point provided by a datasource extension by making JDBC drivers available.
  */
 @EagerInit
 public class SyntheticDirectoryContributionProcessor extends AbstractContributionProcessor {
@@ -42,7 +42,6 @@ public class SyntheticDirectoryContributionProcessor extends AbstractContributio
     public void processManifest(Contribution contribution, final IntrospectionContext context) {
         URL sourceUrl = contribution.getLocation();
         File root = FileHelper.toFile(sourceUrl);
-        assert root.isDirectory();
         ContributionManifest manifest = contribution.getManifest();
         manifest.setExtension(true);
         manifest.addExtend(root.getName());

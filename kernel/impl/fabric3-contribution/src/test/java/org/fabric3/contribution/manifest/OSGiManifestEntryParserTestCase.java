@@ -24,8 +24,8 @@ import junit.framework.TestCase;
  *
  */
 public class OSGiManifestEntryParserTestCase extends TestCase {
-    private static final String HEADER_1 = "org.fabric3.foo;resolution:=required,org.fabric3.bar;resolution:=optional,org.fabric3.baz;version\n" +
-            " =\"[1.0.0, 2.0.0)\"\n";
+    private static final String HEADER_1 = "org.fabric3.foo;resolution:=required,org.fabric3.bar;resolution:=optional,org.fabric3.baz;version\n"
+                                           + " =\"[1.0.0, 2.0.0)\"\n";
 
     private static final String HEADER_2 = "org.fabric3.baz;version=1.0.0";
 
@@ -34,7 +34,6 @@ public class OSGiManifestEntryParserTestCase extends TestCase {
     private static final String HEADER_4 = "org.fabric3.baz";
 
     private static final String HEADER_5 = "org.fabric3.baz,org.fabric3.bar";
-
 
     public void testHeader1() {
         OSGiManifestEntryParser parser = new OSGiManifestEntryParser(HEADER_1);
@@ -107,7 +106,6 @@ public class OSGiManifestEntryParserTestCase extends TestCase {
         type = parser.next();
         assertEquals(OSGiManifestEntryParser.EventType.END, type);
     }
-
 
     public void testHeader5() {
         OSGiManifestEntryParser parser = new OSGiManifestEntryParser(HEADER_5);

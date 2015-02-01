@@ -32,7 +32,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
@@ -62,7 +61,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore store;
     private ClasspathProcessorRegistry processorRegistry;
-    private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
+    private Map<Class<?>, ClassLoaderWireGenerator<?>> generators;
     private ClassLoaderWireBuilder builder;
     private HostInfo info;
 
@@ -97,7 +96,6 @@ public class ContributionLoaderImplTestCase extends TestCase {
 
         EasyMock.verify(classLoaderRegistry, store, processorRegistry, builder);
     }
-
 
     @Override
     protected void setUp() throws Exception {
@@ -139,7 +137,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
         generators.put(LocationContributionWire.class, locationGenerator);
     }
 
-    private void setupStore() throws Fabric3Exception {
+    private void setupStore() {
         URI importUri = URI.create("import");
         URI exportUri = URI.create("export");
         JavaContributionWire javaWire = new JavaContributionWire(imprt, export, importUri, exportUri);

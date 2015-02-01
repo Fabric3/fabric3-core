@@ -73,7 +73,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         ContributionManifest manifest;
         try {
             String sourceUrl = contribution.getLocation().toString();
@@ -106,13 +106,12 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) {
         File root = FileHelper.toFile(contribution.getLocation());
         iterateArtifactsRecursive(root, root, contribution, callback, context);
     }
 
-    protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context)
-            throws Fabric3Exception {
+    protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) {
         File[] files = dir.listFiles();
         ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {

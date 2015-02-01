@@ -71,5 +71,4 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
         registry.register(processor);
     }
 
-
 }

@@ -57,7 +57,7 @@ public class DefaultContributionResolver implements ContributionResolver {
         this.extensions = extensions;
     }
 
-    public URL resolve(URI contributionUri) throws Fabric3Exception {
+    public URL resolve(URI contributionUri) {
         Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             return contribution.getLocation();
@@ -78,7 +78,7 @@ public class DefaultContributionResolver implements ContributionResolver {
         throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
-    public List<URL> resolveAllLocations(URI contributionUri) throws Fabric3Exception {
+    public List<URL> resolveAllLocations(URI contributionUri) {
         Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             List<URL> locations = new ArrayList<>();
@@ -102,7 +102,7 @@ public class DefaultContributionResolver implements ContributionResolver {
         throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
-    public void release(URI contributionUri) throws Fabric3Exception {
+    public void release(URI contributionUri) {
         cache.remove(contributionUri);
     }
 

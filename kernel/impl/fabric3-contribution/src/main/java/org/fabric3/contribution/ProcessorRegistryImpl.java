@@ -60,17 +60,17 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         resourceProcessorCache.remove(contentType);
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         ContributionProcessor processor = getContributionProcessor(contribution);
         processor.processManifest(contribution, context);
     }
 
-    public void indexContribution(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void indexContribution(Contribution contribution, IntrospectionContext context) {
         ContributionProcessor processor = getContributionProcessor(contribution);
         processor.index(contribution, context);
     }
 
-    public void indexResource(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void indexResource(Resource resource, IntrospectionContext context) {
         String contentType = resource.getContentType();
         ResourceProcessor processor = resourceProcessorCache.get(contentType);
         if (processor == null) {
@@ -80,12 +80,12 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         processor.index(resource, context);
     }
 
-    public void processContribution(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processContribution(Contribution contribution, IntrospectionContext context) {
         ContributionProcessor processor = getContributionProcessor(contribution);
         processor.process(contribution, context);
     }
 
-    public void processResource(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void processResource(Resource resource, IntrospectionContext context) {
         if (ResourceState.ERROR == resource.getState()) {
             // skip processing as the resource is in the error state
             return;
@@ -97,7 +97,7 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         processor.process(resource, context);
     }
 
-    public ContributionProcessor getContributionProcessor(Contribution contribution) throws Fabric3Exception {
+    public ContributionProcessor getContributionProcessor(Contribution contribution) {
         for (ContributionProcessor processor : contributionProcessorCache) {
             if (processor.canProcess(contribution)) {
                 return processor;

@@ -45,17 +45,16 @@ public class ContributionElementLoaderTestCase extends TestCase {
     private static final Capability PROVIDED_CAPABILITY = new Capability("some-provided-capability");
 
     private static final String XML = "<contribution xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'\n" +
-            "              xmlns:f3='urn:fabric3.org'" +
-            "              f3:extension='true'" +
-            "              f3:description='JMS extension'>" +
-            "    <import.java package='javax.transaction' version='1.1.0'/>" +
-            "    <export.java package='org.fabric3.binding.jms.spi.common' version='1.8'/>" +
-            "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='node vm'/>" +
-            "    <f3:provides name='some-extension'/>" +
-            "    <f3:requires.capability name='some-required-capability'/>" +
-            "    <f3:provides.capability name='some-provided-capability'/>" +
-            "</contribution>";
-
+                                      "              xmlns:f3='urn:fabric3.org'" +
+                                      "              f3:extension='true'" +
+                                      "              f3:description='JMS extension'>" +
+                                      "    <import.java package='javax.transaction' version='1.1.0'/>" +
+                                      "    <export.java package='org.fabric3.binding.jms.spi.common' version='1.8'/>" +
+                                      "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='node vm'/>" +
+                                      "    <f3:provides name='some-extension'/>" +
+                                      "    <f3:requires.capability name='some-required-capability'/>" +
+                                      "    <f3:provides.capability name='some-provided-capability'/>" +
+                                      "</contribution>";
 
     private ContributionElementLoader loader;
     private XMLStreamReader reader;
@@ -99,6 +98,5 @@ public class ContributionElementLoaderTestCase extends TestCase {
         reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
         reader.nextTag();
     }
-
 
 }

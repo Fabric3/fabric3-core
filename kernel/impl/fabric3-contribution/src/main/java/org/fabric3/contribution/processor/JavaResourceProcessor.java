@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Component;
@@ -74,7 +73,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         return Constants.JAVA_COMPONENT_CONTENT_TYPE;
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void index(Resource resource, IntrospectionContext context) {
         // create component definition
         ResourceElement<?, ?> resourceElement = resource.getResourceElements().get(0);
         Class<?> clazz = (Class<?>) resourceElement.getValue();
@@ -115,7 +114,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
     }
 
     @SuppressWarnings("unchecked")
-    public void process(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Resource resource, IntrospectionContext context) {
         ResourceElement<ParsedComponentSymbol, QName> resourceElement = null;
         for (ResourceElement<?, ?> element : resource.getResourceElements()) {
             if (element.getSymbol() instanceof ParsedComponentSymbol) {

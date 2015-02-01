@@ -34,21 +34,21 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class LibraryLoaderTestCase extends TestCase {
     private static final String MINIMAL = "<library path='lib/http.dll'>" +
-            "    <os name='OS1'/>" +
-            "</library>";
+                                          "    <os name='OS1'/>" +
+                                          "</library>";
 
     private static final String RANGE = "<library path='lib/http.dll'>" +
-            "    <os name='OS1' min='2.1' minInclusive='false' max='3.1' maxInclusive='false'/>" +
-            "</library>";
+                                        "    <os name='OS1' min='2.1' minInclusive='false' max='3.1' maxInclusive='false'/>" +
+                                        "</library>";
 
     private static final String VERSION = "<library path='lib/http.dll'>" +
-            "    <os name='OS1' version='2.1' processor='x64'/>" +
-            "</library>";
+                                          "    <os name='OS1' version='2.1' processor='x64'/>" +
+                                          "</library>";
 
     private static final String MULTIPLE = "<library path='lib/http.dll'>" +
-            "    <os name='OS1' version='2.1' processor='x64'/>" +
-            "    <os name='OS12' version='3.1' processor='x64'/>" +
-            "</library>";
+                                           "    <os name='OS1' version='2.1' processor='x64'/>" +
+                                           "    <os name='OS12' version='3.1' processor='x64'/>" +
+                                           "</library>";
 
     private LibraryLoader loader;
     private DefaultIntrospectionContext context;

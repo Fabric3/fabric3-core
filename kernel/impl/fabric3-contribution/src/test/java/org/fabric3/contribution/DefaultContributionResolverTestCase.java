@@ -41,7 +41,6 @@ public class DefaultContributionResolverTestCase extends TestCase {
     private URI uri;
     private URL location;
 
-
     public void testResolveAgainstStore() throws Exception {
         Contribution contribution = new Contribution(uri, null, location, -1, null, false);
         EasyMock.expect(store.find(uri)).andReturn(contribution);

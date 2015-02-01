@@ -39,7 +39,6 @@ public class ContributionExportLoaderTestCase extends TestCase {
         assertEquals(URI.create("foo"), export.getSymbolicUri());
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
         loader = new ContributionExportLoader();

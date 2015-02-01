@@ -42,7 +42,7 @@ import org.fabric3.spi.introspection.xml.Loader;
  */
 public class CompositeResourceProcessorTestCase extends TestCase {
     private static final String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' targetNamespace='test' name='composite'/>";
-    
+
     private ProcessorRegistry registry;
     private Loader loader;
     private QName compositeName;

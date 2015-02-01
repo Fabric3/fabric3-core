@@ -28,8 +28,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Creates LocationContributionWireInstantiator instances.
  */
 @EagerInit
-public class LocationContributionWireInstantiator
-        implements ContributionWireInstantiator<ContributionImport, ContributionExport, LocationContributionWire> {
+public class LocationContributionWireInstantiator implements ContributionWireInstantiator<ContributionImport, ContributionExport, LocationContributionWire> {
 
     public LocationContributionWire instantiate(ContributionImport imprt, ContributionExport export, URI importUri, URI exportUri) {
         return new LocationContributionWire(imprt, export, importUri, exportUri);

@@ -20,8 +20,8 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  *
  */
 public class CompositeContributionProcessorTestCase extends TestCase {
-    private static final String XML =
-            "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='test' targetNamespace='urn:foo.com'></composite>";
+    private static final String XML
+            = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='test' targetNamespace='urn:foo.com'></composite>";
 
     private CompositeContributionProcessor processor;
     private LoaderRegistry registry;
@@ -33,9 +33,7 @@ public class CompositeContributionProcessorTestCase extends TestCase {
 
     public void testConfigProcessor() throws Exception {
         Composite composite = new Composite(new QName("foo", "bar"));
-        EasyMock.expect(registry.load((Source) EasyMock.isNull(),
-                                      EasyMock.eq(Composite.class),
-                                      EasyMock.isA(IntrospectionContext.class))).andReturn(composite);
+        EasyMock.expect(registry.load((Source) EasyMock.isNull(), EasyMock.eq(Composite.class), EasyMock.isA(IntrospectionContext.class))).andReturn(composite);
         EasyMock.replay(registry);
 
         XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
@@ -49,7 +47,6 @@ public class CompositeContributionProcessorTestCase extends TestCase {
 
         EasyMock.verify(registry);
     }
-
 
     @Override
     public void setUp() throws Exception {

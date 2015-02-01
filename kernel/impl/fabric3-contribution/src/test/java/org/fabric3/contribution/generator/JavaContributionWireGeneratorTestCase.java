@@ -40,5 +40,4 @@ public class JavaContributionWireGeneratorTestCase extends TestCase {
         assertNotNull(generator.generate(wire));
     }
 
-
 }

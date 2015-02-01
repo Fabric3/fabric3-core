@@ -43,7 +43,7 @@ public class XmlProcessorRegistryImpl implements XmlProcessorRegistry {
         cache.remove(name);
     }
 
-    public void process(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) {
         QName name = reader.getName();
         XmlProcessor processor = cache.get(name);
         if (processor == null) {

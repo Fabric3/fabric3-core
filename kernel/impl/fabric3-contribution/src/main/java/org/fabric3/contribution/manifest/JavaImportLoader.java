@@ -84,11 +84,7 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
         return new JavaImport(info, locationUri);
     }
 
-    private PackageInfo parseVersion(String statement,
-                                     String version,
-                                     boolean required,
-                                     XMLStreamReader reader,
-                                     IntrospectionContext context) {
+    private PackageInfo parseVersion(String statement, String version, boolean required, XMLStreamReader reader, IntrospectionContext context) {
         try {
             String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
             boolean minInclusive = minInclusiveAttr == null || Boolean.parseBoolean(minInclusiveAttr);
@@ -102,11 +98,7 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
         }
     }
 
-    private PackageInfo parseRange(String statement,
-                                   String minVersion,
-                                   boolean required,
-                                   XMLStreamReader reader,
-                                   IntrospectionContext context) {
+    private PackageInfo parseRange(String statement, String minVersion, boolean required, XMLStreamReader reader, IntrospectionContext context) {
         Location location = reader.getLocation();
         String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
         boolean minInclusive = minInclusiveAttr == null || Boolean.parseBoolean(minInclusiveAttr);

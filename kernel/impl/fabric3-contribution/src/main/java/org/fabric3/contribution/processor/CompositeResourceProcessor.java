@@ -66,7 +66,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         return Constants.COMPOSITE_CONTENT_TYPE;
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void index(Resource resource, IntrospectionContext context) {
         XMLStreamReader reader = null;
         InputStream stream = null;
         try {
@@ -111,7 +111,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void process(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Resource resource, IntrospectionContext context) {
         Source source = resource.getSource();
         ClassLoader classLoader = context.getClassLoader();
         URI contributionUri = context.getContributionUri();

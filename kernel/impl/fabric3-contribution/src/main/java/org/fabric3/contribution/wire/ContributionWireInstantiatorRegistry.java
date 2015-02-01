@@ -25,10 +25,8 @@ import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
 /**
- * A registry used to dispatch to ContributionWireInstantiators.
- * <p/>
- * This is is required since the kernel does not support reinjection of multiplicity references on Singleton components (it does, however, support
- * reinjection of non-multiplicity references, which is done with this service).
+ * A registry used to dispatch to ContributionWireInstantiators. <p/> This is is required since the kernel does not support reinjection of multiplicity
+ * references on Singleton components (it does, however, support reinjection of non-multiplicity references, which is done with this service).
  */
 public interface ContributionWireInstantiatorRegistry {
 

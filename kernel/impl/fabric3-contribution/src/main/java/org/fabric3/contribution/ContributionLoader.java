@@ -27,8 +27,8 @@ import org.fabric3.spi.contribution.Contribution;
 public interface ContributionLoader {
 
     /**
-     * Performs the load operation. This includes resolution of dependent contributions if necessary, and constructing a classloader with access to
-     * resources contained in and required by the contribution.
+     * Performs the load operation. This includes resolution of dependent contributions if necessary, and constructing a classloader with access to resources
+     * contained in and required by the contribution.
      *
      * @param contribution the contribution to load
      * @return the classloader with access to the contribution and dependent resources

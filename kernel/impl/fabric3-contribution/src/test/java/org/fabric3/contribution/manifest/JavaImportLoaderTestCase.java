@@ -32,8 +32,8 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
  */
 public class JavaImportLoaderTestCase extends TestCase {
     private static final String XML_VERSION = "<import.java package=\"org.bar\" version=\"1.0.0\" required=\"true\"/>";
-    private static final String XML_RANGE =
-            "<import.java package=\"org.bar\" min=\"1.0.0\" minInclusive=\"false\" max=\"2.0.0\" maxInclusive=\"true\" required=\"true\"/>";
+    private static final String XML_RANGE
+            = "<import.java package=\"org.bar\" min=\"1.0.0\" minInclusive=\"false\" max=\"2.0.0\" maxInclusive=\"true\" required=\"true\"/>";
     private static final Version MIN_VERSION = new Version(1, 0, 0);
     private static final Version MAX_VERSION = new Version(2, 0, 0);
 
@@ -71,6 +71,5 @@ public class JavaImportLoaderTestCase extends TestCase {
         super.setUp();
         loader = new JavaImportLoader();
     }
-
 
 }

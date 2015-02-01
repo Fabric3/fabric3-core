@@ -49,5 +49,4 @@ public class ProvidesLoaderTestCase extends TestCase {
         reader.nextTag();
     }
 
-
 }

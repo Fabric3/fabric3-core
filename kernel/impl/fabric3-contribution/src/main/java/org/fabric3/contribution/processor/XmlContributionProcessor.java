@@ -79,7 +79,7 @@ public class XmlContributionProcessor implements ContributionProcessor {
         // no-op as XML contributions do not contain manifest headers
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void index(Contribution contribution, IntrospectionContext context) {
         InputStream stream = null;
         XMLStreamReader reader = null;
         try {
@@ -108,7 +108,7 @@ public class XmlContributionProcessor implements ContributionProcessor {
         }
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Contribution contribution, IntrospectionContext context) {
         URL locationURL = contribution.getLocation();
         InputStream stream = null;
         XMLStreamReader reader = null;

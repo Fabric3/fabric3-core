@@ -77,7 +77,7 @@ public class XmlContributionProcessorTestCase extends TestCase {
     }
 
     public void testProcess() throws Exception {
-        xmlProcessorRegistry.process(EasyMock.isA(Contribution.class),EasyMock.isA(XMLStreamReader.class), EasyMock.isA(IntrospectionContext.class));
+        xmlProcessorRegistry.process(EasyMock.isA(Contribution.class), EasyMock.isA(XMLStreamReader.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.replay(xmlProcessorRegistry);
 
         processor.process(contribution, context);
@@ -88,7 +88,7 @@ public class XmlContributionProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = EasyMock.createMock(ProcessorRegistry.class);
-        xmlProcessorRegistry =    EasyMock.createMock(XmlProcessorRegistry.class);
+        xmlProcessorRegistry = EasyMock.createMock(XmlProcessorRegistry.class);
         xmlIndexerRegistry = EasyMock.createMock(XmlIndexerRegistry.class);
         processor = new XmlContributionProcessor(registry, xmlProcessorRegistry, xmlIndexerRegistry);
         URL file = getClass().getResource("test.composite");

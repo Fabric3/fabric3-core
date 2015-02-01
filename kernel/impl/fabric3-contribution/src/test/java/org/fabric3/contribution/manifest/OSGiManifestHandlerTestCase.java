@@ -38,20 +38,21 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 public class OSGiManifestHandlerTestCase extends TestCase {
     private static final String MANIFEST = "Manifest-Version: 1.0\n" +
-            "Created-By: test\n" +
-            "Import-Package: org.fabric3.foo;resolution:=required,org.fabric3.bar;resolution:=optional,org.fabric3.baz;version" +
-            " =\"[1.0.0, 2.0.0)\"\n" +
-            "Export-Package: org.fabric3.export1;version=\"1.1.1.1\",org.fabric3.export2;version=\"2.2.2.2\";uses:=\"foo.com, bar.com\"\n";
+                                           "Created-By: test\n" +
+                                           "Import-Package: org.fabric3.foo;resolution:=required,org.fabric3.bar;resolution:=optional,org.fabric3.baz;version" +
+                                           " =\"[1.0.0, 2.0.0)\"\n" +
+                                           "Export-Package: org.fabric3.export1;version=\"1.1.1.1\",org.fabric3.export2;version=\"2.2.2.2\";uses:=\"foo.com, "
+                                           + "bar.com\"\n";
 
     private static final String MANIFEST2 = "Manifest-Version: 1.0\n" +
-            "Created-By: test\n" +
-            "Import-Package: org.fabric3.foo\n" +
-            "Export-Package: org.fabric3.export\n";
+                                            "Created-By: test\n" +
+                                            "Import-Package: org.fabric3.foo\n" +
+                                            "Export-Package: org.fabric3.export\n";
 
     private static final String MANIFEST3 = "Manifest-Version: 1.0\n" +
-            "Created-By: test\n" +
-            "Import-Package: org.fabric3.foo1, org.fabric3.foo2\n" +
-            "Export-Package: org.fabric3.export1, org.fabric3.export2\n";
+                                            "Created-By: test\n" +
+                                            "Import-Package: org.fabric3.foo1, org.fabric3.foo2\n" +
+                                            "Export-Package: org.fabric3.export1, org.fabric3.export2\n";
 
     private OSGiManifestHandler handler = new OSGiManifestHandler();
 
@@ -116,6 +117,5 @@ public class OSGiManifestHandlerTestCase extends TestCase {
         assertEquals(2, manifest.getImports().size());
         assertEquals(2, manifest.getExports().size());
     }
-
 
 }

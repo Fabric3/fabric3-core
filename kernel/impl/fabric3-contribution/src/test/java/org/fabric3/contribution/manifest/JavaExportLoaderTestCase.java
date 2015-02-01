@@ -44,7 +44,6 @@ public class JavaExportLoaderTestCase extends TestCase {
         assertEquals(1, info.getMinVersion().getMicro());
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
         loader = new JavaExportLoader();

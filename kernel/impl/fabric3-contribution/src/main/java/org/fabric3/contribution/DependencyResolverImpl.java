@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Capability;
@@ -64,7 +65,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         sorter = new TopologicalSorterImpl<>();
     }
 
-    public List<Contribution> resolve(List<Contribution> contributions) throws Fabric3Exception {
+    public List<Contribution> resolve(List<Contribution> contributions) {
         DirectedGraph<Contribution> dag = new DirectedGraphImpl<>();
         // add the contributions as vertices
         for (Contribution contribution : contributions) {
@@ -136,9 +137,8 @@ public class DependencyResolverImpl implements DependencyResolver {
      *
      * @param source the contribution to resolve imports for
      * @param dag    the current contribution dag
-     * @throws Fabric3Exception if a resolution error occurs
      */
-    private void resolveImports(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws Fabric3Exception {
+    private void resolveImports(Vertex<Contribution> source, DirectedGraph<Contribution> dag) {
         Contribution contribution = source.getEntity();
         ContributionManifest manifest = contribution.getManifest();
         for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext(); ) {
@@ -161,9 +161,8 @@ public class DependencyResolverImpl implements DependencyResolver {
      * @param imprt  the import to resolve
      * @param source the contribution to resolve imports for
      * @param dag    the current contribution dag
-     * @throws Fabric3Exception if a resolution error occurs
      */
-    private void resolveExternalImport(Import imprt, Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws Fabric3Exception {
+    private void resolveExternalImport(Import imprt, Vertex<Contribution> source, DirectedGraph<Contribution> dag) {
         // See if the import is already stored. Extension imports do not need to be checked since we assume extensions are installed prior
         Contribution contribution = source.getEntity();
         URI uri = contribution.getUri();
@@ -193,10 +192,8 @@ public class DependencyResolverImpl implements DependencyResolver {
      * @param iterator the import iterator - used to remove the import from the containing manifest if it is resolved by the export in the same contribution
      * @param source   the source contribution
      * @param dag      the current DAG to resolve against
-     * @throws Fabric3Exception if there is a resolution error
      */
-    private void resolveOverlappingImport(Import imprt, Iterator<Import> iterator, Vertex<Contribution> source, DirectedGraph<Contribution> dag)
-            throws Fabric3Exception {
+    private void resolveOverlappingImport(Import imprt, Iterator<Import> iterator, Vertex<Contribution> source, DirectedGraph<Contribution> dag) {
         Contribution contribution = source.getEntity();
         ContributionManifest manifest = contribution.getManifest();
         URI uri = contribution.getUri();
@@ -222,7 +219,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
     }
 
-    private void resolveCapabilities(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws Fabric3Exception {
+    private void resolveCapabilities(Vertex<Contribution> source, DirectedGraph<Contribution> dag) {
         Contribution contribution = source.getEntity();
         URI uri = contribution.getUri();
         for (Capability capability : contribution.getManifest().getRequiredCapabilities()) {
@@ -233,7 +230,7 @@ public class DependencyResolverImpl implements DependencyResolver {
                 for (Contribution resolved : resolvedContributions) {
                     if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
                         throw new Fabric3Exception("Contribution " + contribution.getUri() + " requires a capability provided by " + resolved.getUri()
-                                                     + " which is not installed");
+                                                   + " which is not installed");
                     }
                 }
                 if (resolvedContributions.isEmpty()) {
@@ -363,9 +360,8 @@ public class DependencyResolverImpl implements DependencyResolver {
      *
      * @param dag the DAG
      * @return the sorted contributions
-     * @throws Fabric3Exception if there is an error sorting the DAG
      */
-    private List<Contribution> sort(DirectedGraph<Contribution> dag) throws Fabric3Exception {
+    private List<Contribution> sort(DirectedGraph<Contribution> dag) {
         // detect cycles
         List<Cycle<Contribution>> cycles = detector.findCycles(dag);
         if (!cycles.isEmpty()) {
@@ -381,9 +377,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         try {
             List<Vertex<Contribution>> vertices = sorter.reverseSort(dag);
             List<Contribution> ordered = new ArrayList<>(vertices.size());
-            for (Vertex<Contribution> vertex : vertices) {
-                ordered.add(vertex.getEntity());
-            }
+            ordered.addAll(vertices.stream().map(Vertex::getEntity).collect(Collectors.toList()));
             return ordered;
         } catch (GraphException e) {
             throw new Fabric3Exception(e);
@@ -436,7 +430,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
     }
 
-    private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) throws Fabric3Exception {
+    private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) {
         for (Contribution resolved : resolvedContributions) {
             if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
                 throw new Fabric3Exception("Contribution " + contribution.getUri() + " imports " + resolved.getUri() + " which is not installed");

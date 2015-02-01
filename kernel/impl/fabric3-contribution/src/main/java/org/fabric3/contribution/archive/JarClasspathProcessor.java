@@ -51,11 +51,9 @@ import org.oasisopen.sca.annotation.Reference;
  * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome using one
  * of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded jars will be copied to a
  * temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file will be extracted to the filesystem
- * and placed on the classpath using a file: URL instead.
- * <p/>
- * The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS read lock on jar files when accessing resources from a jar:
- * URL and does not release it. This results in holding open temporary file handles and not being able to delete those files until the JVM terminates. This
- * issue does not occur on Unix systems.
+ * and placed on the classpath using a file: URL instead. <p/> The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS
+ * read lock on jar files when accessing resources from a jar: URL and does not release it. This results in holding open temporary file handles and not being
+ * able to delete those files until the JVM terminates. This issue does not occur on Unix systems.
  */
 @EagerInit
 public class JarClasspathProcessor implements ClasspathProcessor {

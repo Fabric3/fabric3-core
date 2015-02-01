@@ -58,7 +58,7 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore store;
     private ClasspathProcessorRegistry processorRegistry;
-    private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
+    private Map<Class<?>, ClassLoaderWireGenerator<?>> generators;
     private ClassLoaderWireBuilder builder;
     private HostInfo info;
 
@@ -79,7 +79,6 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
 
         EasyMock.verify(classLoaderRegistry, store, processorRegistry, builder);
     }
-
 
     @Override
     protected void setUp() throws Exception {
@@ -119,14 +118,12 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-    private void setupStore() throws Fabric3Exception {
+    private void setupStore() {
         store = EasyMock.createMock(MetaDataStore.class);
-        EasyMock.expect(store.resolveContributionWires(EasyMock.eq(contributionUri),
-                                                       EasyMock.isA(JavaImport.class))).andThrow(new Fabric3Exception("test"));
+        EasyMock.expect(store.resolveContributionWires(EasyMock.eq(contributionUri), EasyMock.isA(JavaImport.class))).andThrow(new Fabric3Exception("test"));
 
         List<ContributionWire<?, ?>> list = Collections.emptyList();
-        EasyMock.expect(store.resolveContributionWires(EasyMock.isA(URI.class),
-                                                       EasyMock.isA(ContributionImport.class))).andReturn(list);
+        EasyMock.expect(store.resolveContributionWires(EasyMock.isA(URI.class), EasyMock.isA(ContributionImport.class))).andReturn(list);
 
     }
 

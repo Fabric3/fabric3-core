@@ -47,7 +47,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
         extensionMap.put("contribution", "text/vnd.fabric3.contribution");
     }
 
-    public String getContentType(URL contentUrl) throws Fabric3Exception {
+    public String getContentType(URL contentUrl) {
 
         if (contentUrl == null) {
             throw new IllegalArgumentException("Content URL cannot be null");

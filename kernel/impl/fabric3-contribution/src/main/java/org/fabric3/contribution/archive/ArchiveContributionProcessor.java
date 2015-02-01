@@ -49,12 +49,12 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         return false;
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         ArchiveContributionHandler handler = getHandler(contribution);
         handler.processManifest(contribution, context);
     }
 
-    public void index(Contribution contribution, final IntrospectionContext context) throws Fabric3Exception {
+    public void index(Contribution contribution, final IntrospectionContext context) {
         ArchiveContributionHandler handler = getHandler(contribution);
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
@@ -69,30 +69,27 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
 
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Contribution contribution, IntrospectionContext context) {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
             List<Resource> copy = new ArrayList<>(contribution.getResources());   // copy the list since processors may add resources
-            for (Resource resource : copy) {
-                if (ResourceState.UNPROCESSED == resource.getState()) {
-                    registry.processResource(resource, context);
-                }
-            }
+            copy.stream().filter(resource -> ResourceState.UNPROCESSED == resource.getState()).forEach(resource -> {
+                registry.processResource(resource, context);
+            });
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
     }
 
-    private ArchiveContributionHandler getHandler(Contribution contribution) throws Fabric3Exception {
+    private ArchiveContributionHandler getHandler(Contribution contribution) {
         for (ArchiveContributionHandler handler : handlers) {
             if (handler.canProcess(contribution)) {
                 return handler;
             }
         }
-        String source = contribution.getUri().toString();
-        throw new Fabric3Exception("Contribution type not supported: " + source);
+        throw new Fabric3Exception("Contribution type not supported: " + contribution.getUri());
     }
 
 }

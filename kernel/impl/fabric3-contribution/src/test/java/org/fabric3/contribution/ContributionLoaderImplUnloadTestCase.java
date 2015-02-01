@@ -35,7 +35,6 @@ import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
-import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
@@ -46,7 +45,7 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore store;
     private ClasspathProcessorRegistry processorRegistry;
-    private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
+    private Map<Class<?>, ClassLoaderWireGenerator<?>> generators;
     private ClassLoaderWireBuilder builder;
     private HostInfo info;
 
@@ -54,7 +53,6 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
     private URI contributionUri;
 
     private Contribution dependentContribution;
-    private URI dependentUri;
 
     public void testUnLoad() throws Exception {
         MultiParentClassLoader contributionClassLoader = new MultiParentClassLoader(contributionUri, getClass().getClassLoader());
@@ -117,7 +115,7 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
         contributionUri = URI.create("contribution");
         contribution = new Contribution(contributionUri);
 
-        dependentUri = URI.create("dependentUri");
+        URI dependentUri = URI.create("dependentUri");
         dependentContribution = new Contribution(dependentUri);
     }
 }

@@ -26,8 +26,8 @@ import org.fabric3.spi.contribution.Import;
 import org.oasisopen.sca.Constants;
 
 /**
- * Exports the entire package contents of a contribution. This export type is used for API and SPI contributions where all contents are visible to
- * importing contributions.
+ * Exports the entire package contents of a contribution. This export type is used for API and SPI contributions where all contents are visible to importing
+ * contributions.
  */
 public class ContributionExport implements Export {
     private static final long serialVersionUID = -2400233923134603994L;
@@ -67,8 +67,12 @@ public class ContributionExport implements Export {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ContributionExport that = (ContributionExport) o;
 

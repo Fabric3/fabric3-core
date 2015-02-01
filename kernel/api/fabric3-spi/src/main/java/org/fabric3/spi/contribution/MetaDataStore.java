@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -81,38 +80,6 @@ public interface MetaDataStore {
      * @throws Fabric3Exception if an error occurs during resolution
      */
     <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws Fabric3Exception;
-
-    /**
-     * Returns a collection of resource elements that reference the artifact represented by the given symbol.
-     *
-     * @param uri    the URI of the contribution to use as the search context
-     * @param symbol the artifact symbol
-     * @return the set of resources that reference the artifact
-     * @throws Fabric3Exception if an error occurs during resolution
-     */
-    <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws Fabric3Exception;
-
-    /**
-     * Updates a resource element contained in a contribution. All references to the resource will be updated in the containing and dependent contributions.
-     *
-     * @param uri   the contribution URI
-     * @param value the new resource element value
-     * @return the collection of model object that have been changed by the update. For example, an update to a composite will cause changes in other composites
-     * that reference it
-     * @throws Fabric3Exception if an error occurs during update
-     */
-    <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws Fabric3Exception;
-
-    /**
-     * Removes a resource element from a contribution. References to the element may be replaced by unresolved pointers depending on the resource type.
-     *
-     * @param uri   the contribution URI
-     * @param value the new resource element value
-     * @return the collection of model object that have been changed by the removal. For example, a deleted composite will cause changes in other composites
-     * that reference it. References to deleted elements may be replaced with pointers.
-     * @throws Fabric3Exception if an error occurs during update
-     */
-    <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws Fabric3Exception;
 
     /**
      * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.

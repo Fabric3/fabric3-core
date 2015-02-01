@@ -40,5 +40,4 @@ public class LocationContributionWireGeneratorTestCase extends TestCase {
         assertNotNull(generator.generate(wire));
     }
 
-
 }

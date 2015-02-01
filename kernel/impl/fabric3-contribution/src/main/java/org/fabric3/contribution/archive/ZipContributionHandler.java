@@ -79,7 +79,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".jar") || sourceUrl.endsWith(".zip");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         URL sourceUrl = contribution.getLocation();
         try {
             URL manifestUrl = new URL("jar:" + sourceUrl.toExternalForm() + "!/META-INF/sca-contribution.xml");
@@ -131,7 +131,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;

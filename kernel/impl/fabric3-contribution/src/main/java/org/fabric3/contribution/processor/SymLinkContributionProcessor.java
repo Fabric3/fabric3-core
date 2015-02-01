@@ -71,7 +71,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         return sourceUrl.endsWith(".contribution") || contribution.getMetaData(Boolean.class, F3_SYMLINK) != null;  // source url will change
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         try {
             Contribution syntheticContribution = createSyntheticContribution(contribution);
             processorRegistry.processManifest(syntheticContribution, context);
@@ -88,7 +88,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         }
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void index(Contribution contribution, IntrospectionContext context) {
         Contribution syntheticContribution = contribution.getMetaData(Contribution.class, contribution.getUri());
         processorRegistry.indexContribution(syntheticContribution, context);
         for (Resource resource : syntheticContribution.getResources()) {
@@ -97,7 +97,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         }
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Contribution contribution, IntrospectionContext context) {
         Contribution syntheticContribution = contribution.getMetaData(Contribution.class, contribution.getUri());
         processorRegistry.processContribution(syntheticContribution, context);
 

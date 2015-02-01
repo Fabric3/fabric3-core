@@ -170,9 +170,7 @@ public class ContributionServiceImpl implements ContributionService {
             contributions.add(contribution);
         }
         contributions = dependencyResolver.orderForUninstall(contributions);
-        for (Contribution contribution : contributions) {
-            uninstall(contribution);
-        }
+        contributions.forEach(this::uninstall);
     }
 
     public void remove(URI uri) {
@@ -190,9 +188,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public void remove(List<URI> uris) {
-        for (URI uri : uris) {
-            remove(uri);
-        }
+        uris.forEach(this::remove);
     }
 
     public ContributionOrder processManifests(List<ContributionSource> contributionSources) {
@@ -240,10 +236,8 @@ public class ContributionServiceImpl implements ContributionService {
                 throw new Fabric3Exception("Contribution is already installed: " + contribution.getUri());
             }
         }
-        for (Contribution contribution : contributions) {
-            // process any SCA manifest information, including imports and exports
-            processManifest(contribution);
-        }
+        // process any SCA manifest information, including imports and exports
+        contributions.forEach(this::processManifest);
         // order the contributions based on their dependencies
         contributions = dependencyResolver.resolve(contributions);
         for (Contribution contribution : contributions) {
@@ -292,10 +286,8 @@ public class ContributionServiceImpl implements ContributionService {
                 throw new Fabric3Exception("Contribution is already installed: " + contribution.getUri());
             }
         }
-        for (Contribution contribution : contributions) {
-            // process any SCA manifest information, including imports and exports
-            processManifest(contribution);
-        }
+        // process any SCA manifest information, including imports and exports
+        contributions.forEach(this::processManifest);
         // order the contributions based on their dependencies
         contributions = dependencyResolver.resolve(contributions);
         try {
@@ -352,7 +344,6 @@ public class ContributionServiceImpl implements ContributionService {
             throw new Fabric3Exception("Contribution not installed: " + uri);
         }
         if (contribution.isLocked()) {
-            List<QName> deployables = contribution.getLockOwners();
             throw new Fabric3Exception("Contribution is currently in use by a deployment: " + uri);
         }
         // unload from memory
@@ -461,17 +452,15 @@ public class ContributionServiceImpl implements ContributionService {
     private void addDeployableEntries(Contribution contribution) {
         ContributionManifest manifest = contribution.getManifest();
         for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (element.getValue() instanceof Composite) {
-                    Composite composite = (Composite) element.getValue();
-                    if (composite.isDeployable()) {
-                        Deployable deployable = new Deployable(composite.getName(), composite.getModes(), composite.getEnvironments());
-                        if (!manifest.getDeployables().contains(deployable)) {
-                            manifest.getDeployables().add(deployable);
-                        }
+            resource.getResourceElements().stream().filter(element -> element.getValue() instanceof Composite).forEach(element -> {
+                Composite composite = (Composite) element.getValue();
+                if (composite.isDeployable()) {
+                    Deployable deployable = new Deployable(composite.getName(), composite.getModes(), composite.getEnvironments());
+                    if (!manifest.getDeployables().contains(deployable)) {
+                        manifest.getDeployables().add(deployable);
                     }
                 }
-            }
+            });
         }
     }
 

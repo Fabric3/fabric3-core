@@ -74,5 +74,4 @@ public class SyntheticDirectoryClasspathProcessor implements ClasspathProcessor 
         return classpath;
     }
 
-
 }

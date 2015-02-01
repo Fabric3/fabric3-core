@@ -76,31 +76,31 @@ public class OSGiManifestHandler implements JarManifestHandler {
         while (true) {
             OSGiManifestEntryParser.EventType type = parser.next();
             switch (type) {
-            case BEGIN:
-                break;
-            case PATH:
-                info = new PackageInfo(parser.getText());
-                break;
-            case PARAMETER:
-                String text = parser.getText();
-                if (text.startsWith(VERSION)) {
-                    if (!parseVersion(text, info, context)) {
-                        return null;
+                case BEGIN:
+                    break;
+                case PATH:
+                    info = new PackageInfo(parser.getText());
+                    break;
+                case PARAMETER:
+                    String text = parser.getText();
+                    if (text.startsWith(VERSION)) {
+                        if (!parseVersion(text, info, context)) {
+                            return null;
+                        }
+                    } else if (text.startsWith(RESOLUTION)) {
+                        String val = text.substring(RESOLUTION.length());
+                        info.setRequired("required".equalsIgnoreCase(val));
                     }
-                } else if (text.startsWith(RESOLUTION)) {
-                    String val = text.substring(RESOLUTION.length());
-                    info.setRequired("required".equalsIgnoreCase(val));
-                }
 
-                break;
-            case END_CLAUSE:
-                if (info != null) {
-                    JavaImport imprt = new JavaImport(info);
-                    imports.add(imprt);
-                }
-                break;
-            case END:
-                return imports;
+                    break;
+                case END_CLAUSE:
+                    if (info != null) {
+                        JavaImport imprt = new JavaImport(info);
+                        imports.add(imprt);
+                    }
+                    break;
+                case END:
+                    return imports;
             }
         }
     }
@@ -112,25 +112,25 @@ public class OSGiManifestHandler implements JarManifestHandler {
         while (true) {
             OSGiManifestEntryParser.EventType type = parser.next();
             switch (type) {
-            case BEGIN:
-                break;
-            case PATH:
-                info = new PackageInfo(parser.getText());
-                break;
-            case PARAMETER:
-                String text = parser.getText();
-                if (text.startsWith(VERSION)) {
-                    if (!parseVersion(text, info, context)) {
-                        return null;
+                case BEGIN:
+                    break;
+                case PATH:
+                    info = new PackageInfo(parser.getText());
+                    break;
+                case PARAMETER:
+                    String text = parser.getText();
+                    if (text.startsWith(VERSION)) {
+                        if (!parseVersion(text, info, context)) {
+                            return null;
+                        }
                     }
-                }
-                break;
-            case END_CLAUSE:
-                JavaExport export = new JavaExport(info);
-                exports.add(export);
-                break;
-            case END:
-                return exports;
+                    break;
+                case END_CLAUSE:
+                    JavaExport export = new JavaExport(info);
+                    exports.add(export);
+                    break;
+                case END:
+                    return exports;
             }
         }
     }
@@ -172,6 +172,5 @@ public class OSGiManifestHandler implements JarManifestHandler {
         }
         return true;
     }
-
 
 }

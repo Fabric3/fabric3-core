@@ -24,10 +24,9 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Processes composite files deployed as a contribution.
- * <p/>
- * During processing, a synthetic deployable composite is created and added to the contribution. In addition, a synthetic QName export equal to the
- * composite target namespace is created and added to the contribution, which can be used for contribution ordering durng deployment.
+ * Processes composite files deployed as a contribution. <p/> During processing, a synthetic deployable composite is created and added to the contribution. In
+ * addition, a synthetic QName export equal to the composite target namespace is created and added to the contribution, which can be used for contribution
+ * ordering during deployment.
  */
 @EagerInit
 public class CompositeContributionProcessor implements ContributionProcessor {
@@ -54,15 +53,15 @@ public class CompositeContributionProcessor implements ContributionProcessor {
         return sourceUrl.endsWith(".composite");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void processManifest(Contribution contribution, IntrospectionContext context) {
         // no-op
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void index(Contribution contribution, IntrospectionContext context) {
         // no-op
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Contribution contribution, IntrospectionContext context) {
         try {
             Source source = contribution.getSource();
             Composite composite = loaderRegistry.load(source, Composite.class, context);

@@ -67,6 +67,5 @@ public class JavaExportLoader extends AbstractValidatingTypeLoader<JavaExport> {
         return new JavaExport(info);
     }
 
-
 }
 

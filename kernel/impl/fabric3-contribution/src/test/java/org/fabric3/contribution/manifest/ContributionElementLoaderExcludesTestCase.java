@@ -31,8 +31,8 @@ import org.fabric3.spi.contribution.ContributionManifest;
  */
 public class ContributionElementLoaderExcludesTestCase extends TestCase {
     private static final String XML = "<contribution xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' xmlns:f3='urn:fabric3.org'>" +
-            "<f3:scan exclude='foo,bar'/>" +
-            "</contribution>";
+                                      "<f3:scan exclude='foo,bar'/>" +
+                                      "</contribution>";
     private ContributionElementLoader loader;
 
     public void testExcludes() throws Exception {
@@ -51,6 +51,5 @@ public class ContributionElementLoaderExcludesTestCase extends TestCase {
     protected void setUp() throws Exception {
         loader = new ContributionElementLoader(null);
     }
-
 
 }

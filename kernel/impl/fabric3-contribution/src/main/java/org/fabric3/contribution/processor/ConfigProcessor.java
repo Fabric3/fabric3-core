@@ -26,13 +26,10 @@ import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 /**
- * Processes XML config contributions. Config XML contributions are used to deploy properties to the domain that may be referenced by components in
- * other contributions. This provides an accessible mechanism for deploying configuration separate from application code archives.
- * <p/>
- * Config files must use the <code>config</code> element as the document root. The <code>config</code> element has two attributes, name and
- * targetNamespace. As show in the following example, name identifies the property name and targetNamespaces identifies the namespace the config
- * contribution exports:
- * <p/>
+ * Processes XML config contributions. Config XML contributions are used to deploy properties to the domain that may be referenced by components in other
+ * contributions. This provides an accessible mechanism for deploying configuration separate from application code archives. <p/> Config files must use the
+ * <code>config</code> element as the document root. The <code>config</code> element has two attributes, name and targetNamespace. As show in the following
+ * example, name identifies the property name and targetNamespaces identifies the namespace the config contribution exports: <p/>
  * <pre>
  * &lt;config xmlns="urn:fabric3.org"
  *       name="MyProperty"
@@ -43,11 +40,8 @@ import org.w3c.dom.Document;
  *   &lt;/foo&gt;
  * &lt;/config&gt;
  * </pre>
- * <p/>
- * The exported namespace can be imported by another contribution that depends on the property to guarantee the runtime performs contribution
- * ordering.
- * <p/>
- * The implementation works by parsing the contents of the config file into a property which is added to a synthetic deployable composite. When the
+ * <p/> The exported namespace can be imported by another contribution that depends on the property to guarantee the runtime performs contribution ordering.
+ * <p/> The implementation works by parsing the contents of the config file into a property which is added to a synthetic deployable composite. When the
  * composite is deployed, the property will be added to the domain where it can be referenced.
  */
 @EagerInit
@@ -75,7 +69,7 @@ public class ConfigProcessor implements XmlProcessor {
         return TYPE;
     }
 
-    public void processContent(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws Fabric3Exception {
+    public void processContent(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) {
         try {
             String localName = reader.getAttributeValue(null, "name");
             String targetNamespace = reader.getAttributeValue(null, "targetNamespace");

@@ -59,14 +59,14 @@ public class ContributionLoaderImpl implements ContributionLoader {
     private final MetaDataStore store;
     private final ClasspathProcessorRegistry classpathProcessorRegistry;
     private boolean classloaderIsolation;
-    private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
+    private Map<Class<?>, ClassLoaderWireGenerator<?>> generators;
     private ClassLoaderWireBuilder builder;
     private Field sysPathsField;
 
     public ContributionLoaderImpl(@Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference MetaDataStore store,
                                   @Reference ClasspathProcessorRegistry classpathProcessorRegistry,
-                                  @Reference Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators,
+                                  @Reference Map<Class<?>, ClassLoaderWireGenerator<?>> generators,
                                   @Reference ClassLoaderWireBuilder builder,
                                   @Reference HostInfo info,
                                   @Monitor ContributionLoaderMonitor monitor) {
@@ -89,7 +89,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         }
     }
 
-    public ClassLoader load(Contribution contribution) throws Fabric3Exception {
+    public ClassLoader load(Contribution contribution) {
         URI contributionUri = contribution.getUri();
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
         // all contributions implicitly import the host contribution
@@ -118,7 +118,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
 
         // connect imported contribution classloaders according to their wires
         for (ContributionWire<?, ?> wire : wires) {
-            @SuppressWarnings("SuspiciousMethodCalls") ClassLoaderWireGenerator generator = generators.get(wire.getClass());
+           ClassLoaderWireGenerator generator = generators.get(wire.getClass());
             if (generator == null) {
                 // not all contribution wires resolve resources through classloaders, so skip if one is not found
                 continue;
@@ -159,7 +159,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         return loader;
     }
 
-    public void unload(Contribution contribution) throws Fabric3Exception {
+    public void unload(Contribution contribution) {
         URI uri = contribution.getUri();
         Set<Contribution> contributions = store.resolveDependentContributions(uri);
         if (!contributions.isEmpty()) {
@@ -173,7 +173,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         classLoaderRegistry.unregister(uri);
     }
 
-    private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws Fabric3Exception {
+    private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) {
         // clear the wires as the contribution may have been loaded previously
         contribution.getWires().clear();
         List<ContributionWire<?, ?>> resolved = new ArrayList<>();

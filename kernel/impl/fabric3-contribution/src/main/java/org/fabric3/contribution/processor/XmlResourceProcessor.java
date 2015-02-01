@@ -42,8 +42,8 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Processes an XML-based resource in a contribution, delegating to a an XMLIndexer to index the resource and a Loader to load it based on the root
- * element QName.
+ * Processes an XML-based resource in a contribution, delegating to a an XMLIndexer to index the resource and a Loader to load it based on the root element
+ * QName.
  */
 @EagerInit
 public class XmlResourceProcessor implements ResourceProcessor {
@@ -75,7 +75,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
         return "application/xml";
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void index(Resource resource, IntrospectionContext context) {
         Source source = resource.getSource();
         XMLStreamReader reader = null;
         InputStream stream = null;
@@ -93,8 +93,8 @@ public class XmlResourceProcessor implements ResourceProcessor {
             if (reader != null) {
                 location = reader.getLocation();
             }
-            InvalidXmlArtifact warning =
-                    new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(), location);
+            InvalidXmlArtifact warning = new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(),
+                                                                location);
             context.addWarning(warning);
         } catch (IOException e) {
             throw new Fabric3Exception(e);
@@ -116,7 +116,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
         }
     }
 
-    public void process(Resource resource, IntrospectionContext context) throws Fabric3Exception {
+    public void process(Resource resource, IntrospectionContext context) {
         InputStream stream = null;
         XMLStreamReader reader = null;
         try {

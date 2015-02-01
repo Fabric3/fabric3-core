@@ -33,14 +33,12 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class ContributionWireInstantiatorRegistryImpl implements ContributionWireInstantiatorRegistry {
-    private Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-            new HashMap<>();
+    private Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators = new HashMap<>();
 
     @Reference
     public void setInstantiators(Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators) {
         this.instantiators = instantiators;
     }
-
 
     public <I extends Import, E extends Export> ContributionWire<I, E> instantiate(I imprt, E export, URI importUri, URI exportUri) {
         ContributionWireInstantiator instantiator = instantiators.get(imprt.getClass());

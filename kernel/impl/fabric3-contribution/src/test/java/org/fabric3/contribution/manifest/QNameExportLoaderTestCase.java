@@ -37,7 +37,6 @@ public class QNameExportLoaderTestCase extends TestCase {
         assertEquals(QNAME, export.getNamespace());
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
         reader = EasyMock.createMock(XMLStreamReader.class);

@@ -62,8 +62,7 @@ public class MetaDataStoreImplResolveResourceElementsTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         store = new MetaDataStoreImpl(null);
-        Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-                new HashMap<>();
+        Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators = new HashMap<>();
         instantiators.put(QNameImport.class, new QNameWireInstantiator());
         ContributionWireInstantiatorRegistryImpl instantiatorRegistry = new ContributionWireInstantiatorRegistryImpl();
         instantiatorRegistry.setInstantiators(instantiators);

@@ -22,7 +22,6 @@ import java.util.List;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
-import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -46,9 +45,7 @@ public class APIImportListener implements ContributionServiceListener {
         if (manifest.isExtension()) {
             return;
         }
-        for (JavaImport imprt : imports) {
-            manifest.addImport(imprt);
-        }
+        imports.forEach(manifest::addImport);
     }
 
     public void onInstall(Contribution contribution) {
@@ -56,16 +53,14 @@ public class APIImportListener implements ContributionServiceListener {
         if (!manifest.isExtension()) {
             return;
         }
-        for (Export export : manifest.getExports()) {
-            if (export instanceof JavaExport) {
-                JavaExport javaExport = (JavaExport) export;
-                String name = javaExport.getPackageInfo().getName();
-                if (name.startsWith(BINDING_PACKAGE) || name.startsWith(IMPLEMENTATION_PACKAGE)) {
-                    JavaImport imprt = new JavaImport(javaExport.getPackageInfo());
-                    imports.add(imprt);
-                }
+        manifest.getExports().stream().filter(export -> export instanceof JavaExport).forEach(export -> {
+            JavaExport javaExport = (JavaExport) export;
+            String name = javaExport.getPackageInfo().getName();
+            if (name.startsWith(BINDING_PACKAGE) || name.startsWith(IMPLEMENTATION_PACKAGE)) {
+                JavaImport imprt = new JavaImport(javaExport.getPackageInfo());
+                imports.add(imprt);
             }
-        }
+        });
     }
 
     public void onUpdate(Contribution contribution) {
@@ -76,16 +71,14 @@ public class APIImportListener implements ContributionServiceListener {
         if (!manifest.isExtension()) {
             return;
         }
-        for (Export export : manifest.getExports()) {
-            if (export instanceof JavaExport) {
-                JavaExport javaExport = (JavaExport) export;
-                String name = javaExport.getPackageInfo().getName();
-                if (name.startsWith(BINDING_PACKAGE) || name.startsWith(IMPLEMENTATION_PACKAGE)) {
-                    JavaImport imprt = new JavaImport(javaExport.getPackageInfo());
-                    imports.remove(imprt);
-                }
+        manifest.getExports().stream().filter(export -> export instanceof JavaExport).forEach(export -> {
+            JavaExport javaExport = (JavaExport) export;
+            String name = javaExport.getPackageInfo().getName();
+            if (name.startsWith(BINDING_PACKAGE) || name.startsWith(IMPLEMENTATION_PACKAGE)) {
+                JavaImport imprt = new JavaImport(javaExport.getPackageInfo());
+                imports.remove(imprt);
             }
-        }
+        });
     }
 
     public void onRemove(Contribution contribution) {

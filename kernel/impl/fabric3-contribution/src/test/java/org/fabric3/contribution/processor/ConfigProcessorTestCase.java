@@ -21,8 +21,7 @@ import org.w3c.dom.Document;
  *
  */
 public class ConfigProcessorTestCase extends TestCase {
-    private static final String XML =
-            "<config xmlns='urn:fabric3.org' name='test' targetNamespace='urn:foo.com'><foo xmlns='urn:test'><bar/></foo></config>";
+    private static final String XML = "<config xmlns='urn:fabric3.org' name='test' targetNamespace='urn:foo.com'><foo xmlns='urn:test'><bar/></foo></config>";
 
     private ConfigProcessor processor;
     private XmlProcessorRegistry registry;
@@ -50,7 +49,6 @@ public class ConfigProcessorTestCase extends TestCase {
 
         EasyMock.verify(registry, loaderHelper);
     }
-
 
     @Override
     public void setUp() throws Exception {

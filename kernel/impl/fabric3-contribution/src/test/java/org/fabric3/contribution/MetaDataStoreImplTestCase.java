@@ -155,8 +155,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
 
         createContributions();
 
-        Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
-                new HashMap<>();
+        Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators = new HashMap<>();
         instantiators.put(QNameImport.class, new QNameWireInstantiator());
         ContributionWireInstantiatorRegistryImpl instantiatorRegistry = new ContributionWireInstantiatorRegistryImpl();
         instantiatorRegistry.setInstantiators(instantiators);
@@ -188,7 +187,6 @@ public class MetaDataStoreImplTestCase extends TestCase {
         createResourceWithComposite(otherDeployableName, otherContribution);
 
         createResourceWithComposite(deployableName, contribution);
-
 
         wireContributions();
     }

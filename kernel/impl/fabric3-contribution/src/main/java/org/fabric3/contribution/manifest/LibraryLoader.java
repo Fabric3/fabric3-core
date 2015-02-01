@@ -65,20 +65,20 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
         List<OperatingSystemSpec> systems = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                if (OS.equals(reader.getName().getLocalPart())) {
-                    OperatingSystemSpec system = parseOperatingSystem(reader, context);
-                    if (system != null) {
-                        systems.add(system);
+                case START_ELEMENT:
+                    if (OS.equals(reader.getName().getLocalPart())) {
+                        OperatingSystemSpec system = parseOperatingSystem(reader, context);
+                        if (system != null) {
+                            systems.add(system);
+                        }
+                        break;
                     }
                     break;
-                }
-                break;
-            case END_ELEMENT:
-                if (LIBRARY.equals(reader.getName().getLocalPart())) {
-                    return systems;
-                }
-                break;
+                case END_ELEMENT:
+                    if (LIBRARY.equals(reader.getName().getLocalPart())) {
+                        return systems;
+                    }
+                    break;
             }
         }
     }
@@ -113,7 +113,6 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
         }
         return system;
     }
-
 
     private OperatingSystemSpec parseVersion(String name, String versionStr, XMLStreamReader reader, IntrospectionContext context) {
         Location location = reader.getLocation();
@@ -162,7 +161,6 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
         return new OperatingSystemSpec(name, processor, minimum, minInclusive, maximum, maxInclusive);
     }
 
-
     private void validateLibraryAttributes(XMLStreamReader reader, IntrospectionContext context) {
         Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -173,6 +171,5 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
             }
         }
     }
-
 
 }
