@@ -22,7 +22,7 @@ package org.fabric3.binding.jms.runtime.resolver;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Strategy for looking up destinations.
@@ -35,8 +35,8 @@ public interface DestinationStrategy {
      * @param definition Destination definition.
      * @param factory    Connection factory.
      * @return Looked up or created destination.
-     * @throws ContainerException if there is an error looking up the destination
+     * @throws Fabric3Exception if there is an error looking up the destination
      */
-    javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws ContainerException;
+    javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws Fabric3Exception;
 
 }

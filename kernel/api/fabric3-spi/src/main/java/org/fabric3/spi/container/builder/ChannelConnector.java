@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
@@ -32,15 +32,15 @@ public interface ChannelConnector {
      * channel, or channel binding).
      *
      * @param definition the connection metadata
-     * @throws ContainerException if an error creating the connect is encountered
+     * @throws Fabric3Exception if an error creating the connect is encountered
      */
-    void connect(PhysicalChannelConnectionDefinition definition) throws ContainerException;
+    void connect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception;
 
     /**
      * Removes a channel connection.
      *
      * @param definition the connection metadata
-     * @throws ContainerException if an error disconnecting is encountered
+     * @throws Fabric3Exception if an error disconnecting is encountered
      */
-    void disconnect(PhysicalChannelConnectionDefinition definition) throws ContainerException;
+    void disconnect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception;
 }

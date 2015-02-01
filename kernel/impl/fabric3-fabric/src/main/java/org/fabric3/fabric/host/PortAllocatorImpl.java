@@ -35,7 +35,7 @@ import java.util.Set;
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.oasisopen.sca.annotation.Destroy;
@@ -77,7 +77,7 @@ public class PortAllocatorImpl implements PortAllocator {
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         if (min == NOT_ALLOCATED && max == NOT_ALLOCATED) {
             return;
         }
@@ -123,11 +123,11 @@ public class PortAllocatorImpl implements PortAllocator {
         return min != NOT_ALLOCATED && max != NOT_ALLOCATED;
     }
 
-    public Port allocate(String name, String type) throws ContainerException {
+    public Port allocate(String name, String type) throws Fabric3Exception {
         List<Port> ports = checkAllocated(name, type);
         while (true) {
             if (unallocated.isEmpty()) {
-                throw new ContainerException("No ports available");
+                throw new Fabric3Exception("No ports available");
             }
             int portNumber = unallocated.remove();
             SocketPair pair = checkAvailability(portNumber);
@@ -143,11 +143,11 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
-    public Port reserve(String name, String type, int portNumber) throws ContainerException {
+    public Port reserve(String name, String type, int portNumber) throws Fabric3Exception {
         List<Port> ports = checkAllocated(name, type);
         SocketPair pair = checkAvailability(portNumber);
         if (pair == null) {
-            throw new ContainerException("Port allocated: " + portNumber);
+            throw new Fabric3Exception("Port allocated: " + portNumber);
         }
         int pos = unallocated.indexOf(portNumber);
         if (pos >= 0) {
@@ -226,19 +226,19 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
-    private List<Port> checkAllocated(String name, String type) throws ContainerException {
+    private List<Port> checkAllocated(String name, String type) throws Fabric3Exception {
         List<Port> ports = allocated.get(type);
         if (ports != null) {
             for (Port port : ports) {
                 if (port.getName().equals(name)) {
-                    throw new ContainerException("Port already allocated: " + type);
+                    throw new Fabric3Exception("Port already allocated: " + type);
                 }
             }
         }
         return ports;
     }
 
-    private SocketPair checkAvailability(int port) throws ContainerException {
+    private SocketPair checkAvailability(int port) throws Fabric3Exception {
         SocketPair pair = lockPort(port);
         // try the wildcard address first
         if (pair == null) {

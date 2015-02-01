@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
@@ -66,7 +66,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         return Constants.COMPOSITE_CONTENT_TYPE;
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws ContainerException {
+    public void index(Resource resource, IntrospectionContext context) throws Fabric3Exception {
         XMLStreamReader reader = null;
         InputStream stream = null;
         try {
@@ -91,7 +91,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             resource.addResourceElement(element);
             validateUnique(resource, element, reader, context);
         } catch (XMLStreamException | IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (stream != null) {
@@ -111,7 +111,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void process(Resource resource, IntrospectionContext context) throws ContainerException {
+    public void process(Resource resource, IntrospectionContext context) throws Fabric3Exception {
         Source source = resource.getSource();
         ClassLoader classLoader = context.getClassLoader();
         URI contributionUri = context.getContributionUri();
@@ -122,7 +122,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             // check to see if the resource has already been evaluated
             composite = loader.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         if (composite == null) {
             // composite could not be parsed

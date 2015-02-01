@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
 import org.fabric3.api.host.contribution.SyntheticContributionSource;
@@ -43,9 +43,9 @@ public class RepositoryScanner {
      *
      * @param info the host info
      * @return the contributions grouped by user and extension contributions
-     * @throws ContainerException if there is an error scanning teh directory
+     * @throws Fabric3Exception if there is an error scanning teh directory
      */
-    public ScanResult scan(HostInfo info) throws ContainerException {
+    public ScanResult scan(HostInfo info) throws Fabric3Exception {
         List<ContributionSource> extensionSources = scan(info.getExtensionsRepositoryDirectory(), true);
         List<ContributionSource> runtimeSources = scan(info.getRuntimeRepositoryDirectory(), true);
         extensionSources.addAll(runtimeSources);
@@ -53,7 +53,7 @@ public class RepositoryScanner {
         return new ScanResult(extensionSources, userSource);
     }
 
-    private List<ContributionSource> scan(File directory, boolean extension) throws ContainerException {
+    private List<ContributionSource> scan(File directory, boolean extension) throws Fabric3Exception {
         List<ContributionSource> sources = new ArrayList<>();
         if (directory == null) {
             return sources;
@@ -80,7 +80,7 @@ public class RepositoryScanner {
                     }
                     sources.add(source);
                 } catch (MalformedURLException e) {
-                    throw new ContainerException("Error loading contribution:" + file.getName(), e);
+                    throw new Fabric3Exception("Error loading contribution:" + file.getName(), e);
                 }
             }
         }

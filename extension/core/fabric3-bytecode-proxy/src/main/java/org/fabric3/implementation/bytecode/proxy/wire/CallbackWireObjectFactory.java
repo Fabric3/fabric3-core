@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -55,7 +55,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         this.proxyFactory = proxyFactory;
     }
 
-    public T getInstance() throws ContainerException {
+    public T getInstance() throws Fabric3Exception {
         if (proxy != null) {
             return proxy;
         }

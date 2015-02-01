@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
@@ -45,10 +45,10 @@ public class DelegatingManagementService implements ManagementService {
      * Setter to allow for reinjection of new management extensions.
      *
      * @param injected the reinjected management extensions
-     * @throws ContainerException if an error is encountered registering previous export requests
+     * @throws Fabric3Exception if an error is encountered registering previous export requests
      */
     @Reference(required = false)
-    public void setExtensions(List<ManagementExtension> injected) throws ContainerException {
+    public void setExtensions(List<ManagementExtension> injected) throws Fabric3Exception {
         extensions.clear();
         for (ManagementExtension extension : injected) {
             extensions.put(extension.getType(), extension);
@@ -57,7 +57,7 @@ public class DelegatingManagementService implements ManagementService {
         exportInstances();
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException {
+    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception {
         ComponentHolder holder = new ComponentHolder(componentUri, info, objectFactory, classLoader);
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
@@ -68,7 +68,7 @@ public class DelegatingManagementService implements ManagementService {
         componentHolders.add(holder);
     }
 
-    public void export(String name, String group, String description, Object instance) throws ContainerException {
+    public void export(String name, String group, String description, Object instance) throws Fabric3Exception {
         InstanceHolder holder = new InstanceHolder(name, group, description, instance);
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
@@ -79,7 +79,7 @@ public class DelegatingManagementService implements ManagementService {
         instanceHolders.add(holder);
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws ContainerException {
+    public void remove(URI componentUri, ManagementInfo info) throws Fabric3Exception {
         for (Iterator<ComponentHolder> iterator = componentHolders.iterator(); iterator.hasNext();) {
             ComponentHolder holder = iterator.next();
             if (holder.componentUri.equals(componentUri)) {
@@ -95,7 +95,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    public void remove(String name, String group) throws ContainerException {
+    public void remove(String name, String group) throws Fabric3Exception {
         for (Iterator<InstanceHolder> iterator = instanceHolders.iterator(); iterator.hasNext();) {
             InstanceHolder holder = iterator.next();
             if (holder.name.equals(name) && holder.group.equals(group)) {
@@ -111,7 +111,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    private void exportComponents() throws ContainerException {
+    private void exportComponents() throws Fabric3Exception {
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();
@@ -124,7 +124,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    private void exportInstances() throws ContainerException {
+    private void exportInstances() throws Fabric3Exception {
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();

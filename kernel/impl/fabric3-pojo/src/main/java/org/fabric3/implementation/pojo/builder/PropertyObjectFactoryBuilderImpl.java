@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
@@ -51,7 +51,7 @@ public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBu
     }
 
     public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader)
-            throws ContainerException {
+            throws Fabric3Exception {
         Class<?> type = dataType.getType();
         if (type.isArray()) {
             return arrayBuilder.createFactory(name, dataType, value, classLoader);

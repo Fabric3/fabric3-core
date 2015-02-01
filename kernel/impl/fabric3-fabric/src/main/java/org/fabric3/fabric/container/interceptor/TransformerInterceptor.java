@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.container.interceptor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.transform.Transformer;
@@ -72,7 +72,7 @@ public class TransformerInterceptor implements Interceptor {
                     Object transformed = inTransformer.transform(params, inLoader);
                     msg.setBody(transformed);
                 }
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 throw new ServiceRuntimeException(e);
             }
         }
@@ -98,7 +98,7 @@ public class TransformerInterceptor implements Interceptor {
                 } else {
                     throw new ServiceRuntimeException("Unexpected type returned: " + body.getClass());
                 }
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 throw new ServiceRuntimeException(e);
             }
         }

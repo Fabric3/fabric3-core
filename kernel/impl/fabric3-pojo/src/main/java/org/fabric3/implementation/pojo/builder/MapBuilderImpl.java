@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
@@ -56,11 +56,11 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
     }
 
     @SuppressWarnings({"unchecked"})
-    public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws ContainerException {
+    public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception {
         List<JavaTypeInfo> typeInfos = type.getTypeInfo().getParameterTypesInfos();
         if (typeInfos.size() < 2) {
             // programming error
-            throw new ContainerException("Map properties must have a key and value type");
+            throw new Fabric3Exception("Map properties must have a key and value type");
         }
         Class<?> keyType = typeInfos.get(0).getRawType();
         List<Class<?>> keyTypes = new ArrayList<>();
@@ -77,15 +77,15 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
 
         Element topValue = normalizeValues(root);
         if (topValue == null) {
-            throw new ContainerException("Invalid Map format: no top-level value tag for " + name);
+            throw new Fabric3Exception("Invalid Map format: no top-level value tag for " + name);
         }
 
         NodeList keys = topValue.getElementsByTagName("key");
         NodeList values = topValue.getElementsByTagName("value");
         if (keys.getLength() != values.getLength()) {
-            throw new ContainerException("Invalid Map format: keys and values must be the same length for " + name);
+            throw new Fabric3Exception("Invalid Map format: keys and values must be the same length for " + name);
         } else if (keys.getLength() == 0) {
-            throw new ContainerException("Invalid Map format: there must be a key and value node for property " + name);
+            throw new Fabric3Exception("Invalid Map format: there must be a key and value node for property " + name);
         }
         for (int i = 0; i < keys.getLength(); i++) {
             Element keyNode = (Element) keys.item(i);

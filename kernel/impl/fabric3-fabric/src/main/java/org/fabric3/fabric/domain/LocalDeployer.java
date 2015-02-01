@@ -21,7 +21,7 @@ package org.fabric3.fabric.domain;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -42,7 +42,7 @@ public class LocalDeployer implements Deployer {
         this.scopeRegistry = scopeRegistry;
     }
 
-    public void deploy(Deployment deployment) throws ContainerException {
+    public void deploy(Deployment deployment) throws Fabric3Exception {
         List<Command> commands = deployment.getCommands();
         execute(commands);
         if (scopeRegistry != null) {
@@ -54,9 +54,9 @@ public class LocalDeployer implements Deployer {
      * Executes the commands, performing a rollback on error.
      *
      * @param commands the commands
-     * @throws ContainerException if a deployment error occurs
+     * @throws Fabric3Exception if a deployment error occurs
      */
-    private void execute(List<Command> commands) throws ContainerException {
+    private void execute(List<Command> commands) throws Fabric3Exception {
         for (Command command : commands) {
             executorRegistry.execute(command);
         }

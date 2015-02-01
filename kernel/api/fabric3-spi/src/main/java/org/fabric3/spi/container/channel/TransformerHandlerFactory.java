@@ -2,7 +2,7 @@ package org.fabric3.spi.container.channel;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -18,7 +18,7 @@ public interface TransformerHandlerFactory {
      * @param eventTypes the vent types
      * @param loader the classloader or loading target types
      * @return the handler
-     * @throws ContainerException if there is an exception creating the handler
+     * @throws Fabric3Exception if there is an exception creating the handler
      */
-    EventStreamHandler createHandler(DataType source, DataType target, List<Class<?>> eventTypes, ClassLoader loader) throws ContainerException;
+    EventStreamHandler createHandler(DataType source, DataType target, List<Class<?>> eventTypes, ClassLoader loader) throws Fabric3Exception;
 }

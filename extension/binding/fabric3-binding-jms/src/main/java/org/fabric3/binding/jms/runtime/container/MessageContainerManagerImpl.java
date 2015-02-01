@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -97,7 +97,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
                 } else {
                     entry.getValue().start();
                 }
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 managerMonitor.startError(entry.getKey(), e);
             }
         }
@@ -109,7 +109,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         return containers.containsKey(serviceUri);
     }
 
-    public void register(AdaptiveMessageContainer container) throws ContainerException {
+    public void register(AdaptiveMessageContainer container) throws Fabric3Exception {
         URI uri = container.getContainerUri();
         containers.put(uri, container);
 
@@ -122,7 +122,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         }
     }
 
-    public void unregister(URI uri) throws ContainerException {
+    public void unregister(URI uri) throws Fabric3Exception {
         AdaptiveMessageContainer container = containers.remove(uri);
         if (container != null) {
             container.shutdown();
@@ -155,7 +155,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
                         entry.getValue().initialize();
                     }
                     managerMonitor.registerListener(entry.getKey());
-                } catch (ContainerException e) {
+                } catch (Fabric3Exception e) {
                     managerMonitor.startError(entry.getKey(), e);
                 }
             }

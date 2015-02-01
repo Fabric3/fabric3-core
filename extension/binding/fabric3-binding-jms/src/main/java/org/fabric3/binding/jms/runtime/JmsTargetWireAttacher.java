@@ -37,7 +37,7 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.OperationPropertiesDefinition;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.runtime.wire.InterceptorConfiguration;
@@ -83,7 +83,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         this.interceptorFactory = interceptorFactory;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws Fabric3Exception {
 
         WireConfiguration wireConfiguration = new WireConfiguration();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
@@ -123,11 +123,11 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws Fabric3Exception {
         resolver.release(target.getMetadata().getConnectionFactory());
     }
 
-    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -137,9 +137,9 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
      *
      * @param configuration the interceptor configuration
      * @param metadata      the JMS binding metadata
-     * @throws ContainerException if an error processing headers occurs
+     * @throws Fabric3Exception if an error processing headers occurs
      */
-    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws ContainerException {
+    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws Fabric3Exception {
         HeadersDefinition uriHeaders = metadata.getUriHeaders();
         HeadersDefinition headers = metadata.getHeaders();
         Map<String, OperationPropertiesDefinition> properties = metadata.getOperationProperties();
@@ -186,7 +186,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws ContainerException {
+    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws Fabric3Exception {
         for (Map.Entry<String, String> entry : definition.getProperties().entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -201,14 +201,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
                     long time = Long.valueOf(value);
                     configuration.setTimeToLive(time);
                 } catch (NumberFormatException e) {
-                    throw new ContainerException(e);
+                    throw new Fabric3Exception(e);
                 }
             } else if (configuration.getPriority() == -1 && "JMSPriority".equals(key)) {
                 try {
                     int priority = Integer.valueOf(value);
                     configuration.setPriority(priority);
                 } catch (NumberFormatException e) {
-                    throw new ContainerException(e);
+                    throw new Fabric3Exception(e);
                 }
             } else {
                 // user-defined property
@@ -226,14 +226,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
     }
 
     private void addJAXBInterceptor(PhysicalWireSourceDefinition source, PhysicalOperationDefinition op, InvocationChain chain, ClassLoader targetClassLoader)
-            throws ContainerException {
+            throws Fabric3Exception {
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
         Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, jaxTypes, DataTypeHelper.JAXB_TYPES, targetClassLoader, sourceClassLoader);
         chain.addInterceptor(jaxbInterceptor);
     }
 
-    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws ContainerException {
+    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws Fabric3Exception {
         JmsBindingMetadata metadata = target.getMetadata();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -272,17 +272,17 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
             }
         } catch (JMSException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
     }
 
-    private void validateDestination(javax.jms.Destination requestDestination, Destination requestDestinationDefinition) throws ContainerException {
+    private void validateDestination(javax.jms.Destination requestDestination, Destination requestDestinationDefinition) throws Fabric3Exception {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
-            throw new ContainerException("Destination is not a queue: " + requestDestinationDefinition.getName());
+            throw new Fabric3Exception("Destination is not a queue: " + requestDestinationDefinition.getName());
         } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
-            throw new ContainerException("Destination is not a topic: " + requestDestinationDefinition.getName());
+            throw new Fabric3Exception("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
 

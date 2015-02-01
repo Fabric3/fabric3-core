@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.spi.destination;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 
 /**
@@ -28,15 +28,15 @@ public interface MonitorDestinationBuilder<D extends PhysicalMonitorDestinationD
      * Build a destination.
      *
      * @param definition the destination configuration
-     * @throws ContainerException If unable to build the destination
+     * @throws Fabric3Exception If unable to build the destination
      */
-    void build(D definition) throws ContainerException;
+    void build(D definition) throws Fabric3Exception;
 
     /**
      * Removes a destination.
      *
      * @param definition the physical definition
-     * @throws ContainerException If unable to remove the destination
+     * @throws Fabric3Exception If unable to remove the destination
      */
-    void remove(D definition) throws ContainerException;
+    void remove(D definition) throws Fabric3Exception;
 }

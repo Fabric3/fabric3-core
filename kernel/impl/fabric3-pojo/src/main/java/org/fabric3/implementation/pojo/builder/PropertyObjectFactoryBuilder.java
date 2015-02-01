@@ -17,7 +17,7 @@
 
 package org.fabric3.implementation.pojo.builder;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.w3c.dom.Document;
@@ -36,7 +36,7 @@ public interface PropertyObjectFactoryBuilder {
      * @param many        true if the property is many-valued
      * @param classLoader the classloader for the target type
      * @return the ObjectFactory
-     * @throws ContainerException if there is an error building the factory
+     * @throws Fabric3Exception if there is an error building the factory
      */
-    ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) throws ContainerException;
+    ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) throws Fabric3Exception;
 }

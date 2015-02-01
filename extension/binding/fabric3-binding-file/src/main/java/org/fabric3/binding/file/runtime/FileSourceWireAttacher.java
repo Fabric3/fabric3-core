@@ -24,7 +24,7 @@ import java.net.URI;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
@@ -158,9 +158,9 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
      *
      * @param source the definition
      * @return the adaptor
-     * @throws ContainerException if there is an error instantiating the class or returning a component instance.
+     * @throws Fabric3Exception if there is an error instantiating the class or returning a component instance.
      */
-    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws ContainerException {
+    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws Fabric3Exception {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();
@@ -169,10 +169,10 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
             }
             Component component = manager.getComponent(adapterUri);
             if (component == null) {
-                throw new ContainerException("Binding adaptor component not found: " + adapterUri);
+                throw new Fabric3Exception("Binding adaptor component not found: " + adapterUri);
             }
             if (!(component instanceof AtomicComponent)) {
-                throw new ContainerException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+                throw new Fabric3Exception("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
             }
             return new ServiceAdaptorWrapper((AtomicComponent) component);
         }
@@ -180,12 +180,12 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         ClassLoader loader = registry.getClassLoader(uri);
         if (loader == null) {
             // this should not happen
-            throw new ContainerException("ClassLoader not found: " + uri);
+            throw new Fabric3Exception("ClassLoader not found: " + uri);
         }
         try {
             return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

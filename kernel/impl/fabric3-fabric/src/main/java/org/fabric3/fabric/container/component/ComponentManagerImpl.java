@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 
@@ -40,15 +40,15 @@ public class ComponentManagerImpl implements ComponentManager {
         components = new ConcurrentHashMap<>();
     }
 
-    public synchronized void register(Component component) throws ContainerException {
+    public synchronized void register(Component component) throws Fabric3Exception {
         URI uri = component.getUri();
         if (components.containsKey(uri)) {
-            throw new ContainerException("A component is already registered for: " + uri.toString());
+            throw new Fabric3Exception("A component is already registered for: " + uri.toString());
         }
         components.put(uri, component);
     }
 
-    public synchronized Component unregister(URI uri) throws ContainerException {
+    public synchronized Component unregister(URI uri) throws Fabric3Exception {
         return components.remove(uri);
     }
 

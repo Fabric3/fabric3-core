@@ -21,7 +21,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Implements unit of work boundaries for a local transaction.
@@ -45,20 +45,20 @@ public class LocalTransactionUnitOfWork implements UnitOfWork {
         // do nothing
     }
 
-    public void end(Session session, Message message) throws ContainerException {
+    public void end(Session session, Message message) throws Fabric3Exception {
         try {
             session.commit();
         } catch (JMSException e) {
-            throw new ContainerException("Error handling message for " + uri, e);
+            throw new Fabric3Exception("Error handling message for " + uri, e);
         }
         statistics.incrementTransactions();
     }
 
-    public void rollback(Session session) throws ContainerException {
+    public void rollback(Session session) throws Fabric3Exception {
         try {
             session.rollback();
         } catch (JMSException e) {
-            throw new ContainerException("Error handling message for " + uri, e);
+            throw new Fabric3Exception("Error handling message for " + uri, e);
         }
         statistics.incrementTransactionsRolledBack();
     }

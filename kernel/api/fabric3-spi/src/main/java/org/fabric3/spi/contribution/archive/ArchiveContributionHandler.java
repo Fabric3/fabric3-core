@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.contribution.archive;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -40,9 +40,9 @@ public interface ArchiveContributionHandler {
      *
      * @param contribution the contribution
      * @param context      the context to which validation errors and warnings are reported
-     * @throws ContainerException if an error occurs processing the manifest
+     * @throws Fabric3Exception if an error occurs processing the manifest
      */
-    void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException;
+    void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception;
 
     /**
      * Iterates through a contribution calling the supplied action when a contained artifact is encountered.
@@ -50,8 +50,8 @@ public interface ArchiveContributionHandler {
      * @param contribution the contribution
      * @param callback     the action to perform when an artifact is encountered
      * @param context      the context to which validation errors and warnings are reported
-     * @throws ContainerException if an error occurs processing the manifest
+     * @throws Fabric3Exception if an error occurs processing the manifest
      */
-    void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException;
+    void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception;
 
 }

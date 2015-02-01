@@ -30,7 +30,6 @@ import java.util.concurrent.CountDownLatch;
 
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
@@ -80,9 +79,9 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
      *
      * @param params the runtime parameters
-     * @throws ContainerException if catastrophic exception was encountered leaving the runtime in an unstable state
+     * @throws Fabric3Exception if catastrophic exception was encountered leaving the runtime in an unstable state
      */
-    public void start(Params params) throws ContainerException {
+    public void start(Params params) throws Fabric3Exception {
 
         DelegatingDestinationRouter router = new DelegatingDestinationRouter();
 
@@ -200,7 +199,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 }
                 coordinator.shutdown();
             }
-        } catch (ContainerException ex) {
+        } catch (Fabric3Exception ex) {
             if (monitor != null) {
                 monitor.shutdownError(ex);
             } else {
@@ -209,7 +208,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         }
     }
 
-    private File getRuntimeDirectory(Params params, File installDirectory) throws ContainerException, IOException {
+    private File getRuntimeDirectory(Params params, File installDirectory) throws Fabric3Exception, IOException {
         File rootRuntimeDir;
         if (params.directory != null) {
             rootRuntimeDir = params.directory;
@@ -222,7 +221,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 File templateDir = BootstrapHelper.getDirectory(rootRuntimeDir, params.clone);
                 File configDir = BootstrapHelper.getDirectory(templateDir, "config");
                 if (!configDir.exists()) {
-                    throw new ContainerException("Unable to create runtime directory: " + runtimeDir);
+                    throw new Fabric3Exception("Unable to create runtime directory: " + runtimeDir);
                 }
                 BootstrapHelper.cloneRuntimeImage(configDir, runtimeDir);
             } else {

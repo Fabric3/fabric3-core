@@ -22,7 +22,7 @@ package org.fabric3.implementation.system.runtime;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
@@ -59,7 +59,7 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         this.factoryBuilder = factoryBuilder;
     }
 
-    public SystemComponent build(SystemComponentDefinition definition) throws ContainerException {
+    public SystemComponent build(SystemComponentDefinition definition) throws Fabric3Exception {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -79,7 +79,7 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         return component;
     }
 
-    public void dispose(SystemComponentDefinition definition, SystemComponent component) throws ContainerException {
+    public void dispose(SystemComponentDefinition definition, SystemComponent component) throws Fabric3Exception {
         dispose(definition);
     }
 

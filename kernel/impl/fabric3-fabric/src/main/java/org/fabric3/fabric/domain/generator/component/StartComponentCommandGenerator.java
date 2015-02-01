@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -36,7 +36,7 @@ public class StartComponentCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public StartComponentCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public StartComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         // start a component if it is atomic and not provisioned
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW)) {
             return new StartComponentCommand(component.getUri());

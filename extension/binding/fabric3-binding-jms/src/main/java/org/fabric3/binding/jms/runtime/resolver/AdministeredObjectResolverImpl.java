@@ -25,7 +25,7 @@ import java.util.Map;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -41,13 +41,13 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
         this.destinationStrategies = destinationStrategies;
     }
 
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws ContainerException {
+    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         CreateOption create = definition.getCreate();
         ConnectionFactoryStrategy strategy = getConnectionFactory(create);
         return strategy.getConnectionFactory(definition);
     }
 
-    public javax.jms.Destination resolve(Destination destination, ConnectionFactory factory) throws ContainerException {
+    public javax.jms.Destination resolve(Destination destination, ConnectionFactory factory) throws Fabric3Exception {
         CreateOption create = destination.getCreate();
         DestinationStrategy strategy = destinationStrategies.get(create);
         if (strategy == null) {
@@ -56,7 +56,7 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
         return strategy.getDestination(destination, factory);
     }
 
-    public void release(ConnectionFactoryDefinition definition) throws ContainerException {
+    public void release(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         CreateOption create = definition.getCreate();
         ConnectionFactoryStrategy strategy = getConnectionFactory(create);
         strategy.release(definition);

@@ -21,7 +21,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -36,7 +36,7 @@ public class String2JAXBElementTransformer implements Transformer<String, Object
         this.declaredType = declaredType;
     }
 
-    public Object transform(String source, ClassLoader loader) throws ContainerException {
+    public Object transform(String source, ClassLoader loader) throws Fabric3Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
@@ -44,7 +44,7 @@ public class String2JAXBElementTransformer implements Transformer<String, Object
             StreamSource streamSource = new StreamSource(reader);
             return jaxbContext.createUnmarshaller().unmarshal(streamSource, declaredType).getValue();
         } catch (JAXBException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

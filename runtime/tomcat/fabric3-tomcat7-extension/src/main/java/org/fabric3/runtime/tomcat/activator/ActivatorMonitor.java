@@ -18,7 +18,7 @@ package org.fabric3.runtime.tomcat.activator;
 
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
@@ -32,7 +32,7 @@ public interface ActivatorMonitor {
     void deactivated(String path);
 
     @Severe("Web application error : [{0}, {1}]")
-	void error(String uri, ContainerException e);
+	void error(String uri, Fabric3Exception e);
 
 
 }

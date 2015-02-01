@@ -24,7 +24,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.oasisopen.sca.annotation.Init;
 
@@ -47,7 +47,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
         extensionMap.put("contribution", "text/vnd.fabric3.contribution");
     }
 
-    public String getContentType(URL contentUrl) throws ContainerException {
+    public String getContentType(URL contentUrl) throws Fabric3Exception {
 
         if (contentUrl == null) {
             throw new IllegalArgumentException("Content URL cannot be null");
@@ -69,7 +69,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
 
             return contentType;
         } catch (IOException ex) {
-            throw new ContainerException("Unable to resolve content type: " + urlString, ex);
+            throw new Fabric3Exception("Unable to resolve content type: " + urlString, ex);
         }
     }
 

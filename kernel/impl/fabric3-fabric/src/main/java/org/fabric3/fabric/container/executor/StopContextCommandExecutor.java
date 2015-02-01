@@ -21,7 +21,7 @@ package org.fabric3.fabric.container.executor;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.fabric.container.command.StopContextCommand;
 import org.fabric3.spi.container.channel.ChannelManager;
@@ -61,7 +61,7 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
         executorRegistry.register(StopContextCommand.class, this);
     }
 
-    public void execute(StopContextCommand command) throws ContainerException {
+    public void execute(StopContextCommand command) throws Fabric3Exception {
         QName deployable = command.getDeployable();
         WorkContextCache.getAndResetThreadWorkContext();
         compositeScopeContainer.stopContext(deployable);

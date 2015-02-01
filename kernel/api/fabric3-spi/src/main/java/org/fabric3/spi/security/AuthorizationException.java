@@ -16,12 +16,12 @@
  */
 package org.fabric3.spi.security;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
  */
-public class AuthorizationException extends ContainerException {
+public class AuthorizationException extends Fabric3Exception {
     private static final long serialVersionUID = -8496803615058429927L;
 
     public AuthorizationException(String message) {

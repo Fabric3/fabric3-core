@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
@@ -57,7 +57,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return false;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws Fabric3Exception {
         URI uri = getClassLoaderUri(interfaze);
 
         List<InvocationChain> list = wire.getInvocationChains();
@@ -68,7 +68,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return new WireProxyObjectFactory<>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
     }
 
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws ContainerException {
+    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws Fabric3Exception {
         URI uri = getClassLoaderUri(interfaze);
 
         List<InvocationChain> list = wire.getInvocationChains();
@@ -81,9 +81,9 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ContainerException {
+            throws Fabric3Exception {
         if (!(factory instanceof CallbackWireObjectFactory)) {
-            throw new ContainerException("Expected object factory of type: " + CallbackWireObjectFactory.class.getName());
+            throw new Fabric3Exception("Expected object factory of type: " + CallbackWireObjectFactory.class.getName());
         }
         CallbackWireObjectFactory callbackFactory = (CallbackWireObjectFactory) factory;
 
@@ -105,7 +105,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return ((MultiParentClassLoader) classLoader).getName();
     }
 
-    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws ContainerException {
+    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws Fabric3Exception {
         Map<Method, InvocationChain> chainMappings = new HashMap<>(chains.size());
         for (InvocationChain chain : chains) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -113,9 +113,9 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
                 Method method = findMethod(interfaze, operation);
                 chainMappings.put(method, chain);
             } catch (NoSuchMethodException e) {
-                throw new ContainerException(operation.getName());
+                throw new Fabric3Exception(operation.getName());
             } catch (ClassNotFoundException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         }
 

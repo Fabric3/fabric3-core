@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 
@@ -75,7 +75,7 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
         this.executorService = executorService;
     }
 
-    public Dispatch<Source> getInstance() throws ContainerException {
+    public Dispatch<Source> getInstance() throws Fabric3Exception {
         if (dispatch == null) {
             // there is a possibility more than one proxy will be created but since this does not have side-effects, avoid synchronization
             dispatch = createProxy();
@@ -88,9 +88,9 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
      * proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
      *
      * @return the web service proxy
-     * @throws ContainerException if there was an error creating the proxy
+     * @throws Fabric3Exception if there was an error creating the proxy
      */
-    private Dispatch<Source> createProxy() throws ContainerException {
+    private Dispatch<Source> createProxy() throws Fabric3Exception {
         try {
             Service service;
             WSService.InitParams params = new WSService.InitParams();
@@ -111,7 +111,7 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
             setSOAPAction(dispatch);
             return dispatch;
         } catch (InaccessibleWSDLException | MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
     }

@@ -21,7 +21,7 @@ package org.fabric3.transform.property;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 
 /**
@@ -40,7 +40,7 @@ public class Property2URLTransformerTestCase extends BaseTransformTest {
             Property2URLTransformer transformer = new Property2URLTransformer();
             final URL transformedURL = transformer.transform(getNode(xml), getClass().getClassLoader());
             assertNotNull(transformedURL);
-        } catch (ContainerException te) {
+        } catch (Fabric3Exception te) {
             fail("TransformationException : - Should Not Occur" + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -58,7 +58,7 @@ public class Property2URLTransformerTestCase extends BaseTransformTest {
             Property2URLTransformer transformer = new Property2URLTransformer();
             transformer.transform(getNode(xml), getClass().getClassLoader());
             fail("Should not convert to URL");
-        } catch (ContainerException te) {
+        } catch (Fabric3Exception te) {
             assertNotNull(te);
             MalformedURLException.class.isAssignableFrom(te.getCause().getClass());
         } catch (Exception e) {

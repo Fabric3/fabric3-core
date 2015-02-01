@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopeContainer;
@@ -56,13 +56,13 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super.stop();
     }
 
-    public Object getInstance(ScopedComponent component) throws ContainerException {
+    public Object getInstance(ScopedComponent component) throws Fabric3Exception {
         Object instance = component.createInstance();
         component.startInstance(instance);
         return instance;
     }
 
-    public void releaseInstance(ScopedComponent component, Object instance) throws ContainerException {
+    public void releaseInstance(ScopedComponent component, Object instance) throws Fabric3Exception {
         component.stopInstance(instance);
     }
 

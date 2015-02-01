@@ -19,7 +19,7 @@ package org.fabric3.plugin.api.runtime;
 import javax.xml.namespace.QName;
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 
 /**
@@ -34,10 +34,10 @@ public interface PluginRuntime extends Fabric3Runtime {
      *
      * @param base      the module output directory location
      * @param composite the composite qualified name to activate
-     * @throws ContainerException if a contribution is thrown. The cause may a ValidationException resulting from  errors in the contribution. In this case the
+     * @throws Fabric3Exception if a contribution is thrown. The cause may a ValidationException resulting from  errors in the contribution. In this case the
      *                            errors should be reported back to the user.
-     * @throws ContainerException if there is an error activating the test composite
+     * @throws Fabric3Exception if there is an error activating the test composite
      */
-    void deploy(URL base, QName composite) throws ContainerException;
+    void deploy(URL base, QName composite) throws Fabric3Exception;
 
 }

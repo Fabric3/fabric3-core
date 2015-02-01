@@ -21,7 +21,7 @@ package org.fabric3.spi.domain.generator.wire;
 
 import java.util.Optional;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
@@ -36,8 +36,8 @@ public interface InterceptorGenerator {
      * @param source the source operation
      * @param target the target operation
      * @return the definition
-     * @throws ContainerException if an exception occurs during generation
+     * @throws Fabric3Exception if an exception occurs during generation
      */
-    Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws ContainerException;
+    Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws Fabric3Exception;
 
 }

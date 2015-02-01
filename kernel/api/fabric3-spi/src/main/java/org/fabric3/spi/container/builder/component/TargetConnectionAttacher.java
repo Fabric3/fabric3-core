@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -35,17 +35,17 @@ public interface TargetConnectionAttacher<P extends PhysicalConnectionTargetDefi
      * @param source     the source metadata
      * @param target     the target metadata
      * @param connection the connection that flows events from a source
-     * @throws ContainerException if an error is encountered performing the attach
+     * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    void attach(PhysicalConnectionSourceDefinition source, P target, ChannelConnection connection) throws ContainerException;
+    void attach(PhysicalConnectionSourceDefinition source, P target, ChannelConnection connection) throws Fabric3Exception;
 
     /**
      * Detach a connection from a target.
      *
      * @param source the source metadata
      * @param target the target metadata
-     * @throws ContainerException if an error is encountered performing the attach
+     * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    void detach(PhysicalConnectionSourceDefinition source, P target) throws ContainerException;
+    void detach(PhysicalConnectionSourceDefinition source, P target) throws Fabric3Exception;
 
 }

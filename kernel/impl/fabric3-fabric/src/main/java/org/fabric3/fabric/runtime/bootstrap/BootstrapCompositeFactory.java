@@ -35,7 +35,7 @@ import f3.ThreadPoolProvider;
 import f3.TransformerProvider;
 import f3.XmlIntrospectionProvider;
 import org.fabric3.api.Namespaces;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -80,7 +80,7 @@ public class BootstrapCompositeFactory {
     public static Composite createSystemComposite(Contribution contribution,
                                                   HostInfo hostInfo,
                                                   ClassLoader bootClassLoader,
-                                                  ImplementationIntrospector processor) throws ContainerException {
+                                                  ImplementationIntrospector processor) throws Fabric3Exception {
 
         CompositeBuilder builder = CompositeBuilder.newBuilder(new QName(Namespaces.F3, "SystemBootComposite"));
         builder.include(ContributionServiceProvider.getComposite());

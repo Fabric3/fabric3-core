@@ -23,7 +23,7 @@ import javax.jms.ConnectionFactory;
 import java.util.List;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
@@ -49,7 +49,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
         this.resolvers = resolvers;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         String name = definition.getName();
         if (name != null) {
             // check if the connection factory has already been created
@@ -69,7 +69,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
 
     }
 
-    public void release(ConnectionFactoryDefinition definition) throws ContainerException {
+    public void release(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         always.release(definition);
     }
 }

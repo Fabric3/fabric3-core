@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.impl.common.MonitorConstants;
 import org.fabric3.monitor.impl.destination.DefaultMonitorDestination;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -100,7 +100,7 @@ public class ExtensionProvider {
             defaultDestination.start();
             registry.register(defaultDestination);
             systemReader = null;
-        } catch (ContainerException | XMLStreamException | IOException e) {
+        } catch (Fabric3Exception | XMLStreamException | IOException e) {
             monitor.error(e);
         }
     }

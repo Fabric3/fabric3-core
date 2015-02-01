@@ -19,7 +19,7 @@ package org.fabric3.implementation.pojo.builder;
 
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.w3c.dom.Document;
@@ -37,8 +37,8 @@ public interface MapBuilder {
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
      * @return the object factory
-     * @throws ContainerException if there is an error creating the object factory
+     * @throws Fabric3Exception if there is an error creating the object factory
      */
-    ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws ContainerException;
+    ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
 
 }

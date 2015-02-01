@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 
@@ -45,9 +45,9 @@ public interface ContributionHelper {
      *
      * @param deployable the deployable name
      * @return the deployable
-     * @throws ContainerException if the deployable cannot be resolved
+     * @throws Fabric3Exception if the deployable cannot be resolved
      */
-    Composite findComposite(QName deployable) throws ContainerException;
+    Composite findComposite(QName deployable) throws Fabric3Exception;
 
     /**
      * Resolves the contributions from the list of URIs.
@@ -61,9 +61,9 @@ public interface ContributionHelper {
      * Locks a set of contributions. The lock owners are the deployables in the contribution.
      *
      * @param contributions the contributions
-     * @throws ContainerException if a deployable is already deployed
+     * @throws Fabric3Exception if a deployable is already deployed
      */
-    void lock(Set<Contribution> contributions) throws ContainerException;
+    void lock(Set<Contribution> contributions) throws Fabric3Exception;
 
     /**
      * Releases locks held on a set of contributions.

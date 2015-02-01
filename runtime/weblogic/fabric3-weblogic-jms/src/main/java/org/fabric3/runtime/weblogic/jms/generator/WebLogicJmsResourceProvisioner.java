@@ -16,7 +16,7 @@
  */
 package org.fabric3.runtime.weblogic.jms.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
@@ -28,19 +28,19 @@ import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
  */
 public class WebLogicJmsResourceProvisioner implements JmsResourceProvisioner {
 
-    public void generateSource(JmsWireSourceDefinition definition) throws ContainerException {
+    public void generateSource(JmsWireSourceDefinition definition) throws Fabric3Exception {
         // TODO implement
     }
 
-    public void generateTarget(JmsWireTargetDefinition definition) throws ContainerException {
+    public void generateTarget(JmsWireTargetDefinition definition) throws Fabric3Exception {
         // TODO implement
     }
 
-    public void generateConnectionSource(JmsConnectionSource definition) throws ContainerException {
+    public void generateConnectionSource(JmsConnectionSource definition) throws Fabric3Exception {
         // TODO implement
     }
 
-    public void generateConnectionTarget(JmsConnectionTarget definition) throws ContainerException {
+    public void generateConnectionTarget(JmsConnectionTarget definition) throws Fabric3Exception {
         // TODO implement
     }
 

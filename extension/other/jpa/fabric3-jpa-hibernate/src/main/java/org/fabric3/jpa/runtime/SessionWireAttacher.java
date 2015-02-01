@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime;
 import javax.transaction.TransactionManager;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.SessionWireTargetDefinition;
@@ -62,7 +62,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws Fabric3Exception {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -83,11 +83,11 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         }
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

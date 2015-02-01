@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tomcat.InstanceManager;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.Injector;
 
 /**
@@ -67,7 +67,7 @@ public class Fabric3InstanceManager implements InstanceManager {
             for (Injector injector : injectors) {
                 try {
                     injector.inject(instance);
-                } catch (ContainerException e) {
+                } catch (Fabric3Exception e) {
                     throw new InvocationTargetException(e);
                 }
             }

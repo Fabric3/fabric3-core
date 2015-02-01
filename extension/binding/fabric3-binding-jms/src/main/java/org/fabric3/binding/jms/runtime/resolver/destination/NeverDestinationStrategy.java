@@ -23,7 +23,7 @@ import javax.jms.ConnectionFactory;
 import java.util.List;
 
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
 import org.oasisopen.sca.annotation.Reference;
@@ -39,14 +39,14 @@ public class NeverDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws ContainerException {
+    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws Fabric3Exception {
         for (DestinationResolver resolver : resolvers) {
             javax.jms.Destination destination = resolver.resolve(definition);
             if (destination != null) {
                 return destination;
             }
         }
-        throw new ContainerException("Destination not found: " + definition.getName());
+        throw new Fabric3Exception("Destination not found: " + definition.getName());
     }
 
 }

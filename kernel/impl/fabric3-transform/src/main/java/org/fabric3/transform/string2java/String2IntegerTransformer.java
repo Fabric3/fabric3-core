@@ -16,7 +16,7 @@
  */
 package org.fabric3.transform.string2java;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -36,7 +36,7 @@ public class String2IntegerTransformer implements SingleTypeTransformer<String, 
         return TARGET;
     }
 
-    public Integer transform(String source, ClassLoader loader) throws ContainerException {
+    public Integer transform(String source, ClassLoader loader) throws Fabric3Exception {
         return Integer.valueOf(source);
     }
 

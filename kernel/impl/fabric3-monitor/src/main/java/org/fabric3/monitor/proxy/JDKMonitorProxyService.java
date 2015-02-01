@@ -25,7 +25,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.fabric3.api.MonitorChannel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.api.host.monitor.Monitorable;
@@ -47,11 +47,11 @@ public class JDKMonitorProxyService implements MonitorProxyServiceExtension {
         this.router = router;
     }
 
-    public <T> T createMonitor(Class<T> type) throws ContainerException {
+    public <T> T createMonitor(Class<T> type) throws Fabric3Exception {
         return createMonitor(type, defaultMonitorable, DEFAULT_DESTINATION);
     }
 
-    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException {
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws Fabric3Exception {
         if (destination == null) {
             destination = DEFAULT_DESTINATION;
         }

@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.repository.ArtifactCache;
@@ -55,9 +55,9 @@ public class FSArtifactCache implements ArtifactCache {
         tempDir.mkdirs();
     }
 
-    public synchronized URL cache(URI uri, InputStream stream) throws ContainerException {
+    public synchronized URL cache(URI uri, InputStream stream) throws Fabric3Exception {
         if (entries.containsKey(uri)) {
-            throw new ContainerException("Entry for URI already exists: " + uri);
+            throw new Fabric3Exception("Entry for URI already exists: " + uri);
         }
         try {
             String suffix = getSuffix(uri);
@@ -69,7 +69,7 @@ public class FSArtifactCache implements ArtifactCache {
             file.deleteOnExit();
             return url;
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 stream.close();

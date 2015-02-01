@@ -29,7 +29,7 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.store.amq.AMQPersistenceAdapter;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
@@ -101,7 +101,7 @@ public class BrokerEngine {
     }
 
     @Property(required = false)
-    public void setBrokerConfig(XMLStreamReader reader) throws ContainerException, XMLStreamException {
+    public void setBrokerConfig(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException {
         BrokerParser parser = new BrokerParser();
         brokerConfiguration = parser.parse(reader);
     }
@@ -194,7 +194,7 @@ public class BrokerEngine {
         }
     }
 
-    private void selectPort() throws ContainerException {
+    private void selectPort() throws Fabric3Exception {
         if (jmsPort == -1) {
             // port not assigned, get one from the allocator
             if (portAllocator.isPoolEnabled()) {

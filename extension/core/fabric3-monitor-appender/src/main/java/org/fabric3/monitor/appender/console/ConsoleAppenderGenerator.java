@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.appender.console;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -26,7 +26,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ConsoleAppenderGenerator implements AppenderGenerator<ConsoleAppenderDefinition> {
 
-    public PhysicalConsoleAppenderDefinition generateResource(ConsoleAppenderDefinition definition) throws ContainerException {
+    public PhysicalConsoleAppenderDefinition generateResource(ConsoleAppenderDefinition definition) throws Fabric3Exception {
         return new PhysicalConsoleAppenderDefinition();
     }
 }

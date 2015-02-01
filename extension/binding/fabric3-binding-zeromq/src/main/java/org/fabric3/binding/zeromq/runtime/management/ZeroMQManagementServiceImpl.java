@@ -25,7 +25,7 @@ import java.util.Set;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
@@ -82,7 +82,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         try {
             subscribers.add(channelName);
             managementService.export(SUBSCRIBERS_PATH + channelName, "", "", subscriber);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error registering subscriber for channel " + channelName, e);
         }
     }
@@ -91,7 +91,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         try {
             subscribers.remove(channelName);
             managementService.remove(SUBSCRIBERS_PATH + channelName, "");
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error unregistering subscriber for channel " + channelName, e);
         }
     }
@@ -100,7 +100,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         publishers.add(channelName);
         try {
             managementService.export(PUBLISHERS_PATH + channelName, "", "", publisher);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error registering publisher for channel " + channelName, e);
         }
     }
@@ -109,7 +109,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         try {
             publishers.remove(channelName);
             managementService.remove(PUBLISHERS_PATH + channelName, "");
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error unregistering publisher for channel " + channelName, e);
         }
     }
@@ -118,7 +118,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         senders.add(id);
         try {
             managementService.export(SENDERS_PATH + id, "", "", sender);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error registering publisher for channel " + id, e);
         }
     }
@@ -127,7 +127,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         senders.remove(id);
         try {
             managementService.remove(SENDERS_PATH + id, "");
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error unregistering sender: " + id, e);
         }
     }
@@ -136,7 +136,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         receivers.add(id);
         try {
             managementService.export(RECEIVERS_PATH + id, "", "", receiver);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error registering receiver: " + id, e);
         }
     }
@@ -145,7 +145,7 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
         receivers.remove(id);
         try {
             managementService.remove(RECEIVERS_PATH + id, "");
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error("Error unregistering receiver: " + id, e);
         }
     }

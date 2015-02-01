@@ -21,7 +21,7 @@ package org.fabric3.implementation.timer.runtime;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
@@ -52,14 +52,14 @@ public class NonTransactionalIntervalTask implements Task {
         try {
             instance = component.getInstance();
             return (Long) method.invoke(instance);
-        } catch (ContainerException | IllegalAccessException | InvocationTargetException e) {
+        } catch (Fabric3Exception | IllegalAccessException | InvocationTargetException e) {
             monitor.executeError(e);
             throw new InvocationRuntimeException(e);
         } finally {
             if (instance != null) {
                 try {
                     component.releaseInstance(instance);
-                } catch (ContainerException e) {
+                } catch (Fabric3Exception e) {
                     monitor.executeError(e);
                 }
             }

@@ -23,7 +23,7 @@ import javax.jms.ConnectionFactory;
 import java.util.List;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
@@ -45,7 +45,7 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
         this.resolvers = resolvers;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         String name = definition.getName();
         ConnectionFactory factory = manager.get(name);
         if (factory != null) {

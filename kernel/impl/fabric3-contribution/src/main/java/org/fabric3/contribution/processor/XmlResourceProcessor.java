@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
@@ -75,7 +75,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
         return "application/xml";
     }
 
-    public void index(Resource resource, IntrospectionContext context) throws ContainerException {
+    public void index(Resource resource, IntrospectionContext context) throws Fabric3Exception {
         Source source = resource.getSource();
         XMLStreamReader reader = null;
         InputStream stream = null;
@@ -97,7 +97,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
                     new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(), location);
             context.addWarning(warning);
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (stream != null) {
@@ -116,7 +116,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
         }
     }
 
-    public void process(Resource resource, IntrospectionContext context) throws ContainerException {
+    public void process(Resource resource, IntrospectionContext context) throws Fabric3Exception {
         InputStream stream = null;
         XMLStreamReader reader = null;
         try {
@@ -132,7 +132,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
             elementLoaderRegistry.load(reader, resource, context);
             resource.setState(ResourceState.PROCESSED);
         } catch (XMLStreamException | IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (stream != null) {

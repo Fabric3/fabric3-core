@@ -27,7 +27,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -80,7 +80,7 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
         try {
             loader.unload(contribution);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(classLoaderRegistry, store, processorRegistry, builder);

@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.spi.container.command.Command;
@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class StartContextCommandGeneratorImpl implements StartContextCommandGenerator {
 
-    public List<Command> generate(List<LogicalComponent<?>> components) throws ContainerException {
+    public List<Command> generate(List<LogicalComponent<?>> components) throws Fabric3Exception {
         List<Command> commands = new ArrayList<>();
         // only log application composite deployments
         components.stream().filter(component -> component.getState() == LogicalState.NEW).forEach(component -> {

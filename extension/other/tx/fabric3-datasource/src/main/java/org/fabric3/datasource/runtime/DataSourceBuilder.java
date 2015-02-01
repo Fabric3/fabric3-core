@@ -16,7 +16,7 @@
  */
 package org.fabric3.datasource.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.datasource.spi.DataSourceFactory;
@@ -35,13 +35,13 @@ public class DataSourceBuilder implements ResourceBuilder<PhysicalDataSourceReso
         this.factory = factory;
     }
 
-    public void build(PhysicalDataSourceResource definition) throws ContainerException {
+    public void build(PhysicalDataSourceResource definition) throws Fabric3Exception {
         for (DataSourceConfiguration configuration : definition.getConfigurations()) {
             factory.create(configuration);
         }
     }
 
-    public void remove(PhysicalDataSourceResource definition) throws ContainerException {
+    public void remove(PhysicalDataSourceResource definition) throws Fabric3Exception {
         for (DataSourceConfiguration configuration : definition.getConfigurations()) {
             factory.remove(configuration);
         }

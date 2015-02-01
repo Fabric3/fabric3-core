@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.contribution;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -38,17 +38,17 @@ public interface ResourceProcessor {
      *
      * @param resource the resource to index
      * @param context  the context to which validation errors and warnings are reported
-     * @throws ContainerException if an error occurs during indexing
+     * @throws Fabric3Exception if an error occurs during indexing
      */
-    void index(Resource resource, IntrospectionContext context) throws ContainerException;
+    void index(Resource resource, IntrospectionContext context) throws Fabric3Exception;
 
     /**
      * Loads the the Resource.
      *
      * @param resource the resource to process
      * @param context  the context to which validation errors and warnings are reported
-     * @throws ContainerException if an error processing the contribution occurs
+     * @throws Fabric3Exception if an error processing the contribution occurs
      */
-    void process(Resource resource, IntrospectionContext context) throws ContainerException;
+    void process(Resource resource, IntrospectionContext context) throws Fabric3Exception;
 
 }

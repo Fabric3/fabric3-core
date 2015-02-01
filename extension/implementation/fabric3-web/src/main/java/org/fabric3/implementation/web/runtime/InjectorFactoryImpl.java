@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
@@ -48,13 +48,13 @@ public class InjectorFactoryImpl implements InjectorFactory {
     public void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                        Map<String, Map<String, InjectionSite>> siteMappings,
                                        Map<String, ObjectFactory<?>> factories,
-                                       ClassLoader classLoader) throws ContainerException {
+                                       ClassLoader classLoader) throws Fabric3Exception {
         for (Map.Entry<String, ObjectFactory<?>> entry : factories.entrySet()) {
             String siteName = entry.getKey();
             ObjectFactory<?> factory = entry.getValue();
             Map<String, InjectionSite> artifactMapping = siteMappings.get(siteName);
             if (artifactMapping == null) {
-                throw new ContainerException("Injection site not found for: " + siteName);
+                throw new Fabric3Exception("Injection site not found for: " + siteName);
             }
             for (Map.Entry<String, InjectionSite> siteEntry : artifactMapping.entrySet()) {
                 String artifactName = siteEntry.getKey();
@@ -80,22 +80,22 @@ public class InjectorFactoryImpl implements InjectorFactory {
     }
 
     private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, MethodInjectionSite site, ClassLoader classLoader)
-            throws ContainerException {
+            throws Fabric3Exception {
         try {
             Method method = getMethod(site, artifactName, classLoader);
             return reflectionFactory.createInjector(method, factory);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
     private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, FieldInjectionSite site, ClassLoader classLoader)
-            throws ContainerException {
+            throws Fabric3Exception {
         try {
             Field field = getField(site, artifactName, classLoader);
             return reflectionFactory.createInjector(field, factory);
         } catch (NoSuchFieldException | ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

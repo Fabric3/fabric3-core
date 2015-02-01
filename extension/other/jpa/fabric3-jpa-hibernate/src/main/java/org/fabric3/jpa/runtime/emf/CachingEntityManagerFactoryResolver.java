@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
@@ -50,7 +50,7 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
         this.cache = cache;
     }
 
-    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws ContainerException {
+    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws Fabric3Exception {
         EntityManagerFactory resolvedEmf = cache.get(unitName);
         if (resolvedEmf != null) {
             return resolvedEmf;
@@ -74,9 +74,9 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
      * @param overrides   persistence unit property overrides
      * @param classLoader the persistence unit classloader
      * @return the entity manager factory
-     * @throws ContainerException if there is an error creating the factory
+     * @throws Fabric3Exception if there is an error creating the factory
      */
-    private EntityManagerFactory createEntityManagerFactory(PersistenceOverrides overrides, ClassLoader classLoader) throws ContainerException {
+    private EntityManagerFactory createEntityManagerFactory(PersistenceOverrides overrides, ClassLoader classLoader) throws Fabric3Exception {
         List<PersistenceUnitInfo> infos = parser.parse(classLoader);
         String unitName = overrides.getUnitName();
         for (PersistenceUnitInfo info : infos) {
@@ -94,7 +94,7 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
             EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(descriptor, Collections.emptyMap(), classLoader);
             return builder.build();
         }
-        throw new ContainerException("Persistence unit not defined for: " + unitName);
+        throw new Fabric3Exception("Persistence unit not defined for: " + unitName);
     }
 
 }

@@ -20,7 +20,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.StringReader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -33,14 +33,14 @@ public class String2JAXBObjectTransformer implements Transformer<String, Object>
         this.jaxbContext = jaxbContext;
     }
 
-    public Object transform(String source, ClassLoader loader) throws ContainerException {
+    public Object transform(String source, ClassLoader loader) throws Fabric3Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
             StringReader reader = new StringReader(source);
             return jaxbContext.createUnmarshaller().unmarshal(reader);
         } catch (JAXBException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

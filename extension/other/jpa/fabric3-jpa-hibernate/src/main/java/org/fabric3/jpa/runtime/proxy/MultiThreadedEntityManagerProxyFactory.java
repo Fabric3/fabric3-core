@@ -20,7 +20,7 @@ package org.fabric3.jpa.runtime.proxy;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -37,7 +37,7 @@ public class MultiThreadedEntityManagerProxyFactory implements ObjectFactory<Mul
         this.unitName = unitName;
     }
 
-    public MultiThreadedEntityManagerProxy getInstance() throws ContainerException {
+    public MultiThreadedEntityManagerProxy getInstance() throws Fabric3Exception {
         return new MultiThreadedEntityManagerProxy(unitName, service, tm);
     }
 }

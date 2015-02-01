@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.domain.generator.Deployment;
 
 /**
@@ -31,8 +31,8 @@ public interface Deployer {
      * Synchronously sends the contents of a DeploymentPackage to zones in a domain.
      *
      * @param deployment the deployment to process
-     * @throws ContainerException if an exception occurs during deployment
+     * @throws Fabric3Exception if an exception occurs during deployment
      */
-    void deploy(Deployment deployment) throws ContainerException;
+    void deploy(Deployment deployment) throws Fabric3Exception;
 
 }

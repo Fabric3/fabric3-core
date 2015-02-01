@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -161,7 +161,7 @@ public class BootstrapAssemblyFactory {
                                       LogicalComponentManager logicalComponentManager,
                                       MetaDataStore metaDataStore,
                                       ManagementService managementService,
-                                      HostInfo info) throws ContainerException {
+                                      HostInfo info) throws Fabric3Exception {
 
         CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
                                                                                 classLoaderRegistry,
@@ -208,23 +208,18 @@ public class BootstrapAssemblyFactory {
         Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, monitorService);
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
-        try {
-            ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class);
-            commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry, contextMonitor));
-            BuildComponentCommandExecutor executor = createBuildComponentExecutor(componentManager,
-                                                                                  scopeRegistry,
-                                                                                  transformerRegistry,
-                                                                                  classLoaderRegistry,
-                                                                                  managementService,
-                                                                                  info);
-            commandRegistry.register(BuildComponentCommand.class, executor);
-            commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
-            commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
-            commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
-
-        } catch (ContainerException e) {
-            throw new AssertionError(e);
-        }
+        ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class);
+        commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry, contextMonitor));
+        BuildComponentCommandExecutor executor = createBuildComponentExecutor(componentManager,
+                                                                              scopeRegistry,
+                                                                              transformerRegistry,
+                                                                              classLoaderRegistry,
+                                                                              managementService,
+                                                                              info);
+        commandRegistry.register(BuildComponentCommand.class, executor);
+        commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
+        commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
+        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
 
         return commandRegistry;
     }

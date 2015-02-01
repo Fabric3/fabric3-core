@@ -18,7 +18,7 @@ package org.fabric3.spi.federation.topology;
 
 import java.io.Serializable;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.command.Command;
 
 /**
@@ -51,9 +51,9 @@ public interface NodeTopologyService {
      * Sends a command asynchronously to all runtimes in the domain.
      *
      * @param command the command
-     * @throws ContainerException if there is an error sending the message
+     * @throws Fabric3Exception if there is an error sending the message
      */
-    void broadcast(Command command) throws ContainerException;
+    void broadcast(Command command) throws Fabric3Exception;
 
     /**
      * Asynchronously sends a message over the given channel to the specified runtime.
@@ -61,18 +61,18 @@ public interface NodeTopologyService {
      * @param runtimeName the runtime
      * @param name        the channel name
      * @param message     the message
-     * @throws ContainerException if there is an error sending the message
+     * @throws Fabric3Exception if there is an error sending the message
      */
-    void sendAsynchronous(String runtimeName, String name, Serializable message) throws ContainerException;
+    void sendAsynchronous(String runtimeName, String name, Serializable message) throws Fabric3Exception;
 
     /**
      * Asynchronously sends a message over the given channel.
      *
      * @param channelName    the channel name
      * @param message the message
-     * @throws ContainerException if there is an error sending the message
+     * @throws Fabric3Exception if there is an error sending the message
      */
-    void sendAsynchronous(String channelName, Serializable message) throws ContainerException;
+    void sendAsynchronous(String channelName, Serializable message) throws Fabric3Exception;
 
     /**
      * Opens a channel.
@@ -81,16 +81,16 @@ public interface NodeTopologyService {
      * @param configuration the channel configuration or null to use the default configuration
      * @param receiver      the receiver to callback when a message is received
      * @param listener      an optional topology listener. May be null.
-     * @throws ContainerException if an error occurs opening the channel
+     * @throws Fabric3Exception if an error occurs opening the channel
      */
-    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ContainerException;
+    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws Fabric3Exception;
 
     /**
      * Closes a channel.
      *
      * @param name the channel name
-     * @throws ContainerException if an error occurs closing the channel
+     * @throws Fabric3Exception if an error occurs closing the channel
      */
-    void closeChannel(String name) throws ContainerException;
+    void closeChannel(String name) throws Fabric3Exception;
 
 }

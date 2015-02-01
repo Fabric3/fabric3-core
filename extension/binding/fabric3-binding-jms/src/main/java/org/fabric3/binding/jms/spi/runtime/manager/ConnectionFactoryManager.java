@@ -21,7 +21,7 @@ package org.fabric3.binding.jms.spi.runtime.manager;
 import javax.jms.ConnectionFactory;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Manages JMS connection factories. Implementations are responsible for registering connection factories provided by a JMS provider with the runtime JTA
@@ -37,18 +37,18 @@ public interface ConnectionFactoryManager {
      * @param factory    the connection factory
      * @param properties properties such as pooling configuration
      * @return the registered connection factory, which may be a wrapper
-     * @throws ContainerException if there is an error registering
+     * @throws Fabric3Exception if there is an error registering
      */
-    ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws ContainerException;
+    ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws Fabric3Exception;
 
     /**
      * Removes a registered connection factory.
      *
      * @param name the connection factory name
      * @return the unregistered connection factory
-     * @throws ContainerException if there is an error un-registering
+     * @throws Fabric3Exception if there is an error un-registering
      */
-    ConnectionFactory unregister(String name) throws ContainerException;
+    ConnectionFactory unregister(String name) throws Fabric3Exception;
 
     /**
      * Returns the registered connection factory for the given name.

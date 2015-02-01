@@ -17,7 +17,7 @@
 package org.fabric3.binding.ws.metro.generator;
 
 import org.fabric3.api.binding.ws.model.WsBinding;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
@@ -34,9 +34,9 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @param serviceBinding logical binding.
      * @param contract       the service contract
      * @return Physical wire source definition.
-     * @throws ContainerException if an error is raised during generation
+     * @throws Fabric3Exception if an error is raised during generation
      */
-    MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> serviceBinding, T contract) throws ContainerException;
+    MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> serviceBinding, T contract) throws Fabric3Exception;
 
     /**
      * Generates a target definition from a logical binding.
@@ -44,9 +44,9 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @param referenceBinding logical binding.
      * @param contract         the service contract
      * @return Physical wire target definition.
-     * @throws ContainerException if an error is raised during generation
+     * @throws Fabric3Exception if an error is raised during generation
      */
-    MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> referenceBinding, T contract) throws ContainerException;
+    MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> referenceBinding, T contract) throws Fabric3Exception;
 
     /**
      * Generates a target definition from logical reference and service bindings.
@@ -54,8 +54,8 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @param serviceBinding logical service binding.
      * @param contract       the service contract
      * @return Physical wire target definition.
-     * @throws ContainerException if an error is raised during generation
+     * @throws Fabric3Exception if an error is raised during generation
      */
-    MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, T contract) throws ContainerException;
+    MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, T contract) throws Fabric3Exception;
 
 }

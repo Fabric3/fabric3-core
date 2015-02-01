@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -71,7 +71,7 @@ public class FileWireBindingGeneratorTestCase extends TestCase {
         try {
             generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
     }

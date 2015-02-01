@@ -25,7 +25,7 @@ import java.util.List;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
@@ -62,7 +62,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<JmsBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws ContainerException {
+                                                                       ChannelDeliveryType deliveryType) throws Fabric3Exception {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         SessionType sessionType = getSessionType(binding);
@@ -93,7 +93,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<JmsBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws ContainerException {
+                                                                       ChannelDeliveryType deliveryType) throws Fabric3Exception {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 

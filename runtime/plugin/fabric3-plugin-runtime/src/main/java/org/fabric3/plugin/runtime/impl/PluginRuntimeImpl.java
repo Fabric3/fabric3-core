@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.Deployable;
@@ -62,7 +62,7 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         return (T) super.getHostInfo();
     }
 
-    public void deploy(URL base, QName qName) throws ContainerException {
+    public void deploy(URL base, QName qName) throws Fabric3Exception {
         PluginContributionSource source = new PluginContributionSource(CONTRIBUTION_URI, base);
         // contribute the Maven project to the application domain
         ContributionService contributionService = getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);
@@ -94,13 +94,9 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         }
     }
 
-    public void startContext(QName deployable) throws ContainerException {
+    public void startContext(QName deployable) throws Fabric3Exception {
         WorkContextCache.getAndResetThreadWorkContext();
-        try {
-            getScopeContainer().startContext(deployable);
-        } catch (ContainerException e) {
-            throw new ContainerException(e);
-        }
+        getScopeContainer().startContext(deployable);
     }
 
     protected Repository createRepository() {

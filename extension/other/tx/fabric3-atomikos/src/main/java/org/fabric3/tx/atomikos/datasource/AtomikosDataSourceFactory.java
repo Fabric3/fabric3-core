@@ -28,7 +28,7 @@ import java.util.Properties;
 import com.atomikos.jdbc.AbstractDataSourceBean;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 import org.fabric3.datasource.spi.DataSourceFactory;
@@ -57,12 +57,12 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
     }
 
     @Property(required = false)
-    public void setDataSources(XMLStreamReader reader) throws ContainerException {
+    public void setDataSources(XMLStreamReader reader) throws Fabric3Exception {
         configurations = parser.parse(reader);
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         beans = new HashMap<>();
         for (DataSourceConfiguration configuration : configurations) {
             create(configuration);
@@ -70,7 +70,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
     }
 
     @Destroy
-    public void destroy() throws ContainerException {
+    public void destroy() throws Fabric3Exception {
         for (Map.Entry<String, AbstractDataSourceBean> entry : beans.entrySet()) {
             AbstractDataSourceBean bean = entry.getValue();
             registry.unregister(entry.getKey());
@@ -79,14 +79,14 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    public void create(DataSourceConfiguration configuration) throws ContainerException {
+    public void create(DataSourceConfiguration configuration) throws Fabric3Exception {
         String name = configuration.getName();
         if (registry.getDataSource(name) != null) {
-            throw new ContainerException("Datasource already registered with name: " + name);
+            throw new Fabric3Exception("Datasource already registered with name: " + name);
         }
         for (String alias : configuration.getAliases()) {
             if (registry.getDataSource(alias) != null) {
-                throw new ContainerException("Datasource already registered with name: " + name);
+                throw new Fabric3Exception("Datasource already registered with name: " + name);
             }
         }
         if (DataSourceType.XA == configuration.getType()) {
@@ -119,11 +119,11 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    public void remove(DataSourceConfiguration configuration) throws ContainerException {
+    public void remove(DataSourceConfiguration configuration) throws Fabric3Exception {
         String name = configuration.getName();
         AbstractDataSourceBean bean = beans.remove(name);
         if (bean == null) {
-            throw new ContainerException("DataSource not registered: " + name);
+            throw new Fabric3Exception("DataSource not registered: " + name);
         }
         for (String alias : configuration.getAliases()) {
             registry.unregister(alias);
@@ -133,13 +133,13 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         bean.close();
     }
 
-    private void registerManagement(AbstractDataSourceBean bean, List<String> aliases) throws ContainerException {
+    private void registerManagement(AbstractDataSourceBean bean, List<String> aliases) throws Fabric3Exception {
         String name = bean.getUniqueResourceName();
         DataSourceWrapper wrapper = new DataSourceWrapper(bean, aliases);
         managementService.export(encode(name), "datasources", "Configured datasources", wrapper);
     }
 
-    private void unRegisterManagement(AbstractDataSourceBean bean) throws ContainerException {
+    private void unRegisterManagement(AbstractDataSourceBean bean) throws Fabric3Exception {
         String name = bean.getUniqueResourceName();
         managementService.remove(encode(name), "datasources");
     }
@@ -148,7 +148,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         return "datasources/" + name.toLowerCase();
     }
 
-    private void setBeanProperties(DataSourceConfiguration configuration, AbstractDataSourceBean bean) throws ContainerException {
+    private void setBeanProperties(DataSourceConfiguration configuration, AbstractDataSourceBean bean) throws Fabric3Exception {
         int connectionTimeout = configuration.getConnectionTimeout();
         if (connectionTimeout != -1) {
             bean.setBorrowConnectionTimeout(connectionTimeout);
@@ -159,7 +159,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
                 bean.setLoginTimeout(loginTimeout);
             }
         } catch (SQLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
         int interval = configuration.getMaintenanceInterval();

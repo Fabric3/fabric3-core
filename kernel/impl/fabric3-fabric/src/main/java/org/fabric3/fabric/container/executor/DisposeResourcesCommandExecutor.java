@@ -21,7 +21,7 @@ package org.fabric3.fabric.container.executor;
 
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -48,7 +48,7 @@ public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeR
         this.builders = builders;
     }
 
-    public void execute(DisposeResourcesCommand command) throws ContainerException {
+    public void execute(DisposeResourcesCommand command) throws Fabric3Exception {
         for (PhysicalResourceDefinition definition : command.getDefinitions()) {
             build(definition);
         }
@@ -60,10 +60,10 @@ public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeR
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalResourceDefinition definition) throws ContainerException {
+    public void build(PhysicalResourceDefinition definition) throws Fabric3Exception {
         ResourceBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
-            throw new ContainerException("Builder not found for " + definition.getClass().getName());
+            throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());
         }
         builder.remove(definition);
     }

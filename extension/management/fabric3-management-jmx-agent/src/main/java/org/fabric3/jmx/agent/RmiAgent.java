@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.oasisopen.sca.annotation.Destroy;
@@ -70,11 +70,11 @@ public class RmiAgent {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws ContainerException {
+    public void setSecurity(String level) throws Fabric3Exception {
         try {
             security = JmxSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ContainerException("Invalid JMX security setting:" + level);
+            throw new Fabric3Exception("Invalid JMX security setting:" + level);
         }
     }
 
@@ -98,7 +98,7 @@ public class RmiAgent {
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         if (disabled) {
             return;
         }
@@ -108,12 +108,12 @@ public class RmiAgent {
             initConnector(environment);
             monitor.jmxStarted(assignedPort.getNumber());
         } catch (IOException ex) {
-            throw new ContainerException(ex);
+            throw new Fabric3Exception(ex);
         }
     }
 
     @Destroy
-    public void destroy() throws ContainerException {
+    public void destroy() throws Fabric3Exception {
         if (disabled) {
             return;
         }
@@ -125,7 +125,7 @@ public class RmiAgent {
                 notify();
             }
         } catch (IOException ex) {
-            throw new ContainerException(ex);
+            throw new Fabric3Exception(ex);
         }
     }
 
@@ -144,7 +144,7 @@ public class RmiAgent {
         connectorServer.start();
     }
 
-    private void createRegistry() throws ContainerException {
+    private void createRegistry() throws Fabric3Exception {
         if (port == -1) {
             // port not assigned, get one from the allocator
             try {
@@ -156,7 +156,7 @@ public class RmiAgent {
                 assignedPort.bind(Port.TYPE.TCP);
                 registry = LocateRegistry.createRegistry(assignedPort.getNumber());
             } catch (RemoteException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         } else {
             // port is explicitly assigned
@@ -165,18 +165,18 @@ public class RmiAgent {
                 assignedPort.bind(Port.TYPE.TCP);
                 registry = LocateRegistry.createRegistry(assignedPort.getNumber());
             } catch (RemoteException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         }
     }
 
-    private void removeRegistry() throws ContainerException {
+    private void removeRegistry() throws Fabric3Exception {
         try {
             if (registry != null) {
                 UnicastRemoteObject.unexportObject(registry, true);
             }
         } catch (IOException ex) {
-            throw new ContainerException(ex);
+            throw new Fabric3Exception(ex);
         }
 
     }

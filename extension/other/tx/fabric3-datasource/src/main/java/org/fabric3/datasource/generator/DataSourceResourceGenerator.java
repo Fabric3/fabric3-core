@@ -16,7 +16,7 @@
  */
 package org.fabric3.datasource.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -30,7 +30,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class DataSourceResourceGenerator implements ResourceGenerator<DataSourceResource> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<DataSourceResource> resource) throws ContainerException {
+    public PhysicalResourceDefinition generateResource(LogicalResource<DataSourceResource> resource) throws Fabric3Exception {
         return new PhysicalDataSourceResource(resource.getDefinition().getConfigurations());
     }
 }

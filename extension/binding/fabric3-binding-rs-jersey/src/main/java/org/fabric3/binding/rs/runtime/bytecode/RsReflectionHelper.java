@@ -5,7 +5,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 import org.glassfish.jersey.internal.util.collection.ClassTypePair;
 import org.glassfish.jersey.spi.ExtendedExceptionMapper;
@@ -18,13 +18,13 @@ import org.glassfish.jersey.spi.ExtendedExceptionMapper;
 public class RsReflectionHelper {
 
     @SuppressWarnings("unchecked")
-    public static Class<? extends Throwable> getExceptionType(Class<? extends ExceptionMapper> mapperClass) throws ContainerException {
+    public static Class<? extends Throwable> getExceptionType(Class<? extends ExceptionMapper> mapperClass) throws Fabric3Exception {
         final Class<?> exceptionType = getType(mapperClass);
         if (Throwable.class.isAssignableFrom(exceptionType)) {
             return (Class<? extends Throwable>) exceptionType;
         }
 
-        throw new ContainerException("Cannot find exception mapper type:" + mapperClass);
+        throw new Fabric3Exception("Cannot find exception mapper type:" + mapperClass);
     }
 
     /**
@@ -33,7 +33,7 @@ public class RsReflectionHelper {
      * @param clazz class to get exception type for.
      * @return exception type for given class.
      */
-    private static Class getType(Class<? extends ExceptionMapper> clazz) throws ContainerException {
+    private static Class getType(Class<? extends ExceptionMapper> clazz) throws Fabric3Exception {
         Class clazzHolder = clazz;
 
         while (clazzHolder != Object.class) {
@@ -45,7 +45,7 @@ public class RsReflectionHelper {
             clazzHolder = clazzHolder.getSuperclass();
         }
 
-        throw new ContainerException("Cannot find exception mapper type:" + clazz);
+        throw new Fabric3Exception("Cannot find exception mapper type:" + clazz);
     }
 
     /**

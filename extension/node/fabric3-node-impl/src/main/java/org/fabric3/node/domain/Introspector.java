@@ -16,7 +16,7 @@
  */
 package org.fabric3.node.domain;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
@@ -29,8 +29,8 @@ public interface Introspector {
      *
      * @param interfaze the interface
      * @return the contract
-     * @throws ContainerException if there is an introspection error
+     * @throws Fabric3Exception if there is an introspection error
      */
-    <T> JavaServiceContract introspect(Class<T> interfaze) throws ContainerException;
+    <T> JavaServiceContract introspect(Class<T> interfaze) throws Fabric3Exception;
 
 }

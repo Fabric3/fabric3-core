@@ -32,7 +32,7 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.tomcat.InstanceManager;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.runtime.tomcat.connector.ConnectorService;
@@ -79,7 +79,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         for (URI webApp : webApps) {
             try {
                 deactivate(webApp);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 monitor.error(webApp.toString(), e);
             }
         }
@@ -94,9 +94,9 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
                                    URI uri,
                                    URI parentClassLoaderId,
                                    Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws ContainerException {
+                                   ComponentContext componentContext) throws Fabric3Exception {
         if (mappings.containsKey(uri)) {
-            throw new ContainerException("Mapping already exists: " + uri.toString());
+            throw new Fabric3Exception("Mapping already exists: " + uri.toString());
         }
         contextPath = "/" + contextPath;
         try {
@@ -128,15 +128,15 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
             monitor.activated(contextPath);
             return servletContext;
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
     }
 
-    public void deactivate(URI uri) throws ContainerException {
+    public void deactivate(URI uri) throws Fabric3Exception {
         String contextPath = mappings.remove(uri);
         if (contextPath == null) {
-            throw new ContainerException("Context not registered for component: " + uri);
+            throw new Fabric3Exception("Context not registered for component: " + uri);
         }
         for (Container container : connector.getService().getContainer().findChildren()) {
             if (container instanceof StandardHost) {
@@ -179,7 +179,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ContainerException {
+    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws Fabric3Exception {
         List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
         if (list == null) {
             // nothing to inject

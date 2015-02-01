@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Reference;
@@ -61,7 +61,7 @@ import org.w3c.dom.Document;
 @EagerInit
 public class SpringComponentGenerator implements ComponentGenerator<LogicalComponent<SpringImplementation>> {
 
-    public PhysicalComponentDefinition generate(LogicalComponent<SpringImplementation> component) throws ContainerException {
+    public PhysicalComponentDefinition generate(LogicalComponent<SpringImplementation> component) throws Fabric3Exception {
         URI uri = component.getUri();
         Component<SpringImplementation> componentDefinition = component.getDefinition();
         SpringImplementation implementation = componentDefinition.getImplementation();
@@ -84,11 +84,11 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
         ServiceContract contract = reference.getLeafReference().getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring reference contracts are always defined by Java interfaces
-            throw new ContainerException("Unexpected interface type for " + reference.getUri() + ": " + contract.getClass().getName());
+            throw new Fabric3Exception("Unexpected interface type for " + reference.getUri() + ": " + contract.getClass().getName());
         }
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = reference.getParent().getUri();
@@ -96,16 +96,16 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return new SpringWireSourceDefinition(referenceName, interfaze, uri);
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
         if (!(service.getLeafService().getDefinition() instanceof SpringService)) {
             // programming error
-            throw new ContainerException("Expected service type: " + service.getDefinition().getClass().getName());
+            throw new Fabric3Exception("Expected service type: " + service.getDefinition().getClass().getName());
         }
         SpringService springService = (SpringService) service.getLeafService().getDefinition();
         ServiceContract contract = springService.getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring service contracts are always defined by Java interfaces
-            throw new ContainerException("Unexpected interface type for " + service.getUri() + ": " + contract.getClass().getName());
+            throw new Fabric3Exception("Unexpected interface type for " + service.getUri() + ": " + contract.getClass().getName());
         }
 
         String target = springService.getTarget();
@@ -114,7 +114,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return new SpringWireTargetDefinition(target, interfaceName, uri);
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
         String producerName = producer.getDefinition().getName();
         URI uri = producer.getParent().getUri();
         ServiceContract serviceContract = producer.getDefinition().getServiceContract();
@@ -123,7 +123,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         SpringConsumer springConsumer = (SpringConsumer) consumer.getDefinition();
         String beanName = springConsumer.getBeanName();
         String methodName = springConsumer.getMethodName();
@@ -132,11 +132,11 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return new SpringConnectionTargetDefinition(beanName, methodName, type, uri);
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

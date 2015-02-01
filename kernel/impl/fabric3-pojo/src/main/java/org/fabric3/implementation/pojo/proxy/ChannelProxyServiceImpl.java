@@ -21,7 +21,7 @@ package org.fabric3.implementation.pojo.proxy;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.spi.container.channel.ChannelConnection;
@@ -55,9 +55,9 @@ public class ChannelProxyServiceImpl implements ChannelProxyService {
         }
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ContainerException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception {
         if (extension == null) {
-            throw new ContainerException("Channel proxy service extension not installed");
+            throw new Fabric3Exception("Channel proxy service extension not installed");
         }
         return extension.createObjectFactory(interfaze, connection);
     }

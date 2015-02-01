@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Producer;
@@ -74,7 +74,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         this.channelConnector = channelConnector;
     }
 
-    public <T> T resolve(Class<T> interfaze, String name) throws ContainerException {
+    public <T> T resolve(Class<T> interfaze, String name) throws Fabric3Exception {
         LogicalChannel logicalChannel = getChannel(name);
         LogicalProducer producer = createProducer(interfaze, logicalChannel.getUri());
         PhysicalChannelDefinition channelDefinition = channelGenerator.generateChannelDefinition(logicalChannel,
@@ -96,11 +96,11 @@ public class ChannelResolverImpl implements ChannelResolver {
             NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
             return interfaze.cast(sourceDefinition.getProxy());
         }
-        throw new ContainerException("Source generator not found");
+        throw new Fabric3Exception("Source generator not found");
 
     }
 
-    private LogicalChannel getChannel(String name) throws ContainerException {
+    private LogicalChannel getChannel(String name) throws Fabric3Exception {
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();
         String domainRoot = domainComponent.getUri().toString();
         URI channelUri = URI.create(domainRoot + "/" + name);
@@ -111,7 +111,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         return logicalChannel;
     }
 
-    private <T> LogicalProducer createProducer(Class<T> interfaze, URI channelUri) throws ContainerException {
+    private <T> LogicalProducer createProducer(Class<T> interfaze, URI channelUri) throws Fabric3Exception {
         JavaServiceContract contract = introspector.introspect(interfaze);
 
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();

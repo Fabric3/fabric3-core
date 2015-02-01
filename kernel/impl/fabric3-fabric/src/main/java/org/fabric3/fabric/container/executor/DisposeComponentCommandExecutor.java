@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.DisposeComponentCommand;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
@@ -68,13 +68,13 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
     }
 
     @SuppressWarnings({"unchecked"})
-    public void execute(DisposeComponentCommand command) throws ContainerException {
+    public void execute(DisposeComponentCommand command) throws Fabric3Exception {
         PhysicalComponentDefinition definition = command.getDefinition();
         URI uri = definition.getComponentUri();
         Component component = componentManager.unregister(uri);
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
-            throw new ContainerException("Builder not found for " + definition.getClass().getName());
+            throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());
         }
         builder.dispose(definition, component);
         for (ComponentBuilderListener listener : listeners) {

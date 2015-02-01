@@ -19,7 +19,7 @@ package org.fabric3.implementation.pojo.builder;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
@@ -35,10 +35,10 @@ public abstract class AbstractPropertyBuilder {
     }
 
     @SuppressWarnings({"unchecked"})
-    protected <T> Transformer<T, ?> getTransformer(String name, DataType sourceType, DataType targetType, List<Class<?>> types) throws ContainerException {
+    protected <T> Transformer<T, ?> getTransformer(String name, DataType sourceType, DataType targetType, List<Class<?>> types) throws Fabric3Exception {
         Transformer<T, ?> transformer = (Transformer<T, ?>) transformerRegistry.getTransformer(sourceType, targetType, types, types);
         if (transformer == null) {
-            throw new ContainerException("No transformer for property " + name + " of type: " + targetType);
+            throw new Fabric3Exception("No transformer for property " + name + " of type: " + targetType);
         }
         return transformer;
     }

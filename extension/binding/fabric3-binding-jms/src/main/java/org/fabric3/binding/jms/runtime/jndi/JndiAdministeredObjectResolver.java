@@ -21,7 +21,7 @@ import javax.naming.NamingException;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
 import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
@@ -40,7 +40,7 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
         this.factoryManager = factoryManager;
     }
 
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws ContainerException {
+    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         try {
             String name = definition.getName();
             ConnectionFactory factory = contextManager.lookup(ConnectionFactory.class, name);
@@ -49,15 +49,15 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
             }
             return factoryManager.register(name, factory, definition.getProperties());
         } catch (NamingException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public javax.jms.Destination resolve(Destination definition) throws ContainerException {
+    public javax.jms.Destination resolve(Destination definition) throws Fabric3Exception {
         try {
             return contextManager.lookup(javax.jms.Destination.class, definition.getName());
         } catch (NamingException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

@@ -4,7 +4,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Property;
@@ -75,7 +75,7 @@ public class ConfigProcessor implements XmlProcessor {
         return TYPE;
     }
 
-    public void processContent(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws ContainerException {
+    public void processContent(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws Fabric3Exception {
         try {
             String localName = reader.getAttributeValue(null, "name");
             String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
@@ -107,7 +107,7 @@ public class ConfigProcessor implements XmlProcessor {
             QNameExport export = new QNameExport(targetNamespace);
             manifest.addExport(export);
         } catch (XMLStreamException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

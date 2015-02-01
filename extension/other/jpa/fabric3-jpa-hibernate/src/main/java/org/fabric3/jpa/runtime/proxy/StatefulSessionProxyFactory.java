@@ -20,7 +20,7 @@ package org.fabric3.jpa.runtime.proxy;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -37,7 +37,7 @@ public class StatefulSessionProxyFactory implements ObjectFactory<StatefulSessio
         this.unitName = unitName;
     }
 
-    public StatefulSessionProxy getInstance() throws ContainerException {
+    public StatefulSessionProxy getInstance() throws Fabric3Exception {
         return new StatefulSessionProxy(unitName, service, tm);
     }
 }

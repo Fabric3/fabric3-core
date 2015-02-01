@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
@@ -59,7 +59,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.artifactCache = artifactCache;
     }
 
-    public void attach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
         QName serviceName = endpointDefinition.getServiceName();
         QName portName = endpointDefinition.getPortName();
@@ -74,7 +74,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         byte[] bytes = source.getGeneratedInterface();
 
         if (!(classLoader instanceof SecureClassLoader)) {
-            throw new ContainerException("Classloader for " + interfaze + " must be a SecureClassLoader");
+            throw new Fabric3Exception("Classloader for " + interfaze + " must be a SecureClassLoader");
         }
         Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
 
@@ -121,7 +121,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         }
     }
 
-    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
         URI servicePath = endpointDefinition.getServicePath();
         String path = servicePath.toString();
@@ -137,7 +137,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         endpointService.unregisterService(path);
     }
 
-    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws ContainerException {
+    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws Fabric3Exception {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
@@ -148,7 +148,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         return schemas;
     }
 
-    private void removeCachedSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws ContainerException {
+    private void removeCachedSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws Fabric3Exception {
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
             artifactCache.remove(uri);

@@ -27,7 +27,7 @@ import javax.jms.Session;
 import javax.jms.TopicConnection;
 
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 
@@ -36,7 +36,7 @@ import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
-    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws ContainerException {
+    public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws Fabric3Exception {
         Connection connection = null;
         String name = definition.getName();
         try {
@@ -53,7 +53,7 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
                 throw new IllegalArgumentException("Unknown destination type for:" + name);
             }
         } catch (JMSException ex) {
-            throw new ContainerException("Unable to create destination:" + name, ex);
+            throw new Fabric3Exception("Unable to create destination:" + name, ex);
         } finally {
             if (connection != null) {
                 try {

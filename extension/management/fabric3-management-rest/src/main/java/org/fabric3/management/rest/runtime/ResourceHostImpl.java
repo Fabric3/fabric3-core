@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
@@ -89,11 +89,11 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws ContainerException {
+    public void setSecurity(String level) throws Fabric3Exception {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ContainerException("Invalid management security setting:" + level);
+            throw new Fabric3Exception("Invalid management security setting:" + level);
         }
     }
 
@@ -116,7 +116,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Init
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         servletHost.registerMapping(MANAGEMENT_PATH, this);
         if (topologyService != null) {
             ResourceReplicationHandler handler = new ResourceReplicationHandler(this, monitor);
@@ -131,7 +131,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Destroy()
-    public void stop() throws ContainerException {
+    public void stop() throws Fabric3Exception {
         servletHost.unregisterMapping(MANAGEMENT_PATH);
         if (topologyService != null) {
             topologyService.closeChannel(RESOURCE_CHANNEL);
@@ -153,7 +153,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
     }
 
-    public void register(ResourceMapping mapping) throws ContainerException {
+    public void register(ResourceMapping mapping) throws Fabric3Exception {
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
             register(mapping, getMappings);
@@ -246,12 +246,12 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      *
      * @param mapping  the resource mapping
      * @param mappings the resource mappings for an HTTP verb
-     * @throws ContainerException if a resource for the path is already registered
+     * @throws Fabric3Exception if a resource for the path is already registered
      */
-    private void register(ResourceMapping mapping, Map<String, ResourceMapping> mappings) throws ContainerException {
+    private void register(ResourceMapping mapping, Map<String, ResourceMapping> mappings) throws Fabric3Exception {
         String path = mapping.getPath();
         if (mappings.containsKey(path)) {
-            throw new ContainerException("Resource already registered at: " + path);
+            throw new Fabric3Exception("Resource already registered at: " + path);
         }
         String identifier = mapping.getIdentifier();
         List<ResourceMapping> registered = getRegistered(identifier);
@@ -482,7 +482,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 replicate(mapping, params);
             }
             return ret;
-        } catch (IllegalAccessException | ContainerException e) {
+        } catch (IllegalAccessException | Fabric3Exception e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InvocationTargetException e) {
@@ -503,9 +503,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      *
      * @param mapping the request mapping
      * @param params  the request parameters
-     * @throws ContainerException if there is a replication error
+     * @throws Fabric3Exception if there is a replication error
      */
-    private void replicate(ResourceMapping mapping, Object[] params) throws ContainerException {
+    private void replicate(ResourceMapping mapping, Object[] params) throws Fabric3Exception {
         if (topologyService != null && mapping.isReplicate() && mapping.getVerb() != Verb.GET) {
             // only replicate if running on a node and request is not HTTP GET
             ReplicationEnvelope envelope;
@@ -578,7 +578,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         } catch (IOException ex) {
             monitor.error("Cannot write error response", ex);
             monitor.error("Response was ", e);
-        } catch (ContainerException ex) {
+        } catch (Fabric3Exception ex) {
             monitor.error("Cannot serialize error response", ex);
             monitor.error("Response was ", e);
         }

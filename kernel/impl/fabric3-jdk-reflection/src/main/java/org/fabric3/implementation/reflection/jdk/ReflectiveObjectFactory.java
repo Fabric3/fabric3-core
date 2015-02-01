@@ -22,7 +22,7 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -43,7 +43,7 @@ public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
         this.paramFactories = paramFactories;
     }
 
-    public T getInstance() throws ContainerException {
+    public T getInstance() throws Fabric3Exception {
         try {
             if (paramFactories == null) {
                 return constructor.newInstance();
@@ -62,15 +62,15 @@ public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
                     for (int i = 0; i < paramTypes.length; i++) {
                         Class<?> paramType = paramTypes[i];
                         if (paramType.isPrimitive() && params[i] == null) {
-                            throw new ContainerException("Cannot assign null value to primitive for parameter " + i + " of " + name);
+                            throw new Fabric3Exception("Cannot assign null value to primitive for parameter " + i + " of " + name);
                         }
                         if (params[i] != null && !paramType.isInstance(params[i])) {
-                            throw new ContainerException(
+                            throw new Fabric3Exception(
                                     "Unable to assign parameter of type " + params[i].getClass().getName() + " to parameter " + i + " of " + name);
                         }
                     }
                     // did not fail because of incompatible assignment
-                    throw new ContainerException(name, e);
+                    throw new Fabric3Exception(name, e);
                 }
             }
         } catch (InstantiationException e) {
@@ -81,7 +81,7 @@ public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
             throw new AssertionError("Constructor is not accessible: " + id);
         } catch (InvocationTargetException e) {
             String id = constructor.toString();
-            throw new ContainerException("Exception thrown by constructor: " + id, e.getCause());
+            throw new Fabric3Exception("Exception thrown by constructor: " + id, e.getCause());
         }
     }
 }

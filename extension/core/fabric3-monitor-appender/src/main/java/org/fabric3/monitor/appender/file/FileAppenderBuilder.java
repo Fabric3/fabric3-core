@@ -18,7 +18,7 @@ package org.fabric3.monitor.appender.file;
 
 import java.io.File;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
@@ -37,7 +37,7 @@ public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Appender build(PhysicalFileAppenderDefinition definition) throws ContainerException {
+    public Appender build(PhysicalFileAppenderDefinition definition) throws Fabric3Exception {
         File outputDir = new File(hostInfo.getDataDir(), "logs");
         outputDir.mkdirs();
         File outputFile = new File(outputDir, definition.getFileName());
@@ -53,7 +53,7 @@ public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender
             RollStrategy strategy = new SizeRollStrategy(rollSize, maxBackups);
             return new FileAppender(outputFile, strategy, false);
         } else {
-            throw new ContainerException("Unknown roll type: " + rollType);
+            throw new Fabric3Exception("Unknown roll type: " + rollType);
         }
 
     }

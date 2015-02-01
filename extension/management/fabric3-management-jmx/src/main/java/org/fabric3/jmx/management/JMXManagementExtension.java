@@ -38,7 +38,7 @@ import java.util.Set;
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.ManagementInfo;
@@ -78,7 +78,7 @@ public class JMXManagementExtension implements ManagementExtension {
         return "fabric3.jmx";
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException {
+    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception {
         if (mBeanServer == null) {
             return;
         }
@@ -89,11 +89,11 @@ public class JMXManagementExtension implements ManagementExtension {
                 mBeanServer.registerMBean(mBean, name);
             }
         } catch (JMException | NoSuchMethodException | ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void export(String name, String group, String description, Object instance) throws ContainerException {
+    public void export(String name, String group, String description, Object instance) throws Fabric3Exception {
         try {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
@@ -138,26 +138,26 @@ public class JMXManagementExtension implements ManagementExtension {
                 mBeanServer.registerMBean(managementBean, objectName);
             }
         } catch (NoSuchMethodException | ClassNotFoundException | JMException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws ContainerException {
+    public void remove(URI componentUri, ManagementInfo info) throws Fabric3Exception {
         try {
             ObjectName name = getObjectName(componentUri, info);
             mBeanServer.unregisterMBean(name);
         } catch (JMException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void remove(String name, String group) throws ContainerException {
+    public void remove(String name, String group) throws Fabric3Exception {
         try {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             mBeanServer.unregisterMBean(objectName);
         } catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

@@ -24,7 +24,7 @@ import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionMonitor;
 import org.fabric3.binding.jms.spi.runtime.connection.SingletonConnectionFactory;
@@ -49,7 +49,7 @@ public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreato
         brokerUri = URI.create("vm://" + brokerName);
     }
 
-    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ContainerException {
+    public ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws Fabric3Exception {
         ConnectionFactoryType type = configuration.getType();
         String clientId = configuration.getClientId();
         switch (type) {

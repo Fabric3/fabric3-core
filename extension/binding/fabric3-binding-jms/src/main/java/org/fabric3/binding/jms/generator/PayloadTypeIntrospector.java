@@ -19,7 +19,7 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 
@@ -33,8 +33,8 @@ public interface PayloadTypeIntrospector {
      *
      * @param operation the operation to introspect
      * @return the introspected JMS message types for input parameters, output type and faults
-     * @throws ContainerException if an error occurs introspecting the operation
+     * @throws Fabric3Exception if an error occurs introspecting the operation
      */
-    OperationPayloadTypes introspect(Operation operation) throws ContainerException;
+    OperationPayloadTypes introspect(Operation operation) throws Fabric3Exception;
 
 }

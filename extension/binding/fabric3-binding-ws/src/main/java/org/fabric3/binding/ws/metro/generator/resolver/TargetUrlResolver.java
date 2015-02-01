@@ -19,7 +19,7 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.URL;
 
 import org.fabric3.api.binding.ws.model.WsBinding;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
@@ -33,8 +33,8 @@ public interface TargetUrlResolver {
      *
      * @param binding the service binding
      * @return the URL
-     * @throws ContainerException if the URL cannot be created
+     * @throws Fabric3Exception if the URL cannot be created
      */
-    URL resolveUrl(LogicalBinding<WsBinding> binding) throws ContainerException;
+    URL resolveUrl(LogicalBinding<WsBinding> binding) throws Fabric3Exception;
 
 }

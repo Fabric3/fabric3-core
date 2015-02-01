@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime.emf;
 import javax.persistence.spi.PersistenceUnitInfo;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Parses a persistence.xml file located at /META-INF/persistence.xml for a provided classloader.
@@ -33,8 +33,8 @@ public interface PersistenceContextParser {
      *
      * @param classLoader Classloader to scan.
      * @return the persistence unit information.
-     * @throws ContainerException if an error reading the persistence unit is encountered
+     * @throws Fabric3Exception if an error reading the persistence unit is encountered
      */
-    List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws ContainerException;
+    List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws Fabric3Exception;
 
 }

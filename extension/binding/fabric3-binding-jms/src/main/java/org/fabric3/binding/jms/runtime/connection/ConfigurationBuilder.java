@@ -14,7 +14,7 @@ import java.util.Properties;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
@@ -79,13 +79,13 @@ public class ConfigurationBuilder {
     }
 
     @Property(required = false)
-    public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, ContainerException {
+    public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         factoryConfigurations.clear();
         parseConfigurations(factoryConfigurations, reader);
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             ConnectionFactory factory = creatorRegistry.create(configuration);
@@ -99,7 +99,7 @@ public class ConfigurationBuilder {
             if (defaultProvider != null) {
                 builder = defaultBuilders.get(defaultProvider);
                 if (builder == null) {
-                    throw new ContainerException("Unable to create default connection factories. Provider not found: " + defaultProvider);
+                    throw new Fabric3Exception("Unable to create default connection factories. Provider not found: " + defaultProvider);
                 }
             } else {
                 builder = defaultBuilders.values().iterator().next();
@@ -123,7 +123,7 @@ public class ConfigurationBuilder {
     }
 
     @Destroy
-    public void destroy() throws ContainerException {
+    public void destroy() throws Fabric3Exception {
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             manager.unregister(configuration.getName());
         }
@@ -142,10 +142,10 @@ public class ConfigurationBuilder {
      * @param configurations the collection to populate
      * @param reader         the XML stream
      * @throws XMLStreamException            if there is an error parsing the stream
-     * @throws ContainerException if the configuration contains an error or is invalid
+     * @throws Fabric3Exception if the configuration contains an error or is invalid
      */
     private void parseConfigurations(List<ConnectionFactoryConfiguration> configurations, XMLStreamReader reader)
-            throws XMLStreamException, ContainerException {
+            throws XMLStreamException, Fabric3Exception {
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -153,7 +153,7 @@ public class ConfigurationBuilder {
                     if (name.equals("connection.factory")) {
                         // no factory specified, pick the first one
                         if (parsers.isEmpty()) {
-                            throw new ContainerException("JMS provider not installed");
+                            throw new Fabric3Exception("JMS provider not installed");
                         }
                         String provider = reader.getAttributeValue(null, "provider");
                         ConnectionFactoryConfigurationParser parser;
@@ -162,7 +162,7 @@ public class ConfigurationBuilder {
                         } else {
                             parser = parsers.get(provider);
                             if (parser == null) {
-                                throw new ContainerException("JMS provider not installed: " + provider);
+                                throw new Fabric3Exception("JMS provider not installed: " + provider);
                             }
                         }
 
@@ -179,14 +179,14 @@ public class ConfigurationBuilder {
         }
     }
 
-    private void checkErrors(DefaultIntrospectionContext context) throws ContainerException {
+    private void checkErrors(DefaultIntrospectionContext context) throws Fabric3Exception {
         if (context.hasErrors()) {
             StringBuilder builder = new StringBuilder();
             builder.append("The following errors were found:\n");
             for (ValidationFailure error : context.getErrors()) {
                 builder.append(error.getMessage()).append("\n");
             }
-            throw new ContainerException(builder.toString());
+            throw new Fabric3Exception(builder.toString());
         }
     }
 

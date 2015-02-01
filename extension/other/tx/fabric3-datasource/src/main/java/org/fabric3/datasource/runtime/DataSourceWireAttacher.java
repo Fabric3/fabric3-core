@@ -20,7 +20,7 @@ package org.fabric3.datasource.runtime;
 
 import javax.sql.DataSource;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -40,19 +40,19 @@ public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWire
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, DataSourceWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws Fabric3Exception {
         String dataSourceName = target.getDataSourceName();
         DataSource source = registry.getDataSource(dataSourceName);
         if (!target.isOptional() && source == null) {
-            throw new ContainerException("DataSource not found: " + dataSourceName);
+            throw new Fabric3Exception("DataSource not found: " + dataSourceName);
         }
         return new SingletonObjectFactory<>(source);
     }

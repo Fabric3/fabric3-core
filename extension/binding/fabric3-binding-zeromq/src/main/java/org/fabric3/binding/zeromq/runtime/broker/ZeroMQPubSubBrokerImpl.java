@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -136,7 +136,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         eventService.subscribe(RuntimeStop.class, this);
     }
 
-    public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws ContainerException {
+    public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws Fabric3Exception {
         String channelName = metadata.getChannelName();
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
@@ -202,7 +202,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     public void connect(String connectionId, ZeroMQMetadata metadata, boolean dedicatedThread, ChannelConnection connection, ClassLoader loader)
-            throws ContainerException {
+            throws Fabric3Exception {
         String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
@@ -214,7 +214,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 // socket address to bind on is explicitly configured in the binding definition
                 if (addresses.size() != 1) {
                     // sanity check
-                    throw new ContainerException("Invalid number of socket addresses: " + addresses.size());
+                    throw new Fabric3Exception("Invalid number of socket addresses: " + addresses.size());
                 }
                 SocketAddressDefinition addressDefinition = addresses.get(0);
                 int portDefinition = addressDefinition.getPort();
@@ -253,11 +253,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         }
     }
 
-    public void release(String connectionId, ZeroMQMetadata metadata) throws ContainerException {
+    public void release(String connectionId, ZeroMQMetadata metadata) throws Fabric3Exception {
         String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
-            throw new ContainerException("Publisher not found for " + channelName);
+            throw new Fabric3Exception("Publisher not found for " + channelName);
         }
         Publisher publisher = holder.getPublisher();
         holder.getConnectionIds().remove(connectionId);
@@ -295,7 +295,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         stopAll();
     }
 
-    private void attachConnection(ChannelConnection connection, Publisher publisher, ClassLoader loader) throws ContainerException {
+    private void attachConnection(ChannelConnection connection, Publisher publisher, ClassLoader loader) throws Fabric3Exception {
         EventStream stream = connection.getEventStream();
         try {
             DataType dataType = getEventType(stream, loader);
@@ -310,12 +310,12 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
             stream.addHandler(transformer);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Error loading event type", e);
+            throw new Fabric3Exception("Error loading event type", e);
         }
         stream.addHandler(new PublisherHandler(publisher));
     }
 
-    private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws ContainerException {
+    private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws Fabric3Exception {
         DataType dataType = getEventTypeForConnection(connection, loader);
         EventStreamHandler head;
         if (dataType.getType().equals(byte[][].class)) {
@@ -342,7 +342,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType getEventTypeForConnection(ChannelConnection connection, ClassLoader loader) throws ContainerException {
+    private DataType getEventTypeForConnection(ChannelConnection connection, ClassLoader loader) throws Fabric3Exception {
         PhysicalEventStreamDefinition eventStreamDefinition = connection.getEventStream().getDefinition();
         if (!eventStreamDefinition.getEventTypes().isEmpty()) {
             try {
@@ -350,7 +350,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 Class<?> type = ParameterTypeHelper.loadClass(eventType, loader);
                 return new JavaType(type);
             } catch (ClassNotFoundException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         } else {
             return new JavaType(Object.class);

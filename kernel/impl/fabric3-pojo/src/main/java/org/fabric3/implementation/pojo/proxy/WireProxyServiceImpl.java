@@ -22,7 +22,7 @@ package org.fabric3.implementation.pojo.proxy;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -57,19 +57,19 @@ public class WireProxyServiceImpl implements WireProxyService {
         }
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws Fabric3Exception {
         checkExtension();
         return extension.createObjectFactory(interfaze, wire, callbackUri);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ContainerException {
+            throws Fabric3Exception {
         checkExtension();
         return extension.createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ContainerException {
+            throws Fabric3Exception {
         checkExtension();
         return extension.updateCallbackObjectFactory(factory, interfaze, multiThreaded, callbackUri, wire);
     }
@@ -81,9 +81,9 @@ public class WireProxyServiceImpl implements WireProxyService {
         return extension.cast(target);
     }
 
-    private void checkExtension() throws ContainerException {
+    private void checkExtension() throws Fabric3Exception {
         if (extension == null) {
-            throw new ContainerException("Channel proxy service extension not installed");
+            throw new Fabric3Exception("Channel proxy service extension not installed");
         }
     }
 

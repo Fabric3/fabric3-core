@@ -32,7 +32,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -116,7 +116,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
 
-    public void testFactory() throws ContainerException {
+    public void testFactory() throws Fabric3Exception {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
 

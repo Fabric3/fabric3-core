@@ -21,7 +21,7 @@ package org.fabric3.fabric.container.executor;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -56,7 +56,7 @@ public class StartComponentCommandExecutor implements CommandExecutor<StartCompo
         commandExecutorRegistry.register(StartComponentCommand.class, this);
     }
 
-    public void execute(StartComponentCommand command) throws ContainerException {
+    public void execute(StartComponentCommand command) throws Fabric3Exception {
         URI uri = command.getUri();
         Component component = componentManager.getComponent(uri);
         component.start();

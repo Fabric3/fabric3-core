@@ -29,7 +29,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.repository.Repository;
 
 /**
@@ -44,10 +44,10 @@ public class AetherRepository implements Repository {
         this.session = session;
     }
 
-    public void shutdown() throws ContainerException {
+    public void shutdown() throws Fabric3Exception {
     }
 
-    public URL store(URI uri, InputStream stream, boolean extension) throws ContainerException {
+    public URL store(URI uri, InputStream stream, boolean extension) throws Fabric3Exception {
         return find(uri);
     }
 
@@ -56,7 +56,7 @@ public class AetherRepository implements Repository {
         return false;
     }
 
-    public URL find(URI uri) throws ContainerException {
+    public URL find(URI uri) throws Fabric3Exception {
         try {
             Artifact artifact = new DefaultArtifact(uri.toString());
             ArtifactRequest request = new ArtifactRequest();
@@ -64,7 +64,7 @@ public class AetherRepository implements Repository {
             ArtifactResult result = repositorySystem.resolveArtifact(session, request);
             return result.getArtifact().getFile().toURI().toURL();
         } catch (ArtifactResolutionException | MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

@@ -22,7 +22,7 @@ import java.io.File;
 import java.net.URI;
 
 import org.fabric3.api.binding.file.ReferenceAdapter;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
@@ -56,7 +56,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
 
-    public void attach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         File location = resolve(target.getLocation());
         location.mkdirs();
 
@@ -67,11 +67,11 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(FileBindingWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(FileBindingWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -94,9 +94,9 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
      *
      * @param source the definition
      * @return the adaptor
-     * @throws ContainerException if there is an error instantiating the class or returning a component instance.
+     * @throws Fabric3Exception if there is an error instantiating the class or returning a component instance.
      */
-    private ReferenceAdapter getAdaptor(FileBindingWireTargetDefinition source) throws ContainerException {
+    private ReferenceAdapter getAdaptor(FileBindingWireTargetDefinition source) throws Fabric3Exception {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();
@@ -105,10 +105,10 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
             }
             Component component = manager.getComponent(adapterUri);
             if (component == null) {
-                throw new ContainerException("Binding adaptor component not found: " + adapterUri);
+                throw new Fabric3Exception("Binding adaptor component not found: " + adapterUri);
             }
             if (!(component instanceof AtomicComponent)) {
-                throw new ContainerException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+                throw new Fabric3Exception("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
             }
             return new ReferenceAdaptorWrapper((AtomicComponent) component);
         }
@@ -116,12 +116,12 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         ClassLoader loader = registry.getClassLoader(uri);
         if (loader == null) {
             // this should not happen
-            throw new ContainerException("ClassLoader not found: " + uri);
+            throw new Fabric3Exception("ClassLoader not found: " + uri);
         }
         try {
             return (ReferenceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

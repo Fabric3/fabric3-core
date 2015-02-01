@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
@@ -75,7 +75,7 @@ public final class ResourceHostImplTestCase extends TestCase {
         try {
             host.register(mapping2);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
     }

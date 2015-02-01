@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -51,7 +51,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
@@ -68,14 +68,14 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
                 try {
                     paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
                 } catch (ClassNotFoundException e) {
-                    throw new ContainerException("Implementation class not found", e);
+                    throw new Fabric3Exception("Implementation class not found", e);
                 }
             }
             Method method;
             try {
                 method = implementationClass.getMethod(operation.getName(), paramTypes);
             } catch (NoSuchMethodException e) {
-                throw new ContainerException("No matching method found", e);
+                throw new Fabric3Exception("No matching method found", e);
             }
 
             SystemInvokerInterceptor interceptor = new SystemInvokerInterceptor(method, targetComponent);
@@ -83,11 +83,11 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

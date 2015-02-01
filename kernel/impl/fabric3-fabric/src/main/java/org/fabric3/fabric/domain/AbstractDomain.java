@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.Domain;
@@ -103,7 +103,7 @@ public abstract class AbstractDomain implements Domain {
         listeners = Collections.emptyList();
     }
 
-    public synchronized void include(QName deployable) throws ContainerException {
+    public synchronized void include(QName deployable) throws Fabric3Exception {
         Composite wrapper = createWrapper(deployable);
         for (DeployListener listener : listeners) {
             listener.onDeploy(deployable);
@@ -114,7 +114,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void include(Composite composite, boolean simulated) throws ContainerException {
+    public synchronized void include(Composite composite, boolean simulated) throws Fabric3Exception {
         QName name = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onDeploy(name);
@@ -125,14 +125,14 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void include(List<URI> uris) throws ContainerException {
+    public synchronized void include(List<URI> uris) throws Fabric3Exception {
         include(uris, false);
     }
 
-    public synchronized void undeploy(URI uri, boolean force) throws ContainerException {
+    public synchronized void undeploy(URI uri, boolean force) throws Fabric3Exception {
         Contribution contribution = metadataStore.find(uri);
         if (contribution == null) {
-            throw new ContainerException("Contribution not found: " + uri);
+            throw new Fabric3Exception("Contribution not found: " + uri);
         }
         List<Deployable> deployables = contribution.getManifest().getDeployables();
         if (deployables.isEmpty()) {
@@ -146,7 +146,7 @@ public abstract class AbstractDomain implements Domain {
         }
         for (QName deployable : names) {
             if (!contribution.getLockOwners().contains(deployable)) {
-                throw new ContainerException("Composite is not deployed: " + deployable);
+                throw new Fabric3Exception("Composite is not deployed: " + deployable);
             }
         }
 
@@ -166,7 +166,7 @@ public abstract class AbstractDomain implements Domain {
         collector.collect(domain);
         try {
             deployer.deploy(deployment);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             if (!force) {
                 throw e;
             }
@@ -184,7 +184,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void undeploy(Composite composite, boolean simulated) throws ContainerException {
+    public synchronized void undeploy(Composite composite, boolean simulated) throws Fabric3Exception {
         QName deployable = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onUndeploy(deployable);
@@ -213,7 +213,7 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param domain the domain component
      */
-    protected void selectBinding(LogicalCompositeComponent domain) throws ContainerException {
+    protected void selectBinding(LogicalCompositeComponent domain) throws Fabric3Exception {
         // no-op
     }
 
@@ -222,9 +222,9 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param uris    the contributions to deploy
      * @param recover true if this is a recovery operation
-     * @throws ContainerException if an error is encountered during inclusion
+     * @throws Fabric3Exception if an error is encountered during inclusion
      */
-    private synchronized void include(List<URI> uris, boolean recover) throws ContainerException {
+    private synchronized void include(List<URI> uris, boolean recover) throws Fabric3Exception {
         Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
         // notify listeners
@@ -256,9 +256,9 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param deployable the deployable being included
      * @return the composite wrapper
-     * @throws ContainerException if there is an error creating the composite wrapper
+     * @throws Fabric3Exception if there is an error creating the composite wrapper
      */
-    private Composite createWrapper(QName deployable) throws ContainerException {
+    private Composite createWrapper(QName deployable) throws Fabric3Exception {
         Composite composite = contributionHelper.findComposite(deployable);
         // In order to include a composite at the domain level, it must first be wrapped in a composite that includes it.
         // This wrapper is thrown away during the inclusion.
@@ -278,14 +278,14 @@ public abstract class AbstractDomain implements Domain {
      * @param deployables   the deployables
      * @param contributions the contributions to deploy
      * @param recover       true if recovery mode is enabled
-     * @throws ContainerException if an error occurs during instantiation or deployment
+     * @throws Fabric3Exception if an error occurs during instantiation or deployment
      */
-    private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, boolean recover) throws ContainerException {
+    private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, boolean recover) throws Fabric3Exception {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         for (Contribution contribution : contributions) {
             if (ContributionState.INSTALLED != contribution.getState()) {
-                throw new ContainerException("Contribution is not installed: " + contribution.getUri());
+                throw new Fabric3Exception("Contribution is not installed: " + contribution.getUri());
             }
         }
 
@@ -309,7 +309,7 @@ public abstract class AbstractDomain implements Domain {
 
             logicalComponentManager.replaceRootComponent(domain);
 
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw e;
@@ -321,25 +321,25 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param composite the composite to instantiate and deploy
      * @param simulated true if the deployment is simulated
-     * @throws ContainerException if a deployment error occurs
+     * @throws Fabric3Exception if a deployment error occurs
      */
-    private void instantiateAndDeploy(Composite composite, boolean simulated) throws ContainerException {
+    private void instantiateAndDeploy(Composite composite, boolean simulated) throws Fabric3Exception {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         QName name = composite.getName();
         QNameSymbol symbol = new QNameSymbol(name);
         ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
         if (element == null) {
-            throw new ContainerException("Composite not found in metadata store: " + name);
+            throw new Fabric3Exception("Composite not found in metadata store: " + name);
         }
         Contribution contribution = element.getResource().getContribution();
         if (ContributionState.INSTALLED != contribution.getState()) {
-            throw new ContainerException("Contribution is not installed: " + contribution.getUri());
+            throw new Fabric3Exception("Contribution is not installed: " + contribution.getUri());
         }
 
         // check if the deployable has already been deployed by querying the lock owners
         if (contribution.getLockOwners().contains(name)) {
-            throw new ContainerException("Composite has already been deployed: " + name);
+            throw new Fabric3Exception("Composite has already been deployed: " + name);
         }
         // lock the contribution
         contribution.acquireLock(name);
@@ -353,7 +353,7 @@ public abstract class AbstractDomain implements Domain {
         if (!simulated) {
             try {
                 allocateAndDeploy(domain);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 // release the contribution lock if there was an error
                 if (contribution.getLockOwners().contains(name)) {
                     contribution.releaseLock(name);
@@ -374,9 +374,9 @@ public abstract class AbstractDomain implements Domain {
      * Allocates and deploys new components in the domain.
      *
      * @param domain the domain component
-     * @throws ContainerException if an error is encountered during deployment
+     * @throws Fabric3Exception if an error is encountered during deployment
      */
-    private void allocateAndDeploy(LogicalCompositeComponent domain) throws ContainerException {
+    private void allocateAndDeploy(LogicalCompositeComponent domain) throws Fabric3Exception {
         // Allocate the components to runtime nodes
         allocate(domain);
         // Select bindings
@@ -391,9 +391,9 @@ public abstract class AbstractDomain implements Domain {
      * Delegates to the Allocator to determine which runtimes to deploy the given collection of components to.
      *
      * @param domain the domain component
-     * @throws ContainerException if an allocation error occurs
+     * @throws Fabric3Exception if an allocation error occurs
      */
-    private void allocate(LogicalCompositeComponent domain) throws ContainerException {
+    private void allocate(LogicalCompositeComponent domain) throws Fabric3Exception {
         if (allocator == null) {
             // allocator is an optional extension
             return;

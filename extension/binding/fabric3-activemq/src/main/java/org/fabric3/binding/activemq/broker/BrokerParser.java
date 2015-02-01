@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Parses broker configuration from the runtime system configuration.
@@ -35,7 +35,7 @@ import org.fabric3.api.host.ContainerException;
 public class BrokerParser {
 
 
-    public BrokerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, ContainerException {
+    public BrokerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         reader.nextTag();
         BrokerConfiguration configuration = new BrokerConfiguration();
         while (true) {
@@ -59,7 +59,7 @@ public class BrokerParser {
         }
     }
 
-    private void parsePersistenceAdapter(XMLStreamReader reader, BrokerConfiguration configuration) throws ContainerException {
+    private void parsePersistenceAdapter(XMLStreamReader reader, BrokerConfiguration configuration) throws Fabric3Exception {
         String type = reader.getAttributeValue(null, "type");
         PersistenceAdapterConfig adaptorConfig = new PersistenceAdapterConfig();
         if (type == null) {
@@ -126,7 +126,7 @@ public class BrokerParser {
     }
 
     private void parseTransportConnectors(XMLStreamReader reader, BrokerConfiguration configuration)
-            throws XMLStreamException, ContainerException {
+            throws XMLStreamException, Fabric3Exception {
         List<TransportConnectorConfig> transportConfigs = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
@@ -170,7 +170,7 @@ public class BrokerParser {
     }
 
     private void parseNetworkConnectors(XMLStreamReader reader, BrokerConfiguration configuration)
-            throws XMLStreamException, ContainerException {
+            throws XMLStreamException, Fabric3Exception {
         List<URI> uris = new ArrayList<>();
         while (true) {
             switch (reader.next()) {
@@ -201,24 +201,24 @@ public class BrokerParser {
         }
     }
 
-    private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws ContainerException {
+    private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws Fabric3Exception {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new ContainerException(message);
+            throw new Fabric3Exception(message);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new ContainerException(message + " [" + line + "," + col + "]");
+        throw new Fabric3Exception(message + " [" + line + "," + col + "]");
     }
 
-    private void raiseInvalidConfiguration(String message, Throwable e, XMLStreamReader reader) throws ContainerException {
+    private void raiseInvalidConfiguration(String message, Throwable e, XMLStreamReader reader) throws Fabric3Exception {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new ContainerException(message, e);
+            throw new Fabric3Exception(message, e);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new ContainerException(message + " [" + line + "," + col + "]", e);
+        throw new Fabric3Exception(message + " [" + line + "," + col + "]", e);
     }
 
 }

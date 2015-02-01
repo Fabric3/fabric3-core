@@ -20,7 +20,7 @@ package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
@@ -52,25 +52,25 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         if (component == null) {
-            throw new ContainerException("Source component not found: " + sourceName);
+            throw new Fabric3Exception("Source component not found: " + sourceName);
         }
         Class<?> type;
         try {
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new ContainerException("Unable to load interface class: " + name, e);
+            throw new Fabric3Exception("Unable to load interface class: " + name, e);
         }
         ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
         component.attach(source.getProducerName(), type, factory);
     }
 
-    public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         component.detach(source.getProducerName());

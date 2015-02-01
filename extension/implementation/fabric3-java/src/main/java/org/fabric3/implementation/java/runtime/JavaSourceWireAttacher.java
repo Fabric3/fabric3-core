@@ -20,7 +20,7 @@ package org.fabric3.implementation.java.runtime;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
@@ -58,11 +58,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
+    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
         if (source == null) {
-            throw new ContainerException("Source callback not found: " + sourceName);
+            throw new Fabric3Exception("Source callback not found: " + sourceName);
         }
         Injectable injectable = sourceDefinition.getInjectable();
 
@@ -71,7 +71,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
             type = classLoaderRegistry.loadClass(sourceDefinition.getClassLoaderId(), sourceDefinition.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = sourceDefinition.getInterfaceName();
-            throw new ContainerException("Unable to load interface class: " + name, e);
+            throw new Fabric3Exception("Unable to load interface class: " + name, e);
         }
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             processCallback(wire, targetDefinition, source, injectable, type);
@@ -80,11 +80,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -92,7 +92,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     public void attachObjectFactory(JavaWireSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalWireTargetDefinition targetDefinition)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
         Injectable injectable = sourceDefinition.getInjectable();
@@ -112,7 +112,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
                                   PhysicalWireTargetDefinition targetDefinition,
                                   JavaComponent source,
                                   Injectable injectable,
-                                  Class<?> type) throws ContainerException {
+                                  Class<?> type) throws Fabric3Exception {
         String callbackUri = null;
         URI uri = targetDefinition.getCallbackUri();
         if (uri != null) {
@@ -131,7 +131,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     }
 
     private void processCallback(Wire wire, PhysicalWireTargetDefinition targetDefinition, JavaComponent source, Injectable injectable, Class<?> type)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();
         ObjectFactory<?> factory = source.getObjectFactory(injectable);

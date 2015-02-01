@@ -52,7 +52,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
@@ -325,7 +325,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -356,7 +356,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 }
             });
         } catch (Exception e) {
-            throw new ContainerException("Error starting Jetty service", e);
+            throw new Fabric3Exception("Error starting Jetty service", e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -483,7 +483,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             try {
                 ServletManager manager = new ServletManager(holder);
                 managementService.export(encode(path), HTTP_SERVLETS, "Registered transport servlets", manager);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 monitor.exception("Exception exporting servlet management object:" + holder.getContextPath(), e);
             }
         }
@@ -528,7 +528,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                     }
                 } catch (ServletException e) {
                     monitor.exception("Exception getting servlet:" + holder.getContextPath(), e);
-                } catch (ContainerException e) {
+                } catch (Fabric3Exception e) {
                     monitor.exception("Exception removing servlet management object:" + holder.getContextPath(), e);
                 }
             }
@@ -565,13 +565,13 @@ public class JettyServiceImpl implements JettyService, Transport {
         rootHandler.removeHandler(handler);
     }
 
-    private void initializeConnectors() throws IOException, ContainerException {
+    private void initializeConnectors() throws IOException, Fabric3Exception {
         selectHttpPort();
         selectHttpsPort();
         selectedHttp.bind(Port.TYPE.TCP);
         if (enableHttps) {
             if (keyStoreManager == null) {
-                throw new ContainerException("Key store manager not found - a security extension must be installed");
+                throw new Fabric3Exception("Key store manager not found - a security extension must be installed");
             }
             selectedHttps.bind(Port.TYPE.TCP);
             // setup HTTP and HTTPS
@@ -651,7 +651,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    private void selectHttpPort() throws IOException, ContainerException {
+    private void selectHttpPort() throws IOException, Fabric3Exception {
         if (configuredHttpPort == -1) {
             if (portAllocator.isPoolEnabled()) {
                 selectedHttp = portAllocator.allocate("HTTP", "HTTP");
@@ -664,7 +664,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    private void selectHttpsPort() throws IOException, ContainerException {
+    private void selectHttpsPort() throws IOException, Fabric3Exception {
         if (!enableHttps) {
             return;
         }

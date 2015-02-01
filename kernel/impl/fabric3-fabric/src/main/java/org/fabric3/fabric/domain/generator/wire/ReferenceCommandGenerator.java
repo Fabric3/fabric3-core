@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.fabric.container.command.AttachWireCommand;
@@ -66,7 +66,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         return ATTACH;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -86,7 +86,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) throws ContainerException {
+    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) throws Fabric3Exception {
         boolean reinjection = isBoundReinjection(reference);
 
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
@@ -115,7 +115,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
                                  LogicalBinding<?> logicalBinding,
                                  ConnectionCommand command,
                                  boolean reinjection,
-                                 boolean callback) throws ContainerException {
+                                 boolean callback) throws Fabric3Exception {
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
@@ -141,7 +141,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
 
     }
 
-    private void generateWires(LogicalReference reference, ConnectionCommand command) throws ContainerException {
+    private void generateWires(LogicalReference reference, ConnectionCommand command) throws Fabric3Exception {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
         boolean reinjection = isWireReinjection(reference);
@@ -204,11 +204,11 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private void generateCallbackBindings(LogicalReference reference) throws ContainerException {
+    private void generateCallbackBindings(LogicalReference reference) throws Fabric3Exception {
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {
-                throw new ContainerException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
+                throw new Fabric3Exception("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
             Binding definition = generator.generateReferenceCallback(logicalBinding);
             definition.setParent(reference.getDefinition());

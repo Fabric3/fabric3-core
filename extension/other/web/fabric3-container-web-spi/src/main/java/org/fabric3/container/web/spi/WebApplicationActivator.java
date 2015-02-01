@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.oasisopen.sca.ComponentContext;
 
@@ -54,17 +54,17 @@ public interface WebApplicationActivator {
      *                            ServletContext.
      * @param context             the component context for the web component
      * @return the servlet context associated with the activated web application
-     * @throws ContainerException if an error occurs activating the web application
+     * @throws Fabric3Exception if an error occurs activating the web application
      */
     ServletContext activate(String contextPath, URI uri, URI parentClassLoaderId, Map<String, List<Injector<?>>> injectors, ComponentContext context)
-            throws ContainerException;
+            throws Fabric3Exception;
 
     /**
      * Removes an activated web application
      *
      * @param uri the URI the web application was activated with
-     * @throws ContainerException if an error occurs activating the web application
+     * @throws Fabric3Exception if an error occurs activating the web application
      */
-    void deactivate(URI uri) throws ContainerException;
+    void deactivate(URI uri) throws Fabric3Exception;
 
 }

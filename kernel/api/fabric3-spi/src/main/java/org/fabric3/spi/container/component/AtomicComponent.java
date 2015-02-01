@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -38,15 +38,15 @@ public interface AtomicComponent extends Component {
      * Returns a component instance for the current context. After an instance is used, it must be returned by calling {@link #releaseInstance(Object)}.
      *
      * @return a component instance
-     * @throws ContainerException if there is an error returning an instance
+     * @throws Fabric3Exception if there is an error returning an instance
      */
-    Object getInstance() throws ContainerException;
+    Object getInstance() throws Fabric3Exception;
 
     /**
      * Signals that an implementation has been released from use.
      *
      * @param instance the instance
-     * @throws ContainerException if there is an error releasing the component
+     * @throws Fabric3Exception if there is an error releasing the component
      */
-    void releaseInstance(Object instance) throws ContainerException;
+    void releaseInstance(Object instance) throws Fabric3Exception;
 }

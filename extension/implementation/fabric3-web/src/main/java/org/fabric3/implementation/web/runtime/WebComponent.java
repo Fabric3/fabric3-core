@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.container.web.spi.WebApplicationActivator;
@@ -114,7 +114,7 @@ public class WebComponent implements Component {
         this.level = level;
     }
 
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         Map<String, List<Injector<?>>> injectors = new HashMap<>();
         injectorFactory.createInjectorMappings(injectors, siteMappings, objectFactories, classLoader);
         injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
@@ -130,7 +130,7 @@ public class WebComponent implements Component {
         activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
     }
 
-    public void stop() throws ContainerException {
+    public void stop() throws Fabric3Exception {
         activator.deactivate(archiveUri);
     }
 
@@ -142,35 +142,35 @@ public class WebComponent implements Component {
 
     }
 
-    public void attachWire(String name, Wire wire) throws ContainerException {
+    public void attachWire(String name, Wire wire) throws Fabric3Exception {
         Map<String, InjectionSite> sites = siteMappings.get(name);
         if (sites == null || sites.isEmpty()) {
-            throw new ContainerException("Injection site not found for: " + name);
+            throw new Fabric3Exception("Injection site not found for: " + name);
         }
         Class<?> type;
         try {
             type = classLoader.loadClass(sites.values().iterator().next().getType());
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Reference type not found for: " + name, e);
+            throw new Fabric3Exception("Reference type not found for: " + name, e);
         }
         ObjectFactory<?> factory = createWireFactory(type, wire);
         attach(name, factory);
     }
 
-    public void attach(String name, ObjectFactory<?> factory) throws ContainerException {
+    public void attach(String name, ObjectFactory<?> factory) throws Fabric3Exception {
         objectFactories.put(name, factory);
     }
 
-    public void connect(String name, ChannelConnection connection) throws ContainerException {
+    public void connect(String name, ChannelConnection connection) throws Fabric3Exception {
         Map<String, InjectionSite> sites = siteMappings.get(name);
         if (sites == null || sites.isEmpty()) {
-            throw new ContainerException("Injection site not found for: " + name);
+            throw new Fabric3Exception("Injection site not found for: " + name);
         }
         Class<?> type;
         try {
             type = classLoader.loadClass(sites.values().iterator().next().getType());
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Producer type not found for: " + name, e);
+            throw new Fabric3Exception("Producer type not found for: " + name, e);
         }
         ObjectFactory<?> factory = createChannelFactory(type, connection);
         attach(name, factory);
@@ -180,7 +180,7 @@ public class WebComponent implements Component {
         return groupId;
     }
 
-    public <B> B getProperty(Class<B> type, String propertyName) throws ContainerException {
+    public <B> B getProperty(Class<B> type, String propertyName) throws Fabric3Exception {
         ObjectFactory<?> factory = propertyFactories.get(propertyName);
         if (factory != null) {
             return type.cast(factory.getInstance());
@@ -194,11 +194,11 @@ public class WebComponent implements Component {
         return (R) proxyService.cast(target);
     }
 
-    private <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws ContainerException {
+    private <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws Fabric3Exception {
         return proxyService.createObjectFactory(interfaze, wire, null);
     }
 
-    private <B> ObjectFactory<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws ContainerException {
+    private <B> ObjectFactory<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws Fabric3Exception {
         return channelProxyService.createObjectFactory(interfaze, connection);
     }
 

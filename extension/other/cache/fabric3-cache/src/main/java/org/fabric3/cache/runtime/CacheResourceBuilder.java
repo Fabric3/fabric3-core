@@ -20,7 +20,7 @@ package org.fabric3.cache.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
@@ -42,7 +42,7 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void build(PhysicalCacheSetDefinition definition) throws ContainerException {
+    public void build(PhysicalCacheSetDefinition definition) throws Fabric3Exception {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.build(cacheDefinition);
@@ -50,18 +50,18 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void remove(PhysicalCacheSetDefinition definition) throws ContainerException {
+    public void remove(PhysicalCacheSetDefinition definition) throws Fabric3Exception {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.remove(cacheDefinition);
         }
     }
 
-    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws ContainerException {
+    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws Fabric3Exception {
         Class<? extends PhysicalResourceDefinition> type = cacheDefinition.getClass();
         CacheBuilder<?> builder = builders.get(type);
         if (builder == null) {
-            throw new ContainerException("Cache builder not found for type: " + type);
+            throw new Fabric3Exception("Cache builder not found for type: " + type);
         }
         return builder;
     }

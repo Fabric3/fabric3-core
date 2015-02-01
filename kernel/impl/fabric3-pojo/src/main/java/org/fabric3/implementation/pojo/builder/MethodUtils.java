@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -36,7 +36,7 @@ public final class MethodUtils {
                                     PhysicalOperationDefinition operation,
                                     Class<?> implementationClass,
                                     ClassLoader loader,
-                                    ClassLoaderRegistry classLoaderRegistry) throws ContainerException {
+                                    ClassLoaderRegistry classLoaderRegistry) throws Fabric3Exception {
         List<String> params = operation.getTargetParameterTypes();
         Class<?>[] paramTypes = new Class<?>[params.size()];
         assert loader != null;
@@ -47,7 +47,7 @@ public final class MethodUtils {
             } catch (ClassNotFoundException e) {
                 URI sourceUri = sourceDefinition.getUri();
                 URI targetUri = targetDefinition.getUri();
-                throw new ContainerException("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
+                throw new Fabric3Exception("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
             }
         }
         Method method = null;
@@ -64,7 +64,7 @@ public final class MethodUtils {
             if (method == null) {
                 URI sourceUri = sourceDefinition.getUri();
                 URI targetUri = targetDefinition.getUri();
-                throw new ContainerException("No matching method found when wiring " + sourceUri + " to " + targetUri);
+                throw new Fabric3Exception("No matching method found when wiring " + sourceUri + " to " + targetUri);
             }
         } else {
             // operation is remote, match on operation names and parameter types
@@ -73,7 +73,7 @@ public final class MethodUtils {
             } catch (NoSuchMethodException e) {
                 URI sourceUri = sourceDefinition.getUri();
                 URI targetUri = targetDefinition.getUri();
-                throw new ContainerException("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
+                throw new Fabric3Exception("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
             }
         }
         return method;

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
@@ -68,7 +69,7 @@ public class BasicAuthenticatorImpl implements BasicAuthenticator {
             context.setSubject(subject);
             // authorized
         } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
+            throw new Fabric3Exception(e);
         }
 
     }

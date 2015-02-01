@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
@@ -75,7 +75,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.monitor = monitor;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws Fabric3Exception {
 
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
@@ -87,7 +87,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
             byte[] bytes = target.getGeneratedInterface();
 
             if (!(classLoader instanceof SecureClassLoader)) {
-                throw new ContainerException("Classloader for " + interfaze + " must be a SecureClassLoader");
+                throw new Fabric3Exception("Classloader for " + interfaze + " must be a SecureClassLoader");
             }
             Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
 
@@ -127,20 +127,20 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 Thread.currentThread().setContextClassLoader(old);
             }
         } catch (URISyntaxException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
     }
 
-    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws Fabric3Exception {
         return null;
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 
-    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTargetDefinition target) throws ContainerException {
+    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTargetDefinition target) throws Fabric3Exception {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : target.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
@@ -59,11 +59,11 @@ public abstract class PojoComponent implements ScopedComponent {
         this.eager = eager;
     }
 
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         scopeContainer.register(this);
     }
 
-    public void stop() throws ContainerException {
+    public void stop() throws Fabric3Exception {
         implementationManager = null;
         cachedInstance = null;
         scopeContainer.unregister(this);
@@ -109,18 +109,18 @@ public abstract class PojoComponent implements ScopedComponent {
         return eager;
     }
 
-    public Object getInstance() throws ContainerException {
+    public Object getInstance() throws Fabric3Exception {
         if (cachedInstance != null) {
             return cachedInstance;
         }
         return scopeContainer.getInstance(this);
     }
 
-    public void releaseInstance(Object instance) throws ContainerException {
+    public void releaseInstance(Object instance) throws Fabric3Exception {
         scopeContainer.releaseInstance(this, instance);
     }
 
-    public Object createInstance() throws ContainerException {
+    public Object createInstance() throws Fabric3Exception {
         if (recreate.getAndSet(false)) {
             implementationManager = null;
         }
@@ -135,16 +135,16 @@ public abstract class PojoComponent implements ScopedComponent {
         return new ComponentObjectFactory(this);
     }
 
-    public void startInstance(Object instance) throws ContainerException {
+    public void startInstance(Object instance) throws Fabric3Exception {
         getImplementationManager().start(instance);
     }
 
-    public void stopInstance(Object instance) throws ContainerException {
+    public void stopInstance(Object instance) throws Fabric3Exception {
         cachedInstance = null;
         getImplementationManager().stop(instance);
     }
 
-    public void reinject(Object instance) throws ContainerException {
+    public void reinject(Object instance) throws Fabric3Exception {
         getImplementationManager().reinject(instance);
     }
 

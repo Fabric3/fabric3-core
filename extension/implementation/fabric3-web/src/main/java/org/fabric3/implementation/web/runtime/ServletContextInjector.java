@@ -20,7 +20,7 @@ package org.fabric3.implementation.web.runtime;
 
 import javax.servlet.ServletContext;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.spi.container.objectfactory.InjectionAttributes;
 import org.fabric3.spi.container.objectfactory.Injector;
@@ -33,7 +33,7 @@ public class ServletContextInjector implements Injector<ServletContext> {
     private ObjectFactory<?> objectFactory;
     private String key;
 
-    public void inject(ServletContext context) throws ContainerException {
+    public void inject(ServletContext context) throws Fabric3Exception {
         context.setAttribute(key, objectFactory.getInstance());
     }
 

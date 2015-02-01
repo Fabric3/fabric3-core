@@ -20,7 +20,7 @@ package org.fabric3.spi.contribution;
 
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Resolver for content type based on file extensions.
@@ -32,18 +32,18 @@ public interface ContentTypeResolver {
      *
      * @param contentUrl URL for the content.
      * @return Content type for the contribution source or null if the content type is unknown.
-     * @throws ContainerException if unable to resolve content type
+     * @throws Fabric3Exception if unable to resolve content type
      */
-    String getContentType(URL contentUrl) throws ContainerException;
+    String getContentType(URL contentUrl) throws Fabric3Exception;
 
     /**
      * Gets the content type for the contribution source.
      *
      * @param fileName the content file name
      * @return Content type for the contribution source or null if the content type is unknown
-     * @throws ContainerException if unable to resolve content type
+     * @throws Fabric3Exception if unable to resolve content type
      */
-    String getContentType(String fileName) throws ContainerException;
+    String getContentType(String fileName) throws Fabric3Exception;
 
     /**
      * Register a new file extension to content type mapping.

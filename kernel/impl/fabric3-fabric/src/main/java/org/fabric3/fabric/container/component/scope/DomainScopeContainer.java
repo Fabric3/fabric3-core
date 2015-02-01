@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Scope;
@@ -100,9 +100,9 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         super.stopContext(deployable);
     }
 
-    public Object getInstance(ScopedComponent component) throws ContainerException {
+    public Object getInstance(ScopedComponent component) throws Fabric3Exception {
         if (topologyService != null && !activated) {
-            throw new ContainerException("Component instance not active: " + component.getUri());
+            throw new Fabric3Exception("Component instance not active: " + component.getUri());
         }
         return super.getInstance(component);
     }

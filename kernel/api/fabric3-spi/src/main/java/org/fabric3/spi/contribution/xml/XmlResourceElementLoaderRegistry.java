@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -50,9 +50,9 @@ public interface XmlResourceElementLoaderRegistry {
      * @param reader   the StAX reader, positioned at the start of the element to laod
      * @param resource the resource
      * @param context  the context to which validation errors and warnings are reported
-     * @throws ContainerException   if a fatal error loading the resource occurs
-     * @throws ContainerException if an error parsing the XML stream occurs
+     * @throws Fabric3Exception   if a fatal error loading the resource occurs
+     * @throws Fabric3Exception if an error parsing the XML stream occurs
      */
-    void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws ContainerException, XMLStreamException;
+    void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws Fabric3Exception, XMLStreamException;
 
 }

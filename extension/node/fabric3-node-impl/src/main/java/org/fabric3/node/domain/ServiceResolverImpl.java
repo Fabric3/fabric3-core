@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
@@ -76,7 +76,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         this.info = info;
     }
 
-    public <T> T resolve(Class<T> interfaze) throws ContainerException {
+    public <T> T resolve(Class<T> interfaze) throws Fabric3Exception {
         LogicalWire wire = createWire(interfaze);
         boolean remote = !wire.getSource().getParent().getZone().equals(wire.getTarget().getParent().getZone());
 
@@ -99,7 +99,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         return interfaze.cast(source.getProxy());
     }
 
-    private <T> LogicalWire createWire(Class<T> interfaze) throws ContainerException {
+    private <T> LogicalWire createWire(Class<T> interfaze) throws Fabric3Exception {
         JavaServiceContract contract = introspector.introspect(interfaze);
 
         LogicalReference logicalReference = createReference(contract);

@@ -25,7 +25,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
@@ -95,7 +95,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
 
@@ -114,7 +114,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
 
@@ -149,7 +149,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
 
@@ -167,7 +167,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         try {
             service.resolve(contributions);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
 

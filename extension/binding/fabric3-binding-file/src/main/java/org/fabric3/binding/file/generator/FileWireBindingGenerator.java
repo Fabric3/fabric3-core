@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -62,7 +62,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
     }
 
     public FileBindingWireSourceDefinition generateSource(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
-            throws ContainerException {
+            throws Fabric3Exception {
         validateServiceContract(contract);
         boolean dataHandler = isDataHandler(contract);
         FileBinding definition = binding.getDefinition();
@@ -76,7 +76,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         URI uri = binding.getParent().getUri();
         String errorLocation = definition.getErrorLocation();
         if (errorLocation == null) {
-            throw new ContainerException("Error location must be specified on the file binding configuration for " + uri);
+            throw new Fabric3Exception("Error location must be specified on the file binding configuration for " + uri);
         }
         String adapterClass = definition.getAdapterClass();
         URI adaptorUri = getAdaptorUri(definition);
@@ -98,7 +98,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
     }
 
     public FileBindingWireTargetDefinition generateTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
-            throws ContainerException {
+            throws Fabric3Exception {
         validateReferenceContract(contract);
         FileBinding definition = binding.getDefinition();
         String location = definition.getLocation();
@@ -109,7 +109,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBinding> binding,
                                                                      ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws ContainerException {
+                                                                     List<LogicalOperation> operations) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -120,29 +120,29 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
      * </pre>
      *
      * @param contract the service contract to validate
-     * @throws ContainerException if the contract is invalid
+     * @throws Fabric3Exception if the contract is invalid
      */
-    private void validateReferenceContract(ServiceContract contract) throws ContainerException {
+    private void validateReferenceContract(ServiceContract contract) throws Fabric3Exception {
         if (contract.getOperations().size() != 1) {
-            throw new ContainerException("File transfer binding contracts must contain one operation of the form openStream(String id)");
+            throw new Fabric3Exception("File transfer binding contracts must contain one operation of the form openStream(String id)");
         }
         Operation operation = contract.getOperations().get(0);
         DataType dataType = operation.getInputTypes().get(0);
         if (!(dataType instanceof JavaType)) {
-            throw new ContainerException("Unsupported parameter type on binding contract: " + dataType);
+            throw new Fabric3Exception("Unsupported parameter type on binding contract: " + dataType);
         }
         JavaType javaType = (JavaType) dataType;
         if (!(String.class.isAssignableFrom(javaType.getType()))) {
-            throw new ContainerException("Parameter type on binding contract must be a string: " + dataType);
+            throw new Fabric3Exception("Parameter type on binding contract must be a string: " + dataType);
         }
 
         DataType outputType = operation.getOutputType();
         if (!(outputType instanceof JavaType)) {
-            throw new ContainerException("Unsupported output type on binding contract: " + outputType);
+            throw new Fabric3Exception("Unsupported output type on binding contract: " + outputType);
         }
         JavaType javaOutputType = (JavaType) outputType;
         if (!(OutputStream.class.isAssignableFrom(javaOutputType.getType()))) {
-            throw new ContainerException("Output type on binding contract must be a java.io.OutputStream: " + dataType);
+            throw new Fabric3Exception("Output type on binding contract must be a java.io.OutputStream: " + dataType);
         }
     }
 
@@ -150,11 +150,11 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
      * Validates a contract for a bound service. The service contract must contain exactly one operation.
      *
      * @param contract the service contract to validate
-     * @throws ContainerException if the contract is invalid
+     * @throws Fabric3Exception if the contract is invalid
      */
-    private void validateServiceContract(ServiceContract contract) throws ContainerException {
+    private void validateServiceContract(ServiceContract contract) throws Fabric3Exception {
         if (contract.getOperations().size() > 1 || contract.getOperations().isEmpty()) {
-            throw new ContainerException("File transfer binding contracts must contain one operation");
+            throw new Fabric3Exception("File transfer binding contracts must contain one operation");
         }
     }
 
@@ -175,7 +175,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         return false;
     }
 
-    private URI getAdaptorUri(FileBinding definition) throws ContainerException {
+    private URI getAdaptorUri(FileBinding definition) throws Fabric3Exception {
         String uri = definition.getAdapterUri();
         if (uri == null) {
             return null;
@@ -183,7 +183,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         try {
             return new URI(info.getDomain().toString() + "/" + uri);
         } catch (URISyntaxException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

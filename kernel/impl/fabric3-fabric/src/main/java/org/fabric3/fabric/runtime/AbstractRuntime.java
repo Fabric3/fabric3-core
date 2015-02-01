@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.monitor.DestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -111,7 +111,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         this.level = level;
     }
 
-    public void boot() throws ContainerException {
+    public void boot() throws Fabric3Exception {
         logicalComponentManager = new LogicalComponentManagerImpl();
         componentManager = new ComponentManagerImpl();
         channelManager = new ChannelManagerImpl();
@@ -134,7 +134,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         }
     }
 
-    public void destroy() throws ContainerException {
+    public void destroy() throws Fabric3Exception {
         // destroy system components
         WorkContextCache.getAndResetThreadWorkContext();
         scopeContainer.stopAllContexts();
@@ -142,7 +142,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             repository.shutdown();
             classLoaderRegistry.close();
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -155,13 +155,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             return null;
         }
 
-        try {
-            Object instance = component.getInstance();
-            return service.cast(instance);
-        } catch (ContainerException e) {
-            // this is an error with the runtime and not something that is recoverable
-            throw new AssertionError(e);
-        }
+        Object instance = component.getInstance();
+        return service.cast(instance);
     }
 
     public <I> I getComponent(Class<I> service) {
@@ -212,9 +207,9 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
      * Creates a default repository which may be overridden by subclasses.
      *
      * @return an initialized repository
-     * @throws ContainerException if an error is encountered initializing a repository
+     * @throws Fabric3Exception if an error is encountered initializing a repository
      */
-    protected Repository createRepository() throws ContainerException {
+    protected Repository createRepository() throws Fabric3Exception {
         RepositoryImpl repository = new RepositoryImpl(hostInfo);
         repository.init();
         return repository;

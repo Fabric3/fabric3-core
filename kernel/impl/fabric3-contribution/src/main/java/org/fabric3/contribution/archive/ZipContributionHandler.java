@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -79,7 +79,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".jar") || sourceUrl.endsWith(".zip");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         URL sourceUrl = contribution.getLocation();
         try {
             URL manifestUrl = new URL("jar:" + sourceUrl.toExternalForm() + "!/META-INF/sca-contribution.xml");
@@ -102,7 +102,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
@@ -118,7 +118,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         } catch (MalformedURLException | FileNotFoundException e) {
             // ignore no manifest found
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (manifestStream != null) {
@@ -131,7 +131,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -195,7 +195,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                 }
             }
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (zipStream != null) {

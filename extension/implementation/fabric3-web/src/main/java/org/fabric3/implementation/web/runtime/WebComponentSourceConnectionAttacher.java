@@ -18,7 +18,7 @@ package org.fabric3.implementation.web.runtime;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
@@ -38,7 +38,7 @@ public class WebComponentSourceConnectionAttacher implements SourceConnectionAtt
     }
 
     public void attach(WebComponentConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String producerName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
@@ -46,7 +46,7 @@ public class WebComponentSourceConnectionAttacher implements SourceConnectionAtt
 
     }
 
-    public void detach(WebComponentConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(WebComponentConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
 
     }
 

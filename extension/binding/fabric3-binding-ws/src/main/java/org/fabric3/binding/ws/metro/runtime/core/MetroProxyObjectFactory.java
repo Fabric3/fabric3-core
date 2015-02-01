@@ -41,7 +41,7 @@ import com.sun.xml.ws.api.model.wsdl.WSDLService;
 import com.sun.xml.ws.resources.ClientMessages;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import com.sun.xml.ws.wsdl.parser.RuntimeWSDLParser;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -102,7 +102,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
         this.xmlInputFactory = xmlInputFactory;
     }
 
-    public Object getInstance() throws ContainerException {
+    public Object getInstance() throws Fabric3Exception {
         if (proxy == null) {
             // there is a possibility more than one proxy will be created but since this does not have side-effects, avoid synchronization
             proxy = createProxy();
@@ -115,9 +115,9 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
      *
      * @return the web service proxy
-     * @throws ContainerException if there was an error creating the proxy
+     * @throws Fabric3Exception if there was an error creating the proxy
      */
-    private Object createProxy() throws ContainerException {
+    private Object createProxy() throws Fabric3Exception {
 
         if (wsdlLocation == null) {
             wsdlLocation = calculateDefaultWsdlLocation();
@@ -178,7 +178,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             configureHandlers(port);
             return port;
         } catch (InaccessibleWSDLException | MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -201,11 +201,11 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @param e      the WebServiceException  triggering this operation
      * @param params any initialization parameters to use when attempting to create a proxy using an introspected service name
      * @return the Service instance for creating a proxy
-     * @throws ContainerException if a service name could not be introspected
+     * @throws Fabric3Exception if a service name could not be introspected
      * @throws WebServiceException     if the original WebServiceException  was not the result of an invalid operation or if there was an error creating the
      *                                 Service instance
      */
-    private Service getWsdlServiceName(WebServiceException e, WSService.InitParams params) throws ContainerException, WebServiceException {
+    private Service getWsdlServiceName(WebServiceException e, WSService.InitParams params) throws Fabric3Exception, WebServiceException {
         Service service;
         // Only calculate a default name if the original can be overriden and the WebServiceException results from an invalid service name; otherwise
         // re-throw the exception
@@ -229,17 +229,17 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
                 }
             }
             if (found.size() > 1) {
-                throw new ContainerException("Cannot determine the default service name as multiple ports using portType " + portTypeName +
+                throw new Fabric3Exception("Cannot determine the default service name as multiple ports using portType " + portTypeName +
                                                   " were found in the WSDL document: " + wsdlLocation);
             } else if (found.isEmpty()) {
-                throw new ContainerException("No default service for portType" + portTypeName + " found in WSDL: " + wsdlLocation);
+                throw new Fabric3Exception("No default service for portType" + portTypeName + " found in WSDL: " + wsdlLocation);
             } else {
                 // retry creating the service
                 QName defaultServiceName = found.iterator().next();
                 service = WSService.create(wsdlLocation, defaultServiceName, params);
             }
         } catch (IOException | XMLStreamException | SAXException e1) {
-            throw new ContainerException(e1);
+            throw new Fabric3Exception(e1);
         } finally {
             try {
                 if (stream != null) {
@@ -256,9 +256,9 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * Determines the default WSDL location if one is not provided.
      *
      * @return the WSDL URL
-     * @throws ContainerException if there is an error determining the WSDL location
+     * @throws Fabric3Exception if there is an error determining the WSDL location
      */
-    private URL calculateDefaultWsdlLocation() throws ContainerException {
+    private URL calculateDefaultWsdlLocation() throws Fabric3Exception {
         try {
             // default to the target URL with ?wsdl appended since most WS stacks support this
             URL wsdlUrl = new URL(endpointUrl.toString() + "?wsdl");
@@ -276,9 +276,9 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
                 }
             }
         } catch (MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
-        throw new ContainerException(
+        throw new Fabric3Exception(
                 "The web service endpoint " + endpointUrl + " does not expose a valid WSDL at a known metadata location, e.g. <service url>?wsdl. " +
                 "Check to make sure the endpoint address is correct. If it is, please specify a valid location using the @WebService " +
                 "annotation on the reference interface.");
@@ -314,13 +314,13 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      *
      * @param e the exception
      * @return true if the WebServiceException was thrown as a result of an invalid service name
-     * @throws ContainerException if the exception message cannot be parsed
+     * @throws Fabric3Exception if the exception message cannot be parsed
      */
-    private boolean isInvalidServiceName(WebServiceException e) throws ContainerException {
+    private boolean isInvalidServiceName(WebServiceException e) throws Fabric3Exception {
         String message = ClientMessages.INVALID_SERVICE_NAME(serviceName, null);
         int index = message.indexOf("null");
         if (index < 1) {
-            throw new ContainerException("Unable to parse error message after proxy creation error was thrown: " + message, e);
+            throw new Fabric3Exception("Unable to parse error message after proxy creation error was thrown: " + message, e);
         }
         message = message.substring(0, index);
         return e.getMessage().contains(message);

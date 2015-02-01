@@ -19,7 +19,7 @@ package org.fabric3.fabric.domain.generator.channel;
 import javax.xml.namespace.QName;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
@@ -52,13 +52,13 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
 
     @SuppressWarnings("unchecked")
     public PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction)
-            throws ContainerException {
+            throws Fabric3Exception {
 
         LogicalBinding<?> binding = channel.getBinding();
         String type = channel.getDefinition().getType();
         ChannelGeneratorExtension generator = extensions.get(type);
         if (generator == null) {
-            throw new ContainerException("Channel generator not found: " + type);
+            throw new Fabric3Exception("Channel generator not found: " + type);
         }
         PhysicalChannelDefinition definition = generator.generate(channel, deployable);
         if (!channel.getBindings().isEmpty()) {
@@ -75,7 +75,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws ContainerException {
+    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws Fabric3Exception {
         return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 

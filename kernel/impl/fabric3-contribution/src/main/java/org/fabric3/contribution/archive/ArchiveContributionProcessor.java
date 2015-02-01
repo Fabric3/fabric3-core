@@ -21,7 +21,7 @@ package org.fabric3.contribution.archive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
@@ -49,12 +49,12 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         return false;
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         ArchiveContributionHandler handler = getHandler(contribution);
         handler.processManifest(contribution, context);
     }
 
-    public void index(Contribution contribution, final IntrospectionContext context) throws ContainerException {
+    public void index(Contribution contribution, final IntrospectionContext context) throws Fabric3Exception {
         ArchiveContributionHandler handler = getHandler(contribution);
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
@@ -69,7 +69,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
 
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = context.getClassLoader();
         try {
@@ -85,14 +85,14 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         }
     }
 
-    private ArchiveContributionHandler getHandler(Contribution contribution) throws ContainerException {
+    private ArchiveContributionHandler getHandler(Contribution contribution) throws Fabric3Exception {
         for (ArchiveContributionHandler handler : handlers) {
             if (handler.canProcess(contribution)) {
                 return handler;
             }
         }
         String source = contribution.getUri().toString();
-        throw new ContainerException("Contribution type not supported: " + source);
+        throw new Fabric3Exception("Contribution type not supported: " + source);
     }
 
 }

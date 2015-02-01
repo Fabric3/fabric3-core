@@ -22,7 +22,7 @@ package org.fabric3.api.host;
 /**
  * The root exception for the Fabric3 runtime.
  */
-public abstract class Fabric3Exception extends RuntimeException {
+public class Fabric3Exception extends RuntimeException {
     private static final long serialVersionUID = -7847121698339635268L;
 
     protected Fabric3Exception() {

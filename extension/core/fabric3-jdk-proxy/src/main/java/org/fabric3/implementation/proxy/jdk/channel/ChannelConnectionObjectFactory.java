@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
@@ -46,7 +46,7 @@ public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
         this.stream = stream;
     }
 
-    public T getInstance() throws ContainerException {
+    public T getInstance() throws Fabric3Exception {
         // as an optimization, only create one proxy since they are stateless
         if (proxy == null) {
             proxy = interfaze.cast(proxyService.createProxy(interfaze, stream));

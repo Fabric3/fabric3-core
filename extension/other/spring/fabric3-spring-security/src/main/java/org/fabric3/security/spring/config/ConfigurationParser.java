@@ -19,7 +19,7 @@ package org.fabric3.security.spring.config;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Parses a Spring security configuration.
@@ -32,7 +32,7 @@ public interface ConfigurationParser {
      * @param reader the XML stream reader
      * @return the parsed configuration
      * @throws XMLStreamException             if an error occurs parsing the XML
-     * @throws ContainerException if an invalid security configuration is specified
+     * @throws Fabric3Exception if an invalid security configuration is specified
      */
-    AuthenticationManagerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, ContainerException;
+    AuthenticationManagerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception;
 }

@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionService;
@@ -178,7 +178,7 @@ public class ContributionServiceImpl implements ContributionService {
     public void remove(URI uri) {
         Contribution contribution = find(uri);
         if (contribution.getState() != ContributionState.STORED) {
-            throw new ContainerException("Contribution must first be uninstalled: " + uri);
+            throw new Fabric3Exception("Contribution must first be uninstalled: " + uri);
         }
         metaDataStore.remove(uri);
         if (contribution.isPersistent()) {
@@ -219,7 +219,7 @@ public class ContributionServiceImpl implements ContributionService {
             for (ContributionServiceListener listener : listeners) {
                 listener.onInstall(contribution);
             }
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             try {
                 revertInstall(Collections.singletonList(contribution));
             } catch (RuntimeException ex) {
@@ -237,7 +237,7 @@ public class ContributionServiceImpl implements ContributionService {
         ContributionOrder order = new ContributionOrder();
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED != contribution.getState()) {
-                throw new ContainerException("Contribution is already installed: " + contribution.getUri());
+                throw new Fabric3Exception("Contribution is already installed: " + contribution.getUri());
             }
         }
         for (Contribution contribution : contributions) {
@@ -274,7 +274,7 @@ public class ContributionServiceImpl implements ContributionService {
     private Contribution find(URI uri) {
         Contribution contribution = metaDataStore.find(uri);
         if (contribution == null) {
-            throw new ContainerException("Contribution not found: " + uri);
+            throw new Fabric3Exception("Contribution not found: " + uri);
         }
         return contribution;
     }
@@ -289,7 +289,7 @@ public class ContributionServiceImpl implements ContributionService {
     private List<URI> installInOrder(List<Contribution> contributions) {
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED != contribution.getState()) {
-                throw new ContainerException("Contribution is already installed: " + contribution.getUri());
+                throw new Fabric3Exception("Contribution is already installed: " + contribution.getUri());
             }
         }
         for (Contribution contribution : contributions) {
@@ -308,7 +308,7 @@ public class ContributionServiceImpl implements ContributionService {
                     listener.onInstall(contribution);
                 }
             }
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             try {
                 revertInstall(contributions);
             } catch (RuntimeException ex) {
@@ -340,7 +340,7 @@ public class ContributionServiceImpl implements ContributionService {
                 }
                 contributionLoader.unload(contribution);
                 remove(contribution.getUri());
-            } catch (ContainerException ex) {
+            } catch (Fabric3Exception ex) {
                 monitor.error("Error reverting installation: " + contribution.getUri(), ex);
             }
         }
@@ -349,11 +349,11 @@ public class ContributionServiceImpl implements ContributionService {
     private void uninstall(Contribution contribution) {
         URI uri = contribution.getUri();
         if (contribution.getState() != ContributionState.INSTALLED) {
-            throw new ContainerException("Contribution not installed: " + uri);
+            throw new Fabric3Exception("Contribution not installed: " + uri);
         }
         if (contribution.isLocked()) {
             List<QName> deployables = contribution.getLockOwners();
-            throw new ContainerException("Contribution is currently in use by a deployment: " + uri);
+            throw new Fabric3Exception("Contribution is currently in use by a deployment: " + uri);
         }
         // unload from memory
         contributionLoader.unload(contribution);
@@ -485,7 +485,7 @@ public class ContributionServiceImpl implements ContributionService {
     private Contribution persist(ContributionSource contributionSource) {
         URI contributionUri = contributionSource.getUri();
         if (metaDataStore.find(contributionUri) != null) {
-            throw new ContainerException("Contribution already exists: " + contributionUri);
+            throw new Fabric3Exception("Contribution already exists: " + contributionUri);
         }
         URL locationUrl;
         boolean persistent = contributionSource.persist();
@@ -502,7 +502,7 @@ public class ContributionServiceImpl implements ContributionService {
                 locationUrl = getRepository().store(contributionUri, stream, extension);
                 source = new UrlSource(locationUrl);
             } catch (IOException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             } finally {
                 try {
                     if (stream != null) {
@@ -515,7 +515,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
         String type = contributionSource.getContentType();
         if (type == null && locationUrl == null) {
-            throw new ContainerException("Content type could not be determined for contribution: " + contributionUri);
+            throw new Fabric3Exception("Content type could not be determined for contribution: " + contributionUri);
         }
         if (type == null) {
             type = contentTypeResolver.getContentType(locationUrl);

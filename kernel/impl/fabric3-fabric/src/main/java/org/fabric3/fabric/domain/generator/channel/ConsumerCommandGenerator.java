@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
@@ -60,7 +60,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public ChannelConnectionCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public ChannelConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -76,7 +76,7 @@ public class ConsumerCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command) throws ContainerException {
+    private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command) throws Fabric3Exception {
         LogicalComponent<?> component = consumer.getParent();
         QName deployable = consumer.getParent().getDeployable();
         if (LogicalState.MARKED == component.getState()) {

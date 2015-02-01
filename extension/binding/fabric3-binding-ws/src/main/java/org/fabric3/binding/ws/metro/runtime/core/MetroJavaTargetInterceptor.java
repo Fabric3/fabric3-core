@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -130,7 +130,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     private Object createProxy() {
         try {
             return proxyFactory.getInstance();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }

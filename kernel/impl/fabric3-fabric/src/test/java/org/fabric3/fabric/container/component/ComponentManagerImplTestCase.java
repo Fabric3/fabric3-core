@@ -25,7 +25,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
 
 /**
@@ -77,7 +77,7 @@ public class ComponentManagerImplTestCase extends TestCase {
         try {
             manager.register(duplicate);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         assertEquals(root, manager.getComponent(ROOT1));

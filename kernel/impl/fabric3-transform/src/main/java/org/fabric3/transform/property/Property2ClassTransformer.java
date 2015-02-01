@@ -18,7 +18,7 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.TypeConstants;
@@ -47,11 +47,11 @@ public class Property2ClassTransformer implements SingleTypeTransformer<Node, Cl
         return TARGET;
     }
 
-    public Class<?> transform(Node node, ClassLoader loader) throws ContainerException {
+    public Class<?> transform(Node node, ClassLoader loader) throws Fabric3Exception {
         try {
             return classLoaderRegistry.loadClass(loader, node.getTextContent());
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 }

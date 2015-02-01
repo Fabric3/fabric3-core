@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.domain.generator.resource;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
@@ -33,8 +33,8 @@ public interface ResourceGenerator<RD extends Resource> {
      *
      * @param resource the logical resource
      * @return the physical resource definition.
-     * @throws ContainerException if there was a problem generating the wire
+     * @throws Fabric3Exception if there was a problem generating the wire
      */
-    PhysicalResourceDefinition generateResource(LogicalResource<RD> resource) throws ContainerException;
+    PhysicalResourceDefinition generateResource(LogicalResource<RD> resource) throws Fabric3Exception;
 
 }

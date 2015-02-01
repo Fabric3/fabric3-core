@@ -26,7 +26,7 @@ import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.channel.JmsEventStreamHandler;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
@@ -47,7 +47,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         this.resolver = resolver;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target, ChannelConnection connection) throws ContainerException {
+    public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target, ChannelConnection connection) throws Fabric3Exception {
 
         // resolve the connection factories and destinations
         JmsBindingMetadata metadata = target.getMetadata();
@@ -64,7 +64,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target) throws ContainerException {
+    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target) throws Fabric3Exception {
         resolver.release(target.getMetadata().getConnectionFactory());
     }
 

@@ -22,7 +22,7 @@ package org.fabric3.spi.container.component;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.Monitorable;
 
 /**
@@ -61,16 +61,16 @@ public interface Component extends Monitorable {
     /**
      * Starts the component;
      *
-     * @throws ContainerException if an error occurs starting the component
+     * @throws Fabric3Exception if an error occurs starting the component
      */
-    void start() throws ContainerException;
+    void start() throws Fabric3Exception;
 
     /**
      * Stops the component.
      *
-     * @throws ContainerException if an error occurs stopping the component
+     * @throws Fabric3Exception if an error occurs stopping the component
      */
-    void stop() throws ContainerException;
+    void stop() throws Fabric3Exception;
 
     /**
      * Used to signal the start of a component configuration update.

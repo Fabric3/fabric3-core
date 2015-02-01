@@ -16,7 +16,7 @@
  */
 package org.fabric3.transform.string2java;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.TypeConstants;
@@ -43,11 +43,11 @@ public class String2ClassTransformer implements SingleTypeTransformer<String, Cl
         return TARGET;
     }
 
-    public Class<?> transform(String source, ClassLoader loader) throws ContainerException {
+    public Class<?> transform(String source, ClassLoader loader) throws Fabric3Exception {
         try {
             return classLoaderRegistry.loadClass(loader, source);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

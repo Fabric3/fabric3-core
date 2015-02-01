@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.java.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
@@ -55,7 +55,7 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         this.ifHelper = ifHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JavaImplementation> component) throws ContainerException {
+    public PhysicalComponentDefinition generate(LogicalComponent<JavaImplementation> component) throws Fabric3Exception {
         Object instance = component.getDefinition().getImplementation().getInstance();
         if (instance != null) {
             // deploying an un managed instance
@@ -68,14 +68,14 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         generationHelper.generateWireSource(definition, reference);
         return definition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
@@ -83,25 +83,25 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
         JavaWireTargetDefinition definition = new JavaWireTargetDefinition();
         generationHelper.generateWireTarget(definition, service);
         return definition;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
         JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
         generationHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
         generationHelper.generateConnectionTarget(definition, consumer);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         generationHelper.generateResourceWireSource(definition, resourceReference);
         return definition;

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -95,7 +95,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         return cache.get(unitName);
     }
 
-    public void put(URI uri, String unitName, EntityManagerFactory factory) throws ContainerException {
+    public void put(URI uri, String unitName, EntityManagerFactory factory) throws Fabric3Exception {
         if (factory == null) {
             throw new IllegalArgumentException("EntityManagerFactory was null");
         }
@@ -109,7 +109,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         export(unitName, factory);
     }
 
-    private void export(String unitName, EntityManagerFactory factory) throws ContainerException {
+    private void export(String unitName, EntityManagerFactory factory) throws Fabric3Exception {
         if (managementService == null) {
             // management not enabled
             return;
@@ -129,7 +129,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         }
         try {
             managementService.remove(encodeName(unitName), "Hibernate");
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error(unitName, e);
         }
     }

@@ -20,7 +20,7 @@ package org.fabric3.fabric.synthesizer;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -88,7 +88,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         this.scopeContainer = scopeContainer;
     }
 
-    public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ContainerException {
+    public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws Fabric3Exception {
         LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
         ScopedComponent physical = createPhysicalComponent(logical, instance);
         componentManager.register(physical);

@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.ContextAnnotationPostProcessor;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
@@ -82,7 +82,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public SpringComponent build(SpringComponentDefinition definition) throws ContainerException {
+    public SpringComponent build(SpringComponentDefinition definition) throws Fabric3Exception {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
         if (classLoader instanceof MultiParentClassLoader) {
             // add the extension classloader as a parent of the app classloader since Spring classes must be visible to the application
@@ -117,20 +117,20 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias, POST_PROCESSORS);
     }
 
-    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws ContainerException {
+    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws Fabric3Exception {
         for (ApplicationContextListener listener : listeners) {
             SCAApplicationContext context = component.getParent();
             listener.onDispose(context);
         }
     }
 
-    private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws ContainerException {
+    private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws Fabric3Exception {
         List<String> contextLocations = definition.getContextLocations();
         for (String location : contextLocations) {
 
             URL resource = classLoader.getResource(definition.getBaseLocation());
             if (resource == null) {
-                throw new ContainerException("Resource path not found:" + definition.getBaseLocation());
+                throw new Fabric3Exception("Resource path not found:" + definition.getBaseLocation());
             }
             String path = resource.getPath();
             File filePath = new File(path);
@@ -138,7 +138,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
                 URL url = new File(filePath, location).toURI().toURL();
                 sources.add(url);
             } catch (MalformedURLException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         }
     }
@@ -169,23 +169,23 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         }
     }
 
-    private void resolveJarSources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws ContainerException {
+    private void resolveJarSources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws Fabric3Exception {
         try {
             for (String location : definition.getContextLocations()) {
                 URL resource = classLoader.getResource(definition.getBaseLocation());
                 if (resource == null) {
-                    throw new ContainerException("Resource was null: " + definition.getBaseLocation());
+                    throw new Fabric3Exception("Resource was null: " + definition.getBaseLocation());
                 }
                 URL url = new URL("jar:" + resource.toExternalForm() + location);
                 sources.add(url);
 
             }
         } catch (MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    protected Map<String, Pair> createProperties(SpringComponentDefinition definition) throws ContainerException {
+    protected Map<String, Pair> createProperties(SpringComponentDefinition definition) throws Fabric3Exception {
         List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
         Map<String, Pair> values = new HashMap<>();
 

@@ -43,7 +43,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -85,7 +85,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         for (Holder holder : mappings.values()) {
             try {
                 remove(holder.getContext());
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 monitor.error("Error removing managed bean for context: " + holder.getContext().getDisplayName(), e);
             }
         }
@@ -100,9 +100,9 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                                    final URI uri,
                                    URI parentClassLoaderId,
                                    final Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws ContainerException {
+                                   ComponentContext componentContext) throws Fabric3Exception {
         if (mappings.containsKey(uri)) {
-            throw new ContainerException("Mapping already exists: " + uri.toString());
+            throw new Fabric3Exception("Mapping already exists: " + uri.toString());
         }
         try {
             // resolve the url to a local artifact
@@ -123,7 +123,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                     ServletContext servletContext = context.getServletContext();
                     try {
                         injectServletContext(servletContext, injectors);
-                    } catch (ContainerException e) {
+                    } catch (Fabric3Exception e) {
                         monitor.error("Error initializing web component: " + uri, e);
                     }
                 }
@@ -145,14 +145,14 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             monitor.activated(holder.getContextPath());
             return servletContext;
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void deactivate(URI uri) throws ContainerException {
+    public void deactivate(URI uri) throws Fabric3Exception {
         Holder holder = mappings.remove(uri);
         if (holder == null) {
-            throw new ContainerException("Mapping does not exist: " + uri.toString());
+            throw new Fabric3Exception("Mapping does not exist: " + uri.toString());
         }
         WebAppContext context = holder.getContext();
         jettyService.getServer().removeBean(context);
@@ -162,7 +162,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             // unregister them from the MBean server
             context.stop();
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         context.setClassLoader(null);
         jettyService.removeHandler(context);
@@ -211,7 +211,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ContainerException {
+    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws Fabric3Exception {
         List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
         if (list == null) {
             // nothing to inject
@@ -222,7 +222,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    private void export(WebAppContext context) throws ContainerException {
+    private void export(WebAppContext context) throws Fabric3Exception {
         String displayName = context.getDisplayName();
         if (displayName == null) {
             displayName = UUID.randomUUID().toString();
@@ -236,7 +236,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    private void remove(WebAppContext context) throws ContainerException {
+    private void remove(WebAppContext context) throws Fabric3Exception {
         String displayName = context.getDisplayName();
         if (displayName == null) {
             displayName = context.toString();

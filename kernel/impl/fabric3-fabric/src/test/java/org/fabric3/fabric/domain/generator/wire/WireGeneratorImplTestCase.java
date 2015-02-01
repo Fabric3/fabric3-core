@@ -26,7 +26,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -230,7 +230,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private PhysicalOperationGenerator setupOperationGenerator() throws ContainerException {
+    private PhysicalOperationGenerator setupOperationGenerator() throws Fabric3Exception {
         PhysicalOperationGenerator operationGenerator = EasyMock.createMock(PhysicalOperationGenerator.class);
         Set<PhysicalOperationDefinition> set = Collections.<PhysicalOperationDefinition>singleton(new MockOperationDefinition());
         EasyMock.expect(operationGenerator.generateOperations(EasyMock.isA(List.class))).andReturn(set);
@@ -238,7 +238,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private PhysicalOperationGenerator setupLocalOperationGenerator() throws ContainerException {
+    private PhysicalOperationGenerator setupLocalOperationGenerator() throws Fabric3Exception {
         PhysicalOperationGenerator operationGenerator = EasyMock.createMock(PhysicalOperationGenerator.class);
         Set<PhysicalOperationDefinition> set = Collections.<PhysicalOperationDefinition>singleton(new MockOperationDefinition());
         EasyMock.expect(operationGenerator.generateOperations(EasyMock.isA(List.class), EasyMock.isA(List.class), EasyMock.anyBoolean())).andReturn(set);
@@ -246,7 +246,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private WireBindingGenerator setupBindingGenerator(GeneratorRegistry registry) throws ContainerException {
+    private WireBindingGenerator setupBindingGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateSource(EasyMock.isA(LogicalBinding.class),
                                                         EasyMock.isA(ServiceContract.class),
@@ -256,7 +256,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private WireBindingGenerator setupServiceBindingTargetGenerator(GeneratorRegistry registry) throws ContainerException {
+    private WireBindingGenerator setupServiceBindingTargetGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateServiceBindingTarget(EasyMock.isA(LogicalBinding.class),
                                                                       EasyMock.isA(ServiceContract.class),
@@ -266,7 +266,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private WireBindingGenerator setupTargetBindingGenerator(GeneratorRegistry registry) throws ContainerException {
+    private WireBindingGenerator setupTargetBindingGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateTarget(EasyMock.isA(LogicalBinding.class),
                                                         EasyMock.isA(ServiceContract.class),
@@ -276,7 +276,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private ComponentGenerator setupTargetComponentGenerator(GeneratorRegistry registry) throws ContainerException {
+    private ComponentGenerator setupTargetComponentGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         ComponentGenerator componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generateTarget(EasyMock.isA(LogicalService.class))).andReturn(new MockWireTargetDefinition());
 
@@ -285,7 +285,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private ComponentGenerator setupSourceComponentGenerator(GeneratorRegistry registry) throws ContainerException {
+    private ComponentGenerator setupSourceComponentGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         ComponentGenerator componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generateSource(EasyMock.isA(LogicalReference.class))).andReturn(new MockWireSourceDefinition());
 
@@ -294,7 +294,7 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private ComponentGenerator setupCallbackComponentGenerator(GeneratorRegistry registry) throws ContainerException {
+    private ComponentGenerator setupCallbackComponentGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         ComponentGenerator componentGenerator = EasyMock.createMock(ComponentGenerator.class);
         EasyMock.expect(componentGenerator.generateCallbackSource(EasyMock.isA(LogicalService.class))).andReturn(new MockWireSourceDefinition());
 

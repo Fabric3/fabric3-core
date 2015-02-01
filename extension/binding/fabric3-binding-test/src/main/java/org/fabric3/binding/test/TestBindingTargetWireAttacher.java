@@ -20,7 +20,7 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
@@ -42,7 +42,7 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         this.channel = channel;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         for (InvocationChain chain : wire.getInvocationChains()) {
             URI destination = target.getUri();
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -52,11 +52,11 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws Fabric3Exception {
         //        throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 }

@@ -20,7 +20,7 @@ package org.fabric3.implementation.pojo.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
@@ -41,7 +41,7 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
         super(transformerRegistry);
     }
 
-    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws ContainerException {
+    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws Fabric3Exception {
         Class<?> type = dataType.getType();
         List<Class<?>> types = new ArrayList<>();
         types.add(type);

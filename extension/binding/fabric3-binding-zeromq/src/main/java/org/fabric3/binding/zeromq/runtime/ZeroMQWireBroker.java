@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
@@ -40,18 +40,18 @@ public interface ZeroMQWireBroker {
      * @param chains     the invocation chains
      * @param metadata the ZeroMQ metadata to configure the underlying socket
      * @param loader     the classloader to load invocation parameters with
-     * @throws ContainerException if a connection error occurs
+     * @throws Fabric3Exception if a connection error occurs
      */
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException;
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception;
 
     /**
      * Releases a previous connection to a sender.
      *
      * @param id  the connection id
      * @param uri the target service URI
-     * @throws ContainerException if a connection error occurs
+     * @throws Fabric3Exception if a connection error occurs
      */
-    public void releaseSender(String id, URI uri) throws ContainerException;
+    public void releaseSender(String id, URI uri) throws Fabric3Exception;
 
     /**
      * Connects to a receiver that dispatches invocation requests from an ZeroMQ XREP socket. The Invocation chain order is used to match an
@@ -61,17 +61,17 @@ public interface ZeroMQWireBroker {
      * @param chains     the invocation chains
      * @param metadata the ZeroMQ metadata to configure the underlying socket
      * @param loader     the classloader to load invocation parameters with
-     * @throws ContainerException if a connection error occurs
+     * @throws Fabric3Exception if a connection error occurs
      */
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException;
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception;
 
     /**
      * Releases previous connection to a receiver.
      *
      * @param uri the target service URI
-     * @throws ContainerException if a connection error occurs
+     * @throws Fabric3Exception if a connection error occurs
      */
-    void releaseReceiver(URI uri) throws ContainerException;
+    void releaseReceiver(URI uri) throws Fabric3Exception;
 
     /**
      * Starts all senders and receivers.

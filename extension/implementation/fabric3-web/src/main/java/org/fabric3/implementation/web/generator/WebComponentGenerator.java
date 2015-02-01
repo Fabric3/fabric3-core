@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -73,7 +73,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         this.info = info;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws ContainerException {
+    public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws Fabric3Exception {
         Component<WebImplementation> definition = component.getDefinition();
         WebComponentType componentType = definition.getImplementation().getComponentType();
 
@@ -87,22 +87,22 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return physical;
     }
 
-    public WebComponentWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
+    public WebComponentWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
         WebComponentWireSourceDefinition definition = new WebComponentWireSourceDefinition();
         definition.setUri(reference.getUri());
         definition.setOptimizable(true);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
         return null;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         WebComponentWireSourceDefinition definition = new WebComponentWireSourceDefinition();
         definition.setUri(resourceReference.getUri());
         return definition;
@@ -114,7 +114,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

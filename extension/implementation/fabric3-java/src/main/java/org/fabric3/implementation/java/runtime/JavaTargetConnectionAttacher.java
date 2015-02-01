@@ -21,7 +21,7 @@ package org.fabric3.implementation.java.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
@@ -55,12 +55,12 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         JavaComponent component = (JavaComponent) manager.getComponent(targetName);
         if (component == null) {
-            throw new ContainerException("Target component not found: " + targetName);
+            throw new Fabric3Exception("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
 
@@ -72,17 +72,17 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 
-    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws ContainerException {
+    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws Fabric3Exception {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {
             return signature.getMethod(implementationClass);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

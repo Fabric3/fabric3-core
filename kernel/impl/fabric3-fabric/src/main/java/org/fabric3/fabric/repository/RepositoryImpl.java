@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.FileHelper;
@@ -56,7 +56,7 @@ public class RepositoryImpl implements Repository {
         userDirectory = info.getUserRepositoryDirectory();
     }
 
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         if (runtimeDirectory == null || !runtimeDirectory.exists() || !runtimeDirectory.isDirectory()) {
             return;
         }
@@ -72,7 +72,7 @@ public class RepositoryImpl implements Repository {
                 archiveUriToUrl.put(mapToUri(file), file.toURI().toURL());
             }
         } catch (MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -80,7 +80,7 @@ public class RepositoryImpl implements Repository {
 
     }
 
-    public URL store(URI uri, InputStream stream, boolean extension) throws ContainerException {
+    public URL store(URI uri, InputStream stream, boolean extension) throws Fabric3Exception {
         try {
             File location;
             if (extension) {
@@ -94,7 +94,7 @@ public class RepositoryImpl implements Repository {
             return locationUrl;
         } catch (IOException e) {
             String id = uri.toString();
-            throw new ContainerException("Error storing: " + id, e);
+            throw new Fabric3Exception("Error storing: " + id, e);
         }
     }
 
@@ -106,7 +106,7 @@ public class RepositoryImpl implements Repository {
         return archiveUriToUrl.get(uri);
     }
 
-    public void remove(URI uri) throws ContainerException {
+    public void remove(URI uri) throws Fabric3Exception {
         try {
             File location = mapToFile(userDirectory, uri);
             if (!location.exists()) {
@@ -117,7 +117,7 @@ public class RepositoryImpl implements Repository {
             location.delete();
         } catch (IOException e) {
             String id = uri.toString();
-            throw new ContainerException("Error removing: " + id, e);
+            throw new Fabric3Exception("Error removing: " + id, e);
         }
     }
 

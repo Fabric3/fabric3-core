@@ -29,7 +29,7 @@ import java.util.concurrent.Executor;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
@@ -134,13 +134,13 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
 
     }
 
-    public void broadcast(Command command) throws ContainerException {
+    public void broadcast(Command command) throws Fabric3Exception {
         byte[] payload = helper.serialize(command);
         Message message = new Message(null, domainChannel.getAddress(), payload);
         try {
             domainChannel.send(message);
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -159,9 +159,9 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         topologyListeners.remove(listener);
     }
 
-    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ContainerException {
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws Fabric3Exception {
         if (channels.containsKey(name)) {
-            throw new ContainerException("Channel already open:" + name);
+            throw new Fabric3Exception("Channel already open:" + name);
         }
         try {
 
@@ -185,48 +185,48 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             channel.setReceiver(delegatingReceiver);
             channel.connect(info.getDomain().getAuthority() + ":" + name);
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void closeChannel(String name) throws ContainerException {
+    public void closeChannel(String name) throws Fabric3Exception {
         Channel channel = channels.remove(name);
         if (channel == null) {
-            throw new ContainerException("Channel not found: " + name);
+            throw new Fabric3Exception("Channel not found: " + name);
         }
         channel.close();
     }
 
-    public void sendAsynchronous(String channelName, Serializable message) throws ContainerException {
+    public void sendAsynchronous(String channelName, Serializable message) throws Fabric3Exception {
         Channel channel = channels.get(channelName);
         if (channel == null) {
-            throw new ContainerException("Channel not found: " + channelName);
+            throw new Fabric3Exception("Channel not found: " + channelName);
         }
         try {
             byte[] payload = helper.serialize(message);
             Message jMessage = new Message(null, null, payload);
             channel.send(jMessage);
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void sendAsynchronous(String runtimeName, String name, Serializable message) throws ContainerException {
+    public void sendAsynchronous(String runtimeName, String name, Serializable message) throws Fabric3Exception {
         Channel channel = channels.get(name);
         if (channel == null) {
-            throw new ContainerException("Channel not found: " + name);
+            throw new Fabric3Exception("Channel not found: " + name);
         }
         try {
             View view = channel.getView();
             if (view == null) {
-                throw new ContainerException("Federation channel closed or not connected when sending message to: " + runtimeName);
+                throw new Fabric3Exception("Federation channel closed or not connected when sending message to: " + runtimeName);
             }
             Address address = helper.getRuntimeAddress(runtimeName, view);
             byte[] payload = helper.serialize(message);
             Message jMessage = new Message(address, null, payload);
             channel.send(jMessage);
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -272,7 +272,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                         byte[] payload = helper.serialize(command);
                         View view = domainChannel.getView();
                         if (view == null) {
-                            throw new ContainerException("Federation channel closed or not connected when sending message to: " + runtimeName);
+                            throw new Fabric3Exception("Federation channel closed or not connected when sending message to: " + runtimeName);
                         }
                         Message message = new Message(oldest, domainChannel.getAddress(), payload);
                         RequestOptions options = new RequestOptions(ResponseMode.GET_FIRST, timeout);
@@ -283,7 +283,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                         // merge the snapshot with the live logical domain
                         mergeService.merge(snapshot);
                     } catch (Exception e) {
-                        throw new ContainerException("Error sending message to runtime: " + runtimeName, e);
+                        throw new Fabric3Exception("Error sending message to runtime: " + runtimeName, e);
                     }
                 }
             } catch (Exception e) {

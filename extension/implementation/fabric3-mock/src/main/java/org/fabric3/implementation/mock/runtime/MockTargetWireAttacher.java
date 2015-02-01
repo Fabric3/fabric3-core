@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.IMocksControl;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -47,7 +47,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         this.control = control;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) throws Fabric3Exception {
 
         Class<?> mockedInterface = loadInterface(targetDefinition);
         Object mock = createMock(mockedInterface);
@@ -64,11 +64,11 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws Fabric3Exception {
         Class<?> mockedInterface = loadInterface(target);
         Object mock = createMock(mockedInterface);
         return new SingletonObjectFactory<>(mock);
@@ -77,7 +77,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
     private Method getOperationMethod(Class<?> mockedInterface,
                                       PhysicalOperationDefinition op,
                                       PhysicalWireSourceDefinition sourceDefinition,
-                                      MockWireTargetDefinition wireTargetDefinition) throws ContainerException {
+                                      MockWireTargetDefinition wireTargetDefinition) throws Fabric3Exception {
         List<String> parameters = op.getTargetParameterTypes();
         for (Method method : mockedInterface.getMethods()) {
             if (method.getName().equals(op.getName())) {
@@ -95,7 +95,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
             }
         }
 
-        throw new ContainerException("Failed to match method: " + op.getName() + " " + op.getSourceParameterTypes());
+        throw new Fabric3Exception("Failed to match method: " + op.getName() + " " + op.getSourceParameterTypes());
     }
 
     private Object createMock(Class<?> mockedInterface) {
@@ -106,13 +106,13 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         }
     }
 
-    private Class<?> loadInterface(MockWireTargetDefinition target) throws ContainerException {
+    private Class<?> loadInterface(MockWireTargetDefinition target) throws Fabric3Exception {
         String interfaceClass = target.getMockedInterface();
         try {
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             return classLoader.loadClass(interfaceClass);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Unable to load interface " + interfaceClass);
+            throw new Fabric3Exception("Unable to load interface " + interfaceClass);
         }
     }
 

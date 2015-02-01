@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.monitor.DestinationRouter;
@@ -77,7 +77,7 @@ public abstract class AbstractPluginRuntimeBooter {
         buildDir = configuration.getBuildDir();
     }
 
-    public PluginRuntime boot() throws ContainerException {
+    public PluginRuntime boot() throws Fabric3Exception {
         BootstrapService bootstrapService = BootstrapFactory.getService(bootClassLoader);
         Document systemConfig = getSystemConfig(bootstrapService);
 
@@ -107,7 +107,7 @@ public abstract class AbstractPluginRuntimeBooter {
         return runtime;
     }
 
-    public void shutdown() throws ContainerException, InterruptedException, ExecutionException {
+    public void shutdown() throws Fabric3Exception, InterruptedException, ExecutionException {
         coordinator.shutdown();
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractPluginRuntimeBooter {
     protected abstract PluginHostInfo createHostInfo(String environment, Set<URL> moduleDependencies, File outputDirectory, File buildDir);
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private PluginRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig, File buildDir) throws ContainerException {
+    private PluginRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig, File buildDir) throws Fabric3Exception {
         String environment = bootstrapService.parseEnvironment(systemConfig);
 
         PluginHostInfo hostInfo = createHostInfo(environment, moduleDependencies, outputDirectory, buildDir);
@@ -133,14 +133,14 @@ public abstract class AbstractPluginRuntimeBooter {
         return instantiateRuntime(configuration, bootClassLoader);
     }
 
-    private Document getSystemConfig(BootstrapService bootstrapService) throws ContainerException {
+    private Document getSystemConfig(BootstrapService bootstrapService) throws Fabric3Exception {
         Source source = null;
         if (systemConfig != null) {
             try {
                 InputStream stream = new ByteArrayInputStream(systemConfig.getBytes("UTF-8"));
                 source = new InputStreamSource("systemConfig", stream);
             } catch (UnsupportedEncodingException e) {
-                throw new ContainerException("Error loading system configuration", e);
+                throw new Fabric3Exception("Error loading system configuration", e);
             }
         }
         Document systemConfig;

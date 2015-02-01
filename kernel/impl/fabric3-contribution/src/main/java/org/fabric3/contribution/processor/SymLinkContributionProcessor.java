@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
@@ -71,7 +71,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         return sourceUrl.endsWith(".contribution") || contribution.getMetaData(Boolean.class, F3_SYMLINK) != null;  // source url will change
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         try {
             Contribution syntheticContribution = createSyntheticContribution(contribution);
             processorRegistry.processManifest(syntheticContribution, context);
@@ -84,11 +84,11 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             contribution.addMetaData(F3_SYMLINK, Boolean.TRUE);
             contribution.addMetaData(contribution.getUri(), syntheticContribution);
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void index(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         Contribution syntheticContribution = contribution.getMetaData(Contribution.class, contribution.getUri());
         processorRegistry.indexContribution(syntheticContribution, context);
         for (Resource resource : syntheticContribution.getResources()) {
@@ -97,14 +97,14 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         }
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         Contribution syntheticContribution = contribution.getMetaData(Contribution.class, contribution.getUri());
         processorRegistry.processContribution(syntheticContribution, context);
 
         contribution.removeMetaData(contribution.getUri());
     }
 
-    private Contribution createSyntheticContribution(Contribution contribution) throws IOException, ContainerException {
+    private Contribution createSyntheticContribution(Contribution contribution) throws IOException, Fabric3Exception {
         try {
 
             URL location = contribution.getLocation();
@@ -112,7 +112,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             List<String> paths = Files.readAllLines(symFile, Charset.defaultCharset());
 
             if (paths.isEmpty()) {
-                throw new ContainerException("Invalid contribution file: " + location);
+                throw new Fabric3Exception("Invalid contribution file: " + location);
             }
 
             // take the first entry in the file as the main contribution location

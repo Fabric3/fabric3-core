@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.timer.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -56,7 +56,7 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         this.generationHelper = generationHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<TimerImplementation> component) throws ContainerException {
+    public PhysicalComponentDefinition generate(LogicalComponent<TimerImplementation> component) throws Fabric3Exception {
         TimerComponentDefinition definition = new TimerComponentDefinition();
         generationHelper.generate(definition, component);
         TimerImplementation implementation = component.getDefinition().getImplementation();
@@ -67,14 +67,14 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         generationHelper.generateWireSource(definition, reference);
         return definition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
@@ -82,23 +82,23 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         return definition;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
         JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
         generationHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         generationHelper.generateResourceWireSource(definition, resourceReference);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         throw new UnsupportedOperationException("Timer components cannot be configured as event consumers");
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException("Cannot wire to timer components");
     }
 }

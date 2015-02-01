@@ -18,14 +18,14 @@ package org.fabric3.transform.java;
 
 import java.io.Serializable;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Deserializes a Java object.
  */
 public class Bytes2JavaTransformer extends AbstractSerializingTransformer<byte[], Serializable> {
 
-    public Serializable transform(byte[] source, ClassLoader loader) throws ContainerException {
+    public Serializable transform(byte[] source, ClassLoader loader) throws Fabric3Exception {
         return deserialize(source, loader);
     }
 

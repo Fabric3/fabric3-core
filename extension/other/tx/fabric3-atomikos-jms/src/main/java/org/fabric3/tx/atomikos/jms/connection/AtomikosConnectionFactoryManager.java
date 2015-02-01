@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.atomikos.jms.AtomikosConnectionFactoryBean;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.spi.management.ManagementService;
 import org.oasisopen.sca.annotation.Destroy;
@@ -61,7 +61,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         for (AtomikosConnectionFactoryBean bean : beans.values()) {
             try {
                 remove(bean);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 // continue so the beans can be closed
                 e.printStackTrace();
             }
@@ -80,17 +80,17 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         return nonXA.get(name);
     }
 
-    public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws ContainerException {
+    public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws Fabric3Exception {
 
         if (!(factory instanceof XAConnectionFactory)) {
             if (nonXA.containsKey(name)) {
-                throw new ContainerException("Connection factory already exists: " + name);
+                throw new Fabric3Exception("Connection factory already exists: " + name);
             }
             nonXA.put(name, factory);
             return factory;
         }
         if (beans.containsKey(name)) {
-            throw new ContainerException("Connection factory already exists: " + name);
+            throw new Fabric3Exception("Connection factory already exists: " + name);
         }
 
         AtomikosConnectionFactoryBean bean;
@@ -113,7 +113,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setBorrowConnectionTimeout(Integer.parseInt(borrowTimeout));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid connection borrow timeout for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid connection borrow timeout for connection factory: " + name, e);
             }
         }
         String maintenance = properties.get(MAINTENANCE_INTERVAL);
@@ -121,7 +121,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setMaintenanceInterval(Integer.parseInt(maintenance));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid maintenance interval for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid maintenance interval for connection factory: " + name, e);
             }
         }
         String maxIdle = properties.get(MAX_IDLE);
@@ -129,7 +129,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setMaxIdleTime(Integer.parseInt(maxIdle));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid maximum idle time for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid maximum idle time for connection factory: " + name, e);
             }
         }
         String maxPool = properties.get(MAX_POOL_SIZE);
@@ -137,7 +137,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setMaxPoolSize(Integer.parseInt(maxPool));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid maximum pool size for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid maximum pool size for connection factory: " + name, e);
             }
         } else {
             bean.setMaxPoolSize(DEFAULT_MAX_POOL_SIZE);
@@ -147,7 +147,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setMinPoolSize(Integer.parseInt(minPool));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid minimum pool size for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid minimum pool size for connection factory: " + name, e);
             }
         }
         String pool = properties.get(POOL_SIZE);
@@ -155,7 +155,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setPoolSize(Integer.parseInt(pool));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid pool size for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid pool size for connection factory: " + name, e);
             }
         }
 
@@ -164,7 +164,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             try {
                 bean.setReapTimeout(Integer.parseInt(reap));
             } catch (NumberFormatException e) {
-                throw new ContainerException("Invalid reap timeout for connection factory: " + name, e);
+                throw new Fabric3Exception("Invalid reap timeout for connection factory: " + name, e);
             }
         }
         beans.put(name, bean);
@@ -175,7 +175,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         return bean;
     }
 
-    public ConnectionFactory unregister(String name) throws ContainerException {
+    public ConnectionFactory unregister(String name) throws Fabric3Exception {
         AtomikosConnectionFactoryBean bean = beans.remove(name);
         if (bean == null) {
             return nonXA.remove(name);
@@ -186,7 +186,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         }
     }
 
-    private void remove(AtomikosConnectionFactoryBean bean) throws ContainerException {
+    private void remove(AtomikosConnectionFactoryBean bean) throws Fabric3Exception {
         if (managementService != null) {
             String name = bean.getUniqueResourceName();
             managementService.remove(encodeName(name), JMS_XA_CONNECTION_POOLS);

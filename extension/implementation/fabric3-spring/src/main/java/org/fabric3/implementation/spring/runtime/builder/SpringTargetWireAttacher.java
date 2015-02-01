@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
@@ -58,14 +58,14 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         this.listeners = listeners;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         String beanName = target.getBeanName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(target.getBeanInterface());
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         for (WireListener listener : listeners) {
             listener.onAttach(wire);
@@ -79,19 +79,19 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(SpringWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(SpringWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    private SpringComponent getComponent(SpringWireTargetDefinition definition) throws ContainerException {
+    private SpringComponent getComponent(SpringWireTargetDefinition definition) throws Fabric3Exception {
         URI uri = UriHelper.getDefragmentedName(definition.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {
-            throw new ContainerException("Target not found: " + uri);
+            throw new Fabric3Exception("Target not found: " + uri);
         }
         return component;
     }

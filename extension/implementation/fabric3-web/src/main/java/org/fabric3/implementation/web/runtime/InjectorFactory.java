@@ -21,7 +21,7 @@ package org.fabric3.implementation.web.runtime;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -41,10 +41,10 @@ public interface InjectorFactory {
      *                     site descriptions of the servlet fields.
      * @param factories    the object factories that supply injected values.
      * @param classLoader  the classloader to load classes in for the web application
-     * @throws ContainerException if an error occurs creating the injectors.
+     * @throws Fabric3Exception if an error occurs creating the injectors.
      */
     void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                 Map<String, Map<String, InjectionSite>> siteMappings,
                                 Map<String, ObjectFactory<?>> factories,
-                                ClassLoader classLoader) throws ContainerException;
+                                ClassLoader classLoader) throws Fabric3Exception;
 }

@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
@@ -73,10 +73,10 @@ public class ResourceInvoker {
      *
      * @param request the HTTP request
      * @return the resource representation
-     * @throws ContainerException if there is an error processing the request
+     * @throws Fabric3Exception if there is an error processing the request
      * @throws ResourceException           if the client is not authorized to invoke an operation
      */
-    public Resource invoke(HttpServletRequest request) throws ContainerException, ResourceException {
+    public Resource invoke(HttpServletRequest request) throws Fabric3Exception, ResourceException {
         try {
             WorkContext workContext = WorkContextCache.getThreadWorkContext();
             if (workContext == null) {
@@ -99,7 +99,7 @@ public class ResourceInvoker {
             resource.setProperty("links", links);
             return resource;
         } catch (MalformedURLException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class ResourceInvoker {
         }
     }
 
-    private Object invoke(ResourceMapping mapping) throws ContainerException {
+    private Object invoke(ResourceMapping mapping) throws Fabric3Exception {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
@@ -133,8 +133,8 @@ public class ResourceInvoker {
             }
             Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             return mapping.getMethod().invoke(instance);
-        } catch (IllegalArgumentException | ContainerException | InvocationTargetException | IllegalAccessException e) {
-            throw new ContainerException("Error invoking operation: " + mapping.getMethod(), e);
+        } catch (IllegalArgumentException | Fabric3Exception | InvocationTargetException | IllegalAccessException e) {
+            throw new Fabric3Exception("Error invoking operation: " + mapping.getMethod(), e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }

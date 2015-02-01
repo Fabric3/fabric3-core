@@ -20,7 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
 import java.util.Collections;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.springframework.beans.factory.BeanFactory;
@@ -60,7 +60,7 @@ public class Fabric3EntityManagerFactoryBean extends LocalContainerEntityManager
                 String unitName = getPersistenceUnitName();
                 PersistenceOverrides overrides = new PersistenceOverrides(unitName, Collections.<String, String>emptyMap());
                 return resolver.resolve(unitName, overrides, getBeanClassLoader());
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 throw new PersistenceException(e);
             }
         }

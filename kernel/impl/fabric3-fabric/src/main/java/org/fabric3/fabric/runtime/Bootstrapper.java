@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime services.
@@ -29,15 +29,15 @@ public interface Bootstrapper {
     /**
      * Initializes the domain for the given runtime.
      *
-     * @throws ContainerException if there was a problem bootstrapping the runtime
+     * @throws Fabric3Exception if there was a problem bootstrapping the runtime
      */
-    void bootRuntimeDomain() throws ContainerException;
+    void bootRuntimeDomain() throws Fabric3Exception;
 
     /**
      * Initialize the core system components for the supplied runtime.
      *
-     * @throws ContainerException if there was a problem bootstrapping the runtime
+     * @throws Fabric3Exception if there was a problem bootstrapping the runtime
      */
-    void bootSystem() throws ContainerException;
+    void bootSystem() throws Fabric3Exception;
 
 }

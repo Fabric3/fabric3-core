@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.proxy;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.api.host.monitor.Monitorable;
@@ -32,11 +32,7 @@ public class MonitorProxyServiceImpl implements MonitorProxyService {
 
     public MonitorProxyServiceImpl(JDKMonitorProxyService extension) {
         this.extension = extension;
-        try {
-            MonitorLocator.setMonitorProxy(extension.createMonitor(MonitorProxy.class));
-        } catch (ContainerException e) {
-            throw new AssertionError(e);
-        }
+        MonitorLocator.setMonitorProxy(extension.createMonitor(MonitorProxy.class));
     }
 
     /**
@@ -49,11 +45,11 @@ public class MonitorProxyServiceImpl implements MonitorProxyService {
         this.extension = extension;
     }
 
-    public <T> T createMonitor(Class<T> type) throws ContainerException {
+    public <T> T createMonitor(Class<T> type) throws Fabric3Exception {
         return extension.createMonitor(type);
     }
 
-    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException {
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws Fabric3Exception {
         return extension.createMonitor(type, monitorable, destination);
     }
 }

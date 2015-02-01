@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.invocation.Message;
@@ -111,10 +111,10 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     }
 
     public void testFailureGettingWrapperThrowsException() {
-        ContainerException ex = new ContainerException("test");
+        Fabric3Exception ex = new Fabric3Exception("test");
         try {
             EasyMock.expect(component.getInstance()).andThrow(ex);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new AssertionError();
         }
         control.replay();

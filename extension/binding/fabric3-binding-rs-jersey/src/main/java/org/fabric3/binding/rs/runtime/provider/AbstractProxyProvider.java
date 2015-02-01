@@ -19,7 +19,7 @@ package org.fabric3.binding.rs.runtime.provider;
 import javax.ws.rs.ext.Provider;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopedComponent;
@@ -61,7 +61,7 @@ public class AbstractProxyProvider<T> {
         }
         try {
             return ((T) delegate.getInstance());
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }

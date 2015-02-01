@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
@@ -35,18 +35,18 @@ public interface ComponentManager {
      * Registers a component which will be managed by the runtime
      *
      * @param component the component
-     * @throws ContainerException when an error occurs registering the component
+     * @throws Fabric3Exception when an error occurs registering the component
      */
-    void register(Component component) throws ContainerException;
+    void register(Component component) throws Fabric3Exception;
 
     /**
      * Un-registers a component
      *
      * @param uri the component URI to un-register
-     * @throws ContainerException when an error occurs registering the component
+     * @throws Fabric3Exception when an error occurs registering the component
      * @return the the component
      */
-    Component unregister(URI uri) throws ContainerException;
+    Component unregister(URI uri) throws Fabric3Exception;
 
     /**
      * Returns the component with the given URI

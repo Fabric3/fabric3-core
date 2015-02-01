@@ -35,7 +35,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopedComponent;
@@ -137,7 +137,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     }
 
     @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
-    public Object getInstance(ScopedComponent component) throws ContainerException {
+    public Object getInstance(ScopedComponent component) throws Fabric3Exception {
         Object instance = instances.get(component);
         if (instance != EMPTY && instance != null) {
             return instance;
@@ -153,7 +153,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     latch.await(5, TimeUnit.MINUTES);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    throw new ContainerException("Error creating instance for: " + component.getUri(), e);
+                    throw new Fabric3Exception("Error creating instance for: " + component.getUri(), e);
                 }
                 // an instance wrapper is now available as the instantiation has completed
                 return instances.get(component);
@@ -201,7 +201,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         return Collections.singletonList(instance);
     }
 
-    public void reinject() throws ContainerException {
+    public void reinject() throws Fabric3Exception {
         for (Map.Entry<ScopedComponent, Object> entry : instances.entrySet()) {
             ScopedComponent component = entry.getKey();
             Object instance = entry.getValue();
@@ -282,7 +282,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             try {
                 Object instance = toDestroy.instance;
                 component.stopInstance(instance);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 // log the error from destroy but continue
                 monitor.destructionError(component.getUri(), component.getDeployable(), e);
             }

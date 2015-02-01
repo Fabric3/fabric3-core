@@ -17,7 +17,7 @@
 
 package org.fabric3.cache.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -36,19 +36,19 @@ public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTarg
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<?> createObjectFactory(CacheWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(CacheWireTargetDefinition target) throws Fabric3Exception {
         String name = target.getCacheName();
         Object cache = registry.getCache(name);
         if (cache == null) {
-            throw new ContainerException("Cache not found: " + name);
+            throw new Fabric3Exception("Cache not found: " + name);
         }
         return new SingletonObjectFactory<>(cache);
     }

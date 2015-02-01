@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -72,7 +72,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".war");
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         ContributionManifest manifest;
         try {
             URL sourceUrl = contribution.getLocation();
@@ -93,14 +93,14 @@ public class WarContributionHandler implements ArchiveContributionHandler {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -163,7 +163,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                 }
             }
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (zipStream != null) {

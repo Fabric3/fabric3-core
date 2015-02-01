@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -36,7 +36,7 @@ public class Stream2ObjectJsonTransformer implements Transformer<InputStream, Ob
         this.mapper = mapper;
     }
 
-    public Object transform(InputStream source, ClassLoader loader) throws ContainerException {
+    public Object transform(InputStream source, ClassLoader loader) throws Fabric3Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
@@ -46,7 +46,7 @@ public class Stream2ObjectJsonTransformer implements Transformer<InputStream, Ob
             jp.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
             return mapper.readValue(jp, type);
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

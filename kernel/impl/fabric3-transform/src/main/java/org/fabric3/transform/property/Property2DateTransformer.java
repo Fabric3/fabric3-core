@@ -23,7 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -51,11 +51,11 @@ public class Property2DateTransformer implements SingleTypeTransformer<Node, Dat
         dateFormatter.setLenient(false);
     }
 
-    public Date transform(final Node node, ClassLoader loader) throws ContainerException {
+    public Date transform(final Node node, ClassLoader loader) throws Fabric3Exception {
         try {
             return dateFormatter.parse(node.getTextContent());
         } catch (ParseException pe) {
-            throw new ContainerException("Unsupported Date Format ", pe);
+            throw new Fabric3Exception("Unsupported Date Format ", pe);
         }
     }
 

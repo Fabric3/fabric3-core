@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
@@ -90,7 +90,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         this.topologyService = topologyService;
     }
 
-    public TimerComponent build(TimerComponentDefinition definition) throws ContainerException {
+    public TimerComponent build(TimerComponentDefinition definition) throws Fabric3Exception {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -103,7 +103,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         try {
             implClass = classLoader.loadClass(managerDefinition.getImplementationClass());
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
 
@@ -132,7 +132,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         return component;
     }
 
-    public void dispose(TimerComponentDefinition definition, TimerComponent component) throws ContainerException {
+    public void dispose(TimerComponentDefinition definition, TimerComponent component) throws Fabric3Exception {
         dispose(definition);
     }
 

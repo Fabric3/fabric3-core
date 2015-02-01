@@ -3,7 +3,6 @@ package org.fabric3.fabric.container.binding;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -13,8 +12,8 @@ import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
- * A {@link BindingHandler} decorator that resolves the target {@link BindingHandler} in a lazy fashion. Lazy loading is used to ensure the full
- * initialization of the target instance.
+ * A {@link BindingHandler} decorator that resolves the target {@link BindingHandler} in a lazy fashion. Lazy loading is used to ensure the full initialization
+ * of the target instance.
  */
 public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
     private URI handlerUri;
@@ -55,12 +54,8 @@ public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
                 }
             }
         }
-        try {
-            // resolve the instance on every invocation so that stateless scoped components receive a new instance
-            return (BindingHandler<T>) delegate.getInstance();
-        } catch (ContainerException e) {
-            throw new ServiceRuntimeException(e);
-        }
+        // resolve the instance on every invocation so that stateless scoped components receive a new instance
+        return (BindingHandler<T>) delegate.getInstance();
     }
 
 }

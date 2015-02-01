@@ -22,7 +22,7 @@ package org.fabric3.fabric.domain.generator.component;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
@@ -41,12 +41,12 @@ public abstract class AbstractBuildComponentCommandGenerator implements CommandG
     }
 
     @SuppressWarnings("unchecked")
-    protected PhysicalComponentDefinition generateDefinition(LogicalComponent<?> component) throws ContainerException {
+    protected PhysicalComponentDefinition generateDefinition(LogicalComponent<?> component) throws Fabric3Exception {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         Class<? extends Implementation> type = implementation.getClass();
         ComponentGenerator generator = generatorRegistry.getComponentGenerator(type);
         if (generator == null) {
-            throw new ContainerException("Generator not found: " + type.getName());
+            throw new Fabric3Exception("Generator not found: " + type.getName());
         }
         PhysicalComponentDefinition definition = generator.generate(component);
         URI uri = component.getUri();

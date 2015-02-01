@@ -16,7 +16,7 @@
  */
 package org.fabric3.spi.container.builder.channel;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -30,16 +30,16 @@ public interface ChannelBuilder {
      *
      * @param definition the physical channel definition
      * @return the channel
-     * @throws ContainerException if there is an error building the channel
+     * @throws Fabric3Exception if there is an error building the channel
      */
-    Channel build(PhysicalChannelDefinition definition) throws ContainerException;
+    Channel build(PhysicalChannelDefinition definition) throws Fabric3Exception;
 
     /**
      * Disposes a channel.
      *
      * @param definition the physical channel definition
      * @param channel    the channel to dispose
-     * @throws ContainerException if there is an error disposing the channel
+     * @throws Fabric3Exception if there is an error disposing the channel
      */
-    void dispose(PhysicalChannelDefinition definition, Channel channel) throws ContainerException;
+    void dispose(PhysicalChannelDefinition definition, Channel channel) throws Fabric3Exception;
 }

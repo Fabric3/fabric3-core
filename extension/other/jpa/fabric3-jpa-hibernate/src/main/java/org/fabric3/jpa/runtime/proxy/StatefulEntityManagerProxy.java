@@ -38,7 +38,7 @@ import javax.transaction.TransactionManager;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -345,7 +345,7 @@ public class StatefulEntityManagerProxy implements HibernateProxy, EntityManager
                 throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
             em = emService.getEntityManager(unitName, this, trx);
-        } catch (SystemException | ContainerException e) {
+        } catch (SystemException | Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }

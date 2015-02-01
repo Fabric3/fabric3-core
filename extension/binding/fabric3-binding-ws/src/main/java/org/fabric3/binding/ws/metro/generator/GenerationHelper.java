@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.ws.model.WsBinding;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -40,9 +40,9 @@ public class GenerationHelper {
      *
      * @param binding the binding definition
      * @return the HTTP configuration
-     * @throws ContainerException if a configuration value is invalid
+     * @throws Fabric3Exception if a configuration value is invalid
      */
-    public static ConnectionConfiguration createConnectionConfiguration(WsBinding binding) throws ContainerException {
+    public static ConnectionConfiguration createConnectionConfiguration(WsBinding binding) throws Fabric3Exception {
         ConnectionConfiguration configuration = new ConnectionConfiguration();
         Map<String, String> configProperties = binding.getConfiguration();
         if (configProperties != null) {
@@ -51,7 +51,7 @@ public class GenerationHelper {
                 try {
                     configuration.setConnectTimeout(Integer.parseInt(connectTimeout));
                 } catch (NumberFormatException e) {
-                    throw new ContainerException("Invalid connectTimeout", e);
+                    throw new Fabric3Exception("Invalid connectTimeout", e);
                 }
             }
             String requestTimeout = configProperties.get("requestTimeout");
@@ -59,7 +59,7 @@ public class GenerationHelper {
                 try {
                     configuration.setRequestTimeout(Integer.parseInt(requestTimeout));
                 } catch (NumberFormatException e) {
-                    throw new ContainerException("Invalid requestTimeout", e);
+                    throw new Fabric3Exception("Invalid requestTimeout", e);
                 }
             }
             String clientStreamingChunkSize = configProperties.get("clientStreamingChunkSize");
@@ -67,7 +67,7 @@ public class GenerationHelper {
                 try {
                     configuration.setClientStreamingChunkSize(Integer.parseInt(clientStreamingChunkSize));
                 } catch (NumberFormatException e) {
-                    throw new ContainerException("Invalid clientStreamingChunkSize", e);
+                    throw new Fabric3Exception("Invalid clientStreamingChunkSize", e);
                 }
             }
         }

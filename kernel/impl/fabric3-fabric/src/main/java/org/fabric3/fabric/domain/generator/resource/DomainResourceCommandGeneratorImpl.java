@@ -19,7 +19,7 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
@@ -41,7 +41,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Command generateBuild(LogicalResource resource) throws ContainerException {
+    public Command generateBuild(LogicalResource resource) throws Fabric3Exception {
         if (resource.getState() != LogicalState.NEW) {
             return null;
         }
@@ -53,7 +53,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         return new BuildResourcesCommand(definitions);
     }
 
-    public Command generateDispose(LogicalResource resource) throws ContainerException {
+    public Command generateDispose(LogicalResource resource) throws Fabric3Exception {
         if (resource.getState() != LogicalState.MARKED) {
             return null;
         }
@@ -65,7 +65,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws ContainerException {
+    private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws Fabric3Exception {
         List<PhysicalResourceDefinition> definitions = new ArrayList<>();
         Resource resourceDefinition = resource.getDefinition();
         ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());

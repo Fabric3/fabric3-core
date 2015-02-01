@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
@@ -106,7 +106,7 @@ public class SpringComponent implements Component {
         this.level = level;
     }
 
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(classLoader);
@@ -140,7 +140,7 @@ public class SpringComponent implements Component {
                 applicationContext.refresh();
                 applicationContext.start();
             } catch (BeansException e) {
-                throw new ContainerException("Error starting component: " + getUri(), e);
+                throw new Fabric3Exception("Error starting component: " + getUri(), e);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(old);

@@ -21,7 +21,7 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
@@ -46,14 +46,14 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
         return false;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ContainerException{
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception{
         URI uri = getClassLoaderUri(interfaze);
 
         Method[] methods = interfaze.getMethods();
         if (methods.length > 1) {
-            throw new ContainerException("Channel interface must have only one method: " + interfaze.getName());
+            throw new Fabric3Exception("Channel interface must have only one method: " + interfaze.getName());
         } else if (methods.length == 0) {
-            throw new ContainerException("Channel interface must have one method: " + interfaze.getName());
+            throw new Fabric3Exception("Channel interface must have one method: " + interfaze.getName());
         }
 
         EventStream stream = connection.getEventStream();

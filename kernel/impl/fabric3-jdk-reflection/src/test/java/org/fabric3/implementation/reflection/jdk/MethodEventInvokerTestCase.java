@@ -22,7 +22,7 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
@@ -35,7 +35,7 @@ public class MethodEventInvokerTestCase extends TestCase {
         try {
             injector.invoke(new Foo());
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
     }

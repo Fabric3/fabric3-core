@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Version;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.monitor.DestinationRouter;
@@ -125,7 +125,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         implementationIntrospector = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
-    public void bootRuntimeDomain() throws ContainerException {
+    public void bootRuntimeDomain() throws Fabric3Exception {
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
         hostInfo = runtimeServices.getHostInfo();
         monitorService = runtimeServices.getMonitorProxyService();
@@ -164,30 +164,26 @@ public class DefaultBootstrapper implements Bootstrapper {
         synthesizeContributions();
     }
 
-    public void bootSystem() throws ContainerException {
-        try {
-            // load the system composite
-            Composite composite = BootstrapCompositeFactory.createSystemComposite(bootContribution, hostInfo, bootClassLoader, implementationIntrospector);
+    public void bootSystem() throws Fabric3Exception {
+        // load the system composite
+        Composite composite = BootstrapCompositeFactory.createSystemComposite(bootContribution, hostInfo, bootClassLoader, implementationIntrospector);
 
-            // create the property and merge it into the composite
-            LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
-            domain.setProperties(logicalProperty);
+        // create the property and merge it into the composite
+        LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
+        domain.setProperties(logicalProperty);
 
-            // deploy the composite to the runtime domain
-            runtimeDomain.include(composite, false);
-        } catch (ContainerException e) {
-            throw new ContainerException(e);
-        }
+        // deploy the composite to the runtime domain
+        runtimeDomain.include(composite, false);
     }
 
     /**
      * Registers the primordial runtime components.
      *
      * @param registrations host components to register
-     * @throws ContainerException if there is an error during registration
+     * @throws Fabric3Exception if there is an error during registration
      */
     @SuppressWarnings({"unchecked"})
-    private <S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations) throws ContainerException {
+    private <S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations) throws Fabric3Exception {
 
         // services available through the outward facing Fabric3Runtime API
         registerComponent("MonitorProxyService", MonitorProxyService.class, monitorService, true);
@@ -248,18 +244,18 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param type       the service interface type
      * @param instance   the component instance
      * @param introspect true if the component should be introspected for references
-     * @throws ContainerException if there is an error during registration
+     * @throws Fabric3Exception if there is an error during registration
      */
-    private <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ContainerException {
+    private <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws Fabric3Exception {
         synthesizer.registerComponent(name, type, instance, introspect);
     }
 
     /**
      * Creates contributions for the host and boot classloaders. These contributions may be imported by extensions and user contributions.
      *
-     * @throws ContainerException if there is an error synthesizing the contributions
+     * @throws Fabric3Exception if there is an error synthesizing the contributions
      */
-    private void synthesizeContributions() throws ContainerException {
+    private void synthesizeContributions() throws Fabric3Exception {
         // export packages included in JDK 6
         synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader, true);
         // add default boot exports
@@ -276,13 +272,13 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param loader           the classloader
      * @param extension        true if the contribution is an extension
      * @return the synthesized contribution
-     * @throws ContainerException if there is an error synthesizing the contribution
+     * @throws Fabric3Exception if there is an error synthesizing the contribution
      */
     private Contribution synthesizeContribution(URI contributionUri,
                                                 Map<String, String> exportedPackages,
                                                 List<String> hostCapabilities,
                                                 ClassLoader loader,
-                                                boolean extension) throws ContainerException {
+                                                boolean extension) throws Fabric3Exception {
         Contribution contribution = new Contribution(contributionUri);
         contribution.setState(ContributionState.INSTALLED);
         ContributionManifest manifest = contribution.getManifest();

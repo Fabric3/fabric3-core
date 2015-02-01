@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.contribution;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -44,26 +44,26 @@ public interface ContributionProcessor {
      *
      * @param contribution the contribution that will be used to hold the results from the processing
      * @param context      the context to which validation errors and warnings are reported
-     * @throws ContainerException if there was a problem with the contribution
+     * @throws Fabric3Exception if there was a problem with the contribution
      */
-    void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException;
+    void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception;
 
     /**
      * Indexes all contribution resources
      *
      * @param contribution the contribution to index
      * @param context      the context to which validation errors and warnings are reported
-     * @throws ContainerException if there was a problem indexing
+     * @throws Fabric3Exception if there was a problem indexing
      */
-    void index(Contribution contribution, IntrospectionContext context) throws ContainerException;
+    void index(Contribution contribution, IntrospectionContext context) throws Fabric3Exception;
 
     /**
      * Loads all resources in the contribution.
      *
      * @param contribution the contribution
      * @param context      the context to which validation errors and warnings are reported
-     * @throws ContainerException if there was a problem loading the contribution resources
+     * @throws Fabric3Exception if there was a problem loading the contribution resources
      */
-    void process(Contribution contribution, IntrospectionContext context) throws ContainerException;
+    void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception;
 
 }

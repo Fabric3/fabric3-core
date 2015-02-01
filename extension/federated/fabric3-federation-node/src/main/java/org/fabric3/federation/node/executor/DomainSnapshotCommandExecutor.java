@@ -19,7 +19,7 @@ package org.fabric3.federation.node.executor;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
@@ -54,7 +54,7 @@ public class DomainSnapshotCommandExecutor implements CommandExecutor<DomainSnap
         executorRegistry.register(DomainSnapshotCommand.class, this);
     }
 
-    public synchronized void execute(DomainSnapshotCommand command) throws ContainerException {
+    public synchronized void execute(DomainSnapshotCommand command) throws Fabric3Exception {
         if (snapshot == null) {
             LogicalCompositeComponent domain = lcm.getRootComponent();
             snapshot = SnapshotHelper.snapshot(domain, LogicalState.NEW);

@@ -27,7 +27,7 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Implements unit of work boundaries for a JMS operation.
@@ -54,16 +54,16 @@ public class JtaUnitOfWork implements UnitOfWork {
         this.statistics = statistics;
     }
 
-    public void begin() throws ContainerException {
+    public void begin() throws Fabric3Exception {
         try {
             tm.begin();
             tm.setTransactionTimeout(transactionTimeout);
         } catch (NotSupportedException | SystemException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void end(Session session, Message message) throws ContainerException {
+    public void end(Session session, Message message) throws Fabric3Exception {
         try {
             if (tm.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
                 tm.commit();
@@ -73,18 +73,18 @@ public class JtaUnitOfWork implements UnitOfWork {
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException | SecurityException | IllegalStateException e) {
-            throw new ContainerException("Error handling message for " + uri, e);
+            throw new Fabric3Exception("Error handling message for " + uri, e);
         }
     }
 
-    public void rollback(Session session) throws ContainerException {
+    public void rollback(Session session) throws Fabric3Exception {
         try {
             if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
                 tm.rollback();
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
-            throw new ContainerException("Error reverting transaction for " + uri, e);
+            throw new Fabric3Exception("Error reverting transaction for " + uri, e);
         }
     }
 

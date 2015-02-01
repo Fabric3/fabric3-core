@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.StopComponentCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -35,7 +35,7 @@ public class StopComponentCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public StopComponentCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public StopComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
             return new StopComponentCommand(component.getUri());
         }

@@ -21,7 +21,7 @@ package org.fabric3.implementation.pojo.spi.proxy;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
@@ -38,9 +38,9 @@ public interface WireProxyService {
      * @param wire        the wire to proxy @return an ObjectFactory that will create proxies
      * @param callbackUri the callback URI or null if the wire is unidirectional
      * @return the factory
-     * @throws ContainerException if there was a problem creating the proxy
+     * @throws Fabric3Exception if there was a problem creating the proxy
      */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException;
+    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws Fabric3Exception;
 
     /**
      * Creates an ObjectFactory that provides proxies for the callback wire.
@@ -50,9 +50,9 @@ public interface WireProxyService {
      * @param callbackUri   the callback service uri
      * @param wire          the wire to proxy
      * @return an ObjectFactory that will create proxies
-     * @throws ContainerException if there was a problem creating the proxy
+     * @throws Fabric3Exception if there was a problem creating the proxy
      */
-    <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws ContainerException;
+    <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws Fabric3Exception;
 
     /**
      * Updates an ObjectFactory with an additional callback wire. This is used when multiple clients are wired to a target bidirectional service.
@@ -63,10 +63,10 @@ public interface WireProxyService {
      * @param callbackUri   the callback service uri
      * @param wire          the wire to proxy
      * @return an ObjectFactory that will create proxies
-     * @throws ContainerException if there was a problem creating the proxy
+     * @throws Fabric3Exception if there was a problem creating the proxy
      */
     <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ContainerException;
+            throws Fabric3Exception;
 
     /**
      * Cast a proxy to a ServiceReference.

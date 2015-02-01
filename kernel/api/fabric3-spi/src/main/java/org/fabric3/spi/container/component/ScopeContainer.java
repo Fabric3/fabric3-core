@@ -22,7 +22,7 @@ package org.fabric3.spi.container.component;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 
 /**
@@ -55,35 +55,35 @@ public interface ScopeContainer {
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
      * @param deployable the deployable to start the context for
-     * @throws ContainerException if an exception starting the context was encountered
+     * @throws Fabric3Exception if an exception starting the context was encountered
      */
-    void startContext(QName deployable) throws ContainerException;
+    void startContext(QName deployable) throws Fabric3Exception;
 
     /**
      * Stop the context associated with the current work context.
      *
      * @param deployable the deployable to start the context for
-     * @throws ContainerException if there is an error stopping the context
+     * @throws Fabric3Exception if there is an error stopping the context
      */
-    void stopContext(QName deployable) throws ContainerException;
+    void stopContext(QName deployable) throws Fabric3Exception;
 
     /**
      * Returns an instance associated with the current scope context, creating one if necessary
      *
      * @param component the component
      * @return the instance
-     * @throws ContainerException if there was a problem instantiating the target instance
+     * @throws Fabric3Exception if there was a problem instantiating the target instance
      */
-    Object getInstance(ScopedComponent component) throws ContainerException;
+    Object getInstance(ScopedComponent component) throws Fabric3Exception;
 
     /**
      * Return am instance after use (for example, after invoking the instance).
      *
      * @param component the component
      * @param instance  the instance
-     * @throws ContainerException if there was a problem returning the target instance
+     * @throws Fabric3Exception if there was a problem returning the target instance
      */
-    void releaseInstance(ScopedComponent component, Object instance) throws ContainerException;
+    void releaseInstance(ScopedComponent component, Object instance) throws Fabric3Exception;
 
     /**
      * Returns a snapshot of the component instances that are active and currently managed by the scope container.
@@ -96,8 +96,8 @@ public interface ScopeContainer {
     /**
      * Reinjects all live instances with updated wires
      *
-     * @throws ContainerException if an error occurs during reinjection
+     * @throws Fabric3Exception if an error occurs during reinjection
      */
-    void reinject() throws ContainerException;
+    void reinject() throws Fabric3Exception;
 
 }

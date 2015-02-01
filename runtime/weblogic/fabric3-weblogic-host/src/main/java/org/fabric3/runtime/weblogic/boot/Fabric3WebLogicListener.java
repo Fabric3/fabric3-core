@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.MonitorProxyService;
@@ -104,7 +104,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             if (monitor != null) {
                 monitor.stopped();
             }
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             context.log("Error shutting down Fabric3", e);
         }
     }

@@ -32,7 +32,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
@@ -139,7 +139,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
         generators.put(LocationContributionWire.class, locationGenerator);
     }
 
-    private void setupStore() throws ContainerException {
+    private void setupStore() throws Fabric3Exception {
         URI importUri = URI.create("import");
         URI exportUri = URI.create("export");
         JavaContributionWire javaWire = new JavaContributionWire(imprt, export, importUri, exportUri);

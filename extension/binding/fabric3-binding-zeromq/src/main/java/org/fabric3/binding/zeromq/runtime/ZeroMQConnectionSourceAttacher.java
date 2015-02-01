@@ -21,7 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
@@ -42,7 +42,7 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
     }
 
     public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
 
         ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
         URI subscriberId = source.getUri();
@@ -50,7 +50,7 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
         broker.subscribe(subscriberId, metadata, connection, loader);
     }
 
-    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
         ZeroMQMetadata metadata = source.getMetadata();
         URI subscriberId = source.getUri();
         broker.unsubscribe(subscriberId, metadata);

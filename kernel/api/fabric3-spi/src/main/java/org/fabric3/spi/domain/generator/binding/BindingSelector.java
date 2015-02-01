@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.domain.generator.binding;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalWire;
 
@@ -31,16 +31,16 @@ public interface BindingSelector {
      * Selects and configures bindings in a domain.
      *
      * @param domain the domain component
-     * @throws ContainerException if an error occurs selecting a binding
+     * @throws Fabric3Exception if an error occurs selecting a binding
      */
-    void selectBindings(LogicalCompositeComponent domain) throws ContainerException;
+    void selectBindings(LogicalCompositeComponent domain) throws Fabric3Exception;
 
     /**
      * Selects and configures a binding for a wire.
      *
      * @param wire the wire
-     * @throws ContainerException if an error occurs selecting a binding
+     * @throws Fabric3Exception if an error occurs selecting a binding
      */
-    void selectBinding(LogicalWire wire) throws ContainerException;
+    void selectBinding(LogicalWire wire) throws Fabric3Exception;
 
 }

@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Parses a Spring Security configuration.
@@ -39,7 +39,7 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         PASSWORD_ENCODERS.add("md5");
     }
 
-    public AuthenticationManagerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, ContainerException {
+    public AuthenticationManagerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         reader.nextTag();
         AuthenticationManagerConfiguration managerConfiguration = new AuthenticationManagerConfiguration();
         while (true) {
@@ -67,7 +67,7 @@ public class ConfigurationParserImpl implements ConfigurationParser {
                     break;
                 case XMLStreamConstants.END_DOCUMENT:
                     if (managerConfiguration.getProviderConfigurations().isEmpty()) {
-                        throw new ContainerException("An authentication provider must be configured for the authentication manager");
+                        throw new Fabric3Exception("An authentication provider must be configured for the authentication manager");
                     }
                     // TODO validate alias on manager
                     return managerConfiguration;
@@ -95,7 +95,7 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         return configuration;
     }
 
-    private AuthenticationProviderConfiguration parseProvider(XMLStreamReader reader) throws XMLStreamException, ContainerException {
+    private AuthenticationProviderConfiguration parseProvider(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         String passwordEncoder = null;
         boolean base64 = false;
         while (true) {
@@ -116,10 +116,10 @@ public class ConfigurationParserImpl implements ConfigurationParser {
                     } else if ("password-encoder".equals(reader.getName().getLocalPart())) {
                         passwordEncoder = reader.getAttributeValue(null, "hash");
                         if (passwordEncoder == null) {
-                            throw new ContainerException("A hash vale must be configured for the password encoder");
+                            throw new Fabric3Exception("A hash vale must be configured for the password encoder");
                         }
                         if (!PASSWORD_ENCODERS.contains(passwordEncoder)) {
-                            throw new ContainerException("Invalid password encoder value: " + passwordEncoder);
+                            throw new Fabric3Exception("Invalid password encoder value: " + passwordEncoder);
                         }
                         base64 = Boolean.parseBoolean(reader.getAttributeValue(null, "useBase64"));
                     }
@@ -136,7 +136,7 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         }
     }
 
-    private LdapServerConfiguration parseLdapServer(XMLStreamReader reader) throws ContainerException {
+    private LdapServerConfiguration parseLdapServer(XMLStreamReader reader) throws Fabric3Exception {
         String url = reader.getAttributeValue(null, "url");
         if (url == null) {
             raiseConfigurationException("LDAP server configuration must specify a URL", reader);
@@ -153,14 +153,14 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         return configuration;
     }
 
-    private void raiseConfigurationException(String message, XMLStreamReader reader) throws ContainerException {
+    private void raiseConfigurationException(String message, XMLStreamReader reader) throws Fabric3Exception {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new ContainerException(message);
+            throw new Fabric3Exception(message);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new ContainerException(message + " [" + line + "," + col + "]");
+        throw new Fabric3Exception(message + " [" + line + "," + col + "]");
     }
 
 }

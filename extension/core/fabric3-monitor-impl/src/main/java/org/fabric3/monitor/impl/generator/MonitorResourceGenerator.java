@@ -18,7 +18,7 @@ package org.fabric3.monitor.impl.generator;
 
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
@@ -42,7 +42,7 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResource> logicalResource) throws ContainerException {
+    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResource> logicalResource) throws Fabric3Exception {
         MonitorResource resourceDefinition = logicalResource.getDefinition();
 
         PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition(resourceDefinition.getName());
@@ -54,10 +54,10 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
         return physicalDefinition;
     }
 
-    private MonitorDestinationGenerator getDestinationGenerator(MonitorDestinationDefinition definition) throws ContainerException {
+    private MonitorDestinationGenerator getDestinationGenerator(MonitorDestinationDefinition definition) throws Fabric3Exception {
         MonitorDestinationGenerator generator = destinationGenerators.get(definition.getClass());
         if (generator == null) {
-            throw new ContainerException("Unknown monitor destination type: " + definition.getClass());
+            throw new Fabric3Exception("Unknown monitor destination type: " + definition.getClass());
         }
         return generator;
     }

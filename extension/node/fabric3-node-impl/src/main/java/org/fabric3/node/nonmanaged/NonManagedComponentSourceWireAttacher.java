@@ -16,7 +16,7 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
@@ -40,25 +40,25 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         this.registry = registry;
     }
 
-    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         try {
             ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
             Class<?> interfaze = loader.loadClass(source.getInterface());
             Object proxy = proxyService.createObjectFactory(interfaze, wire, null).getInstance();
             source.setProxy(proxy);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
     public void attachObjectFactory(NonManagedPhysicalWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         source.setProxy(objectFactory.getInstance());
     }
 
-    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 
-    public void detachObjectFactory(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 }

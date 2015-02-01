@@ -21,7 +21,7 @@ package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -44,14 +44,14 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
         this.manager = manager;
     }
 
-    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 
-    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -59,7 +59,7 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
     }
 
     public void attachObjectFactory(SingletonWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

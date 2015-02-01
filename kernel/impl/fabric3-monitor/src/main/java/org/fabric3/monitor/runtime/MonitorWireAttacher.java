@@ -18,7 +18,7 @@
  */
 package org.fabric3.monitor.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -47,15 +47,15 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws Fabric3Exception {
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
@@ -63,7 +63,7 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
             Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
             return new SingletonObjectFactory<>(monitor);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Unable to load monitor class: " + target.getMonitorType(), e);
+            throw new Fabric3Exception("Unable to load monitor class: " + target.getMonitorType(), e);
         }
     }
 }

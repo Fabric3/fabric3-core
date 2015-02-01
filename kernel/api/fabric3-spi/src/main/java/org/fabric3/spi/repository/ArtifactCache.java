@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Temporarily stores artifacts locally to a runtime.
@@ -36,9 +36,9 @@ public interface ArtifactCache {
      * @param uri    The artifact URI
      * @param stream the artifact contents
      * @return a URL for the persisted artifact
-     * @throws ContainerException if an error occurs persisting the artifact
+     * @throws Fabric3Exception if an error occurs persisting the artifact
      */
-    URL cache(URI uri, InputStream stream) throws ContainerException;
+    URL cache(URI uri, InputStream stream) throws Fabric3Exception;
 
     /**
      * Returns the URL for the cached artifact or null if not found.
@@ -53,8 +53,8 @@ public interface ArtifactCache {
      *
      * @param uri the artifact URI.
      * @return returns true if the artifact was evicted
-     * @throws ContainerException if an error occurs releasing the artifact
+     * @throws Fabric3Exception if an error occurs releasing the artifact
      */
-    boolean remove(URI uri) throws ContainerException;
+    boolean remove(URI uri) throws Fabric3Exception;
 
 }

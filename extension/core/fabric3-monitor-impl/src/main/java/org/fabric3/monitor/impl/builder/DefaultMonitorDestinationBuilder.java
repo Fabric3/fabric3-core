@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.impl.common.MonitorConstants;
 import org.fabric3.monitor.impl.destination.DefaultMonitorDestination;
 import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition;
@@ -64,13 +64,13 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws ContainerException {
+    public void build(PhysicalDefaultMonitorDestinationDefinition definition) throws Fabric3Exception {
         // create the appenders for the destination
         List<Appender> appenders = new ArrayList<>();
         for (PhysicalAppenderDefinition appenderDefinition : definition.getDefinitions()) {
             AppenderBuilder builder = appenderBuilders.get(appenderDefinition.getClass());
             if (builder == null) {
-                throw new ContainerException("Unknown appender type: " + definition.getClass());
+                throw new Fabric3Exception("Unknown appender type: " + definition.getClass());
             }
             Appender appender;
             appender = builder.build(appenderDefinition);
@@ -82,17 +82,17 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
         try {
             destination.start();
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         registry.register(destination);
     }
 
-    public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws ContainerException {
+    public void remove(PhysicalDefaultMonitorDestinationDefinition definition) throws Fabric3Exception {
         MonitorDestination destination = registry.unregister(definition.getName());
         try {
             destination.stop();
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
     }

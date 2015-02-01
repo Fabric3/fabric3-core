@@ -19,7 +19,7 @@
  */
 package org.fabric3.api.host.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Manages the lifecycle of a Fabric3 runtime instance.
@@ -37,23 +37,23 @@ public interface RuntimeCoordinator {
      * Prepares the runtime, synchronizes it with the domain, and places it in a state to receive requests. Equivalent to calling {@link #boot()}, {@link
      * #load()} and {@link #joinDomain()}.
      *
-     * @throws ContainerException if an error occurs starting the runtime
+     * @throws Fabric3Exception if an error occurs starting the runtime
      */
-    void start() throws ContainerException;
+    void start() throws Fabric3Exception;
 
     /**
      * Prepares the runtime by performing bootstrap.
      *
-     * @throws ContainerException if an error occurs booting the runtime
+     * @throws Fabric3Exception if an error occurs booting the runtime
      */
-    void boot() throws ContainerException;
+    void boot() throws Fabric3Exception;
 
     /**
      * Loads extensions and performs local recovery.
      *
-     * @throws ContainerException if an error occurs loading the runtime
+     * @throws Fabric3Exception if an error occurs loading the runtime
      */
-    void load() throws ContainerException;
+    void load() throws Fabric3Exception;
 
     /**
      * Performs domain synchronization, domain recovery and places the runtime in a state to receive requests.
@@ -64,9 +64,9 @@ public interface RuntimeCoordinator {
      * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed to proceed
      * to completion.
      *
-     * @throws ContainerException if an error occurs shutting down the runtime
+     * @throws Fabric3Exception if an error occurs shutting down the runtime
      */
-    void shutdown() throws ContainerException;
+    void shutdown() throws Fabric3Exception;
 }
 
 

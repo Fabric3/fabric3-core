@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.contribution.Contribution;
@@ -65,7 +65,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
     }
 
     public <T> T createProxy(URI classLoaderKey, Class<T> interfaze, Method[] methods, Class<? extends ProxyDispatcher> dispatcher, boolean wrapped)
-            throws ContainerException {
+            throws Fabric3Exception {
         if (wrapped) {
             return createWrappedProxy(classLoaderKey, interfaze, methods, dispatcher);
         } else {
@@ -86,11 +86,11 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
      * @param methods        the proxy methods
      * @param dispatcher     the dispatcher
      * @return the proxy
-     * @throws ContainerException if there is an error creating the proxy
+     * @throws Fabric3Exception if there is an error creating the proxy
      */
     @SuppressWarnings("unchecked")
     private <T> T createWrappedProxy(URI classLoaderKey, Class<T> interfaze, Method[] methods, Class<? extends ProxyDispatcher> dispatcher)
-            throws ContainerException {
+            throws Fabric3Exception {
 
         String className = interfaze.getName() + "_Proxy_" + dispatcher.getSimpleName();  // ensure multiple dispatchers can be defined for the same interface
 
@@ -102,7 +102,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
         } catch (ClassNotFoundException e) {
             // ignore
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
         String interfazeName = Type.getInternalName(interfaze);
@@ -280,7 +280,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
         try {
             return (T) proxyClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -292,11 +292,11 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
      * @param methods        the proxy methods
      * @param dispatcher     the dispatcher
      * @return the proxy
-     * @throws ContainerException if there is an error creating the proxy
+     * @throws Fabric3Exception if there is an error creating the proxy
      */
     @SuppressWarnings("unchecked")
     private <T> T createUnWrappedProxy(URI classLoaderKey, Class<T> interfaze, Method[] methods, Class<? extends ProxyDispatcher> dispatcher)
-            throws ContainerException {
+            throws Fabric3Exception {
 
         String className = interfaze.getName() + "_Proxy_" + dispatcher.getSimpleName();  // ensure multiple dispatchers can be defined for the same interface
 
@@ -308,7 +308,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
         } catch (ClassNotFoundException e) {
             // ignore
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
         String interfazeName = Type.getInternalName(interfaze);
@@ -431,7 +431,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ContributionServiceListen
         try {
             return (T) proxyClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

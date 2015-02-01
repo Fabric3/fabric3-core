@@ -18,7 +18,7 @@ package org.fabric3.fabric.container.builder.channel;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
@@ -41,20 +41,20 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI uri = target.getUri();
         Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) throws Fabric3Exception {
         // no-op since channel do not maintain references to incoming handlers
     }
 
-    private Channel getChannel(URI uri, ChannelSide channelSide) throws ContainerException {
+    private Channel getChannel(URI uri, ChannelSide channelSide) throws Fabric3Exception {
         Channel channel = channelManager.getChannel(uri, channelSide);
         if (channel == null) {
-            throw new ContainerException("Channel not found");
+            throw new Fabric3Exception("Channel not found");
         }
         return channel;
     }

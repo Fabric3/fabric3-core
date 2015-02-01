@@ -19,7 +19,7 @@ package org.fabric3.monitor.impl.generator;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
@@ -40,7 +40,7 @@ public class DefaultMonitorDestinationGenerator implements MonitorDestinationGen
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalDefaultMonitorDestinationDefinition generateResource(DefaultMonitorDestinationDefinition definition) throws ContainerException {
+    public PhysicalDefaultMonitorDestinationDefinition generateResource(DefaultMonitorDestinationDefinition definition) throws Fabric3Exception {
         String name = definition.getParent().getName();
         PhysicalDefaultMonitorDestinationDefinition physicalDefinition = new PhysicalDefaultMonitorDestinationDefinition(name);
         List<AppenderDefinition> appenderDefinitions = definition.getAppenderDefinitions();
@@ -53,10 +53,10 @@ public class DefaultMonitorDestinationGenerator implements MonitorDestinationGen
         return physicalDefinition;
     }
 
-    private AppenderGenerator getAppenderGenerator(AppenderDefinition definition) throws ContainerException {
+    private AppenderGenerator getAppenderGenerator(AppenderDefinition definition) throws Fabric3Exception {
         AppenderGenerator generator = appenderGenerators.get(definition.getClass());
         if (generator == null) {
-            throw new ContainerException("Unknown appender type: " + definition.getClass());
+            throw new Fabric3Exception("Unknown appender type: " + definition.getClass());
         }
         return generator;
     }

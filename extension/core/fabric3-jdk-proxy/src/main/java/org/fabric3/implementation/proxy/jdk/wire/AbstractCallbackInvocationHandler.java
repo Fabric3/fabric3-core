@@ -21,7 +21,7 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -76,7 +76,7 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
         }
     }
 
-    protected Object handleProxyMethod(Method method) throws ContainerException {
+    protected Object handleProxyMethod(Method method) throws Fabric3Exception {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
         } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
@@ -87,7 +87,7 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
             // TODO better hash algorithm
         }
         String op = method.getName();
-        throw new ContainerException("Operation not configured: " + op);
+        throw new Fabric3Exception("Operation not configured: " + op);
     }
 
 }

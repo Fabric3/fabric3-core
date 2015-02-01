@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -53,7 +53,7 @@ public class AttachWireCommandExecutor implements CommandExecutor<AttachWireComm
         commandExecutorRegistry.register(AttachWireCommand.class, this);
     }
 
-    public void execute(AttachWireCommand command) throws ContainerException {
+    public void execute(AttachWireCommand command) throws Fabric3Exception {
         connector.connect(command.getPhysicalWireDefinition());
     }
 }

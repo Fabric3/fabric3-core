@@ -21,7 +21,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 
 /**
@@ -34,14 +34,14 @@ public class JAXBObject2StringTransformer implements Transformer<Object, String>
         this.jaxbContext = jaxbContext;
     }
 
-    public String transform(Object source, ClassLoader loader) throws ContainerException {
+    public String transform(Object source, ClassLoader loader) throws Fabric3Exception {
         try {
             Marshaller marshaller = jaxbContext.createMarshaller();
             StringWriter writer = new StringWriter();
             marshaller.marshal(source, writer);
             return writer.toString();
         } catch (JAXBException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

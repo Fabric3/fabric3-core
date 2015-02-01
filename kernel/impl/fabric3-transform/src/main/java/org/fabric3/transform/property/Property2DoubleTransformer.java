@@ -18,7 +18,7 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -39,11 +39,11 @@ public class Property2DoubleTransformer implements SingleTypeTransformer<Node, D
         return TARGET;
     }
 
-    public Double transform(Node node, ClassLoader loader) throws ContainerException {
+    public Double transform(Node node, ClassLoader loader) throws Fabric3Exception {
         try {
             return Double.valueOf(node.getTextContent());
         } catch (NumberFormatException ex) {
-            throw new ContainerException("Unsupportable double " + node.getTextContent(), ex);
+            throw new Fabric3Exception("Unsupportable double " + node.getTextContent(), ex);
         }
     }
 }

@@ -16,12 +16,12 @@
  */
 package org.fabric3.spi.security;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Base authentication exception.
  */
-public class AuthenticationException extends ContainerException {
+public class AuthenticationException extends Fabric3Exception {
     private static final long serialVersionUID = 6275153762711600627L;
 
     public AuthenticationException(String message) {

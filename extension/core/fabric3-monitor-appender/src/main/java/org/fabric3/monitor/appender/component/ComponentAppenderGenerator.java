@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.appender.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -26,7 +26,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ComponentAppenderGenerator implements AppenderGenerator<ComponentAppenderDefinition> {
 
-    public PhysicalComponentAppenderDefinition generateResource(ComponentAppenderDefinition definition) throws ContainerException {
+    public PhysicalComponentAppenderDefinition generateResource(ComponentAppenderDefinition definition) throws Fabric3Exception {
         return new PhysicalComponentAppenderDefinition(definition.getComponentName());
     }
 }

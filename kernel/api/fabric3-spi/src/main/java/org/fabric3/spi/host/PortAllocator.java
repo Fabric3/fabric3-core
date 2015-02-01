@@ -20,7 +20,7 @@ package org.fabric3.spi.host;
 
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Responsible for allocating ports for use by a binding transport or other extension.
@@ -45,9 +45,9 @@ public interface PortAllocator {
      * @param name the port name. Used when a transport uses a port per endpoint
      * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
      * @return the allocated port
-     * @throws ContainerException if there was an error allocating a port
+     * @throws Fabric3Exception if there was an error allocating a port
      */
-    Port allocate(String name, String type) throws ContainerException;
+    Port allocate(String name, String type) throws Fabric3Exception;
 
     /**
      * Requests a specific port number to be reserved. This may be outside the configured port range. If so, the allocator will check availability and
@@ -57,9 +57,9 @@ public interface PortAllocator {
      * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
      * @param port the requested port number
      * @return returns the port
-     * @throws ContainerException if there was an error reserving the port
+     * @throws Fabric3Exception if there was an error reserving the port
      */
-    Port reserve(String name, String type, int port) throws ContainerException;
+    Port reserve(String name, String type, int port) throws Fabric3Exception;
 
     /**
      * Returns the port number associated with the name.

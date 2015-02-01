@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -50,13 +50,13 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         return true;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ContainerException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws Fabric3Exception {
         Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
         return new WireObjectFactory<>(interfaze, callbackUri, this, mappings);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-           throws ContainerException  {
+           throws Fabric3Exception  {
         Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
         Map<String, Map<Method, InvocationChain>> mappings = new HashMap<>();
         mappings.put(callbackUri.toString(), operationMappings);
@@ -64,7 +64,7 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ContainerException {
+            throws Fabric3Exception {
         if (!(factory instanceof CallbackWireObjectFactory)) {
             // a placeholder object factory (i.e. created when the callback is not wired) needs to be replaced 
             return createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
@@ -75,13 +75,13 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         return callbackFactory;
     }
 
-    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ContainerException {
+    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws Fabric3Exception {
         JDKInvocationHandler<T> handler;
         handler = new JDKInvocationHandler<>(interfaze, callbackUri, mappings);
         return handler.getService();
     }
 
-    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ContainerException {
+    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws Fabric3Exception {
         ClassLoader cl = interfaze.getClassLoader();
         MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<>(mappings);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
@@ -107,7 +107,7 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         }
     }
 
-    private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) throws ContainerException {
+    private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) throws Fabric3Exception {
 
         List<InvocationChain> invocationChains = wire.getInvocationChains();
 
@@ -118,9 +118,9 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
                 Method method = findMethod(interfaze, operation);
                 chains.put(method, chain);
             } catch (NoSuchMethodException e) {
-                throw new ContainerException(operation.getName());
+                throw new Fabric3Exception(operation.getName());
             } catch (ClassNotFoundException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         }
         return chains;

@@ -3,7 +3,7 @@ package org.fabric3.binding.rs.runtime;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.fabric3.binding.rs.runtime.container.RsClientInterceptor;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -25,7 +25,7 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws Fabric3Exception {
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(def.getClassLoaderId());
         List<InvocationChain> invocationChains = wire.getInvocationChains();
         URI uri = def.getUri();
@@ -43,15 +43,15 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
                 chain.addInterceptor(new RsClientInterceptor(operationName, interfaceClass, uri, args));
             }
         } catch (Exception e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws Fabric3Exception {
         // no-op
     }
 

@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
 import org.fabric3.binding.rs.runtime.container.RsContainer;
@@ -79,7 +79,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         this.logLevel = Level.parse(level);
     }
 
-    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
@@ -99,7 +99,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
             monitor.provisionedEndpoint(sourceUri);
         } catch (ClassNotFoundException e) {
             String name = source.getRsClass();
-            throw new ContainerException("Unable to load interface class " + name, e);
+            throw new Fabric3Exception("Unable to load interface class " + name, e);
         }
     }
 
@@ -115,7 +115,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         throw new AssertionError();
     }
 
-    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 
@@ -127,7 +127,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         return servletMapping;
     }
 
-    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException, ContainerException {
+    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException, Fabric3Exception {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -152,7 +152,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     private Resource createResource(F3ResourceHandler handler) {
         Resource template = Resource.from(handler.getInterface());
         if (template == null) {
-            throw new ContainerException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
+            throw new Fabric3Exception("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
         }
         Resource.Builder resourceBuilder = Resource.builder(template.getPath());
         for (ResourceMethod resourceMethod : template.getAllMethods()) {

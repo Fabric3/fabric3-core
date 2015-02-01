@@ -20,7 +20,7 @@ package org.fabric3.implementation.junit.generator;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
@@ -40,7 +40,7 @@ public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBind
 
     public JUnitWireSourceDefinition generateSource(LogicalBinding<JUnitBinding> bindingDefinition,
                                                     ServiceContract contract,
-                                                    List<LogicalOperation> operations) throws ContainerException {
+                                                    List<LogicalOperation> operations) throws Fabric3Exception {
         Component<?> definition = bindingDefinition.getParent().getParent().getDefinition();
         String testName = definition.getImplementation().getImplementationName();
         ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
@@ -49,13 +49,13 @@ public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBind
 
     public PhysicalWireTargetDefinition generateTarget(LogicalBinding<JUnitBinding> bindingDefinition,
                                                        ServiceContract contract,
-                                                       List<LogicalOperation> operations) throws ContainerException {
+                                                       List<LogicalOperation> operations) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JUnitBinding> serviceBinding,
                                                                      ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws ContainerException {
+                                                                     List<LogicalOperation> operations) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 }

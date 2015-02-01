@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -59,7 +59,7 @@ public class OperationResolverImplTestCase extends TestCase {
         try {
             resolver.resolve(operation1, targets);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
     }

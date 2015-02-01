@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
@@ -32,16 +32,16 @@ public interface Connector {
      * binding source (for bound services) or to a binding target (for bound references).
      *
      * @param definition metadata describing the wire to create
-     * @throws ContainerException if an error creating the wire occurs
+     * @throws Fabric3Exception if an error creating the wire occurs
      */
-    void connect(PhysicalWireDefinition definition) throws ContainerException;
+    void connect(PhysicalWireDefinition definition) throws Fabric3Exception;
 
 
     /**
      * Disconnects a wire between two components or a component and a binding.
      *
      * @param definition the metadata describing the wire to disconnect
-     * @throws ContainerException if an error disconnecting the wire occurs
+     * @throws Fabric3Exception if an error disconnecting the wire occurs
      */
-    void disconnect(PhysicalWireDefinition definition) throws ContainerException;
+    void disconnect(PhysicalWireDefinition definition) throws Fabric3Exception;
 }

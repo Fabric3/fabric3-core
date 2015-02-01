@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -41,7 +41,7 @@ public class BuildComponentCommandGenerator extends AbstractBuildComponentComman
         return BUILD_COMPONENTS;
     }
 
-    public BuildComponentCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public BuildComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW)) {
             PhysicalComponentDefinition definition = generateDefinition(component);
             return new BuildComponentCommand(definition);

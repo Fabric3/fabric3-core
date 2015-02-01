@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Defines monitor events for scope containers
@@ -37,7 +37,7 @@ public interface ScopeContainerMonitor {
     void initializationError(URI uri, QName deployable, Exception e);
 
     @Severe("Error destroying component {0} ({1})")
-    void destructionError(URI uri, QName deployable, ContainerException e);
+    void destructionError(URI uri, QName deployable, Fabric3Exception e);
 
     @Severe("Error electing zone leader")
     void leaderElectionError(Exception e);

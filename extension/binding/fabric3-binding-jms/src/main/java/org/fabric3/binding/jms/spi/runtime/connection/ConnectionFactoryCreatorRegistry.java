@@ -21,7 +21,7 @@ package org.fabric3.binding.jms.spi.runtime.connection;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Creates connection factory instances.
@@ -33,9 +33,9 @@ public interface ConnectionFactoryCreatorRegistry {
      *
      * @param configuration the configuration
      * @return the connection factory
-     * @throws ContainerException if there is an error creating the connection factory
+     * @throws Fabric3Exception if there is an error creating the connection factory
      */
-    ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws ContainerException;
+    ConnectionFactory create(ConnectionFactoryConfiguration configuration) throws Fabric3Exception;
 
     /**
      * Releases the connection factory from use. Implementations may close open connections and remove any resources allocated by the connection factory.

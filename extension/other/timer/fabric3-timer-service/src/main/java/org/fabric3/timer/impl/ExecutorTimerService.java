@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
@@ -68,7 +68,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         allocate(TimerService.DEFAULT_POOL, defaultPoolSize);
     }
 
@@ -77,7 +77,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         executors.values().forEach(java.util.concurrent.ScheduledExecutorService::shutdownNow);
     }
 
-    public void allocate(String poolName, int coreSize) throws ContainerException {
+    public void allocate(String poolName, int coreSize) throws Fabric3Exception {
         if (executors.containsKey(poolName)) {
             throw new IllegalStateException("Pool already allocated: " + poolName);
         }
@@ -93,7 +93,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         }
     }
 
-    public void deallocate(String poolName) throws ContainerException {
+    public void deallocate(String poolName) throws Fabric3Exception {
         ScheduledExecutorService executor = executors.remove(poolName);
         if (executor == null) {
             throw new IllegalStateException("Pool not allocated: " + poolName);

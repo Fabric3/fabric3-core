@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.jgroups.Address;
 import org.jgroups.View;
 
@@ -69,18 +69,18 @@ public interface JGroupsHelper {
      *
      * @param payload the message
      * @return the message payload
-     * @throws ContainerException if there is an error deserializing the payload
+     * @throws Fabric3Exception if there is an error deserializing the payload
      */
-    Object deserialize(byte[] payload) throws ContainerException;
+    Object deserialize(byte[] payload) throws Fabric3Exception;
 
     /**
      * Serializes an object.
      *
      * @param object the object to serialize
      * @return the serialized bytes
-     * @throws ContainerException if there is an error serializing
+     * @throws Fabric3Exception if there is an error serializing
      */
-    byte[] serialize(Serializable object) throws ContainerException;
+    byte[] serialize(Serializable object) throws Fabric3Exception;
 
     /**
      * Calculates the set of new runtimes from the two views.

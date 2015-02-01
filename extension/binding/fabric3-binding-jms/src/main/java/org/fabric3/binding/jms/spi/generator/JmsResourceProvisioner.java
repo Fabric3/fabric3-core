@@ -16,7 +16,7 @@
  */
 package org.fabric3.binding.jms.spi.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
@@ -34,32 +34,32 @@ public interface JmsResourceProvisioner {
      * Called after a source definition has been generated.
      *
      * @param definition the source definition
-     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
+     * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    void generateSource(JmsWireSourceDefinition definition) throws ContainerException;
+    void generateSource(JmsWireSourceDefinition definition) throws Fabric3Exception;
 
     /**
      * Called after a target definition has been generated.
      *
      * @param definition the target definition
-     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
+     * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    void generateTarget(JmsWireTargetDefinition definition) throws ContainerException;
+    void generateTarget(JmsWireTargetDefinition definition) throws Fabric3Exception;
 
     /**
      * Called after a source connection definition has been generated.
      *
      * @param definition the source definition
-     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
+     * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionSource(JmsConnectionSource definition) throws ContainerException ;
+    public void generateConnectionSource(JmsConnectionSource definition) throws Fabric3Exception ;
 
     /**
      * Called after a target connection definition has been generated.
      *
      * @param definition the target definition
-     * @throws ContainerException if an error occurs provisioning a required JMS artifact.
+     * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionTarget(JmsConnectionTarget definition) throws ContainerException;
+    public void generateConnectionTarget(JmsConnectionTarget definition) throws Fabric3Exception;
     
 }

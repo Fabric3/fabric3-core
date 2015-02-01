@@ -21,7 +21,7 @@ package org.fabric3.fabric.synthesizer;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -29,7 +29,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  *
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
-public class InvalidServiceContractException extends ContainerException {
+public class InvalidServiceContractException extends Fabric3Exception {
     private static final long serialVersionUID = 4367622270403828483L;
     private List<ValidationFailure> errors;
 

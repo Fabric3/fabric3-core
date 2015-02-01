@@ -22,7 +22,7 @@ package org.fabric3.binding.jms.generator;
 import java.io.InputStream;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
@@ -47,14 +47,14 @@ import org.fabric3.binding.jms.spi.provision.PayloadType;
 public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
     private static final String JAXB = "JAXB";
 
-    public OperationPayloadTypes introspect(Operation operation) throws ContainerException {
+    public OperationPayloadTypes introspect(Operation operation) throws Fabric3Exception {
         PayloadType inputType = getInputPayloadType(operation);
         PayloadType outputType = introspectType(operation.getOutputType());
         PayloadType faultType = getFaultPayloadType(operation);
         return new OperationPayloadTypes(operation.getName(), inputType, outputType, faultType);
     }
 
-    private PayloadType getInputPayloadType(Operation operation) throws ContainerException {
+    private PayloadType getInputPayloadType(Operation operation) throws Fabric3Exception {
         List<DataType> inputTypes = operation.getInputTypes();
         if (inputTypes.size() == 1) {
             DataType param = inputTypes.get(0);
@@ -65,7 +65,7 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
         }
     }
 
-    private PayloadType getFaultPayloadType(Operation operation) throws ContainerException {
+    private PayloadType getFaultPayloadType(Operation operation) throws Fabric3Exception {
         for (DataType dataType : operation.getFaultTypes()) {
             if ("JAXB".equals(dataType.getDatabinding())) {
                 return PayloadType.TEXT;
@@ -74,7 +74,7 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
         return PayloadType.OBJECT;
     }
 
-    private PayloadType introspectType(DataType param) throws ContainerException {
+    private PayloadType introspectType(DataType param) throws Fabric3Exception {
 
         Class<?> type = param.getType();
         if (type.isPrimitive() && !Void.TYPE.equals(type)) {
@@ -87,7 +87,7 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
         return PayloadType.OBJECT;
     }
 
-    private PayloadType calculatePrimitivePayloadType(Class<?> clazz) throws ContainerException {
+    private PayloadType calculatePrimitivePayloadType(Class<?> clazz) throws Fabric3Exception {
         if (Short.TYPE.equals(clazz)) {
             return PayloadType.SHORT;
         } else if (Integer.TYPE.equals(clazz)) {
@@ -105,7 +105,7 @@ public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
         } else if (Byte.TYPE.equals(clazz)) {
             return PayloadType.BYTE;
         } else {
-            throw new ContainerException("Parameter type not supported: " + clazz);
+            throw new Fabric3Exception("Parameter type not supported: " + clazz);
         }
 
     }

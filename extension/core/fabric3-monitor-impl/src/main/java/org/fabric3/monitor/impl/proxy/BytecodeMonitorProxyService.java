@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -117,7 +117,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         super(router, monitorable);
     }
 
-    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException {
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws Fabric3Exception {
         if (destination == null) {
             destination = DEFAULT_DESTINATION;
         }
@@ -145,7 +145,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
             handler.init(destinationIndex, monitorable, router, infos, enabled);
             return type.cast(handler);
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

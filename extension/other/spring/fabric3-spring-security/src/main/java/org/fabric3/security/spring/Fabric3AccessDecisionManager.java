@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
 import org.oasisopen.sca.annotation.Init;
@@ -69,7 +69,7 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         if (getDecisionVoters() == null || getDecisionVoters().isEmpty()) {
             List<AccessDecisionVoter> voters = new ArrayList<>();
             RoleVoter roleVoter = new RoleVoter();
@@ -92,7 +92,7 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
             unanimousBased.setDecisionVoters(getDecisionVoters());
             delegate = unanimousBased;
         } else {
-            throw new ContainerException("Unknown access decision manager type: " + managerType);
+            throw new Fabric3Exception("Unknown access decision manager type: " + managerType);
         }
     }
 

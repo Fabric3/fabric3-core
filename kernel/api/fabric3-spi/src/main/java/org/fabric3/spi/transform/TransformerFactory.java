@@ -20,7 +20,7 @@ package org.fabric3.spi.transform;
 
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -52,7 +52,7 @@ public interface TransformerFactory {
      * @param inTypes  the physical types of the source data
      * @param outTypes the physical types of the converted data
      * @return the transformer the transformer
-     * @throws ContainerException if there was an error creating the transformer
+     * @throws Fabric3Exception if there was an error creating the transformer
      */
-    Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws ContainerException;
+    Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws Fabric3Exception;
 }

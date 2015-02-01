@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -35,26 +35,26 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param source metadata for performing the attach
      * @param target metadata for performing the attach
      * @param wire   the wire
-     * @throws ContainerException if an exception occurs during the attach operation
+     * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws ContainerException;
+    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws Fabric3Exception;
 
     /**
      * Detaches a wire from a target component or outgoing transport binding.
      *
      * @param source metadata for performing the attach
      * @param target metadata for performing the attach
-     * @throws ContainerException if an exception occurs during the detach operation
+     * @throws Fabric3Exception if an exception occurs during the detach operation
      */
-    void detach(PhysicalWireSourceDefinition source, PTD target) throws ContainerException;
+    void detach(PhysicalWireSourceDefinition source, PTD target) throws Fabric3Exception;
 
     /**
      * Create an ObjectFactory that returns a direct target instance.
      *
      * @param target metadata for performing the attach
      * @return an ObjectFactory that returns the target instance
-     * @throws ContainerException if an exception occurs during the attach operation
+     * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    ObjectFactory<?> createObjectFactory(PTD target) throws ContainerException;
+    ObjectFactory<?> createObjectFactory(PTD target) throws Fabric3Exception;
 
 }

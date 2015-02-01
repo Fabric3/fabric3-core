@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.AssemblyFailure;
 
 /**
  * Denotes a failure updating the domain assembly during deployment. For example, a failure may be a reference targeted to a non-existent service.
  */
-public class AssemblyException extends ContainerException {
+public class AssemblyException extends Fabric3Exception {
     private static final long serialVersionUID = 3957908169593535300L;
     private static final Comparator<AssemblyFailure> COMPARATOR = (first, second) -> first.getComponentUri().compareTo(second.getComponentUri());
 

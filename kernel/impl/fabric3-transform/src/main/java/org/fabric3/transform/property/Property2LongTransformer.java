@@ -18,7 +18,7 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -39,11 +39,11 @@ public class Property2LongTransformer implements SingleTypeTransformer<Node, Lon
         return TARGET;
     }
 
-    public Long transform(Node node, ClassLoader loader) throws ContainerException {
+    public Long transform(Node node, ClassLoader loader) throws Fabric3Exception {
         try {
             return Long.valueOf(node.getTextContent());
         } catch (NumberFormatException ex) {
-            throw new ContainerException("Unsupportable long " + node.getTextContent(), ex);
+            throw new Fabric3Exception("Unsupportable long " + node.getTextContent(), ex);
         }
     }
 }

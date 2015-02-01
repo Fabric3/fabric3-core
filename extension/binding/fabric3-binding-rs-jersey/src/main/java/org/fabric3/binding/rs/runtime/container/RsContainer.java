@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -75,7 +75,7 @@ public final class RsContainer extends HttpServlet {
         this.resources = new ArrayList<>();
     }
 
-    public void addResource(Resource resource) throws ContainerException {
+    public void addResource(Resource resource) throws Fabric3Exception {
         resources.add(resource);
         reload();
     }
@@ -107,7 +107,7 @@ public final class RsContainer extends HttpServlet {
         }
     }
 
-    private void reload() throws ContainerException {
+    private void reload() throws Fabric3Exception {
         try {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
@@ -127,7 +127,7 @@ public final class RsContainer extends HttpServlet {
             servlet = new ServletContainer(resourceConfig);
             servlet.init(servletConfig);
         } catch (Throwable t) {
-            throw new ContainerException(t);
+            throw new Fabric3Exception(t);
         }
     }
 

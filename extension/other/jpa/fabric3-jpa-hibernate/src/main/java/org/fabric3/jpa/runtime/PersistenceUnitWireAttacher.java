@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime;
 import javax.persistence.EntityManagerFactory;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
@@ -51,15 +51,15 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
         ClassLoader classLoader = registry.getClassLoader(classLoaderUri);

@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
@@ -60,13 +60,13 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         return state;
     }
 
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         boot();
         load();
         joinDomain();
     }
 
-    public void boot() throws ContainerException {
+    public void boot() throws Fabric3Exception {
         runtime.boot();
         Bootstrapper bootstrapper = new DefaultBootstrapper(configuration);
 
@@ -78,7 +78,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
     }
 
-    public void load() throws ContainerException {
+    public void load() throws Fabric3Exception {
         // load and initialize runtime extension components and the local runtime domain
         loadExtensions();
 
@@ -100,7 +100,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         state = RuntimeState.STARTED;
     }
 
-    public void shutdown() throws ContainerException {
+    public void shutdown() throws Fabric3Exception {
         if (state == RuntimeState.STARTED) {
             EventService eventService = runtime.getComponent(EventService.class);
             eventService.publish(new RuntimeStop());
@@ -114,9 +114,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     /**
      * Loads runtime extensions.
      *
-     * @throws ContainerException if an error loading runtime extensions
+     * @throws Fabric3Exception if an error loading runtime extensions
      */
-    private void loadExtensions() throws ContainerException {
+    private void loadExtensions() throws Fabric3Exception {
         List<ContributionSource> contributions = configuration.getExtensionContributions();
         ContributionService contributionService = runtime.getComponent(ContributionService.class);
         Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
@@ -144,14 +144,14 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      * Performs local runtime recovery operations, such as controller recovery and transaction recovery.
      *
      * @param eventService the event service
-     * @throws ContainerException if an error performing recovery is encountered
+     * @throws Fabric3Exception if an error performing recovery is encountered
      */
-    private void recover(EventService eventService) throws ContainerException {
+    private void recover(EventService eventService) throws Fabric3Exception {
         Domain domain = runtime.getComponent(Domain.class, APPLICATION_DOMAIN_URI);
         if (domain == null) {
             state = RuntimeState.ERROR;
             String name = APPLICATION_DOMAIN_URI.toString();
-            throw new ContainerException("Domain not found: " + name);
+            throw new Fabric3Exception("Domain not found: " + name);
         }
         // install user contributions - they will be deployed when the domain recovers
         List<ContributionSource> contributions = configuration.getUserContributions();
@@ -166,9 +166,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      *
      * @param sources the contribution sources
      * @return the list of installed contribution URIs
-     * @throws ContainerException if an installation error occurs
+     * @throws Fabric3Exception if an installation error occurs
      */
-    private List<URI> installContributions(List<ContributionSource> sources) throws ContainerException {
+    private List<URI> installContributions(List<ContributionSource> sources) throws Fabric3Exception {
         try {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
             // install the contributions

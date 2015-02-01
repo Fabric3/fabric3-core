@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionSource;
@@ -201,7 +201,7 @@ public abstract class AbstractFabric implements Fabric {
                 FileHelper.cleanDirectory(tempDirectory);
             }
             return this;
-        } catch (ContainerException | IOException e) {
+        } catch (IOException e) {
             throw new FabricException(e);
         }
     }
@@ -318,15 +318,15 @@ public abstract class AbstractFabric implements Fabric {
      *
      * @param onlyCore if true, only scan for core extensions; ignore all others as they will be explicitly configured
      * @return the sources
-     * @throws ContainerException if there is a scan error
+     * @throws Fabric3Exception if there is a scan error
      */
-    private List<ContributionSource> scanExtensions(final boolean onlyCore) throws ContainerException {
+    private List<ContributionSource> scanExtensions(final boolean onlyCore) throws Fabric3Exception {
         try {
 
             List<File> archives = scanClasspathForProfileArchives();
 
             if (archives.size() == 0) {
-                throw new ContainerException("Core extension archive not found");
+                throw new Fabric3Exception("Core extension archive not found");
             }
 
             List<ContributionSource> sources = new ArrayList<>();
@@ -344,7 +344,7 @@ public abstract class AbstractFabric implements Fabric {
             addSources(extensionsFiles, sources);
             return sources;
         } catch (IOException e) {
-            throw new ContainerException("Error scanning extensions", e);
+            throw new Fabric3Exception("Error scanning extensions", e);
         }
     }
 

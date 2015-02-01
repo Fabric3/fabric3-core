@@ -21,7 +21,7 @@ package org.fabric3.fabric.container.builder;
 
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.wire.InvocationChainImpl;
 import org.fabric3.fabric.container.wire.WireImpl;
 import org.fabric3.spi.container.builder.Connector;
@@ -70,16 +70,16 @@ public class ConnectorImpl implements Connector {
         this.targetAttachers = targetAttachers;
     }
 
-    public void connect(PhysicalWireDefinition definition) throws ContainerException {
+    public void connect(PhysicalWireDefinition definition) throws Fabric3Exception {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
         if (sourceAttacher == null) {
-            throw new ContainerException("Source attacher not found for type: " + sourceDefinition.getClass());
+            throw new Fabric3Exception("Source attacher not found for type: " + sourceDefinition.getClass());
         }
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
         TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
         if (targetAttacher == null) {
-            throw new ContainerException("Target attacher not found for type: " + targetDefinition.getClass());
+            throw new Fabric3Exception("Target attacher not found for type: " + targetDefinition.getClass());
         }
 
         if (definition.isOptimizable()) {
@@ -92,11 +92,11 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public void disconnect(PhysicalWireDefinition definition) throws ContainerException {
+    public void disconnect(PhysicalWireDefinition definition) throws Fabric3Exception {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
         if (sourceAttacher == null) {
-            throw new ContainerException("Source attacher not found for type: " + sourceDefinition.getClass());
+            throw new Fabric3Exception("Source attacher not found for type: " + sourceDefinition.getClass());
         }
 
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
@@ -105,14 +105,14 @@ public class ConnectorImpl implements Connector {
         } else {
             TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
             if (targetAttacher == null) {
-                throw new ContainerException("Target attacher not found for type: " + targetDefinition.getClass());
+                throw new Fabric3Exception("Target attacher not found for type: " + targetDefinition.getClass());
             }
             targetAttacher.detach(sourceDefinition, targetDefinition);
             sourceAttacher.detach(sourceDefinition, targetDefinition);
         }
     }
 
-    Wire createWire(PhysicalWireDefinition definition) throws ContainerException {
+    Wire createWire(PhysicalWireDefinition definition) throws Fabric3Exception {
         Wire wire = new WireImpl();
         for (PhysicalOperationDefinition operation : definition.getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);

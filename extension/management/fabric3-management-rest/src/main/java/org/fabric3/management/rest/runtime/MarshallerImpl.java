@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.management.rest.Constants;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
@@ -80,7 +80,7 @@ public class MarshallerImpl implements Marshaller {
             }
             byte[] output = mapping.getPair().getSerializer().transform(resource, loader);
             response.getOutputStream().write(output);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             Method method = mapping.getMethod();
             monitor.error("Error serializing response for " + method, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -157,7 +157,7 @@ public class MarshallerImpl implements Marshaller {
                 ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
                 ServletInputStream stream = request.getInputStream();
                 return new Object[]{transformer.transform(stream, loader)};
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 monitor.error("Error deserializing parameters for " + method, e);
                 throw new ResourceException(HttpStatus.BAD_REQUEST, "Invalid or unsupported parameter type");
             } catch (IOException e) {

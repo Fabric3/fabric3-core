@@ -22,7 +22,7 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
@@ -50,7 +50,7 @@ public class DisposeResourceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public DisposeResourcesCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public DisposeResourcesCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.MARKED)) {
             return null;
         }

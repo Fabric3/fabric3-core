@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.fabric3.api.binding.file.InvalidDataException;
 import org.fabric3.api.binding.file.ServiceAdapter;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -48,7 +48,7 @@ public class ServiceAdaptorWrapper implements ServiceAdapter {
                 throw new ServiceRuntimeException("File binding adaptor must implement " + ServiceAdapter.class.getName() + ":" + componentName);
             }
             return (ServiceAdapter) instance;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }

@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -45,7 +45,7 @@ public class DetachWireCommandExecutor implements CommandExecutor<DetachWireComm
         commandExecutorRegistry.register(DetachWireCommand.class, this);
     }
 
-    public void execute(DetachWireCommand command) throws ContainerException {
+    public void execute(DetachWireCommand command) throws Fabric3Exception {
         connector.disconnect(command.getPhysicalWireDefinition());
     }
 }

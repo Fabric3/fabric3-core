@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.appender.file;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -26,7 +26,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class FileAppenderGenerator implements AppenderGenerator<FileAppenderDefinition> {
 
-    public PhysicalFileAppenderDefinition generateResource(FileAppenderDefinition definition) throws ContainerException {
+    public PhysicalFileAppenderDefinition generateResource(FileAppenderDefinition definition) throws Fabric3Exception {
         return new PhysicalFileAppenderDefinition(definition.getFileName(), definition.getRollType(), definition.getRollSize(), definition.getMaxBackups());
     }
 

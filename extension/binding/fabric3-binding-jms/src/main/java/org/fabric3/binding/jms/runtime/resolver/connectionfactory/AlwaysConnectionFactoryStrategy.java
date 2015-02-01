@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
@@ -49,7 +49,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
         this.manager = manager;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws ContainerException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws Fabric3Exception {
             Map<String, String> properties = definition.getProperties();
             String className = properties.get("class");
             ConnectionFactory factory = instantiate(className, properties);
@@ -58,18 +58,18 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             return manager.register(name, factory, definition.getProperties());
     }
 
-    public void release(ConnectionFactoryDefinition definition) throws ContainerException {
+    public void release(ConnectionFactoryDefinition definition) throws Fabric3Exception {
             String name = definition.getName();
             if (created.remove(name)) {
                 ConnectionFactory factory = manager.unregister(name);
                 if (factory == null) {
-                    throw new ContainerException("Connection factory not found: " + name);
+                    throw new Fabric3Exception("Connection factory not found: " + name);
                 }
                 creatorRegistry.release(factory);
             }
     }
 
-    private ConnectionFactory instantiate(String className, Map<String, String> props) throws ContainerException {
+    private ConnectionFactory instantiate(String className, Map<String, String> props) throws Fabric3Exception {
         try {
             ConnectionFactory factory = (ConnectionFactory) Class.forName(className).newInstance();
             for (PropertyDescriptor pd : Introspector.getBeanInfo(factory.getClass()).getPropertyDescriptors()) {
@@ -82,7 +82,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             }
             return factory;
         } catch (InstantiationException | InvocationTargetException | IntrospectionException | ClassNotFoundException | IllegalAccessException e) {
-            throw new ContainerException("Unable to create connection factory: " + className, e);
+            throw new Fabric3Exception("Unable to create connection factory: " + className, e);
         }
 
     }

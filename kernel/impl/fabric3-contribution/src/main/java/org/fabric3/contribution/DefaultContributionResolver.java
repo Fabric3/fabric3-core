@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
@@ -57,7 +57,7 @@ public class DefaultContributionResolver implements ContributionResolver {
         this.extensions = extensions;
     }
 
-    public URL resolve(URI contributionUri) throws ContainerException {
+    public URL resolve(URI contributionUri) throws Fabric3Exception {
         Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             return contribution.getLocation();
@@ -75,10 +75,10 @@ public class DefaultContributionResolver implements ContributionResolver {
                 return cache.cache(contributionUri, stream);
             }
         }
-        throw new ContainerException("Contribution not found: " + contributionUri);
+        throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
-    public List<URL> resolveAllLocations(URI contributionUri) throws ContainerException {
+    public List<URL> resolveAllLocations(URI contributionUri) throws Fabric3Exception {
         Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             List<URL> locations = new ArrayList<>();
@@ -99,10 +99,10 @@ public class DefaultContributionResolver implements ContributionResolver {
                 return Collections.singletonList(cache.cache(contributionUri, stream));
             }
         }
-        throw new ContainerException("Contribution not found: " + contributionUri);
+        throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
-    public void release(URI contributionUri) throws ContainerException {
+    public void release(URI contributionUri) throws Fabric3Exception {
         cache.remove(contributionUri);
     }
 

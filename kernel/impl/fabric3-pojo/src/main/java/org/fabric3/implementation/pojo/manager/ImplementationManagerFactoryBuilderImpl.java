@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.api.model.type.java.Signature;
@@ -51,7 +51,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws ContainerException {
+    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws Fabric3Exception {
         try {
             URI componentUri = definition.getComponentUri();
             String className = definition.getImplementationClass();
@@ -69,7 +69,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
             for (int i = 0; i < cdiSources.length; i++) {
                 if (cdiSources[i] == null) {
                     String clazz = ctr.getName();
-                    throw new ContainerException("No injection value for constructor parameter " + i + " in class " + clazz);
+                    throw new Fabric3Exception("No injection value for constructor parameter " + i + " in class " + clazz);
                 }
             }
 
@@ -90,7 +90,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
                                                         cl,
                                                         reflectionFactory);
         } catch (ClassNotFoundException | NoSuchMethodException ex) {
-            throw new ContainerException(ex);
+            throw new Fabric3Exception(ex);
         }
     }
 

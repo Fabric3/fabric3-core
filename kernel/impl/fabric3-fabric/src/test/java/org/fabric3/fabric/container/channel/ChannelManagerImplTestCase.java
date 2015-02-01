@@ -21,7 +21,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.ChannelSide;
 
@@ -44,7 +44,7 @@ public class ChannelManagerImplTestCase extends TestCase {
         try {
             manager.register(channel);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
 

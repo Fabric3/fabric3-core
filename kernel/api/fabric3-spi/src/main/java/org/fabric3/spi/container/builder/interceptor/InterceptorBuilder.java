@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder.interceptor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
@@ -33,8 +33,8 @@ public interface InterceptorBuilder<PID extends PhysicalInterceptorDefinition> {
      *
      * @param definition metadata used for returning an interceptor
      * @return the interceptor
-     * @throws ContainerException if an error occurs returning the interceptor
+     * @throws Fabric3Exception if an error occurs returning the interceptor
      */
-    Interceptor build(PID definition) throws ContainerException;
+    Interceptor build(PID definition) throws Fabric3Exception;
 
 }

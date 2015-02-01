@@ -29,7 +29,6 @@ import java.util.Map;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.container.objectfactory.Injector;
 
 /**
@@ -41,7 +40,6 @@ public class InjectingDecorator implements ServletContextHandler.Decorator {
     public InjectingDecorator(Map<String, List<Injector<?>>> injectorMappings) {
         this.injectorMappings = injectorMappings;
     }
-
 
     public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
         inject(filter);
@@ -84,14 +82,9 @@ public class InjectingDecorator implements ServletContextHandler.Decorator {
         List<Injector<?>> injectors = injectorMappings.get(instance.getClass().getName());
         if (injectors != null) {
             for (Injector injector : injectors) {
-                try {
-                    injector.inject(instance);
-                } catch (ContainerException e) {
-                    throw new ServletException(e);
-                }
+                injector.inject(instance);
             }
         }
     }
-
 
 }

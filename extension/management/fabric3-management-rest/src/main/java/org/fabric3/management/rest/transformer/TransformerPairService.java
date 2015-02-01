@@ -19,7 +19,7 @@ package org.fabric3.management.rest.transformer;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -34,8 +34,8 @@ public interface TransformerPairService {
      * @param inputType  the input (serialized) type
      * @param outputType the type responses should be serialized to
      * @return the pair
-     * @throws ContainerException if an error occurs returning the pair
+     * @throws Fabric3Exception if an error occurs returning the pair
      */
-    TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws ContainerException;
+    TransformerPair getTransformerPair(List<Method> methods, DataType inputType, DataType outputType) throws Fabric3Exception;
 
 }

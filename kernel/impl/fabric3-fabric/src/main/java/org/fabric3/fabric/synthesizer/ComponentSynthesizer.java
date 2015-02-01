@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.synthesizer;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Synthesizes and registers a component from an existing object instance in the runtime domain.
@@ -32,8 +32,8 @@ public interface ComponentSynthesizer {
      * @param type       the service contract type
      * @param instance   the implementation instance
      * @param introspect true if the componentType should be introspected from the instance
-     * @throws ContainerException if an error occurs synthesizing the component
+     * @throws Fabric3Exception if an error occurs synthesizing the component
      */
-    public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ContainerException;
+    public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws Fabric3Exception;
 
 }

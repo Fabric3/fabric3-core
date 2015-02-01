@@ -21,7 +21,7 @@ package org.fabric3.spi.contribution.xml;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -49,8 +49,8 @@ public interface XmlProcessorRegistry {
      * @param contribution the contribution metadata to update
      * @param reader       the reader positioned at the first element of the document
      * @param context      the context to which validation errors and warnings are reported
-     * @throws ContainerException if an error occurs processing
+     * @throws Fabric3Exception if an error occurs processing
      */
-    void process(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws ContainerException;
+    void process(Contribution contribution, XMLStreamReader reader, IntrospectionContext context) throws Fabric3Exception;
 
 }

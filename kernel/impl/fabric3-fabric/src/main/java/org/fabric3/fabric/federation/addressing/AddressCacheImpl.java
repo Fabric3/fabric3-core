@@ -27,7 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
@@ -90,7 +90,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Destroy
-    public void destroy() throws ContainerException {
+    public void destroy() throws Fabric3Exception {
         if (isNode()) {
             topologyService.closeChannel(qualifiedChannelName);
             topologyService.deregister(this);
@@ -206,7 +206,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 AddressRequest request = new AddressRequest(info.getRuntimeName());
                 topologyService.sendAsynchronous(qualifiedChannelName, request);
             }
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             monitor.error(e);
         }
     }
@@ -239,7 +239,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
             if (propagate && isNode() && event instanceof AddressAnnouncement) {
                 try {
                     topologyService.sendAsynchronous(qualifiedChannelName, event);
-                } catch (ContainerException e) {
+                } catch (Fabric3Exception e) {
                     monitor.error(e);
                 }
             }
@@ -270,7 +270,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                             topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
                         }
                         // ignore on controller
-                    } catch (ContainerException e) {
+                    } catch (Fabric3Exception e) {
                         monitor.error(e);
                     }
                 }

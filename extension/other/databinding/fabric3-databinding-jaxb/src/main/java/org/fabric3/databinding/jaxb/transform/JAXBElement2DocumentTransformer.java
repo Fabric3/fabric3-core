@@ -25,7 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 import org.w3c.dom.Document;
 
@@ -45,7 +45,7 @@ public class JAXBElement2DocumentTransformer implements Transformer<Object, Docu
     }
 
     @SuppressWarnings({"unchecked"})
-    public Document transform(Object source, ClassLoader loader) throws ContainerException {
+    public Document transform(Object source, ClassLoader loader) throws Fabric3Exception {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.newDocument();
@@ -66,7 +66,7 @@ public class JAXBElement2DocumentTransformer implements Transformer<Object, Docu
 
             return document;
         } catch (JAXBException | ParserConfigurationException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

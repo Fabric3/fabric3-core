@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.objectfactory;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Creates new instances of a type.
@@ -29,7 +29,7 @@ public interface ObjectFactory<T> {
      * Return a instance of the type that this factory creates.
      *
      * @return a instance from this factory
-     * @throws ContainerException if there was a problem creating the instance
+     * @throws Fabric3Exception if there was a problem creating the instance
      */
-    T getInstance() throws ContainerException;
+    T getInstance() throws Fabric3Exception;
 }

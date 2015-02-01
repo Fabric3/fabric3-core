@@ -21,7 +21,7 @@ package org.fabric3.transform.property;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -42,13 +42,13 @@ public class Property2URLTransformer implements SingleTypeTransformer<Node, URL>
         return TARGET;
     }
 
-    public URL transform(final Node node, ClassLoader loader) throws ContainerException {
+    public URL transform(final Node node, ClassLoader loader) throws Fabric3Exception {
         final String content = node.getTextContent();
         final URL url;
         try {
             url = new URL(node.getTextContent());
         } catch (MalformedURLException me) {
-            throw new ContainerException("Unable to create URL :- " + content, me);
+            throw new Fabric3Exception("Unable to create URL :- " + content, me);
         }
         return url;
     }

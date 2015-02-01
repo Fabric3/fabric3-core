@@ -21,7 +21,7 @@ package org.fabric3.jpa.runtime.proxy;
 import javax.persistence.EntityManager;
 import javax.transaction.Transaction;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Responsible for returning an EntityManager with a persitence context tied to an execution context.
@@ -35,8 +35,8 @@ public interface EntityManagerService {
      * @param proxy       the proxy requesting the EntityManager
      * @param transaction the transaction
      * @return the EntityManager
-     * @throws ContainerException if an error creating the EntityManager is encountered
+     * @throws Fabric3Exception if an error creating the EntityManager is encountered
      */
-    EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws ContainerException;
+    EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws Fabric3Exception;
 
 }

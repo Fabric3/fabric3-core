@@ -19,7 +19,7 @@ package org.fabric3.databinding.jaxb.transform;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,7 +35,7 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
         this.jaxbContext = jaxbContext;
     }
 
-    public Object transform(Node source, ClassLoader loader) throws ContainerException {
+    public Object transform(Node source, ClassLoader loader) throws Fabric3Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
@@ -46,7 +46,7 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
                         return jaxbContext.createUnmarshaller().unmarshal(children.item(i));
                     }
                 }
-                throw new ContainerException("Unexpected content");
+                throw new Fabric3Exception("Unexpected content");
 
             } else {
                 // global element
@@ -54,7 +54,7 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
             }
 
         } catch (JAXBException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

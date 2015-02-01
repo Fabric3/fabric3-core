@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.UrlContributionSource;
 import org.fabric3.api.model.type.component.Channel;
@@ -57,7 +57,7 @@ public class NodeDomain implements Domain {
     public <T> T getService(Class<T> interfaze) {
         try {
             return serviceResolver.resolve(interfaze);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -65,7 +65,7 @@ public class NodeDomain implements Domain {
     public <T> T getChannel(Class<T> interfaze, String name) {
         try {
             return channelResolver.resolve(interfaze, name);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -74,7 +74,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(composite);
             return this;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -83,7 +83,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(name, instance, interfaces);
             return this;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -92,7 +92,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(component);
             return this;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -101,7 +101,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.undeploy(name);
             return this;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -110,7 +110,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.undeploy(name);
             return this;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -123,7 +123,7 @@ public class NodeDomain implements Domain {
             contributionService.install(uri);
             domain.include(Collections.singletonList(uri));
             return this;
-        } catch (URISyntaxException | ContainerException e) {
+        } catch (URISyntaxException | Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -135,7 +135,7 @@ public class NodeDomain implements Domain {
             contributionService.uninstall(uri);
             contributionService.remove(uri);
             return this;
-        } catch (URISyntaxException | ContainerException e) {
+        } catch (URISyntaxException | Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -144,7 +144,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(channel);
             return this;
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }

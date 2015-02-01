@@ -21,7 +21,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Implements unit of work boundaries for client acknowledgement mode.
@@ -42,7 +42,7 @@ public class ClientAckUnitOfWork implements UnitOfWork {
         // do nothing
     }
 
-    public void end(Session session, Message message) throws ContainerException {
+    public void end(Session session, Message message) throws Fabric3Exception {
         if (message == null) {
             // message can be null if the consumer receive loop timed out without returning a message.
             return;
@@ -50,15 +50,15 @@ public class ClientAckUnitOfWork implements UnitOfWork {
         try {
             message.acknowledge();
         } catch (JMSException e) {
-            throw new ContainerException("Error handling message for " + uri, e);
+            throw new Fabric3Exception("Error handling message for " + uri, e);
         }
     }
 
-    public void rollback(Session session) throws ContainerException {
+    public void rollback(Session session) throws Fabric3Exception {
         try {
             session.recover();
         } catch (JMSException e) {
-            throw new ContainerException("Error handling message for " + uri, e);
+            throw new Fabric3Exception("Error handling message for " + uri, e);
         }
     }
 

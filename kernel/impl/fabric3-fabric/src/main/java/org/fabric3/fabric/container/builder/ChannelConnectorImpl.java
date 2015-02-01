@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
@@ -85,16 +85,16 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void connect(PhysicalChannelConnectionDefinition definition) throws ContainerException {
+    public void connect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
-            throw new ContainerException("Attacher not found for type: " + source.getClass().getName());
+            throw new Fabric3Exception("Attacher not found for type: " + source.getClass().getName());
         }
         TargetConnectionAttacher targetAttacher = targetAttachers.get(target.getClass());
         if (targetAttacher == null) {
-            throw new ContainerException("Attacher not found for type: " + target.getClass().getName());
+            throw new Fabric3Exception("Attacher not found for type: " + target.getClass().getName());
         }
 
         ChannelConnection connection = createConnection(definition);
@@ -104,16 +104,16 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void disconnect(PhysicalChannelConnectionDefinition definition) throws ContainerException {
+    public void disconnect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
-            throw new ContainerException("Attacher not found for type: " + source.getClass().getName());
+            throw new Fabric3Exception("Attacher not found for type: " + source.getClass().getName());
         }
         TargetConnectionAttacher targetAttacher = targetAttachers.get(target.getClass());
         if (targetAttacher == null) {
-            throw new ContainerException("Attacher not found for type: " + target.getClass().getName());
+            throw new Fabric3Exception("Attacher not found for type: " + target.getClass().getName());
         }
         sourceAttacher.detach(source, target);
         targetAttacher.detach(source, target);
@@ -124,9 +124,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param definition the connection definition
      * @return the connection
-     * @throws ContainerException if there is an error creating the connection
+     * @throws Fabric3Exception if there is an error creating the connection
      */
-    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws ContainerException {
+    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception {
         ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
 
         PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
@@ -138,7 +138,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         return new ChannelConnectionImpl(stream, sequence);
     }
 
-    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) throws ContainerException {
+    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) throws Fabric3Exception {
         if (transformerHandlerFactory == null) {
             return;  // bootstrap
         }
@@ -149,7 +149,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         }
         if (sourceTypes.size() > 1 || targetTypes.size() > 1) {
             // for now, only support one data type
-            throw new ContainerException("Multi-type events are not supported");
+            throw new Fabric3Exception("Multi-type events are not supported");
         }
         DataType sourceType = sourceTypes.get(0);
         DataType targetType = targetTypes.get(0);
@@ -165,7 +165,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
             EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
             stream.addHandler(handler);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -174,10 +174,10 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param streamDefinition the stream definition
      * @param stream           the stream being created
-     * @throws ContainerException if there is an error adding a filter
+     * @throws Fabric3Exception if there is an error adding a filter
      */
     @SuppressWarnings({"unchecked"})
-    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws ContainerException {
+    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws Fabric3Exception {
         for (PhysicalEventFilterDefinition definition : streamDefinition.getFilters()) {
             EventFilterBuilder builder = filterBuilders.get(definition.getClass());
             EventFilter filter = builder.build(definition);

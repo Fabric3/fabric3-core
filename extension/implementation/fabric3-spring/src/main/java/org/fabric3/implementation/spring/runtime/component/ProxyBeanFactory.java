@@ -19,7 +19,7 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
@@ -60,7 +60,7 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
         }
         try {
             return factory.getInstance();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             throw new BeanCreationException("Error creating proxy: " + name, e);
         }
     }

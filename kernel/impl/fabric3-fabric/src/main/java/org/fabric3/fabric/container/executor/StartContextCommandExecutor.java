@@ -22,7 +22,7 @@ package org.fabric3.fabric.container.executor;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.spi.container.channel.ChannelManager;
@@ -68,7 +68,7 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
         commandExecutorRegistry.register(StartContextCommand.class, this);
     }
 
-    public void execute(StartContextCommand command) throws ContainerException {
+    public void execute(StartContextCommand command) throws Fabric3Exception {
         QName deployable = command.getDeployable();
         WorkContextCache.getAndResetThreadWorkContext();
         // Channels must be started before components since the latter may send events during initialization.

@@ -21,7 +21,7 @@ package org.fabric3.implementation.java.runtime;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
@@ -57,7 +57,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         this.factoryBuilder = factoryBuilder;
     }
 
-    public JavaComponent build(JavaComponentDefinition definition) throws ContainerException {
+    public JavaComponent build(JavaComponentDefinition definition) throws Fabric3Exception {
         if (definition.getInstance() != null) {
             return buildNonManagedComponent(definition);
         } else {
@@ -65,11 +65,11 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         }
     }
 
-    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws ContainerException {
+    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws Fabric3Exception {
         dispose(definition);
     }
 
-    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) throws ContainerException {
+    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) throws Fabric3Exception {
         URI uri = definition.getComponentUri();
 
         QName deployable = definition.getDeployable();

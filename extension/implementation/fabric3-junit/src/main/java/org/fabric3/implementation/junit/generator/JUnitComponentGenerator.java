@@ -20,7 +20,7 @@ package org.fabric3.implementation.junit.generator;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
@@ -65,7 +65,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         this.javaHelper = javaHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws ContainerException {
+    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws Fabric3Exception {
 
         Component<JUnitImplementation> definition = component.getDefinition();
         JUnitImplementation implementation = definition.getImplementation();
@@ -89,7 +89,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = getInterfaceName(serviceContract);
@@ -112,24 +112,24 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return wireDefinition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws ContainerException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
         JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
         javaHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
         javaHelper.generateConnectionTarget(definition, consumer);
         return definition;
     }
 
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
 
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
@@ -146,7 +146,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return contract.getQualifiedInterfaceName();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
         JUnitWireTargetDefinition wireDefinition = new JUnitWireTargetDefinition();
         wireDefinition.setUri(service.getUri());
         return wireDefinition;

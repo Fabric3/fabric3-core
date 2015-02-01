@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fabric3.api.annotation.Source;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
@@ -93,7 +93,7 @@ public class BindingSelectorImpl implements BindingSelector {
         }
     }
 
-    public void selectBindings(LogicalCompositeComponent domain) throws ContainerException {
+    public void selectBindings(LogicalCompositeComponent domain) throws Fabric3Exception {
         if (RuntimeMode.NODE != info.getRuntimeMode() || disable) {
             // there are no remote wires when the domain is contained withing a single VM (including Participant mode, which has a runtime domain)
             return;
@@ -109,7 +109,7 @@ public class BindingSelectorImpl implements BindingSelector {
         }
     }
 
-    public void selectBinding(LogicalWire wire) throws ContainerException {
+    public void selectBinding(LogicalWire wire) throws Fabric3Exception {
         LogicalReference source = wire.getSource();
         LogicalService target = wire.getTarget();
         for (BindingProvider provider : providers) {
@@ -121,13 +121,13 @@ public class BindingSelectorImpl implements BindingSelector {
                 provider.bind(wire);
                 if (source.getLeafReference().getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new ContainerException("Binding provider error. Provider did not set a binding for the reference: " + type);
+                    throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the reference: " + type);
                 }
                 wire.setSourceBinding(source.getBindings().get(0));
                 if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
                     if (target.getLeafService().getBindings().isEmpty()) {
                         QName type = result.getType();
-                        throw new ContainerException("Binding provider error. Provider did not set a binding for the service: " + type);
+                        throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the service: " + type);
                     }
                     if (!target.getBindings().isEmpty()) {
                         wire.setTargetBinding(target.getBindings().get(0));
@@ -140,16 +140,16 @@ public class BindingSelectorImpl implements BindingSelector {
         }
         URI sourceUri = source.getUri();
         URI targetUri = target.getUri();
-        throw new ContainerException("No SCA binding provider suitable for creating wire from " + sourceUri + " to " + targetUri);
+        throw new Fabric3Exception("No SCA binding provider suitable for creating wire from " + sourceUri + " to " + targetUri);
     }
 
     /**
      * Selects and configures bindings for wires sourced from the given component.
      *
      * @param component the component
-     * @throws ContainerException if an error occurs selecting a binding
+     * @throws Fabric3Exception if an error occurs selecting a binding
      */
-    private void selectBindings(LogicalComponent<?> component) throws ContainerException {
+    private void selectBindings(LogicalComponent<?> component) throws Fabric3Exception {
         // bind remote wires
         for (LogicalReference reference : component.getReferences()) {
             for (LogicalWire wire : reference.getWires()) {
@@ -187,9 +187,9 @@ public class BindingSelectorImpl implements BindingSelector {
      * Selects and configures a binding for a channel.
      *
      * @param channel the channel
-     * @throws ContainerException if an error occurs selecting a binding
+     * @throws Fabric3Exception if an error occurs selecting a binding
      */
-    private void selectBinding(LogicalChannel channel) throws ContainerException {
+    private void selectBinding(LogicalChannel channel) throws Fabric3Exception {
         if (channel.isBound() || channel.getDefinition().isLocal()) {
             return;
         }
@@ -199,13 +199,13 @@ public class BindingSelectorImpl implements BindingSelector {
                 provider.bind(channel);
                 if (channel.getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new ContainerException("Binding provider error. Provider did not set a binding for the channel: " + type);
+                    throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the channel: " + type);
                 }
                 return;
             }
         }
         URI uri = channel.getUri();
-        throw new ContainerException("No SCA binding provider suitable for channel " + uri);
+        throw new Fabric3Exception("No SCA binding provider suitable for channel " + uri);
     }
 
     /**

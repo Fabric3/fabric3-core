@@ -20,14 +20,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.spi.introspection.validation.ValidationUtils;
 
 /**
  *
  */
-public class ValidationDeploymentException extends ContainerException {
+public class ValidationDeploymentException extends Fabric3Exception {
     private static final long serialVersionUID = 1568105611963957413L;
 
     private transient List<ValidationFailure> errors;

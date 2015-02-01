@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.easymock.IMocksControl;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
@@ -43,7 +43,7 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
         this.control = control;
     }
 
-    public MockComponent build(MockComponentDefinition componentDefinition) throws ContainerException {
+    public MockComponent build(MockComponentDefinition componentDefinition) throws Fabric3Exception {
         List<String> interfaces = componentDefinition.getInterfaces();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(componentDefinition.getClassLoaderId());
 
@@ -60,7 +60,7 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
         return new MockComponent(componentDefinition.getComponentUri(), objectFactory);
     }
 
-    public void dispose(MockComponentDefinition definition, MockComponent component) throws ContainerException {
+    public void dispose(MockComponentDefinition definition, MockComponent component) throws Fabric3Exception {
         //no-op
     }
 

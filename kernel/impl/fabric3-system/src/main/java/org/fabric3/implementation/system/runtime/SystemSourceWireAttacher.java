@@ -21,7 +21,7 @@ package org.fabric3.implementation.system.runtime;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
@@ -67,9 +67,9 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         this.proxyService = proxyService;
     }
 
-    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         if (proxyService == null) {
-            throw new ContainerException("Attempt to inject a non-optimized wire during runtime bootstrap.");
+            throw new Fabric3Exception("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
@@ -80,7 +80,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new ContainerException("Unable to load interface class: " + name, e);
+            throw new Fabric3Exception("Unable to load interface class: " + name, e);
         }
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             throw new UnsupportedOperationException("Callbacks are not supported on system components");
@@ -103,11 +103,11 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         }
     }
 
-    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         detachObjectFactory(source, target);
     }
 
-    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
@@ -115,7 +115,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
     }
 
     public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

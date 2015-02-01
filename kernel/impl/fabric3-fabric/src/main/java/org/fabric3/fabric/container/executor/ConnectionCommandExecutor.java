@@ -21,7 +21,7 @@ package org.fabric3.fabric.container.executor;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.container.command.DetachWireCommand;
@@ -51,11 +51,11 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
         commandExecutorRegistry.register(ConnectionCommand.class, this);
     }
 
-    public void execute(ConnectionCommand command) throws ContainerException {
+    public void execute(ConnectionCommand command) throws Fabric3Exception {
         URI uri = command.getComponentUri();
         Component component = componentManager.getComponent(uri);
         if (component == null) {
-            throw new ContainerException("Component not found: " + uri);
+            throw new Fabric3Exception("Component not found: " + uri);
         }
         component.startUpdate();
         // detach must be executed first so wire attachers can drop connection prior to adding new ones

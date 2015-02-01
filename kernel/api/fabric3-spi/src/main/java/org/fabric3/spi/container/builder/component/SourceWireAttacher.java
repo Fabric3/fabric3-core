@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -35,9 +35,9 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @param source metadata for the source side of the wire
      * @param target metadata for the target side of the wire
      * @param wire   the wire
-     * @throws ContainerException if an exception occurs during the attach operation
+     * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void attach(PSD source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException;
+    void attach(PSD source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception;
 
     /**
      * Attaches an ObjectFactory that returns a direct target instance to a source component.
@@ -45,26 +45,26 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @param source        the definition of the component reference to attach to
      * @param objectFactory an ObjectFactory that can produce values compatible with the reference
      * @param target        the target definition for the wire
-     * @throws ContainerException if an exception occurs during the attach operation
+     * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void attachObjectFactory(PSD source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) throws ContainerException;
+    void attachObjectFactory(PSD source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) throws Fabric3Exception;
 
     /**
      * Detaches a wire from a source component or transport binding.
      *
      * @param source metadata for the source side of the wire
      * @param target metadata for the target side of the wire
-     * @throws ContainerException if an exception occurs during the attach operation
+     * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void detach(PSD source, PhysicalWireTargetDefinition target) throws ContainerException;
+    void detach(PSD source, PhysicalWireTargetDefinition target) throws Fabric3Exception;
 
     /**
      * detaches an ObjectFactory from a source component.
      *
      * @param source the definition of the component reference to detach
      * @param target the target definition for the wire
-     * @throws ContainerException if an exception occurs during the deattach operation
+     * @throws Fabric3Exception if an exception occurs during the deattach operation
      */
-    void detachObjectFactory(PSD source, PhysicalWireTargetDefinition target) throws ContainerException;
+    void detachObjectFactory(PSD source, PhysicalWireTargetDefinition target) throws Fabric3Exception;
 
 }

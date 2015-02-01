@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -48,7 +48,7 @@ public class BuildChannelCommandExecutor implements CommandExecutor<BuildChannel
     }
 
     @SuppressWarnings("unchecked")
-    public void execute(BuildChannelCommand command) throws ContainerException {
+    public void execute(BuildChannelCommand command) throws Fabric3Exception {
         PhysicalChannelDefinition definition = command.getDefinition();
         channelBuilderRegistry.build(definition);
     }

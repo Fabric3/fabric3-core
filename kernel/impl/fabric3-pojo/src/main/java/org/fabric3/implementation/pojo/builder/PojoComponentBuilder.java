@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.Injectable;
@@ -72,7 +72,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         this.info = info;
     }
 
-    protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws ContainerException {
+    protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws Fabric3Exception {
         List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
 
         TypeMapping typeMapping = new TypeMapping();
@@ -98,7 +98,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         }
     }
 
-    protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws ContainerException {
+    protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws Fabric3Exception {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
             ObjectFactory<Object> objectFactory = component.createObjectFactory();
@@ -107,7 +107,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         }
     }
 
-    protected void dispose(PojoComponentDefinition definition) throws ContainerException {
+    protected void dispose(PojoComponentDefinition definition) throws Fabric3Exception {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
             URI uri = definition.getComponentUri();

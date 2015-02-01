@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
@@ -44,7 +44,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         this.registry = registry;
     }
 
-    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -57,7 +57,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         broker.connectToReceiver(uri, chains, metadata, loader);
     }
 
-    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -68,11 +68,11 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
     }
 
     public void attachObjectFactory(ZeroMQWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

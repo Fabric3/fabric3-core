@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.appender.console.ConsoleAppender;
@@ -68,17 +68,17 @@ public class AppenderFactoryImpl implements AppenderFactory {
         this.appenderBuilders = appenderBuilders;
     }
 
-    public List<Appender> instantiateDefaultAppenders() throws ContainerException {
+    public List<Appender> instantiateDefaultAppenders() throws Fabric3Exception {
         return Collections.<Appender>singletonList(new ConsoleAppender());
     }
 
-    public List<Appender> instantiate(XMLStreamReader reader) throws ContainerException, XMLStreamException {
+    public List<Appender> instantiate(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException {
         List<AppenderDefinition> definitions = load(reader);
         List<PhysicalAppenderDefinition> physicalDefinitions = generate(definitions);
         return build(definitions, physicalDefinitions);
     }
 
-    private List<AppenderDefinition> load(XMLStreamReader reader) throws ContainerException, XMLStreamException {
+    private List<AppenderDefinition> load(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException {
         List<AppenderDefinition> appenderDefinitions = new ArrayList<>();
         Set<String> definedTypes = new HashSet<>();
 
@@ -109,7 +109,7 @@ public class AppenderFactoryImpl implements AppenderFactory {
                             appenderDefinitions.add(appenderDefinition);
 
                         } else {
-                            throw new ContainerException("Unexpected type: " + modelObject);
+                            throw new Fabric3Exception("Unexpected type: " + modelObject);
                         }
                     }
 
@@ -127,12 +127,12 @@ public class AppenderFactoryImpl implements AppenderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) throws ContainerException {
+    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) throws Fabric3Exception {
         List<PhysicalAppenderDefinition> physicalDefinitions = new ArrayList<>(definitions.size());
         for (AppenderDefinition definition : definitions) {
             AppenderGenerator generator = appenderGenerators.get(definition.getClass());
             if (generator == null) {
-                throw new ContainerException("Unknown appender type: " + definition.getClass());
+                throw new Fabric3Exception("Unknown appender type: " + definition.getClass());
             }
             PhysicalAppenderDefinition physicalDefinition = generator.generateResource(definition);
             physicalDefinitions.add(physicalDefinition);
@@ -141,12 +141,12 @@ public class AppenderFactoryImpl implements AppenderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) throws ContainerException {
+    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) throws Fabric3Exception {
         List<Appender> appenders = new ArrayList<>(definitions.size());
         for (PhysicalAppenderDefinition definition : physicalDefinitions) {
             AppenderBuilder builder = appenderBuilders.get(definition.getClass());
             if (builder == null) {
-                throw new ContainerException("Unknown appender type: " + definition.getClass());
+                throw new Fabric3Exception("Unknown appender type: " + definition.getClass());
             }
             Appender appender = builder.build(definition);
             appenders.add(appender);

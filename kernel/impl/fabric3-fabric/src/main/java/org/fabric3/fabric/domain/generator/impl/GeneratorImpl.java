@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StartContextCommandGenerator;
 import org.fabric3.fabric.domain.generator.context.StopContextCommandGenerator;
@@ -72,7 +72,7 @@ public class GeneratorImpl implements Generator {
         this.resourceGenerator = generator;
     }
 
-    public Deployment generate(LogicalCompositeComponent domain) throws ContainerException {
+    public Deployment generate(LogicalCompositeComponent domain) throws Fabric3Exception {
 
         List<LogicalComponent<?>> sorted = topologicalSort(domain);
 

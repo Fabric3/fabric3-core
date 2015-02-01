@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
@@ -50,11 +50,11 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
                                                           String name,
                                                           JavaGenericType dataType,
                                                           Document value,
-                                                          ClassLoader classLoader) throws ContainerException {
+                                                          ClassLoader classLoader) throws Fabric3Exception {
         List<JavaTypeInfo> typeInfos = dataType.getTypeInfo().getParameterTypesInfos();
         if (typeInfos.size() < 1) {
             // programming error
-            throw new ContainerException("Collection properties must have a value type");
+            throw new Fabric3Exception("Collection properties must have a value type");
         }
         Class<?> type = typeInfos.get(0).getRawType();
 

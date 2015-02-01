@@ -16,7 +16,7 @@
  */
 package org.fabric3.timer.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.timer.provision.PhysicalTimerPoolResource;
 import org.fabric3.timer.spi.TimerService;
@@ -34,11 +34,11 @@ public class TimerPoolBuilder implements ResourceBuilder<PhysicalTimerPoolResour
         this.service = service;
     }
 
-    public void build(PhysicalTimerPoolResource definition) throws ContainerException {
+    public void build(PhysicalTimerPoolResource definition) throws Fabric3Exception {
         service.allocate(definition.getName(), definition.getCoreSize());
     }
 
-    public void remove(PhysicalTimerPoolResource definition) throws ContainerException {
+    public void remove(PhysicalTimerPoolResource definition) throws Fabric3Exception {
         service.deallocate(definition.getName());
     }
 }

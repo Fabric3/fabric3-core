@@ -21,7 +21,7 @@ package org.fabric3.implementation.junit.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
@@ -59,11 +59,11 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTarg
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, JUnitWireTargetDefinition targetDefinition, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, JUnitWireTargetDefinition targetDefinition, Wire wire) throws Fabric3Exception {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
         if (component == null) {
-            throw new ContainerException("Target not found: " + targetName);
+            throw new Fabric3Exception("Target not found: " + targetName);
         }
         JavaComponent target = (JavaComponent) component;
 
@@ -97,11 +97,11 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTarg
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JUnitWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, JUnitWireTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JUnitWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(JUnitWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();

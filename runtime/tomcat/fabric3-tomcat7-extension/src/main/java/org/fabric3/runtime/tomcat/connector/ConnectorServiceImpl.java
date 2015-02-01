@@ -18,7 +18,7 @@ package org.fabric3.runtime.tomcat.connector;
 
 import org.apache.catalina.Service;
 import org.apache.catalina.connector.Connector;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -44,7 +44,7 @@ public class ConnectorServiceImpl implements ConnectorService {
     }
 
     @Init
-    public void init() throws ContainerException {
+    public void init() throws Fabric3Exception {
         for (Connector connector : service.findConnectors()) {
             if (connector.getPort() == defaultHttpPort) {
                 defaultHttpConnector = connector;
@@ -52,7 +52,7 @@ public class ConnectorServiceImpl implements ConnectorService {
             }
         }
         if (defaultHttpConnector == null) {
-            throw new ContainerException("Default HTTP connector not found for port: " + defaultHttpPort
+            throw new Fabric3Exception("Default HTTP connector not found for port: " + defaultHttpPort
                     + ". Ensure that the Fabric3 runtime HTTP port is configured in systemConfig.xml.");
         }
     }

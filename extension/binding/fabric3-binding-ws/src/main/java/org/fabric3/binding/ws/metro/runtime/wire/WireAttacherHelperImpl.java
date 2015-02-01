@@ -19,7 +19,7 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureClassLoader;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.oasisopen.sca.annotation.Reference;
@@ -36,7 +36,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
         this.classLoaderUpdater = classLoaderUpdater;
     }
 
-    public Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws ContainerException {
+    public Class<?> loadSEI(String interfaze, byte[] classBytes, SecureClassLoader classLoader) throws Fabric3Exception {
         try {
             Class<?> seiClass;
             if (classBytes != null) {
@@ -49,7 +49,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
             classLoaderUpdater.updateClassLoader(seiClass);
             return seiClass;
         } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

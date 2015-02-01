@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
@@ -89,7 +89,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         }
     }
 
-    public ClassLoader load(Contribution contribution) throws ContainerException {
+    public ClassLoader load(Contribution contribution) throws Fabric3Exception {
         URI contributionUri = contribution.getUri();
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
         // all contributions implicitly import the host contribution
@@ -111,7 +111,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
                 classpath.forEach(loader::addURL);
                 setSysPathsField(loader);
             } catch (IOException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
 
         }
@@ -159,7 +159,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         return loader;
     }
 
-    public void unload(Contribution contribution) throws ContainerException {
+    public void unload(Contribution contribution) throws Fabric3Exception {
         URI uri = contribution.getUri();
         Set<Contribution> contributions = store.resolveDependentContributions(uri);
         if (!contributions.isEmpty()) {
@@ -167,13 +167,13 @@ public class ContributionLoaderImpl implements ContributionLoader {
             dependents.addAll(contributions.stream().filter(dependent -> ContributionState.INSTALLED == dependent.getState()).map(Contribution::getUri).collect(
                     Collectors.toList()));
             if (!dependents.isEmpty()) {
-                throw new ContainerException("Contribution is in use: " + uri);
+                throw new Fabric3Exception("Contribution is in use: " + uri);
             }
         }
         classLoaderRegistry.unregister(uri);
     }
 
-    private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws ContainerException {
+    private List<ContributionWire<?, ?>> resolveImports(Contribution contribution) throws Fabric3Exception {
         // clear the wires as the contribution may have been loaded previously
         contribution.getWires().clear();
         List<ContributionWire<?, ?>> resolved = new ArrayList<>();
@@ -187,7 +187,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
                     contribution.addWire(wire);
                     resolved.add(wire);
                 }
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 if (!imprt.isRequired()) {
                     // not required, ignore
                     continue;

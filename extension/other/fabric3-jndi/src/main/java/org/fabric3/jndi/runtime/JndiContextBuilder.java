@@ -20,7 +20,7 @@ import javax.naming.NamingException;
 import java.util.Map;
 import java.util.Properties;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.jndi.spi.JndiContextManager;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
@@ -38,22 +38,22 @@ public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDe
         this.manager = manager;
     }
 
-    public void build(PhysicalJndiContextDefinition definition) throws ContainerException {
+    public void build(PhysicalJndiContextDefinition definition) throws Fabric3Exception {
         for (Map.Entry<String, Properties> entry : definition.getContexts().entrySet()) {
             try {
                 manager.register(entry.getKey(), entry.getValue());
             } catch (NamingException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         }
     }
 
-    public void remove(PhysicalJndiContextDefinition definition) throws ContainerException {
+    public void remove(PhysicalJndiContextDefinition definition) throws Fabric3Exception {
         for (String name : definition.getContexts().keySet()) {
             try {
                 manager.unregister(name);
             } catch (NamingException e) {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         }
     }

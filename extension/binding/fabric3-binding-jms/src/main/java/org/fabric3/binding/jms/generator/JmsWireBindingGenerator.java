@@ -29,7 +29,7 @@ import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -74,7 +74,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         this.provisioner = provisioner;
     }
 
-    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws ContainerException {
+    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
 
         SessionType sessionType = getSessionType(binding.getParent().getParent());
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
@@ -104,7 +104,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         return definition;
     }
 
-    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws ContainerException {
+    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
 
         SessionType sessionType = getSessionType(binding.getParent().getParent());
 
@@ -147,7 +147,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
 
     public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBinding> binding,
                                                                 ServiceContract contract,
-                                                                List<LogicalOperation> operations) throws ContainerException {
+                                                                List<LogicalOperation> operations) throws Fabric3Exception {
         return generateTarget(binding, contract, operations);
     }
 
@@ -192,12 +192,12 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
      *
      * @param metadata the JMS metadata
      * @param contract the service contract
-     * @throws ContainerException if there is an error processing the response
+     * @throws Fabric3Exception if there is an error processing the response
      */
-    private void processServiceResponse(JmsBindingMetadata metadata, ServiceContract contract) throws ContainerException {
+    private void processServiceResponse(JmsBindingMetadata metadata, ServiceContract contract) throws Fabric3Exception {
         if (metadata.isResponse()) {
             if (metadata.getResponse().getActivationSpec() != null) {
-                throw new ContainerException("Activation spec not allowed on a service binding response");
+                throw new Fabric3Exception("Activation spec not allowed on a service binding response");
             }
             return;
         }
@@ -230,9 +230,9 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
      *
      * @param serviceContract the service contract
      * @return the collection of payload types
-     * @throws ContainerException if an error occurs
+     * @throws Fabric3Exception if an error occurs
      */
-    private List<OperationPayloadTypes> processPayloadTypes(ServiceContract serviceContract) throws ContainerException {
+    private List<OperationPayloadTypes> processPayloadTypes(ServiceContract serviceContract) throws Fabric3Exception {
         List<OperationPayloadTypes> types = new ArrayList<>();
         for (Operation operation : serviceContract.getOperations()) {
             OperationPayloadTypes payloadType = introspector.introspect(operation);
@@ -241,14 +241,14 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         return types;
     }
 
-    private void processDestinationDefinitions(JmsBindingMetadata metadata, boolean reference) throws ContainerException {
+    private void processDestinationDefinitions(JmsBindingMetadata metadata, boolean reference) throws Fabric3Exception {
         Destination destination = metadata.getDestination();
         if (destination == null) {
             // create a definition from the activation spec
             ActivationSpec spec = metadata.getActivationSpec();
             if (spec != null) {
                 if (reference) {
-                    throw new ContainerException("Activation specification not allowed on a reference");
+                    throw new Fabric3Exception("Activation specification not allowed on a reference");
                 }
                 destination = populateActivationInformation(spec);
                 metadata.setDestination(destination);

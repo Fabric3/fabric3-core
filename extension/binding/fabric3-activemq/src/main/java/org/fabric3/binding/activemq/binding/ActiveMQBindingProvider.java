@@ -31,7 +31,7 @@ import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
@@ -126,7 +126,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, getType());
     }
 
-    public void bind(LogicalWire wire) throws ContainerException {
+    public void bind(LogicalWire wire) throws Fabric3Exception {
         LogicalReference source = wire.getSource().getLeafReference();
         LogicalService target = wire.getTarget().getLeafService();
         QName deployable = source.getParent().getDeployable();
@@ -176,7 +176,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         }
     }
 
-    public void bind(LogicalService service) throws ContainerException {
+    public void bind(LogicalService service) throws Fabric3Exception {
         String forwardQueue = service.getUri().toString();
         QName deployable = service.getParent().getDeployable();
         ServiceContract targetContract = service.getDefinition().getServiceContract();

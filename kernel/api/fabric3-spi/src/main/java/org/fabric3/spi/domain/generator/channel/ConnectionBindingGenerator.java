@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.domain.generator.channel;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -40,9 +40,9 @@ public interface ConnectionBindingGenerator<BD extends Binding> {
      * @param binding      the channel binding configuration
      * @param deliveryType the delivery type implemented by the channel this binding will connect to
      * @return the binding transport metadata or null if provisioning is not required
-     * @throws ContainerException if an error occurs during the generation process
+     * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<BD> binding, ChannelDeliveryType deliveryType) throws ContainerException;
+    PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<BD> binding, ChannelDeliveryType deliveryType) throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a consumer to a channel binding transport.
@@ -51,10 +51,10 @@ public interface ConnectionBindingGenerator<BD extends Binding> {
      * @param binding      the channel binding configuration
      * @param deliveryType the channel delivery semantics
      * @return the connection metadata
-     * @throws ContainerException if an error occurs during the generation process
+     * @throws Fabric3Exception if an error occurs during the generation process
      */
     PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<BD> binding, ChannelDeliveryType deliveryType)
-            throws ContainerException;
+            throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a producer to a channel binding transport.
@@ -63,9 +63,9 @@ public interface ConnectionBindingGenerator<BD extends Binding> {
      * @param binding      the channel binding configuration
      * @param deliveryType the channel delivery semantics
      * @return the connection metadata
-     * @throws ContainerException if an error occurs during the generation process
+     * @throws Fabric3Exception if an error occurs during the generation process
      */
     PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<BD> binding, ChannelDeliveryType deliveryType)
-            throws ContainerException;
+            throws Fabric3Exception;
 
 }

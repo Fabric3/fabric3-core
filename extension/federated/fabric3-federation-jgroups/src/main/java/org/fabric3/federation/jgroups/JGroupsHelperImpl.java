@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
@@ -112,7 +112,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         return null;
     }
 
-    public Object deserialize(byte[] payload) throws ContainerException {
+    public Object deserialize(byte[] payload) throws Fabric3Exception {
         MultiClassLoaderObjectInputStream ois = null;
         try {
             InputStream stream = new ByteArrayInputStream(payload);
@@ -121,7 +121,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
             ois = new MultiClassLoaderObjectInputStream(stream, classLoaderRegistry);
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (ois != null) {
@@ -133,7 +133,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         }
     }
 
-    public byte[] serialize(Serializable object) throws ContainerException {
+    public byte[] serialize(Serializable object) throws Fabric3Exception {
         try {
             ByteArrayOutputStream bas = new ByteArrayOutputStream();
             MultiClassLoaderObjectOutputStream stream;
@@ -142,7 +142,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
             stream.close();
             return bas.toByteArray();
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.runtime.weblogic.api.Constants;
 import org.fabric3.runtime.weblogic.api.ServletRequestDispatcher;
 import org.fabric3.spi.host.ServletHost;
@@ -64,12 +64,12 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
     }
 
     @Init
-    public void start() throws JMException, ContainerException, MalformedURLException {
+    public void start() throws JMException, Fabric3Exception, MalformedURLException {
         // determine the default HTTP and HTTPS URLs 
         ObjectName serverRuntimeMBean = (ObjectName) mBeanServer.getAttribute(Constants.WLS_RUNTIME_SERVICE_MBEAN, "ServerRuntime");
         String httpUrl = (String) mBeanServer.invoke(serverRuntimeMBean, "getURL", new Object[]{"http"}, new String[]{String.class.getName()});
         if (httpUrl == null) {
-            throw new ContainerException("HTTP port not configured");
+            throw new Fabric3Exception("HTTP port not configured");
         }
         httpPort = new URL(httpUrl).getPort();
 

@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
@@ -63,7 +63,7 @@ public class ProvisionerImpl implements Provisioner {
         this.domain = domain;
     }
 
-    public void deploy(String name, Object instance, Class<?>... interfaces) throws ContainerException {
+    public void deploy(String name, Object instance, Class<?>... interfaces) throws Fabric3Exception {
         Component<?> definition = JavaComponentBuilder.newBuilder(name, instance).build();
         if (interfaces == null) {
             // if no interfaces are specified, check if the implementation class implements one or more interfaces
@@ -86,7 +86,7 @@ public class ProvisionerImpl implements Provisioner {
         deploy(definition);
     }
 
-    public void deploy(Composite composite) throws ContainerException {
+    public void deploy(Composite composite) throws Fabric3Exception {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(ContributionResolver.getContribution(), getClass().getClassLoader());
 
         // enrich the model
@@ -98,17 +98,11 @@ public class ProvisionerImpl implements Provisioner {
         // validate model
 
         setContributionUris(composite);
-
-        try {
-            addCompositeToContribution(composite);
-            domain.include(composite, false);
-        } catch (ContainerException e) {
-            // TODO remove the contribution
-            throw new ContainerException(e);
-        }
+        addCompositeToContribution(composite);
+        domain.include(composite, false);
     }
 
-    public void deploy(Component<?> component) throws ContainerException {
+    public void deploy(Component<?> component) throws Fabric3Exception {
         URI uri = ContributionResolver.getContribution();
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(uri, getClass().getClassLoader());
         component.setContributionUri(uri);
@@ -116,48 +110,34 @@ public class ProvisionerImpl implements Provisioner {
         componentProcessor.process(component, context);
         checkErrors(context);
 
-        try {
-            Composite wrapper = createWrapperComposite(component.getName());
-            wrapper.add(component);
+        Composite wrapper = createWrapperComposite(component.getName());
+        wrapper.add(component);
 
-            domain.include(wrapper, false);
-        } catch (ContainerException e) {
-            throw new ContainerException(e);
-        }
+        domain.include(wrapper, false);
     }
 
-    public void deploy(Channel channel) throws ContainerException {
-        try {
-            URI uri = ContributionResolver.getContribution();
-            Composite wrapper = createWrapperComposite(channel.getName());
-            wrapper.add(channel);
-            domain.include(wrapper, false);
-        } catch (ContainerException e) {
-            throw new ContainerException(e);
-        }
+    public void deploy(Channel channel) throws Fabric3Exception {
+        Composite wrapper = createWrapperComposite(channel.getName());
+        wrapper.add(channel);
+        domain.include(wrapper, false);
     }
 
-    public void undeploy(QName name) throws ContainerException {
-        try {
-
-            QNameSymbol symbol = new QNameSymbol(name);
-            ResourceElement<QNameSymbol, Composite> element = metaDataStore.find(Composite.class, symbol);
-            if (element == null) {
-                throw new ContainerException("Component not deployed: " + name);
-            }
-            Composite composite = element.getValue();
-            domain.undeploy(composite, false);
-
-            Resource resource = element.getResource();
-            Contribution contribution = resource.getContribution();
-            contribution.getResources().remove(resource);
-
-        } catch (ContainerException e) {
-            throw new ContainerException(e);
+    public void undeploy(QName name) throws Fabric3Exception {
+        QNameSymbol symbol = new QNameSymbol(name);
+        ResourceElement<QNameSymbol, Composite> element = metaDataStore.find(Composite.class, symbol);
+        if (element == null) {
+            throw new Fabric3Exception("Component not deployed: " + name);
         }
+        Composite composite = element.getValue();
+        domain.undeploy(composite, false);
+
+        Resource resource = element.getResource();
+        Contribution contribution = resource.getContribution();
+        contribution.getResources().remove(resource);
+
     }
 
-    public void undeploy(String name) throws ContainerException {
+    public void undeploy(String name) throws Fabric3Exception {
         // find the wrapper composite used to deploy it and remove it from the host contribution
         QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
         undeploy(compositeName);

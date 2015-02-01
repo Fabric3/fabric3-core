@@ -22,7 +22,7 @@ package org.fabric3.fabric.container.executor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
@@ -40,7 +40,7 @@ public class CommandExecutorRegistryImpl implements CommandExecutorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends Command> void execute(T command) throws ContainerException {
+    public <T extends Command> void execute(T command) throws Fabric3Exception {
         Class<? extends Command> clazz = command.getClass();
         CommandExecutor<T> executor = (CommandExecutor<T>) executors.get(clazz);
         if (executor == null) {

@@ -22,7 +22,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.Resource;
@@ -108,7 +108,7 @@ public class ProcessorRegistryImplTestCase extends TestCase {
         try {
             registry.processContribution(contribution, context);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(processor);

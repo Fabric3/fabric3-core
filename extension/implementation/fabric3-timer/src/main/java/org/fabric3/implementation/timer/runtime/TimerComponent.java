@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -81,7 +81,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         classLoader = factory.getImplementationClass().getClassLoader();
     }
 
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         super.start();
         if (Scope.DOMAIN.equals(scope)) {
             if (topologyService != null) {
@@ -98,7 +98,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         }
     }
 
-    public void stop() throws ContainerException {
+    public void stop() throws Fabric3Exception {
         super.stop();
         if (topologyService != null && Scope.DOMAIN.equals(scope)) {
             topologyService.deregister(this);

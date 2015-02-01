@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.builder.component;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
@@ -33,16 +33,16 @@ public interface ChannelBindingBuilder<B extends PhysicalChannelBindingDefinitio
      *
      * @param definition the binding definition
      * @param channel    the channel
-     * @throws ContainerException if there is an error during the build process
+     * @throws Fabric3Exception if there is an error during the build process
      */
-    void build(B definition, Channel channel) throws ContainerException;
+    void build(B definition, Channel channel) throws Fabric3Exception;
 
     /**
      * Disposes the infrastructure.
      *
      * @param definition the binding definition
      * @param channel    the channel
-     * @throws ContainerException if there is an error during the dispose process
+     * @throws Fabric3Exception if there is an error during the dispose process
      */
-    void dispose(B definition, Channel channel) throws ContainerException;
+    void dispose(B definition, Channel channel) throws Fabric3Exception;
 }

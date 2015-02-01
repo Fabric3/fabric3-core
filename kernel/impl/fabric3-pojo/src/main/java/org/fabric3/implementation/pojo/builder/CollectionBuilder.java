@@ -19,7 +19,7 @@ package org.fabric3.implementation.pojo.builder;
 
 import java.util.Collection;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.w3c.dom.Document;
@@ -38,11 +38,11 @@ public interface CollectionBuilder {
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
      * @return the object factory
-     * @throws ContainerException if there is an error creating the object factory
+     * @throws Fabric3Exception if there is an error creating the object factory
      */
     <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection,
                                                    String name,
                                                    JavaGenericType type,
                                                    Document value,
-                                                   ClassLoader classLoader) throws ContainerException;
+                                                   ClassLoader classLoader) throws Fabric3Exception;
 }

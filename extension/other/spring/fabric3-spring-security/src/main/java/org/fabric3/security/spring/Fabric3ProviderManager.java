@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
 import org.fabric3.security.spring.config.ConfigurationParser;
 import org.fabric3.security.spring.factory.AuthenticationProviderFactory;
@@ -65,7 +65,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     }
 
     @Property(required = false)
-    public void setConfiguration(XMLStreamReader reader) throws XMLStreamException, ContainerException {
+    public void setConfiguration(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         configuration = parser.parse(reader);
     }
 

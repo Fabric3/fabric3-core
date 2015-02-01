@@ -23,7 +23,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -50,7 +50,7 @@ public class Property2CalendarTransformer implements SingleTypeTransformer<Node,
         return TARGET;
     }
 
-    public Calendar transform(final Node node, ClassLoader loader) throws ContainerException {
+    public Calendar transform(final Node node, ClassLoader loader) throws Fabric3Exception {
         XMLGregorianCalendar xmlCalendar = factory.newXMLGregorianCalendar(node.getTextContent());
         return xmlCalendar.toGregorianCalendar();
     }

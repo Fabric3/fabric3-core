@@ -16,7 +16,7 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
@@ -37,17 +37,17 @@ public class NonManagedConnectionSourceWireAttacher implements SourceConnectionA
     }
 
     public void attach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             Class<?> interfaze = loader.loadClass(source.getInterface());
             Object proxy = proxyService.createObjectFactory(interfaze, connection).getInstance();
             source.setProxy(proxy);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void detach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
     }
 }

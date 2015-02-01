@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.spi.container.invocation.Message;
@@ -68,7 +68,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public Object newInstance() throws ContainerException {
+    public Object newInstance() throws Fabric3Exception {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
         try {
@@ -90,7 +90,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void start(Object instance) throws ContainerException {
+    public void start(Object instance) throws Fabric3Exception {
         if (initInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
             try {
@@ -102,7 +102,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void stop(Object instance) throws ContainerException {
+    public void stop(Object instance) throws Fabric3Exception {
         if (destroyInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
             try {
@@ -114,7 +114,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void reinject(Object instance) throws ContainerException {
+    public void reinject(Object instance) throws Fabric3Exception {
         if (!reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable:" + componentUri);
         }

@@ -16,7 +16,7 @@
  */
 package org.fabric3.binding.ws.metro.generator.java.codegen;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Generates an interface with JAX-WS annotations from another interface. This allows classes with non-annotated interfaces to be used with Metro, which
@@ -48,8 +48,8 @@ public interface InterfaceGenerator {
      * @param serviceName     the service name to use with the @WebService annotation or null.
      * @param portName        the port name to use with the @WebService annotation or null.
      * @return the generated interface result
-     * @throws ContainerException if an error generating the exception occurs
+     * @throws Fabric3Exception if an error generating the exception occurs
      */
-    GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName) throws ContainerException;
+    GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName) throws Fabric3Exception;
 
 }

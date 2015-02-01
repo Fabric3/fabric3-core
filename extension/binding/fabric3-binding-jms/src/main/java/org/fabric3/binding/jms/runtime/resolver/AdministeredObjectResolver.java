@@ -22,7 +22,7 @@ import javax.jms.ConnectionFactory;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by {@link
@@ -35,9 +35,9 @@ public interface AdministeredObjectResolver {
      *
      * @param definition the connection factory definition
      * @return the connection factory.
-     * @throws ContainerException if there is an error during resolution
+     * @throws Fabric3Exception if there is an error during resolution
      */
-    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws ContainerException;
+    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception;
 
     /**
      * Resolves a destination.
@@ -45,16 +45,16 @@ public interface AdministeredObjectResolver {
      * @param destination the destination definition
      * @param factory    the connection factory
      * @return the destination
-     * @throws ContainerException if there is an error during resolution
+     * @throws Fabric3Exception if there is an error during resolution
      */
-    javax.jms.Destination resolve(Destination destination, ConnectionFactory factory) throws ContainerException;
+    javax.jms.Destination resolve(Destination destination, ConnectionFactory factory) throws Fabric3Exception;
 
     /**
      * Signals that a connection factory is being released and resources can be disposed.
      *
      * @param definition the definition that created the connection factory
-     * @throws ContainerException if there is an error releasing resources
+     * @throws Fabric3Exception if there is an error releasing resources
      */
-    void release(ConnectionFactoryDefinition definition) throws ContainerException;
+    void release(ConnectionFactoryDefinition definition) throws Fabric3Exception;
 
 }

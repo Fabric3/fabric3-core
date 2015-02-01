@@ -20,7 +20,7 @@ package org.fabric3.resource.runtime;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
@@ -41,19 +41,19 @@ public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<Sys
         this.manager = manager;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemSourcedWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {
-            throw new ContainerException("Resource not found: " + targetId);
+            throw new Fabric3Exception("Resource not found: " + targetId);
         }
         return targetComponent.createObjectFactory();
     }

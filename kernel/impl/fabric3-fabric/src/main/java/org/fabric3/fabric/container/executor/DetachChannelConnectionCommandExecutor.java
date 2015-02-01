@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -47,7 +47,7 @@ public class DetachChannelConnectionCommandExecutor implements CommandExecutor<D
         commandExecutorRegistry.register(DetachChannelConnectionCommand.class, this);
     }
 
-    public void execute(DetachChannelConnectionCommand command) throws ContainerException {
+    public void execute(DetachChannelConnectionCommand command) throws Fabric3Exception {
         connector.disconnect(command.getDefinition());
     }
 }

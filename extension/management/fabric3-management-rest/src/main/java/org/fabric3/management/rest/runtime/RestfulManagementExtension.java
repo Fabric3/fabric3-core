@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
@@ -80,11 +80,11 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     @Property(required = false)
-    public void setSecurity(String level) throws ContainerException {
+    public void setSecurity(String level) throws Fabric3Exception {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ContainerException("Invalid management security setting:" + level);
+            throw new Fabric3Exception("Invalid management security setting:" + level);
         }
     }
 
@@ -108,7 +108,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         return "fabric3.rest";
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ContainerException {
+    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception {
         String root = info.getPath();
         if (root.length() == 0) {
             root = componentUri.getPath();
@@ -161,11 +161,11 @@ public class RestfulManagementExtension implements ManagementExtension {
                 createRootResource(identifier, root, getMappings);
             }
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void export(String name, String group, String description, Object instance) throws ContainerException {
+    public void export(String name, String group, String description, Object instance) throws Fabric3Exception {
         String root = "/runtime/" + name;
 
         Set<Role> readRoles = new HashSet<>();
@@ -226,7 +226,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         }
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws ContainerException {
+    public void remove(URI componentUri, ManagementInfo info) throws Fabric3Exception {
         String identifier = componentUri.toString();
         resourceHost.unregister(identifier);
         for (ResourceListener listener : listeners) {
@@ -235,7 +235,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         }
     }
 
-    public void remove(String name, String group) throws ContainerException {
+    public void remove(String name, String group) throws Fabric3Exception {
         resourceHost.unregister(name);
         for (ResourceListener listener : listeners) {
             listener.onRootResourceRemove(name);
@@ -319,9 +319,9 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param identifier the identifier used to group a set of mappings during deployment and undeployment
      * @param root       the root path
      * @param mappings   the sub-resource mappings   @throws ManagementException if an error occurs creating the root resource
-     * @throws ContainerException if there is an error creating the mapping
+     * @throws Fabric3Exception if there is an error creating the mapping
      */
-    private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws ContainerException {
+    private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws Fabric3Exception {
         ResourceInvoker invoker = new ResourceInvoker(mappings, security);
         List<Method> methods = new ArrayList<>();
         for (ResourceMapping mapping : mappings) {
@@ -378,9 +378,9 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param mapping            the mapping
      * @param rootResourcePath   the root resource path for this hierarchy
      * @param createRootResource true if a dynamic root resource should be dynamically created
-     * @throws ContainerException if there was an error creating parent resources
+     * @throws Fabric3Exception if there was an error creating parent resources
      */
-    private void createDynamicResources(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) throws ContainerException {
+    private void createDynamicResources(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) throws Fabric3Exception {
         ResourceMapping previous = dynamicResources.remove(mapping.getPath());
         if (previous != null) {
             // A dynamic resource service was already registered. Remove it since it is being replaced by a configured resource service.
@@ -439,7 +439,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                                                                      mapping.getRoles());
                 mappings.add(dynamicMapping);
                 dynamicResources.put(dynamicMapping.getPath(), dynamicMapping);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 throw new AssertionError(e);
             }
         }

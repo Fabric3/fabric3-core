@@ -20,7 +20,7 @@ package org.fabric3.implementation.java.runtime;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
@@ -52,12 +52,12 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
     }
 
     public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         if (component == null) {
-            throw new ContainerException("Source component not found: " + sourceName);
+            throw new Fabric3Exception("Source component not found: " + sourceName);
         }
         Injectable injectable = source.getInjectable();
         Class<?> type;
@@ -65,13 +65,13 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
             type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         } catch (ClassNotFoundException e) {
             String name = source.getInterfaceName();
-            throw new ContainerException("Unable to load interface class: " + name, e);
+            throw new Fabric3Exception("Unable to load interface class: " + name, e);
         }
         ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
         component.setObjectFactory(injectable, factory);
     }
 
-    public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();

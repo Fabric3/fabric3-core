@@ -16,7 +16,7 @@
  */
 package org.fabric3.node.domain;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Resolves a service and returns a wire proxy to it.
@@ -28,8 +28,8 @@ public interface ServiceResolver {
      *
      * @param interfaze the service interface
      * @return the wire proxy
-     * @throws ContainerException if there is a resolution exception
+     * @throws Fabric3Exception if there is a resolution exception
      */
-    <T> T resolve(Class<T> interfaze) throws ContainerException;
+    <T> T resolve(Class<T> interfaze) throws Fabric3Exception;
 
 }

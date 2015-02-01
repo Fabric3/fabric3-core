@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
@@ -56,7 +56,7 @@ public class MockComponent implements AtomicComponent {
         return objectFactory;
     }
 
-    public Object getInstance() throws ContainerException {
+    public Object getInstance() throws Fabric3Exception {
         return objectFactory.getInstance();
     }
 

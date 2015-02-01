@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Manages artifacts contributed to a domain. Contributions can be application or extension artifacts. Contributions may be in a variety of formats, for
@@ -58,92 +58,92 @@ public interface ContributionService {
      *
      * @param uri the URI of the contribution to search
      * @return a list of deployables in a contribution. If no deployables are found, an empty list is returned.
-     * @throws ContainerException if a contribution corresponding to the URI is not found
+     * @throws Fabric3Exception if a contribution corresponding to the URI is not found
      */
-    List<Deployable> getDeployables(URI uri) throws ContainerException;
+    List<Deployable> getDeployables(URI uri) throws Fabric3Exception;
 
     /**
      * Persistently stores a contribution in the domain.
      *
      * @param source the contribution source
      * @return a URI that uniquely identifies this contribution within the domain
-     * @throws ContainerException if there is an error storing the contribution
+     * @throws Fabric3Exception if there is an error storing the contribution
      */
-    URI store(ContributionSource source) throws ContainerException;
+    URI store(ContributionSource source) throws Fabric3Exception;
 
     /**
      * Persistently stores a collection of contributions in the domain.
      *
      * @param sources the contribution sources
      * @return URIs that uniquely identify the contribution within the domain
-     * @throws ContainerException if there is an error storing the contribution
+     * @throws Fabric3Exception if there is an error storing the contribution
      */
-    List<URI> store(List<ContributionSource> sources) throws ContainerException;
+    List<URI> store(List<ContributionSource> sources) throws Fabric3Exception;
 
     /**
      * Installs a stored contribution.
      *
      * @param uri the contribution URI
-     * @throws ContainerException if there an error reading, introspecting or loading the contribution
+     * @throws Fabric3Exception if there an error reading, introspecting or loading the contribution
      */
-    void install(URI uri) throws ContainerException;
+    void install(URI uri) throws Fabric3Exception;
 
     /**
      * Installs a list of stored contributions.
      *
      * @param uris the contribution URIs
      * @return the list of installed URIs ordered by dependencies
-     * @throws ContainerException if there an error reading, introspecting or loading the contribution
+     * @throws Fabric3Exception if there an error reading, introspecting or loading the contribution
      */
-    List<URI> install(List<URI> uris) throws ContainerException;
+    List<URI> install(List<URI> uris) throws Fabric3Exception;
 
     /**
      * Persistently stores a collection of contributions and processes their manifests.
      *
      * @param sources the contribution sources
      * @return metadata representing the dependency ordering of the contributions
-     * @throws ContainerException if there is an error storing the contribution
+     * @throws Fabric3Exception if there is an error storing the contribution
      */
-    ContributionOrder processManifests(List<ContributionSource> sources) throws ContainerException;
+    ContributionOrder processManifests(List<ContributionSource> sources) throws Fabric3Exception;
 
     /**
      * Introspects the contents of a contribution.
      *
      * @param uri the contribution URI
-     * @throws ContainerException if there is an error
+     * @throws Fabric3Exception if there is an error
      */
-    void processContents(URI uri) throws ContainerException;
+    void processContents(URI uri) throws Fabric3Exception;
 
     /**
      * Uninstalls a contribution.
      *
      * @param uri The URI of the contribution
-     * @throws ContainerException if there was a problem with the contribution
+     * @throws Fabric3Exception if there was a problem with the contribution
      */
-    void uninstall(URI uri) throws ContainerException;
+    void uninstall(URI uri) throws Fabric3Exception;
 
     /**
      * Uninstalls multiple contributions.
      *
      * @param uris The URIs of the contributions
-     * @throws ContainerException if there was a problem with the contribution
+     * @throws Fabric3Exception if there was a problem with the contribution
      */
-    void uninstall(List<URI> uris) throws ContainerException;
+    void uninstall(List<URI> uris) throws Fabric3Exception;
 
     /**
      * Remove a contribution from persistent storage. Contribution must be uninstalled prior to being removed.
      *
      * @param uri The URI of the contribution
-     * @throws ContainerException if there was a problem with the contribution
+     * @throws Fabric3Exception if there was a problem with the contribution
      */
-    void remove(URI uri) throws ContainerException;
+    void remove(URI uri) throws Fabric3Exception;
 
     /**
      * Remove multiple contributions from persistent storage. Contribution must be uninstalled prior to being removed.
      *
      * @param uris The URIs of the contributions
-     * @throws ContainerException if there was a problem with the contribution
+     * @throws Fabric3Exception if there was a problem with the contribution
      */
-    void remove(List<URI> uris) throws ContainerException;
+    void remove(List<URI> uris) throws Fabric3Exception;
 
 }

@@ -16,7 +16,7 @@
  */
 package org.fabric3.binding.zeromq.builder;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
@@ -26,11 +26,11 @@ import org.fabric3.spi.container.channel.Channel;
  */
 public class ZeroMQChannelBindingBuilder implements ChannelBindingBuilder<ZeroMQChannelBindingDefinition>{
 
-    public void build(ZeroMQChannelBindingDefinition definition, Channel channel) throws ContainerException {
+    public void build(ZeroMQChannelBindingDefinition definition, Channel channel) throws Fabric3Exception {
         // no-op
     }
 
-    public void dispose(ZeroMQChannelBindingDefinition definition, Channel channel) throws ContainerException {
+    public void dispose(ZeroMQChannelBindingDefinition definition, Channel channel) throws Fabric3Exception {
         //no-op
     }
 }

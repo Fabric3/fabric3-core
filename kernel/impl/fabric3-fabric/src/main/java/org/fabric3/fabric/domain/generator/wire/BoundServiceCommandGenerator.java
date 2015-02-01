@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.container.command.AttachWireCommand;
@@ -62,7 +62,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         this.generators = generators;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws ContainerException {
+    public ConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
@@ -89,7 +89,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command) throws ContainerException {
+    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command) throws Fabric3Exception {
         for (LogicalService service : component.getServices()) {
             if (service.getBindings().isEmpty()) {
                 continue;
@@ -146,11 +146,11 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private void generateCallbackBindings(LogicalService service) throws ContainerException {
+    private void generateCallbackBindings(LogicalService service) throws Fabric3Exception {
         for (LogicalBinding<?> logicalBinding : service.getBindings()) {
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {
-                throw new ContainerException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
+                throw new Fabric3Exception("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
             Binding definition = generator.generateServiceCallback(logicalBinding);
             definition.setParent(service.getDefinition());

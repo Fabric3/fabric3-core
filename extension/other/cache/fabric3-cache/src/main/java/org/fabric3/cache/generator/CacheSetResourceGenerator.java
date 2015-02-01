@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.model.CacheSetResource;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheResource;
@@ -44,7 +44,7 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResource> resource) throws ContainerException {
+    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResource> resource) throws Fabric3Exception {
         PhysicalCacheSetDefinition definitions = new PhysicalCacheSetDefinition();
         List<CacheResource> configurations = resource.getDefinition().getDefinitions();
         for (CacheResource definition : configurations) {
@@ -55,11 +55,11 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
         return definitions;
     }
 
-    private CacheResourceGenerator getGenerator(CacheResource configuration) throws ContainerException {
+    private CacheResourceGenerator getGenerator(CacheResource configuration) throws Fabric3Exception {
         Class<? extends CacheResource> type = configuration.getClass();
         CacheResourceGenerator generator = generators.get(type);
         if (generator == null) {
-            throw new ContainerException("Cache resource generator not found for type : " + type);
+            throw new Fabric3Exception("Cache resource generator not found for type : " + type);
         }
         return generator;
     }

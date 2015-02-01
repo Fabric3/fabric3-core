@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
@@ -74,7 +74,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
         this.listeners = listeners;
     }
 
-    public void execute(BuildComponentCommand command) throws ContainerException {
+    public void execute(BuildComponentCommand command) throws Fabric3Exception {
         PhysicalComponentDefinition definition = command.getDefinition();
         Component component = build(definition);
         URI classLoaderId = definition.getClassLoaderId();
@@ -90,14 +90,14 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
      *
      * @param definition the component definition.
      * @return Component to be built.
-     * @throws ContainerException if an exception building is encountered
+     * @throws Fabric3Exception if an exception building is encountered
      */
     @SuppressWarnings("unchecked")
-    private Component build(PhysicalComponentDefinition definition) throws ContainerException {
+    private Component build(PhysicalComponentDefinition definition) throws Fabric3Exception {
 
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
-            throw new ContainerException("Builder not found for " + definition.getClass().getName());
+            throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());
         }
         return builder.build(definition);
     }

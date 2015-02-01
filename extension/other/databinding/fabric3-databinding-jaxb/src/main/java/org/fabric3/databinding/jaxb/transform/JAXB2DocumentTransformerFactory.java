@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
@@ -54,7 +54,7 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
         return target.getType().equals(Document.class) && source instanceof JavaType;
     }
 
-    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws ContainerException {
+    public Transformer<?, ?> create(DataType source, DataType target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) throws Fabric3Exception {
         try {
             Set<Class<?>> types = new HashSet<>(sourceTypes);
             types.addAll(targetTypes);
@@ -74,7 +74,7 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
                 throw new UnsupportedOperationException("Null parameter operations not yet supported");
             }
         } catch (JAXBException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 

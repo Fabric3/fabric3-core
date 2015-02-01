@@ -21,7 +21,7 @@ package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
@@ -44,11 +44,11 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class SingletonComponentGenerator implements ComponentGenerator<LogicalComponent<SingletonImplementation>> {
 
-    public PhysicalComponentDefinition generate(LogicalComponent<SingletonImplementation> component) throws ContainerException {
+    public PhysicalComponentDefinition generate(LogicalComponent<SingletonImplementation> component) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
         SingletonWireSourceDefinition wireDefinition = new SingletonWireSourceDefinition();
         URI uri = reference.getUri();
         wireDefinition.setOptimizable(true);
@@ -58,7 +58,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         return wireDefinition;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
         SingletonWireTargetDefinition wireDefinition = new SingletonWireTargetDefinition();
         URI uri = service.getUri();
         wireDefinition.setUri(uri);
@@ -66,7 +66,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         return wireDefinition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws ContainerException {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         SingletonWireSourceDefinition wireDefinition = new SingletonWireSourceDefinition();
         URI uri = resourceReference.getUri();
         wireDefinition.setOptimizable(true);
@@ -79,11 +79,11 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws ContainerException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws ContainerException {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

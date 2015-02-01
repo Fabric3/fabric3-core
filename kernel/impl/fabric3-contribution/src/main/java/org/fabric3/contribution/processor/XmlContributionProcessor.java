@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
@@ -79,7 +79,7 @@ public class XmlContributionProcessor implements ContributionProcessor {
         // no-op as XML contributions do not contain manifest headers
     }
 
-    public void index(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void index(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         InputStream stream = null;
         XMLStreamReader reader = null;
         try {
@@ -94,21 +94,21 @@ public class XmlContributionProcessor implements ContributionProcessor {
             contribution.addResource(resource);
         } catch (IOException e) {
             String uri = contribution.getUri().toString();
-            throw new ContainerException("Error processing contribution " + uri, e);
+            throw new Fabric3Exception("Error processing contribution " + uri, e);
         } catch (XMLStreamException e) {
             String uri = contribution.getUri().toString();
             if (e.getLocation() == null) {
-                throw new ContainerException("Error processing contribution " + uri, e);
+                throw new Fabric3Exception("Error processing contribution " + uri, e);
             }
             int line = e.getLocation().getLineNumber();
             int col = e.getLocation().getColumnNumber();
-            throw new ContainerException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
+            throw new Fabric3Exception("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
         } finally {
             close(stream, reader);
         }
     }
 
-    public void process(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void process(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         URL locationURL = contribution.getLocation();
         InputStream stream = null;
         XMLStreamReader reader = null;
@@ -119,12 +119,12 @@ public class XmlContributionProcessor implements ContributionProcessor {
             xmlProcessorRegistry.process(contribution, reader, context);
         } catch (IOException e) {
             String uri = contribution.getUri().toString();
-            throw new ContainerException("Error processing contribution " + uri, e);
+            throw new Fabric3Exception("Error processing contribution " + uri, e);
         } catch (XMLStreamException e) {
             String uri = contribution.getUri().toString();
             int line = e.getLocation().getLineNumber();
             int col = e.getLocation().getColumnNumber();
-            throw new ContainerException("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
+            throw new Fabric3Exception("Error processing contribution " + uri + " [" + line + "," + col + "]", e);
         } finally {
             close(stream, reader);
         }

@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
@@ -73,7 +73,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
     }
 
-    public void processManifest(Contribution contribution, IntrospectionContext context) throws ContainerException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws Fabric3Exception {
         ContributionManifest manifest;
         try {
             String sourceUrl = contribution.getLocation().toString();
@@ -99,20 +99,20 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new ContainerException(e);
+                throw new Fabric3Exception(e);
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws ContainerException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception {
         File root = FileHelper.toFile(contribution.getLocation());
         iterateArtifactsRecursive(root, root, contribution, callback, context);
     }
 
     protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context)
-            throws ContainerException {
+            throws Fabric3Exception {
         File[] files = dir.listFiles();
         ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {
@@ -168,7 +168,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         callback.onResource(resource);
                     }
                 } catch (MalformedURLException e) {
-                    throw new ContainerException(e);
+                    throw new Fabric3Exception(e);
                 }
             }
         }

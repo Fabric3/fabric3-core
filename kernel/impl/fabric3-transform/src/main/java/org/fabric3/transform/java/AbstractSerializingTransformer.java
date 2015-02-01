@@ -23,7 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderObjectInputStream;
 import org.fabric3.spi.transform.Transformer;
 
@@ -32,7 +32,7 @@ import org.fabric3.spi.transform.Transformer;
  */
 public abstract class AbstractSerializingTransformer<S, T> implements Transformer<S, T> {
 
-    protected byte[] serialize(Object o) throws ContainerException {
+    protected byte[] serialize(Object o) throws Fabric3Exception {
         if (o == null) {
             throw new IllegalArgumentException("Attempt to serialize a null object");
         }
@@ -47,7 +47,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
             stream.flush();
             return bos.toByteArray();
         } catch (IOException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (stream != null) {
@@ -59,7 +59,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
         }
     }
 
-    protected Serializable deserialize(byte[] bytes, ClassLoader loader) throws ContainerException {
+    protected Serializable deserialize(byte[] bytes, ClassLoader loader) throws Fabric3Exception {
         ByteArrayInputStream bis = null;
         ObjectInputStream stream = null;
         try {
@@ -67,7 +67,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
             stream = new ClassLoaderObjectInputStream(bis, loader);
             return (Serializable) stream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (stream != null) {

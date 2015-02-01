@@ -19,7 +19,7 @@ package org.fabric3.fabric.container.interceptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
@@ -44,7 +44,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
                                          List<DataType> sources,
                                          List<DataType> targets,
                                          ClassLoader targetLoader,
-                                         ClassLoader sourceLoader) throws ContainerException {
+                                         ClassLoader sourceLoader) throws Fabric3Exception {
         List<Class<?>> targetTypes = loadTargetInputTypes(definition, targetLoader);
         List<Class<?>> sourceTypes = loadSourceInputTypes(definition, targetLoader);
         // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
@@ -67,7 +67,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             }
         }
         if (inTransformer == null) {
-            throw new ContainerException("No transformer found for operation: " + definition.getName());
+            throw new Fabric3Exception("No transformer found for operation: " + definition.getName());
         }
 
         // create the output transformer which flips the source and target types of the forward interceptor
@@ -78,7 +78,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
                                                                                                            targetOutTypes,
                                                                                                            sourceOutTypes);
         if (outTransformer == null) {
-            throw new ContainerException("No transformer from type " + selectedTarget + " to type " + selectedSource);
+            throw new Fabric3Exception("No transformer from type " + selectedTarget + " to type " + selectedSource);
         }
         return new TransformerInterceptor(inTransformer, outTransformer, targetLoader, sourceLoader);
     }
@@ -89,13 +89,13 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws ContainerException if an error occurs loading the parameter types
+     * @throws Fabric3Exception if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws ContainerException {
+    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
         try {
             return ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -105,13 +105,13 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws ContainerException if an error occurs loading the parameter types
+     * @throws Fabric3Exception if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws ContainerException {
+    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
         try {
             return ParameterTypeHelper.loadTargetInParameterTypes(definition, loader);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -121,9 +121,9 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws ContainerException if an error occurs loading the parameter types
+     * @throws Fabric3Exception if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws ContainerException {
+    private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
         List<Class<?>> types = new ArrayList<>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadSourceOutputType(definition, loader);
@@ -132,7 +132,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             //  Set<Class<?>> faults = ParameterTypeHelper.loadFaultTypes(definition, loader);
             //  types.addAll(faults);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         return types;
     }
@@ -143,9 +143,9 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws ContainerException if an error occurs loading the parameter types
+     * @throws Fabric3Exception if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws ContainerException {
+    private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
         List<Class<?>> types = new ArrayList<>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
@@ -154,7 +154,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             //  Set<Class<?>> faults = ParameterTypeHelper.loadFaultTypes(definition, loader);
             //  types.addAll(faults);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
         return types;
     }

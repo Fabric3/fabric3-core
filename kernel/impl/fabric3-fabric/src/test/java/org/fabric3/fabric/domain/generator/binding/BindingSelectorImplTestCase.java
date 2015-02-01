@@ -25,7 +25,7 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Channel;
@@ -113,7 +113,7 @@ public class BindingSelectorImplTestCase extends TestCase {
         try {
             selector.selectBindings(domain);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(info, provider);
@@ -160,7 +160,7 @@ public class BindingSelectorImplTestCase extends TestCase {
         try {
             selector.selectBindings(domain);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(info, provider);

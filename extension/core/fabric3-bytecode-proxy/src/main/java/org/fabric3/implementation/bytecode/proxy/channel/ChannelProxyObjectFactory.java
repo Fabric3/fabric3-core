@@ -21,7 +21,7 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -46,7 +46,7 @@ public class ChannelProxyObjectFactory<T> implements ObjectFactory<T> {
         this.proxyFactory = proxyFactory;
     }
 
-    public T getInstance() throws ContainerException {
+    public T getInstance() throws Fabric3Exception {
         if (proxy == null) {
             proxy = proxyFactory.createProxy(uri, interfaze, methods, ChannelProxyDispatcher.class, false);
             ((ChannelProxyDispatcher) proxy).init(handler);

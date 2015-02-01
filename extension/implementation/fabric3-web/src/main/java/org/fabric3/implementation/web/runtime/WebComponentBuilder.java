@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.container.web.spi.WebApplicationActivator;
@@ -58,7 +58,7 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
         this.info = info;
     }
 
-    public WebComponent build(WebComponentDefinition definition) throws ContainerException {
+    public WebComponent build(WebComponentDefinition definition) throws Fabric3Exception {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         // TODO fix properties
@@ -81,7 +81,7 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
                                 info);
     }
 
-    public void dispose(WebComponentDefinition definition, WebComponent component) throws ContainerException {
+    public void dispose(WebComponentDefinition definition, WebComponent component) throws Fabric3Exception {
         // no-op
     }
 }

@@ -23,7 +23,7 @@ import java.rmi.server.ExportException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 
@@ -55,7 +55,7 @@ public class RmiAgentTestCase extends TestCase {
             agent.init();
             agent.destroy();
             EasyMock.verify(portAllocator, port);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             if (e.getCause() instanceof ExportException) {
                 // ignore
                 System.out.println("*******Skipping RMI Agent test as port is bound");
@@ -88,7 +88,7 @@ public class RmiAgentTestCase extends TestCase {
             agent.init();
             agent.destroy();
             EasyMock.verify(portAllocator, port);
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             if (e.getCause() instanceof ExportException) {
                 // ignore
                 System.out.println("*******Skipping RMI Agent test as port is bound");

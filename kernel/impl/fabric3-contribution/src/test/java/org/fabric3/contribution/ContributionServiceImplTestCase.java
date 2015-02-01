@@ -28,7 +28,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
@@ -168,7 +168,7 @@ public class ContributionServiceImplTestCase extends TestCase {
         try {
             service.uninstall(contributionUri);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
@@ -181,7 +181,7 @@ public class ContributionServiceImplTestCase extends TestCase {
         try {
             service.uninstall(contributionUri);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);

@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.junit.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
@@ -55,12 +55,12 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         this.authenticationService = authenticationService;
     }
 
-    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         String testName = source.getTestName();
         ContextConfiguration configuration = source.getConfiguration();
         if (configuration != null) {
             if (authenticationService == null) {
-                throw new ContainerException("Security information set for the test but a security extension has not been installed in the runtime");
+                throw new Fabric3Exception("Security information set for the test but a security extension has not been installed in the runtime");
             }
             // configuration an authentication interceptor to set the subject on the work context
             for (InvocationChain chain : wire.getInvocationChains()) {
@@ -75,14 +75,14 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
     }
 
     public void attachObjectFactory(JUnitWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 
-    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 
 

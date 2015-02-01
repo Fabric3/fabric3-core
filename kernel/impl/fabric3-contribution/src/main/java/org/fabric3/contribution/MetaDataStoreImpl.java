@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
@@ -99,7 +99,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         this.updaters = updaters;
     }
 
-    public void store(Contribution contribution) throws ContainerException {
+    public void store(Contribution contribution) throws Fabric3Exception {
         cache.put(contribution.getUri(), contribution);
     }
 
@@ -133,15 +133,15 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws ContainerException {
+    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws Fabric3Exception {
         return resolve(uri, type, symbol, null);
     }
 
-    public <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws ContainerException {
+    public <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws Fabric3Exception {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContainerException("Contribution not found: " + identifier);
+            throw new Fabric3Exception("Contribution not found: " + identifier);
         }
 
         ResourceElement<S, ?> referred = find(uri, Serializable.class, symbol);
@@ -175,45 +175,45 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return elements;
     }
 
-    public <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws ContainerException {
+    public <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws Fabric3Exception {
         ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContainerException("Contribution not found: " + identifier);
+            throw new Fabric3Exception("Contribution not found: " + identifier);
         }
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
         return updater.update(value, contribution, dependentContributions);
     }
 
-    public <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws ContainerException {
+    public <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws Fabric3Exception {
         ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContainerException("Contribution not found: " + identifier);
+            throw new Fabric3Exception("Contribution not found: " + identifier);
         }
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
         return updater.remove(value, contribution, dependentContributions);
     }
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
-            throws ContainerException {
+            throws Fabric3Exception {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContainerException("Contribution not found: " + identifier);
+            throw new Fabric3Exception("Contribution not found: " + identifier);
         }
 
         return resolve(contribution, type, symbol, context);
     }
 
     @SuppressWarnings({"unchecked"})
-    public <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws ContainerException {
+    public <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws Fabric3Exception {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
-            throw new ContainerException("Contribution not found: " + identifier);
+            throw new Fabric3Exception("Contribution not found: " + identifier);
         }
         List<ResourceElement<?, V>> artifacts = new ArrayList<>();
         for (Resource resource : contribution.getResources()) {
@@ -291,14 +291,14 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return resolved;
     }
 
-    public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws ContainerException {
+    public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws Fabric3Exception {
         List<ContributionWire<?, ?>> wires = new ArrayList<>();
         for (Map.Entry<URI, Export> entry : imprt.getResolved().entrySet()) {
             ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, entry.getValue(), uri, entry.getKey());
             wires.add(wire);
         }
         if (wires.isEmpty()) {
-            throw new ContainerException(imprt.toString());
+            throw new Fabric3Exception(imprt.toString());
         }
         return wires;
     }
@@ -363,7 +363,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(Contribution contribution,
                                                                                      Class<V> type,
                                                                                      S symbol,
-                                                                                     IntrospectionContext context) throws ContainerException {
+                                                                                     IntrospectionContext context) throws Fabric3Exception {
         ResourceElement<S, V> element;
         // resolve by delegating to exporting contributions first
         for (ContributionWire<?, ?> wire : contribution.getWires()) {
@@ -441,7 +441,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolveInternal(Contribution contribution,
                                                                                              Class<V> type,
                                                                                              S symbol,
-                                                                                             IntrospectionContext context) throws ContainerException {
+                                                                                             IntrospectionContext context) throws Fabric3Exception {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol().equals(symbol)) {
@@ -449,12 +449,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
                         String identifier = resource.getSource().getSystemId();
                         throw new AssertionError("Resource not resolved: " + identifier);
                     } else if (ResourceState.UNPROCESSED == resource.getState() && context != null) {
-                        try {
-                            processorRegistry.processResource(resource, context);
-                        } catch (ContainerException e) {
-                            String identifier = resource.getSource().getSystemId();
-                            throw new ContainerException("Error resolving resource: " + identifier, e);
-                        }
+                        processorRegistry.processResource(resource, context);
                     }
                     Object val = element.getValue();
                     if (!type.isInstance(val)) {
@@ -468,12 +463,12 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <V extends Serializable> ResourceElementUpdater<V> getUpdater(URI uri, V value) throws ContainerException {
+    private <V extends Serializable> ResourceElementUpdater<V> getUpdater(URI uri, V value) throws Fabric3Exception {
         String clazz = value.getClass().getName();
         ResourceElementUpdater<V> updater = (ResourceElementUpdater<V>) updaters.get(clazz);
         if (updater == null) {
             String identifier = uri.toString();
-            throw new ContainerException("Updater not found: " + identifier);
+            throw new Fabric3Exception("Updater not found: " + identifier);
         }
         return updater;
     }

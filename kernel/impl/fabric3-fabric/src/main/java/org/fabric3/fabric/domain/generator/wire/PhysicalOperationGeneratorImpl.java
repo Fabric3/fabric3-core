@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
@@ -47,7 +47,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws ContainerException {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws Fabric3Exception {
 
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(operations.size());
 
@@ -58,15 +58,11 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         return physicalOperations;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) throws ContainerException {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote)
+            throws Fabric3Exception {
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(sources.size());
         for (LogicalOperation source : sources) {
-            LogicalOperation target;
-            try {
-                target = operationResolver.resolve(source, targets);
-            } catch (ContainerException e) {
-                throw new ContainerException(e);
-            }
+            LogicalOperation target = operationResolver.resolve(source, targets);
             PhysicalOperationDefinition physicalOperation = generate(source, target);
             physicalOperations.add(physicalOperation);
             if (!remote) {
@@ -83,9 +79,9 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param source the operation
      * @param target the target operation
      * @return the interceptor definitions
-     * @throws ContainerException if a generation error occurs
+     * @throws Fabric3Exception if a generation error occurs
      */
-    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) throws ContainerException {
+    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) throws Fabric3Exception {
         Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<>();
         for (InterceptorGenerator interceptorGenerator : generatorRegistry.getInterceptorGenerators()) {
             Optional<PhysicalInterceptorDefinition> optional = interceptorGenerator.generate(source, target);

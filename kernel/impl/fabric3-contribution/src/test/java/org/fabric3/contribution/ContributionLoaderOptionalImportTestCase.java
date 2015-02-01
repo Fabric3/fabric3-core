@@ -30,7 +30,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
@@ -119,10 +119,10 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-    private void setupStore() throws ContainerException {
+    private void setupStore() throws Fabric3Exception {
         store = EasyMock.createMock(MetaDataStore.class);
         EasyMock.expect(store.resolveContributionWires(EasyMock.eq(contributionUri),
-                                                       EasyMock.isA(JavaImport.class))).andThrow(new ContainerException("test"));
+                                                       EasyMock.isA(JavaImport.class))).andThrow(new Fabric3Exception("test"));
 
         List<ContributionWire<?, ?>> list = Collections.emptyList();
         EasyMock.expect(store.resolveContributionWires(EasyMock.isA(URI.class),

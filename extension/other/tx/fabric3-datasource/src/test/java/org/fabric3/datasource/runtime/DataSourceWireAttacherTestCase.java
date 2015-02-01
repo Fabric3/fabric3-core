@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -79,7 +79,7 @@ public class DataSourceWireAttacherTestCase extends TestCase {
         try {
             attacher.createObjectFactory(definition);
             fail();
-        } catch (ContainerException e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
         EasyMock.verify(registry);

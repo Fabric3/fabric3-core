@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -147,7 +147,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         eventService.subscribe(RuntimeStop.class, this);
     }
 
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException {
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception {
         SenderHolder holder;
         if (ZMQ.equals(uri.getScheme())) {
             DelegatingOneWaySender sender = new DelegatingOneWaySender(id, this, metadata);
@@ -173,12 +173,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         holder.getIds().add(id);
     }
 
-    public void releaseSender(String id, URI uri) throws ContainerException {
+    public void releaseSender(String id, URI uri) throws Fabric3Exception {
         SenderHolder holder = senders.get(uri.toString());
         if (holder == null) {
             if (!ZMQ.equals(uri.getScheme())) {
                 // callback holders are dynamically created and it is possible for a sender to be released before an invocation is dispatched to it
-                throw new ContainerException("Sender not found for " + uri);
+                throw new Fabric3Exception("Sender not found for " + uri);
             } else {
                 return;
             }
@@ -192,9 +192,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
     }
 
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws ContainerException {
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception {
         if (receivers.containsKey(uri.toString())) {
-            throw new ContainerException("Receiver already defined for " + uri);
+            throw new Fabric3Exception("Receiver already defined for " + uri);
         }
         String endpointId = uri.toString();
 
@@ -205,7 +205,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         if (metadata.getSocketAddresses() != null && !metadata.getSocketAddresses().isEmpty()) {
             // bind using specified address and port
             if (metadata.getSocketAddresses().size() != 1) {
-                throw new ContainerException("Only one socket address can be specified");
+                throw new Fabric3Exception("Only one socket address can be specified");
             }
             SocketAddressDefinition addressDefinition = metadata.getSocketAddresses().get(0);
             String specifiedHost = addressDefinition.getHost();
@@ -241,10 +241,10 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         monitor.onProvisionEndpoint(id);
     }
 
-    public void releaseReceiver(URI uri) throws ContainerException {
+    public void releaseReceiver(URI uri) throws Fabric3Exception {
         Receiver receiver = receivers.remove(uri.toString());
         if (receiver == null) {
-            throw new ContainerException("Receiver not found for " + uri);
+            throw new Fabric3Exception("Receiver not found for " + uri);
         }
         String endpointId = uri.toString();
 
@@ -371,7 +371,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         return chains.get(0).getPhysicalOperation().isOneWay();
     }
 
-    private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws ContainerException {
+    private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws Fabric3Exception {
         for (InvocationChain chain : chains) {
             PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
             List<DataType> targetTypes = createTypes(physicalOperation, loader);
@@ -382,7 +382,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws ContainerException {
+    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws Fabric3Exception {
         try {
             List<DataType> dataTypes = new ArrayList<>();
             if (physicalOperation.getSourceParameterTypes().isEmpty()) {
@@ -396,7 +396,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             }
             return dataTypes;
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Error transforming parameter", e);
+            throw new Fabric3Exception("Error transforming parameter", e);
         }
     }
 

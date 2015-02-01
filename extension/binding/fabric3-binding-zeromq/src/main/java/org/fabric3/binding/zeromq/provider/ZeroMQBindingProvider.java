@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.binding.BindingMatchResult;
 import org.fabric3.spi.domain.generator.binding.BindingProvider;
@@ -120,7 +120,7 @@ public class ZeroMQBindingProvider implements BindingProvider {
 
     }
 
-    public void bind(LogicalWire wire) throws ContainerException {
+    public void bind(LogicalWire wire) throws Fabric3Exception {
         LogicalReference source = wire.getSource().getLeafReference();
         LogicalService target = wire.getTarget().getLeafService();
         QName deployable = source.getParent().getDeployable();
@@ -163,7 +163,7 @@ public class ZeroMQBindingProvider implements BindingProvider {
         }
     }
 
-    public void bind(LogicalChannel channel) throws ContainerException {
+    public void bind(LogicalChannel channel) throws Fabric3Exception {
         ZeroMQMetadata metadata = createMetadata();
         metadata.setChannelName(channel.getDefinition().getName());
         ZeroMQBinding definition = new ZeroMQBinding("binding.zeromq", metadata);

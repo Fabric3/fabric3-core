@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -149,11 +149,11 @@ public class SingletonComponent implements ScopedComponent {
         // no-op
     }
 
-    public void stopInstance(Object instance) throws ContainerException {
+    public void stopInstance(Object instance) throws Fabric3Exception {
         // no-op
     }
 
-    public void reinject(Object instance) throws ContainerException {
+    public void reinject(Object instance) throws Fabric3Exception {
         for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
             inject(entry.getValue(), entry.getKey());
         }
@@ -322,9 +322,9 @@ public class SingletonComponent implements ScopedComponent {
      *
      * @param attribute the InjectableAttribute defining the field or method
      * @param factory   the ObjectFactory that returns the value to inject
-     * @throws ContainerException if an error occurs during injection
+     * @throws Fabric3Exception if an error occurs during injection
      */
-    private void inject(Injectable attribute, ObjectFactory factory) throws ContainerException {
+    private void inject(Injectable attribute, ObjectFactory factory) throws Fabric3Exception {
         for (Map.Entry<Member, Injectable> entry : sites.entrySet()) {
             if (entry.getValue().equals(attribute)) {
                 Member member = entry.getKey();
@@ -334,7 +334,7 @@ public class SingletonComponent implements ScopedComponent {
                         ((Field) member).set(instance, param);
                     } catch (IllegalAccessException e) {
                         // should not happen as accessibility is already set
-                        throw new ContainerException(e);
+                        throw new Fabric3Exception(e);
                     }
                 } else if (member instanceof Method) {
                     try {
@@ -343,11 +343,11 @@ public class SingletonComponent implements ScopedComponent {
                         method.invoke(instance, param);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         // should not happen as accessibility is already set
-                        throw new ContainerException(e);
+                        throw new Fabric3Exception(e);
                     }
                 } else {
                     // programming error
-                    throw new ContainerException("Unsupported member type" + member);
+                    throw new Fabric3Exception("Unsupported member type" + member);
                 }
             }
         }

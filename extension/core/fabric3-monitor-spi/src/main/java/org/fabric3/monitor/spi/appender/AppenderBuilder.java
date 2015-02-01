@@ -16,7 +16,7 @@
  */
 package org.fabric3.monitor.spi.appender;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 
 /**
@@ -29,7 +29,7 @@ public interface AppenderBuilder<D extends PhysicalAppenderDefinition> {
      *
      * @param definition the definition
      * @return the appender
-     * @throws ContainerException if there is an error creating the appender
+     * @throws Fabric3Exception if there is an error creating the appender
      */
-    Appender build(D definition) throws ContainerException;
+    Appender build(D definition) throws Fabric3Exception;
 }

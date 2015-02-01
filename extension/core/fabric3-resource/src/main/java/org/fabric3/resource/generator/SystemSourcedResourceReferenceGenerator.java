@@ -20,7 +20,7 @@ package org.fabric3.resource.generator;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
@@ -34,7 +34,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class SystemSourcedResourceReferenceGenerator implements ResourceReferenceGenerator<SystemSourcedResourceReference> {
 
-    public SystemSourcedWireTargetDefinition generateWireTarget(LogicalResourceReference<SystemSourcedResourceReference> resourceReference) throws ContainerException {
+    public SystemSourcedWireTargetDefinition generateWireTarget(LogicalResourceReference<SystemSourcedResourceReference> resourceReference) throws Fabric3Exception {
         SystemSourcedResourceReference definition = resourceReference.getDefinition();
         String mappedName = definition.getMappedName();
         URI targetUri = URI.create(Names.RUNTIME_NAME + "/" + mappedName);

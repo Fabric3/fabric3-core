@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -64,7 +64,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         sorter = new TopologicalSorterImpl<>();
     }
 
-    public List<Contribution> resolve(List<Contribution> contributions) throws ContainerException {
+    public List<Contribution> resolve(List<Contribution> contributions) throws Fabric3Exception {
         DirectedGraph<Contribution> dag = new DirectedGraphImpl<>();
         // add the contributions as vertices
         for (Contribution contribution : contributions) {
@@ -136,9 +136,9 @@ public class DependencyResolverImpl implements DependencyResolver {
      *
      * @param source the contribution to resolve imports for
      * @param dag    the current contribution dag
-     * @throws ContainerException if a resolution error occurs
+     * @throws Fabric3Exception if a resolution error occurs
      */
-    private void resolveImports(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws ContainerException {
+    private void resolveImports(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws Fabric3Exception {
         Contribution contribution = source.getEntity();
         ContributionManifest manifest = contribution.getManifest();
         for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext(); ) {
@@ -161,9 +161,9 @@ public class DependencyResolverImpl implements DependencyResolver {
      * @param imprt  the import to resolve
      * @param source the contribution to resolve imports for
      * @param dag    the current contribution dag
-     * @throws ContainerException if a resolution error occurs
+     * @throws Fabric3Exception if a resolution error occurs
      */
-    private void resolveExternalImport(Import imprt, Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws ContainerException {
+    private void resolveExternalImport(Import imprt, Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws Fabric3Exception {
         // See if the import is already stored. Extension imports do not need to be checked since we assume extensions are installed prior
         Contribution contribution = source.getEntity();
         URI uri = contribution.getUri();
@@ -172,7 +172,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             List<Contribution> resolvedContributions = store.resolve(uri, imprt);
             checkInstalled(contribution, resolvedContributions);
             if (resolvedContributions.isEmpty() && imprt.isRequired()) {
-                throw new ContainerException("Unable to resolve import " + imprt + " in " + uri);
+                throw new Fabric3Exception("Unable to resolve import " + imprt + " in " + uri);
             }
         } else {
             for (Vertex<Contribution> sink : sinks) {
@@ -193,10 +193,10 @@ public class DependencyResolverImpl implements DependencyResolver {
      * @param iterator the import iterator - used to remove the import from the containing manifest if it is resolved by the export in the same contribution
      * @param source   the source contribution
      * @param dag      the current DAG to resolve against
-     * @throws ContainerException if there is a resolution error
+     * @throws Fabric3Exception if there is a resolution error
      */
     private void resolveOverlappingImport(Import imprt, Iterator<Import> iterator, Vertex<Contribution> source, DirectedGraph<Contribution> dag)
-            throws ContainerException {
+            throws Fabric3Exception {
         Contribution contribution = source.getEntity();
         ContributionManifest manifest = contribution.getManifest();
         URI uri = contribution.getUri();
@@ -222,7 +222,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
     }
 
-    private void resolveCapabilities(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws ContainerException {
+    private void resolveCapabilities(Vertex<Contribution> source, DirectedGraph<Contribution> dag) throws Fabric3Exception {
         Contribution contribution = source.getEntity();
         URI uri = contribution.getUri();
         for (Capability capability : contribution.getManifest().getRequiredCapabilities()) {
@@ -232,12 +232,12 @@ public class DependencyResolverImpl implements DependencyResolver {
                 Set<Contribution> resolvedContributions = store.resolveCapability(capability.getName());
                 for (Contribution resolved : resolvedContributions) {
                     if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
-                        throw new ContainerException("Contribution " + contribution.getUri() + " requires a capability provided by " + resolved.getUri()
+                        throw new Fabric3Exception("Contribution " + contribution.getUri() + " requires a capability provided by " + resolved.getUri()
                                                      + " which is not installed");
                     }
                 }
                 if (resolvedContributions.isEmpty()) {
-                    throw new ContainerException("Unable to resolve capability " + capability + " required by " + uri);
+                    throw new Fabric3Exception("Unable to resolve capability " + capability + " required by " + uri);
                 }
 
             } else {
@@ -363,9 +363,9 @@ public class DependencyResolverImpl implements DependencyResolver {
      *
      * @param dag the DAG
      * @return the sorted contributions
-     * @throws ContainerException if there is an error sorting the DAG
+     * @throws Fabric3Exception if there is an error sorting the DAG
      */
-    private List<Contribution> sort(DirectedGraph<Contribution> dag) throws ContainerException {
+    private List<Contribution> sort(DirectedGraph<Contribution> dag) throws Fabric3Exception {
         // detect cycles
         List<Cycle<Contribution>> cycles = detector.findCycles(dag);
         if (!cycles.isEmpty()) {
@@ -376,7 +376,7 @@ public class DependencyResolverImpl implements DependencyResolver {
                     builder.append(vertex.getEntity().getUri()).append("\n");
                 }
             }
-            throw new ContainerException("Cyclic dependencies found:\n" + builder);
+            throw new Fabric3Exception("Cyclic dependencies found:\n" + builder);
         }
         try {
             List<Vertex<Contribution>> vertices = sorter.reverseSort(dag);
@@ -386,7 +386,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             }
             return ordered;
         } catch (GraphException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -436,10 +436,10 @@ public class DependencyResolverImpl implements DependencyResolver {
         }
     }
 
-    private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) throws ContainerException {
+    private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) throws Fabric3Exception {
         for (Contribution resolved : resolvedContributions) {
             if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
-                throw new ContainerException("Contribution " + contribution.getUri() + " imports " + resolved.getUri() + " which is not installed");
+                throw new Fabric3Exception("Contribution " + contribution.getUri() + " imports " + resolved.getUri() + " which is not installed");
             }
         }
     }

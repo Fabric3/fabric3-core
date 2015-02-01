@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutorService;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.binding.jms.model.DestinationType;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
@@ -425,10 +425,10 @@ public class AdaptiveMessageContainer {
     /**
      * Starts the container. Once started, messages will be received.
      *
-     * @throws ContainerException if an error during start-up occurs
+     * @throws Fabric3Exception if an error during start-up occurs
      */
     @ManagementOperation(description = "Starts the containing processing messages")
-    public void start() throws ContainerException {
+    public void start() throws Fabric3Exception {
         connectionManager.start();
         synchronized (syncMonitor) {
             running = true;
@@ -463,9 +463,9 @@ public class AdaptiveMessageContainer {
     /**
      * Initializes and starts the container. Once started, messages will be received.
      *
-     * @throws ContainerException if an initialization error occurs
+     * @throws Fabric3Exception if an initialization error occurs
      */
-    public void initialize() throws ContainerException {
+    public void initialize() throws Fabric3Exception {
         synchronized (syncMonitor) {
             initialized = true;
             syncMonitor.notifyAll();
@@ -755,9 +755,9 @@ public class AdaptiveMessageContainer {
          *
          * @return true if a message was received on executing the loop
          * @throws JMSException       if an error occurs processing a message
-         * @throws ContainerException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
+         * @throws Fabric3Exception if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receiveLoop() throws JMSException, ContainerException {
+        private boolean receiveLoop() throws JMSException, Fabric3Exception {
             boolean received = false;
             boolean active = true;
             while (active) {
@@ -814,9 +814,9 @@ public class AdaptiveMessageContainer {
          *
          * @return true if a message was received
          * @throws JMSException       if there was an error receiving the message
-         * @throws ContainerException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
+         * @throws Fabric3Exception if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receive() throws JMSException, ContainerException {
+        private boolean receive() throws JMSException, Fabric3Exception {
             try {
                 setRecoveryMarker();
                 boolean received = doReceive();
@@ -832,9 +832,9 @@ public class AdaptiveMessageContainer {
          *
          * @return true if a message was received
          * @throws JMSException       if a JMS-related exception occurred during the receive
-         * @throws ContainerException if a transaction exception occurred during thr receive
+         * @throws Fabric3Exception if a transaction exception occurred during thr receive
          */
-        private boolean doReceive() throws JMSException, ContainerException {
+        private boolean doReceive() throws JMSException, Fabric3Exception {
             synchronized (syncMonitor) {
                 if (!isRunning()) {
                     return false;

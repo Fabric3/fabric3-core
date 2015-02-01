@@ -21,7 +21,7 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -57,7 +57,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         }
     }
 
-    public T getInstance() throws ContainerException {
+    public T getInstance() throws Fabric3Exception {
         if (multiThreaded) {
             return interfaze.cast(proxyService.createMultiThreadedCallbackProxy(interfaze, mappings));
         } else {

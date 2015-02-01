@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
@@ -58,7 +58,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         this.listeners = listeners;
     }
 
-    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -72,12 +72,12 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
                 listener.onAttach(wire);
             }
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
     public void attachObjectFactory(SpringWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -86,25 +86,25 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
             interfaze = loader.loadClass(source.getInterface());
             component.attach(referenceName, interfaze, objectFactory);
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
-    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         component.detach(referenceName);
     }
 
-    public void detachObjectFactory(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         detach(source, target);
     }
 
-    private SpringComponent getComponent(SpringWireSourceDefinition definition) throws ContainerException {
+    private SpringComponent getComponent(SpringWireSourceDefinition definition) throws Fabric3Exception {
         URI uri = definition.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {
-            throw new ContainerException("Source not found: " + uri);
+            throw new Fabric3Exception("Source not found: " + uri);
         }
         return component;
     }

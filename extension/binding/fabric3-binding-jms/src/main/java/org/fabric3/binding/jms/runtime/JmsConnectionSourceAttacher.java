@@ -27,7 +27,7 @@ import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
@@ -71,7 +71,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         this.monitor = monitor;
     }
 
-    public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws ContainerException {
+    public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws Fabric3Exception {
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
@@ -99,7 +99,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         containerManager.register(container);
     }
 
-    public void detach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target) throws ContainerException {
+    public void detach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
         containerManager.unregister(source.getUri());
         resolver.release(source.getMetadata().getConnectionFactory());
     }
@@ -125,7 +125,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSource source) throws ContainerException {
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSource source) throws Fabric3Exception {
         JmsBindingMetadata metadata = source.getMetadata();
         ConnectionFactoryDefinition connectionFactory = metadata.getConnectionFactory();
         ConnectionFactory requestConnectionFactory = resolver.resolve(connectionFactory);

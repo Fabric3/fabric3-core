@@ -20,7 +20,7 @@ package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringEventStreamHandler;
@@ -45,11 +45,11 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target, ChannelConnection connection)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI targetUri = target.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(targetUri);
         if (component == null) {
-            throw new ContainerException("Target component not found: " + targetUri);
+            throw new Fabric3Exception("Target component not found: " + targetUri);
         }
         String beanName = target.getBeanName();
         JavaType type = target.getType();
@@ -59,7 +59,7 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) throws Fabric3Exception {
         // no-op
     }
 

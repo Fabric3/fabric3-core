@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionSource;
@@ -218,7 +218,7 @@ public class DefaultFabric implements Fabric {
                 }
             }
             return this;
-        } catch (ContainerException | IOException e) {
+        } catch (IOException e) {
             throw new FabricException(e);
         }
     }
@@ -359,9 +359,9 @@ public class DefaultFabric implements Fabric {
      *
      * @param onlyCore if true, only scan for core extensions; ignore all others as they will be explicitly configured
      * @return the sources
-     * @throws ContainerException if there is a scan error
+     * @throws Fabric3Exception if there is a scan error
      */
-    private List<ContributionSource> scanExtensions(boolean onlyCore) throws ContainerException {
+    private List<ContributionSource> scanExtensions(boolean onlyCore) throws Fabric3Exception {
         File repositoryDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class);
         File f3Extensions = new File(repositoryDirectory, "f3.extensions.jar");
         try {
@@ -369,7 +369,7 @@ public class DefaultFabric implements Fabric {
             List<File> archives = scanClasspathForProfileArchives();
 
             if (archives.size() == 0) {
-                throw new ContainerException("Core extension archive not found");
+                throw new Fabric3Exception("Core extension archive not found");
             }
 
             List<ContributionSource> sources = new ArrayList<>();
@@ -396,7 +396,7 @@ public class DefaultFabric implements Fabric {
 
             return sources;
         } catch (IOException e) {
-            throw new ContainerException("Error scanning extensions", e);
+            throw new Fabric3Exception("Error scanning extensions", e);
         }
     }
 

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
@@ -41,15 +41,15 @@ public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalCompone
         this.componentManager = componentManager;
     }
 
-    public Appender build(PhysicalComponentAppenderDefinition definition) throws ContainerException {
+    public Appender build(PhysicalComponentAppenderDefinition definition) throws Fabric3Exception {
         URI uri = URI.create(Names.RUNTIME_NAME + "/" + definition.getComponentName());
 
         Component component = componentManager.getComponent(uri);
         if (component == null) {
-            throw new ContainerException("Component not found: " + uri);
+            throw new Fabric3Exception("Component not found: " + uri);
         }
         if (!(component instanceof AtomicComponent)) {
-            throw new ContainerException("Component must be atomic: " + uri);
+            throw new Fabric3Exception("Component must be atomic: " + uri);
         }
         AtomicComponent atomicComponent = (AtomicComponent) component;
         return new AppenderAdapter(atomicComponent);
@@ -66,16 +66,12 @@ public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalCompone
             this.atomicComponent = atomicComponent;
         }
 
-        public void start() throws IOException {
-            try {
-                Object instance = atomicComponent.getInstance();
-                if (!(instance instanceof Appender)) {
-                    throw new IOException("Component does not implement " + Appender.class.getName() + ": " + atomicComponent.getUri());
-                }
-                delegate = (Appender) instance;
-            } catch (ContainerException e) {
-                throw new IOException(e);
+        public void start() {
+            Object instance = atomicComponent.getInstance();
+            if (!(instance instanceof Appender)) {
+                throw new Fabric3Exception("Component does not implement " + Appender.class.getName() + ": " + atomicComponent.getUri());
             }
+            delegate = (Appender) instance;
         }
 
         public void stop() throws IOException {

@@ -21,7 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -43,7 +43,7 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTarget
         this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         URI sourceUri = source.getUri();
         String id = sourceUri.getPath().substring(1) + "/" + sourceUri.getFragment();   // strip leading '/'
         URI targetUri = target.getUri();
@@ -52,13 +52,13 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTarget
         broker.connectToSender(id, targetUri, chains, target.getMetadata(), loader);
     }
 
-    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) throws ContainerException {
+    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) throws Fabric3Exception {
         String id = source.getUri().toString();
         URI uri = target.getUri();
         broker.releaseSender(id, uri);
     }
 
-    public ObjectFactory<?> createObjectFactory(ZeroMQWireTargetDefinition target) throws ContainerException {
+    public ObjectFactory<?> createObjectFactory(ZeroMQWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

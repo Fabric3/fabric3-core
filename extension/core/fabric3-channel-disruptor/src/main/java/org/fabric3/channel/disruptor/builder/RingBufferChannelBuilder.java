@@ -28,7 +28,7 @@ import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.channel.disruptor.impl.RingBufferChannel;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
@@ -47,7 +47,7 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
         this.executorService = executorService;
     }
 
-    public Channel build(PhysicalChannelDefinition definition) throws ContainerException {
+    public Channel build(PhysicalChannelDefinition definition) throws Fabric3Exception {
         URI uri = definition.getUri();
         QName deployable = definition.getDeployable();
 
@@ -61,7 +61,7 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
         return new RingBufferChannel(uri, deployable, size, strategy, channelSide, executorService);
     }
 
-    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws ContainerException {
+    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws Fabric3Exception {
         // no-op
     }
 

@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.java.generator;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
@@ -43,18 +43,18 @@ public interface JavaGenerationHelper {
      *
      * @param definition the JavaComponentDefinition to populate
      * @param component  the component being generated
-     * @throws ContainerException if there is an error generating the JavaComponentDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaComponentDefinition
      */
-    void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws ContainerException;
+    void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws Fabric3Exception;
 
     /**
      * Populates the JavaWireSourceDefinition with reference wiring information.
      *
      * @param definition the JavaWireSourceDefinition to populate
      * @param reference  the reference the wire is being generated for
-     * @throws ContainerException if there is an error generating the JavaWireSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
      */
-    void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws ContainerException;
+    void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws Fabric3Exception;
 
     /**
      * Populates the JavaWireSourceDefinition with callback wiring information.
@@ -62,46 +62,46 @@ public interface JavaGenerationHelper {
      * @param definition      the JavaWireSourceDefinition to populate
      * @param component       the component to be injected with the callback, i.e. the component providing the forward service
      * @param serviceContract the callback service contract
-     * @throws ContainerException if there is an error generating the JavaWireSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
      */
     void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                     LogicalComponent<? extends JavaImplementation> component,
-                                    ServiceContract serviceContract) throws ContainerException;
+                                    ServiceContract serviceContract) throws Fabric3Exception;
 
     /**
      * Populates the JavaWireTargetDefinition with wiring information.
      *
      * @param definition the JavaWireTargetDefinition to populate
      * @param service    the target service for the wire
-     * @throws ContainerException if there is an error generating the JavaWireSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
      */
-    void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws ContainerException;
+    void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws Fabric3Exception;
 
     /**
      * Populates the JavaConnectionSourceDefinition with information for connecting it to a component producer.
      *
      * @param definition the JavaConnectionSourceDefinition to populate
      * @param producer   the producer
-     * @throws ContainerException if there is an error generating the JavaConnectionSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaConnectionSourceDefinition
      */
-    void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws ContainerException;
+    void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws Fabric3Exception;
 
     /**
      * Populates the JavaConnectionTargetDefinition with information for connecting it to a component consumer .
      *
      * @param definition the JavaConnectionTargetDefinition to populate
      * @param consumer   the consumer
-     * @throws ContainerException if there is an error generating the JavaConnectionSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaConnectionSourceDefinition
      */
-    void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws ContainerException;
+    void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws Fabric3Exception;
 
     /**
      * Populates the JavaWireSourceDefinition with resource wiring information.
      *
      * @param definition        the JavaWireSourceDefinition to populate
      * @param resourceReference the resource to be wired
-     * @throws ContainerException if there is an error generating the JavaWireSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
      */
-    void generateResourceWireSource(JavaWireSourceDefinition definition, LogicalResourceReference<?> resourceReference) throws ContainerException;
+    void generateResourceWireSource(JavaWireSourceDefinition definition, LogicalResourceReference<?> resourceReference) throws Fabric3Exception;
 
 }

@@ -25,7 +25,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
 import org.fabric3.binding.rs.runtime.bytecode.ProviderGenerator;
 import org.fabric3.binding.rs.runtime.bytecode.RsReflectionHelper;
@@ -63,7 +63,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalProviderResourceDefinition definition) throws ContainerException {
+    public void build(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
         try {
             URI providerUri = definition.getProviderUri();
 
@@ -77,12 +77,12 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 providerRegistry.registerGlobalProvider(providerUri, provider);
             }
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalProviderResourceDefinition definition) throws ContainerException {
+    public void remove(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
         try {
             if (definition.getBindingAnnotation() != null) {
                 String bindingAnnotation = definition.getBindingAnnotation();
@@ -95,12 +95,12 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 providerRegistry.unregisterGlobalFilter(filterUri);
             }
         } catch (ClassNotFoundException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private Object createProvider(PhysicalProviderResourceDefinition definition) throws ContainerException {
+    private Object createProvider(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
 
         try {
             URI contributionUri = definition.getContributionUri();
@@ -123,13 +123,13 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 String signature = getGenericExceptionMapperSignature((Class<? extends ExceptionMapper>) providerClass);
                 provider = providerGenerator.generate(ProxyExceptionMapper.class, providerClass, signature).newInstance();
             } else {
-                throw new ContainerException("Unknown provider type: " + providerClass.getName());
+                throw new Fabric3Exception("Unknown provider type: " + providerClass.getName());
             }
 
             provider.init(filterUri, componentManager);
             return provider;
         } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
 
     }
@@ -139,9 +139,9 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
      *
      * @param mapperClass the ExceptionMapper class
      * @return the signature
-     * @throws ContainerException if there is an error creating the signature
+     * @throws Fabric3Exception if there is an error creating the signature
      */
-    private String getGenericExceptionMapperSignature(Class<? extends ExceptionMapper> mapperClass) throws ContainerException {
+    private String getGenericExceptionMapperSignature(Class<? extends ExceptionMapper> mapperClass) throws Fabric3Exception {
         Class<?> exceptionType = RsReflectionHelper.getExceptionType(mapperClass);
         String exceptionName = Type.getInternalName(exceptionType);
         return "<E:L" + exceptionName + ";>L" + Type.getInternalName(ProxyExceptionMapper.class) + "<L" + exceptionName + ";>;L" + Type.getInternalName(

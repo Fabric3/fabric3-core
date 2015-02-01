@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.command.Response;
@@ -186,7 +186,7 @@ public abstract class AbstractTopologyService {
                 monitor.receiveMessage(runtimeName);
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 monitor.error("Error receiving message from: " + runtimeName, e);
             }
         }
@@ -214,17 +214,17 @@ public abstract class AbstractTopologyService {
                 Response response = command.getResponse();
                 response.setRuntimeName(runtimeName);
                 return helper.serialize(response);
-            } catch (ContainerException e) {
+            } catch (Fabric3Exception e) {
                 monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
                 ex.setRuntimeName(runtimeName);
                 try {
                     return helper.serialize(ex);
-                } catch (ContainerException e1) {
+                } catch (Fabric3Exception e1) {
                     monitor.error("Error handling message from: " + runtimeName, e);
                 }
             }
-            throw new MessageRuntimeException("Unable to handle request");
+            throw new Fabric3Exception("Unable to handle request");
         }
     }
 

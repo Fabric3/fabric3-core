@@ -25,7 +25,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
@@ -161,7 +161,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.verify(registry, bindingGenerator, channelGenerator);
     }
 
-    private ChannelGeneratorExtension getChannelGenerator() throws ContainerException {
+    private ChannelGeneratorExtension getChannelGenerator() throws Fabric3Exception {
         ChannelGeneratorExtension channelGenerator = EasyMock.createMock(ChannelGeneratorExtension.class);
         PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "test"));
         EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class), EasyMock.eq(DEPLOYABLE))).andReturn(definition);

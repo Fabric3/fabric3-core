@@ -20,7 +20,7 @@ package org.fabric3.implementation.web.runtime;
 
 import java.net.URI;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -42,23 +42,23 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
         this.manager = manager;
     }
 
-    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
         component.attachWire(referenceName, wire);
     }
 
-    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         // TODO implement
     }
 
-    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         // TODO implement
     }
 
     public void attachObjectFactory(WebComponentWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws ContainerException {
+            throws Fabric3Exception {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);

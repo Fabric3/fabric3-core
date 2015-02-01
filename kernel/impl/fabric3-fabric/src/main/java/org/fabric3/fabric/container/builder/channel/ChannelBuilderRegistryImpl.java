@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
@@ -72,7 +72,7 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
     private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) {
         ChannelBuilder builder = builders.get(definition.getType());
         if (builder == null) {
-            throw new ContainerException("Channel builder not found for type " + definition.getType());
+            throw new Fabric3Exception("Channel builder not found for type " + definition.getType());
         }
         return builder;
     }

@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 
@@ -34,7 +34,7 @@ import org.fabric3.api.model.type.resource.datasource.DataSourceType;
  */
 public class DataSourceConfigParser {
 
-    public List<DataSourceConfiguration> parse(XMLStreamReader reader) throws ContainerException {
+    public List<DataSourceConfiguration> parse(XMLStreamReader reader) throws Fabric3Exception {
         List<DataSourceConfiguration> configurations = new ArrayList<>();
         try {
             reader.nextTag();
@@ -102,7 +102,7 @@ public class DataSourceConfigParser {
                 }
             }
         } catch (XMLStreamException e) {
-            throw new ContainerException(e);
+            throw new Fabric3Exception(e);
         }
     }
 
@@ -115,7 +115,7 @@ public class DataSourceConfigParser {
         }
     }
 
-    private DataSourceType parseType(XMLStreamReader reader) throws ContainerException {
+    private DataSourceType parseType(XMLStreamReader reader) throws Fabric3Exception {
         DataSourceType dataSourceType;
         String type = readMandatoryAttribute("type", reader);
         if (type == null) {
@@ -124,31 +124,31 @@ public class DataSourceConfigParser {
             try {
                 dataSourceType = DataSourceType.valueOf(type.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new ContainerException("Datasource type must be either xa or non_xa");
+                throw new Fabric3Exception("Datasource type must be either xa or non_xa");
             }
         }
         return dataSourceType;
     }
 
-    private int parseInt(String value, String name) throws ContainerException {
+    private int parseInt(String value, String name) throws Fabric3Exception {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new ContainerException("Invalid value for " + name, e);
+            throw new Fabric3Exception("Invalid value for " + name, e);
         }
     }
 
-    private String readMandatoryAttribute(String name, XMLStreamReader reader) throws ContainerException {
+    private String readMandatoryAttribute(String name, XMLStreamReader reader) throws Fabric3Exception {
         String val = reader.getAttributeValue(null, name);
         if (val == null) {
             Location location = reader.getLocation();
             if (location == null) {
                 // configuration does not come from the file system
-                throw new ContainerException("Datasource " + name + " not specified in system configuration");
+                throw new Fabric3Exception("Datasource " + name + " not specified in system configuration");
             }
             int line = location.getLineNumber();
             int col = location.getColumnNumber();
-            throw new ContainerException("Datasource " + name + " not configured [" + line + "," + col + "]");
+            throw new Fabric3Exception("Datasource " + name + " not configured [" + line + "," + col + "]");
         }
         return val;
     }

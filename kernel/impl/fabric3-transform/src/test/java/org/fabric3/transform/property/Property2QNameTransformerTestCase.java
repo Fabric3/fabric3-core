@@ -20,7 +20,7 @@ package org.fabric3.transform.property;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Tests String to QName transform.
@@ -39,7 +39,7 @@ public class Property2QNameTransformerTestCase extends BaseTransformTest {
             assertEquals("{http://f3.com/ns/fabric/test}f3", qname.toString());
             assertEquals("http://f3.com/ns/fabric/test", qname.getNamespaceURI());
             assertEquals("f3", qname.getLocalPart());
-        } catch (ContainerException te) {
+        } catch (Fabric3Exception te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -59,7 +59,7 @@ public class Property2QNameTransformerTestCase extends BaseTransformTest {
             assertEquals("http://f3.com/ns/fabric/test", qname.getNamespaceURI());
             assertEquals("f3", qname.getLocalPart());
             assertEquals("foo", qname.getPrefix());
-        } catch (ContainerException te) {
+        } catch (Fabric3Exception te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);

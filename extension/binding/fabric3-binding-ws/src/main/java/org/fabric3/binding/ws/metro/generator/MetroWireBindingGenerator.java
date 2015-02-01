@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.ws.model.WsBinding;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
@@ -43,13 +43,13 @@ public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding
     }
 
     @SuppressWarnings({"unchecked"})
-    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws ContainerException {
+    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateSource(binding, contract);
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws ContainerException {
+    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateTarget(binding, contract);
     }
@@ -57,16 +57,16 @@ public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding
     @SuppressWarnings({"unchecked"})
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding,
                                                                      ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws ContainerException {
+                                                                     List<LogicalOperation> operations) throws Fabric3Exception {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateServiceBindingTarget(serviceBinding, contract);
     }
 
 
-    private MetroGeneratorDelegate getDelegate(ServiceContract contract) throws ContainerException {
+    private MetroGeneratorDelegate getDelegate(ServiceContract contract) throws Fabric3Exception {
         MetroGeneratorDelegate<?> delegate = delegates.get(contract.getClass());
         if (delegate == null) {
-            throw new ContainerException("Generator delegate not found for type: " + contract.getClass().getName());
+            throw new Fabric3Exception("Generator delegate not found for type: " + contract.getClass().getName());
         }
         return delegate;
     }

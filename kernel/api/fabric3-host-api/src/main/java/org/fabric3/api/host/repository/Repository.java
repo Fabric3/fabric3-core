@@ -23,7 +23,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Implementations store and retrieve artifacts such as contributions from persistent storage.
@@ -37,9 +37,9 @@ public interface Repository {
      * @param stream the artifact contents
      * @param extension true if the artifact is a runtime extension
      * @return a URL for the persisted artifact
-     * @throws ContainerException if an error occurs storing the artifact
+     * @throws Fabric3Exception if an error occurs storing the artifact
      */
-    URL store(URI uri, InputStream stream, boolean extension) throws ContainerException;
+    URL store(URI uri, InputStream stream, boolean extension) throws Fabric3Exception;
 
     /**
      * Returns true if the artifact exists.
@@ -54,17 +54,17 @@ public interface Repository {
      *
      * @param uri The artifact URI
      * @return A URL pointing to the artifact or null if the artifact cannot be found
-     * @throws ContainerException if an exception occurs finding the artifact
+     * @throws Fabric3Exception if an exception occurs finding the artifact
      */
-    URL find(URI uri) throws ContainerException;
+    URL find(URI uri) throws Fabric3Exception;
 
     /**
      * Removes an artifact from the repository.
      *
      * @param uri The URI of the artifact to be removed
-     * @throws ContainerException if an exception occurs removing the artifact
+     * @throws Fabric3Exception if an exception occurs removing the artifact
      */
-    void remove(URI uri) throws ContainerException;
+    void remove(URI uri) throws Fabric3Exception;
 
     /**
      * Returns a list of URIs for all the artifacts in the repository.
@@ -76,7 +76,7 @@ public interface Repository {
     /**
      * Callback to signal for the repository it can close open resources.
      *
-     * @throws ContainerException if an error shutting down occurs.
+     * @throws Fabric3Exception if an error shutting down occurs.
      */
-    void shutdown() throws ContainerException;
+    void shutdown() throws Fabric3Exception;
 }

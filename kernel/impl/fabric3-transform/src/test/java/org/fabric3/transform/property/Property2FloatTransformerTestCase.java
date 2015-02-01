@@ -18,7 +18,7 @@
  */
 package org.fabric3.transform.property;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Tests String to Float transform.
@@ -36,7 +36,7 @@ public class Property2FloatTransformerTestCase extends BaseTransformTest {
             double convertedFloat = transformer.transform(getNode(xml), getClass().getClassLoader());
             assertNotNull(convertedFloat);
             assertEquals(99.00, convertedFloat);
-        } catch (ContainerException te) {
+        } catch (Fabric3Exception te) {
             fail("Transform exception should not occur " + te);
         } catch (Exception e) {
             fail("Unexpexcted Exception Should not occur " + e);
@@ -53,7 +53,7 @@ public class Property2FloatTransformerTestCase extends BaseTransformTest {
             Property2FloatTransformer transformer = new Property2FloatTransformer();
             transformer.transform(getNode(xml), getClass().getClassLoader());
             fail("Should not reach here something wrong in [ String2Float ] code");
-        } catch (ContainerException te) {
+        } catch (Fabric3Exception te) {
             assertNotNull(te);
             assertTrue(NumberFormatException.class.isAssignableFrom(te.getCause().getClass()));
         } catch (Exception e) {

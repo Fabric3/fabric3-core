@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.mock.runtime;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -30,19 +30,19 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  */
 public class MockSourceWireAttacher implements SourceWireAttacher<MockWireSourceDefinition> {
 
-    public void attachObjectFactory(MockWireSourceDefinition source, ObjectFactory<?> factor, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void attachObjectFactory(MockWireSourceDefinition source, ObjectFactory<?> factor, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         // Empty implementation; we don't want to attach anything to the mock
     }
 
-    public void attach(MockWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws ContainerException {
+    public void attach(MockWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         // Empty implementation; we don't want to attach anything to the mock
     }
 
-    public void detach(MockWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detach(MockWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 
 
-    public void detachObjectFactory(MockWireSourceDefinition source, PhysicalWireTargetDefinition target) throws ContainerException {
+    public void detachObjectFactory(MockWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
     }
 
 }

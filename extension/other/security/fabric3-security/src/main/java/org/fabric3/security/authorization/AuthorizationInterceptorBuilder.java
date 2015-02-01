@@ -18,7 +18,7 @@
  */
 package org.fabric3.security.authorization;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.security.AuthorizationService;
@@ -40,7 +40,7 @@ public class AuthorizationInterceptorBuilder implements InterceptorBuilder<Autho
      * @param definition Authorization interceptor definition.
      * @return An instance of the authorization interceptor.
      */
-    public Interceptor build(AuthorizationInterceptorDefinition definition) throws ContainerException {
+    public Interceptor build(AuthorizationInterceptorDefinition definition) throws Fabric3Exception {
         return new RoleBasedAuthorizationInterceptor(definition.getRoles(), authorizationService);
     }
 

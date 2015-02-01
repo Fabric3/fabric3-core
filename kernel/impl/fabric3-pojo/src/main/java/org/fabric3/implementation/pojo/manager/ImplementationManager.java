@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Returns an injected component instance. This is used by a Component implementation to create new instances of application implementation objects as
@@ -30,33 +30,33 @@ public interface ImplementationManager {
      * Creates a new instance of the component. All injected values must be set but any @Init methods must not have been invoked.
      *
      * @return A new component instance
-     * @throws ContainerException if there was a problem creating the instance
+     * @throws Fabric3Exception if there was a problem creating the instance
      */
-    Object newInstance() throws ContainerException;
+    Object newInstance() throws Fabric3Exception;
 
     /**
      * Starts the instance, calling an @Init method if one is configured.
      *
      * @param instance the instance
-     * @throws ContainerException if there is an error when calling the initialization method
+     * @throws Fabric3Exception if there is an error when calling the initialization method
      */
-    void start(Object instance) throws ContainerException;
+    void start(Object instance) throws Fabric3Exception;
 
     /**
      * Stops the instance, calling an @Destroy method if one is configured.
      *
      * @param instance the instance
-     * @throws ContainerException if there is an error when calling the initialization method
+     * @throws Fabric3Exception if there is an error when calling the initialization method
      */
-    void stop(Object instance) throws ContainerException;
+    void stop(Object instance) throws Fabric3Exception;
 
     /**
      * Reinjects the instance with any updated references.
      *
      * @param instance the instance
-     * @throws ContainerException if an error is raised during reinjection
+     * @throws Fabric3Exception if an error is raised during reinjection
      */
-    void reinject(Object instance) throws ContainerException;
+    void reinject(Object instance) throws Fabric3Exception;
 
     /**
      * Updates the instance with a new reference proxy.

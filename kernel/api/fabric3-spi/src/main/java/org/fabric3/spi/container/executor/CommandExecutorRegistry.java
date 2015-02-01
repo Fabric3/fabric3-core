@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.executor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.command.Command;
 
 /**
@@ -39,7 +39,7 @@ public interface CommandExecutorRegistry {
      * Dispatches a command to an executor.
      *
      * @param command the command to dispatch
-     * @throws ContainerException if there is an error executing the command
+     * @throws Fabric3Exception if there is an error executing the command
      */
-    <T extends Command> void execute(T command) throws ContainerException;
+    <T extends Command> void execute(T command) throws Fabric3Exception;
 }

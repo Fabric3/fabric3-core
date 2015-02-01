@@ -20,7 +20,7 @@ package org.fabric3.transform.property;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -41,7 +41,7 @@ public class Property2QNameTransformer implements SingleTypeTransformer<Node, QN
         return TARGET;
     }
 
-    public QName transform(final Node node, ClassLoader loader) throws ContainerException {
+    public QName transform(final Node node, ClassLoader loader) throws Fabric3Exception {
         String content = node.getTextContent();
         // see if the content looks like it might reference a namespace
         int index = content.indexOf(':');

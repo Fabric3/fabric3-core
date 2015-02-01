@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -37,7 +37,7 @@ public class DataTypeHelper {
     public static final DataType JAXB_TYPE = new JavaType(String.class, "JAXB");
     public static List<DataType> JAXB_TYPES = Arrays.asList(JAXB_TYPE);
 
-    public static List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws ContainerException {
+    public static List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws Fabric3Exception {
         try {
             List<DataType> dataTypes = new ArrayList<>();
             if (!physicalOperation.getSourceParameterTypes().isEmpty()) {
@@ -48,7 +48,7 @@ public class DataTypeHelper {
             }
             return dataTypes;
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Error transforming parameter", e);
+            throw new Fabric3Exception("Error transforming parameter", e);
         }
     }
 

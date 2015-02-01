@@ -16,7 +16,7 @@
  */
 package org.fabric3.management.rest.spi;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Responsible for dispatching requests to a managed resource.
@@ -36,9 +36,9 @@ public interface ResourceHost {
      * Registers a mapping, making the managed resource available via HTTP.
      *
      * @param mapping the mapping
-     * @throws ContainerException if a managed resource has already been registered for the path
+     * @throws Fabric3Exception if a managed resource has already been registered for the path
      */
-    void register(ResourceMapping mapping) throws ContainerException;
+    void register(ResourceMapping mapping) throws Fabric3Exception;
 
     /**
      * Removes mappings for the given resource identifier. Multiple path/verb associations may be removed.

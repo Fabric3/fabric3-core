@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -52,10 +52,10 @@ public abstract class PojoSourceWireAttacher {
      * @param sourceDefinition the source metadata
      * @param targetDefinition the target metadata
      * @return the key
-     * @throws ContainerException if there is an error instantiating the key
+     * @throws Fabric3Exception if there is an error instantiating the key
      */
     @SuppressWarnings("unchecked")
-    protected Object getKey(PojoWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition) throws ContainerException {
+    protected Object getKey(PojoWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition) throws Fabric3Exception {
         if (!sourceDefinition.isKeyed()) {
             return null;
         }
@@ -70,7 +70,7 @@ public abstract class PojoSourceWireAttacher {
         try {
             keyType = classLoaderRegistry.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
         } catch (ClassNotFoundException e) {
-            throw new ContainerException("Error loading reference key type for: " + sourceDefinition.getUri(), e);
+            throw new Fabric3Exception("Error loading reference key type for: " + sourceDefinition.getUri(), e);
         }
         if (String.class.equals(keyType)) {
             // short-circuit the transformation and return the string
@@ -86,13 +86,13 @@ public abstract class PojoSourceWireAttacher {
     }
 
     @SuppressWarnings("unchecked")
-    private Object createKey(DataType targetType, String value, ClassLoader classLoader) throws ContainerException {
+    private Object createKey(DataType targetType, String value, ClassLoader classLoader) throws Fabric3Exception {
         Class<?> type = targetType.getType();
         List<Class<?>> types = new ArrayList<>();
         types.add(type);
         Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(TypeConstants.STRING_TYPE, targetType, types, types);
         if (transformer == null) {
-            throw new ContainerException("No transformer for : " + targetType);
+            throw new Fabric3Exception("No transformer for : " + targetType);
         }
         return transformer.transform(value, classLoader);
     }

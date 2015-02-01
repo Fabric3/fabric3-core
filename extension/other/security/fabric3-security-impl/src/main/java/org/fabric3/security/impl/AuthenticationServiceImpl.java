@@ -20,7 +20,6 @@ import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.api.host.ContainerException;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;
@@ -51,22 +50,18 @@ public class AuthenticationServiceImpl implements AuthenticationService, JMXAuth
             throw new UnsupportedOperationException("Token type not supported: " + token.getClass().getName());
         }
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-        try {
-            String principal = userToken.getPrincipal();
-            if (principal == null) {
-                throw new AuthenticationException("Principal was null");
-            }
-            BasicSecuritySubject subject = store.find(principal);
-            if (subject == null) {
-                throw new InvalidAuthenticationException("Invalid authentication information");
-            }
-            if (!userToken.getCredentials().equals(subject.getPassword())) {
-                throw new InvalidAuthenticationException("Invalid authentication information");
-            }
-            return subject;
-        } catch (ContainerException e) {
-            throw new AuthenticationException(e);
+        String principal = userToken.getPrincipal();
+        if (principal == null) {
+            throw new AuthenticationException("Principal was null");
         }
+        BasicSecuritySubject subject = store.find(principal);
+        if (subject == null) {
+            throw new InvalidAuthenticationException("Invalid authentication information");
+        }
+        if (!userToken.getCredentials().equals(subject.getPassword())) {
+            throw new InvalidAuthenticationException("Invalid authentication information");
+        }
+        return subject;
     }
 
     public Subject authenticate(Object credentials) {

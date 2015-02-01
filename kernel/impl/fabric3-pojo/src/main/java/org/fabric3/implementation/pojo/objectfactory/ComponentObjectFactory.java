@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
@@ -33,7 +33,7 @@ public class ComponentObjectFactory implements ObjectFactory<Object> {
         this.component = component;
     }
 
-    public Object getInstance() throws ContainerException {
+    public Object getInstance() throws Fabric3Exception {
         return component.getInstance();
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
@@ -43,7 +43,7 @@ public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnect
         this.manager = manager;
     }
 
-    public void build(PhysicalConnectionFactoryResource definition) throws ContainerException {
+    public void build(PhysicalConnectionFactoryResource definition) throws Fabric3Exception {
         ConnectionFactoryConfiguration configuration = definition.getConfiguration();
         ConnectionFactory factory = registry.create(configuration);
         String name = configuration.getName();
@@ -51,7 +51,7 @@ public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnect
         manager.register(name, factory, factoryProperties);
     }
 
-    public void remove(PhysicalConnectionFactoryResource definition) throws ContainerException {
+    public void remove(PhysicalConnectionFactoryResource definition) throws Fabric3Exception {
         ConnectionFactory factory = manager.unregister(definition.getConfiguration().getName());
         registry.release(factory);
     }

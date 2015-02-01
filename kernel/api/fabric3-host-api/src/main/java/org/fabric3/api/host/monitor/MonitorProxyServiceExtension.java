@@ -19,7 +19,7 @@
  */
 package org.fabric3.api.host.monitor;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Creates monitor proxies.
@@ -32,9 +32,9 @@ public interface MonitorProxyServiceExtension {
      * @param type the proxy interface
      * @param <T>  the proxy type
      * @return the proxy
-     * @throws ContainerException if an error occurs creating the proxy
+     * @throws Fabric3Exception if an error occurs creating the proxy
      */
-    <T> T createMonitor(Class<T> type) throws ContainerException;
+    <T> T createMonitor(Class<T> type) throws Fabric3Exception;
 
     /**
      * Create a proxy using the given monitorable as the event source and the given destination.
@@ -44,8 +44,8 @@ public interface MonitorProxyServiceExtension {
      * @param destination the destination name
      * @param <T>         the proxy type
      * @return the proxy
-     * @throws ContainerException if an error occurs creating the proxy
+     * @throws Fabric3Exception if an error occurs creating the proxy
      */
-    <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws ContainerException;
+    <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws Fabric3Exception;
 
 }

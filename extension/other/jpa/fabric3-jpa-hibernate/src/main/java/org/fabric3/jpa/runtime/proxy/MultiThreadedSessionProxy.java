@@ -25,7 +25,7 @@ import javax.transaction.TransactionManager;
 import java.io.Serializable;
 import java.sql.Connection;
 
-import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.Fabric3Exception;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Filter;
@@ -455,7 +455,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
             }
             EntityManager em = emService.getEntityManager(unitName, this, trx);
             return (Session) em.getDelegate();
-        } catch (SystemException | ContainerException e) {
+        } catch (SystemException | Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
