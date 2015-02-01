@@ -55,12 +55,4 @@ public class UrlSource implements Source {
         connection.setUseCaches(false);
         return connection.getInputStream();
     }
-
-    public Source getImportSource(String parentLocation, String importLocation) throws IOException {
-        String baseLocation = parentLocation != null ? parentLocation : getSystemId();
-        String resolvedLocation = FileHelper.resolveRelativePath(baseLocation, importLocation);
-        // assuming the resolved location is also a proper URL
-        URL importURL = new URL(resolvedLocation);
-        return new UrlSource(importURL);
-    }
 }

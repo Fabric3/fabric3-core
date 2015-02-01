@@ -49,7 +49,4 @@ public class InputStreamSource implements Source {
         return source;
     }
 
-    public Source getImportSource(String parentLocation, String importLocation) throws IOException {
-        return null;
-    }
 }

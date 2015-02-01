@@ -209,10 +209,6 @@ public class JavaResourceProcessor implements ResourceProcessor {
         public InputStream openStream() throws IOException {
             return null;
         }
-
-        public Source getImportSource(String parentLocation, String importLocation) throws IOException {
-            return null;
-        }
     }
 
 }
