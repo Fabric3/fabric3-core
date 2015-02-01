@@ -21,7 +21,6 @@ package org.fabric3.api.host.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +30,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.StringTokenizer;
+
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Helper methods for working with files.
@@ -65,11 +66,8 @@ public class FileHelper {
     }
 
     /**
-     * Returns the index of the last directory separator character.
-     * <p/>
-     * This method will handle a file in either Unix or Windows format. The position of the last forward or backslash is returned.
-     * <p/>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * Returns the index of the last directory separator character. <p/> This method will handle a file in either Unix or Windows format. The position of the
+     * last forward or backslash is returned. <p/> The output will be the same irrespective of the machine that the code is running on.
      *
      * @param filename the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there is no such character
@@ -84,12 +82,9 @@ public class FileHelper {
     }
 
     /**
-     * Returns the index of the last extension separator character, which is a dot.
-     * <p/>
-     * This method also checks that there is no directory separator after the last dot. To do this it uses {@link #indexOfLastSeparator(String)} which will
-     * handle a file in either Unix or Windows format.
-     * <p/>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * Returns the index of the last extension separator character, which is a dot. <p/> This method also checks that there is no directory separator after the
+     * last dot. To do this it uses {@link #indexOfLastSeparator(String)} which will handle a file in either Unix or Windows format. <p/> The output will be the
+     * same irrespective of the machine that the code is running on.
      *
      * @param filename the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there is no such character
@@ -104,19 +99,15 @@ public class FileHelper {
     }
 
     /**
-     * Gets the name minus the path from a full filename.
-     * <p/>
-     * This method will handle a file in either Unix or Windows format. The text after the last forward or backslash is returned.
-     * <p/>
+     * Gets the name minus the path from a full filename. <p/> This method will handle a file in either Unix or Windows format. The text after the last forward
+     * or backslash is returned. <p/>
      * <pre>
      * a/b/c.txt --&gt; c.txt
      * a.txt     --&gt; a.txt
      * a/b/c     --&gt; c
      * a/b/c/    --&gt; &quot;&quot;
      * </pre>
-     * <p/>
-     * <p/>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * <p/> <p/> The output will be the same irrespective of the machine that the code is running on.
      *
      * @param fileName the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
@@ -130,19 +121,15 @@ public class FileHelper {
     }
 
     /**
-     * Gets the extension of a filename.
-     * <p/>
-     * This method returns the textual part of the filename after the last dot. There must be no directory separator after the dot.
-     * <p/>
+     * Gets the extension of a filename. <p/> This method returns the textual part of the filename after the last dot. There must be no directory separator
+     * after the dot. <p/>
      * <pre>
      * foo.txt      --&gt; &quot;txt&quot;
      * a/b/c.jpg    --&gt; &quot;jpg&quot;
      * a/b.txt/c    --&gt; &quot;&quot;
      * a/b/c        --&gt; &quot;&quot;
      * </pre>
-     * <p/>
-     * <p/>
-     * The output will be the same irrespective of the machine that the code is running on.
+     * <p/> <p/> The output will be the same irrespective of the machine that the code is running on.
      *
      * @param filename the filename to retrieve the extension of.
      * @return the extension of the file or an empty string if none exists.
@@ -165,53 +152,50 @@ public class FileHelper {
      *
      * @param directory directory to create, not null
      * @throws NullPointerException if the directory is null
-     * @throws IOException          if the directory cannot be created
+     * @throws Fabric3Exception     if the directory cannot be created
      */
-    public static void forceMkdir(File directory) throws IOException {
+    public static void forceMkdir(File directory) throws Fabric3Exception {
         if (directory == null) {
             return;
         }
         if (directory.exists()) {
             if (directory.isFile()) {
                 String message = "File " + directory + " exists and is " + "not a directory. Unable to create directory.";
-                throw new IOException(message);
+                throw new Fabric3Exception(message);
             }
         } else {
             if (!directory.mkdirs()) {
                 String message = "Unable to create directory " + directory;
-                throw new IOException(message);
+                throw new Fabric3Exception(message);
             }
         }
     }
 
     /**
-     * Delete a file. If file is a directory, delete it and all sub-directories.
-     * <p/>
-     * The difference between File.delete() and this method are: <ul> <li>A directory to be deleted does not have to be empty.</li> <li>You get exceptions when
-     * a file or directory cannot be deleted. (java.io.File methods returns a boolean)</li> </ul>
+     * Delete a file. If file is a directory, delete it and all sub-directories. <p/> The difference between File.delete() and this method are: <ul> <li>A
+     * directory to be deleted does not have to be empty.</li> <li>You get exceptions when a file or directory cannot be deleted. (java.io.File methods returns
+     * a boolean)</li> </ul>
      *
      * @param file file or directory to delete, not null
-     * @throws IOException in case deletion is unsuccessful
+     * @throws Fabric3Exception in case deletion is unsuccessful
      */
-    public static void forceDelete(File file) throws IOException {
+    public static void forceDelete(File file) throws Fabric3Exception {
         if (file.isDirectory()) {
             deleteDirectory(file);
         } else {
             if (!file.exists()) {
-                throw new FileNotFoundException("File does not exist: " + file);
+                throw new Fabric3Exception("File does not exist: " + file);
             }
             if (!file.delete()) {
                 String message = "Unable to delete file: " + file;
-                throw new IOException(message);
+                throw new Fabric3Exception(message);
             }
         }
     }
 
     /**
-     * Convert from a <code>URL</code> to a <code>File</code>.
-     * <p/>
-     * From version 1.1 this method will decode the URL. Syntax such as <code>file:///my%20docs/file.txt</code> will be correctly decoded to <code>/my
-     * docs/file.txt</code>.
+     * Convert from a <code>URL</code> to a <code>File</code>. <p/> From version 1.1 this method will decode the URL. Syntax such as
+     * <code>file:///my%20docs/file.txt</code> will be correctly decoded to <code>/my docs/file.txt</code>.
      *
      * @param url the file URL to convert, null returns null
      * @return the equivalent <code>File</code> object, or <code>null</code> if the URL's protocol is not <code>file</code>
@@ -226,10 +210,8 @@ public class FileHelper {
     }
 
     /**
-     * Convert from a <code>URL</code> to a <code>File</code>.
-     * <p/>
-     * From version 1.1 this method will decode the URL. Syntax such as <code>file:///my%20docs/file.txt</code> will be correctly decoded to <code>/my
-     * docs/file.txt</code>.
+     * Convert from a <code>URL</code> to a <code>File</code>. <p/> From version 1.1 this method will decode the URL. Syntax such as
+     * <code>file:///my%20docs/file.txt</code> will be correctly decoded to <code>/my docs/file.txt</code>.
      *
      * @param url the file URL to convert, null returns null
      * @return the equivalent <code>File</code> object, or <code>null</code> if the URL's protocol is not <code>file</code>
@@ -256,9 +238,9 @@ public class FileHelper {
      * Clean a directory without deleting it.
      *
      * @param directory directory to clean
-     * @throws IOException in case cleaning is unsuccessful
+     * @throws Fabric3Exception in case cleaning is unsuccessful
      */
-    public static void cleanDirectory(File directory) throws IOException {
+    public static void cleanDirectory(File directory) throws Fabric3Exception {
         if (directory == null) {
             return;
         }
@@ -274,14 +256,14 @@ public class FileHelper {
 
         File[] files = directory.listFiles();
         if (files == null) { // null if security restricted
-            throw new IOException("Failed to list contents of " + directory);
+            throw new Fabric3Exception("Failed to list contents of " + directory);
         }
 
-        IOException exception = null;
+        Fabric3Exception exception = null;
         for (File file : files) {
             try {
                 forceDelete(file);
-            } catch (IOException ioe) {
+            } catch (Fabric3Exception ioe) {
                 exception = ioe;
             }
         }
@@ -295,9 +277,9 @@ public class FileHelper {
      * Clean a directory without deleting it.
      *
      * @param directory directory to clean, must not be <code>null</code>
-     * @throws IOException in case cleaning is unsuccessful
+     * @throws Fabric3Exception in case cleaning is unsuccessful
      */
-    private static void cleanDirectoryOnExit(File directory) throws IOException {
+    private static void cleanDirectoryOnExit(File directory) throws Fabric3Exception {
         if (!directory.exists()) {
             String message = directory + " does not exist";
             throw new IllegalArgumentException(message);
@@ -310,14 +292,14 @@ public class FileHelper {
 
         File[] files = directory.listFiles();
         if (files == null) { // null if security restricted
-            throw new IOException("Failed to list contents of " + directory);
+            throw new Fabric3Exception("Failed to list contents of " + directory);
         }
 
-        IOException exception = null;
+        Fabric3Exception exception = null;
         for (File file : files) {
             try {
                 forceDeleteOnExit(file);
-            } catch (IOException ioe) {
+            } catch (Fabric3Exception ioe) {
                 exception = ioe;
             }
         }
@@ -328,68 +310,62 @@ public class FileHelper {
     }
 
     /**
-     * Copies a whole directory to a new location preserving the file dates.
-     * <p/>
-     * This method copies the specified directory and all its child directories and files to the specified destination. The destination is the new location and
-     * name of the directory.
-     * <p/>
-     * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the
-     * destination, with the source taking precedence.
+     * Copies a whole directory to a new location preserving the file dates. <p/> This method copies the specified directory and all its child directories and
+     * files to the specified destination. The destination is the new location and name of the directory. <p/> The destination directory is created if it does
+     * not exist. If the destination directory did exist, then this method merges the source with the destination, with the source taking precedence.
      *
      * @param srcDir  an existing directory to copy, must not be <code>null</code>
      * @param destDir the new directory, must not be <code>null</code>
-     * @throws IOException if an IO error occurs during copying
+     * @throws Fabric3Exception if an IO error occurs during copying
      * @since Commons IO 1.1
      */
-    public static void copyDirectory(File srcDir, File destDir) throws IOException {
+    public static void copyDirectory(File srcDir, File destDir) throws Fabric3Exception {
         copyDirectory(srcDir, destDir, true);
     }
 
     /**
-     * Copies a whole directory to a new location.
-     * <p/>
-     * This method copies the contents of the specified source directory to within the specified destination directory.
-     * <p/>
-     * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the
-     * destination, with the source taking precedence.
+     * Copies a whole directory to a new location. <p/> This method copies the contents of the specified source directory to within the specified destination
+     * directory. <p/> The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source
+     * with the destination, with the source taking precedence.
      *
      * @param srcDir           an existing directory to copy, must not be <code>null</code>
      * @param destDir          the new directory, must not be <code>null</code>
      * @param preserveFileDate true if the file date of the copy should be the same as the original
-     * @throws IOException if source or destination is invalid
+     * @throws Fabric3Exception if source or destination is invalid
      */
-    public static void copyDirectory(File srcDir, File destDir, boolean preserveFileDate) throws IOException {
-        if (srcDir == null) {
-            throw new NullPointerException("Source must not be null");
+    public static void copyDirectory(File srcDir, File destDir, boolean preserveFileDate) throws Fabric3Exception {
+        try {
+            if (srcDir == null) {
+                throw new NullPointerException("Source must not be null");
+            }
+            if (destDir == null) {
+                throw new NullPointerException("Destination must not be null");
+            }
+            if (!srcDir.exists()) {
+                throw new Fabric3Exception("Source '" + srcDir + "' does not exist");
+            }
+            if (!srcDir.isDirectory()) {
+                throw new Fabric3Exception("Source '" + srcDir + "' exists but is not a directory");
+            }
+            if (srcDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
+                throw new Fabric3Exception("Source '" + srcDir + "' and destination '" + destDir + "' are the same");
+            }
+            doCopyDirectory(srcDir, destDir, preserveFileDate);
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        if (destDir == null) {
-            throw new NullPointerException("Destination must not be null");
-        }
-        if (!srcDir.exists()) {
-            throw new FileNotFoundException("Source '" + srcDir + "' does not exist");
-        }
-        if (!srcDir.isDirectory()) {
-            throw new IOException("Source '" + srcDir + "' exists but is not a directory");
-        }
-        if (srcDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
-            throw new IOException("Source '" + srcDir + "' and destination '" + destDir + "' are the same");
-        }
-        doCopyDirectory(srcDir, destDir, preserveFileDate);
     }
 
     /**
-     * Copies a directory to within another directory preserving the file dates.
-     * <p/>
-     * This method copies the source directory and all its contents to a directory of the same name in the specified destination directory.
-     * <p/>
-     * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the
-     * destination, with the source taking precedence.
+     * Copies a directory to within another directory preserving the file dates. <p/> This method copies the source directory and all its contents to a
+     * directory of the same name in the specified destination directory. <p/> The destination directory is created if it does not exist. If the destination
+     * directory did exist, then this method merges the source with the destination, with the source taking precedence.
      *
      * @param srcDir  an existing directory to copy, must not be <code>null</code>
      * @param destDir the directory to place the copy in, must not be <code>null</code>
-     * @throws IOException if an IO error occurs during copying
+     * @throws Fabric3Exception if an IO error occurs during copying
      */
-    public static void copyDirectoryToDirectory(File srcDir, File destDir) throws IOException {
+    public static void copyDirectoryToDirectory(File srcDir, File destDir) throws Fabric3Exception {
         if (srcDir == null) {
             throw new NullPointerException("Source must not be null");
         }
@@ -406,84 +382,82 @@ public class FileHelper {
     }
 
     /**
-     * Copies a file to a new location preserving the file date.
-     * <p/>
-     * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if
-     * it does not exist. If the destination file exists, then this method will overwrite it.
+     * Copies a file to a new location preserving the file date. <p/> This method copies the contents of the specified source file to the specified destination
+     * file. The directory holding the destination file is created if it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile  an existing file to copy, must not be <code>null</code>
      * @param destFile the new file, must not be <code>null</code>
-     * @throws IOException if an IO error occurs during copying
+     * @throws Fabric3Exception if an IO error occurs during copying
      */
-    public static void copyFile(File srcFile, File destFile) throws IOException {
+    public static void copyFile(File srcFile, File destFile) throws Fabric3Exception {
         copyFile(srcFile, destFile, true);
     }
 
     /**
-     * Copies a file to a new location.
-     * <p/>
-     * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if
-     * it does not exist. If the destination file exists, then this method will overwrite it.
+     * Copies a file to a new location. <p/> This method copies the contents of the specified source file to the specified destination file. The directory
+     * holding the destination file is created if it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile          an existing file to copy, must not be <code>null</code>
      * @param destFile         the new file, must not be <code>null</code>
      * @param preserveFileDate true if the file date of the copy should be the same as the original
-     * @throws IOException if an IO error occurs during copying
+     * @throws Fabric3Exception if an IO error occurs during copying
      */
-    public static void copyFile(File srcFile, File destFile, boolean preserveFileDate) throws IOException {
-        if (srcFile == null) {
-            throw new NullPointerException("Source must not be null");
-        }
-        if (destFile == null) {
-            throw new NullPointerException("Destination must not be null");
-        }
-        if (!srcFile.exists()) {
-            throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
-        }
-        if (srcFile.isDirectory()) {
-            throw new IOException("Source '" + srcFile + "' exists but is a directory");
-        }
-        if (srcFile.getCanonicalPath().equals(destFile.getCanonicalPath())) {
-            throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
-        }
-        if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
-            if (!destFile.getParentFile().mkdirs()) {
-                throw new IOException("Destination '" + destFile + "' directory cannot be created");
+    public static void copyFile(File srcFile, File destFile, boolean preserveFileDate) throws Fabric3Exception {
+        try {
+            if (srcFile == null) {
+                throw new NullPointerException("Source must not be null");
             }
+            if (destFile == null) {
+                throw new NullPointerException("Destination must not be null");
+            }
+            if (!srcFile.exists()) {
+                throw new Fabric3Exception("Source '" + srcFile + "' does not exist");
+            }
+            if (srcFile.isDirectory()) {
+                throw new Fabric3Exception("Source '" + srcFile + "' exists but is a directory");
+            }
+            if (srcFile.getCanonicalPath().equals(destFile.getCanonicalPath())) {
+                throw new Fabric3Exception("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
+            }
+            if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
+                if (!destFile.getParentFile().mkdirs()) {
+                    throw new Fabric3Exception("Destination '" + destFile + "' directory cannot be created");
+                }
+            }
+            if (destFile.exists() && !destFile.canWrite()) {
+                throw new Fabric3Exception("Destination '" + destFile + "' exists but is read-only");
+            }
+            doCopyFile(srcFile, destFile, preserveFileDate);
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        if (destFile.exists() && !destFile.canWrite()) {
-            throw new IOException("Destination '" + destFile + "' exists but is read-only");
-        }
-        doCopyFile(srcFile, destFile, preserveFileDate);
     }
 
     /**
-     * Copies a file to a directory preserving the file date.
-     * <p/>
-     * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory
-     * is created if it does not exist. If the destination file exists, then this method will overwrite it.
+     * Copies a file to a directory preserving the file date. <p/> This method copies the contents of the specified source file to a file of the same name in
+     * the specified destination directory. The destination directory is created if it does not exist. If the destination file exists, then this method will
+     * overwrite it.
      *
      * @param srcFile an existing file to copy, must not be <code>null</code>
      * @param destDir the directory to place the copy in, must not be <code>null</code>
-     * @throws IOException if an IO error occurs during copying
+     * @throws Fabric3Exception if an IO error occurs during copying
      */
-    public static void copyFileToDirectory(File srcFile, File destDir) throws IOException {
+    public static void copyFileToDirectory(File srcFile, File destDir) throws Fabric3Exception {
         copyFileToDirectory(srcFile, destDir, true);
     }
 
     /**
-     * Copies a file to a directory optionally preserving the file date.
-     * <p/>
-     * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory
-     * is created if it does not exist. If the destination file exists, then this method will overwrite it.
+     * Copies a file to a directory optionally preserving the file date. <p/> This method copies the contents of the specified source file to a file of the same
+     * name in the specified destination directory. The destination directory is created if it does not exist. If the destination file exists, then this method
+     * will overwrite it.
      *
      * @param srcFile          an existing file to copy, must not be <code>null</code>
      * @param destDir          the directory to place the copy in, must not be <code>null</code>
      * @param preserveFileDate true if the file date of the copy should be the same as the original
-     * @throws IOException if an IO error occurs during copying
+     * @throws Fabric3Exception if an IO error occurs during copying
      * @since Commons IO 1.3
      */
-    public static void copyFileToDirectory(File srcFile, File destDir, boolean preserveFileDate) throws IOException {
+    public static void copyFileToDirectory(File srcFile, File destDir, boolean preserveFileDate) throws Fabric3Exception {
         if (destDir == null) {
             throw new NullPointerException("Destination must not be null");
         }
@@ -497,9 +471,9 @@ public class FileHelper {
      * Recursively delete a directory.
      *
      * @param directory directory to delete
-     * @throws IOException in case deletion is unsuccessful
+     * @throws Fabric3Exception in case deletion is unsuccessful
      */
-    public static void deleteDirectory(File directory) throws IOException {
+    public static void deleteDirectory(File directory) throws Fabric3Exception {
         if (!directory.exists()) {
             return;
         }
@@ -507,7 +481,7 @@ public class FileHelper {
         cleanDirectory(directory);
         if (!directory.delete()) {
             String message = "Unable to delete directory " + directory + ".";
-            throw new IOException(message);
+            throw new Fabric3Exception(message);
         }
     }
 
@@ -516,13 +490,13 @@ public class FileHelper {
      *
      * @param source the source stream
      * @param target the target disk location
-     * @throws IOException if the write encountered an error
+     * @throws Fabric3Exception if the write encountered an error
      */
-    public static void write(InputStream source, File target) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(target, "rw");
+    public static void write(InputStream source, File target) throws Fabric3Exception {
+
         FileChannel channel = null;
         FileLock lock = null;
-        try {
+        try (RandomAccessFile file = new RandomAccessFile(target, "rw")) {
             channel = file.getChannel();
             lock = channel.lock();
             ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -537,14 +511,24 @@ public class FileHelper {
                 buffer.clear();
             }
             channel.force(true);
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         } finally {
             if (channel != null) {
                 if (lock != null) {
-                    lock.release();
+                    try {
+                        lock.release();
+                    } catch (IOException e) {
+                       // ignore
+                    }
                 }
-                channel.close();
+                try {
+                    channel.close();
+                } catch (IOException e) {
+                   //ignore
+                }
             }
-            file.close();
+
         }
 
     }
@@ -554,9 +538,9 @@ public class FileHelper {
      *
      * @param directory directory to delete, must not be <code>null</code>
      * @throws NullPointerException if the directory is <code>null</code>
-     * @throws IOException          in case deletion is unsuccessful
+     * @throws Fabric3Exception     in case deletion is unsuccessful
      */
-    private static void deleteDirectoryOnExit(File directory) throws IOException {
+    private static void deleteDirectoryOnExit(File directory) throws Fabric3Exception {
         if (!directory.exists()) {
             return;
         }
@@ -571,28 +555,28 @@ public class FileHelper {
      * @param srcDir           the validated source directory, must not be <code>null</code>
      * @param destDir          the validated destination directory, must not be <code>null</code>
      * @param preserveFileDate whether to preserve the file date
-     * @throws IOException if an error occurs
+     * @throws Fabric3Exception if an error occurs
      */
-    private static void doCopyDirectory(File srcDir, File destDir, boolean preserveFileDate) throws IOException {
+    private static void doCopyDirectory(File srcDir, File destDir, boolean preserveFileDate) throws Fabric3Exception {
         if (destDir.exists()) {
             if (!destDir.isDirectory()) {
-                throw new IOException("Destination '" + destDir + "' exists but is not a directory");
+                throw new Fabric3Exception("Destination '" + destDir + "' exists but is not a directory");
             }
         } else {
             if (!destDir.mkdirs()) {
-                throw new IOException("Destination '" + destDir + "' directory cannot be created");
+                throw new Fabric3Exception("Destination '" + destDir + "' directory cannot be created");
             }
             if (preserveFileDate) {
                 destDir.setLastModified(srcDir.lastModified());
             }
         }
         if (!destDir.canWrite()) {
-            throw new IOException("Destination '" + destDir + "' cannot be written to");
+            throw new Fabric3Exception("Destination '" + destDir + "' cannot be written to");
         }
         // recurse
         File[] files = srcDir.listFiles();
         if (files == null) { // null if security restricted
-            throw new IOException("Failed to list contents of " + srcDir);
+            throw new Fabric3Exception("Failed to list contents of " + srcDir);
         }
         for (File file : files) {
             File copiedFile = new File(destDir, file.getName());
@@ -610,27 +594,31 @@ public class FileHelper {
      * @param srcFile          the validated source file, must not be <code>null</code>
      * @param destFile         the validated destination file, must not be <code>null</code>
      * @param preserveFileDate whether to preserve the file date
-     * @throws IOException if an error occurs
+     * @throws Fabric3Exception if an error occurs
      */
-    private static void doCopyFile(File srcFile, File destFile, boolean preserveFileDate) throws IOException {
+    private static void doCopyFile(File srcFile, File destFile, boolean preserveFileDate) throws Fabric3Exception {
         if (destFile.exists() && destFile.isDirectory()) {
-            throw new IOException("Destination '" + destFile + "' exists but is a directory");
+            throw new Fabric3Exception("Destination '" + destFile + "' exists but is a directory");
         }
-
-        FileInputStream input = new FileInputStream(srcFile);
         FileOutputStream output = null;
-        try {
+        try (FileInputStream input = new FileInputStream(srcFile)) {
             output = new FileOutputStream(destFile);
             IOHelper.copy(input, output);
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         } finally {
             if (output != null) {
-                output.close();
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            input.close();
+
         }
 
         if (srcFile.length() != destFile.length()) {
-            throw new IOException("Failed to copy full contents from '" + srcFile + "' to '" + destFile + "'");
+            throw new Fabric3Exception("Failed to copy full contents from '" + srcFile + "' to '" + destFile + "'");
         }
         if (preserveFileDate) {
             destFile.setLastModified(srcFile.lastModified());
@@ -642,9 +630,9 @@ public class FileHelper {
      *
      * @param file file or directory to delete, must not be <code>null</code>
      * @throws NullPointerException if the file is <code>null</code>
-     * @throws IOException          in case deletion is unsuccessful
+     * @throws Fabric3Exception     in case deletion is unsuccessful
      */
-    public static void forceDeleteOnExit(File file) throws IOException {
+    public static void forceDeleteOnExit(File file) throws Fabric3Exception {
         if (file.isDirectory()) {
             deleteDirectoryOnExit(file);
         } else {

@@ -88,12 +88,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
 
     public <O> O load(Source source, Class<O> type, IntrospectionContext ctx) throws LoaderException {
         String id = source.getSystemId();
-        InputStream stream;
-        try {
-            stream = source.openStream();
-        } catch (IOException e) {
-            throw new LoaderException("Invalid source: " + id, e);
-        }
+        InputStream stream = source.openStream();
         try {
             try {
                 return load(id, stream, type, ctx);

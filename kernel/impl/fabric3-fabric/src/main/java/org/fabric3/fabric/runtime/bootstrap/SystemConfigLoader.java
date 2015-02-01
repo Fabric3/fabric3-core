@@ -22,7 +22,6 @@ package org.fabric3.fabric.runtime.bootstrap;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,8 +29,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Environment;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
@@ -43,7 +42,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Loads the system configuration property for a runtime domain.
@@ -85,29 +83,25 @@ public class SystemConfigLoader {
      * @throws Fabric3Exception if an error reading the source is encountered
      */
     public Document loadSystemConfig(Source source) throws Fabric3Exception {
-        try {
-            InputSource inputSource = new InputSource(source.openStream());
-            Document document = loader.load(inputSource, true);
-            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
-            Element oldRoot = document.getDocumentElement();
-            boolean hasNamespaces = oldRoot.getNamespaceURI() != null && !"".equals(oldRoot.getNamespaceURI());
-            Element newRoot = document.createElementNS(org.fabric3.api.Namespaces.F3, "values");
-            newRoot.setAttribute("xmlns:sca", Constants.SCA_NS);
-            document.removeChild(oldRoot);
-            document.appendChild(newRoot);
-            newRoot.appendChild(oldRoot);
-            if (!hasNamespaces) {
-                // System config did not specify namespaces, add them
-                // Note that namespaces are not added to attributes since the latter do not inherit the default namespace:
-                // http://www.w3.org/TR/REC-xml-names/#defaulting (the default namespace does not apply to attribute names)
-                // If namespaces were added to attributes, consistency would require users to manually add them to all attributes in a systemConfig
-                // that is namespace-aware and hence is not updated using DocumentLoader.addNamespace().
-                loader.addNamespace(document, oldRoot, org.fabric3.api.Namespaces.F3);
-            }
-            return document;
-        } catch (IOException | SAXException e) {
-            throw new Fabric3Exception(e);
+        InputSource inputSource = new InputSource(source.openStream());
+        Document document = loader.load(inputSource, true);
+        // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
+        Element oldRoot = document.getDocumentElement();
+        boolean hasNamespaces = oldRoot.getNamespaceURI() != null && !"".equals(oldRoot.getNamespaceURI());
+        Element newRoot = document.createElementNS(org.fabric3.api.Namespaces.F3, "values");
+        newRoot.setAttribute("xmlns:sca", Constants.SCA_NS);
+        document.removeChild(oldRoot);
+        document.appendChild(newRoot);
+        newRoot.appendChild(oldRoot);
+        if (!hasNamespaces) {
+            // System config did not specify namespaces, add them
+            // Note that namespaces are not added to attributes since the latter do not inherit the default namespace:
+            // http://www.w3.org/TR/REC-xml-names/#defaulting (the default namespace does not apply to attribute names)
+            // If namespaces were added to attributes, consistency would require users to manually add them to all attributes in a systemConfig
+            // that is namespace-aware and hence is not updated using DocumentLoader.addNamespace().
+            loader.addNamespace(document, oldRoot, org.fabric3.api.Namespaces.F3);
         }
+        return document;
     }
 
     /**

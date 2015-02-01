@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Provides a content stream for for an artifact referenced by a URL.
@@ -50,9 +50,13 @@ public class UrlSource implements Source {
         return url;
     }
 
-    public InputStream openStream() throws IOException {
-        URLConnection connection = url.openConnection();
-        connection.setUseCaches(false);
-        return connection.getInputStream();
+    public InputStream openStream() {
+        try {
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            return connection.getInputStream();
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
+        }
     }
 }

@@ -16,7 +16,6 @@
  */
 package org.fabric3.api.host.stream;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -41,7 +40,7 @@ public class InputStreamSource implements Source {
         return null;
     }
 
-    public InputStream openStream() throws IOException {
+    public InputStream openStream() {
         if (opened) {
             throw new IllegalStateException("Input stream can only be opened once");
         }

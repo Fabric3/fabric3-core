@@ -18,13 +18,10 @@
  */
 package org.fabric3.fabric.xml;
 
-import java.io.IOException;
-import java.net.URL;
-
+import org.fabric3.api.host.Fabric3Exception;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Loads XML documents as DOM objects.
@@ -32,26 +29,14 @@ import org.xml.sax.SAXException;
 public interface DocumentLoader {
 
     /**
-     * Loads a Document from a URL.
-     *
-     * @param url             the location of the resource
-     * @param stripWhitespace true if whitespace should be stripped from the document
-     * @return the content of the resource as a Document
-     * @throws IOException  if there was a problem reading the resource
-     * @throws SAXException if there was a problem with the document
-     */
-    Document load(URL url, boolean stripWhitespace) throws IOException, SAXException;
-
-    /**
      * Loads a Document from an InputSource.
      *
      * @param source          the source of the document text
      * @param stripWhitespace true if whitespace should be stripped from the document
      * @return the content as a Document
-     * @throws IOException  if there was a problem reading the content
-     * @throws SAXException if there was a problem with the document
+     * @throws Fabric3Exception if there was a problem with the document
      */
-    Document load(InputSource source, boolean stripWhitespace) throws IOException, SAXException;
+    Document load(InputSource source, boolean stripWhitespace) throws Fabric3Exception;
 
     /**
      * Recursively add a namespace to a node. Note that the namespace is not added to attributes.

@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.fabric3.api.host.Fabric3Exception;
+
 /**
  * Helper methods for processing with streams.
  */
@@ -35,24 +37,27 @@ public final class IOHelper {
     }
 
     /**
-     * Copy bytes from an <code>InputStream</code> to an <code>OutputStream</code>.
-     * <p/>
-     * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
+     * Copy bytes from an <code>InputStream</code> to an <code>OutputStream</code>. <p/> This method buffers the input internally, so there is no need to use a
+     * <code>BufferedInputStream</code>.
      *
      * @param input  the <code>InputStream</code> to read from
      * @param output the <code>OutputStream</code> to write to
      * @return the number of bytes copied
-     * @throws IOException if an I/O error occurs
+     * @throws Fabric3Exception if an I/O error occurs
      */
-    public static int copy(InputStream input, OutputStream output) throws IOException {
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int count = 0;
-        int n;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-            count += n;
+    public static int copy(InputStream input, OutputStream output) throws Fabric3Exception {
+        try {
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int count = 0;
+            int n;
+            while (-1 != (n = input.read(buffer))) {
+                output.write(buffer, 0, n);
+                count += n;
+            }
+            return count;
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        return count;
     }
 
     public static void closeQuietly(Closeable closeable) {

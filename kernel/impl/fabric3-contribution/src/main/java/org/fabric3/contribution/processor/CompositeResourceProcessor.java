@@ -90,7 +90,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol);
             resource.addResourceElement(element);
             validateUnique(resource, element, reader, context);
-        } catch (XMLStreamException | IOException e) {
+        } catch (XMLStreamException e) {
             throw new Fabric3Exception(e);
         } finally {
             try {

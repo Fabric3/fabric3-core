@@ -205,22 +205,18 @@ public class DefaultFabric implements Fabric {
         if (state != State.RUNNING) {
             throw new IllegalStateException("Not in running state: " + state);
         }
-        try {
-            coordinator.shutdown();
-            state = State.UNINITIALIZED;
-            if (tempDirectory.exists()) {
-                try {
-                    FileHelper.cleanDirectory(tempDirectory);
-                } catch (IOException e) {
-                    if (tempDirectory.exists()) {
-                        FileHelper.forceDeleteOnExit(tempDirectory);
-                    }
+        coordinator.shutdown();
+        state = State.UNINITIALIZED;
+        if (tempDirectory.exists()) {
+            try {
+                FileHelper.cleanDirectory(tempDirectory);
+            } catch (Fabric3Exception e) {
+                if (tempDirectory.exists()) {
+                    FileHelper.forceDeleteOnExit(tempDirectory);
                 }
             }
-            return this;
-        } catch (IOException e) {
-            throw new FabricException(e);
         }
+        return this;
     }
 
     public <T> T createTransportDispatcher(Class<T> interfaze, Map<String, Object> properties) {
@@ -301,11 +297,7 @@ public class DefaultFabric implements Fabric {
     private void createDirectories() throws FabricException {
         // clear out the tmp directory
         if (tempDirectory.exists()) {
-            try {
-                FileHelper.cleanDirectory(tempDirectory);
-            } catch (IOException e) {
-                throw new FabricException(e);
-            }
+            FileHelper.cleanDirectory(tempDirectory);
         }
         tempDirectory.mkdirs();
         extensionsDirectory.mkdirs();

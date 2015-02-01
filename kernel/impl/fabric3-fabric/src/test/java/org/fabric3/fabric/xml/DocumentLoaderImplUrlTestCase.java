@@ -24,6 +24,7 @@ import java.io.File;
 import junit.framework.TestCase;
 import org.fabric3.api.host.util.FileHelper;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -34,7 +35,7 @@ public class DocumentLoaderImplUrlTestCase extends TestCase {
 
     public void testLoadFromUrl() throws Exception {
         DocumentLoaderImpl loader = new DocumentLoaderImpl();
-        Document document = loader.load(XML_FILE.toURI().toURL(), true);
+        Document document = loader.load(new InputSource(XML_FILE.toURI().toURL().openStream()), true);
         assertEquals("test", document.getDocumentElement().getNodeName());
     }
 

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import junit.framework.TestCase;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
@@ -141,11 +142,11 @@ public class FileHelperTestCase extends TestCase {
 
         FileHelper.forceMkdir(sourceDir);
 
-        addTmpFiles(sourceDir,"sourceFile",10);
+        addTmpFiles(sourceDir,"sourceFile");
 
         File sourceSubDir = new File(sourceDir,"subdir");
         FileHelper.forceMkdir(sourceSubDir);
-        addTmpFiles(sourceSubDir,"subsubFiles",10);
+        addTmpFiles(sourceSubDir,"subsubFiles");
 
         assertEquals(11, sourceDir.list().length);
         assertEquals(10,sourceSubDir.list().length);
@@ -187,7 +188,7 @@ public class FileHelperTestCase extends TestCase {
         FileHelper.forceDelete(sourceDir);
     }
 
-    private void addTmpFiles(File directory,String prefix,int count) throws IOException {
+    private void addTmpFiles(File directory, String prefix) throws IOException {
         for (int i = 0; i < 10; i++)
             File.createTempFile(prefix, null, directory);
     }
@@ -216,7 +217,7 @@ public class FileHelperTestCase extends TestCase {
 
         setUpDirs(srcDir, destDir);
 
-        addTmpFiles(srcDir, "srcFile", 10);
+        addTmpFiles(srcDir, "srcFile");
 
 
         FileHelper.copyDirectoryToDirectory(srcDir, destDir);
@@ -252,7 +253,7 @@ public class FileHelperTestCase extends TestCase {
         try {
             FileHelper.copyFileToDirectory(srcDir,destDir);
             fail("Should not be able to copy a Directory");
-        } catch (IOException e) {
+        } catch (Fabric3Exception e) {
             // everything is ok
         }
 
@@ -276,7 +277,7 @@ public class FileHelperTestCase extends TestCase {
         FileHelper.deleteDirectory(testDir);
         assertFalse(testDir.exists());
         setUpDirs(testDir);
-        addTmpFiles(testDir,"testDelete",20);
+        addTmpFiles(testDir,"testDelete");
         FileHelper.deleteDirectory(testDir);
         assertFalse(testDir.exists());
     }

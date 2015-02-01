@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Version;
 import org.fabric3.api.host.classloader.DelegatingResourceClassLoader;
 import org.fabric3.api.host.os.OperatingSystem;
@@ -88,15 +89,15 @@ public final class BootstrapHelper {
      * @param baseDir the base directory
      * @param path    the  path
      * @return the boot directory
-     * @throws FileNotFoundException if the boot directory does not exist
+     * @throws Fabric3Exception if the boot directory does not exist
      */
-    public static File getDirectory(File baseDir, String path) throws FileNotFoundException {
+    public static File getDirectory(File baseDir, String path) throws Fabric3Exception {
         File dir = new File(baseDir, path);
         if (!dir.exists()) {
-            throw new FileNotFoundException("Directory does not exist: " + dir);
+            throw new Fabric3Exception("Directory does not exist: " + dir);
         }
         if (!dir.isDirectory()) {
-            throw new FileNotFoundException("Resource is not a directory: " + dir);
+            throw new Fabric3Exception("Resource is not a directory: " + dir);
         }
         return dir;
     }
@@ -146,7 +147,7 @@ public final class BootstrapHelper {
      * @param targetDir       the target runtime directory
      * @throws IOException if the runtime directory cannot be created
      */
-    public static void cloneRuntimeImage(File sourceConfigDir, File targetDir) throws IOException {
+    public static void cloneRuntimeImage(File sourceConfigDir, File targetDir) {
         File targetConfigDir = new File(targetDir, "config");
         FileHelper.forceMkdir(targetConfigDir);
         FileHelper.copyDirectory(sourceConfigDir, targetConfigDir);

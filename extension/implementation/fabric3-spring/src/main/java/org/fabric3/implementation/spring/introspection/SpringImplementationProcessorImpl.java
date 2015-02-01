@@ -103,8 +103,6 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             validate(type, context, start);
 
             return type;
-        } catch (IOException e) {
-            throw new XMLStreamException(e);
         } finally {
             if (reader != null) {
                 reader.close();

@@ -96,8 +96,6 @@ public class XmlResourceProcessor implements ResourceProcessor {
             InvalidXmlArtifact warning = new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(),
                                                                 location);
             context.addWarning(warning);
-        } catch (IOException e) {
-            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (stream != null) {
@@ -131,7 +129,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
             }
             elementLoaderRegistry.load(reader, resource, context);
             resource.setState(ResourceState.PROCESSED);
-        } catch (XMLStreamException | IOException e) {
+        } catch (XMLStreamException e) {
             throw new Fabric3Exception(e);
         } finally {
             try {

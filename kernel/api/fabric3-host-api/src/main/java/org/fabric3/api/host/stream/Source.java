@@ -16,9 +16,10 @@
  */
 package org.fabric3.api.host.stream;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Provides an input stream for reading the contents of an artifact.
@@ -43,8 +44,8 @@ public interface Source {
      * Returns an input stream for reading the contents of the artifact. Clients are responsible for closing the returned stream.
      *
      * @return an input stream
-     * @throws IOException if there is an error opening the stream
+     * @throws Fabric3Exception if there is an error opening the stream
      */
-    InputStream openStream() throws IOException;
+    InputStream openStream() throws Fabric3Exception;
 
 }

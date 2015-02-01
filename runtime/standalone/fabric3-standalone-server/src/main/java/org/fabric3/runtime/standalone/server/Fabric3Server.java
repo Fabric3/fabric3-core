@@ -23,7 +23,6 @@ import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -207,7 +206,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         }
     }
 
-    private File getRuntimeDirectory(Params params, File installDirectory) throws Fabric3Exception, IOException {
+    private File getRuntimeDirectory(Params params, File installDirectory) throws Fabric3Exception {
         File rootRuntimeDir;
         if (params.directory != null) {
             rootRuntimeDir = params.directory;

@@ -194,16 +194,12 @@ public abstract class AbstractFabric implements Fabric {
         if (state != State.RUNNING) {
             throw new IllegalStateException("Not in running state: " + state);
         }
-        try {
-            coordinator.shutdown();
-            state = State.UNINITIALIZED;
-            if (tempDirectory.exists()) {
-                FileHelper.cleanDirectory(tempDirectory);
-            }
-            return this;
-        } catch (IOException e) {
-            throw new FabricException(e);
+        coordinator.shutdown();
+        state = State.UNINITIALIZED;
+        if (tempDirectory.exists()) {
+            FileHelper.cleanDirectory(tempDirectory);
         }
+        return this;
     }
 
     public <T> Fabric registerSystemService(Class<T> interfaze, T instance) throws FabricException {
@@ -268,11 +264,7 @@ public abstract class AbstractFabric implements Fabric {
     private void createDirectories() throws FabricException {
         // clear out the tmp directory
         if (tempDirectory.exists()) {
-            try {
-                FileHelper.cleanDirectory(tempDirectory);
-            } catch (IOException e) {
-                throw new FabricException(e);
-            }
+            FileHelper.cleanDirectory(tempDirectory);
         }
         tempDirectory.mkdirs();
         extensionsDirectory.mkdirs();
