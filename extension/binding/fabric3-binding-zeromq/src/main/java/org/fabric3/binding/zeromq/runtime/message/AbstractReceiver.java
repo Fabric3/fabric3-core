@@ -18,13 +18,13 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
@@ -137,7 +137,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
             }
             workContext.addCallbackReferences(stack);
             return workContext;
-        } catch (IOException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException("Error deserializing callback references", e);
         }
     }

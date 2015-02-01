@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.host.Fabric3Exception;
+
 /**
  * Serializes and (De)Serializes a callback reference to a byte array or String.
  */
@@ -44,35 +46,43 @@ public class CallbackReferenceSerializer {
         return builder.toString();
     }
 
-    public static byte[] serializeToBytes(List<String> references) throws IOException {
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        DataOutputStream das = new DataOutputStream(bas);
-        das.writeInt(references.size());
-        for (String reference : references) {
-            das.writeInt(reference.length());
-            das.write(reference.getBytes());
+    public static byte[] serializeToBytes(List<String> references) throws Fabric3Exception {
+        try {
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            DataOutputStream das = new DataOutputStream(bas);
+            das.writeInt(references.size());
+            for (String reference : references) {
+                das.writeInt(reference.length());
+                das.write(reference.getBytes());
+            }
+            return bas.toByteArray();
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        return bas.toByteArray();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static List<String> deserialize(byte[] bytes) throws IOException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        DataInputStream dis = new DataInputStream(bis);
-        int number = dis.readInt();
-        List<String> references = new ArrayList<>(number);
-        while (number > 0) {
-            String callbackReference = null;
-            int callbackUriSize = dis.readInt();
-            if (callbackUriSize > 0) {
-                byte[] uriBytes = new byte[callbackUriSize];
-                dis.read(uriBytes);
-                callbackReference = new String(uriBytes);
+    public static List<String> deserialize(byte[] bytes) throws Fabric3Exception {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            DataInputStream dis = new DataInputStream(bis);
+            int number = dis.readInt();
+            List<String> references = new ArrayList<>(number);
+            while (number > 0) {
+                String callbackReference = null;
+                int callbackUriSize = dis.readInt();
+                if (callbackUriSize > 0) {
+                    byte[] uriBytes = new byte[callbackUriSize];
+                    dis.read(uriBytes);
+                    callbackReference = new String(uriBytes);
+                }
+                references.add(callbackReference);
+                number--;
             }
-            references.add(callbackReference);
-            number--;
+            return references;
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        return references;
     }
 
     public static List<String> deserialize(String serialized) {

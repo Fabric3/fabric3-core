@@ -263,16 +263,14 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
         }
         if (!update.getAnnouncements().isEmpty()) {
             // send response from a separate thread to avoid blocking on the federation callback
-            executor.execute(new Runnable() {
-                public void run() {
-                    try {
-                        if (isNode()) {
-                            topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
-                        }
-                        // ignore on controller
-                    } catch (Fabric3Exception e) {
-                        monitor.error(e);
+            executor.execute(() -> {
+                try {
+                    if (isNode()) {
+                        topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
                     }
+                    // ignore on controller
+                } catch (Fabric3Exception e) {
+                    monitor.error(e);
                 }
             });
         }

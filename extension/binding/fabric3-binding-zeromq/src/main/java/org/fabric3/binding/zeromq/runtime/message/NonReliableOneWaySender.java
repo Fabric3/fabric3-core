@@ -18,7 +18,6 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
@@ -101,7 +101,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         } catch (InterruptedException e) {
             Thread.interrupted();
             throw new ServiceRuntimeException(e);
-        } catch (IOException e) {
+        } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -122,9 +122,9 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
      *
      * @param workContext the work context
      * @return the serialized work context
-     * @throws IOException if a serialization error is encountered
+     * @throws Fabric3Exception if a serialization error is encountered
      */
-    private byte[] serialize(WorkContext workContext) throws IOException {
+    private byte[] serialize(WorkContext workContext)  {
         List<String> stack = workContext.getCallbackReferences();
         if (stack == null || stack.isEmpty()) {
             return null;

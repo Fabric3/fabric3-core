@@ -18,7 +18,6 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +34,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
@@ -124,7 +124,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             throw new ServiceRuntimeException(e);
         } catch (ExecutionException e) {
             throw new ServiceRuntimeException(e);
-        } catch (TimeoutException | IOException e) {
+        } catch (TimeoutException | Fabric3Exception e) {
             throw new ServiceUnavailableException(e);
         }
     }
@@ -145,9 +145,9 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
      *
      * @param workContext the work context
      * @return the serialized work context
-     * @throws IOException if a serialization error is encountered
+     * @throws Fabric3Exception if a serialization error is encountered
      */
-    private byte[] serialize(WorkContext workContext) throws IOException {
+    private byte[] serialize(WorkContext workContext) {
         List<String> stack = workContext.getCallbackReferences();
         if (stack == null || stack.isEmpty()) {
             return null;

@@ -20,7 +20,6 @@
 package org.fabric3.api.host.runtime;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -145,7 +144,6 @@ public final class BootstrapHelper {
      *
      * @param sourceConfigDir the configuration directory to use as a template
      * @param targetDir       the target runtime directory
-     * @throws IOException if the runtime directory cannot be created
      */
     public static void cloneRuntimeImage(File sourceConfigDir, File targetDir) {
         File targetConfigDir = new File(targetDir, "config");
