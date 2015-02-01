@@ -18,7 +18,6 @@
  */
 package org.fabric3.contribution;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
@@ -106,19 +105,14 @@ public class ContributionLoaderImpl implements ContributionLoader {
         // construct the classpath for contained resources in the contribution if it is a physical artifact
         URL location = contribution.getLocation();
         if (location != null) {
-            try {
-                List<URL> classpath = classpathProcessorRegistry.process(location, manifest.getLibraries());
-                classpath.forEach(loader::addURL);
-                setSysPathsField(loader);
-            } catch (IOException e) {
-                throw new Fabric3Exception(e);
-            }
-
+            List<URL> classpath = classpathProcessorRegistry.process(location, manifest.getLibraries());
+            classpath.forEach(loader::addURL);
+            setSysPathsField(loader);
         }
 
         // connect imported contribution classloaders according to their wires
         for (ContributionWire<?, ?> wire : wires) {
-           ClassLoaderWireGenerator generator = generators.get(wire.getClass());
+            ClassLoaderWireGenerator generator = generators.get(wire.getClass());
             if (generator == null) {
                 // not all contribution wires resolve resources through classloaders, so skip if one is not found
                 continue;

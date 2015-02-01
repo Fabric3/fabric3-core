@@ -17,7 +17,6 @@
 package org.fabric3.contribution.processor;
 
 import javax.xml.namespace.QName;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
@@ -206,7 +205,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
             return null;
         }
 
-        public InputStream openStream() throws IOException {
+        public InputStream openStream() {
             return null;
         }
     }

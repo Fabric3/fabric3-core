@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
@@ -81,14 +82,18 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (registry == null || registry.isEmpty()) {
             return;
         }
         Collection<ClassLoader> classLoaders = registry.values();
         for (ClassLoader classLoader : classLoaders) {
             if (classLoader instanceof URLClassLoader) {
-                ((URLClassLoader) classLoader).close();
+                try {
+                    ((URLClassLoader) classLoader).close();
+                } catch (IOException e) {
+                    throw new Fabric3Exception(e);
+                }
             }
         }
     }

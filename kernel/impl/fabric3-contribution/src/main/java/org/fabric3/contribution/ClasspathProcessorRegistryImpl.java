@@ -18,7 +18,6 @@
  */
 package org.fabric3.contribution;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class ClasspathProcessorRegistryImpl implements ClasspathProcessorRegistr
         processors.remove(processor);
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws IOException {
+    public List<URL> process(URL url, List<Library> libraries) {
         for (ClasspathProcessor processor : processors) {
             if (processor.canProcess(url)) {
                 return processor.process(url, libraries);

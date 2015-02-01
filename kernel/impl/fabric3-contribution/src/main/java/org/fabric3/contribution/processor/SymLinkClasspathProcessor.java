@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.os.Library;
@@ -61,23 +62,27 @@ public class SymLinkClasspathProcessor implements ClasspathProcessor {
         return url.toString().endsWith(".contribution");
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<>();
-        File root = deReferenceFile(url);
-        classpath.add(root.toURI().toURL());
-        File metaInfLib = new File(root, "META-INF" + File.separator + "lib");
-        if (metaInfLib.exists()) {
-            classpath.add(metaInfLib.toURI().toURL());
+    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+        try {
+            List<URL> classpath = new ArrayList<>();
+            File root = deReferenceFile(url);
+            classpath.add(root.toURI().toURL());
+            File metaInfLib = new File(root, "META-INF" + File.separator + "lib");
+            if (metaInfLib.exists()) {
+                classpath.add(metaInfLib.toURI().toURL());
+            }
+            File webInfLib = new File(root, "WEB-INF" + File.separator + "lib");
+            if (webInfLib.exists()) {
+                classpath.add(webInfLib.toURI().toURL());
+            }
+            File webInfClasses = new File(root, "WEB-INF" + File.separator + "classes");
+            if (webInfClasses.exists()) {
+                classpath.add(webInfClasses.toURI().toURL());
+            }
+            return classpath;
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        File webInfLib = new File(root, "WEB-INF" + File.separator + "lib");
-        if (webInfLib.exists()) {
-            classpath.add(webInfLib.toURI().toURL());
-        }
-        File webInfClasses = new File(root, "WEB-INF" + File.separator + "classes");
-        if (webInfClasses.exists()) {
-            classpath.add(webInfClasses.toURI().toURL());
-        }
-        return classpath;
     }
 
     private File deReferenceFile(URL url) throws IOException {

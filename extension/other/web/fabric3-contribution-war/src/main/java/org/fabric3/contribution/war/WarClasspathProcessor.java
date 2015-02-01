@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
@@ -72,7 +73,7 @@ public class WarClasspathProcessor implements ClasspathProcessor {
         return name.endsWith(".war");
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws IOException {
+    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
         List<URL> classpath = new ArrayList<>();
         // add the the jar itself to the classpath
         classpath.add(url);
@@ -81,8 +82,12 @@ public class WarClasspathProcessor implements ClasspathProcessor {
             return classpath;
         }
 
-        // add libraries from the jar
-        addLibraries(classpath, url);
+        try {
+            // add libraries from the jar
+            addLibraries(classpath, url);
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
+        }
         return classpath;
     }
 
@@ -125,12 +130,9 @@ public class WarClasspathProcessor implements ClasspathProcessor {
                     pathAndPackageName.mkdirs();
                     pathAndPackageName.deleteOnExit();
                     File classFile = new File(pathAndPackageName, name);
-                    OutputStream os = new BufferedOutputStream(new FileOutputStream(classFile));
-                    try {
+                    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(classFile))) {
                         copy(jarStream, os);
                         os.flush();
-                    } finally {
-                        os.close();
                     }
                     classFile.deleteOnExit();
                     classpath.add(classesDir.toURI().toURL());

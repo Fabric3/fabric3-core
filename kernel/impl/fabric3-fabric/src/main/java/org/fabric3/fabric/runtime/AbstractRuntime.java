@@ -21,7 +21,6 @@ package org.fabric3.fabric.runtime;
 
 import javax.management.MBeanServer;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
@@ -130,11 +129,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         // destroy system components
         WorkContextCache.getAndResetThreadWorkContext();
         scopeContainer.stopAllContexts();
-        try {
-            classLoaderRegistry.close();
-        } catch (IOException e) {
-            throw new Fabric3Exception(e);
-        }
+        classLoaderRegistry.close();
     }
 
     public <I> I getComponent(Class<I> service, URI uri) {

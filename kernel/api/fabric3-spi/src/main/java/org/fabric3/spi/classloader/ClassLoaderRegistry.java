@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.classloader;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
@@ -81,5 +80,5 @@ public interface ClassLoaderRegistry {
     /**
      * Method calls close() on all URLClassLoader-s in registry.
      */
-    void close() throws IOException;
+    void close();
 }

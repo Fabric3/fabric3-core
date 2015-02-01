@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
@@ -63,15 +64,19 @@ public class SyntheticDirectoryClasspathProcessor implements ClasspathProcessor 
         return root.isDirectory();
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<>();
-        File root = FileHelper.toFile(url);
-        for (File file : root.listFiles()) {
-            if (file.getName().endsWith(".jar")) {
-                classpath.add(file.toURI().toURL());
+    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+        try {
+            List<URL> classpath = new ArrayList<>();
+            File root = FileHelper.toFile(url);
+            for (File file : root.listFiles()) {
+                if (file.getName().endsWith(".jar")) {
+                    classpath.add(file.toURI().toURL());
+                }
             }
+            return classpath;
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        return classpath;
     }
 
 }

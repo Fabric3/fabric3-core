@@ -35,6 +35,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.fabric3.api.annotation.Source;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
@@ -89,60 +90,64 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         return name.endsWith(".jar") || name.endsWith(".zip") || name.endsWith("/classes") || name.endsWith("/classes/");
     }
 
-    public List<URL> process(URL jar, List<Library> libraries) throws IOException {
-        List<URL> classpath = new ArrayList<>();
-        // add the the jar itself to the classpath
-        classpath.add(jar);
+    public List<URL> process(URL jar, List<Library> libraries) throws Fabric3Exception {
+        try {
+            List<URL> classpath = new ArrayList<>();
+            // add the the jar itself to the classpath
+            classpath.add(jar);
 
-        if (libraries.isEmpty() && !hasLibDirectory(new File(jar.getFile()))) {
-            return classpath;
-        }
-
-        File dir = hostInfo.getTempDir();
-        Set<String> resolvedLibraryPaths = resolveNativeLibraries(libraries);
-        try (InputStream is = jar.openStream()) {
-
-            JarInputStream jarStream = new JarInputStream(is);
-            JarEntry entry;
-            while ((entry = jarStream.getNextJarEntry()) != null) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                String name = entry.getName();
-                int index = name.lastIndexOf("/");
-                String path;
-                if (index > 0) {
-                    path = name.substring(0, index);
-                } else {
-                    path = name;
-                }
-
-                if (resolvedLibraryPaths.contains(name)) {
-                    extractNativeLibrary(path, jarStream, entry);
-                    continue;
-                }
-                if (!path.startsWith("META-INF/lib") || (path.startsWith("META-INF/lib") && name.length() <= 13)) {
-                    continue;
-                }
-                if (explodeJars) {
-                    String fileName = path.substring(path.lastIndexOf('/'));
-                    File explodedDirectory = new File(dir, fileName);
-                    explodeJar(dir, jarStream, explodedDirectory);
-                    classpath.add(explodedDirectory.toURI().toURL());
-                } else {
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    File jarFile = File.createTempFile("fabric3", ".jar", dir);
-                    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile))) {
-                        IOHelper.copy(jarStream, os);
-                        os.flush();
-                    }
-                    jarFile.deleteOnExit();
-                    classpath.add(jarFile.toURI().toURL());
-                }
+            if (libraries.isEmpty() && !hasLibDirectory(new File(jar.getFile()))) {
+                return classpath;
             }
-            return classpath;
+
+            File dir = hostInfo.getTempDir();
+            Set<String> resolvedLibraryPaths = resolveNativeLibraries(libraries);
+            try (InputStream is = jar.openStream()) {
+
+                JarInputStream jarStream = new JarInputStream(is);
+                JarEntry entry;
+                while ((entry = jarStream.getNextJarEntry()) != null) {
+                    if (entry.isDirectory()) {
+                        continue;
+                    }
+                    String name = entry.getName();
+                    int index = name.lastIndexOf("/");
+                    String path;
+                    if (index > 0) {
+                        path = name.substring(0, index);
+                    } else {
+                        path = name;
+                    }
+
+                    if (resolvedLibraryPaths.contains(name)) {
+                        extractNativeLibrary(path, jarStream, entry);
+                        continue;
+                    }
+                    if (!path.startsWith("META-INF/lib") || (path.startsWith("META-INF/lib") && name.length() <= 13)) {
+                        continue;
+                    }
+                    if (explodeJars) {
+                        String fileName = path.substring(path.lastIndexOf('/'));
+                        File explodedDirectory = new File(dir, fileName);
+                        explodeJar(dir, jarStream, explodedDirectory);
+                        classpath.add(explodedDirectory.toURI().toURL());
+                    } else {
+                        if (!dir.exists()) {
+                            dir.mkdirs();
+                        }
+                        File jarFile = File.createTempFile("fabric3", ".jar", dir);
+                        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile))) {
+                            IOHelper.copy(jarStream, os);
+                            os.flush();
+                        }
+                        jarFile.deleteOnExit();
+                        classpath.add(jarFile.toURI().toURL());
+                    }
+                }
+                return classpath;
+            }
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
     }
 

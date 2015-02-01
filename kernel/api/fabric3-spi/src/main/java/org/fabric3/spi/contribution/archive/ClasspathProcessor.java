@@ -18,10 +18,10 @@
  */
 package org.fabric3.spi.contribution.archive;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.os.Library;
 
 /**
@@ -44,8 +44,8 @@ public interface ClasspathProcessor {
      * @param url       the location of the archive
      * @param libraries the native libraries contained in the archive
      * @return the classpath URLs for the given archive
-     * @throws IOException if an error occurs during introspection
+     * @throws Fabric3Exception if an error occurs during introspection
      */
-    List<URL> process(URL url, List<Library> libraries) throws IOException;
+    List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception;
 
 }

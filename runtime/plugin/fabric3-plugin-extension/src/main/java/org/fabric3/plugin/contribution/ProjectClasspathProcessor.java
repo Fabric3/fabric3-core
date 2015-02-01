@@ -17,13 +17,13 @@
 package org.fabric3.plugin.contribution;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.plugin.api.runtime.PluginHostInfo;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
@@ -65,32 +65,32 @@ public class ProjectClasspathProcessor implements ClasspathProcessor {
         }
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws IOException {
-        final List<URL> urls = new ArrayList<>(2);
+    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+        try {
+            List<URL> urls = new ArrayList<>(2);
 
-        File classesDir = hostInfo.getClassesDir();
-        File testDir = hostInfo.getTestClassesDir();
+            File classesDir = hostInfo.getClassesDir();
+            File testDir = hostInfo.getTestClassesDir();
 
-        urls.add(classesDir.toURI().toURL());
-        urls.add(testDir.toURI().toURL());
+            urls.add(classesDir.toURI().toURL());
+            urls.add(testDir.toURI().toURL());
 
-        urls.addAll(hostInfo.getDependencyUrls());
+            urls.addAll(hostInfo.getDependencyUrls());
 
-        //add jars in META-INF/lib to classpath
-        File metaInf = new File(classesDir, "META-INF");
-        File metaInfLib = new File(metaInf, "lib");
+            //add jars in META-INF/lib to classpath
+            File metaInf = new File(classesDir, "META-INF");
+            File metaInfLib = new File(metaInf, "lib");
 
-        if (metaInfLib.exists()) {
-            File[] jars = metaInfLib.listFiles(new FileFilter() {
-                public boolean accept(File pathname) {
-                    return pathname.getName().endsWith(".jar");
+            if (metaInfLib.exists()) {
+                File[] jars = metaInfLib.listFiles(pathname -> pathname.getName().endsWith(".jar"));
+                for (File jar : jars) {
+                    urls.add(jar.toURI().toURL());
                 }
-            });
-            for (File jar : jars) {
-                urls.add(jar.toURI().toURL());
-            }
 
+            }
+            return urls;
+        } catch (IOException e) {
+            throw new Fabric3Exception(e);
         }
-        return urls;
     }
 }
