@@ -49,7 +49,7 @@ public class StopComponentCommandExecutor implements CommandExecutor<StopCompone
         executorRegistry.register(StopComponentCommand.class, this);
     }
 
-    public void execute(StopComponentCommand command) throws Fabric3Exception {
+    public void execute(StopComponentCommand command) {
         URI uri = command.getUri();
         Component component = componentManager.getComponent(uri);
         if (component == null) {

@@ -10,10 +10,6 @@
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationLoader"/>
     </component>
 
-    <component name="JavaImplementationWriter">
-        <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationWriter"/>
-    </component>
-
     <component name="JavaImplementationIntrospector">
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationIntrospectorImpl"/>
         <reference name="heuristic" target="JavaHeuristic"/>

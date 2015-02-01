@@ -18,7 +18,6 @@ package org.fabric3.implementation.java.runtime;
 
 import java.lang.reflect.Type;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
@@ -73,17 +72,17 @@ public class NonManagedImplementationManagerFactory implements ImplementationMan
         throw new UnsupportedOperationException();
     }
 
-    public Object newInstance() throws Fabric3Exception {
+    public Object newInstance() {
         return instance;
     }
 
-    public void start(Object instance) throws Fabric3Exception {
+    public void start(Object instance) {
     }
 
-    public void stop(Object instance) throws Fabric3Exception {
+    public void stop(Object instance) {
     }
 
-    public void reinject(Object instance) throws Fabric3Exception {
+    public void reinject(Object instance) {
     }
 
     public void updated(Object instance, String referenceName) {

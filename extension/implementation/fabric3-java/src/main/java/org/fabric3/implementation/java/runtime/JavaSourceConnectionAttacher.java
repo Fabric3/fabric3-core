@@ -51,8 +51,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
@@ -71,7 +70,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
         component.setObjectFactory(injectable, factory);
     }
 
-    public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();

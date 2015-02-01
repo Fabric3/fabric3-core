@@ -25,7 +25,7 @@ import java.util.List;
 import org.fabric3.spi.container.command.Command;
 
 /**
- *
+ * A collection of {@link Command}s that perform a deployment.
  */
 public class Deployment {
     private List<Command> commands = new ArrayList<>();

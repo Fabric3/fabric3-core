@@ -17,7 +17,6 @@
 package org.fabric3.federation.node.executor;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.merge.DomainMergeService;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -48,7 +47,7 @@ public class DeploymentSnapshotCommandExecutor implements CommandExecutor<Deploy
         executorRegistry.register(DeploymentSnapshotCommand.class, this);
     }
 
-    public void execute(DeploymentSnapshotCommand command) throws Fabric3Exception {
+    public void execute(DeploymentSnapshotCommand command) {
         monitor.received(command.getRuntimeName());
         mergeService.merge(command.getSnapshot());
     }

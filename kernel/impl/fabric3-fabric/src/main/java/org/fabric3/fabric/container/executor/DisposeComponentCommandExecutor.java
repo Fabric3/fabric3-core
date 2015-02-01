@@ -68,7 +68,7 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
     }
 
     @SuppressWarnings({"unchecked"})
-    public void execute(DisposeComponentCommand command) throws Fabric3Exception {
+    public void execute(DisposeComponentCommand command) {
         PhysicalComponentDefinition definition = command.getDefinition();
         URI uri = definition.getComponentUri();
         Component component = componentManager.unregister(uri);

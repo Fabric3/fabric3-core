@@ -54,8 +54,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection) {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         JavaComponent component = (JavaComponent) manager.getComponent(targetName);
@@ -72,11 +71,11 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) {
         // no-op
     }
 
-    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws Fabric3Exception {
+    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {

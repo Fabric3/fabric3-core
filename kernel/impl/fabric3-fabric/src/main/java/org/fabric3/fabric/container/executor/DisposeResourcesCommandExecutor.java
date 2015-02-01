@@ -49,9 +49,7 @@ public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeR
     }
 
     public void execute(DisposeResourcesCommand command) throws Fabric3Exception {
-        for (PhysicalResourceDefinition definition : command.getDefinitions()) {
-            build(definition);
-        }
+        command.getDefinitions().forEach(this::build);
     }
 
     @Init
@@ -60,7 +58,7 @@ public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeR
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalResourceDefinition definition) throws Fabric3Exception {
+    public void build(PhysicalResourceDefinition definition) {
         ResourceBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
             throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());

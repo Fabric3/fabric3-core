@@ -307,15 +307,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
-    private void revertInstallation(List<URI> uris) {
-        try {
-            contributionService.uninstall(uris);
-            contributionService.remove(uris);
-        } catch (Fabric3Exception e) {
-            monitor.error(e);
-        }
-    }
-
     /**
      * Processes added resources in the deployment directories.
      *

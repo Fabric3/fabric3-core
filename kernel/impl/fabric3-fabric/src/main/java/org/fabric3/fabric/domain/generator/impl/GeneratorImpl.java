@@ -157,12 +157,7 @@ public class GeneratorImpl implements Generator {
     }
 
     private List<CommandGenerator> sortGenerators(List<? extends CommandGenerator> commandGenerators) {
-        Comparator<CommandGenerator> generatorComparator = new Comparator<CommandGenerator>() {
-
-            public int compare(CommandGenerator first, CommandGenerator second) {
-                return first.getOrder() - second.getOrder();
-            }
-        };
+        Comparator<CommandGenerator> generatorComparator = (first, second) -> first.getOrder() - second.getOrder();
         List<CommandGenerator> sorted = new ArrayList<>(commandGenerators);
         Collections.sort(sorted, generatorComparator);
         return sorted;

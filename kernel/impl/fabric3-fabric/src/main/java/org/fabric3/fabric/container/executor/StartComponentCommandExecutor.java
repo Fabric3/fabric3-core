@@ -56,7 +56,7 @@ public class StartComponentCommandExecutor implements CommandExecutor<StartCompo
         commandExecutorRegistry.register(StartComponentCommand.class, this);
     }
 
-    public void execute(StartComponentCommand command) throws Fabric3Exception {
+    public void execute(StartComponentCommand command) {
         URI uri = command.getUri();
         Component component = componentManager.getComponent(uri);
         component.start();

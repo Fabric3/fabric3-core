@@ -60,7 +60,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         this.matcher = matcher;
     }
 
-    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws Fabric3Exception {
+    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component)  {
         Component<? extends JavaImplementation> logical = component.getDefinition();
         JavaImplementation implementation = logical.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
@@ -87,7 +87,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         helper.processPropertyValues(component, definition);
     }
 
-    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws Fabric3Exception {
+    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference)  {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -106,7 +106,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
     }
 
-    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws Fabric3Exception {
+    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer)  {
         URI uri = producer.getUri();
         ServiceContract serviceContract = producer.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -116,7 +116,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws Fabric3Exception {
+    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer)  {
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
         // TODO support promotion by returning the leaf component URI instead of the parent component URI
         URI uri = component.getUri();
@@ -132,7 +132,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
     public void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                            LogicalComponent<? extends JavaImplementation> component,
-                                           ServiceContract serviceContract) throws Fabric3Exception {
+                                           ServiceContract serviceContract)  {
         String interfaceName = serviceContract.getQualifiedInterfaceName();
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         String name = null;
@@ -159,7 +159,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference)  {
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -170,7 +170,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws Fabric3Exception {
+    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service)  {
         LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);

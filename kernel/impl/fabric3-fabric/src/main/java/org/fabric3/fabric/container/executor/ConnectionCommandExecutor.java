@@ -22,9 +22,7 @@ package org.fabric3.fabric.container.executor;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
-import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -51,7 +49,7 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
         commandExecutorRegistry.register(ConnectionCommand.class, this);
     }
 
-    public void execute(ConnectionCommand command) throws Fabric3Exception {
+    public void execute(ConnectionCommand command) {
         URI uri = command.getComponentUri();
         Component component = componentManager.getComponent(uri);
         if (component == null) {
@@ -59,12 +57,8 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
         }
         component.startUpdate();
         // detach must be executed first so wire attachers can drop connection prior to adding new ones
-        for (DetachWireCommand detachWireCommand : command.getDetachCommands()) {
-            commandExecutorRegistry.execute(detachWireCommand);
-        }
-        for (AttachWireCommand attachWireCommand : command.getAttachCommands()) {
-            commandExecutorRegistry.execute(attachWireCommand);
-        }
+        command.getDetachCommands().forEach(commandExecutorRegistry::execute);
+        command.getAttachCommands().forEach(commandExecutorRegistry::execute);
         component.endUpdate();
     }
 }

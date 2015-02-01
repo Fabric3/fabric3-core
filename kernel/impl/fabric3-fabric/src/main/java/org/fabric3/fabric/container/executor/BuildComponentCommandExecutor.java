@@ -74,7 +74,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
         this.listeners = listeners;
     }
 
-    public void execute(BuildComponentCommand command) throws Fabric3Exception {
+    public void execute(BuildComponentCommand command) {
         PhysicalComponentDefinition definition = command.getDefinition();
         Component component = build(definition);
         URI classLoaderId = definition.getClassLoaderId();
@@ -90,10 +90,9 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
      *
      * @param definition the component definition.
      * @return Component to be built.
-     * @throws Fabric3Exception if an exception building is encountered
      */
     @SuppressWarnings("unchecked")
-    private Component build(PhysicalComponentDefinition definition) throws Fabric3Exception {
+    private Component build(PhysicalComponentDefinition definition) {
 
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {

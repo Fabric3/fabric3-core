@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.executor.CommandExecutor;
@@ -48,7 +47,7 @@ public class AttachChannelConnectionCommandExecutor implements CommandExecutor<A
         executorRegistry.register(AttachChannelConnectionCommand.class, this);
     }
 
-    public void execute(AttachChannelConnectionCommand command) throws Fabric3Exception {
+    public void execute(AttachChannelConnectionCommand command) {
         connector.connect(command.getDefinition());
     }
 }

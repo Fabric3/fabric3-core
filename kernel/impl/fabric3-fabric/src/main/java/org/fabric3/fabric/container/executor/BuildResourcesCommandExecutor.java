@@ -54,13 +54,11 @@ public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResou
     }
 
     public void execute(BuildResourcesCommand command) throws Fabric3Exception {
-        for (PhysicalResourceDefinition definition : command.getDefinitions()) {
-            build(definition);
-        }
+        command.getDefinitions().forEach(this::build);
     }
 
     @SuppressWarnings("unchecked")
-    private void build(PhysicalResourceDefinition definition) throws Fabric3Exception {
+    private void build(PhysicalResourceDefinition definition) {
         ResourceBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
             throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());

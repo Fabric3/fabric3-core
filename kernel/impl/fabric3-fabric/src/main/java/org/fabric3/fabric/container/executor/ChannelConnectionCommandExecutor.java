@@ -19,12 +19,7 @@
  */
 package org.fabric3.fabric.container.executor;
 
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
-import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
-import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
-import org.fabric3.fabric.container.command.DisposeChannelCommand;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -47,24 +42,16 @@ public class ChannelConnectionCommandExecutor implements CommandExecutor<Channel
         executorRegistry.register(ChannelConnectionCommand.class, this);
     }
 
-    public void execute(ChannelConnectionCommand command) throws Fabric3Exception {
+    public void execute(ChannelConnectionCommand command) {
 
         // detach must be executed first so attachers can drop connections prior to adding new ones
-        for (DetachChannelConnectionCommand detachCommand : command.getDetachCommands()) {
-            executorRegistry.execute(detachCommand);
-        }
+        command.getDetachCommands().forEach(executorRegistry::execute);
 
-        for (DisposeChannelCommand disposeCommand : command.getDisposeChannelCommands()) {
-            executorRegistry.execute(disposeCommand);
-        }
+        command.getDisposeChannelCommands().forEach(executorRegistry::execute);
 
-        for (BuildChannelCommand buildCommand : command.getBuildChannelCommands()) {
-            executorRegistry.execute(buildCommand);
-        }
+        command.getBuildChannelCommands().forEach(executorRegistry::execute);
 
-        for (AttachChannelConnectionCommand attachCommand : command.getAttachCommands()) {
-            executorRegistry.execute(attachCommand);
-        }
+        command.getAttachCommands().forEach(executorRegistry::execute);
 
     }
 }

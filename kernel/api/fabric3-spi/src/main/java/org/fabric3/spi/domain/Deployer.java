@@ -28,7 +28,7 @@ import org.fabric3.spi.domain.generator.Deployment;
 public interface Deployer {
 
     /**
-     * Synchronously sends the contents of a DeploymentPackage to zones in a domain.
+     * Processes the deployment.
      *
      * @param deployment the deployment to process
      * @throws Fabric3Exception if an exception occurs during deployment

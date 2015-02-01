@@ -57,7 +57,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
         if (component == null) {
@@ -74,8 +74,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
             Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader, classLoaderRegistry);
             ServiceInvoker invoker = reflectionFactory.createServiceInvoker(method);
             InvokerInterceptor interceptor;
-            if (sourceDefinition instanceof PojoWireSourceDefinition &&
-                    targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
+            if (sourceDefinition instanceof PojoWireSourceDefinition && targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
                 interceptor = new InvokerInterceptor(invoker, target);
             } else {
@@ -88,11 +87,11 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) {
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) throws Fabric3Exception {
+    public ObjectFactory<?> createObjectFactory(JavaWireTargetDefinition target) {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();
