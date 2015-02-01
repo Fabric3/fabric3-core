@@ -36,9 +36,7 @@ public class DefaultHostInfo implements HostInfo {
     private String environment;
     private URI domain;
     private File baseDir;
-    private File userDirectory;
     private File sharedDirectory;
-    private File runtimeDirectory;
     private File tempDirectory;
     private File nativeDirectory;
 
@@ -56,9 +54,7 @@ public class DefaultHostInfo implements HostInfo {
      * @param environment       the runtime environment type
      * @param domain            the SCA domain this runtime belongs to
      * @param baseDir           directory containing the standalone installation
-     * @param userDirectory     user repository directory
      * @param sharedDirectory   the shared extensions repository directory
-     * @param runtimeDirectory  the private extensions repository directory
      * @param dataDirectory     directory for storing persistent data
      * @param tempDirectory     the directory for writing temporary files
      * @param deployDirectories the directory for file system-based deployments
@@ -71,9 +67,7 @@ public class DefaultHostInfo implements HostInfo {
                            String environment,
                            URI domain,
                            File baseDir,
-                           File userDirectory,
                            File sharedDirectory,
-                           File runtimeDirectory,
                            File dataDirectory,
                            File tempDirectory,
                            List<File> deployDirectories,
@@ -85,9 +79,7 @@ public class DefaultHostInfo implements HostInfo {
         this.environment = environment;
         this.domain = domain;
         this.baseDir = baseDir;
-        this.userDirectory = userDirectory;
         this.sharedDirectory = sharedDirectory;
-        this.runtimeDirectory = runtimeDirectory;
         this.dataDirectory = dataDirectory;
         this.tempDirectory = tempDirectory;
         this.javaEEXAEnabled = javaEEXAEnabled;
@@ -138,14 +130,6 @@ public class DefaultHostInfo implements HostInfo {
 
     public OperatingSystem getOperatingSystem() {
         return operatingSystem;
-    }
-
-    public File getUserRepositoryDirectory() {
-        return userDirectory;
-    }
-
-    public File getRuntimeRepositoryDirectory() {
-        return runtimeDirectory;
     }
 
     public File getExtensionsRepositoryDirectory() {

@@ -115,14 +115,6 @@ public class PluginHostInfoImpl implements PluginHostInfo {
         return tempDir;
     }
 
-    public File getUserRepositoryDirectory() {
-        return null;
-    }
-
-    public File getRuntimeRepositoryDirectory() {
-        return null;
-    }
-
     public File getExtensionsRepositoryDirectory() {
         return null;
     }

@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
+import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapFactory;
@@ -47,7 +48,6 @@ import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.runtime.weblogic.api.Constants;
@@ -193,7 +193,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             Map<String, String> exportedPackages = getExportedPackages();
 
-            ScanResult result = bootstrapService.scanRepository(hostInfo);
+            List<ContributionSource> extensions =  bootstrapService.getExtensions(hostInfo);
 
             BootConfiguration configuration = new BootConfiguration();
 
@@ -209,8 +209,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
             configuration.setSystemConfig(systemConfig);
-            configuration.setExtensionContributions(result.getExtensionContributions());
-            configuration.setUserContributions(result.getUserContributions());
+            configuration.setExtensionContributions(extensions);
             configuration.setExportedPackages(exportedPackages);
             configuration.setHostCapabilities(getHostCapabilities());
 

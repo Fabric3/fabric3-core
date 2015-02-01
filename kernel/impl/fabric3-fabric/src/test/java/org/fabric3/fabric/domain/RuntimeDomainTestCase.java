@@ -29,7 +29,7 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.runtime.DefaultHostInfo;
+import org.fabric3.api.host.runtime.DefaultHostInfoBuilder;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Component;
@@ -147,7 +147,14 @@ public class RuntimeDomainTestCase extends TestCase {
         MetaDataStore store = control.createMock(MetaDataStore.class);
 
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime", Names.DEFAULT_ZONE, RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, false);
+
+        DefaultHostInfoBuilder builder = new DefaultHostInfoBuilder();
+        builder.runtimeName("runtime");
+        builder.zoneName(Names.DEFAULT_ZONE);
+        builder.runtimeMode(RuntimeMode.VM);
+        builder.domain(uri);
+        HostInfo info = builder.build();
+
         ContributionHelperImpl helper = new ContributionHelperImpl(store, info);
 
         lcm = new LogicalComponentManagerImpl(info);

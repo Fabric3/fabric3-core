@@ -23,8 +23,9 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Environment;
+import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
@@ -125,13 +126,13 @@ public interface BootstrapService {
     String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode);
 
     /**
-     * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
+     * Returns the configured extensions for the runtime.
      *
      * @param info the host info
-     * @return the result
+     * @return the extensions
      * @throws Fabric3Exception if an error occurs during the scan operation
      */
-    ScanResult scanRepository(HostInfo info) throws Fabric3Exception;
+    List<ContributionSource> getExtensions(HostInfo info) throws Fabric3Exception;
 
     /**
      * Instantiates a default runtime implementation.

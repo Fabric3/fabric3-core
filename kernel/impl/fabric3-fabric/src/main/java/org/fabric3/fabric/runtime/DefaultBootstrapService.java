@@ -24,7 +24,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapService;
 import org.fabric3.api.host.runtime.ComponentRegistration;
@@ -32,11 +32,10 @@ import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.node.Fabric;
-import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
+import org.fabric3.fabric.runtime.bootstrap.ExtensionsScanner;
 import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
 import org.w3c.dom.Document;
 
@@ -44,19 +43,19 @@ import org.w3c.dom.Document;
  * Default BootstrapFactory implementation.
  */
 public class DefaultBootstrapService implements BootstrapService {
-    private RepositoryScanner scanner;
+    private ExtensionsScanner scanner;
     private SystemConfigLoader systemConfigLoader;
 
     public DefaultBootstrapService() {
-        scanner = new RepositoryScanner();
+        scanner = new ExtensionsScanner();
         systemConfigLoader = new SystemConfigLoader();
     }
 
-    public Document loadSystemConfig(File configDirectory) throws Fabric3Exception {
+    public Document loadSystemConfig(File configDirectory) {
         return systemConfigLoader.loadSystemConfig(configDirectory);
     }
 
-    public Document loadSystemConfig(Source source) throws Fabric3Exception {
+    public Document loadSystemConfig(Source source) {
         return systemConfigLoader.loadSystemConfig(source);
     }
 
@@ -64,15 +63,15 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.createDefaultSystemConfig();
     }
 
-    public URI parseDomainName(Document systemConfig) throws Fabric3Exception {
+    public URI parseDomainName(Document systemConfig) {
         return systemConfigLoader.parseDomainName(systemConfig);
     }
 
-    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws Fabric3Exception {
+    public String parseZoneName(Document systemConfig, RuntimeMode mode) {
         return systemConfigLoader.parseZoneName(systemConfig, mode);
     }
 
-    public RuntimeMode parseRuntimeMode(Document systemConfig) throws Fabric3Exception {
+    public RuntimeMode parseRuntimeMode(Document systemConfig) {
         return systemConfigLoader.parseRuntimeMode(systemConfig);
     }
 
@@ -80,11 +79,11 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseEnvironment(systemConfig);
     }
 
-    public List<File> parseDeployDirectories(Document systemConfig) throws Fabric3Exception {
+    public List<File> parseDeployDirectories(Document systemConfig) {
         return systemConfigLoader.parseDeployDirectories(systemConfig);
     }
 
-    public String parseProductName(Document systemConfig) throws Fabric3Exception {
+    public String parseProductName(Document systemConfig) {
         return systemConfigLoader.parseProductName(systemConfig);
     }
 
@@ -92,7 +91,7 @@ public class DefaultBootstrapService implements BootstrapService {
         return RuntimeMode.NODE == mode ? domainName.getAuthority() + ":node:" + zoneName + ":" + runtimeId : "vm";
     }
 
-    public ScanResult scanRepository(HostInfo info) throws Fabric3Exception {
+    public List<ContributionSource> getExtensions(HostInfo info) {
         return scanner.scan(info);
     }
 

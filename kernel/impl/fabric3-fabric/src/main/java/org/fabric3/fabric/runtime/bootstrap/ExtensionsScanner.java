@@ -19,7 +19,6 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -31,26 +30,21 @@ import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
 import org.fabric3.api.host.contribution.SyntheticContributionSource;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.ScanResult;
 
 /**
- * Scans a repository for extension and user contributions.
+ * Scans for configured extensions.
  */
-public class RepositoryScanner {
+public class ExtensionsScanner {
 
     /**
-     * Scans a repository directory for contributions.
+     * Scans the extensions directory for contributions.
      *
      * @param info the host info
-     * @return the contributions grouped by user and extension contributions
-     * @throws Fabric3Exception if there is an error scanning teh directory
+     * @return the extension contributions
+     * @throws Fabric3Exception if there is an error scanning the directory
      */
-    public ScanResult scan(HostInfo info) throws Fabric3Exception {
-        List<ContributionSource> extensionSources = scan(info.getExtensionsRepositoryDirectory(), true);
-        List<ContributionSource> runtimeSources = scan(info.getRuntimeRepositoryDirectory(), true);
-        extensionSources.addAll(runtimeSources);
-        List<ContributionSource> userSource = scan(info.getUserRepositoryDirectory(), false);
-        return new ScanResult(extensionSources, userSource);
+    public List<ContributionSource> scan(HostInfo info) throws Fabric3Exception {
+        return scan(info.getExtensionsRepositoryDirectory(), true);
     }
 
     private List<ContributionSource> scan(File directory, boolean extension) throws Fabric3Exception {
@@ -58,19 +52,14 @@ public class RepositoryScanner {
         if (directory == null) {
             return sources;
         }
-        File[] files = directory.listFiles(new FileFilter() {
-            public boolean accept(File pathname) {
-                // skip directories and files beginning with '.'
-                return !pathname.getName().startsWith(".");
-            }
-        });
+        File[] files = directory.listFiles(pathname -> !pathname.getName().startsWith("."));
         if (files != null) {
             for (File file : files) {
                 try {
                     URL location = file.toURI().toURL();
                     ContributionSource source;
                     if (file.isDirectory()) {
-                        // create synthetic contributions from directories contained in the repository
+                        // create synthetic contributions from directories contained in the directory
                         URI uri = URI.create("f3-" + file.getName());
                         source = new SyntheticContributionSource(uri, location, extension);
 
@@ -80,7 +69,7 @@ public class RepositoryScanner {
                     }
                     sources.add(source);
                 } catch (MalformedURLException e) {
-                    throw new Fabric3Exception("Error loading contribution:" + file.getName(), e);
+                    throw new Fabric3Exception("Error loading extension:" + file.getName(), e);
                 }
             }
         }

@@ -39,7 +39,6 @@ public class BootConfiguration {
     private List<String> hostCapabilities = new ArrayList<>();
     private List<ComponentRegistration> registrations = new ArrayList<>();
     private List<ContributionSource> extensionContributions = Collections.emptyList();
-    private List<ContributionSource> userContributions = Collections.emptyList();
     private ClassLoader hostClassLoader;
 
     public Fabric3Runtime getRuntime() {
@@ -104,14 +103,6 @@ public class BootConfiguration {
 
     public void setExtensionContributions(List<ContributionSource> extensionContributions) {
         this.extensionContributions = extensionContributions;
-    }
-
-    public List<ContributionSource> getUserContributions() {
-        return userContributions;
-    }
-
-    public void setUserContributions(List<ContributionSource> userContributions) {
-        this.userContributions = userContributions;
     }
 
 }

@@ -20,7 +20,6 @@
 package org.fabric3.api.host.runtime;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -111,20 +110,18 @@ public final class BootstrapHelper {
      * @return a classloader whose classpath includes all jar files and sub-directories of the supplied directory
      */
     public static ClassLoader createClassLoader(ClassLoader parent, File directory) {
-        File[] jars = directory.listFiles(new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isHidden()) {
-                    return false;
-                }
-                if (file.isDirectory()) {
-                    return true;
-                }
-                try {
-                    JarFile jar = new JarFile(file);
-                    return jar.getManifest() != null;
-                } catch (IOException e) {
-                    return false;
-                }
+        File[] jars = directory.listFiles(file -> {
+            if (file.isHidden()) {
+                return false;
+            }
+            if (file.isDirectory()) {
+                return true;
+            }
+            try {
+                JarFile jar = new JarFile(file);
+                return jar.getManifest() != null;
+            } catch (IOException e) {
+                return false;
             }
         });
         if (jars == null) {
@@ -186,9 +183,6 @@ public final class BootstrapHelper {
                                           File extensionsDir,
                                           List<File> deployDirectories,
                                           boolean javaEEXAEnabled) throws IOException {
-        File repositoryDir = getDirectory(runtimeDir, "repository");
-        File userRepositoryDir = new File(repositoryDir, "user");
-        File runtimeRepositoryDir = new File(repositoryDir, "runtime");
         File tempDir = getDirectory(runtimeDir, "tmp");
         File dataDir = getDirectory(runtimeDir, "data");
         File deployDir = new File(runtimeDir, "deploy");
@@ -206,20 +200,19 @@ public final class BootstrapHelper {
 
         OperatingSystem os = getOperatingSystem();
 
-        return new DefaultHostInfo(runtimeName,
-                                   zoneName,
-                                   runtimeMode,
-                                   environment,
-                                   domainName,
-                                   runtimeDir,
-                                   userRepositoryDir,
-                                   extensionsDir,
-                                   runtimeRepositoryDir,
-                                   dataDir,
-                                   tempDir,
-                                   deployDirs,
-                                   os,
-                                   javaEEXAEnabled);
+        DefaultHostInfoBuilder builder = new DefaultHostInfoBuilder().runtimeName(runtimeName);
+        builder.zoneName(zoneName);
+        builder.runtimeMode(runtimeMode);
+        builder.environment(environment);
+        builder.domain(domainName);
+        builder.baseDir(runtimeDir);
+        builder.sharedDirectory(extensionsDir);
+        builder.dataDirectory(dataDir);
+        builder.tempDirectory(tempDir);
+        builder.deployDirectories(deployDirs);
+        builder.operatingSystem(os);
+        builder.javaEEXAEnabled(javaEEXAEnabled);
+        return builder.build();
     }
 
     /**

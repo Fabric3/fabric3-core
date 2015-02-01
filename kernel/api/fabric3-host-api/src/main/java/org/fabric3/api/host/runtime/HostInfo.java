@@ -97,20 +97,6 @@ public interface HostInfo {
     File getNativeLibraryDir();
 
     /**
-     * Returns the user repository directory.
-     *
-     * @return the user repository directory or null if the runtime provisions extensions from an external source
-     */
-    File getUserRepositoryDirectory();
-
-    /**
-     * Returns the private runtime repository directory.
-     *
-     * @return the private runtime repository directory or null if the runtime provisions extensions from an external source
-     */
-    File getRuntimeRepositoryDirectory();
-
-    /**
      * Returns the shared runtime extensions directory.
      *
      * @return the shared runtime extensions directory

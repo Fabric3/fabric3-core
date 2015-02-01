@@ -40,6 +40,7 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.mbeans.MBeanUtils;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
+import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.api.host.runtime.BootConfiguration;
@@ -52,7 +53,6 @@ import org.fabric3.api.host.runtime.HiddenPackages;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
-import org.fabric3.api.host.runtime.ScanResult;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
@@ -184,7 +184,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            ScanResult result = bootstrapService.scanRepository(hostInfo);
+            List<ContributionSource> extensions =  bootstrapService.getExtensions(hostInfo);
 
 
             List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
@@ -196,8 +196,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
             configuration.setSystemConfig(systemConfig);
-            configuration.setExtensionContributions(result.getExtensionContributions());
-            configuration.setUserContributions(result.getUserContributions());
+            configuration.setExtensionContributions(extensions);
             configuration.addRegistrations(registrations);
 
             // boot the runtime

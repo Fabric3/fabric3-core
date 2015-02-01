@@ -45,7 +45,7 @@ import org.fabric3.api.host.runtime.BootstrapFactory;
 import org.fabric3.api.host.runtime.BootstrapHelper;
 import org.fabric3.api.host.runtime.BootstrapService;
 import org.fabric3.api.host.runtime.ComponentRegistration;
-import org.fabric3.api.host.runtime.DefaultHostInfo;
+import org.fabric3.api.host.runtime.DefaultHostInfoBuilder;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HiddenPackages;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -338,20 +338,19 @@ public class DefaultFabric implements Fabric {
 
         OperatingSystem os = BootstrapHelper.getOperatingSystem();
 
-        return new DefaultHostInfo(runtimeName,
-                                   zoneName,
-                                   mode,
-                                   environment,
-                                   domainName,
-                                   runtimeDirectory,
-                                   SYNTHETIC_DIRECTORY,
-                                   SYNTHETIC_DIRECTORY,
-                                   runtimeDirectory,
-                                   dataDirectory,
-                                   tempDirectory,
-                                   deployDirs,
-                                   os,
-                                   false);
+        DefaultHostInfoBuilder builder = new DefaultHostInfoBuilder();
+        builder.runtimeName(runtimeName);
+        builder.zoneName(zoneName);
+        builder.runtimeMode(mode);
+        builder.environment(environment);
+        builder.domain(domainName);
+        builder.baseDir(runtimeDirectory);
+        builder.sharedDirectory(SYNTHETIC_DIRECTORY);
+        builder.dataDirectory(dataDirectory);
+        builder.tempDirectory(tempDirectory);
+        builder.deployDirectories(deployDirs);
+        builder.operatingSystem(os);
+        return builder.javaEEXAEnabled(false).build();
     }
 
     /**

@@ -20,25 +20,25 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import java.io.File;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.api.host.runtime.ScanResult;
 
 /**
  *
  */
-public class RepositoryScannerTestCase extends TestCase {
+public class ExtensionsScannerTestCase extends TestCase {
     private static final String BASE = "org/fabric3/fabric/runtime/bootstrap/repository/";
 
     private HostInfo info;
 
     public void testScan() throws Exception {
-        RepositoryScanner scanner = new RepositoryScanner();
-        ScanResult result = scanner.scan(info);
-        assertEquals(2, result.getExtensionContributions().size());
-        assertEquals(1, result.getUserContributions().size());
+        ExtensionsScanner scanner = new ExtensionsScanner();
+        List<ContributionSource> extensions = scanner.scan(info);
+        assertEquals(1, extensions.size());
         EasyMock.verify(info);
     }
 
@@ -46,12 +46,8 @@ public class RepositoryScannerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         File extensionsDir = new File(getClass().getClassLoader().getResource(BASE + "extensions/extension.jar").getFile()).getParentFile();
-        File runtimeDir = new File(getClass().getClassLoader().getResource(BASE + "runtime/runtime.jar").getFile()).getParentFile();
-        File userDir = new File(getClass().getClassLoader().getResource(BASE + "user/user.jar").getFile()).getParentFile();
         info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.getExtensionsRepositoryDirectory()).andReturn(extensionsDir);
-        EasyMock.expect(info.getRuntimeRepositoryDirectory()).andReturn(runtimeDir);
-        EasyMock.expect(info.getUserRepositoryDirectory()).andReturn(userDir);
 
         EasyMock.replay(info);
     }

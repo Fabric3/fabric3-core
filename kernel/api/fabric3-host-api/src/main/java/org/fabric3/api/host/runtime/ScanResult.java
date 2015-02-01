@@ -28,18 +28,13 @@ import org.fabric3.api.host.contribution.ContributionSource;
  */
 public class ScanResult {
     private List<ContributionSource> extensionContributions = new ArrayList<>();
-    private List<ContributionSource> userContributions = new ArrayList<>();
 
-    public ScanResult(List<ContributionSource> extensionContributions, List<ContributionSource> userContributions) {
+    public ScanResult(List<ContributionSource> extensionContributions) {
         this.extensionContributions = extensionContributions;
-        this.userContributions = userContributions;
     }
 
     public List<ContributionSource> getExtensionContributions() {
         return extensionContributions;
     }
 
-    public List<ContributionSource> getUserContributions() {
-        return userContributions;
-    }
 }

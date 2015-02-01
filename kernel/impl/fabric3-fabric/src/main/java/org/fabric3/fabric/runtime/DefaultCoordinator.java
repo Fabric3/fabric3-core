@@ -40,7 +40,6 @@ import org.fabric3.spi.runtime.event.RuntimeRecover;
 import org.fabric3.spi.runtime.event.RuntimeStart;
 import org.fabric3.spi.runtime.event.RuntimeStop;
 import static org.fabric3.api.host.Names.APPLICATION_DOMAIN_URI;
-import static org.fabric3.api.host.Names.CONTRIBUTION_SERVICE_URI;
 import static org.fabric3.api.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
 
 /**
@@ -123,9 +122,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         try {
             // process manifests and order the contributions
             ContributionOrder order = contributionService.processManifests(contributions);
-            for (URI uri : order.getBaseContributions()) {
-                contributionService.processContents(uri);
-            }
+            order.getBaseContributions().forEach(contributionService::processContents);
             // base contributions are deployed in batch since they only rely on boot runtime capabilities
             domain.include(order.getBaseContributions());
 
@@ -153,29 +150,6 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             String name = APPLICATION_DOMAIN_URI.toString();
             throw new Fabric3Exception("Domain not found: " + name);
         }
-        // install user contributions - they will be deployed when the domain recovers
-        List<ContributionSource> contributions = configuration.getUserContributions();
-        if (!contributions.isEmpty()) {
-            installContributions(contributions);
-        }
         eventService.publish(new RuntimeRecover());
-    }
-
-    /**
-     * Installs a collection of contributions.
-     *
-     * @param sources the contribution sources
-     * @return the list of installed contribution URIs
-     * @throws Fabric3Exception if an installation error occurs
-     */
-    private List<URI> installContributions(List<ContributionSource> sources) throws Fabric3Exception {
-        try {
-            ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
-            // install the contributions
-            List<URI> stored = contributionService.store(sources);
-            return contributionService.install(stored);
-        } finally {
-            state = RuntimeState.ERROR;
-        }
     }
 }
