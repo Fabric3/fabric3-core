@@ -13,28 +13,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.contribution;
-
-import java.io.InputStream;
-import java.net.URI;
+package org.fabric3.fabric.domain;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.domain.generator.Deployment;
 
 /**
- * Implementations resolve contribution artifacts in a domain.
+ * Processes a {@link Deployment}.
  */
-public interface ContributionResolverExtension {
+public interface Deployer {
 
     /**
-     * Resolves the contribution artifact associated with the URI, returning an InputStream.
+     * Processes the deployment.
      *
-     * @param contributionUri the contribution URI
-     * @return an input stream for the artifact
-     * @throws Fabric3Exception if an error occurs resolving the artifact
+     * @param deployment the deployment to process
+     * @throws Fabric3Exception if an exception occurs during deployment
      */
-    InputStream resolve(URI contributionUri) throws Fabric3Exception;
+    void deploy(Deployment deployment) throws Fabric3Exception;
 
 }

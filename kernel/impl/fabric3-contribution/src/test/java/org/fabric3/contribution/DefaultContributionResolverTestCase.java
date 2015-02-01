@@ -18,15 +18,12 @@
  */
 package org.fabric3.contribution;
 
-import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.repository.ArtifactCache;
 
@@ -36,7 +33,6 @@ import org.fabric3.spi.repository.ArtifactCache;
 public class DefaultContributionResolverTestCase extends TestCase {
     private MetaDataStore store;
     private ArtifactCache cache;
-    private ContributionResolverExtension extension;
     private DefaultContributionResolver resolver;
     private URI uri;
     private URL location;
@@ -44,42 +40,21 @@ public class DefaultContributionResolverTestCase extends TestCase {
     public void testResolveAgainstStore() throws Exception {
         Contribution contribution = new Contribution(uri, null, location, -1, null, false);
         EasyMock.expect(store.find(uri)).andReturn(contribution);
-        EasyMock.replay(store, cache, extension);
+        EasyMock.replay(store, cache);
 
         assertEquals(location, resolver.resolve(uri));
 
-        EasyMock.verify(store, cache, extension);
+        EasyMock.verify(store, cache);
     }
 
     public void testResolveAgainstCache() throws Exception {
         EasyMock.expect(store.find(uri)).andReturn(null);
         EasyMock.expect(cache.get(uri)).andReturn(location);
-        EasyMock.replay(store, cache, extension);
+        EasyMock.replay(store, cache);
 
         assertEquals(location, resolver.resolve(uri));
 
-        EasyMock.verify(store, cache, extension);
-    }
-
-    public void testResolveAgainstExtension() throws Exception {
-        EasyMock.expect(store.find(uri)).andReturn(null);
-        EasyMock.expect(cache.get(uri)).andReturn(null);
-        ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
-        EasyMock.expect(extension.resolve(uri)).andReturn(stream);
-        EasyMock.expect(cache.cache(uri, stream)).andReturn(location);
-        EasyMock.replay(store, cache, extension);
-
-        resolver.setExtensions(Collections.singletonList(extension));
-        assertEquals(location, resolver.resolve(uri));
-
-        EasyMock.verify(store, cache, extension);
-    }
-
-    public void testRelease() throws Exception {
-        EasyMock.expect(cache.remove(uri)).andReturn(true);
-        EasyMock.replay(store, cache, extension);
-        resolver.release(uri);
-        EasyMock.verify(store, cache, extension);
+        EasyMock.verify(store, cache);
     }
 
     @Override
@@ -90,7 +65,6 @@ public class DefaultContributionResolverTestCase extends TestCase {
 
         store = EasyMock.createMock(MetaDataStore.class);
         cache = EasyMock.createMock(ArtifactCache.class);
-        extension = EasyMock.createMock(ContributionResolverExtension.class);
 
         resolver = new DefaultContributionResolver(store, cache);
     }

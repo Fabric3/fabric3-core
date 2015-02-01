@@ -18,7 +18,6 @@
  */
 package org.fabric3.contribution;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.List;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
-import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.Constructor;
@@ -43,18 +41,11 @@ import org.oasisopen.sca.annotation.Reference;
 public class DefaultContributionResolver implements ContributionResolver {
     private MetaDataStore store;
     private ArtifactCache cache;
-    private List<ContributionResolverExtension> extensions;
 
     @Constructor
     public DefaultContributionResolver(@Reference MetaDataStore store, @Reference ArtifactCache cache) {
         this.store = store;
         this.cache = cache;
-        extensions = Collections.emptyList();
-    }
-
-    @Reference(required = false)
-    public void setExtensions(List<ContributionResolverExtension> extensions) {
-        this.extensions = extensions;
     }
 
     public URL resolve(URI contributionUri) {
@@ -68,13 +59,6 @@ public class DefaultContributionResolver implements ContributionResolver {
             return url;
         }
 
-        for (ContributionResolverExtension extension : extensions) {
-            // provision and cache the contribution
-            InputStream stream = extension.resolve(contributionUri);
-            if (stream != null) {
-                return cache.cache(contributionUri, stream);
-            }
-        }
         throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
@@ -92,18 +76,8 @@ public class DefaultContributionResolver implements ContributionResolver {
             return Collections.singletonList(url);
         }
 
-        for (ContributionResolverExtension extension : extensions) {
-            // provision and cache the contribution
-            InputStream stream = extension.resolve(contributionUri);
-            if (stream != null) {
-                return Collections.singletonList(cache.cache(contributionUri, stream));
-            }
-        }
         throw new Fabric3Exception("Contribution not found: " + contributionUri);
     }
 
-    public void release(URI contributionUri) {
-        cache.remove(contributionUri);
-    }
 
 }

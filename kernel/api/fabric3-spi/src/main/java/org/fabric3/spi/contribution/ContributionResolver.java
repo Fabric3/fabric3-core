@@ -48,12 +48,4 @@ public interface ContributionResolver {
      */
     List<URL> resolveAllLocations(URI contributionUri) throws Fabric3Exception;
 
-    /**
-     * Releases a previously resolved contribution.
-     *
-     * @param contributionUri the contribution  URI.
-     * @throws Fabric3Exception if an error occurs releasing the artifact
-     */
-    void release(URI contributionUri) throws Fabric3Exception;
-
 }
