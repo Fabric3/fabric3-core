@@ -66,12 +66,7 @@ public abstract class PojoSourceWireAttacher {
         URI targetId = targetDefinition.getClassLoaderId();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(targetId);
 
-        Class<?> keyType;
-        try {
-            keyType = classLoaderRegistry.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Error loading reference key type for: " + sourceDefinition.getUri(), e);
-        }
+        Class<?> keyType = classLoaderRegistry.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
         if (String.class.equals(keyType)) {
             // short-circuit the transformation and return the string
             return key;

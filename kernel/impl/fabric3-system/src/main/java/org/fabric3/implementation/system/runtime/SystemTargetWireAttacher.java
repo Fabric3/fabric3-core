@@ -65,11 +65,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
             Class<?>[] paramTypes = new Class<?>[params.size()];
             for (int i = 0; i < params.size(); i++) {
                 String param = params.get(i);
-                try {
-                    paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
-                } catch (ClassNotFoundException e) {
-                    throw new Fabric3Exception("Implementation class not found", e);
-                }
+                paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
             }
             Method method;
             try {

@@ -56,14 +56,10 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
     }
 
     public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws Fabric3Exception {
-        try {
-            ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
-            Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
-            Component monitorable = componentManager.getComponent(target.getMonitorable());
-            Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
-            return new SingletonObjectFactory<>(monitor);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Unable to load monitor class: " + target.getMonitorType(), e);
-        }
+        ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+        Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
+        Component monitorable = componentManager.getComponent(target.getMonitorable());
+        Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
+        return new SingletonObjectFactory<>(monitor);
     }
 }

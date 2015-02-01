@@ -23,11 +23,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -138,7 +138,6 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
 
     private class MockClassLoaderRegistry implements ClassLoaderRegistry {
 
-        @Override
         public void close() {
 
         }
@@ -159,16 +158,16 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
             return null;
         }
 
-        public Class<?> loadClass(URI classLoaderId, String className) throws ClassNotFoundException {
+        public Class<?> loadClass(URI classLoaderId, String className) {
             return null;
         }
 
-        public Class<?> loadClass(ClassLoader cl, String className) throws ClassNotFoundException {
-            return Class.forName(className, true, cl);
-        }
-
-        public List<URI> resolveParentUris(ClassLoader cl) {
-            return null;
+        public Class<?> loadClass(ClassLoader cl, String className) {
+            try {
+                return Class.forName(className, true, cl);
+            } catch (ClassNotFoundException e) {
+                throw new Fabric3Exception(e);
+            }
         }
 
     }

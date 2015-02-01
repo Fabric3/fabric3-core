@@ -34,7 +34,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  * Implementation of a registry for classloaders.
  */
 public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
-    private final Map<URI, ClassLoader> registry = new ConcurrentHashMap<>();
+    private Map<URI, ClassLoader> registry = new ConcurrentHashMap<>();
     private static final Map<String, Class<?>> PRIMITIVES;
 
     static {
@@ -68,20 +68,23 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
         return registry;
     }
 
-    public Class<?> loadClass(URI classLoaderId, String className) throws ClassNotFoundException {
+    public Class<?> loadClass(URI classLoaderId, String className) {
         ClassLoader cl = getClassLoader(classLoaderId);
         return loadClass(cl, className);
     }
 
-    public Class<?> loadClass(ClassLoader cl, String className) throws ClassNotFoundException {
+    public Class<?> loadClass(ClassLoader cl, String className) {
         Class<?> clazz = PRIMITIVES.get(className);
         if (clazz == null) {
-            clazz = Class.forName(className, true, cl);
+            try {
+                clazz = Class.forName(className, true, cl);
+            } catch (ClassNotFoundException e) {
+                throw new Fabric3Exception(e);
+            }
         }
         return clazz;
     }
 
-    @Override
     public void close() {
         if (registry == null || registry.isEmpty()) {
             return;

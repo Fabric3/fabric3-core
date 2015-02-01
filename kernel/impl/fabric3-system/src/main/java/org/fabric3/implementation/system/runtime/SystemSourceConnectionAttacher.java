@@ -67,13 +67,7 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
         Injectable injectable = source.getInjectable();
-        Class<?> type;
-        try {
-            type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
-        } catch (ClassNotFoundException e) {
-            String name = source.getInterfaceName();
-            throw new Fabric3Exception("Unable to load interface class: " + name, e);
-        }
+        Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
         component.setObjectFactory(injectable, factory);
     }

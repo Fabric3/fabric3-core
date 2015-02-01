@@ -53,49 +53,45 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
     }
 
     public void process(Component<JavaImplementation> component) {
-        try {
-            URI contributionUri = component.getContributionUri();
-            String implClass = component.getImplementation().getImplementationClass();
-            Class<?> clazz = classLoaderRegistry.loadClass(contributionUri, implClass);
-            if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)
-                && !ContextResolver.class.isAssignableFrom(clazz) && !MessageBodyReader.class.isAssignableFrom(clazz)
-                && !MessageBodyWriter.class.isAssignableFrom(clazz) && !ExceptionMapper.class.isAssignableFrom(clazz)) {
-                // not a provider type
-                return;
-            }
-            if (ContextResolver.class.isAssignableFrom(clazz)) {
-                // currently only object mappers are supported
-                Type[] interfaces = clazz.getGenericInterfaces();
-                for (Type interfaze : interfaces) {
-                    if (!(interfaze instanceof ParameterizedType)) {
-                        continue;
-                    }
-                    ParameterizedType parameterizedType = (ParameterizedType) interfaze;
-                    if (ContextResolver.class.equals(parameterizedType.getRawType())) {
-                        Type[] arguments = parameterizedType.getActualTypeArguments();
-                        if (arguments.length != 1 || !ObjectMapper.class.equals(arguments[0])) {
-                            monitor.severe("Only ObjectMapper JAX-RS ContextResolver types are supported. The class must implement " +
-                                           "ContextResolver<ObjectMapper>. Ignoring provider: " + implClass);
-                            return;
-                        }
-                    }
-                }
-
-            }
-            String bindingAnnotation = null;
-            for (Annotation annotation : clazz.getAnnotations()) {
-                Class<? extends Annotation> type = annotation.annotationType();
-                if (type.isAnnotationPresent(NameBinding.class)) {
-                    bindingAnnotation = type.getName();
-                    break;
-                }
-            }
-            String name = component.getName();
-            ProviderResource providerResource = new ProviderResource(name, bindingAnnotation, implClass, contributionUri);
-            component.getParent().add(providerResource);
-        } catch (ClassNotFoundException e) {
-            throw new AssertionError(e);   // will not happen
+        URI contributionUri = component.getContributionUri();
+        String implClass = component.getImplementation().getImplementationClass();
+        Class<?> clazz = classLoaderRegistry.loadClass(contributionUri, implClass);
+        if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)
+            && !ContextResolver.class.isAssignableFrom(clazz) && !MessageBodyReader.class.isAssignableFrom(clazz) && !MessageBodyWriter.class.isAssignableFrom(
+                clazz) && !ExceptionMapper.class.isAssignableFrom(clazz)) {
+            // not a provider type
+            return;
         }
+        if (ContextResolver.class.isAssignableFrom(clazz)) {
+            // currently only object mappers are supported
+            Type[] interfaces = clazz.getGenericInterfaces();
+            for (Type interfaze : interfaces) {
+                if (!(interfaze instanceof ParameterizedType)) {
+                    continue;
+                }
+                ParameterizedType parameterizedType = (ParameterizedType) interfaze;
+                if (ContextResolver.class.equals(parameterizedType.getRawType())) {
+                    Type[] arguments = parameterizedType.getActualTypeArguments();
+                    if (arguments.length != 1 || !ObjectMapper.class.equals(arguments[0])) {
+                        monitor.severe("Only ObjectMapper JAX-RS ContextResolver types are supported. The class must implement " +
+                                       "ContextResolver<ObjectMapper>. Ignoring provider: " + implClass);
+                        return;
+                    }
+                }
+            }
+
+        }
+        String bindingAnnotation = null;
+        for (Annotation annotation : clazz.getAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+            if (type.isAnnotationPresent(NameBinding.class)) {
+                bindingAnnotation = type.getName();
+                break;
+            }
+        }
+        String name = component.getName();
+        ProviderResource providerResource = new ProviderResource(name, bindingAnnotation, implClass, contributionUri);
+        component.getParent().add(providerResource);
     }
 
 }

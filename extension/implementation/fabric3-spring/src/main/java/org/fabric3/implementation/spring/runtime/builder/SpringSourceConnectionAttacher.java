@@ -59,13 +59,7 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
         if (component == null) {
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
-        Class<?> type;
-        try {
-            type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
-        } catch (ClassNotFoundException e) {
-            String name = source.getInterfaceName();
-            throw new Fabric3Exception("Unable to load interface class: " + name, e);
-        }
+        Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
         component.attach(source.getProducerName(), type, factory);
     }

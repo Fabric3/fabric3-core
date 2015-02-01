@@ -64,38 +64,30 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
 
     @SuppressWarnings("unchecked")
     public void build(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
-        try {
-            URI providerUri = definition.getProviderUri();
+        URI providerUri = definition.getProviderUri();
 
-            Object provider = createProvider(definition);
-            if (definition.getBindingAnnotation() != null) {
-                String bindingAnnotation = definition.getBindingAnnotation();
-                URI contributionUri = definition.getContributionUri();
-                Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
-                providerRegistry.registerNameFilter(providerUri, annotationClass, provider);
-            } else {
-                providerRegistry.registerGlobalProvider(providerUri, provider);
-            }
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
+        Object provider = createProvider(definition);
+        if (definition.getBindingAnnotation() != null) {
+            String bindingAnnotation = definition.getBindingAnnotation();
+            URI contributionUri = definition.getContributionUri();
+            Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
+            providerRegistry.registerNameFilter(providerUri, annotationClass, provider);
+        } else {
+            providerRegistry.registerGlobalProvider(providerUri, provider);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void remove(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
-        try {
-            if (definition.getBindingAnnotation() != null) {
-                String bindingAnnotation = definition.getBindingAnnotation();
-                URI contributionUri = definition.getContributionUri();
-                Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
-                URI filterUri = definition.getProviderUri();
-                providerRegistry.unregisterNameFilter(filterUri, annotationClass);
-            } else {
-                URI filterUri = definition.getProviderUri();
-                providerRegistry.unregisterGlobalFilter(filterUri);
-            }
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
+        if (definition.getBindingAnnotation() != null) {
+            String bindingAnnotation = definition.getBindingAnnotation();
+            URI contributionUri = definition.getContributionUri();
+            Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
+            URI filterUri = definition.getProviderUri();
+            providerRegistry.unregisterNameFilter(filterUri, annotationClass);
+        } else {
+            URI filterUri = definition.getProviderUri();
+            providerRegistry.unregisterGlobalFilter(filterUri);
         }
     }
 
@@ -128,7 +120,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
 
             provider.init(filterUri, componentManager);
             return provider;
-        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new Fabric3Exception(e);
         }
 

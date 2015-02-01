@@ -66,13 +66,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
         Injectable injectable = sourceDefinition.getInjectable();
 
-        Class<?> type;
-        try {
-            type = classLoaderRegistry.loadClass(sourceDefinition.getClassLoaderId(), sourceDefinition.getInterfaceName());
-        } catch (ClassNotFoundException e) {
-            String name = sourceDefinition.getInterfaceName();
-            throw new Fabric3Exception("Unable to load interface class: " + name, e);
-        }
+        Class<?> type = classLoaderRegistry.loadClass(sourceDefinition.getClassLoaderId(), sourceDefinition.getInterfaceName());
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             processCallback(wire, targetDefinition, source, injectable, type);
         } else {

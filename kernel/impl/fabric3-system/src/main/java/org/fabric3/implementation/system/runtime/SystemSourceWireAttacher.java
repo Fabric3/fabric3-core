@@ -75,13 +75,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
 
-        Class<?> type;
-        try {
-            type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
-        } catch (ClassNotFoundException e) {
-            String name = source.getInterfaceName();
-            throw new Fabric3Exception("Unable to load interface class: " + name, e);
-        }
+        Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             throw new UnsupportedOperationException("Callbacks are not supported on system components");
         } else {
@@ -114,8 +108,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         component.removeObjectFactory(injectable);
     }
 
-    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
+    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

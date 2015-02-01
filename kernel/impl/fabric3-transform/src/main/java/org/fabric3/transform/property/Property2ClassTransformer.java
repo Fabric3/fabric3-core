@@ -48,10 +48,6 @@ public class Property2ClassTransformer implements SingleTypeTransformer<Node, Cl
     }
 
     public Class<?> transform(Node node, ClassLoader loader) throws Fabric3Exception {
-        try {
-            return classLoaderRegistry.loadClass(loader, node.getTextContent());
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
+        return classLoaderRegistry.loadClass(loader, node.getTextContent());
     }
 }

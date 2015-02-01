@@ -42,13 +42,7 @@ public final class MethodUtils {
         assert loader != null;
         for (int i = 0; i < params.size(); i++) {
             String param = params.get(i);
-            try {
-                paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
-            } catch (ClassNotFoundException e) {
-                URI sourceUri = sourceDefinition.getUri();
-                URI targetUri = targetDefinition.getUri();
-                throw new Fabric3Exception("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
-            }
+            paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
         }
         Method method = null;
         if (operation.isRemotable()) {
