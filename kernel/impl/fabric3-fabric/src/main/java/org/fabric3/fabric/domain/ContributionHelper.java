@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.host.ContainerException;
-import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 
@@ -62,9 +61,9 @@ public interface ContributionHelper {
      * Locks a set of contributions. The lock owners are the deployables in the contribution.
      *
      * @param contributions the contributions
-     * @throws CompositeAlreadyDeployedException if a deployable is already deployed
+     * @throws ContainerException if a deployable is already deployed
      */
-    void lock(Set<Contribution> contributions) throws CompositeAlreadyDeployedException;
+    void lock(Set<Contribution> contributions) throws ContainerException;
 
     /**
      * Releases locks held on a set of contributions.

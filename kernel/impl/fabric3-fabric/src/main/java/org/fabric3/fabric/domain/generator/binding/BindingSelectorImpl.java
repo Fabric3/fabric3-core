@@ -110,7 +110,6 @@ public class BindingSelectorImpl implements BindingSelector {
     }
 
     public void selectBinding(LogicalWire wire) throws ContainerException {
-        List<BindingMatchResult> results = new ArrayList<>();
         LogicalReference source = wire.getSource();
         LogicalService target = wire.getTarget();
         for (BindingProvider provider : providers) {
@@ -138,12 +137,10 @@ public class BindingSelectorImpl implements BindingSelector {
                 }
                 return;
             }
-            results.add(result);
-
         }
         URI sourceUri = source.getUri();
         URI targetUri = target.getUri();
-        throw new NoSCABindingProviderException("No SCA binding provider suitable for creating wire from " + sourceUri + " to " + targetUri, results);
+        throw new ContainerException("No SCA binding provider suitable for creating wire from " + sourceUri + " to " + targetUri);
     }
 
     /**
@@ -196,7 +193,6 @@ public class BindingSelectorImpl implements BindingSelector {
         if (channel.isBound() || channel.getDefinition().isLocal()) {
             return;
         }
-        List<BindingMatchResult> results = new ArrayList<>();
         for (BindingProvider provider : providers) {
             BindingMatchResult result = provider.canBind(channel);
             if (result.isMatch()) {
@@ -207,10 +203,9 @@ public class BindingSelectorImpl implements BindingSelector {
                 }
                 return;
             }
-            results.add(result);
         }
         URI uri = channel.getUri();
-        throw new NoSCABindingProviderException("No SCA binding provider suitable for channel " + uri, results);
+        throw new ContainerException("No SCA binding provider suitable for channel " + uri);
     }
 
     /**

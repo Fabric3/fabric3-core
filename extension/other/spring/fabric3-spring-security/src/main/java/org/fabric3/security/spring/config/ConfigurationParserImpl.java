@@ -23,6 +23,8 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fabric3.api.host.ContainerException;
+
 /**
  * Parses a Spring Security configuration.
  */
@@ -37,38 +39,38 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         PASSWORD_ENCODERS.add("md5");
     }
 
-    public AuthenticationManagerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, SecurityConfigurationException {
+    public AuthenticationManagerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         reader.nextTag();
         AuthenticationManagerConfiguration managerConfiguration = new AuthenticationManagerConfiguration();
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                if ("authentication-manager".equals(reader.getName().getLocalPart())) {
-                    String alias = reader.getAttributeValue(null, "alias");
-                    boolean erase = Boolean.parseBoolean(reader.getAttributeValue(null, "erase-credentials "));
-                    managerConfiguration.setAlias(alias);
-                    managerConfiguration.setEraseCredentials(erase);
-                } else if ("http".equals(reader.getName().getLocalPart())) {
-                    raiseConfigurationException("The <http> element is not supported for runtime-level configuration. " +
-                            "It must be configured in the Spring application context", reader);
-                } else if ("ldap-server".equals(reader.getName().getLocalPart())) {
-                    LdapServerConfiguration serverConfiguration = parseLdapServer(reader);
-                    managerConfiguration.setLdapServerConfiguration(serverConfiguration);
-                } else if ("authentication-provider".equals(reader.getName().getLocalPart())) {
-                    AuthenticationProviderConfiguration providerConfiguration = parseProvider(reader);
-                    managerConfiguration.add(providerConfiguration);
-                } else if ("ldap-authentication-provider".equals(reader.getName().getLocalPart())) {
-                    LdapProviderConfiguration providerConfiguration = parseLdapProvider(reader);
-                    managerConfiguration.add(providerConfiguration);
-                }
+                case XMLStreamConstants.START_ELEMENT:
+                    if ("authentication-manager".equals(reader.getName().getLocalPart())) {
+                        String alias = reader.getAttributeValue(null, "alias");
+                        boolean erase = Boolean.parseBoolean(reader.getAttributeValue(null, "erase-credentials "));
+                        managerConfiguration.setAlias(alias);
+                        managerConfiguration.setEraseCredentials(erase);
+                    } else if ("http".equals(reader.getName().getLocalPart())) {
+                        raiseConfigurationException("The <http> element is not supported for runtime-level configuration. "
+                                                    + "It must be configured in the Spring application context", reader);
+                    } else if ("ldap-server".equals(reader.getName().getLocalPart())) {
+                        LdapServerConfiguration serverConfiguration = parseLdapServer(reader);
+                        managerConfiguration.setLdapServerConfiguration(serverConfiguration);
+                    } else if ("authentication-provider".equals(reader.getName().getLocalPart())) {
+                        AuthenticationProviderConfiguration providerConfiguration = parseProvider(reader);
+                        managerConfiguration.add(providerConfiguration);
+                    } else if ("ldap-authentication-provider".equals(reader.getName().getLocalPart())) {
+                        LdapProviderConfiguration providerConfiguration = parseLdapProvider(reader);
+                        managerConfiguration.add(providerConfiguration);
+                    }
 
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                if (managerConfiguration.getProviderConfigurations().isEmpty()) {
-                    throw new SecurityConfigurationException("An authentication provider must be configured for the authentication manager");
-                }
-                // TODO validate alias on manager
-                return managerConfiguration;
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    if (managerConfiguration.getProviderConfigurations().isEmpty()) {
+                        throw new ContainerException("An authentication provider must be configured for the authentication manager");
+                    }
+                    // TODO validate alias on manager
+                    return managerConfiguration;
             }
         }
     }
@@ -93,48 +95,48 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         return configuration;
     }
 
-    private AuthenticationProviderConfiguration parseProvider(XMLStreamReader reader) throws XMLStreamException, SecurityConfigurationException {
+    private AuthenticationProviderConfiguration parseProvider(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         String passwordEncoder = null;
         boolean base64 = false;
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                if ("user-service".equals(reader.getName().getLocalPart())) {
-                    // TODO support in-memory user service
-                    raiseConfigurationException("The generic <user-service> element is not yet supported", reader);
-                } else if ("jdbc-user-service".equals(reader.getName().getLocalPart())) {
-                    String dataSource = reader.getAttributeValue(null, "data-source-ref");
-                    if (dataSource == null) {
-                        raiseConfigurationException("A datasource must be specified on the <jdbc-user-service> element", reader);
+                case XMLStreamConstants.START_ELEMENT:
+                    if ("user-service".equals(reader.getName().getLocalPart())) {
+                        // TODO support in-memory user service
+                        raiseConfigurationException("The generic <user-service> element is not yet supported", reader);
+                    } else if ("jdbc-user-service".equals(reader.getName().getLocalPart())) {
+                        String dataSource = reader.getAttributeValue(null, "data-source-ref");
+                        if (dataSource == null) {
+                            raiseConfigurationException("A datasource must be specified on the <jdbc-user-service> element", reader);
+                        }
+                        JdbcProviderConfiguration configuration = new JdbcProviderConfiguration(dataSource);
+                        configuration.setPasswordEncoder(passwordEncoder);
+                        configuration.setUseBase64(base64);
+                        return configuration;
+                    } else if ("password-encoder".equals(reader.getName().getLocalPart())) {
+                        passwordEncoder = reader.getAttributeValue(null, "hash");
+                        if (passwordEncoder == null) {
+                            throw new ContainerException("A hash vale must be configured for the password encoder");
+                        }
+                        if (!PASSWORD_ENCODERS.contains(passwordEncoder)) {
+                            throw new ContainerException("Invalid password encoder value: " + passwordEncoder);
+                        }
+                        base64 = Boolean.parseBoolean(reader.getAttributeValue(null, "useBase64"));
                     }
-                    JdbcProviderConfiguration configuration = new JdbcProviderConfiguration(dataSource);
-                    configuration.setPasswordEncoder(passwordEncoder);
-                    configuration.setUseBase64(base64);
-                    return configuration;
-                } else if ("password-encoder".equals(reader.getName().getLocalPart())) {
-                    passwordEncoder = reader.getAttributeValue(null, "hash");
-                    if (passwordEncoder == null) {
-                        throw new SecurityConfigurationException("A hash vale must be configured for the password encoder");
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if ("authentication-provider".equals(reader.getName().getLocalPart())) {
+                        raiseConfigurationException("Authentication provider configuration must define at least one provider", reader);
                     }
-                    if (!PASSWORD_ENCODERS.contains(passwordEncoder)) {
-                        throw new SecurityConfigurationException("Invalid password encoder value: " + passwordEncoder);
-                    }
-                    base64 = Boolean.parseBoolean(reader.getAttributeValue(null, "useBase64"));
-                }
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                if ("authentication-provider".equals(reader.getName().getLocalPart())) {
-                    raiseConfigurationException("Authentication provider configuration must define at least one provider", reader);
-                }
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                throw new AssertionError("End of document encountered");
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    throw new AssertionError("End of document encountered");
 
             }
         }
     }
 
-    private LdapServerConfiguration parseLdapServer(XMLStreamReader reader) throws SecurityConfigurationException {
+    private LdapServerConfiguration parseLdapServer(XMLStreamReader reader) throws ContainerException {
         String url = reader.getAttributeValue(null, "url");
         if (url == null) {
             raiseConfigurationException("LDAP server configuration must specify a URL", reader);
@@ -151,14 +153,14 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         return configuration;
     }
 
-    private void raiseConfigurationException(String message, XMLStreamReader reader) throws SecurityConfigurationException {
+    private void raiseConfigurationException(String message, XMLStreamReader reader) throws ContainerException {
         Location location = reader.getLocation();
         if (location == null) {
-            throw new SecurityConfigurationException(message);
+            throw new ContainerException(message);
         }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        throw new SecurityConfigurationException(message + " [" + line + "," + col + "]");
+        throw new ContainerException(message + " [" + line + "," + col + "]");
     }
 
 }

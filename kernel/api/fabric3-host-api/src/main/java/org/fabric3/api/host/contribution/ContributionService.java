@@ -58,7 +58,7 @@ public interface ContributionService {
      *
      * @param uri the URI of the contribution to search
      * @return a list of deployables in a contribution. If no deployables are found, an empty list is returned.
-     * @throws ContributionNotFoundException if a contribution corresponding to the URI is not found
+     * @throws ContainerException if a contribution corresponding to the URI is not found
      */
     List<Deployable> getDeployables(URI uri) throws ContainerException;
 
@@ -93,7 +93,7 @@ public interface ContributionService {
      *
      * @param uris the contribution URIs
      * @return the list of installed URIs ordered by dependencies
-     * @throws ContainerException   if there an error reading, introspecting or loading the contribution
+     * @throws ContainerException if there an error reading, introspecting or loading the contribution
      */
     List<URI> install(List<URI> uris) throws ContainerException;
 
@@ -102,7 +102,7 @@ public interface ContributionService {
      *
      * @param sources the contribution sources
      * @return metadata representing the dependency ordering of the contributions
-     * @throws ContainerException   if there is an error storing the contribution
+     * @throws ContainerException if there is an error storing the contribution
      */
     ContributionOrder processManifests(List<ContributionSource> sources) throws ContainerException;
 
@@ -134,17 +134,15 @@ public interface ContributionService {
      * Remove a contribution from persistent storage. Contribution must be uninstalled prior to being removed.
      *
      * @param uri The URI of the contribution
-     * @throws RemoveException               if there was a problem with the contribution
-     * @throws ContributionNotFoundException if a contribution is not found
+     * @throws ContainerException if there was a problem with the contribution
      */
-    void remove(URI uri) throws RemoveException, ContributionNotFoundException;
+    void remove(URI uri) throws ContainerException;
 
     /**
      * Remove multiple contributions from persistent storage. Contribution must be uninstalled prior to being removed.
      *
      * @param uris The URIs of the contributions
-     * @throws RemoveException    if there was a problem with the contribution
-     * @throws ContainerException if a contribution is not found
+     * @throws ContainerException if there was a problem with the contribution
      */
     void remove(List<URI> uris) throws ContainerException;
 

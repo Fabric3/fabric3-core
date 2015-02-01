@@ -36,6 +36,7 @@ import f3.TransformerProvider;
 import f3.XmlIntrospectionProvider;
 import org.fabric3.api.Namespaces;
 import org.fabric3.api.host.ContainerException;
+import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.stream.Source;
@@ -57,7 +58,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
-import org.fabric3.spi.introspection.validation.InvalidCompositeException;
 import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 
 /**
@@ -118,7 +118,7 @@ public class BootstrapCompositeFactory {
             QName name = composite.getName();
             List<ValidationFailure> errors = context.getErrors();
             List<ValidationFailure> warnings = context.getWarnings();
-            throw new ContainerException(new InvalidCompositeException(name, errors, warnings));
+            throw new ValidationException("Errors found in composite: " + name, errors, warnings);
         }
 
         addContributionUri(contributionUri, composite);

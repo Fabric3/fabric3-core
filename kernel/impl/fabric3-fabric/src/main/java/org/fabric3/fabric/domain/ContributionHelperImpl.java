@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
@@ -103,13 +102,13 @@ public class ContributionHelperImpl implements ContributionHelper {
         return contributions;
     }
 
-    public void lock(Set<Contribution> contributions) throws CompositeAlreadyDeployedException {
+    public void lock(Set<Contribution> contributions) throws ContainerException {
         for (Contribution contribution : contributions) {
             for (Deployable deployable : contribution.getManifest().getDeployables()) {
                 QName name = deployable.getName();
                 // check if the deployable has already been deployed by querying the lock owners
                 if (contribution.getLockOwners().contains(name)) {
-                    throw new CompositeAlreadyDeployedException("Composite has already been deployed: " + name);
+                    throw new ContainerException("Composite has already been deployed: " + name);
                 }
                 contribution.acquireLock(name);
             }

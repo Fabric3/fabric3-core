@@ -30,9 +30,6 @@ import java.util.Set;
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
-import org.fabric3.api.host.domain.ContributionNotFoundException;
-import org.fabric3.api.host.domain.ContributionNotInstalledException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -135,7 +132,7 @@ public abstract class AbstractDomain implements Domain {
     public synchronized void undeploy(URI uri, boolean force) throws ContainerException {
         Contribution contribution = metadataStore.find(uri);
         if (contribution == null) {
-            throw new ContributionNotFoundException("Contribution not found: " + uri);
+            throw new ContainerException("Contribution not found: " + uri);
         }
         List<Deployable> deployables = contribution.getManifest().getDeployables();
         if (deployables.isEmpty()) {
@@ -288,7 +285,7 @@ public abstract class AbstractDomain implements Domain {
 
         for (Contribution contribution : contributions) {
             if (ContributionState.INSTALLED != contribution.getState()) {
-                throw new ContributionNotInstalledException("Contribution is not installed: " + contribution.getUri());
+                throw new ContainerException("Contribution is not installed: " + contribution.getUri());
             }
         }
 
@@ -337,12 +334,12 @@ public abstract class AbstractDomain implements Domain {
         }
         Contribution contribution = element.getResource().getContribution();
         if (ContributionState.INSTALLED != contribution.getState()) {
-            throw new ContributionNotInstalledException("Contribution is not installed: " + contribution.getUri());
+            throw new ContainerException("Contribution is not installed: " + contribution.getUri());
         }
 
         // check if the deployable has already been deployed by querying the lock owners
         if (contribution.getLockOwners().contains(name)) {
-            throw new CompositeAlreadyDeployedException("Composite has already been deployed: " + name);
+            throw new ContainerException("Composite has already been deployed: " + name);
         }
         // lock the contribution
         contribution.acquireLock(name);

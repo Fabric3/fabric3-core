@@ -63,7 +63,7 @@ public class ProvisionerImpl implements Provisioner {
         this.domain = domain;
     }
 
-    public void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException {
+    public void deploy(String name, Object instance, Class<?>... interfaces) throws ContainerException {
         Component<?> definition = JavaComponentBuilder.newBuilder(name, instance).build();
         if (interfaces == null) {
             // if no interfaces are specified, check if the implementation class implements one or more interfaces
@@ -86,7 +86,7 @@ public class ProvisionerImpl implements Provisioner {
         deploy(definition);
     }
 
-    public void deploy(Composite composite) throws DeploymentException {
+    public void deploy(Composite composite) throws ContainerException {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(ContributionResolver.getContribution(), getClass().getClassLoader());
 
         // enrich the model
@@ -104,11 +104,11 @@ public class ProvisionerImpl implements Provisioner {
             domain.include(composite, false);
         } catch (ContainerException e) {
             // TODO remove the contribution
-            throw new DeploymentException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void deploy(Component<?> component) throws DeploymentException {
+    public void deploy(Component<?> component) throws ContainerException {
         URI uri = ContributionResolver.getContribution();
         DefaultIntrospectionContext context = new DefaultIntrospectionContext(uri, getClass().getClassLoader());
         component.setContributionUri(uri);
@@ -122,28 +122,28 @@ public class ProvisionerImpl implements Provisioner {
 
             domain.include(wrapper, false);
         } catch (ContainerException e) {
-            throw new DeploymentException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void deploy(Channel channel) throws DeploymentException {
+    public void deploy(Channel channel) throws ContainerException {
         try {
             URI uri = ContributionResolver.getContribution();
             Composite wrapper = createWrapperComposite(channel.getName());
             wrapper.add(channel);
             domain.include(wrapper, false);
         } catch (ContainerException e) {
-            throw new DeploymentException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void undeploy(QName name) throws DeploymentException {
+    public void undeploy(QName name) throws ContainerException {
         try {
 
             QNameSymbol symbol = new QNameSymbol(name);
             ResourceElement<QNameSymbol, Composite> element = metaDataStore.find(Composite.class, symbol);
             if (element == null) {
-                throw new DeploymentException("Component not deployed: " + name);
+                throw new ContainerException("Component not deployed: " + name);
             }
             Composite composite = element.getValue();
             domain.undeploy(composite, false);
@@ -153,11 +153,11 @@ public class ProvisionerImpl implements Provisioner {
             contribution.getResources().remove(resource);
 
         } catch (ContainerException e) {
-            throw new DeploymentException(e);
+            throw new ContainerException(e);
         }
     }
 
-    public void undeploy(String name) throws DeploymentException {
+    public void undeploy(String name) throws ContainerException {
         // find the wrapper composite used to deploy it and remove it from the host contribution
         QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
         undeploy(compositeName);

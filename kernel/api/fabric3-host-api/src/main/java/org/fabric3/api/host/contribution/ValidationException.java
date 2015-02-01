@@ -27,7 +27,7 @@ import org.fabric3.api.host.failure.ValidationFailure;
  * Base class for exceptions indicating a contribution has failed validation.
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
-public abstract class ValidationException extends ContainerException {
+public class ValidationException extends ContainerException {
     private static final long serialVersionUID = -9097590343387033730L;
 
     private final List<ValidationFailure> errors;
@@ -39,8 +39,21 @@ public abstract class ValidationException extends ContainerException {
      * @param errors   the list of errors
      * @param warnings the list of warnings
      */
-    protected ValidationException(List<ValidationFailure> errors, List<ValidationFailure> warnings) {
+    public ValidationException(List<ValidationFailure> errors, List<ValidationFailure> warnings) {
         super("Validation errors were found");
+        this.errors = errors;
+        this.warnings = warnings;
+    }
+
+    /**
+     * Constructor that initializes the initial list of errors and warnings.
+     *
+     * @param message  the message
+     * @param errors   the list of errors
+     * @param warnings the list of warnings
+     */
+    public ValidationException(String message, List<ValidationFailure> errors, List<ValidationFailure> warnings) {
+        super(message);
         this.errors = errors;
         this.warnings = warnings;
     }

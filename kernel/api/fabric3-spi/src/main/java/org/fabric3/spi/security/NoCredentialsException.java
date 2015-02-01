@@ -16,12 +16,10 @@
  */
 package org.fabric3.spi.security;
 
-import org.fabric3.api.host.ContainerException;
-
 /**
  * Base authentication exception.
  */
-public class NoCredentialsException extends ContainerException {
+public class NoCredentialsException extends AuthenticationException {
     private static final long serialVersionUID = 2419376501383279634L;
 
     public NoCredentialsException() {

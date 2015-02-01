@@ -34,12 +34,11 @@ import java.util.Set;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.ContainerException;
 import org.fabric3.api.host.contribution.ArtifactValidationFailure;
-import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionOrder;
 import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.contribution.RemoveException;
+import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.stream.Source;
@@ -59,7 +58,6 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.validation.InvalidContributionException;
 import org.fabric3.spi.introspection.validation.ValidationUtils;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -163,12 +161,12 @@ public class ContributionServiceImpl implements ContributionService {
         return installInOrder(contributions);
     }
 
-    public void uninstall(URI uri) throws ContainerException, ContributionNotFoundException {
+    public void uninstall(URI uri) throws ContainerException, ContainerException {
         Contribution contribution = find(uri);
         uninstall(contribution);
     }
 
-    public void uninstall(List<URI> uris) throws ContainerException, ContributionNotFoundException {
+    public void uninstall(List<URI> uris) throws ContainerException, ContainerException {
         List<Contribution> contributions = new ArrayList<>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = find(uri);
@@ -180,25 +178,21 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    public void remove(URI uri) throws RemoveException, ContributionNotFoundException {
+    public void remove(URI uri) throws ContainerException {
         Contribution contribution = find(uri);
         if (contribution.getState() != ContributionState.STORED) {
-            throw new RemoveException("Contribution must first be uninstalled: " + uri);
+            throw new ContainerException("Contribution must first be uninstalled: " + uri);
         }
         metaDataStore.remove(uri);
-        try {
-            if (contribution.isPersistent()) {
-                getRepository().remove(uri);
-            }
-        } catch (ContainerException e) {
-            throw new RemoveException("Error removing contribution archive", e);
+        if (contribution.isPersistent()) {
+            getRepository().remove(uri);
         }
         for (ContributionServiceListener listener : listeners) {
             listener.onRemove(contribution);
         }
     }
 
-    public void remove(List<URI> uris) throws ContributionNotFoundException, RemoveException {
+    public void remove(List<URI> uris) throws ContainerException {
         for (URI uri : uris) {
             remove(uri);
         }
@@ -278,12 +272,12 @@ public class ContributionServiceImpl implements ContributionService {
      *
      * @param uri the contribution URI
      * @return the contribution
-     * @throws ContributionNotFoundException if the contribution does not exist
+     * @throws ContainerException if the contribution does not exist
      */
-    private Contribution find(URI uri) throws ContributionNotFoundException {
+    private Contribution find(URI uri) throws ContainerException {
         Contribution contribution = metaDataStore.find(uri);
         if (contribution == null) {
-            throw new ContributionNotFoundException("Contribution not found: " + uri);
+            throw new ContainerException("Contribution not found: " + uri);
         }
         return contribution;
     }
@@ -397,7 +391,7 @@ public class ContributionServiceImpl implements ContributionService {
             warning.addFailures(context.getWarnings());
             List<ValidationFailure> warnings = new ArrayList<>();
             warnings.add(warning);
-            throw new InvalidContributionException(failures, warnings);
+            throw new ValidationException(failures, warnings);
         }
         for (ContributionServiceListener listener : listeners) {
             listener.onProcessManifest(contribution);
@@ -417,7 +411,7 @@ public class ContributionServiceImpl implements ContributionService {
         IntrospectionContext context = new DefaultIntrospectionContext(contributionUri, loader);
         processorRegistry.indexContribution(contribution, context);
         if (context.hasErrors()) {
-            throw new InvalidContributionException(context.getErrors(), context.getWarnings());
+            throw new ValidationException(context.getErrors(), context.getWarnings());
         } else if (context.hasWarnings()) {
             // there were just warnings, report them
             monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
@@ -427,7 +421,7 @@ public class ContributionServiceImpl implements ContributionService {
         processorRegistry.processContribution(contribution, context);
         validateContribution(contribution, context);
         if (context.hasErrors()) {
-            throw new InvalidContributionException(context.getErrors(), context.getWarnings());
+            throw new ValidationException(context.getErrors(), context.getWarnings());
         } else if (context.hasWarnings()) {
             // there were just warnings, report them
             monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));

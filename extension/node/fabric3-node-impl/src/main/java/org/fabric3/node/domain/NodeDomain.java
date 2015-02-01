@@ -74,7 +74,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(composite);
             return this;
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -83,7 +83,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(name, instance, interfaces);
             return this;
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -92,7 +92,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(component);
             return this;
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -101,7 +101,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.undeploy(name);
             return this;
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -110,7 +110,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.undeploy(name);
             return this;
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -144,7 +144,7 @@ public class NodeDomain implements Domain {
         try {
             provisioner.deploy(channel);
             return this;
-        } catch (DeploymentException e) {
+        } catch (ContainerException e) {
             throw new ServiceRuntimeException(e);
         }
     }

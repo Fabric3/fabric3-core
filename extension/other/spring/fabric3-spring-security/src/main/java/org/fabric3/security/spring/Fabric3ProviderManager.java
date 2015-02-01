@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.ContainerException;
 import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
 import org.fabric3.security.spring.config.ConfigurationParser;
-import org.fabric3.security.spring.config.SecurityConfigurationException;
 import org.fabric3.security.spring.factory.AuthenticationProviderFactory;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
@@ -42,10 +42,8 @@ import org.springframework.security.core.Authentication;
 
 /**
  * Serves as a bridge between the Fabric3 security SPI and SpringSecurity for authentication by implementing {@link AuthenticationService} and
- * <code>AuthenticationManager</code> respectively. This allows Fabric3 code (e.g. transports) to authenticate a request using the Fabric3 security
- * SPI and Spring code to authenticate against the Spring Security API.
- * <p/>
- * Authentication is done using a set of Spring <code>AuthenticationProvider</code>s.
+ * <code>AuthenticationManager</code> respectively. This allows Fabric3 code (e.g. transports) to authenticate a request using the Fabric3 security SPI and
+ * Spring code to authenticate against the Spring Security API. <p/> Authentication is done using a set of Spring <code>AuthenticationProvider</code>s.
  */
 @Service({AuthenticationManager.class, AuthenticationService.class})
 public class Fabric3ProviderManager extends ProviderManager implements AuthenticationService {
@@ -55,9 +53,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     private SecurityMonitor monitor;
     private boolean disabled;
 
-    public Fabric3ProviderManager(@Reference ConfigurationParser parser,
-                                  @Reference AuthenticationProviderFactory factory,
-                                  @Monitor SecurityMonitor monitor) {
+    public Fabric3ProviderManager(@Reference ConfigurationParser parser, @Reference AuthenticationProviderFactory factory, @Monitor SecurityMonitor monitor) {
         this.parser = parser;
         this.factory = factory;
         this.monitor = monitor;
@@ -69,7 +65,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     }
 
     @Property(required = false)
-    public void setConfiguration(XMLStreamReader reader) throws XMLStreamException, SecurityConfigurationException {
+    public void setConfiguration(XMLStreamReader reader) throws XMLStreamException, ContainerException {
         configuration = parser.parse(reader);
     }
 
