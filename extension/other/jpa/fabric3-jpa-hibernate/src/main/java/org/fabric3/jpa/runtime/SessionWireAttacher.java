@@ -27,7 +27,7 @@ import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxy;
-import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
+import org.fabric3.jpa.runtime.proxy.StatefulSessionProxy;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
@@ -75,7 +75,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
             if (definition.isMultiThreaded()) {
                 return () -> new MultiThreadedSessionProxy(unitName, emService, tm);
             } else {
-                return new StatefulSessionProxyFactory(unitName, emService, tm);
+                return () -> new StatefulSessionProxy(unitName, emService, tm);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);

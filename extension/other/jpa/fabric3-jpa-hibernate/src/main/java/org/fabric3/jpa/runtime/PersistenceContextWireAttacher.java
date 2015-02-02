@@ -27,8 +27,8 @@ import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
-import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
-import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
+import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxy;
+import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxy;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
@@ -74,9 +74,9 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
             PersistenceOverrides overrides = definition.getOverrides();
             emfResolver.resolve(unitName, overrides, classLoader);
             if (definition.isMultiThreaded()) {
-                return new MultiThreadedEntityManagerProxyFactory(unitName, emService, tm);
+                return () -> new MultiThreadedEntityManagerProxy(unitName, emService, tm);
             } else {
-                return new StatefulEntityManagerProxyFactory(unitName, emService, tm);
+                return () -> new StatefulEntityManagerProxy(unitName, emService, tm);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
