@@ -31,7 +31,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
@@ -99,16 +98,15 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
         EasyMock.expect(reflectionFactory.createLifecycleInvoker(EasyMock.isA(Method.class))).andReturn(invoker);
         EasyMock.replay(reflectionFactory);
 
-        MockClassLoaderRegistry classLoaderRegistry = new MockClassLoaderRegistry();
-        builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
+        builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory);
         cl = getClass().getClassLoader();
         constructor = Foo.class.getConstructor(String.class, Long.class);
 
         definition = new ImplementationManagerDefinition();
         definition.setImplementationClass(Foo.class.getName());
         definition.setConstructor(constructor);
-        definition.setInitMethod(new Signature("init"));
-        definition.setDestroyMethod(new Signature("destroy"));
+        definition.setInitMethod(Foo.class.getMethod("init"));
+        definition.setDestroyMethod(Foo.class.getMethod("destroy"));
         Map<InjectionSite, Injectable> construction = definition.getConstruction();
         construction.put(new ConstructorInjectionSite(constructor, 0), new Injectable(InjectableType.PROPERTY, "a"));
         construction.put(new ConstructorInjectionSite(constructor, 1), new Injectable(InjectableType.REFERENCE, "b"));

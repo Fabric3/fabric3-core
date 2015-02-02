@@ -20,6 +20,7 @@
 package org.fabric3.api.model.type.java;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +37,6 @@ import org.fabric3.api.model.type.component.ResourceReference;
  * A component type associated with an implementation that supports injection.
  */
 public class InjectingComponentType extends ComponentType {
-    private static final long serialVersionUID = -2602867276842414240L;
-
     private String implClass;
     private String scope;
     private int initLevel;
@@ -45,8 +44,8 @@ public class InjectingComponentType extends ComponentType {
     private ManagementInfo managementInfo;
 
     private Constructor<?> constructor;
-    private Signature initMethod;
-    private Signature destroyMethod;
+    private Method initMethod;
+    private Method destroyMethod;
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<>();
     private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<>();
     private Map<String, Callback> callbacks = new HashMap<>();
@@ -309,7 +308,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @return the component initializer method
      */
-    public Signature getInitMethod() {
+    public Method getInitMethod() {
         return initMethod;
     }
 
@@ -318,7 +317,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @param initMethod the component initializer method
      */
-    public void setInitMethod(Signature initMethod) {
+    public void setInitMethod(Method initMethod) {
         this.initMethod = initMethod;
     }
 
@@ -327,7 +326,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @return the component destructor method
      */
-    public Signature getDestroyMethod() {
+    public Method getDestroyMethod() {
         return destroyMethod;
     }
 
@@ -336,7 +335,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @param destroyMethod the component destructor method
      */
-    public void setDestroyMethod(Signature destroyMethod) {
+    public void setDestroyMethod(Method destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
 

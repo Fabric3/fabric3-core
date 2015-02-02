@@ -29,11 +29,9 @@ import java.util.Map;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -44,78 +42,64 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ImplementationManagerFactoryBuilderImpl implements ImplementationManagerFactoryBuilder {
     private ReflectionFactory reflectionFactory;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public ImplementationManagerFactoryBuilderImpl(@Reference ReflectionFactory reflectionFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public ImplementationManagerFactoryBuilderImpl(@Reference ReflectionFactory reflectionFactory) {
         this.reflectionFactory = reflectionFactory;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws Fabric3Exception {
-        try {
-            URI componentUri = definition.getComponentUri();
-            String className = definition.getImplementationClass();
-            Class<?> implClass = classLoaderRegistry.loadClass(cl, className);
-            Constructor<?> ctr = definition.getConstructor();
+        URI componentUri = definition.getComponentUri();
+        Constructor<?> ctr = definition.getConstructor();
 
-            Map<InjectionSite, Injectable> injectionSites = definition.getConstruction();
-            Injectable[] cdiSources = new Injectable[ctr.getParameterTypes().length];
-            for (Map.Entry<InjectionSite, Injectable> entry : injectionSites.entrySet()) {
-                InjectionSite site = entry.getKey();
-                Injectable injectable = entry.getValue();
-                ConstructorInjectionSite constructorSite = (ConstructorInjectionSite) site;
-                cdiSources[constructorSite.getParam()] = injectable;
-            }
-            for (int i = 0; i < cdiSources.length; i++) {
-                if (cdiSources[i] == null) {
-                    String clazz = ctr.getName();
-                    throw new Fabric3Exception("No injection value for constructor parameter " + i + " in class " + clazz);
-                }
-            }
-
-            LifecycleInvoker initInvoker = getInitInvoker(definition, implClass);
-            LifecycleInvoker destroyInvoker = getDestroyInvoker(definition, implClass);
-
-            Map<InjectionSite, Injectable> postConstruction = definition.getPostConstruction();
-            List<Injectable> construction = Arrays.asList(cdiSources);
-            boolean reinjectable = definition.isReinjectable();
-
-            return new ImplementationManagerFactoryImpl(componentUri,
-                                                        ctr,
-                                                        construction,
-                                                        postConstruction,
-                                                        initInvoker,
-                                                        destroyInvoker,
-                                                        reinjectable,
-                                                        cl,
-                                                        reflectionFactory);
-        } catch (ClassNotFoundException | NoSuchMethodException ex) {
-            throw new Fabric3Exception(ex);
+        Map<InjectionSite, Injectable> injectionSites = definition.getConstruction();
+        Injectable[] cdiSources = new Injectable[ctr.getParameterTypes().length];
+        for (Map.Entry<InjectionSite, Injectable> entry : injectionSites.entrySet()) {
+            InjectionSite site = entry.getKey();
+            Injectable injectable = entry.getValue();
+            ConstructorInjectionSite constructorSite = (ConstructorInjectionSite) site;
+            cdiSources[constructorSite.getParam()] = injectable;
         }
+        for (int i = 0; i < cdiSources.length; i++) {
+            if (cdiSources[i] == null) {
+                String clazz = ctr.getName();
+                throw new Fabric3Exception("No injection value for constructor parameter " + i + " in class " + clazz);
+            }
+        }
+
+        LifecycleInvoker initInvoker = getInitInvoker(definition);
+        LifecycleInvoker destroyInvoker = getDestroyInvoker(definition);
+
+        Map<InjectionSite, Injectable> postConstruction = definition.getPostConstruction();
+        List<Injectable> construction = Arrays.asList(cdiSources);
+        boolean reinjectable = definition.isReinjectable();
+
+        return new ImplementationManagerFactoryImpl(componentUri,
+                                                    ctr,
+                                                    construction,
+                                                    postConstruction,
+                                                    initInvoker,
+                                                    destroyInvoker,
+                                                    reinjectable,
+                                                    cl,
+                                                    reflectionFactory);
     }
 
-    private LifecycleInvoker getInitInvoker(ImplementationManagerDefinition definition, Class<?> implClass)
-            throws NoSuchMethodException, ClassNotFoundException {
+    private LifecycleInvoker getInitInvoker(ImplementationManagerDefinition definition) {
         LifecycleInvoker initInvoker = null;
-        Method initMethod = getMethod(implClass, definition.getInitMethod());
+        Method initMethod = definition.getInitMethod();
         if (initMethod != null) {
             initInvoker = reflectionFactory.createLifecycleInvoker(initMethod);
         }
         return initInvoker;
     }
 
-    private LifecycleInvoker getDestroyInvoker(ImplementationManagerDefinition definition, Class<?> implClass)
-            throws NoSuchMethodException, ClassNotFoundException {
+    private LifecycleInvoker getDestroyInvoker(ImplementationManagerDefinition definition) {
         LifecycleInvoker destroyInvoker = null;
-        Method destroyMethod = getMethod(implClass, definition.getDestroyMethod());
+        Method destroyMethod = definition.getDestroyMethod();
         if (destroyMethod != null) {
             destroyInvoker = reflectionFactory.createLifecycleInvoker(destroyMethod);
         }
         return destroyInvoker;
-    }
-
-    private Method getMethod(Class<?> implClass, Signature signature) throws NoSuchMethodException, ClassNotFoundException {
-        return signature == null ? null : signature.getMethod(implClass);
     }
 
 }

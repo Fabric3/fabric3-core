@@ -50,7 +50,7 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
                                                           String name,
                                                           JavaGenericType dataType,
                                                           Document value,
-                                                          ClassLoader classLoader) throws Fabric3Exception {
+                                                          ClassLoader classLoader) {
         List<JavaTypeInfo> typeInfos = dataType.getTypeInfo().getParameterTypesInfos();
         if (typeInfos.size() < 1) {
             // programming error

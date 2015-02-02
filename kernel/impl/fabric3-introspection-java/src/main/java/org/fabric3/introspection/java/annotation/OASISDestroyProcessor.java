@@ -22,7 +22,6 @@ package org.fabric3.introspection.java.annotation;
 import java.lang.reflect.Method;
 
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.oasisopen.sca.annotation.Destroy;
@@ -44,7 +43,7 @@ public class OASISDestroyProcessor extends AbstractAnnotationProcessor<Destroy> 
         if (!validate(method, context, componentType)) {
             return;
         }
-        componentType.setDestroyMethod(new Signature(method));
+        componentType.setDestroyMethod(method);
     }
 
     private boolean validate(Method method, IntrospectionContext context, InjectingComponentType componentType) {

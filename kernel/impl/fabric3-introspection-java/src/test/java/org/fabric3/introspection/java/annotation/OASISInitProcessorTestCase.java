@@ -48,7 +48,7 @@ public class OASISInitProcessorTestCase extends TestCase {
         Method method = TestClass.class.getDeclaredMethod("init");
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getWarnings().size());
-        assertEquals(method, componentType.getInitMethod().getMethod(TestClass.class));
+        assertEquals(method, componentType.getInitMethod());
     }
 
     public void testPrivateInit() throws Exception {
@@ -58,7 +58,7 @@ public class OASISInitProcessorTestCase extends TestCase {
         Method method = TestClass.class.getDeclaredMethod("init");
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getWarnings().size());
-        assertEquals(method, componentType.getInitMethod().getMethod(TestClass.class));
+        assertEquals(method, componentType.getInitMethod());
     }
 
     protected void setUp() throws Exception {

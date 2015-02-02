@@ -40,7 +40,7 @@ public class OASISInitProcessor extends AbstractAnnotationProcessor<Init> {
         if (!validate(method, context, componentType)) {
             return;
         }
-        componentType.setInitMethod(new Signature(method));
+        componentType.setInitMethod(method);
     }
 
     private boolean validate(Method method, IntrospectionContext context, InjectingComponentType componentType) {

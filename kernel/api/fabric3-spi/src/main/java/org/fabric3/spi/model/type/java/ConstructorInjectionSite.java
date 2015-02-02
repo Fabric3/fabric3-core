@@ -19,10 +19,6 @@
  */
 package org.fabric3.spi.model.type.java;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.lang.reflect.Constructor;
 
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -31,8 +27,7 @@ import org.fabric3.api.model.type.java.Signature;
 /**
  * Represents a constructor that is injected into when a component implementation instance is instantiated.
  */
-public class ConstructorInjectionSite extends InjectionSite implements Externalizable {
-    private static final long serialVersionUID = -6543986170145816234L;
+public class ConstructorInjectionSite extends InjectionSite {
     private Signature signature;
     private int param;
     private transient Constructor constructor;
@@ -99,13 +94,4 @@ public class ConstructorInjectionSite extends InjectionSite implements Externali
         return 31 * signature.hashCode() + param;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(signature);
-        out.writeInt(param);
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        signature = (Signature) in.readObject();
-        param = in.readInt();
-    }
 }

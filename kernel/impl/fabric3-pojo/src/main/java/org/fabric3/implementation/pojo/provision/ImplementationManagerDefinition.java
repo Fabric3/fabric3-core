@@ -19,26 +19,24 @@
  */
 package org.fabric3.implementation.pojo.provision;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 
 /**
  * Base class for implementation manager factory definitions.
  */
-public class ImplementationManagerDefinition implements Serializable {
-    private static final long serialVersionUID = 3516497485593609161L;
+public class ImplementationManagerDefinition {
 
     private String implementationClass;
     private Constructor<?> constructor;
-    private Signature initMethod;
-    private Signature destroyMethod;
+    private Method initMethod;
+    private Method destroyMethod;
     private boolean reinjectable;
     private Map<InjectionSite, Injectable> construction = new HashMap<>();
     private Map<InjectionSite, Injectable> postConstruction = new HashMap<>();
@@ -86,7 +84,7 @@ public class ImplementationManagerDefinition implements Serializable {
      *
      * @return the signature for the init method
      */
-    public Signature getInitMethod() {
+    public Method getInitMethod() {
         return initMethod;
     }
 
@@ -95,7 +93,7 @@ public class ImplementationManagerDefinition implements Serializable {
      *
      * @param initMethod the signature of the init method
      */
-    public void setInitMethod(Signature initMethod) {
+    public void setInitMethod(Method initMethod) {
         this.initMethod = initMethod;
     }
 
@@ -104,7 +102,7 @@ public class ImplementationManagerDefinition implements Serializable {
      *
      * @return the signature of the destroy method
      */
-    public Signature getDestroyMethod() {
+    public Method getDestroyMethod() {
         return destroyMethod;
     }
 
@@ -113,7 +111,7 @@ public class ImplementationManagerDefinition implements Serializable {
      *
      * @param destroyMethod the signature of the destroy method
      */
-    public void setDestroyMethod(Signature destroyMethod) {
+    public void setDestroyMethod(Method destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
 

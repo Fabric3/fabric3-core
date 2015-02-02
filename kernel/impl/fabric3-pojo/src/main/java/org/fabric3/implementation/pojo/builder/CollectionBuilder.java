@@ -40,9 +40,6 @@ public interface CollectionBuilder {
      * @return the object factory
      * @throws Fabric3Exception if there is an error creating the object factory
      */
-    <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection,
-                                                   String name,
-                                                   JavaGenericType type,
-                                                   Document value,
-                                                   ClassLoader classLoader) throws Fabric3Exception;
+    <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection, String name, JavaGenericType type, Document value, ClassLoader classLoader)
+            throws Fabric3Exception;
 }

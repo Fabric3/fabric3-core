@@ -35,7 +35,6 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -84,14 +83,14 @@ public class JUnitHeuristic implements HeuristicProcessor {
         }
 
         if (componentType.getInitMethod() == null) {
-            Signature setUp = getCallback(implClass, "setUp");
+            Method setUp = getCallback(implClass, "setUp");
             if (setUp == null) {
                 setUp = getCallback(implClass, Before.class);
             }
             componentType.setInitMethod(setUp);
         }
         if (componentType.getDestroyMethod() == null) {
-            Signature tearDown = getCallback(implClass, "tearDown");
+            Method tearDown = getCallback(implClass, "tearDown");
             if (tearDown == null) {
                 tearDown = getCallback(implClass, After.class);
             }
@@ -99,11 +98,10 @@ public class JUnitHeuristic implements HeuristicProcessor {
         }
     }
 
-    private Signature getCallback(Class<?> implClass, String name) {
+    private Method getCallback(Class<?> implClass, String name) {
         while (Object.class != implClass) {
             try {
-                Method callback = implClass.getDeclaredMethod(name);
-                return new Signature(callback);
+                return implClass.getDeclaredMethod(name);
             } catch (NoSuchMethodException e) {
                 implClass = implClass.getSuperclass();
             }
@@ -111,11 +109,11 @@ public class JUnitHeuristic implements HeuristicProcessor {
         return null;
     }
 
-    private Signature getCallback(Class<?> implClass, Class<? extends Annotation> annotation) {
+    private Method getCallback(Class<?> implClass, Class<? extends Annotation> annotation) {
         while (Object.class != implClass) {
             for (Method method : implClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(annotation)) {
-                    return new Signature(method);
+                    return method;
                 }
             }
             implClass = implClass.getSuperclass();

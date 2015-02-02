@@ -35,7 +35,7 @@ public abstract class AbstractPropertyBuilder {
     }
 
     @SuppressWarnings({"unchecked"})
-    protected <T> Transformer<T, ?> getTransformer(String name, DataType sourceType, DataType targetType, List<Class<?>> types) throws Fabric3Exception {
+    protected <T> Transformer<T, ?> getTransformer(String name, DataType sourceType, DataType targetType, List<Class<?>> types) {
         Transformer<T, ?> transformer = (Transformer<T, ?>) transformerRegistry.getTransformer(sourceType, targetType, types, types);
         if (transformer == null) {
             throw new Fabric3Exception("No transformer for property " + name + " of type: " + targetType);

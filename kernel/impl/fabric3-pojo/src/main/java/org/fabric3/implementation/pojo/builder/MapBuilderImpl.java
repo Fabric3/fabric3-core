@@ -56,7 +56,7 @@ public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilde
     }
 
     @SuppressWarnings({"unchecked"})
-    public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception {
+    public ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) {
         List<JavaTypeInfo> typeInfos = type.getTypeInfo().getParameterTypesInfos();
         if (typeInfos.size() < 2) {
             // programming error
