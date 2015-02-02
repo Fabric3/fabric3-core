@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
@@ -38,7 +39,6 @@ import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
@@ -88,11 +88,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
         try {
             Thread.currentThread().setContextClassLoader(loader);
             List<Resource> copy = new ArrayList<>(contribution.getResources());   // copy the list since processors may add resources
-            for (Resource resource : copy) {
-                if (ResourceState.UNPROCESSED == resource.getState()) {
-                    registry.processResource(resource, context);
-                }
-            }
+            copy.stream().filter(resource -> ResourceState.UNPROCESSED == resource.getState()).forEach(resource -> registry.processResource(resource, context));
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
@@ -136,10 +132,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-
-            iterateArtifacts(contribution, context, resource -> {
-                registry.indexResource(resource, context);
-            });
+            iterateArtifacts(contribution, context, resource -> registry.indexResource(resource, context));
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
@@ -167,13 +160,13 @@ public class PluginContributionProcessor implements ContributionProcessor {
         return null;
     }
 
-    private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback) throws Fabric3Exception {
+    private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, Consumer<Resource> callback) throws Fabric3Exception {
         File root = FileHelper.toFile(contribution.getLocation());
         assert root.isDirectory();
         iterateArtifactsRecursive(contribution, context, callback, root);
     }
 
-    private void iterateArtifactsRecursive(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback, File dir)
+    private void iterateArtifactsRecursive(Contribution contribution, final IntrospectionContext context, Consumer<Resource> callback, File dir)
             throws Fabric3Exception {
         File[] files = dir.listFiles();
         if (files == null) {
@@ -207,7 +200,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
                                 continue;
                             }
                             contribution.addResource(resource);
-                            callback.onResource(resource);
+                            callback.accept(resource);
                         } catch (ClassNotFoundException | NoClassDefFoundError e) {
                             // ignore since the class may reference another class not present in the contribution
                         }
@@ -221,7 +214,7 @@ public class PluginContributionProcessor implements ContributionProcessor {
                         UrlSource source = new UrlSource(entryUrl);
                         Resource resource = new Resource(contribution, source, contentType);
                         contribution.addResource(resource);
-                        callback.onResource(resource);
+                        callback.accept(resource);
                     }
                 } catch (MalformedURLException e) {
                     context.addWarning(new ContributionIndexingFailure(file, e));

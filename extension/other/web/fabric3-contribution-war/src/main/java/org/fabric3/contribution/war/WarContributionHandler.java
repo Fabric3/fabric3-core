@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -38,7 +39,6 @@ import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
@@ -99,7 +99,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception {
+    public void iterateArtifacts(Contribution contribution, Consumer<Resource> callback, IntrospectionContext context) throws Fabric3Exception {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -142,7 +142,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                             continue;
                         }
                         contribution.addResource(resource);
-                        callback.onResource(resource);
+                        callback.accept(resource);
                     } catch (ClassNotFoundException | NoClassDefFoundError e) {
                         // ignore since the class may reference another class not present in the contribution
                     }
@@ -158,7 +158,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     Resource resource = new Resource(contribution, source, contentType);
                     contribution.addResource(resource);
 
-                    callback.onResource(resource);
+                    callback.accept(resource);
                 }
             }
         } catch (IOException e) {

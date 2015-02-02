@@ -21,6 +21,7 @@ package org.fabric3.contribution.archive;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
@@ -31,7 +32,6 @@ import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
@@ -63,11 +63,12 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         EasyMock.verify(loader);
     }
 
+    @SuppressWarnings("unchecked")
     public void testIterateAllContents() throws Exception {
         Contribution contribution = createContribution();
 
-        ArtifactResourceCallback callback = EasyMock.createMock(ArtifactResourceCallback.class);
-        callback.onResource(EasyMock.isA(Resource.class));
+        Consumer callback = EasyMock.createMock(Consumer.class);
+        callback.accept(EasyMock.isA(Resource.class));
         EasyMock.expectLastCall().times(2);  // 2 items in the archive minus the contribution manifest
         EasyMock.replay(callback);
 
@@ -76,12 +77,13 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         EasyMock.verify(callback);
     }
 
+    @SuppressWarnings("unchecked")
     public void testExcludeContents() throws Exception {
         Contribution contribution = createContribution();
         contribution.getManifest().setScanExcludes(Collections.singletonList(Pattern.compile("META-INF/test1.*.composite")));
 
-        ArtifactResourceCallback callback = EasyMock.createMock(ArtifactResourceCallback.class);
-        callback.onResource(EasyMock.isA(Resource.class));
+        Consumer<Resource> callback = EasyMock.createMock(Consumer.class);
+        callback.accept(EasyMock.isA(Resource.class));
         // Should only be 1 item in the archive minus the contribution manifest and the excluded file
         EasyMock.expectLastCall().times(1);
         EasyMock.replay(callback);
@@ -95,7 +97,7 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         Contribution contribution = createContribution();
         contribution.getManifest().setScanExcludes(Collections.singletonList(Pattern.compile("META-INF/.*")));
 
-        ArtifactResourceCallback callback = EasyMock.createMock(ArtifactResourceCallback.class);
+        Consumer callback = EasyMock.createMock(Consumer.class);
         // no contents should be scanned
         EasyMock.replay(callback);
 

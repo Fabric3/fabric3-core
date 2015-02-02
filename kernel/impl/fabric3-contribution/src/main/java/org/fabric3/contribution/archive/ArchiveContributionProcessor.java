@@ -60,9 +60,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            handler.iterateArtifacts(contribution, resource -> {
-                registry.indexResource(resource, context);
-            }, context);
+            handler.iterateArtifacts(contribution, resource -> registry.indexResource(resource, context), context);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
@@ -75,9 +73,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         try {
             Thread.currentThread().setContextClassLoader(loader);
             List<Resource> copy = new ArrayList<>(contribution.getResources());   // copy the list since processors may add resources
-            copy.stream().filter(resource -> ResourceState.UNPROCESSED == resource.getState()).forEach(resource -> {
-                registry.processResource(resource, context);
-            });
+            copy.stream().filter(resource -> ResourceState.UNPROCESSED == resource.getState()).forEach(resource -> registry.processResource(resource, context));
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }

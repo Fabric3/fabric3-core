@@ -18,8 +18,11 @@
  */
 package org.fabric3.spi.contribution.archive;
 
+import java.util.function.Consumer;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -52,6 +55,6 @@ public interface ArchiveContributionHandler {
      * @param context      the context to which validation errors and warnings are reported
      * @throws Fabric3Exception if an error occurs processing the manifest
      */
-    void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws Fabric3Exception;
+    void iterateArtifacts(Contribution contribution, Consumer<Resource> callback, IntrospectionContext context) throws Fabric3Exception;
 
 }

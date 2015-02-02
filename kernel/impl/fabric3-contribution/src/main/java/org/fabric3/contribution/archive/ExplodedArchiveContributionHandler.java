@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -37,7 +38,6 @@ import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
@@ -105,12 +105,12 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) {
+    public void iterateArtifacts(Contribution contribution, Consumer<Resource> callback, IntrospectionContext context) {
         File root = FileHelper.toFile(contribution.getLocation());
         iterateArtifactsRecursive(root, root, contribution, callback, context);
     }
 
-    protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) {
+    protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, Consumer<Resource> callback, IntrospectionContext context) {
         File[] files = dir.listFiles();
         ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {
@@ -147,7 +147,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                                 continue;
                             }
                             contribution.addResource(resource);
-                            callback.onResource(resource);
+                            callback.accept(resource);
                         } catch (ClassNotFoundException | NoClassDefFoundError e) {
                             // ignore since the class may reference another class not present in the contribution
                         }
@@ -163,7 +163,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         UrlSource source = new UrlSource(entryUrl);
                         Resource resource = new Resource(contribution, source, contentType);
                         contribution.addResource(resource);
-                        callback.onResource(resource);
+                        callback.accept(resource);
                     }
                 } catch (MalformedURLException e) {
                     throw new Fabric3Exception(e);

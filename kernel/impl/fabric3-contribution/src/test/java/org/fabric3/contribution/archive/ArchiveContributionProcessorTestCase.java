@@ -21,6 +21,7 @@ package org.fabric3.contribution.archive;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -32,7 +33,6 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -93,13 +93,13 @@ public class ArchiveContributionProcessorTestCase extends TestCase {
         EasyMock.expect(handler.canProcess(EasyMock.isA(Contribution.class))).andReturn(true);
         ClassLoader classLoader = getClass().getClassLoader();
         IntrospectionContext context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
-        handler.iterateArtifacts(EasyMock.isA(Contribution.class), EasyMock.isA(ArtifactResourceCallback.class), EasyMock.isA(IntrospectionContext.class));
+        handler.iterateArtifacts(EasyMock.isA(Contribution.class), EasyMock.isA(Consumer.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 Contribution contribution = (Contribution) EasyMock.getCurrentArguments()[0];
-                ArtifactResourceCallback callback = (ArtifactResourceCallback) EasyMock.getCurrentArguments()[1];
+                Consumer<Resource> callback = (Consumer<Resource>) EasyMock.getCurrentArguments()[1];
                 Resource resource = new Resource(contribution, new UrlSource(new URL("file://test")), "application/xml");
-                callback.onResource(resource);
+                callback.accept(resource);
                 return null;
             }
         });
