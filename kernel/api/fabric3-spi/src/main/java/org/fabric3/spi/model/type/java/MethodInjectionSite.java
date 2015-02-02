@@ -19,14 +19,9 @@
  */
 package org.fabric3.spi.model.type.java;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 
 /**
  * Represents a setter method that is injected into when a component implementation instance is instantiated.
@@ -35,30 +30,14 @@ import org.fabric3.api.model.type.java.Signature;
  * #hashCode()} is called by the containing map before a <code>Signature</code> has been set, leading to a null pointer. Implement Externalizable avoids this by
  * setting the Signature before <code>hashCode</code> is invoked.
  */
-public class MethodInjectionSite extends InjectionSite implements Externalizable {
-    private static final long serialVersionUID = -2222837362065034249L;
-    private Signature signature;
+public class MethodInjectionSite extends InjectionSite {
     private int param;
-    private transient Method method;
+    private Method method;
 
     public MethodInjectionSite(Method method, int param) {
-        super(method.getParameterTypes()[param].getName());
-        this.signature = new Signature(method);
+        super(method.getParameterTypes()[param]);
         this.param = param;
         this.method = method;
-    }
-
-    public MethodInjectionSite() {
-        // ctor for deserialization
-    }
-
-    /**
-     * Returns the signature that identifies the method.
-     *
-     * @return the signature that identifies the method
-     */
-    public Signature getSignature() {
-        return signature;
     }
 
     /**
@@ -82,7 +61,7 @@ public class MethodInjectionSite extends InjectionSite implements Externalizable
     }
 
     public String toString() {
-        return signature.toString() + '[' + param + ']';
+        return method.toString() + '[' + param + ']';
     }
 
     public boolean equals(Object o) {
@@ -95,21 +74,13 @@ public class MethodInjectionSite extends InjectionSite implements Externalizable
 
         MethodInjectionSite that = (MethodInjectionSite) o;
 
-        return signature.equals(that.signature) && param == that.param;
+        return param == that.param && method.equals(that.method);
 
     }
 
     public int hashCode() {
-        return signature.hashCode() * 31 + param;
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(signature);
-        out.writeInt(param);
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        signature = (Signature) in.readObject();
-        param = in.readInt();
+        int result = param;
+        result = 31 * result + method.hashCode();
+        return result;
     }
 }

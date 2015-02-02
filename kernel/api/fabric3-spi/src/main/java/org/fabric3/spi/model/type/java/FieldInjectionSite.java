@@ -19,10 +19,6 @@
  */
 package org.fabric3.spi.model.type.java;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 
 import org.fabric3.api.model.type.java.InjectionSite;
@@ -30,19 +26,14 @@ import org.fabric3.api.model.type.java.InjectionSite;
 /**
  * Represents a field that is injected into when a component implementation instance is instantiated.
  */
-public class FieldInjectionSite extends InjectionSite implements Externalizable {
-    private static final long serialVersionUID = -6502983302874808563L;
+public class FieldInjectionSite extends InjectionSite {
     private String name;
-    private transient Field field;
+    private Field field;
 
     public FieldInjectionSite(Field field) {
-        super(field.getType().getName());
+        super(field.getType());
         this.name = field.getName();
         this.field = field;
-    }
-
-    public FieldInjectionSite() {
-        // ctor for deserialization
     }
 
     /**
@@ -84,11 +75,4 @@ public class FieldInjectionSite extends InjectionSite implements Externalizable 
         return name.hashCode();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name = (String) in.readObject();
-    }
 }

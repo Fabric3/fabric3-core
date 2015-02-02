@@ -18,8 +18,6 @@
  */
 package org.fabric3.implementation.web.runtime;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,34 +66,14 @@ public class InjectorFactoryImpl implements InjectorFactory {
                 if (site instanceof WebContextInjectionSite) {
                     injector = createInjector(siteName, factory, (WebContextInjectionSite) site);
                 } else if (site instanceof FieldInjectionSite) {
-                    injector = createInjector(factory, artifactName, (FieldInjectionSite) site, classLoader);
+                    injector = reflectionFactory.createInjector(((FieldInjectionSite) site).getField(), factory);
                 } else if (site instanceof MethodInjectionSite) {
-                    injector = createInjector(factory, artifactName, (MethodInjectionSite) site, classLoader);
+                    injector = reflectionFactory.createInjector(((MethodInjectionSite) site).getMethod(), factory);
                 } else {
                     throw new UnsupportedOperationException("Unsupported injection site type: " + site.getClass());
                 }
                 injectorList.add(injector);
             }
-        }
-    }
-
-    private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, MethodInjectionSite site, ClassLoader classLoader)
-            throws Fabric3Exception {
-        try {
-            Method method = getMethod(site, artifactName, classLoader);
-            return reflectionFactory.createInjector(method, factory);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new Fabric3Exception(e);
-        }
-    }
-
-    private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, FieldInjectionSite site, ClassLoader classLoader)
-            throws Fabric3Exception {
-        try {
-            Field field = getField(site, artifactName, classLoader);
-            return reflectionFactory.createInjector(field, factory);
-        } catch (NoSuchFieldException | ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
         }
     }
 
@@ -111,25 +89,6 @@ public class InjectorFactoryImpl implements InjectorFactory {
             injector.setObjectFactory(factory, attributes);
             return injector;
         }
-    }
-
-    private Method getMethod(MethodInjectionSite methodSite, String implementationClass, ClassLoader classLoader)
-            throws ClassNotFoundException, NoSuchMethodException {
-        Class<?> clazz = classLoader.loadClass(implementationClass);
-        return methodSite.getSignature().getMethod(clazz);
-    }
-
-    private Field getField(FieldInjectionSite site, String implementationClass, ClassLoader classLoader) throws NoSuchFieldException, ClassNotFoundException {
-        Class<?> clazz = classLoader.loadClass(implementationClass);
-        String name = site.getName();
-        while (clazz != null) {
-            try {
-                return clazz.getDeclaredField(name);
-            } catch (NoSuchFieldException e) {
-                clazz = clazz.getSuperclass();
-            }
-        }
-        throw new NoSuchFieldException(name);
     }
 
 }

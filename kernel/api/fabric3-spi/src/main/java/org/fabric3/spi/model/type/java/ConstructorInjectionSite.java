@@ -22,36 +22,18 @@ package org.fabric3.spi.model.type.java;
 import java.lang.reflect.Constructor;
 
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 
 /**
  * Represents a constructor that is injected into when a component implementation instance is instantiated.
  */
 public class ConstructorInjectionSite extends InjectionSite {
-    private Signature signature;
     private int param;
-    private transient Constructor constructor;
+    private Constructor constructor;
 
     public ConstructorInjectionSite(Constructor<?> constructor, int param) {
-        super(constructor.getParameterTypes()[param].getName());
-        this.signature = new Signature(constructor);
+        super(constructor.getParameterTypes()[param]);
         this.param = param;
         this.constructor = constructor;
-    }
-
-    public ConstructorInjectionSite(Signature signature, int param) {
-        super(signature.getParameterTypes().get(param));
-        this.signature = signature;
-        this.param = param;
-    }
-
-    /**
-     * Returns the signature that identifies the method.
-     *
-     * @return the signature that identifies the method
-     */
-    public Signature getSignature() {
-        return signature;
     }
 
     /**
@@ -73,7 +55,7 @@ public class ConstructorInjectionSite extends InjectionSite {
     }
 
     public String toString() {
-        return signature.toString() + '[' + param + ']';
+        return constructor.toString() + '[' + param + ']';
     }
 
     public boolean equals(Object o) {
@@ -86,12 +68,13 @@ public class ConstructorInjectionSite extends InjectionSite {
 
         ConstructorInjectionSite that = (ConstructorInjectionSite) o;
 
-        return param == that.param && signature.equals(that.signature);
+        return param == that.param && constructor.equals(that.constructor);
 
     }
 
     public int hashCode() {
-        return 31 * signature.hashCode() + param;
+        int result = param;
+        result = 31 * result + constructor.hashCode();
+        return result;
     }
-
 }

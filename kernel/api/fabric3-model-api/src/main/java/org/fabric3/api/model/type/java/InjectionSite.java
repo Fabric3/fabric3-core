@@ -25,16 +25,10 @@ import org.fabric3.api.model.type.ModelObject;
  * Represents an injection site on a Java-based component implementation.
  */
 public class InjectionSite extends ModelObject<InjectingComponentType> {
+    private Class<?> type;
 
-    // Name of type being injected
-    private String type;
-
-    protected InjectionSite(String type) {
+    protected InjectionSite(Class<?> type) {
         this.type = type;
-    }
-
-    protected InjectionSite() {
-        // required for deserialization
     }
 
     /**
@@ -42,7 +36,7 @@ public class InjectionSite extends ModelObject<InjectingComponentType> {
      *
      * @return the name of the Java type being injected
      */
-    public String getType() {
+    public Class<?> getType() {
         return type;
     }
 }

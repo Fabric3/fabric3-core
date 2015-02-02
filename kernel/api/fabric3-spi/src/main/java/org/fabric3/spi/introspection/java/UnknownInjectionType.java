@@ -52,10 +52,10 @@ public class UnknownInjectionType extends JavaValidationFailure {
             return "Unknown injection type " + type + " on field " + field.getName() + " in class " + clazz;
         } else if (site instanceof MethodInjectionSite) {
             MethodInjectionSite method = (MethodInjectionSite) site;
-            return "Unknown injection type " + type + " on method " + method.getSignature() + " in class " + clazz;
+            return "Unknown injection type " + type + " on method " + method + " in class " + clazz;
         } else if (site instanceof ConstructorInjectionSite) {
             ConstructorInjectionSite ctor = (ConstructorInjectionSite) site;
-            return "Unknown injection type " + type + " on constructor " + ctor.getSignature() + " in class " + clazz;
+            return "Unknown injection type " + type + " on constructor " + ctor.getConstructor() + " in class " + clazz;
         } else {
             return "Unknown injection type " + type + " found in class " + clazz;
         }

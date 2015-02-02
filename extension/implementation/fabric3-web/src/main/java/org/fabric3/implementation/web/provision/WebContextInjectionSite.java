@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.java.InjectionSite;
  * An injection site specialized for web applications.
  */
 public class WebContextInjectionSite extends InjectionSite {
-    private static final long serialVersionUID = 8530588154179239645L;
     private ContextType contextType;
 
     public static enum ContextType {
@@ -32,7 +31,7 @@ public class WebContextInjectionSite extends InjectionSite {
         SESSION_CONTEXT
     }
 
-    public WebContextInjectionSite(String type, ContextType contextType) {
+    public WebContextInjectionSite(Class<?> type, ContextType contextType) {
         super(type);
         this.contextType = contextType;
     }

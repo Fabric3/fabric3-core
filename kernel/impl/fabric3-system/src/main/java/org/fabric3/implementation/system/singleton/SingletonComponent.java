@@ -66,7 +66,7 @@ public class SingletonComponent implements ScopedComponent {
         this.uri = componentId;
         this.instance = instance;
         this.reinjectionMappings = new HashMap<>();
-        initializeInjectionSites(instance, mappings);
+        initializeInjectionSites(mappings);
     }
 
     public URI getClassLoaderId() {
@@ -94,19 +94,15 @@ public class SingletonComponent implements ScopedComponent {
     }
 
     public void startUpdate() {
-        for (ObjectFactory factory : reinjectionMappings.keySet()) {
-            if (factory instanceof MultiplicityObjectFactory) {
-                ((MultiplicityObjectFactory) factory).startUpdate();
-            }
-        }
+        reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicityObjectFactory).forEach(factory -> {
+            ((MultiplicityObjectFactory) factory).startUpdate();
+        });
     }
 
     public void endUpdate() {
-        for (ObjectFactory factory : reinjectionMappings.keySet()) {
-            if (factory instanceof MultiplicityObjectFactory) {
-                ((MultiplicityObjectFactory) factory).endUpdate();
-            }
-        }
+        reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicityObjectFactory).forEach(factory -> {
+            ((MultiplicityObjectFactory) factory).endUpdate();
+        });
     }
 
     public QName getDeployable() {
@@ -194,10 +190,9 @@ public class SingletonComponent implements ScopedComponent {
     /**
      * Obtain the fields and methods for injection sites associated with the instance
      *
-     * @param instance the instance this component wraps
      * @param mappings the mappings of injection sites
      */
-    private void initializeInjectionSites(Object instance, Map<InjectionSite, Injectable> mappings) {
+    private void initializeInjectionSites(Map<InjectionSite, Injectable> mappings) {
         this.sites = new HashMap<>();
         for (Map.Entry<InjectionSite, Injectable> entry : mappings.entrySet()) {
             InjectionSite site = entry.getKey();
@@ -211,14 +206,8 @@ public class SingletonComponent implements ScopedComponent {
                 }
             } else if (site instanceof MethodInjectionSite) {
                 MethodInjectionSite methodInjectionSite = (MethodInjectionSite) site;
-                try {
-                    Method method = methodInjectionSite.getSignature().getMethod(instance.getClass());
-                    sites.put(method, entry.getValue());
-                } catch (ClassNotFoundException | NoSuchMethodException e) {
-                    // programming error
-                    throw new AssertionError(e);
-                }
-
+                Method method = methodInjectionSite.getMethod();
+                sites.put(method, entry.getValue());
             } else {
                 // ignore other injection sites
             }

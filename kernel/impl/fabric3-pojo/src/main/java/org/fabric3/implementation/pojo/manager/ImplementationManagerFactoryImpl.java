@@ -52,11 +52,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  *
  */
 public class ImplementationManagerFactoryImpl implements ImplementationManagerFactory {
-    private static final ObjectFactory<?> NULL_FACTORY = new ObjectFactory<Object>() {
-        public Object getInstance() {
-            return null;
-        }
-    };
+    private static final ObjectFactory<?> NULL_FACTORY = () -> null;
 
     private final URI componentUri;
     private final Class<?> implementationClass;
@@ -172,22 +168,13 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                 throw new AssertionError(e);
             }
         } else if (site instanceof MethodInjectionSite) {
-
-            try {
-                MethodInjectionSite methodSite = (MethodInjectionSite) site;
-                Method method = methodSite.getSignature().getMethod(implementationClass);
-                return method.getParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                throw new AssertionError(e);
-            }
+            MethodInjectionSite methodSite = (MethodInjectionSite) site;
+            Method method = methodSite.getMethod();
+            return method.getParameterTypes()[methodSite.getParam()];
         } else if (site instanceof ConstructorInjectionSite) {
-            try {
-                ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
-                Constructor<?> method = methodSite.getSignature().getConstructor(implementationClass);
-                return method.getParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                throw new AssertionError(e);
-            }
+            ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
+            Constructor<?> method = methodSite.getConstructor();
+            return method.getParameterTypes()[methodSite.getParam()];
         } else {
             throw new AssertionError("Invalid injection site type: " + site.getClass());
         }
@@ -207,21 +194,13 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                 throw new AssertionError(e);
             }
         } else if (site instanceof MethodInjectionSite) {
-            try {
-                MethodInjectionSite methodSite = (MethodInjectionSite) site;
-                Method method = methodSite.getSignature().getMethod(implementationClass);
-                return method.getGenericParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                throw new AssertionError(e);
-            }
+            MethodInjectionSite methodSite = (MethodInjectionSite) site;
+            Method method = methodSite.getMethod();
+            return method.getGenericParameterTypes()[methodSite.getParam()];
         } else if (site instanceof ConstructorInjectionSite) {
-            try {
-                ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
-                Constructor<?> method = methodSite.getSignature().getConstructor(implementationClass);
-                return method.getGenericParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                throw new AssertionError(e);
-            }
+            ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
+            Constructor<?> method = methodSite.getConstructor();
+            return method.getGenericParameterTypes()[methodSite.getParam()];
         } else {
             throw new AssertionError("Invalid injection site type " + site.getClass());
         }
@@ -276,14 +255,10 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                         throw new AssertionError(e);
                     }
                 } else if (site instanceof MethodInjectionSite) {
-                    try {
-                        MethodInjectionSite methodSite = (MethodInjectionSite) site;
-                        Method method = methodSite.getSignature().getMethod(implementationClass);
-                        Injector<?> injector = reflectionFactory.createInjector(method, factory);
-                        injectors.put(attribute, injector);
-                    } catch (ClassNotFoundException | NoSuchMethodException e) {
-                        throw new AssertionError(e);
-                    }
+                    MethodInjectionSite methodSite = (MethodInjectionSite) site;
+                    Method method = methodSite.getMethod();
+                    Injector<?> injector = reflectionFactory.createInjector(method, factory);
+                    injectors.put(attribute, injector);
                 }
             }
         }
@@ -364,14 +339,14 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         throw new NoSuchFieldException(name);
     }
 
-    private ObjectFactory<?> createObjectFactory(String referenceType) {
-        if ("java.util.Map".equals(referenceType)) {
+    private ObjectFactory<?> createObjectFactory(Class<?> referenceType) {
+        if (Map.class.equals(referenceType)) {
             return new MapMultiplicityObjectFactory();
-        } else if ("java.util.Set".equals(referenceType)) {
+        } else if (Set.class.equals(referenceType)) {
             return new SetMultiplicityObjectFactory();
-        } else if ("java.util.List".equals(referenceType)) {
+        } else if (List.class.equals(referenceType)) {
             return new ListMultiplicityObjectFactory();
-        } else if ("java.util.Collection".equals(referenceType)) {
+        } else if (Collection.class.equals(referenceType)) {
             return new ListMultiplicityObjectFactory();
         } else {
             return NULL_FACTORY;

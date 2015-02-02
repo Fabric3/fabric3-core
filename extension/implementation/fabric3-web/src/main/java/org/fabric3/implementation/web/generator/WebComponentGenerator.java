@@ -39,6 +39,7 @@ import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefi
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -68,20 +69,23 @@ import static org.fabric3.implementation.web.provision.WebContextInjectionSite.C
 @EagerInit
 public class WebComponentGenerator implements ComponentGenerator<LogicalComponent<WebImplementation>> {
     private HostInfo info;
+    private ClassLoaderRegistry classLoaderRegistry;
 
-    public WebComponentGenerator(@org.oasisopen.sca.annotation.Reference HostInfo info) {
+    public WebComponentGenerator(@org.oasisopen.sca.annotation.Reference HostInfo info,
+                                 @org.oasisopen.sca.annotation.Reference ClassLoaderRegistry classLoaderRegistry) {
         this.info = info;
+        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws Fabric3Exception {
         Component<WebImplementation> definition = component.getDefinition();
         WebComponentType componentType = definition.getImplementation().getComponentType();
-
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getContributionUri());
         String contextUrl = calculateContextUrl(component);
 
         WebComponentDefinition physical = new WebComponentDefinition();
         physical.setContextUrl(contextUrl);
-        Map<String, Map<String, InjectionSite>> sites = generateInjectionMapping(componentType);
+        Map<String, Map<String, InjectionSite>> sites = generateInjectionMapping(componentType, classLoader);
         physical.setInjectionMappings(sites);
         processPropertyValues(component, physical);
         return physical;
@@ -118,16 +122,16 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         throw new UnsupportedOperationException();
     }
 
-    private Map<String, Map<String, InjectionSite>> generateInjectionMapping(WebComponentType type) {
+    private Map<String, Map<String, InjectionSite>> generateInjectionMapping(WebComponentType type, ClassLoader classLoader) {
         Map<String, Map<String, InjectionSite>> mappings = new HashMap<>();
         for (Reference<ComponentType> definition : type.getReferences().values()) {
-            generateReferenceInjectionMapping(definition, type, mappings);
+            generateReferenceInjectionMapping(definition, type, mappings, classLoader);
         }
         for (ResourceReference definition : type.getResourceReferences().values()) {
-            generateResourceInjectionMapping(definition, type, mappings);
+            generateResourceInjectionMapping(definition, type, mappings, classLoader);
         }
         for (Producer definition : type.getProducers().values()) {
-            generateProducerInjectionMapping(definition, type, mappings);
+            generateProducerInjectionMapping(definition, type, mappings, classLoader);
         }
         for (Property property : type.getProperties().values()) {
             generatePropertyInjectionMapping(property, mappings);
@@ -136,7 +140,10 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return mappings;
     }
 
-    private void generateReferenceInjectionMapping(Reference<ComponentType> definition, WebComponentType type, Map<String, Map<String, InjectionSite>> mappings) {
+    private void generateReferenceInjectionMapping(Reference<ComponentType> definition,
+                                                   WebComponentType type,
+                                                   Map<String, Map<String, InjectionSite>> mappings,
+                                                   ClassLoader classLoader) {
         Map<String, InjectionSite> mapping = mappings.get(definition.getName());
         if (mapping == null) {
             mapping = new HashMap<>();
@@ -150,7 +157,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
         ServiceContract contract = definition.getServiceContract();
-        String interfaceClass = contract.getQualifiedInterfaceName();
+        Class<?> interfaceClass = classLoaderRegistry.loadClass(classLoader, contract.getQualifiedInterfaceName());
         // inject the reference into the session context
         WebContextInjectionSite site = new WebContextInjectionSite(interfaceClass, SESSION_CONTEXT);
         mapping.put(SESSION_CONTEXT_SITE, site);
@@ -161,7 +168,8 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
 
     private void generateResourceInjectionMapping(ResourceReference definition,
                                                   WebComponentType type,
-                                                  Map<String, Map<String, InjectionSite>> mappings) {
+                                                  Map<String, Map<String, InjectionSite>> mappings,
+                                                  ClassLoader classLoader) {
         Map<String, InjectionSite> mapping = mappings.get(definition.getName());
         if (mapping == null) {
             mapping = new HashMap<>();
@@ -175,13 +183,17 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
         ServiceContract contract = definition.getServiceContract();
-        String interfaceClass = contract.getQualifiedInterfaceName();
+        Class<?> interfaceClass = classLoaderRegistry.loadClass(classLoader, contract.getQualifiedInterfaceName());
+
         // also inject the reference into the servlet context
         WebContextInjectionSite servletContextSite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
         mapping.put(SERVLET_CONTEXT_SITE, servletContextSite);
     }
 
-    private void generateProducerInjectionMapping(Producer definition, WebComponentType type, Map<String, Map<String, InjectionSite>> mappings) {
+    private void generateProducerInjectionMapping(Producer definition,
+                                                  WebComponentType type,
+                                                  Map<String, Map<String, InjectionSite>> mappings,
+                                                  ClassLoader classLoader) {
         Map<String, InjectionSite> mapping = mappings.get(definition.getName());
         if (mapping == null) {
             mapping = new HashMap<>();
@@ -195,7 +207,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
         ServiceContract contract = definition.getServiceContract();
-        String interfaceClass = contract.getQualifiedInterfaceName();
+        Class<?> interfaceClass = classLoaderRegistry.loadClass(classLoader, contract.getQualifiedInterfaceName());
         // also inject the reference into the servlet context
         WebContextInjectionSite servletContextSite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
         mapping.put(SERVLET_CONTEXT_SITE, servletContextSite);
@@ -209,7 +221,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         }
         // inject the property into the session context
         // we don't need to do the type mappings from schema to Java so set Object as the type
-        WebContextInjectionSite site = new WebContextInjectionSite(Object.class.getName(), SERVLET_CONTEXT);
+        WebContextInjectionSite site = new WebContextInjectionSite(Object.class, SERVLET_CONTEXT);
         mapping.put(SESSION_CONTEXT_SITE, site);
     }
 
@@ -218,7 +230,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         Map<String, InjectionSite> oasisMapping = mappings.get(OASIS_CONTEXT_ATTRIBUTE);
         if (oasisMapping == null) {
             oasisMapping = new HashMap<>();
-            WebContextInjectionSite site = new WebContextInjectionSite(ComponentContext.class.getName(), SESSION_CONTEXT);
+            WebContextInjectionSite site = new WebContextInjectionSite(ComponentContext.class, SESSION_CONTEXT);
             oasisMapping.put(SESSION_CONTEXT_SITE, site);
             mappings.put(OASIS_CONTEXT_ATTRIBUTE, oasisMapping);
         }

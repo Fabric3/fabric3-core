@@ -121,8 +121,7 @@ public class WebComponent implements Component {
         OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
         Map<String, ObjectFactory<?>> contextFactories = new HashMap<>();
 
-        SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory
-                = new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);
+        SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory = new SingletonObjectFactory<>(oasisContext);
         contextFactories.put(OASIS_CONTEXT_ATTRIBUTE, oasisComponentContextFactory);
 
         injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
@@ -147,12 +146,7 @@ public class WebComponent implements Component {
         if (sites == null || sites.isEmpty()) {
             throw new Fabric3Exception("Injection site not found for: " + name);
         }
-        Class<?> type;
-        try {
-            type = classLoader.loadClass(sites.values().iterator().next().getType());
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Reference type not found for: " + name, e);
-        }
+        Class<?> type = sites.values().iterator().next().getType();
         ObjectFactory<?> factory = createWireFactory(type, wire);
         attach(name, factory);
     }
@@ -166,12 +160,7 @@ public class WebComponent implements Component {
         if (sites == null || sites.isEmpty()) {
             throw new Fabric3Exception("Injection site not found for: " + name);
         }
-        Class<?> type;
-        try {
-            type = classLoader.loadClass(sites.values().iterator().next().getType());
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Producer type not found for: " + name, e);
-        }
+        Class<?> type = sites.values().iterator().next().getType();
         ObjectFactory<?> factory = createChannelFactory(type, connection);
         attach(name, factory);
     }
