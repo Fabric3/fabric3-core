@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
@@ -63,7 +62,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
 
-        Method method = loadMethod(target, component);
+        Method method = target.getConsumerMethod();
         ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
 
         InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
@@ -73,16 +72,6 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
 
     public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) {
         // no-op
-    }
-
-    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) {
-        Signature signature = target.getConsumerSignature();
-        Class<?> implementationClass = component.getImplementationClass();
-        try {
-            return signature.getMethod(implementationClass);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new Fabric3Exception(e);
-        }
     }
 
 }

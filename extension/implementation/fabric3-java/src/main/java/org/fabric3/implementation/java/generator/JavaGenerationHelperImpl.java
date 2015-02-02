@@ -18,6 +18,7 @@
  */
 package org.fabric3.implementation.java.generator;
 
+import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -30,7 +31,6 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
@@ -122,12 +122,12 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         URI uri = component.getUri();
         definition.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
-        Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
-        if (signature == null) {
+        Method method = type.getConsumerMethod(consumer.getUri().getFragment());
+        if (method == null) {
             // programming error
-            throw new Fabric3Exception("Consumer signature not found on: " + consumer.getUri());
+            throw new Fabric3Exception("Consumer method not found on: " + consumer.getUri());
         }
-        definition.setConsumerSignature(signature);
+        definition.setConsumerMethod(method);
     }
 
     public void generateCallbackWireSource(JavaWireSourceDefinition definition,

@@ -32,7 +32,6 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -74,7 +73,6 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         List<DataType> types = introspectParameterTypes(method, typeMapping);
         // TODO handle policies
         String name = helper.getSiteName(method, annotation.value());
-        Signature signature = new Signature(method);
         Consumer<ComponentType> consumer = new Consumer<>(name, types);
 
         int sequence = annotation.sequence();
@@ -85,7 +83,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         }
         Class<?> clazz = method.getDeclaringClass();
         processSources(annotation, consumer, method, clazz, context);
-        componentType.add(consumer, signature);
+        componentType.add(consumer, method);
     }
 
     private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {

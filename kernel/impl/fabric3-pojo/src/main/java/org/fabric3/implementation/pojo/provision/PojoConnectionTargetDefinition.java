@@ -19,21 +19,21 @@
  */
 package org.fabric3.implementation.pojo.provision;
 
-import org.fabric3.api.model.type.java.Signature;
+import java.lang.reflect.Method;
+
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  *
  */
 public class PojoConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = 6177213006707271474L;
-    private Signature consumer;
+    private Method consumer;
 
-    public Signature getConsumerSignature() {
+    public Method getConsumerMethod() {
         return consumer;
     }
 
-    public void setConsumerSignature(Signature consumer) {
+    public void setConsumerMethod(Method consumer) {
         this.consumer = consumer;
     }
 

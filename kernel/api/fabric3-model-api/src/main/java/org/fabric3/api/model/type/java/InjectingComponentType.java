@@ -49,7 +49,7 @@ public class InjectingComponentType extends ComponentType {
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<>();
     private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<>();
     private Map<String, Callback> callbacks = new HashMap<>();
-    private Map<String, Signature> consumerSignatures = new HashMap<>();
+    private Map<String, Method> consumerSignatures = new HashMap<>();
 
     /**
      * Constructor.
@@ -178,20 +178,20 @@ public class InjectingComponentType extends ComponentType {
      * Add a consumer and its associated method signature.
      *
      * @param consumer  the consumer to add
-     * @param signature the consumer method signature
+     * @param method the consumer method
      */
-    public void add(Consumer<ComponentType> consumer, Signature signature) {
+    public void add(Consumer<ComponentType> consumer, Method method) {
         super.add(consumer);
-        consumerSignatures.put(consumer.getName(), signature);
+        consumerSignatures.put(consumer.getName(), method);
     }
 
     /**
-     * Returns the consumer method signature for the given consumer name
+     * Returns the consumer method for the given consumer name
      *
      * @param name the consumer  name
      * @return the method signature
      */
-    public Signature getConsumerSignature(String name) {
+    public Method getConsumerMethod(String name) {
         return consumerSignatures.get(name);
     }
 
