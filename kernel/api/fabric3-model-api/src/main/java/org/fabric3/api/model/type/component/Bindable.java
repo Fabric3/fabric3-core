@@ -9,7 +9,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A model object which can be configured with a binding.
  */
 public abstract class Bindable<P extends ModelObject> extends ModelObject<P> {
-    private static final long serialVersionUID = -7495919678050678596L;
 
     protected List<Binding> bindings = new ArrayList<>();
 

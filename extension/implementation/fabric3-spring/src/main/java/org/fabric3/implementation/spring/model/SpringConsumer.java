@@ -26,7 +26,6 @@ import org.fabric3.spi.model.type.java.JavaType;
  * An SCA consumer definition in a Spring application context.
  */
 public class SpringConsumer extends Consumer {
-    private static final long serialVersionUID = 204519855340684340L;
     private String beanName;
     private JavaType type;
     private String methodName;

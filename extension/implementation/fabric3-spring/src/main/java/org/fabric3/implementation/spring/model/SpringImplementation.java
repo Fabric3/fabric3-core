@@ -26,8 +26,6 @@ import org.fabric3.api.model.type.component.Implementation;
  * A Spring component implementation type.
  */
 public class SpringImplementation extends Implementation<SpringComponentType> {
-    private static final long serialVersionUID = -6701786225245805039L;
-
     public enum LocationType {
         JAR, DIRECTORY, FILE
     }

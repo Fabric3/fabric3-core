@@ -82,8 +82,6 @@ public class ChannelInstantiatorImplTestCase extends TestCase {
 
 
     private class MockBinding extends Binding {
-        private static final long serialVersionUID = -7088192438672216044L;
-
         public MockBinding() {
             super(null, null);
         }

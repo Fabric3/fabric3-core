@@ -34,7 +34,6 @@ import org.fabric3.api.model.type.PolicyAware;
  * An operation on a service contract.
  */
 public class Operation extends ModelObject<ServiceContract> implements PolicyAware{
-    private static final long serialVersionUID = 5279880534105654066L;
     private String name;
     private boolean remotable;
     private boolean oneWay;

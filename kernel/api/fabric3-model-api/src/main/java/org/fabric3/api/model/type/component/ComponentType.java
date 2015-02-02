@@ -32,8 +32,6 @@ import org.fabric3.api.model.type.PolicyAware;
  * A base component type.
  */
 public class ComponentType extends ModelObject<Implementation> implements PolicyAware {
-    private static final long serialVersionUID = 5302580019263119837L;
-
     private String key;
     private int order = Integer.MIN_VALUE;
 

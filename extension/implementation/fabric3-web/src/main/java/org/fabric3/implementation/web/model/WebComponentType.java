@@ -29,7 +29,6 @@ import org.fabric3.api.model.type.java.InjectionSite;
  * A component type representing a web component.
  */
 public class WebComponentType extends ComponentType {
-    private static final long serialVersionUID = 9213093177241637932L;
     private final Map<String, Map<InjectionSite, Injectable>> sites = new HashMap<>();
 
     /**

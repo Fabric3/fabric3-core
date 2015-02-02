@@ -23,8 +23,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  * Models non-managed code that is deployed as a component to a service fabric.
  */
 public class NonManagedImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = 8179450453871659967L;
-
     public String getType() {
         return "NonManaged";
     }

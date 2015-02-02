@@ -86,8 +86,6 @@ public class InstantiationTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<ComponentType> {
-        private static final long serialVersionUID = 4128780797281194069L;
-
         public String getType() {
             return null;
         }

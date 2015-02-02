@@ -25,7 +25,6 @@ import org.fabric3.implementation.junit.common.ContextConfiguration;
  *
  */
 public class JUnitBinding extends Binding {
-    private static final long serialVersionUID = -1306543849900003084L;
     private ContextConfiguration configuration;
 
     /**

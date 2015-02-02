@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  * Represents the system composite implementation
  */
 public class SystemImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = -3698947089871597184L;
     private String implementationClass;
 
     public SystemImplementation() {

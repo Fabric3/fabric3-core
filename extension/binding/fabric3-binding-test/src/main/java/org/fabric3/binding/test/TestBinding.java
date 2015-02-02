@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.component.Binding;
  *
  */
 public class TestBinding extends Binding {
-    private static final long serialVersionUID = 2529090404017606258L;
 
     public TestBinding(String name, URI targetUri) {
         super(name, targetUri, "test");

@@ -30,8 +30,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A reference.
  */
 public class Reference<P extends ModelObject> extends Bindable<P> {
-    private static final long serialVersionUID = 4641581818938572132L;
-
     private String name;
 
     private ServiceContract serviceContract;

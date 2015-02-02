@@ -22,6 +22,5 @@ import org.fabric3.api.model.type.ModelObject;
  * A resource declared in composite.
  */
 public class Resource extends ModelObject<Composite> {
-    private static final long serialVersionUID = -3860710064340747379L;
 
 }

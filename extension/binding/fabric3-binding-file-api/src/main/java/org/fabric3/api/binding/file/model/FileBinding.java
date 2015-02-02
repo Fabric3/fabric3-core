@@ -23,7 +23,6 @@ import org.fabric3.api.model.type.component.Binding;
  * A file binding configuration set on a reference.
  */
 public class FileBinding extends Binding {
-    private static final long serialVersionUID = -8904535030035183877L;
     private static final String BINDING_FILE = "file";
 
     private String pattern;

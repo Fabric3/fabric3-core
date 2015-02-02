@@ -73,7 +73,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
         serviceHeuristic.applyHeuristics(componentType, implClass, context);
 
         if (componentType.getConstructor() == null) {
-            Signature ctor = findConstructor(implClass, componentType, context);
+            Constructor<?> ctor = findConstructor(implClass, componentType, context);
             componentType.setConstructor(ctor);
         }
 
@@ -123,7 +123,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
         return null;
     }
 
-    private Signature findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+    private Constructor<?> findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Constructor<?>[] constructors = implClass.getDeclaredConstructors();
         Constructor<?> selected = null;
         if (constructors.length == 1) {
@@ -143,22 +143,16 @@ public class JUnitHeuristic implements HeuristicProcessor {
                 return null;
             }
         }
-        return new Signature(selected);
+        return selected;
     }
 
     private void evaluateConstructor(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
-        Constructor<?> constructor;
-        try {
-            if (componentType.getConstructor() == null) {
-                // there was an error with the constructor previously, just return
-                return;
-            }
-            constructor = componentType.getConstructor().getConstructor(implClass);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new AssertionError(e);
+        if (componentType.getConstructor() == null) {
+            // there was an error with the constructor previously, just return
+            return;
         }
-
+        Constructor<?> constructor = componentType.getConstructor();
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Type[] parameterTypes = constructor.getGenericParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
@@ -171,7 +165,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
 
             Type parameterType = parameterTypes[i];
             String name = helper.getSiteName(constructor, i, null);
-            Annotation[] annotations = constructor.getParameterAnnotations()[i];
             processSite(componentType, typeMapping, name, constructor, parameterType, site, context);
         }
     }
@@ -190,7 +183,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
 
             String name = helper.getSiteName(setter, null);
             Type parameterType = setter.getGenericParameterTypes()[0];
-            Annotation[] annotations = setter.getAnnotations();
             processSite(componentType, typeMapping, name, setter, parameterType, site, context);
         }
     }
@@ -209,7 +201,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
 
             String name = helper.getSiteName(field, null);
             Type parameterType = field.getGenericType();
-            Annotation[] annotations = field.getAnnotations();
             processSite(componentType, typeMapping, name, field, parameterType, site, context);
         }
     }

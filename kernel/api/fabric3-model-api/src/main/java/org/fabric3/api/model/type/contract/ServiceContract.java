@@ -28,7 +28,6 @@ import org.fabric3.api.model.type.ModelObject;
  * Base class representing service contract information.
  */
 public abstract class ServiceContract extends ModelObject<ModelObject> {
-    private static final long serialVersionUID = 7930416351019873131L;
     protected boolean remotable;
     protected String interfaceName;
     protected List<Operation> operations;

@@ -106,7 +106,7 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
 
         definition = new ImplementationManagerDefinition();
         definition.setImplementationClass(Foo.class.getName());
-        definition.setConstructor(new Signature(constructor));
+        definition.setConstructor(constructor);
         definition.setInitMethod(new Signature("init"));
         definition.setDestroyMethod(new Signature("destroy"));
         Map<InjectionSite, Injectable> construction = definition.getConstruction();

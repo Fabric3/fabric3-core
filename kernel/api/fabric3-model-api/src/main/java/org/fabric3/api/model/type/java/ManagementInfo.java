@@ -30,8 +30,6 @@ import org.fabric3.api.model.type.ModelObject;
  * Encapsulates management metadata about a component implementation.
  */
 public class ManagementInfo extends ModelObject<InjectingComponentType> {
-    private static final long serialVersionUID = 8421549578785177167L;
-
     private String name;
     private String path;
     private String group;

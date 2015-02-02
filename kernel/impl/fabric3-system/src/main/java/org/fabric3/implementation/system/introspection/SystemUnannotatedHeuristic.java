@@ -53,7 +53,8 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
     private final IntrospectionHelper helper;
     private final JavaContractProcessor contractProcessor;
 
-    public SystemUnannotatedHeuristic(@org.oasisopen.sca.annotation.Reference IntrospectionHelper helper, @org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor) {
+    public SystemUnannotatedHeuristic(@org.oasisopen.sca.annotation.Reference IntrospectionHelper helper,
+                                      @org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor) {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
     }
@@ -72,13 +73,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
 
     void evaluateConstructor(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
-        Constructor<?> constructor;
-        try {
-            constructor = componentType.getConstructor().getConstructor(implClass);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new AssertionError(e);
-        }
-
+        Constructor<?> constructor = componentType.getConstructor();
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Type[] parameterTypes = constructor.getGenericParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
@@ -131,7 +126,6 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
         }
     }
 
-
     private void processSite(InjectingComponentType componentType,
                              TypeMapping typeMapping,
                              String name,
@@ -141,16 +135,16 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
                              IntrospectionContext context) {
         InjectableType type = helper.inferType(parameterType, typeMapping);
         switch (type) {
-        case PROPERTY:
-            addProperty(componentType, typeMapping, name, parameterType, site);
-            break;
-        case REFERENCE:
-            addReference(componentType, typeMapping, name, parameterType, site, context);
-            break;
-        default:
-            String clazz = componentType.getImplClass();
-            UnknownInjectionType error = new UnknownInjectionType(site, type, clazz, member, componentType);
-            context.addError(error);
+            case PROPERTY:
+                addProperty(componentType, typeMapping, name, parameterType, site);
+                break;
+            case REFERENCE:
+                addReference(componentType, typeMapping, name, parameterType, site, context);
+                break;
+            default:
+                String clazz = componentType.getImplClass();
+                UnknownInjectionType error = new UnknownInjectionType(site, type, clazz, member, componentType);
+                context.addError(error);
         }
     }
 

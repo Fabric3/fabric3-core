@@ -32,7 +32,6 @@ import org.fabric3.api.model.type.ModelObject;
  * Note that unbound TypeVariables and WildCardTypes will be evaluated using their raw type.
  */
 public class JavaTypeInfo extends ModelObject {
-    private static final long serialVersionUID = -9157948376540103018L;
     private Class<?> rawType;
     private List<JavaTypeInfo> parameterTypeInfos;
 

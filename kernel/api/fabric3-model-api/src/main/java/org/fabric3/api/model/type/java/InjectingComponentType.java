@@ -19,6 +19,7 @@
  */
 package org.fabric3.api.model.type.java;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class InjectingComponentType extends ComponentType {
     private boolean managed;
     private ManagementInfo managementInfo;
 
-    private Signature constructor;
+    private Constructor<?> constructor;
     private Signature initMethod;
     private Signature destroyMethod;
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<>();
@@ -288,18 +289,18 @@ public class InjectingComponentType extends ComponentType {
     /**
      * Returns the signature of the constructor to use.
      *
-     * @return the signature of the constructor to use
+     * @return the constructor to use
      */
-    public Signature getConstructor() {
+    public Constructor<?> getConstructor() {
         return constructor;
     }
 
     /**
      * Sets the signature of the constructor to use.
      *
-     * @param constructor the signature of the constructor to use
+     * @param constructor the constructor to use
      */
-    public void setConstructor(Signature constructor) {
+    public void setConstructor(Constructor<?> constructor) {
         this.constructor = constructor;
     }
 

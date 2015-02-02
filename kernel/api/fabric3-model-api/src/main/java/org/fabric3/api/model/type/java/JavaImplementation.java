@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.component.Implementation;
  * Represents a Java component implementation type.
  */
 public class JavaImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = 8922589166061811190L;
     private String implementationClass;
     private transient Object instance;
 

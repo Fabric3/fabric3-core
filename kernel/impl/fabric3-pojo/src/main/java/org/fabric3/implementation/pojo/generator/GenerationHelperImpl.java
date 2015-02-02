@@ -18,6 +18,7 @@
  */
 package org.fabric3.implementation.pojo.generator;
 
+import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,6 @@ import java.util.Set;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -45,9 +45,9 @@ public class GenerationHelperImpl implements GenerationHelper {
 
         // add injections for all the active constructor args
         Map<InjectionSite, Injectable> construction = managerDefinition.getConstruction();
-        Signature constructor = componentType.getConstructor();
-        Set<Injectable> byConstruction = new HashSet<>(constructor.getParameterTypes().size());
-        for (int i = 0; i < constructor.getParameterTypes().size(); i++) {
+        Constructor<?> constructor = componentType.getConstructor();
+        Set<Injectable> byConstruction = new HashSet<>(constructor.getParameterTypes().length);
+        for (int i = 0; i < constructor.getParameterTypes().length; i++) {
             InjectionSite site = new ConstructorInjectionSite(constructor, i);
             Injectable attribute = mappings.get(site);
             construction.put(site, attribute);

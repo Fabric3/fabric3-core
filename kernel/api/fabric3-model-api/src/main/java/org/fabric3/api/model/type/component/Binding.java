@@ -29,8 +29,6 @@ import org.fabric3.api.model.type.ModelObject;
  * Base binding representation.
  */
 public abstract class Binding extends ModelObject<Bindable> {
-    private static final long serialVersionUID = 8780407747984243865L;
-
     protected URI targetUri;
     protected String type;
     protected String name;

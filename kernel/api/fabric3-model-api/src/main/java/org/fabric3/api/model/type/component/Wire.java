@@ -25,8 +25,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A wire specified in a composite file.
  */
 public class Wire extends ModelObject<Composite> {
-    private static final long serialVersionUID = -2310313135279527903L;
-
     private Target reference;
     private Target service;
 

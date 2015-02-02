@@ -31,7 +31,6 @@ import org.fabric3.api.model.type.contract.DataType;
  * A consumer introspected from a component type.
  */
 public class Consumer<P extends ModelObject> extends Bindable<P> {
-    private static final long serialVersionUID = -4222312633353056234L;
     public static final int NO_SEQUENCE = 0;
 
     private String name;

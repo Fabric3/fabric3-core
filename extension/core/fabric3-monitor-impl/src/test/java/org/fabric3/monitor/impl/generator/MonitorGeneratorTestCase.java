@@ -55,7 +55,6 @@ public class MonitorGeneratorTestCase extends TestCase {
     }
 
     private class MockDefinition extends MonitorDestinationDefinition {
-        private static final long serialVersionUID = -3620668496377933326L;
     }
 
     private class MockPhysicalDefinition extends PhysicalMonitorDestinationDefinition {

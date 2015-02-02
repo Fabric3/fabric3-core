@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A resource that takes a DataSource type.
  */
 public class DataSourceResourceReference extends ResourceReference {
-    private static final long serialVersionUID = -7941116454357577579L;
     private String dataSourceName;
 
     public DataSourceResourceReference(String resourceName, ServiceContract contract, boolean optional, String dataSourceName) {

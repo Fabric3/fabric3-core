@@ -72,9 +72,6 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<ComponentType> {
-        private static final long serialVersionUID = -4177749325047896524L;
-
-        @Override
         public String getType() {
             return null;
         }

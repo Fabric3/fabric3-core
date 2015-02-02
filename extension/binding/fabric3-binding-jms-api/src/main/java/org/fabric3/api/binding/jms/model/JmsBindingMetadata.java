@@ -28,8 +28,6 @@ import org.fabric3.api.model.type.ModelObject;
  * Encapsulates binding configuration.
  */
 public class JmsBindingMetadata extends ModelObject {
-    private static final long serialVersionUID = 4623441503097788831L;
-
     // headers specified in a JMS URI. URI headers have higher priority than plain headers
     private HeadersDefinition uriHeaders = new HeadersDefinition();
     // headers specified in the binding.jms/headers element

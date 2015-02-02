@@ -386,7 +386,6 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     private class MockBindingDefinition extends Binding {
-        private static final long serialVersionUID = 6341221394239456452L;
 
         public MockBindingDefinition() {
             super(URI.create("target"), null);
@@ -394,8 +393,6 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     private class MockContract extends ServiceContract {
-        private static final long serialVersionUID = -2909070237720164262L;
-
         @Override
         public String getQualifiedInterfaceName() {
             return "service";
@@ -408,8 +405,6 @@ public class WireGeneratorImplTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<ComponentType> {
-        private static final long serialVersionUID = -8283300933931216298L;
-
         @Override
         public String getType() {
             return null;

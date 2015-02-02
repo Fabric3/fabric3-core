@@ -26,9 +26,6 @@ import org.fabric3.api.model.type.component.Implementation;
  * Model object for a web component.
  */
 public class WebImplementation extends Implementation<WebComponentType> {
-    private static final long serialVersionUID = 5589199308230767243L;
-    // the deprecated, F3-specific namespace
-
     private URI uri;
 
     /**

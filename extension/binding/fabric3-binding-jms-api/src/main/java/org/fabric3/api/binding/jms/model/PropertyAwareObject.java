@@ -29,7 +29,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A JMS binding configuration element that contains properties.
  */
 public abstract class PropertyAwareObject extends ModelObject {
-    private static final long serialVersionUID = 7862305926561642783L;
     private Map<String, String> properties = null;
 
     /**

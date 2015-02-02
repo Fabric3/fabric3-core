@@ -26,8 +26,6 @@ import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
  * Defines a default monitor destination.
  */
 public class DefaultMonitorDestinationDefinition extends MonitorDestinationDefinition {
-    private static final long serialVersionUID = 5004114389808584302L;
-
     private List<AppenderDefinition> appenderDefinitions;
 
     public DefaultMonitorDestinationDefinition() {

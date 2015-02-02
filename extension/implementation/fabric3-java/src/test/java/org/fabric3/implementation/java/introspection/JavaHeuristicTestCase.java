@@ -67,7 +67,7 @@ public class JavaHeuristicTestCase extends TestCase {
         context.addTypeMapping(MultipleCtorsWithAnnotation.class, new TypeMapping());
 
         heuristic.applyHeuristics(type, MultipleCtorsWithAnnotation.class, context);
-        assertEquals(List.class.getName(), type.getConstructor().getParameterTypes().get(0));
+        assertEquals(List.class.getName(), type.getConstructor().getParameterTypes()[0].getName());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -91,7 +91,7 @@ public class JavaHeuristicTestCase extends TestCase {
         context.addTypeMapping(MultipleCtors.class, new TypeMapping());
 
         heuristic.applyHeuristics(type, MultipleCtors.class, context);
-        assertEquals(List.class.getName(), type.getConstructor().getParameterTypes().get(0));
+        assertEquals(List.class.getName(), type.getConstructor().getParameterTypes()[0].getName());
     }
 
     @SuppressWarnings({"unchecked"})

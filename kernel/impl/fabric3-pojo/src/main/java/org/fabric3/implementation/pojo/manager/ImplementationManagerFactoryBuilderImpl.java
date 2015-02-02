@@ -56,7 +56,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
             URI componentUri = definition.getComponentUri();
             String className = definition.getImplementationClass();
             Class<?> implClass = classLoaderRegistry.loadClass(cl, className);
-            Constructor<?> ctr = getConstructor(implClass, definition.getConstructor());
+            Constructor<?> ctr = definition.getConstructor();
 
             Map<InjectionSite, Injectable> injectionSites = definition.getConstruction();
             Injectable[] cdiSources = new Injectable[ctr.getParameterTypes().length];
@@ -116,12 +116,6 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
 
     private Method getMethod(Class<?> implClass, Signature signature) throws NoSuchMethodException, ClassNotFoundException {
         return signature == null ? null : signature.getMethod(implClass);
-    }
-
-    private <T> Constructor<T> getConstructor(Class<T> implClass, Signature signature) throws ClassNotFoundException, NoSuchMethodException {
-        Constructor<T> ctr = signature.getConstructor(implClass);
-        ctr.setAccessible(true);
-        return ctr;
     }
 
 }

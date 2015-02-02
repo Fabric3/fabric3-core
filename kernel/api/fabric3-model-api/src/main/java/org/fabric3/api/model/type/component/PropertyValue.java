@@ -31,7 +31,6 @@ import org.w3c.dom.Document;
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class PropertyValue extends ModelObject<Component> {
-    private static final long serialVersionUID = -1638553201072873854L;
     private String name;
     private String source;
     private URI file;

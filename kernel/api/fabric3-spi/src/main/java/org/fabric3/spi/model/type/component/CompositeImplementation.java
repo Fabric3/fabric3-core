@@ -28,7 +28,6 @@ import org.fabric3.api.model.type.component.Implementation;
  * A composite component implementation.
  */
 public class CompositeImplementation extends Implementation<Composite> {
-    private static final long serialVersionUID = 2140686609936627287L;
     private QName name;
 
     public String getType() {

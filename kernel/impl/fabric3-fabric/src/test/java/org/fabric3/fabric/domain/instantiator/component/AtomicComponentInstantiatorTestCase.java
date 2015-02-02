@@ -261,17 +261,12 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
 
 
     private class MockBinding extends Binding {
-        private static final long serialVersionUID = -7088192438672216044L;
-
         public MockBinding() {
             super(null, null);
         }
     }
 
     private class MockImplementation extends Implementation<ComponentType> {
-        private static final long serialVersionUID = 820191204264624733L;
-
-        @Override
         public String getType() {
             return null;
         }

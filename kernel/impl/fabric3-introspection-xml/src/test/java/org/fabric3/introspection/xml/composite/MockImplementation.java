@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  *
  */
 public class MockImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = 4898222089241004315L;
     public static QName TYPE = new QName(org.fabric3.api.Namespaces.F3, "implementation.testing");
 
     public String getType() {

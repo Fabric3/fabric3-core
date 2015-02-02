@@ -23,8 +23,6 @@ import org.fabric3.api.model.type.component.Implementation;
  * An implementation of a component hosted on a remote node.
  */
 public class RemoteImplementation extends Implementation<ComponentType> {
-    private static final long serialVersionUID = -1812724898310420362L;
-
     public String getType() {
         return "remote";
     }

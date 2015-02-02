@@ -20,6 +20,7 @@
 package org.fabric3.implementation.pojo.provision;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class ImplementationManagerDefinition implements Serializable {
     private static final long serialVersionUID = 3516497485593609161L;
 
     private String implementationClass;
-    private Signature constructor;
+    private Constructor<?> constructor;
     private Signature initMethod;
     private Signature destroyMethod;
     private boolean reinjectable;
@@ -65,18 +66,18 @@ public class ImplementationManagerDefinition implements Serializable {
     /**
      * Returns the signature of the constructor that should be used.
      *
-     * @return the signature of the constructor that should be used
+     * @return the constructor that should be used
      */
-    public Signature getConstructor() {
+    public Constructor<?> getConstructor() {
         return constructor;
     }
 
     /**
      * Sets the signature of the constructor that should be used.
      *
-     * @param constructor the signature of the constructor that should be used
+     * @param constructor the constructor that should be used
      */
-    public void setConstructor(Signature constructor) {
+    public void setConstructor(Constructor<?> constructor) {
         this.constructor = constructor;
     }
 

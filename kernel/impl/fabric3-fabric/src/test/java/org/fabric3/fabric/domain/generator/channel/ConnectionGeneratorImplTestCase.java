@@ -241,9 +241,6 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<ComponentType> {
-        private static final long serialVersionUID = -7252835651799578229L;
-
-        @Override
         public String getType() {
             return null;
         }

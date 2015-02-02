@@ -27,9 +27,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  * Implementation type for mock components.
  */
 public class ImplementationMock extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = -3519206465795353416L;
-
-
     private final List<String> mockedInterfaces;
 
     /**

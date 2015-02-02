@@ -18,7 +18,6 @@
  */
 package org.fabric3.contribution;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -89,7 +88,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(Class<V> type, S symbol) {
+    public <S extends Symbol, V> ResourceElement<S, V> find(Class<V> type, S symbol) {
         for (Contribution contribution : cache.values()) {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> element : resource.getResourceElements()) {
@@ -106,11 +105,11 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) {
+    public <S extends Symbol, V> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) {
         return resolve(uri, type, symbol, null);
     }
 
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context) {
+    public <S extends Symbol, V> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context) {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
@@ -121,7 +120,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) {
+    public <V> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) {
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
@@ -272,7 +271,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return extensions;
     }
 
-    private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(Contribution contribution,
+    private <S extends Symbol, V> ResourceElement<S, V> resolve(Contribution contribution,
                                                                                      Class<V> type,
                                                                                      S symbol,
                                                                                      IntrospectionContext context) {
@@ -334,7 +333,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolveInternal(Contribution contribution,
+    private <S extends Symbol, V> ResourceElement<S, V> resolveInternal(Contribution contribution,
                                                                                              Class<V> type,
                                                                                              S symbol,
                                                                                              IntrospectionContext context) {

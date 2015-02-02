@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A resource sourced from the runtime domain.
  */
 public class SystemSourcedResourceReference extends ResourceReference {
-    private static final long serialVersionUID = 8542386357450347005L;
     private String mappedName;
 
     public SystemSourcedResourceReference(String name, boolean optional, String mappedName, ServiceContract serviceContract) {

@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A component type callback.
  */
 public class Callback extends ModelObject<ComponentType> {
-    private static final long serialVersionUID = -1845071329121684755L;
 
     private String name;
     private ServiceContract serviceContract;

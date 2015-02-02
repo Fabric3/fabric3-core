@@ -27,8 +27,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A composite include.
  */
 public class Include extends ModelObject<Composite> {
-    private static final long serialVersionUID = 3982129607792011105L;
-
     private QName name;
     private Composite included;
 

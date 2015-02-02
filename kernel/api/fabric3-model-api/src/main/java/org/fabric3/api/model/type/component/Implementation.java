@@ -25,8 +25,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A base component implementation.
  */
 public abstract class Implementation<T extends ComponentType> extends ModelObject<Component> {
-    private static final long serialVersionUID = -6060603636927660850L;
-
     private T componentType;
 
     protected Implementation() {

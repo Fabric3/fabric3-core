@@ -27,8 +27,6 @@ import org.fabric3.api.model.type.component.Binding;
  * Encapsulates JMS binding configuration specified in a composite.
  */
 public class JmsBinding extends Binding {
-    private static final long serialVersionUID = -1888120511695824132L;
-
     private URI generatedTargetUri;
     private JmsBindingMetadata metadata;
 

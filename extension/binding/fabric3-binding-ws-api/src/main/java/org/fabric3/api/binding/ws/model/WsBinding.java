@@ -29,8 +29,6 @@ import org.fabric3.api.model.type.component.Binding;
  * Logical binding definition for web services.
  */
 public class WsBinding extends Binding {
-    private static final long serialVersionUID = -2097314069798596206L;
-
     private String wsdlLocation;
     private String wsdlElement;
     private Map<String, String> configuration;

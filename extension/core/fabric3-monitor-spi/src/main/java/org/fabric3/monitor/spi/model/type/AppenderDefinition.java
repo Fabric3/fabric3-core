@@ -22,7 +22,6 @@ import org.fabric3.api.model.type.ModelObject;
  *
  */
 public class AppenderDefinition extends ModelObject<MonitorResource> {
-    private static final long serialVersionUID = 2317094916412094075L;
     private String type;
 
     public AppenderDefinition(String type) {

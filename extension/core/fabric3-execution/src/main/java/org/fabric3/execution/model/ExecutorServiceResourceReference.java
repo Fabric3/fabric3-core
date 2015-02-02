@@ -25,8 +25,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A resource that takes an ExecutorService type.
  */
 public class ExecutorServiceResourceReference extends ResourceReference {
-    private static final long serialVersionUID = -7941116454357577579L;
-
     public ExecutorServiceResourceReference(String resourceName, ServiceContract contract) {
         super(resourceName, contract, false);
     }

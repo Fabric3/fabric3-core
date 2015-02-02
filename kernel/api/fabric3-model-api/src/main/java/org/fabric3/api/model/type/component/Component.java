@@ -29,8 +29,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A component configuration in a composite file.
  */
 public class Component<I extends Implementation<?>> extends ModelObject<Composite> {
-    private static final long serialVersionUID = 4909969579651563484L;
-
     private String name;
     private I implementation;
     private String key;

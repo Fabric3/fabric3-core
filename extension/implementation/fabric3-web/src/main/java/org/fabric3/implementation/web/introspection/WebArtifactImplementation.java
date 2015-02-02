@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  * Represents the implementation of a web artifact such as a servlet or filter.
  */
 public class WebArtifactImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = -5415465119697665067L;
 
     public String getType() {
         return "webartifact";

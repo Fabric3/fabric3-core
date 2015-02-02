@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.ModelObject;
  * A response configuration.
  */
 public class ResponseDefinition extends ModelObject {
-    private static final long serialVersionUID = -3413442748842988653L;
     private Destination destination;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
     private ActivationSpec activationSpec;

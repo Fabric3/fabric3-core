@@ -27,8 +27,6 @@ import java.util.Map;
 public class Channel extends Bindable<Composite> {
     public static final String DEFAULT_TYPE = "default";
 
-    private static final long serialVersionUID = 8735705202863105855L;
-
     private String name;
     private String type = DEFAULT_TYPE;
     private boolean local;

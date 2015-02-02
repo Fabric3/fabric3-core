@@ -187,8 +187,6 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     }
 
     private class MockWireDefinition extends PhysicalWireDefinition {
-        private static final long serialVersionUID = 358078346745301821L;
-
         private MockWireDefinition() {
             super(null, null, null);
         }

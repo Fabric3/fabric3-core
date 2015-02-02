@@ -18,7 +18,6 @@
  */
 package org.fabric3.spi.contribution;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +67,7 @@ public interface MetaDataStore {
      * @param symbol the symbol used to represent the resource element.
      * @return the resource element or null if not found
      */
-    <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(Class<V> type, S symbol);
+    <S extends Symbol, V> ResourceElement<S, V> find(Class<V> type, S symbol);
 
     /**
      * Finds a resource element by its symbol against the given contribution uri.
@@ -79,7 +78,7 @@ public interface MetaDataStore {
      * @return the resource element or null if not found
      * @throws Fabric3Exception if an error occurs during resolution
      */
-    <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws Fabric3Exception;
+    <S extends Symbol, V> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws Fabric3Exception;
 
     /**
      * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.
@@ -91,7 +90,7 @@ public interface MetaDataStore {
      * @return the resource element or null if not found
      * @throws Fabric3Exception if an error occurs during resolution
      */
-    <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
+    <S extends Symbol, V> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
             throws Fabric3Exception;
 
     /**
@@ -102,7 +101,7 @@ public interface MetaDataStore {
      * @return the collection of resource elements
      * @throws Fabric3Exception if there is an error resolving the resource elements
      */
-    <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws Fabric3Exception;
+    <V> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws Fabric3Exception;
 
     /**
      * Resolves an import or returns an empty list if it cannot be satisfied.

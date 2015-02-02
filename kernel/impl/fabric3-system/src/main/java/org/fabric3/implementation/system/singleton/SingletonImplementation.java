@@ -26,8 +26,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  *
  */
 public class SingletonImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = -3874858273451538661L;
-
     private String implementationClass;
 
     public SingletonImplementation(InjectingComponentType componentType, String implementationClass) {

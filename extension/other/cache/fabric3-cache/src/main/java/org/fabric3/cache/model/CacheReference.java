@@ -24,8 +24,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A reference to a cache resource.
  */
 public class CacheReference extends ResourceReference {
-    private static final long serialVersionUID = 7840284656807493613L;
-
     private String cacheName;
 
     public CacheReference(String name, ServiceContract serviceContract, boolean optional, String cacheName) {

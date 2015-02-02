@@ -35,8 +35,6 @@ import org.fabric3.api.model.type.RuntimeMode;
  * A composite component type.
  */
 public class Composite extends ComponentType {
-    private static final long serialVersionUID = -3126069884608566611L;
-
     private QName name;
     private URI contributionUri;
 

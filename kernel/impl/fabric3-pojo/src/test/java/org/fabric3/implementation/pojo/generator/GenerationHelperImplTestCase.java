@@ -19,6 +19,7 @@
  */
 package org.fabric3.implementation.pojo.generator;
 
+import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -26,7 +27,6 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 
@@ -41,8 +41,8 @@ public class GenerationHelperImplTestCase extends TestCase {
     private Injectable intProp;
     private Injectable stringProp;
 
-    public void testSimpleConstructor() {
-        Signature constructor = new Signature("Test", "int", "String");
+    public void testSimpleConstructor() throws Exception {
+        Constructor<?> constructor = Test.class.getConstructor(Integer.TYPE, String.class);
         ConstructorInjectionSite intSite = new ConstructorInjectionSite(constructor, 0);
         ConstructorInjectionSite stringSite = new ConstructorInjectionSite(constructor, 1);
         componentType.setConstructor(constructor);
@@ -66,5 +66,12 @@ public class GenerationHelperImplTestCase extends TestCase {
         intProp = new Injectable(InjectableType.PROPERTY, "intProp");
         stringProp = new Injectable(InjectableType.PROPERTY, "stringProp");
     }
+
+    public static class Test {
+
+        public Test(int x, String y) {
+        }
+    }
+
 
 }

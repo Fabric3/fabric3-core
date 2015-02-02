@@ -30,7 +30,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A producer introspected from a component type.
  */
 public class Producer<P extends ModelObject> extends Bindable<P> {
-    private static final long serialVersionUID = -4222312633353056234L;
 
     private String name;
     private ServiceContract serviceContract;

@@ -26,8 +26,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A reference to a system resource introspected from a component type.
  */
 public class ResourceReference extends ModelObject<ComponentType> {
-    private static final long serialVersionUID = 4241666632750146304L;
-
     private String name;
     private boolean optional;
     private ServiceContract serviceContract;

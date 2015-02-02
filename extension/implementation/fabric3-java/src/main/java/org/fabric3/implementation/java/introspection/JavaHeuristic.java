@@ -37,7 +37,6 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -74,7 +73,7 @@ public class JavaHeuristic implements HeuristicProcessor {
         serviceHeuristic.applyHeuristics(componentType, implClass, context);
 
         if (componentType.getConstructor() == null) {
-            Signature ctor = findConstructor(implClass, componentType, context);
+            Constructor<?> ctor = findConstructor(implClass, componentType, context);
             componentType.setConstructor(ctor);
         }
 
@@ -92,7 +91,7 @@ public class JavaHeuristic implements HeuristicProcessor {
 
     }
 
-    private Signature findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+    private Constructor<?> findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Constructor<?>[] constructors = implClass.getDeclaredConstructors();
         Constructor<?> selected = null;
         if (constructors.length == 1) {
@@ -129,23 +128,12 @@ public class JavaHeuristic implements HeuristicProcessor {
                 }
             }
         }
-        return new Signature(selected);
+        return selected;
     }
 
     private void evaluateConstructor(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
-        Constructor<?> constructor;
-        try {
-            Signature ctor = componentType.getConstructor();
-            if (ctor == null) {
-                // there could have been an error evaluating the constructor, in which case no signature will be present
-                return;
-            }
-            constructor = ctor.getConstructor(implClass);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new AssertionError(e);
-        }
-
+        Constructor<?> constructor = componentType.getConstructor();
         Type[] parameterTypes = constructor.getGenericParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
             InjectionSite site = new ConstructorInjectionSite(constructor, i);
@@ -205,7 +193,8 @@ public class JavaHeuristic implements HeuristicProcessor {
                              Member member,
                              Class<?> parameterType,
                              Class<?> declaringClass,
-                             InjectionSite site, IntrospectionContext context) {
+                             InjectionSite site,
+                             IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(declaringClass);
         InjectableType type = helper.inferType(parameterType, typeMapping);
         switch (type) {

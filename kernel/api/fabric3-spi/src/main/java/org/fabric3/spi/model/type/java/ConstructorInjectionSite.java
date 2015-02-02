@@ -50,10 +50,6 @@ public class ConstructorInjectionSite extends InjectionSite implements Externali
         this.param = param;
     }
 
-    public ConstructorInjectionSite() {
-        // ctor for deserialization
-    }
-
     /**
      * Returns the signature that identifies the method.
      *

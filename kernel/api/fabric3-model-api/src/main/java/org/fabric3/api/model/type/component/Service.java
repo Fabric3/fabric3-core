@@ -29,8 +29,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * A service.
  */
 public class Service<P extends ModelObject> extends Bindable<P> {
-    private static final long serialVersionUID = -3331868180749278028L;
-
     private String name;
     private ServiceContract serviceContract;
     private List<Binding> callbackBindings = new ArrayList<>();

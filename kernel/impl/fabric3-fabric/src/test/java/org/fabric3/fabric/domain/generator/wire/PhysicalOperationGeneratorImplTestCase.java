@@ -129,8 +129,6 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<ComponentType> {
-        private static final long serialVersionUID = 2052223324217668545L;
-
         private InjectingComponentType componentType = new InjectingComponentType();
 
         public ComponentType getComponentType() {

@@ -21,7 +21,6 @@ package org.fabric3.implementation.system.introspection;
 import java.lang.reflect.Constructor;
 
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.NoConstructorFound;
@@ -38,22 +37,20 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
             return;
         }
 
-        Signature signature = findConstructor(implClass, componentType, context);
-        componentType.setConstructor(signature);
+        Constructor<?> ctor = findConstructor(implClass, componentType, context);
+        componentType.setConstructor(ctor);
     }
 
     /**
-     * Find the constructor to use.
-     * <p/>
-     * For now, we require that the class have a single constructor or one annotated with @Constructor. If there is more than one, the default
-     * constructor will be selected or an org.osoa.sca.annotations.Constructor annotation must be used.
+     * Find the constructor to use. <p/> For now, we require that the class have a single constructor or one annotated with @Constructor. If there is more than
+     * one, the default constructor will be selected or an org.osoa.sca.annotations.Constructor annotation must be used.
      *
      * @param implClass     the class we are inspecting
      * @param componentType the parent component type
      * @param context       the introspection context to report errors and warnings
-     * @return the signature of the constructor to use
+     * @return the constructor to use
      */
-    Signature findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+    Constructor<?> findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Constructor<?>[] constructors = implClass.getDeclaredConstructors();
         Constructor<?> selected = null;
         if (constructors.length == 1) {
@@ -77,7 +74,7 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
                 }
             }
         }
-        return new Signature(selected);
+        return selected;
     }
 
 }

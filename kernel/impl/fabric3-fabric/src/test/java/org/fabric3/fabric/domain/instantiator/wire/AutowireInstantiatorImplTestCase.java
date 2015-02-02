@@ -183,8 +183,6 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
     }
 
     private class MockAtomicImpl extends Implementation<ComponentType> {
-        private static final long serialVersionUID = 9075647188452892957L;
-
         public String getType() {
             throw new UnsupportedOperationException();
         }

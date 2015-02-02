@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  *
  */
 public class MonitorResourceReference extends ResourceReference {
-    private static final long serialVersionUID = -6723752212878850748L;
     private String destination;
 
     /**

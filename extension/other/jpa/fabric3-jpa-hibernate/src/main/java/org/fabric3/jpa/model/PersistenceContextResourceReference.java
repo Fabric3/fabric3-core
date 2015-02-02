@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * Represents an entity manager factory treated as a resource.
  */
 public final class PersistenceContextResourceReference extends ResourceReference {
-    private static final long serialVersionUID = -8717050996527626286L;
     private String unitName;
     private boolean multiThreaded;
 

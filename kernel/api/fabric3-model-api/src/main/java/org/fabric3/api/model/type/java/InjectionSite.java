@@ -25,7 +25,6 @@ import org.fabric3.api.model.type.ModelObject;
  * Represents an injection site on a Java-based component implementation.
  */
 public class InjectionSite extends ModelObject<InjectingComponentType> {
-    private static final long serialVersionUID = 7792895640425046691L;
 
     // Name of type being injected
     private String type;

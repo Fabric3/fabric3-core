@@ -19,13 +19,10 @@
  */
 package org.fabric3.api.model.type;
 
-import java.io.Serializable;
-
 /**
  * The base class for model types.
  */
-public abstract class ModelObject<P extends ModelObject> implements Serializable {
-    private static final long serialVersionUID = -4731760911483352681L;
+public abstract class ModelObject<P extends ModelObject>  {
 
     private P parent;
 

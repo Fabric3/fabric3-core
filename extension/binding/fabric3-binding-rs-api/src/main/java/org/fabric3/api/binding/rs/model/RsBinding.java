@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.component.Binding;
  * Configures a service to be exposed as a JAX-RS resource.
  */
 public class RsBinding extends Binding {
-    private static final long serialVersionUID = 7344870455465600359L;
 
     public RsBinding(String name, URI serviceUri) {
         super(name, serviceUri, "rs");
