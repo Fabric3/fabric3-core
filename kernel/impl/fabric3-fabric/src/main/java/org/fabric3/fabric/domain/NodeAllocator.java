@@ -46,15 +46,9 @@ public class NodeAllocator implements Allocator {
         if (Names.LOCAL_ZONE.equals(component.getZone())) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
-                for (LogicalComponent<?> child : composite.getComponents()) {
-                    allocate(child);
-                }
-                for (LogicalResource<?> resource : composite.getResources()) {
-                    allocate(resource);
-                }
-                for (LogicalChannel channel : composite.getChannels()) {
-                    allocate(channel);
-                }
+                composite.getComponents().forEach(this::allocate);
+                composite.getResources().forEach(this::allocate);
+                composite.getChannels().forEach(this::allocate);
             }
             component.setZone(zoneName);
         }
