@@ -19,8 +19,9 @@
  */
 package org.fabric3.spi.container.component;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * The runtime instantiation of an SCA atomic, or leaf-type, component.
@@ -28,11 +29,11 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 public interface AtomicComponent extends Component {
 
     /**
-     * Create an ObjectFactory that returns an instance of this AtomicComponent.
+     * Create a Supplier that returns an instance of this AtomicComponent.
      *
-     * @return an ObjectFactory that returns an instance of this AtomicComponent
+     * @return a Supplier that returns an instance of this AtomicComponent
      */
-    ObjectFactory<Object> createObjectFactory();
+    Supplier<Object> createSupplier();
 
     /**
      * Returns a component instance for the current context. After an instance is used, it must be returned by calling {@link #releaseInstance(Object)}.

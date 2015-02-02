@@ -21,10 +21,10 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 import org.fabric3.implementation.pojo.spi.reflection.InjectorFactory;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * The default runtime reflection factory extension that uses JDK reflection.
@@ -35,11 +35,11 @@ public class JDKInjectorFactory implements InjectorFactory {
         return true;
     }
 
-    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
+    public Injector<?> createInjector(Member member, Supplier<?> parameterSupplier) {
         if (member instanceof Field) {
-            return new FieldInjector((Field) member, parameterFactory);
+            return new FieldInjector((Field) member, parameterSupplier);
         } else if (member instanceof Method) {
-            return new MethodInjector((Method) member, parameterFactory);
+            return new MethodInjector((Method) member, parameterSupplier);
         } else {
             throw new AssertionError("Unsupported type: " + member);
         }

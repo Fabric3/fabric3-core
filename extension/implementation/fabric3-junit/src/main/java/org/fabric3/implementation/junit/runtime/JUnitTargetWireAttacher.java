@@ -20,6 +20,7 @@ package org.fabric3.implementation.junit.runtime;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.java.runtime.JavaComponent;
@@ -33,7 +34,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -101,10 +101,10 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTarg
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(JUnitWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(JUnitWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
-        return targetComponent.createObjectFactory();
+        return targetComponent.createSupplier();
     }
 
 }

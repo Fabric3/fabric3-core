@@ -19,13 +19,12 @@
 package org.fabric3.datasource.runtime;
 
 import javax.sql.DataSource;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -48,12 +47,12 @@ public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWire
         throw new AssertionError();
     }
 
-    public ObjectFactory<DataSource> createObjectFactory(DataSourceWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<DataSource> createSupplier(DataSourceWireTargetDefinition target) throws Fabric3Exception {
         String dataSourceName = target.getDataSourceName();
         DataSource source = registry.getDataSource(dataSourceName);
         if (!target.isOptional() && source == null) {
             throw new Fabric3Exception("DataSource not found: " + dataSourceName);
         }
-        return new SingletonObjectFactory<>(source);
+        return () -> source;
     }
 }

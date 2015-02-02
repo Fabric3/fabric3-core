@@ -47,7 +47,7 @@ public class PojoComponentContext implements Fabric3ComponentContext {
     }
 
     public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) {

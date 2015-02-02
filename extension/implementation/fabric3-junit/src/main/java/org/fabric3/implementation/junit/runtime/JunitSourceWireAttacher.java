@@ -18,13 +18,14 @@
  */
 package org.fabric3.implementation.junit.runtime;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -55,7 +56,7 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         this.authenticationService = authenticationService;
     }
 
-    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         String testName = source.getTestName();
         ContextConfiguration configuration = source.getConfiguration();
         if (configuration != null) {
@@ -74,16 +75,14 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         holder.add(testName, wire);
     }
 
-    public void attachObjectFactory(JUnitWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
+    public void attachSupplier(JUnitWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
-    public void detachObjectFactory(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
-
 
 }

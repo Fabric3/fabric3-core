@@ -20,6 +20,7 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.Handler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
@@ -27,7 +28,6 @@ import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 
@@ -43,10 +43,10 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroWireSourceD
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void detachObjectFactory(T source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(T source, PhysicalWireTargetDefinition target) {
     }
 
-    public void attachObjectFactory(T source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(T source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 

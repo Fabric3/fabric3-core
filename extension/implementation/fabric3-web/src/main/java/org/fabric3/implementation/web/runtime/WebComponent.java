@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.Fabric3Exception;
@@ -34,11 +35,8 @@ import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.container.wire.Wire;
-import org.oasisopen.sca.ServiceReference;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 
 /**
@@ -56,9 +54,9 @@ public class WebComponent implements Component {
     private final Map<String, Map<String, InjectionSite>> siteMappings;
     private final WireProxyService proxyService;
     private final QName groupId;
-    private final Map<String, ObjectFactory<?>> propertyFactories;
+    private final Map<String, Supplier<?>> propertySuppliers;
     private HostInfo info;
-    private final Map<String, ObjectFactory<?>> objectFactories;
+    private final Map<String, Supplier<?>> suppliers;
     private final URI archiveUri;
     private String contextUrl;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -72,7 +70,7 @@ public class WebComponent implements Component {
                         WebApplicationActivator activator,
                         WireProxyService wireProxyService,
                         ChannelProxyService channelProxyService,
-                        Map<String, ObjectFactory<?>> propertyFactories,
+                        Map<String, Supplier<?>> propertySuppliers,
                         Map<String, Map<String, InjectionSite>> injectorMappings,
                         HostInfo info) {
         this.uri = uri;
@@ -85,9 +83,9 @@ public class WebComponent implements Component {
         this.siteMappings = injectorMappings;
         this.proxyService = wireProxyService;
         this.groupId = deployable;
-        this.propertyFactories = propertyFactories;
+        this.propertySuppliers = propertySuppliers;
         this.info = info;
-        objectFactories = new ConcurrentHashMap<>();
+        suppliers = new ConcurrentHashMap<>();
     }
 
     public URI getUri() {
@@ -116,15 +114,14 @@ public class WebComponent implements Component {
 
     public void start() throws Fabric3Exception {
         Map<String, List<Injector<?>>> injectors = new HashMap<>();
-        injectorFactory.createInjectorMappings(injectors, siteMappings, objectFactories, classLoader);
-        injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
+        injectorFactory.createInjectorMappings(injectors, siteMappings, suppliers, classLoader);
+        injectorFactory.createInjectorMappings(injectors, siteMappings, propertySuppliers, classLoader);
         OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
-        Map<String, ObjectFactory<?>> contextFactories = new HashMap<>();
+        Map<String, Supplier<?>> contextSuppliers = new HashMap<>();
 
-        SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory = new SingletonObjectFactory<>(oasisContext);
-        contextFactories.put(OASIS_CONTEXT_ATTRIBUTE, oasisComponentContextFactory);
+        contextSuppliers.put(OASIS_CONTEXT_ATTRIBUTE, () -> oasisContext);
 
-        injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
+        injectorFactory.createInjectorMappings(injectors, siteMappings, contextSuppliers, classLoader);
         // activate the web application
         activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
     }
@@ -147,12 +144,12 @@ public class WebComponent implements Component {
             throw new Fabric3Exception("Injection site not found for: " + name);
         }
         Class<?> type = sites.values().iterator().next().getType();
-        ObjectFactory<?> factory = createWireFactory(type, wire);
-        attach(name, factory);
+        Supplier<?> supplier = createWireFactory(type, wire);
+        attach(name, supplier);
     }
 
-    public void attach(String name, ObjectFactory<?> factory) throws Fabric3Exception {
-        objectFactories.put(name, factory);
+    public void attach(String name, Supplier<?> supplier) throws Fabric3Exception {
+        suppliers.put(name, supplier);
     }
 
     public void connect(String name, ChannelConnection connection) throws Fabric3Exception {
@@ -161,7 +158,7 @@ public class WebComponent implements Component {
             throw new Fabric3Exception("Injection site not found for: " + name);
         }
         Class<?> type = sites.values().iterator().next().getType();
-        ObjectFactory<?> factory = createChannelFactory(type, connection);
+        Supplier<?> factory = createChannelFactory(type, connection);
         attach(name, factory);
     }
 
@@ -170,25 +167,20 @@ public class WebComponent implements Component {
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) throws Fabric3Exception {
-        ObjectFactory<?> factory = propertyFactories.get(propertyName);
-        if (factory != null) {
-            return type.cast(factory.getInstance());
+        Supplier<?> supplier = propertySuppliers.get(propertyName);
+        if (supplier != null) {
+            return type.cast(supplier.get());
         } else {
             return null;
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    public <B, R extends ServiceReference<B>> R cast(B target) {
-        return (R) proxyService.cast(target);
+    private <B> Supplier<B> createWireFactory(Class<B> interfaze, Wire wire) throws Fabric3Exception {
+        return proxyService.createSupplier(interfaze, wire, null);
     }
 
-    private <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws Fabric3Exception {
-        return proxyService.createObjectFactory(interfaze, wire, null);
-    }
-
-    private <B> ObjectFactory<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws Fabric3Exception {
-        return channelProxyService.createObjectFactory(interfaze, connection);
+    private <B> Supplier<B> createChannelFactory(Class<B> interfaze, ChannelConnection connection) throws Fabric3Exception {
+        return channelProxyService.createSupplier(interfaze, connection);
     }
 
     public String toString() {

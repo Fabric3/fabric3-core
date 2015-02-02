@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Signature;
@@ -32,7 +33,6 @@ import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -57,7 +57,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return false;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws Fabric3Exception {
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, Wire wire, String callbackUri) {
         URI uri = getClassLoaderUri(interfaze);
 
         List<InvocationChain> list = wire.getInvocationChains();
@@ -65,10 +65,10 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         Method[] methods = mappings.keySet().toArray(new Method[mappings.size()]);
         InvocationChain[] chains = mappings.values().toArray(new InvocationChain[mappings.size()]);
 
-        return new WireProxyObjectFactory<>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
+        return new WireProxySupplier<>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
     }
 
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws Fabric3Exception {
+    public <T> Supplier<T> createCallbackSupplier(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) {
         URI uri = getClassLoaderUri(interfaze);
 
         List<InvocationChain> list = wire.getInvocationChains();
@@ -77,24 +77,19 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         InvocationChain[] chains = mappings.values().toArray(new InvocationChain[mappings.size()]);
 
         String callbackString = callbackUri.toString();
-        return new CallbackWireObjectFactory<>(uri, interfaze, methods, callbackString, chains, proxyFactory);
+        return new CallbackWireSupplier<>(uri, interfaze, methods, callbackString, chains, proxyFactory);
     }
 
-    public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws Fabric3Exception {
-        if (!(factory instanceof CallbackWireObjectFactory)) {
-            throw new Fabric3Exception("Expected object factory of type: " + CallbackWireObjectFactory.class.getName());
+    public <T> Supplier<?> updateCallbackSupplier(Supplier<?> supplier, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) {
+        if (!(supplier instanceof CallbackWireSupplier)) {
+            throw new Fabric3Exception("Expected Supplier of type: " + CallbackWireSupplier.class.getName());
         }
-        CallbackWireObjectFactory callbackFactory = (CallbackWireObjectFactory) factory;
+        CallbackWireSupplier callbackFactory = (CallbackWireSupplier) supplier;
 
         List<InvocationChain> list = wire.getInvocationChains();
         InvocationChain[] chains = list.toArray(new InvocationChain[list.size()]);
         callbackFactory.updateMappings(callbackUri.toString(), chains);
         return callbackFactory;
-    }
-
-    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
     }
 
     private <T> URI getClassLoaderUri(Class<T> interfaze) {
@@ -105,7 +100,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         return ((MultiParentClassLoader) classLoader).getName();
     }
 
-    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws Fabric3Exception {
+    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) {
         Map<Method, InvocationChain> chainMappings = new HashMap<>(chains.size());
         for (InvocationChain chain : chains) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();

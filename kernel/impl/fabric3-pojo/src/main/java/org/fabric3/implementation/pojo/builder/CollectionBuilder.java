@@ -18,28 +18,28 @@
 package org.fabric3.implementation.pojo.builder;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.w3c.dom.Document;
 
 /**
- * Builds an object factory that creates a property value collection from a DOM.
+ * Builds a Supplier that creates a property value collection from a DOM.
  */
 public interface CollectionBuilder {
 
     /**
-     * Creates the object factory for the property value.
+     * Creates the Supplier for the property value.
      *
      * @param collection  the collection
      * @param name        the property name
      * @param type        the property type
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
-     * @return the object factory
-     * @throws Fabric3Exception if there is an error creating the object factory
+     * @return the Supplier
+     * @throws Fabric3Exception if there is an error creating the Supplier
      */
-    <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection, String name, JavaGenericType type, Document value, ClassLoader classLoader)
+    <T> Supplier<Collection<T>> createFactory(Collection<T> collection, String name, JavaGenericType type, Document value, ClassLoader classLoader)
             throws Fabric3Exception;
 }

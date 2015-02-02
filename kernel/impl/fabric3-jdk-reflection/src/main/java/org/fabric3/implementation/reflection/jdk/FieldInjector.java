@@ -20,32 +20,32 @@
 package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Field;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
+import org.fabric3.spi.container.injection.InjectionAttributes;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
- * Injects a value created by an {@link ObjectFactory} on a given field.
+ * Injects a value created by a Supplier on a given field.
  */
 public class FieldInjector implements Injector<Object> {
     private final Field field;
 
-    private ObjectFactory<?> objectFactory;
+    private Supplier<?> supplier;
 
     /**
-     * Create an injector and have it use the given <code>ObjectFactory</code> to inject a value on the instance using the reflected
+     * Create an injector and have it use the given Supplier to inject a value on the instance using the reflected
      * <code>Field</code>
      *
      * @param field         target field to inject on
-     * @param objectFactory the object factor that creates the value to inject
+     * @param supplier the object factor that creates the value to inject
      */
-    public FieldInjector(Field field, ObjectFactory<?> objectFactory) {
+    public FieldInjector(Field field, Supplier<?> supplier) {
         this.field = field;
         this.field.setAccessible(true);
-        this.objectFactory = objectFactory;
+        this.supplier = supplier;
     }
 
     /**
@@ -54,13 +54,13 @@ public class FieldInjector implements Injector<Object> {
     public void inject(Object instance) throws Fabric3Exception {
         try {
             Object target;
-            if (objectFactory == null) {
+            if (supplier == null) {
                 // this can happen if a value is removed such as a reference being un-wired
                 target = null;
             } else {
-                target = objectFactory.getInstance();
+                target = supplier.get();
                 if (target == null) {
-                    // The object factory is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
+                    // The Supplier is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
                     // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
                     return;
                 }
@@ -72,21 +72,21 @@ public class FieldInjector implements Injector<Object> {
         }
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+    public void setSupplier(Supplier<?> newSupplier, InjectionAttributes attributes) {
 
-        if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).addObjectFactory(objectFactory, attributes);
+        if (this.supplier instanceof MultiplicitySupplier<?>) {
+            ((MultiplicitySupplier<?>) this.supplier).addSupplier(newSupplier, attributes);
         } else {
-            this.objectFactory = objectFactory;
+            this.supplier = newSupplier;
         }
 
     }
 
-    public void clearObjectFactory() {
-        if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).clear();
+    public void clearSupplier() {
+        if (this.supplier instanceof MultiplicitySupplier<?>) {
+            ((MultiplicitySupplier<?>) this.supplier).clear();
         } else {
-            objectFactory = null;
+            supplier = null;
         }
     }
 }

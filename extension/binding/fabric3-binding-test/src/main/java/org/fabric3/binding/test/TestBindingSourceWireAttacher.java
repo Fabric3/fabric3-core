@@ -19,10 +19,9 @@
 package org.fabric3.binding.test;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -37,20 +36,19 @@ public class TestBindingSourceWireAttacher implements SourceWireAttacher<TestBin
         this.channel = channel;
     }
 
-    public void attach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         // register the wire to the bound service so it can be invoked through the channel from a bound reference
         URI callbackUri = target.getCallbackUri();
         channel.registerDestinationWire(source.getUri(), wire, callbackUri);
     }
 
-    public void detach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
-    public void detachObjectFactory(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
-    public void attachObjectFactory(TestBindingWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)
-            throws Fabric3Exception {
+    public void attachSupplier(TestBindingWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition definition) {
         throw new AssertionError();
     }
 }

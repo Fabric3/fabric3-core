@@ -28,6 +28,7 @@ import javax.transaction.TransactionManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
@@ -50,7 +51,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
@@ -127,7 +127,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         resolver.release(target.getMetadata().getConnectionFactory());
     }
 
-    public ObjectFactory<?> createObjectFactory(JmsWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(JmsWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

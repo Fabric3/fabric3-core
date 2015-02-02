@@ -21,11 +21,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -171,18 +171,18 @@ public class SpringComponent implements Component {
     }
 
     /**
-     * Adds an object factory for a wire or producer proxy.
+     * Adds a Supplier for a wire or producer proxy.
      *
      * @param name    the reference or producer name
      * @param type    the interface type implemented by the proxy
-     * @param factory the object factory
+     * @param supplier the Supplier
      */
-    public void attach(String name, Class<?> type, ObjectFactory factory) {
-        parent.add(name, type, factory);
+    public void attach(String name, Class<?> type, Supplier supplier) {
+        parent.add(name, type, supplier);
     }
 
     /**
-     * Removes an object factory for a wire or producer proxy
+     * Removes a Supplier for a wire or producer proxy
      *
      * @param name the reference or producer name
      */

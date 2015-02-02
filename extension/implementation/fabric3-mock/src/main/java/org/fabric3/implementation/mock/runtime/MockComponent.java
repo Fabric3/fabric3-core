@@ -20,11 +20,11 @@ package org.fabric3.implementation.mock.runtime;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *
@@ -32,12 +32,12 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 public class MockComponent implements AtomicComponent {
 
     private final URI componentId;
-    private final ObjectFactory<Object> objectFactory;
+    private final Supplier<Object> supplier;
     private URI classLoaderId;
 
-    public MockComponent(URI componentId, ObjectFactory<Object> objectFactory) {
+    public MockComponent(URI componentId, Supplier<Object> supplier) {
         this.componentId = componentId;
-        this.objectFactory = objectFactory;
+        this.supplier = supplier;
     }
 
     public URI getUri() {
@@ -52,12 +52,12 @@ public class MockComponent implements AtomicComponent {
         this.classLoaderId = classLoaderId;
     }
 
-    public ObjectFactory<Object> createObjectFactory() {
-        return objectFactory;
+    public Supplier<Object> createSupplier() {
+        return supplier;
     }
 
     public Object getInstance() throws Fabric3Exception {
-        return objectFactory.getInstance();
+        return supplier.get();
     }
 
     public void releaseInstance(Object instance) {

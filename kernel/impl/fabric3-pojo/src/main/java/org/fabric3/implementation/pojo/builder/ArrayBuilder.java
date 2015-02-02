@@ -17,26 +17,27 @@
 
 package org.fabric3.implementation.pojo.builder;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.w3c.dom.Document;
 
 /**
- * Builds an object factory that creates a property value array from a DOM.
+ * Builds a Supplier that creates a property value array from a DOM.
  */
 public interface ArrayBuilder {
 
     /**
-     * Creates the object factory for the property value.
+     * Creates the Supplier for the property value.
      *
      * @param name        the property name
      * @param type        the property type
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
-     * @return the object factory
-     * @throws Fabric3Exception if there is an error creating the object factory
+     * @return the Supplier
+     * @throws Fabric3Exception if there is an error creating the Supplier
      */
-    ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
+    Supplier<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
 
 }

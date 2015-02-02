@@ -22,21 +22,21 @@ package org.fabric3.implementation.pojo.manager;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  *
  */
 public class ImplementationManagerImpl implements ImplementationManager {
     private URI componentUri;
-    private final ObjectFactory<?> constructor;
+    private final Supplier<?> constructor;
     private Injectable[] injectables;
     private final Injector<Object>[] injectors;
     private final LifecycleInvoker initInvoker;
@@ -46,7 +46,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
     private Set<Injector<Object>> updatedInjectors;
 
     public ImplementationManagerImpl(URI componentUri,
-                                     ObjectFactory<?> constructor,
+                                     Supplier<?> constructor,
                                      Injectable[] injectables,
                                      Injector<Object>[] injectors,
                                      LifecycleInvoker initInvoker,
@@ -76,7 +76,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
             // injection.
             Message message = MessageCache.getMessage();
             Object content = message.getBody();
-            Object instance = constructor.getInstance();
+            Object instance = constructor.get();
             if (injectors != null) {
                 for (Injector<Object> injector : injectors) {
                     injector.inject(instance);
@@ -147,7 +147,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
             Injectable attribute = injectables[i];
             if (attribute.getName().equals(referenceName)) {
                 Injector<Object> injector = injectors[i];
-                injector.clearObjectFactory();
+                injector.clearSupplier();
                 if (instance != null) {
                     updatedInjectors.add(injector);
                 }

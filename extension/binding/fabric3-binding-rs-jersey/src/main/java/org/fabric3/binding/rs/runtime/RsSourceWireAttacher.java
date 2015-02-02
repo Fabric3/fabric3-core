@@ -21,6 +21,7 @@ package org.fabric3.binding.rs.runtime;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +35,6 @@ import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;
@@ -111,11 +111,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         monitor.removedEndpoint(sourceUri);
     }
 
-    public void attachObjectFactory(RsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(RsWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         throw new AssertionError();
     }
 
-    public void detachObjectFactory(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 

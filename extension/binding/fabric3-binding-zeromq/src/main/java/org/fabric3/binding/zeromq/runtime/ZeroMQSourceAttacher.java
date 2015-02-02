@@ -20,13 +20,12 @@ package org.fabric3.binding.zeromq.runtime;
 
 import java.net.URI;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -44,7 +43,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         this.registry = registry;
     }
 
-    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -57,7 +56,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         broker.connectToReceiver(uri, chains, metadata, loader);
     }
 
-    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         URI uri;
         if (source.getCallbackUri() != null) {
             uri = source.getCallbackUri();
@@ -67,12 +66,11 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         broker.releaseReceiver(uri);
     }
 
-    public void attachObjectFactory(ZeroMQWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
+    public void attachSupplier(ZeroMQWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 
-    public void detachObjectFactory(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 

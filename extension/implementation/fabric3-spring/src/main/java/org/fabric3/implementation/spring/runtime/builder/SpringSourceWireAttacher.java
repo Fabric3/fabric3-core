@@ -19,6 +19,7 @@ package org.fabric3.implementation.spring.runtime.builder;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
@@ -27,7 +28,6 @@ import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spring.spi.WireListener;
@@ -58,7 +58,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         this.listeners = listeners;
     }
 
-    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
@@ -66,8 +66,8 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         try {
             interfaze = loader.loadClass(source.getInterface());
             // note callbacks not supported for spring beans
-            ObjectFactory<?> factory = proxyService.createObjectFactory(interfaze, wire, null);
-            component.attach(referenceName, interfaze, factory);
+            Supplier<?> supplier = proxyService.createSupplier(interfaze, wire, null);
+            component.attach(referenceName, interfaze, supplier);
             for (WireListener listener : listeners) {
                 listener.onAttach(wire);
             }
@@ -76,31 +76,30 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         }
     }
 
-    public void attachObjectFactory(SpringWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
+    public void attachSupplier(SpringWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(source.getInterface());
-            component.attach(referenceName, interfaze, objectFactory);
+            component.attach(referenceName, interfaze, supplier);
         } catch (ClassNotFoundException e) {
             throw new Fabric3Exception(e);
         }
     }
 
-    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         component.detach(referenceName);
     }
 
-    public void detachObjectFactory(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         detach(source, target);
     }
 
-    private SpringComponent getComponent(SpringWireSourceDefinition definition) throws Fabric3Exception {
+    private SpringComponent getComponent(SpringWireSourceDefinition definition) {
         URI uri = definition.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {
@@ -108,6 +107,5 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         }
         return component;
     }
-
 
 }

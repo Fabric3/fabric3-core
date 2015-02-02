@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
  * Creates a service proxy that can be shared among invocation chains of a wire. The proxy must be lazily created as opposed to during wire attachment as as the
  * service WSDL is accessed from the endpoint address, which may not be provisioned at that time.
  */
-public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory<Object> {
+public class MetroProxySupplier extends AbstractMetroBindingProviderFactory<Object> {
     private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");
     private static final EntityResolver RESOLVER = new NullResolver();
 
@@ -81,14 +81,14 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @param executorService         the executor service used for dispatching invocations
      * @param xmlInputFactory         the StAX XML factory to use for WSDL parsing
      */
-    public MetroProxyObjectFactory(ReferenceEndpointDefinition endpointDefinition,
-                                   URL wsdlLocation,
-                                   URL wsitConfiguration,
-                                   Class<?> seiClass,
-                                   ConnectionConfiguration connectionConfiguration,
-                                   List<Handler> handlers,
-                                   ExecutorService executorService,
-                                   XMLInputFactory xmlInputFactory) {
+    public MetroProxySupplier(ReferenceEndpointDefinition endpointDefinition,
+                              URL wsdlLocation,
+                              URL wsitConfiguration,
+                              Class<?> seiClass,
+                              ConnectionConfiguration connectionConfiguration,
+                              List<Handler> handlers,
+                              ExecutorService executorService,
+                              XMLInputFactory xmlInputFactory) {
         super(connectionConfiguration, handlers);
         this.serviceName = endpointDefinition.getServiceName();
         this.serviceNameDefault = endpointDefinition.isDefaultServiceName();
@@ -102,7 +102,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
         this.xmlInputFactory = xmlInputFactory;
     }
 
-    public Object getInstance() throws Fabric3Exception {
+    public Object get() throws Fabric3Exception {
         if (proxy == null) {
             // there is a possibility more than one proxy will be created but since this does not have side-effects, avoid synchronization
             proxy = createProxy();

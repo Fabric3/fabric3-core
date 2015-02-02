@@ -13,34 +13,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.implementation.pojo.objectfactory;
+package org.fabric3.implementation.pojo.supplier;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
- * Returns an <code>Array</code> of object instances.
+ * Returns a <code>List</code> of object instances.
  */
-public class ArrayMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<List<ObjectFactory<?>>> {
-    private Class interfaceType;
+public class ListMultiplicitySupplier extends AbstractCollectionMultiplicitySupplier<List<Supplier<?>>> {
 
-    public ArrayMultiplicityObjectFactory(Class interfaceType) {
-        this.interfaceType = interfaceType;
-    }
-
-    public Object getInstance() throws Fabric3Exception {
-        Object array = Array.newInstance(interfaceType, factories.size());
-        for (int i = 0; i < factories.size(); i++) {
-            Array.set(array, i, factories.get(i).getInstance());
+    public List<?> get() throws Fabric3Exception {
+        List<Object> list = new ArrayList<>();
+        for (Supplier<?> supplier : suppliers) {
+            list.add(supplier.get());
         }
-        return array;
+        return list;
     }
-
 }

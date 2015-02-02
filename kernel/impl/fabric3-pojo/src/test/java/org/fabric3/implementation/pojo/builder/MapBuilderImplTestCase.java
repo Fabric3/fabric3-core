@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -71,9 +71,9 @@ public class MapBuilderImplTestCase extends TestCase {
 
         createValue("key2", "val2", document, values);
 
-        ObjectFactory<?> factory = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
 
-        Map<String, String> result = (Map<String, String>) factory.getInstance();
+        Map<String, String> result = (Map<String, String>) supplier.get();
         assertEquals(2, result.size());
         assertEquals("val1", result.get("key1"));
         assertEquals("val2", result.get("key2"));
@@ -121,9 +121,9 @@ public class MapBuilderImplTestCase extends TestCase {
         mapValue.setTextContent("val2");
         entry.appendChild(mapValue);
 
-        ObjectFactory<?> factory = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
 
-        Map<String, String> result = (Map<String, String>) factory.getInstance();
+        Map<String, String> result = (Map<String, String>) supplier.get();
         assertEquals(2, result.size());
         assertEquals("val1", result.get("key1"));
         assertEquals("val2", result.get("key2"));

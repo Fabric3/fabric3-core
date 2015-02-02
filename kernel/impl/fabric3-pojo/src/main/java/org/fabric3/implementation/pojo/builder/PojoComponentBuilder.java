@@ -38,8 +38,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -57,11 +55,11 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     protected ClassLoaderRegistry classLoaderRegistry;
     protected IntrospectionHelper helper;
     private HostInfo info;
-    private PropertyObjectFactoryBuilder propertyBuilder;
+    private PropertySupplierBuilder propertyBuilder;
     private ManagementService managementService;
 
     protected PojoComponentBuilder(ClassLoaderRegistry registry,
-                                   PropertyObjectFactoryBuilder propertyBuilder,
+                                   PropertySupplierBuilder propertyBuilder,
                                    ManagementService managementService,
                                    IntrospectionHelper helper,
                                    HostInfo info) {
@@ -82,8 +80,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
             String name = propertyDefinition.getName();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
             if (propertyDefinition.getInstanceValue() != null) {
-                ObjectFactory<Object> objectFactory = new SingletonObjectFactory<>(propertyDefinition.getInstanceValue());
-                factory.setObjectFactory(source, objectFactory);
+                factory.setSupplier(source, propertyDefinition::getInstanceValue);
             } else {
                 Document value = propertyDefinition.getValue();
 
@@ -92,8 +89,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
 
                 ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
                 boolean many = propertyDefinition.isMany();
-                ObjectFactory<?> objectFactory = propertyBuilder.createFactory(name, dataType, value, many, classLoader);
-                factory.setObjectFactory(source, objectFactory);
+                factory.setSupplier(source, propertyBuilder.createSupplier(name, dataType, value, many, classLoader));
             }
         }
     }
@@ -101,9 +97,8 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws Fabric3Exception {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
-            ObjectFactory<Object> objectFactory = component.createObjectFactory();
             URI uri = definition.getComponentUri();
-            managementService.export(uri, info, objectFactory, classLoader);
+            managementService.export(uri, info, component::createSupplier);
         }
     }
 
@@ -117,11 +112,9 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
 
     protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
         PojoRequestContext requestContext = new PojoRequestContext();
-        SingletonObjectFactory<PojoRequestContext> requestFactory = new SingletonObjectFactory<>(requestContext);
-        factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, requestFactory);
+        factory.setSupplier(Injectable.OASIS_REQUEST_CONTEXT, () -> requestContext);
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext, info);
-        SingletonObjectFactory<PojoComponentContext> componentFactory = new SingletonObjectFactory<>(componentContext);
-        factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, componentFactory);
+        factory.setSupplier(Injectable.OASIS_COMPONENT_CONTEXT, () -> componentContext);
     }
 
     @SuppressWarnings({"unchecked"})

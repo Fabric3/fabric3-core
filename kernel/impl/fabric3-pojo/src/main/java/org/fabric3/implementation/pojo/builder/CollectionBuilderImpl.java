@@ -20,10 +20,9 @@ package org.fabric3.implementation.pojo.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
@@ -46,7 +45,7 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T> ObjectFactory<Collection<T>> createFactory(Collection<T> collection,
+    public <T> Supplier<Collection<T>> createFactory(Collection<T> collection,
                                                           String name,
                                                           JavaGenericType dataType,
                                                           Document value,
@@ -70,7 +69,7 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
             T val = (T) transformer.transform(node, classLoader);
             collection.add(val);
         }
-        return new SingletonObjectFactory<>(collection);
+        return () -> collection;
     }
 
 }

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.injection.Injector;
 import org.oasisopen.sca.ComponentContext;
 
 /**

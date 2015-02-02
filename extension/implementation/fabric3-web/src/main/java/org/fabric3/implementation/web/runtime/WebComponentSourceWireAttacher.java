@@ -19,12 +19,11 @@
 package org.fabric3.implementation.web.runtime;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
@@ -42,26 +41,25 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
         this.manager = manager;
     }
 
-    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
         component.attachWire(referenceName, wire);
     }
 
-    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         // TODO implement
     }
 
-    public void detachObjectFactory(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         // TODO implement
     }
 
-    public void attachObjectFactory(WebComponentWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
+    public void attachSupplier(WebComponentWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
-        component.attach(referenceName, objectFactory);
+        component.attach(referenceName, supplier);
     }
 }

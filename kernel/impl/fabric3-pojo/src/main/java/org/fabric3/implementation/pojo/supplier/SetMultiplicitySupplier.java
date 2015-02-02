@@ -13,27 +13,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.implementation.pojo.objectfactory;
+package org.fabric3.implementation.pojo.supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.component.AtomicComponent;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
- * Delegates to an {@link AtomicComponent} to create an instance.
+ * Returns a <code>Set</code> of object instances.
  */
-public class ComponentObjectFactory implements ObjectFactory<Object> {
-    private AtomicComponent component;
+public class SetMultiplicitySupplier extends AbstractCollectionMultiplicitySupplier<Set<Supplier<?>>> {
 
-    public ComponentObjectFactory(AtomicComponent component) {
-        this.component = component;
+    public Set<Object> get() {
+        Set<Object> set = new LinkedHashSet<>();
+        for (Supplier<?> supplier : suppliers) {
+            set.add(supplier.get());
+        }
+        return set;
     }
 
-    public Object getInstance() throws Fabric3Exception {
-        return component.getInstance();
-    }
 }

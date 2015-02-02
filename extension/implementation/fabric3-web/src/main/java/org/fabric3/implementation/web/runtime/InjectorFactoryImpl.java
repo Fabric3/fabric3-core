@@ -21,14 +21,14 @@ package org.fabric3.implementation.web.runtime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
+import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.Reference;
@@ -45,11 +45,11 @@ public class InjectorFactoryImpl implements InjectorFactory {
 
     public void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                        Map<String, Map<String, InjectionSite>> siteMappings,
-                                       Map<String, ObjectFactory<?>> factories,
-                                       ClassLoader classLoader) throws Fabric3Exception {
-        for (Map.Entry<String, ObjectFactory<?>> entry : factories.entrySet()) {
+                                       Map<String, Supplier<?>> suppliers,
+                                       ClassLoader classLoader) {
+        for (Map.Entry<String, Supplier<?>> entry : suppliers.entrySet()) {
             String siteName = entry.getKey();
-            ObjectFactory<?> factory = entry.getValue();
+            Supplier<?> supplier = entry.getValue();
             Map<String, InjectionSite> artifactMapping = siteMappings.get(siteName);
             if (artifactMapping == null) {
                 throw new Fabric3Exception("Injection site not found for: " + siteName);
@@ -64,11 +64,11 @@ public class InjectorFactoryImpl implements InjectorFactory {
                 }
                 Injector<?> injector;
                 if (site instanceof WebContextInjectionSite) {
-                    injector = createInjector(siteName, factory, (WebContextInjectionSite) site);
+                    injector = createInjector(siteName, supplier, (WebContextInjectionSite) site);
                 } else if (site instanceof FieldInjectionSite) {
-                    injector = reflectionFactory.createInjector(((FieldInjectionSite) site).getField(), factory);
+                    injector = reflectionFactory.createInjector(((FieldInjectionSite) site).getField(), supplier);
                 } else if (site instanceof MethodInjectionSite) {
-                    injector = reflectionFactory.createInjector(((MethodInjectionSite) site).getMethod(), factory);
+                    injector = reflectionFactory.createInjector(((MethodInjectionSite) site).getMethod(), supplier);
                 } else {
                     throw new UnsupportedOperationException("Unsupported injection site type: " + site.getClass());
                 }
@@ -77,16 +77,16 @@ public class InjectorFactoryImpl implements InjectorFactory {
         }
     }
 
-    private Injector<?> createInjector(String referenceName, ObjectFactory<?> factory, WebContextInjectionSite site) {
+    private Injector<?> createInjector(String referenceName, Supplier<?> supplier, WebContextInjectionSite site) {
         // use reference name as the key
         InjectionAttributes attributes = new InjectionAttributes(referenceName, Integer.MIN_VALUE);
         if (site.getContextType() == WebContextInjectionSite.ContextType.SERVLET_CONTEXT) {
             Injector<?> injector = new ServletContextInjector();
-            injector.setObjectFactory(factory, attributes);
+            injector.setSupplier(supplier, attributes);
             return injector;
         } else {
             Injector<?> injector = new HttpSessionInjector();
-            injector.setObjectFactory(factory, attributes);
+            injector.setSupplier(supplier, attributes);
             return injector;
         }
     }

@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
@@ -44,8 +45,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -77,13 +76,13 @@ public class JMXManagementExtension implements ManagementExtension {
         return "fabric3.jmx";
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception {
+    public void export(URI componentUri, ManagementInfo info, Supplier<?> supplier) {
         if (mBeanServer == null) {
             return;
         }
         try {
             ObjectName name = getObjectName(componentUri, info);
-            OptimizedMBean<?> mBean = createOptimizedMBean(info, objectFactory, classLoader);
+            OptimizedMBean<?> mBean = createOptimizedMBean(info, supplier);
             if (!mBeanServer.isRegistered(name)) {
                 mBeanServer.registerMBean(mBean, name);
             }
@@ -92,7 +91,7 @@ public class JMXManagementExtension implements ManagementExtension {
         }
     }
 
-    public void export(String name, String group, String description, Object instance) throws Fabric3Exception {
+    public void export(String name, String group, String description, Object instance) {
         try {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
@@ -103,7 +102,7 @@ public class JMXManagementExtension implements ManagementExtension {
                 // use the instance if it is a Standard MBean
                 managementBean = instance;
             } else {
-                SingletonObjectFactory<Object> factory = new SingletonObjectFactory<>(instance);
+
                 Class<?> clazz = instance.getClass();
                 ClassLoader loader = clazz.getClassLoader();
 
@@ -131,7 +130,7 @@ public class JMXManagementExtension implements ManagementExtension {
                 }
                 ManagementInfo info = new ManagementInfo(name, group, path, description, clazz.getName(), readRoles, writeRoles);
                 introspect(instance, info);
-                managementBean = createOptimizedMBean(info, factory, loader);
+                managementBean = createOptimizedMBean(info, () -> instance);
             }
             if (!mBeanServer.isRegistered(objectName)) {
                 mBeanServer.registerMBean(managementBean, objectName);
@@ -141,7 +140,7 @@ public class JMXManagementExtension implements ManagementExtension {
         }
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws Fabric3Exception {
+    public void remove(URI componentUri, ManagementInfo info) {
         try {
             ObjectName name = getObjectName(componentUri, info);
             mBeanServer.unregisterMBean(name);
@@ -150,7 +149,7 @@ public class JMXManagementExtension implements ManagementExtension {
         }
     }
 
-    public void remove(String name, String group) throws Fabric3Exception {
+    public void remove(String name, String group) {
         try {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
@@ -238,7 +237,7 @@ public class JMXManagementExtension implements ManagementExtension {
         }
     }
 
-    private <T> OptimizedMBean<T> createOptimizedMBean(ManagementInfo info, ObjectFactory<T> objectFactory, ClassLoader loader)
+    private <T> OptimizedMBean<T> createOptimizedMBean(ManagementInfo info, Supplier<T> supplier)
             throws IntrospectionException, ClassNotFoundException, NoSuchMethodException {
         String className = info.getManagementClass();
         Set<AttributeDescription> attributes = new HashSet<>();
@@ -289,7 +288,7 @@ public class JMXManagementExtension implements ManagementExtension {
         MBeanOperationInfo[] mBeanOperations = createOperationInfo(operations);
         String description = info.getDescription();
         MBeanInfo mbeanInfo = new MBeanInfo(className, description, mBeanAttributes, null, mBeanOperations, null);
-        return new OptimizedMBean<>(objectFactory, mbeanInfo, getters, setters, operations, authorization);
+        return new OptimizedMBean<>(supplier, mbeanInfo, getters, setters, operations, authorization);
     }
 
     private MBeanOperationInfo[] createOperationInfo(Map<OperationKey, MethodHolder> operations) {

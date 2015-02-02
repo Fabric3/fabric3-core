@@ -32,21 +32,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.supplier.ArrayMultiplicitySupplier;
+import org.fabric3.implementation.pojo.supplier.ListMultiplicitySupplier;
+import org.fabric3.implementation.pojo.supplier.MapMultiplicitySupplier;
+import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
+import org.fabric3.implementation.pojo.supplier.SetMultiplicitySupplier;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
@@ -57,7 +56,7 @@ public class SingletonComponent implements ScopedComponent {
     private final URI uri;
     private Object instance;
     private Map<Member, Injectable> sites;
-    private Map<ObjectFactory, Injectable> reinjectionMappings;
+    private Map<Supplier, Injectable> reinjectionMappings;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
     private AtomicBoolean started = new AtomicBoolean(false);
@@ -94,15 +93,13 @@ public class SingletonComponent implements ScopedComponent {
     }
 
     public void startUpdate() {
-        reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicityObjectFactory).forEach(factory -> {
-            ((MultiplicityObjectFactory) factory).startUpdate();
-        });
+        reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicitySupplier).forEach(factory -> ((MultiplicitySupplier) factory)
+                .startUpdate());
     }
 
     public void endUpdate() {
-        reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicityObjectFactory).forEach(factory -> {
-            ((MultiplicityObjectFactory) factory).endUpdate();
-        });
+        reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicitySupplier).forEach(factory -> ((MultiplicitySupplier) factory)
+                .endUpdate());
     }
 
     public QName getDeployable() {
@@ -121,8 +118,8 @@ public class SingletonComponent implements ScopedComponent {
         // no-op
     }
 
-    public ObjectFactory<Object> createObjectFactory() {
-        return new SingletonObjectFactory<>(instance);
+    public Supplier<Object> createSupplier() {
+        return () -> instance;
     }
 
     public Object getInstance() {
@@ -150,32 +147,31 @@ public class SingletonComponent implements ScopedComponent {
     }
 
     public void reinject(Object instance) throws Fabric3Exception {
-        for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
+        for (Map.Entry<Supplier, Injectable> entry : reinjectionMappings.entrySet()) {
             inject(entry.getValue(), entry.getKey());
         }
         reinjectionMappings.clear();
     }
 
     /**
-     * Adds an ObjectFactory to be reinjected. Note only String keys are supported for singleton components to avoid a requirement on the transformer
-     * infrastructure.
+     * Adds a Supplier to be reinjected. Note only String keys are supported for singleton components to avoid a requirement on the transformer infrastructure.
      *
-     * @param injectable    the InjectableAttribute describing the site to reinject
-     * @param objectFactory the object factory responsible for supplying a value to reinject
-     * @param attributes    the injection attributes
+     * @param injectable the InjectableAttribute describing the site to reinject
+     * @param supplier   the Supplier responsible for supplying a value to reinject
+     * @param attributes the injection attributes
      */
-    public void addObjectFactory(Injectable injectable, ObjectFactory objectFactory, InjectionAttributes attributes) {
+    public void addSupplier(Injectable injectable, Supplier supplier, InjectionAttributes attributes) {
         if (InjectableType.REFERENCE == injectable.getType()) {
-            setFactory(injectable, objectFactory, attributes);
+            setFactory(injectable, supplier, attributes);
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
-            reinjectionMappings.put(objectFactory, injectable);
+            reinjectionMappings.put(supplier, injectable);
         }
     }
 
-    public void removeObjectFactory(Injectable injectable) {
-        for (Iterator<Map.Entry<ObjectFactory, Injectable>> iterator = reinjectionMappings.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<ObjectFactory, Injectable> entry = iterator.next();
+    public void removeSupplier(Injectable injectable) {
+        for (Iterator<Map.Entry<Supplier, Injectable>> iterator = reinjectionMappings.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<Supplier, Injectable> entry = iterator.next();
             if (injectable.equals(entry.getValue())) {
                 iterator.remove();
                 break;
@@ -214,62 +210,62 @@ public class SingletonComponent implements ScopedComponent {
         }
     }
 
-    private void setFactory(Injectable injectable, ObjectFactory objectFactory, InjectionAttributes attributes) {
-        ObjectFactory<?> factory = findFactory(injectable);
-        if (factory == null) {
+    private void setFactory(Injectable injectable, Supplier supplier, InjectionAttributes attributes) {
+        Supplier<?> foundSupplier = findSupplier(injectable);
+        if (foundSupplier == null) {
             Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
-                MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
+                MapMultiplicitySupplier mapFactory = new MapMultiplicitySupplier();
                 mapFactory.startUpdate();
-                mapFactory.addObjectFactory(objectFactory, attributes);
+                mapFactory.addSupplier(supplier, attributes);
                 reinjectionMappings.put(mapFactory, injectable);
             } else if (Set.class.equals(type)) {
-                SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
+                SetMultiplicitySupplier setFactory = new SetMultiplicitySupplier();
                 setFactory.startUpdate();
-                setFactory.addObjectFactory(objectFactory, attributes);
+                setFactory.addSupplier(supplier, attributes);
                 reinjectionMappings.put(setFactory, injectable);
             } else if (List.class.equals(type)) {
-                ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                ListMultiplicitySupplier listFactory = new ListMultiplicitySupplier();
                 listFactory.startUpdate();
-                listFactory.addObjectFactory(objectFactory, attributes);
+                listFactory.addSupplier(supplier, attributes);
                 reinjectionMappings.put(listFactory, injectable);
             } else if (Collection.class.equals(type)) {
-                ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                ListMultiplicitySupplier listFactory = new ListMultiplicitySupplier();
                 listFactory.startUpdate();
-                listFactory.addObjectFactory(objectFactory, attributes);
+                listFactory.addSupplier(supplier, attributes);
                 reinjectionMappings.put(listFactory, injectable);
             } else if (type.isArray()) {
-                ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
+                ArrayMultiplicitySupplier arrayFactory = new ArrayMultiplicitySupplier(type.getComponentType());
                 arrayFactory.startUpdate();
-                arrayFactory.addObjectFactory(objectFactory, attributes);
+                arrayFactory.addSupplier(supplier, attributes);
                 reinjectionMappings.put(arrayFactory, injectable);
             } else {
-                reinjectionMappings.put(objectFactory, injectable);
+                reinjectionMappings.put(supplier, injectable);
             }
-        } else if (factory instanceof MultiplicityObjectFactory) {
-            MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
-            multiplicityObjectFactory.addObjectFactory(objectFactory, attributes);
+        } else if (foundSupplier instanceof MultiplicitySupplier) {
+            MultiplicitySupplier<?> multiplicitySupplier = (MultiplicitySupplier<?>) foundSupplier;
+            multiplicitySupplier.addSupplier(supplier, attributes);
         } else {
             //update or overwrite  the factory
-            reinjectionMappings.put(objectFactory, injectable);
+            reinjectionMappings.put(supplier, injectable);
         }
     }
 
     /**
-     * Finds the mapped object factory for the injectable.
+     * Finds the mapped Supplier for the injectable.
      *
      * @param injectable the injectable
-     * @return the object factory
+     * @return the Supplier
      */
-    private ObjectFactory<?> findFactory(Injectable injectable) {
-        ObjectFactory<?> factory = null;
-        for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
+    private Supplier<?> findSupplier(Injectable injectable) {
+        Supplier<?> supplier = null;
+        for (Map.Entry<Supplier, Injectable> entry : reinjectionMappings.entrySet()) {
             if (injectable.equals(entry.getValue())) {
-                factory = entry.getKey();
+                supplier = entry.getKey();
                 break;
             }
         }
-        return factory;
+        return supplier;
     }
 
     /**
@@ -310,16 +306,16 @@ public class SingletonComponent implements ScopedComponent {
      * Injects a new value on a field or method of the instance.
      *
      * @param attribute the InjectableAttribute defining the field or method
-     * @param factory   the ObjectFactory that returns the value to inject
+     * @param factory   the Supplier that returns the value to inject
      * @throws Fabric3Exception if an error occurs during injection
      */
-    private void inject(Injectable attribute, ObjectFactory factory) throws Fabric3Exception {
+    private void inject(Injectable attribute, Supplier factory) throws Fabric3Exception {
         for (Map.Entry<Member, Injectable> entry : sites.entrySet()) {
             if (entry.getValue().equals(attribute)) {
                 Member member = entry.getKey();
                 if (member instanceof Field) {
                     try {
-                        Object param = factory.getInstance();
+                        Object param = factory.get();
                         ((Field) member).set(instance, param);
                     } catch (IllegalAccessException e) {
                         // should not happen as accessibility is already set
@@ -327,7 +323,7 @@ public class SingletonComponent implements ScopedComponent {
                     }
                 } else if (member instanceof Method) {
                     try {
-                        Object param = factory.getInstance();
+                        Object param = factory.get();
                         Method method = (Method) member;
                         method.invoke(instance, param);
                     } catch (IllegalAccessException | InvocationTargetException e) {

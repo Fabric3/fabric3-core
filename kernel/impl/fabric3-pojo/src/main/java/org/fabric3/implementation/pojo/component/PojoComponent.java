@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.Fabric3Exception;
@@ -30,11 +31,10 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.implementation.pojo.objectfactory.ComponentObjectFactory;
+import org.fabric3.implementation.pojo.supplier.ComponentSupplier;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 
 /**
  * Base class for Java component implementations.
@@ -131,8 +131,8 @@ public abstract class PojoComponent implements ScopedComponent {
         return instance;
     }
 
-    public ObjectFactory<Object> createObjectFactory() {
-        return new ComponentObjectFactory(this);
+    public Supplier<Object> createSupplier() {
+        return new ComponentSupplier(this);
     }
 
     public void startInstance(Object instance) throws Fabric3Exception {
@@ -157,24 +157,24 @@ public abstract class PojoComponent implements ScopedComponent {
     }
 
     /**
-     * Sets an object factory.
+     * Sets a Supplier
      *
-     * @param injectable    the InjectableAttribute identifying the component reference, property or context artifact the object factory creates instances for
-     * @param objectFactory the object factory
+     * @param injectable the InjectableAttribute identifying the component reference, property or context artifact the Supplier creates instances for
+     * @param supplier   the Supplier
      */
-    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
-        setObjectFactory(injectable, objectFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
+    public void setSupplier(Injectable injectable, Supplier<?> supplier) {
+        setSupplier(injectable, supplier, InjectionAttributes.EMPTY_ATTRIBUTES);
     }
 
     /**
-     * Sets an object factory.
+     * Sets a Supplier.
      *
-     * @param injectable    the injectable identifying the component reference, property or context artifact the object factory creates instances for
-     * @param objectFactory the object factory
-     * @param attributes    the injection attributes
+     * @param injectable the injectable identifying the component reference, property or context artifact the Supplier creates instances for
+     * @param supplier   the Supplier
+     * @param attributes the injection attributes
      */
-    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
-        factory.setObjectFactory(injectable, objectFactory, attributes);
+    public void setSupplier(Injectable injectable, Supplier<?> supplier, InjectionAttributes attributes) {
+        factory.setSupplier(injectable, supplier, attributes);
         List<Object> instances = scopeContainer.getActiveInstances(this);
         String name = injectable.getName();
         for (Object instance : instances) {
@@ -185,8 +185,8 @@ public abstract class PojoComponent implements ScopedComponent {
         recreate.set(true);
     }
 
-    public void removeObjectFactory(Injectable injectable) {
-        factory.removeObjectFactory(injectable);
+    public void removeSupplier(Injectable injectable) {
+        factory.removeSupplier(injectable);
         String name = injectable.getName();
         List<Object> instances = scopeContainer.getActiveInstances(this);
         for (Object instance : instances) {
@@ -197,8 +197,8 @@ public abstract class PojoComponent implements ScopedComponent {
         recreate.set(true);
     }
 
-    public ObjectFactory<?> getObjectFactory(Injectable injectable) {
-        return factory.getObjectFactory(injectable);
+    public Supplier<?> getSupplier(Injectable injectable) {
+        return factory.getObjectSupplier(injectable);
     }
 
     public String toString() {

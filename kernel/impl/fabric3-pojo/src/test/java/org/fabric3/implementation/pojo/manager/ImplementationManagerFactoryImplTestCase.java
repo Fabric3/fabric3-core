@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -37,8 +38,7 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
@@ -49,8 +49,8 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
     private Constructor<?> argConstructor;
     private List<Injectable> ctrNames;
     private Map<InjectionSite, Injectable> sites;
-    private ObjectFactory intFactory;
-    private ObjectFactory stringFactory;
+    private Supplier intFactory;
+    private Supplier stringFactory;
     private ImplementationManagerFactoryImpl provider;
     private Field intField;
     private Field stringField;
@@ -62,7 +62,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
 
     public void testNoConstructorArgs() {
         List<Injectable> sources = Collections.emptyList();
-        ObjectFactory<?>[] args = provider.getConstructorParameterFactories(sources);
+        Supplier<?>[] args = provider.getConstructorParameterSuppliers(sources);
         assertEquals(0, args.length);
     }
 
@@ -80,9 +80,9 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
                                                               false,
                                                               classLoader,
                                                               reflectionFactory);
-        provider.setObjectFactory(intProperty, intFactory);
-        provider.setObjectFactory(stringProperty, stringFactory);
-        ObjectFactory<?>[] args = provider.getConstructorParameterFactories(ctrNames);
+        provider.setSupplier(intProperty, intFactory);
+        provider.setSupplier(stringProperty, stringFactory);
+        Supplier<?>[] args = provider.getConstructorParameterSuppliers(ctrNames);
         assertEquals(2, args.length);
         assertSame(intFactory, args[0]);
         assertSame(stringFactory, args[1]);
@@ -93,7 +93,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         sites.put(new FieldInjectionSite(stringField), stringProperty);
 
         Injector mockInjector = EasyMock.createMock(Injector.class);
-        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Field.class),EasyMock.isA(ObjectFactory.class))).andReturn(mockInjector).times(2);
+        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Field.class),EasyMock.isA(Supplier.class))).andReturn(mockInjector).times(2);
         EasyMock.replay(reflectionFactory);
 
         Collection<Injector<?>> injectors = provider.createInjectorMappings().values();
@@ -107,7 +107,7 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
 
         Injector mockInjector = EasyMock.createMock(Injector.class);
-        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Method.class),EasyMock.isA(ObjectFactory.class))).andReturn(mockInjector).times(2);
+        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Method.class),EasyMock.isA(Supplier.class))).andReturn(mockInjector).times(2);
         EasyMock.replay(reflectionFactory);
 
         Collection<Injector<?>> injectors = provider.createInjectorMappings().values();
@@ -120,10 +120,10 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
 
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(reflectionFactory.createInstantiator(EasyMock.isA(Constructor.class), EasyMock.isA(ObjectFactory[].class))).andReturn(mockFactory);
+        Supplier mockFactory = EasyMock.createMock(Supplier.class);
+        EasyMock.expect(reflectionFactory.createInstantiator(EasyMock.isA(Constructor.class), EasyMock.isA(Supplier[].class))).andReturn(mockFactory);
         Injector mockInjector = EasyMock.createMock(Injector.class);
-        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Method.class),EasyMock.isA(ObjectFactory.class))).andReturn(mockInjector).times(2);
+        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Method.class),EasyMock.isA(Supplier.class))).andReturn(mockInjector).times(2);
         EasyMock.replay(reflectionFactory);
 
         ImplementationManager implementationManager = provider.createManager();
@@ -145,8 +145,8 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         ctrNames = new ArrayList<>();
         sites = new HashMap<>();
         ClassLoader classLoader = Foo.class.getClassLoader();
-        intFactory = EasyMock.createMock(ObjectFactory.class);
-        stringFactory = EasyMock.createMock(ObjectFactory.class);
+        intFactory = EasyMock.createMock(Supplier.class);
+        stringFactory = EasyMock.createMock(Supplier.class);
         reflectionFactory = EasyMock.createMock(ReflectionFactory.class);
 
         provider = new ImplementationManagerFactoryImpl(URI.create("TestComponent"),
@@ -161,8 +161,8 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
 
         EasyMock.replay(intFactory, stringFactory);
 
-        provider.setObjectFactory(intProperty, intFactory);
-        provider.setObjectFactory(stringProperty, stringFactory);
+        provider.setSupplier(intProperty, intFactory);
+        provider.setSupplier(stringProperty, stringFactory);
     }
 
     public static class Foo {

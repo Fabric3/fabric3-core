@@ -19,9 +19,9 @@
 package org.fabric3.implementation.pojo.spi.reflection;
 
 import java.lang.reflect.Member;
+import java.util.function.Supplier;
 
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Creates {@link Injector}s for a field or method.
@@ -39,9 +39,9 @@ public interface InjectorFactory {
      * Creates an injector for a field or method.
      *
      * @param member           the field or method
-     * @param parameterFactory the factory that returns an instance to be injected
+     * @param parameterSupplier the factory that returns an instance to be injected
      * @return the injector
      */
-    Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
+    Injector<?> createInjector(Member member, Supplier<?> parameterSupplier);
 
 }

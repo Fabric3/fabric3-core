@@ -21,37 +21,37 @@ package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
+import org.fabric3.spi.container.injection.InjectionAttributes;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
- * Injects a value created by an {@link ObjectFactory} using a given method.
+ * Injects a value created by a Supplier using a given method.
  */
 public class MethodInjector implements Injector<Object> {
     private final Method method;
-    private ObjectFactory<?> objectFactory;
+    private Supplier<?> supplier;
 
-    public MethodInjector(Method method, ObjectFactory<?> objectFactory) {
+    public MethodInjector(Method method, Supplier<?> supplier) {
         assert method != null;
-        assert objectFactory != null;
+        assert supplier != null;
         this.method = method;
         this.method.setAccessible(true);
-        this.objectFactory = objectFactory;
+        this.supplier = supplier;
     }
 
     public void inject(Object instance) throws Fabric3Exception {
         Object target;
-        if (objectFactory == null) {
+        if (supplier == null) {
             // this can happen if a value is removed such as a reference being un-wired
             target = null;
         } else {
-            target = objectFactory.getInstance();
+            target = supplier.get();
             if (target == null) {
-                // The object factory is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
+                // The Supplier is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
                 // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
                 return;
             }
@@ -67,21 +67,21 @@ public class MethodInjector implements Injector<Object> {
         }
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+    public void setSupplier(Supplier<?> newSupplier, InjectionAttributes attributes) {
 
-        if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).addObjectFactory(objectFactory, attributes);
+        if (this.supplier instanceof MultiplicitySupplier<?>) {
+            ((MultiplicitySupplier<?>) this.supplier).addSupplier(newSupplier, attributes);
         } else {
-            this.objectFactory = objectFactory;
+            this.supplier = newSupplier;
         }
 
     }
 
-    public void clearObjectFactory() {
-        if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).clear();
+    public void clearSupplier() {
+        if (this.supplier instanceof MultiplicitySupplier<?>) {
+            ((MultiplicitySupplier<?>) this.supplier).clear();
         } else {
-            objectFactory = null;
+            supplier = null;
         }
     }
 

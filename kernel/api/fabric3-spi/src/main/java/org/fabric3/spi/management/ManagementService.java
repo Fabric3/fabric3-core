@@ -19,10 +19,10 @@
 package org.fabric3.spi.management;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Exposes a component to the underlying runtime management framework.
@@ -32,13 +32,13 @@ public interface ManagementService {
     /**
      * Exposes a component for management.
      *
-     * @param componentUri  the component URI
-     * @param info          the management metadata
-     * @param objectFactory the object factory responsible for returning the managed component instance
-     * @param classLoader   the classloader
+     * @param classLoader  the classloader
+     * @param componentUri the component URI
+     * @param info         the management metadata
+     * @param supplier     the Supplier responsible for returning the managed component instance
      * @throws Fabric3Exception if an error exposing the component is encountered
      */
-    void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception;
+    void export(URI componentUri, ManagementInfo info, Supplier<?> supplier) throws Fabric3Exception;
 
     /**
      * Exposes an instance for management as a system resource.

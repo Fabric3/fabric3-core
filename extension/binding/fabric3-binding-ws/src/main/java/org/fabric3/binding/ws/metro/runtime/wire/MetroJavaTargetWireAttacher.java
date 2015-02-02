@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
@@ -37,10 +38,9 @@ import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
-import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
+import org.fabric3.binding.ws.metro.runtime.core.MetroProxySupplier;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -113,14 +113,14 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                 List<Handler> handlers = createHandlers(target);
 
                 // if the target service is a callback, add the resolver
-                ObjectFactory<?> proxyFactory = new MetroProxyObjectFactory(endpointDefinition,
-                                                                            wsdlLocation,
-                                                                            generatedWsdl,
-                                                                            seiClass,
-                                                                            connectionConfiguration,
-                                                                            handlers,
-                                                                            executorService,
-                                                                            xmlInputFactory);
+                Supplier<?> proxyFactory = new MetroProxySupplier(endpointDefinition,
+                                                                       wsdlLocation,
+                                                                       generatedWsdl,
+                                                                       seiClass,
+                                                                       connectionConfiguration,
+                                                                       handlers,
+                                                                       executorService,
+                                                                       xmlInputFactory);
 
                 attachInterceptors(seiClass, target, wire, proxyFactory);
             } finally {
@@ -132,7 +132,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
     }
 
-    public ObjectFactory<?> createObjectFactory(MetroJavaWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(MetroJavaWireTargetDefinition target) throws Fabric3Exception {
         return null;
     }
 
@@ -151,7 +151,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         return schemas;
     }
 
-    private void attachInterceptors(Class<?> seiClass, MetroJavaWireTargetDefinition target, Wire wire, ObjectFactory<?> factory) {
+    private void attachInterceptors(Class<?> seiClass, MetroJavaWireTargetDefinition target, Wire wire, Supplier<?> factory) {
         Method[] methods = seiClass.getMethods();
         int retries = target.getRetries();
         for (InvocationChain chain : wire.getInvocationChains()) {

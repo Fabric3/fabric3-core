@@ -36,8 +36,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.management.rest.transformer.TransformerPairService;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 
 /**
  *
@@ -47,7 +45,6 @@ public class RestfulManagementExtensionTestCase extends TestCase {
     private Marshaller marshaller;
     private ResourceHost host;
     private RestfulManagementExtension extension;
-    private ClassLoader loader;
 
     public void testExportComponent() throws Exception {
         String path = "services/service";
@@ -67,12 +64,10 @@ public class RestfulManagementExtensionTestCase extends TestCase {
         ManagementOperationInfo operation = new ManagementOperationInfo(method, "operation", OperationType.POST, "description", writeRoles);
         info.addOperation(operation);
 
-        ObjectFactory<?> factory = new SingletonObjectFactory<>(new TestComponent());
-        extension.export(URI.create("fabric3://domain/Component"), info, factory, loader);
+        extension.export(URI.create("fabric3://domain/Component"), info, TestComponent::new);
 
         EasyMock.verify(pairService, marshaller, host);
     }
-
 
     public void testExportInstance() throws Exception {
         String path = "/runtime/services/service";     // note runtime is appended since instance exports are placed under /runtime
@@ -103,7 +98,6 @@ public class RestfulManagementExtensionTestCase extends TestCase {
                                                        EasyMock.isA(DataType.class))).andReturn(pair).atLeastOnce();
         marshaller = EasyMock.createMock(Marshaller.class);
         host = EasyMock.createMock(ResourceHost.class);
-        loader = getClass().getClassLoader();
 
         extension = new RestfulManagementExtension(pairService, marshaller, host);
         extension.init();

@@ -22,13 +22,13 @@ package org.fabric3.implementation.system.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -83,9 +83,9 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SystemWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
-        return targetComponent.createObjectFactory();
+        return targetComponent.createSupplier();
     }
 }

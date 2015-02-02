@@ -85,8 +85,8 @@ import org.fabric3.implementation.pojo.builder.MapBuilder;
 import org.fabric3.implementation.pojo.builder.MapBuilderImpl;
 import org.fabric3.implementation.pojo.builder.ObjectBuilder;
 import org.fabric3.implementation.pojo.builder.ObjectBuilderImpl;
-import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
-import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
+import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
+import org.fabric3.implementation.pojo.builder.PropertySupplierBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.reflection.ReflectionFactoryImpl;
@@ -238,7 +238,7 @@ public class BootstrapAssemblyFactory {
         MapBuilder mapBuilder = new MapBuilderImpl(transformerRegistry);
         ObjectBuilder objectBuilder = new ObjectBuilderImpl(transformerRegistry);
 
-        PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(arrayBuilder, collectionBuilder, mapBuilder, objectBuilder);
+        PropertySupplierBuilder propertyBuilder = new PropertySupplierBuilderImpl(arrayBuilder, collectionBuilder, mapBuilder, objectBuilder);
 
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 

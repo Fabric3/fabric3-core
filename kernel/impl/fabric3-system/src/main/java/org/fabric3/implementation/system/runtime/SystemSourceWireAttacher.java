@@ -20,6 +20,7 @@
 package org.fabric3.implementation.system.runtime;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
@@ -30,8 +31,7 @@ import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.transform.TransformerRegistry;
@@ -67,7 +67,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         this.proxyService = proxyService;
     }
 
-    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         if (proxyService == null) {
             throw new Fabric3Exception("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
@@ -84,31 +84,31 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             if (uri != null) {
                 callbackUri = uri.toString();
             }
-            ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
+            Supplier<?> factory = proxyService.createSupplier(type, wire, callbackUri);
 
             if (source.isKeyed() || source.isOrdered()) {
                 Object key = getKey(source, target);
                 int order = source.getOrder();
                 InjectionAttributes attributes = new InjectionAttributes(key, order);
-                component.setObjectFactory(injectable, factory, attributes);
+                component.setSupplier(injectable, factory, attributes);
             } else {
-                component.setObjectFactory(injectable, factory);
+                component.setSupplier(injectable, factory);
             }
         }
     }
 
-    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
-        detachObjectFactory(source, target);
+    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+        detachSupplier(source, target);
     }
 
-    public void detachObjectFactory(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
-        component.removeObjectFactory(injectable);
+        component.removeSupplier(injectable);
     }
 
-    public void attachObjectFactory(SystemWireSourceDefinition source, ObjectFactory<?> factory, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void attachSupplier(SystemWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();
@@ -116,9 +116,9 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             Object key = getKey(source, target);
             int order = source.getOrder();
             InjectionAttributes attributes = new InjectionAttributes(key, order);
-            component.setObjectFactory(injectable, factory, attributes);
+            component.setSupplier(injectable, supplier, attributes);
         } else {
-            component.setObjectFactory(injectable, factory);
+            component.setSupplier(injectable, supplier);
         }
     }
 }

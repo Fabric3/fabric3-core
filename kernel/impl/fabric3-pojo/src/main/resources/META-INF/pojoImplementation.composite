@@ -17,8 +17,8 @@
         <f3:implementation.system class="org.fabric3.implementation.pojo.generator.GenerationHelperImpl"/>
     </component>
 
-    <component name="PropertyObjectFactoryBuilder">
-        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl"/>
+    <component name="PropertySupplierBuilder">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.PropertySupplierBuilderImpl"/>
     </component>
 
     <component name="ArrayBuilder">

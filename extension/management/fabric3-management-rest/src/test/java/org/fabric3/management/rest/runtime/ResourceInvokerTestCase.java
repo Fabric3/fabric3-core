@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -34,7 +35,6 @@ import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicSecuritySubject;
 
 /**
@@ -72,19 +72,19 @@ public class ResourceInvokerTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testInvokeNoSecurityObjectFactory() throws Exception {
+    public void testInvokeNoSecuritySupplier() throws Exception {
         EasyMock.expect(instance.invoke()).andReturn("test").times(2);
 
-        ObjectFactory<TestResource> factory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(factory.getInstance()).andReturn(instance).times(2);
+        Supplier<TestResource> supplier = EasyMock.createMock(Supplier.class);
+        EasyMock.expect(supplier.get()).andReturn(instance).times(2);
 
         Set<Role> roles = Collections.emptySet();
-        List<ResourceMapping> mappings = createMappings(factory, method, roles);
+        List<ResourceMapping> mappings = createMappings(supplier, method, roles);
 
         ResourceInvoker invoker = new ResourceInvoker(mappings, ManagementSecurity.DISABLED);
         HttpServletRequest request = createRequest();
 
-        EasyMock.replay(request, factory, instance);
+        EasyMock.replay(request, supplier, instance);
 
         Resource resource = invoker.invoke(request);
         List<Link> links = (List<Link>) resource.getProperties().get("links");
@@ -98,7 +98,7 @@ public class ResourceInvokerTestCase extends TestCase {
         assertEquals("baz", link2.getName());
         assertEquals("http://localhost/management/service/baz", link2.getHref().toString());
 
-        EasyMock.verify(request, factory, instance);
+        EasyMock.verify(request, supplier, instance);
     }
 
     @SuppressWarnings({"unchecked"})

@@ -18,6 +18,8 @@
  */
 package org.fabric3.monitor.runtime;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
@@ -25,8 +27,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -55,11 +55,11 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(MonitorWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(MonitorWireTargetDefinition target) throws Fabric3Exception {
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
         Component monitorable = componentManager.getComponent(target.getMonitorable());
         Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
-        return new SingletonObjectFactory<>(monitor);
+        return () -> monitor;
     }
 }

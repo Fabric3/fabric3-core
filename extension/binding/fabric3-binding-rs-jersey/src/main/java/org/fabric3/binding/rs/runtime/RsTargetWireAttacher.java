@@ -2,13 +2,13 @@ package org.fabric3.binding.rs.runtime;
 
 import java.net.URI;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.fabric3.binding.rs.runtime.container.RsClientInterceptor;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -47,7 +47,7 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         }
     }
 
-    public ObjectFactory<?> createObjectFactory(RsWireTargetDefinition def) throws Fabric3Exception {
+    public Supplier<?> createSupplier(RsWireTargetDefinition def) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

@@ -16,18 +16,19 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Attaches a wire or object factory to non-managed code. The attachment is done by generating a proxy or returning an object instance which is then set on the
+ * Attaches a wire or Supplier to non-managed code. The attachment is done by generating a proxy or returning an object instance which is then set on the
  * physical source definition. The proxy or instance can then be returned to the non-managed code.
  */
 @EagerInit
@@ -40,25 +41,24 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         this.registry = registry;
     }
 
-    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         try {
             ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
             Class<?> interfaze = loader.loadClass(source.getInterface());
-            Object proxy = proxyService.createObjectFactory(interfaze, wire, null).getInstance();
+            Object proxy = proxyService.createSupplier(interfaze, wire, null).get();
             source.setProxy(proxy);
         } catch (ClassNotFoundException e) {
             throw new Fabric3Exception(e);
         }
     }
 
-    public void attachObjectFactory(NonManagedPhysicalWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
-        source.setProxy(objectFactory.getInstance());
+    public void attachSupplier(NonManagedPhysicalWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
+        source.setProxy(supplier.get());
     }
 
-    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
-    public void detachObjectFactory(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 }

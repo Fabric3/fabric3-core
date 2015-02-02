@@ -20,6 +20,7 @@ package org.fabric3.implementation.system.runtime;
 
 import java.net.URI;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
@@ -29,7 +30,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -68,15 +68,15 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
         }
         Injectable injectable = source.getInjectable();
         Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
-        ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
-        component.setObjectFactory(injectable, factory);
+        Supplier<?> supplier = proxyService.createSupplier(type, connection);
+        component.setSupplier(injectable, supplier);
     }
 
     public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
-        component.removeObjectFactory(injectable);
+        component.removeSupplier(injectable);
     }
 
 }

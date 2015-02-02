@@ -37,7 +37,7 @@ public class BytecodeChannelProxyServiceTestCase extends TestCase {
     public void testTest() throws Exception {
         EasyMock.replay(proxyFactory, connection, eventStream);
 
-        assertNotNull(proxyService.createObjectFactory(ProxyService.class, connection));
+        assertNotNull(proxyService.createSupplier(ProxyService.class, connection));
 
         EasyMock.verify(proxyFactory, connection, eventStream);
     }

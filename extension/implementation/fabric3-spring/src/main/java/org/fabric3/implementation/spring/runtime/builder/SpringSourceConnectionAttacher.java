@@ -19,6 +19,7 @@
 package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
@@ -28,7 +29,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -60,8 +60,8 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
         Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
-        ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
-        component.attach(source.getProducerName(), type, factory);
+        Supplier<?> supplier = proxyService.createSupplier(type, connection);
+        component.attach(source.getProducerName(), type, supplier);
     }
 
     public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {

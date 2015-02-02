@@ -19,13 +19,13 @@
 package org.fabric3.resource.runtime;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.util.UriHelper;
@@ -49,12 +49,12 @@ public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<Sys
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {
             throw new Fabric3Exception("Resource not found: " + targetId);
         }
-        return targetComponent.createObjectFactory();
+        return targetComponent.createSupplier();
     }
 }

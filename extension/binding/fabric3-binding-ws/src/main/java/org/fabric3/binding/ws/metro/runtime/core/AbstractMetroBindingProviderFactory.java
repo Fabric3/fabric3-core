@@ -4,15 +4,15 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.sun.xml.ws.developer.JAXWSProperties;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *
  */
-public abstract class AbstractMetroBindingProviderFactory<T> implements ObjectFactory<T> {
+public abstract class AbstractMetroBindingProviderFactory<T> implements Supplier<T> {
     private ConnectionConfiguration connectionConfig;
     private List<Handler> handlers;
 

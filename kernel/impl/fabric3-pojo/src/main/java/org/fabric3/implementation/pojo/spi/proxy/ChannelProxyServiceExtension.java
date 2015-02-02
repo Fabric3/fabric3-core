@@ -19,9 +19,10 @@
  */
 package org.fabric3.implementation.pojo.spi.proxy;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates proxies fronting event channel connections.
@@ -42,9 +43,9 @@ public interface ChannelProxyServiceExtension {
      * @param interfaze  the interface the proxy implements
      * @param connection the channel connection to proxy
      * @param <T>        the interface type
-     * @return the object factory
+     * @return the Supplier
      * @throws Fabric3Exception if there is an error creating the factory
      */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception;
+    <T> Supplier<T> createSupplier(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception;
 
 }

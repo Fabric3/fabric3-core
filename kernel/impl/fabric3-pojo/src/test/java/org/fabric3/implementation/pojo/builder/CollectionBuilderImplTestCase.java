@@ -22,11 +22,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -69,9 +69,9 @@ public class CollectionBuilderImplTestCase extends TestCase {
         values.appendChild(value);
 
         ArrayList<String> arrayList = new ArrayList<>();
-        ObjectFactory<?> factory = builder.createFactory(arrayList, "test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createFactory(arrayList, "test", type, document, getClass().getClassLoader());
 
-        List result = (List) factory.getInstance();
+        List result = (List) supplier.get();
         assertEquals(2, result.size());
         assertEquals("test1", result.get(0));
         assertEquals("test2", result.get(1));

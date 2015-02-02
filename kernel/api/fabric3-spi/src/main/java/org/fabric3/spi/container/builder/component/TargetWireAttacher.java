@@ -19,8 +19,9 @@
  */
 package org.fabric3.spi.container.builder.component;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
@@ -49,12 +50,12 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
     void detach(PhysicalWireSourceDefinition source, PTD target) throws Fabric3Exception;
 
     /**
-     * Create an ObjectFactory that returns a direct target instance.
+     * Create a Supplier that returns a direct target instance.
      *
      * @param target metadata for performing the attach
-     * @return an ObjectFactory that returns the target instance
+     * @return a Supplier that returns the target instance
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    ObjectFactory<?> createObjectFactory(PTD target) throws Fabric3Exception;
+    Supplier<?> createSupplier(PTD target) throws Fabric3Exception;
 
 }

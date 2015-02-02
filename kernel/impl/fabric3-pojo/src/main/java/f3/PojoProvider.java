@@ -26,7 +26,7 @@ import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
 import org.fabric3.implementation.pojo.builder.CollectionBuilderImpl;
 import org.fabric3.implementation.pojo.builder.MapBuilderImpl;
 import org.fabric3.implementation.pojo.builder.ObjectBuilderImpl;
-import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
+import org.fabric3.implementation.pojo.builder.PropertySupplierBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
@@ -49,7 +49,7 @@ public class PojoProvider {
         compositeBuilder.component(newBuilder(ImplementationManagerFactoryBuilderImpl.class).key(ImplementationManagerDefinition.class.getName()).build());
         compositeBuilder.component(newBuilder(ReflectionFactoryImpl.class).build());
         compositeBuilder.component(newBuilder(GenerationHelperImpl.class).build());
-        compositeBuilder.component(newBuilder(PropertyObjectFactoryBuilderImpl.class).build());
+        compositeBuilder.component(newBuilder(PropertySupplierBuilderImpl.class).build());
         compositeBuilder.component(newBuilder(ArrayBuilderImpl.class).build());
         compositeBuilder.component(newBuilder(CollectionBuilderImpl.class).build());
         compositeBuilder.component(newBuilder(MapBuilderImpl.class).build());

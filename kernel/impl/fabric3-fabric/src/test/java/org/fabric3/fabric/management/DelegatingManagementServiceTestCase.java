@@ -20,11 +20,11 @@ package org.fabric3.fabric.management;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 
 /**
@@ -35,31 +35,27 @@ public class DelegatingManagementServiceTestCase extends TestCase {
 
     public void testComponentRegistration() throws Exception {
         URI uri = URI.create("test");
-        SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(this);
-        ClassLoader loader = getClass().getClassLoader();
 
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
         EasyMock.expect(extension.getType()).andReturn("test.extension");
-        extension.export(uri, null, factory, loader);
+        extension.export(EasyMock.eq(uri), EasyMock.isNull(), EasyMock.isA(Supplier.class));
         EasyMock.expectLastCall();
         EasyMock.replay(extension);
 
         managementService.setExtensions(Collections.singletonList(extension));
 
-        managementService.export(uri, null, factory, loader);
+        managementService.export(uri, null, () -> this);
 
         EasyMock.verify(extension);
     }
 
     public void testComponentRemove() throws Exception {
         URI uri = URI.create("test");
-        SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(this);
-        ClassLoader loader = getClass().getClassLoader();
         ManagementInfo info = new ManagementInfo(null, null, null, null, null, null, null);
 
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
         EasyMock.expect(extension.getType()).andReturn("test.extension");
-        extension.export(uri, info, factory, loader);
+        extension.export(EasyMock.eq(uri), EasyMock.eq(info), EasyMock.isA(Supplier.class));
         EasyMock.expectLastCall();
         extension.remove(uri, info);
         EasyMock.expectLastCall();
@@ -67,7 +63,7 @@ public class DelegatingManagementServiceTestCase extends TestCase {
 
         managementService.setExtensions(Collections.singletonList(extension));
 
-        managementService.export(uri, info, factory, loader);
+        managementService.export(uri, info, () -> this);
         managementService.remove(uri, info);
 
         EasyMock.verify(extension);
@@ -75,21 +71,18 @@ public class DelegatingManagementServiceTestCase extends TestCase {
 
     public void testDelayedComponentRegistration() throws Exception {
         URI uri = URI.create("test");
-        SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(this);
-        ClassLoader loader = getClass().getClassLoader();
 
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
         EasyMock.expect(extension.getType()).andReturn("test.extension");
-        extension.export(uri, null, factory, loader);
+        extension.export(EasyMock.eq(uri), EasyMock.isNull(), EasyMock.isA(Supplier.class));
         EasyMock.expectLastCall();
         EasyMock.replay(extension);
 
-        managementService.export(uri, null, factory, loader);
+        managementService.export(uri, null, () -> this);
 
         managementService.setExtensions(Collections.singletonList(extension));
         EasyMock.verify(extension);
     }
-
 
     public void testInstanceRegistration() throws Exception {
         Object instance = new Object();

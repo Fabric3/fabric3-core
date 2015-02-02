@@ -38,7 +38,7 @@ import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.runtime.tomcat.connector.ConnectorService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.Destroy;

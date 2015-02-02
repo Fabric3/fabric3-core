@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
@@ -29,7 +30,6 @@ import org.fabric3.implementation.spring.runtime.component.SpringInvoker;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -83,7 +83,7 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(SpringWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SpringWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

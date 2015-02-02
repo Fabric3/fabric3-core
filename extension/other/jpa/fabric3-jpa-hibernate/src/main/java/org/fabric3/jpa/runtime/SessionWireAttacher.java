@@ -20,17 +20,16 @@ package org.fabric3.jpa.runtime;
 
 import javax.transaction.TransactionManager;
 import java.net.URI;
+import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
-import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
+import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -62,7 +61,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         this.tm = tm;
     }
 
-    public ObjectFactory<?> createObjectFactory(SessionWireTargetDefinition definition) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SessionWireTargetDefinition definition) {
         String unitName = definition.getUnitName();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -74,7 +73,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
             PersistenceOverrides overrides = definition.getOverrides();
             emfResolver.resolve(unitName, overrides, classLoader);
             if (definition.isMultiThreaded()) {
-                return new MultiThreadedSessionProxyFactory(unitName, emService, tm);
+                return () -> new MultiThreadedSessionProxy(unitName, emService, tm);
             } else {
                 return new StatefulSessionProxyFactory(unitName, emService, tm);
             }
@@ -83,11 +82,11 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         }
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 

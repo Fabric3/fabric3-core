@@ -19,20 +19,20 @@
 package org.fabric3.datasource.runtime;
 
 import javax.sql.DataSource;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *
  */
 public class DataSourceWireAttacherTestCase extends TestCase {
 
-    public void testCreateObjectFactory() throws Exception {
+    public void testCreateSupplier() throws Exception {
         DataSource dataSource = EasyMock.createNiceMock(DataSource.class);
 
         DataSourceRegistry registry = EasyMock.createNiceMock(DataSourceRegistry.class);
@@ -43,14 +43,14 @@ public class DataSourceWireAttacherTestCase extends TestCase {
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
         DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", false);
-        ObjectFactory<DataSource> factory = attacher.createObjectFactory(definition);
-        assertEquals(dataSource, factory.getInstance());
+        Supplier<DataSource> supplier = attacher.createSupplier(definition);
+        assertEquals(dataSource, supplier.get());
 
         EasyMock.verify(dataSource, registry);
     }
 
 
-    public void testOptionalCreateObjectFactory() throws Exception {
+    public void testOptionalCreateSupplier() throws Exception {
 
         DataSourceRegistry registry = EasyMock.createNiceMock(DataSourceRegistry.class);
         registry.getDataSource("datasource");
@@ -60,13 +60,13 @@ public class DataSourceWireAttacherTestCase extends TestCase {
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
         DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", true);
-        ObjectFactory<DataSource> factory = attacher.createObjectFactory(definition);
-        assertNull(factory.getInstance());    // datasource not found, inject null
+        Supplier<DataSource> supplier = attacher.createSupplier(definition);
+        assertNull(supplier.get());    // datasource not found, inject null
 
         EasyMock.verify(registry);
     }
 
-    public void testRequiredCreateObjectFactory() throws Exception {
+    public void testRequiredCreateSupplier() throws Exception {
 
         DataSourceRegistry registry = EasyMock.createNiceMock(DataSourceRegistry.class);
         registry.getDataSource("datasource");
@@ -77,7 +77,7 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", false);
         try {
-            attacher.createObjectFactory(definition);
+            attacher.createSupplier(definition);
             fail();
         } catch (Fabric3Exception e) {
             // expected

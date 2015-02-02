@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.container.objectfactory;
+package org.fabric3.spi.container.injection;
 
 /**
  * Attributes of a wire used during injection.

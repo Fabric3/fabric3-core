@@ -18,9 +18,9 @@ package org.fabric3.implementation.spring.runtime.component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -36,30 +36,30 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
 public class ProxyBeanFactory extends DefaultListableBeanFactory {
     private static final long serialVersionUID = -7196391297579217924L;
 
-    private transient Map<String, ObjectFactory> factories = new ConcurrentHashMap<>();
+    private transient Map<String, Supplier> suppliers = new ConcurrentHashMap<>();
     private transient Map<String, BeanDefinition> definitions = new ConcurrentHashMap<>();
 
-    public void add(String name, Class<?> type, ObjectFactory factory) {
-        factories.put(name, factory);
+    public void add(String name, Class<?> type, Supplier supplier) {
+        suppliers.put(name, supplier);
         BeanDefinition definition = new GenericBeanDefinition();
         definition.setBeanClassName(type.getName());
         definition.setScope(BeanDefinition.SCOPE_PROTOTYPE);
         definitions.put(name, definition);
     }
 
-    public ObjectFactory remove(String name) {
+    public Supplier remove(String name) {
         definitions.remove(name);
-        return factories.remove(name);
+        return suppliers.remove(name);
     }
 
     @Override
     public Object getBean(String name) throws BeansException {
-        ObjectFactory factory = factories.get(name);
-        if (factory == null) {
+        Supplier supplier = suppliers.get(name);
+        if (supplier == null) {
             return super.getBean(name);
         }
         try {
-            return factory.getInstance();
+            return supplier.get();
         } catch (Fabric3Exception e) {
             throw new BeanCreationException("Error creating proxy: " + name, e);
         }
@@ -94,17 +94,17 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
 
     @Override
     public boolean containsBean(String name) {
-        return factories.containsKey(name);
+        return suppliers.containsKey(name);
     }
 
     @Override
     public boolean containsBeanDefinition(String beanName) {
-        return factories.containsKey(beanName);
+        return suppliers.containsKey(beanName);
     }
 
     @Override
     public int getBeanDefinitionCount() {
-        return factories.size();
+        return suppliers.size();
     }
 
     @Override

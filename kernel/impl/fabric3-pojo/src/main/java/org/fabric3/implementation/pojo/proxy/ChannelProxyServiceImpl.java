@@ -20,12 +20,12 @@
 package org.fabric3.implementation.pojo.proxy;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -55,10 +55,10 @@ public class ChannelProxyServiceImpl implements ChannelProxyService {
         }
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception {
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception {
         if (extension == null) {
             throw new Fabric3Exception("Channel proxy service extension not installed");
         }
-        return extension.createObjectFactory(interfaze, connection);
+        return extension.createSupplier(interfaze, connection);
     }
 }

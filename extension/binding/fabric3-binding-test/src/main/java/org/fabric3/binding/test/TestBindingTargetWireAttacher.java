@@ -19,10 +19,10 @@
 package org.fabric3.binding.test;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -56,7 +56,7 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         //        throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(TestBindingWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(TestBindingWireTargetDefinition target) throws Fabric3Exception {
         throw new AssertionError();
     }
 }

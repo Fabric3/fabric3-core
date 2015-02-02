@@ -29,7 +29,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
-import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
+import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
@@ -66,7 +66,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                  @Reference ImplementationManagerFactoryBuilder factoryBuilder,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
-                                 @Reference PropertyObjectFactoryBuilder propertyBuilder,
+                                 @Reference PropertySupplierBuilder propertyBuilder,
                                  @Reference TimerService timerService,
                                  @Reference TransactionManager tm,
                                  @Reference ManagementService managementService,

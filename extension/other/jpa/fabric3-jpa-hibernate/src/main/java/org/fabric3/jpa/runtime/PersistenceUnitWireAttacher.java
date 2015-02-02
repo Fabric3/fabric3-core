@@ -20,6 +20,7 @@ package org.fabric3.jpa.runtime;
 
 import javax.persistence.EntityManagerFactory;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
@@ -27,8 +28,6 @@ import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -59,7 +58,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         throw new AssertionError();
     }
 
-    public ObjectFactory<?> createObjectFactory(PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
         ClassLoader classLoader = registry.getClassLoader(classLoaderUri);
@@ -69,7 +68,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
             Thread.currentThread().setContextClassLoader(classLoader);
             PersistenceOverrides overrides = target.getOverrides();
             EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, overrides, classLoader);
-            return new SingletonObjectFactory<>(entityManagerFactory);
+            return () -> entityManagerFactory;
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

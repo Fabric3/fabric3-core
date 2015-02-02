@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
@@ -38,8 +39,6 @@ import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spring.spi.ApplicationContextListener;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -49,12 +48,10 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.w3c.dom.Document;
 
 /**
- * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.
- * <p/>
- * The parent context contains object factories for creating wire proxies for references configured on the component. In addition, the parent context also
- * contains system components configured to be aliased as Spring beans.
- * <p/>
- * The child context contains beans defined in the configuration file specified by the location attribute of the Spring component.
+ * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy. <p/> The parent context contains
+ * object factories for creating wire proxies for references configured on the component. In addition, the parent context also contains system components
+ * configured to be aliased as Spring beans. <p/> The child context contains beans defined in the configuration file specified by the location attribute of the
+ * Spring component.
  */
 @EagerInit
 public class SpringComponentBuilder implements ComponentBuilder<SpringComponentDefinition, SpringComponent> {
@@ -158,7 +155,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
             for (Map.Entry<String, Pair> entry : properties.entrySet()) {
                 String name = entry.getKey();
                 Pair pair = entry.getValue();
-                parent.add(name, pair.getType(), pair.getFactory());
+                parent.add(name, pair.getType(), pair.getSupplier());
             }
             for (ApplicationContextListener listener : listeners) {
                 listener.onCreate(parent);
@@ -192,24 +189,20 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
             String name = propertyDefinition.getName();
             if (propertyDefinition.getInstanceValue() != null) {
-                SingletonObjectFactory<Object> factory = new SingletonObjectFactory<>(propertyDefinition.getInstanceValue());
-                Pair pair = new Pair(Object.class, factory);
+                Pair pair = new Pair(Object.class, propertyDefinition::getInstanceValue);
                 values.put(name, pair);
             } else {
                 Document document = propertyDefinition.getValue();
                 String value = document.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
                 QName type = propertyDefinition.getType();
                 if (XSD_BOOLEAN.equals(type)) {
-                    SingletonObjectFactory<Boolean> factory = new SingletonObjectFactory<>(Boolean.valueOf(value));
-                    Pair pair = new Pair(Boolean.class, factory);
+                    Pair pair = new Pair(Boolean.class, () -> Boolean.valueOf(value));
                     values.put(name, pair);
                 } else if (XSD_INT.equals(type)) {
-                    SingletonObjectFactory<Integer> factory = new SingletonObjectFactory<>(Integer.valueOf(value));
-                    Pair pair = new Pair(Integer.class, factory);
+                    Pair pair = new Pair(Integer.class, () -> Boolean.valueOf(value));
                     values.put(name, pair);
                 } else {
-                    SingletonObjectFactory<String> factory = new SingletonObjectFactory<>(value);
-                    Pair pair = new Pair(String.class, factory);
+                    Pair pair = new Pair(String.class, () -> value);
                     values.put(name, pair);
                 }
             }
@@ -219,19 +212,19 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
 
     private class Pair {
         private Class<?> type;
-        private ObjectFactory<?> factory;
+        private Supplier<?> supplier;
 
-        private Pair(Class<?> type, ObjectFactory<?> factory) {
+        private Pair(Class<?> type, Supplier<?> supplier) {
             this.type = type;
-            this.factory = factory;
+            this.supplier = supplier;
         }
 
         public Class<?> getType() {
             return type;
         }
 
-        public ObjectFactory<?> getFactory() {
-            return factory;
+        public Supplier<?> getSupplier() {
+            return supplier;
         }
     }
 

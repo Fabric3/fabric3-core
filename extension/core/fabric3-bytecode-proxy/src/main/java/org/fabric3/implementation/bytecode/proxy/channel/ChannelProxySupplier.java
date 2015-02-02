@@ -16,44 +16,40 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.implementation.bytecode.proxy.wire;
+package org.fabric3.implementation.bytecode.proxy.channel;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
- * Creates a proxy for a wire.
+ * Creates a proxy for a channel.
  */
-public class WireProxyObjectFactory<T> implements ObjectFactory<T> {
+public class ChannelProxySupplier<T> implements Supplier<T> {
     private ProxyFactory proxyFactory;
     private URI uri;
     private Class<T> interfaze;
-    private String callbackUri;
     private Method[] methods;
-    private InvocationChain[] chains;
+    private EventStreamHandler handler;
 
     private T proxy;
 
-    public WireProxyObjectFactory(URI uri, Class<T> interfaze, Method[] methods, InvocationChain[] chains, String callbackUri, ProxyFactory proxyFactory) {
+    public ChannelProxySupplier(URI uri, Class<T> interfaze, Method method, EventStreamHandler handler, ProxyFactory proxyFactory) {
         this.uri = uri;
         this.interfaze = interfaze;
-        this.methods = methods;
-        this.chains = chains;
-        this.callbackUri = callbackUri;
+        this.methods = new Method[]{method};
+        this.handler = handler;
         this.proxyFactory = proxyFactory;
     }
 
-    @SuppressWarnings("unchecked")
-    public T getInstance() throws Fabric3Exception {
+    public T get() throws Fabric3Exception {
         if (proxy == null) {
-            proxy = proxyFactory.createProxy(uri, interfaze, methods, WireProxyDispatcher.class, true);
-            WireProxyDispatcher dispatcher = (WireProxyDispatcher) proxy;
-            dispatcher.init(interfaze, callbackUri, chains);
+            proxy = proxyFactory.createProxy(uri, interfaze, methods, ChannelProxyDispatcher.class, false);
+            ((ChannelProxyDispatcher) proxy).init(handler);
         }
         return proxy;
     }

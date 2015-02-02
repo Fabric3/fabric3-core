@@ -17,24 +17,23 @@
 package org.fabric3.implementation.java.runtime;
 
 import java.lang.reflect.Type;
+import java.util.function.Supplier;
 
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 
 /**
  * A factory that enabled non-managed code to be treated as a Java implementation instance.
  */
 public class NonManagedImplementationManagerFactory implements ImplementationManagerFactory, ImplementationManager {
     private Object instance;
-    private SingletonObjectFactory<?> factory;
+    private Supplier<?> supplier;
 
     public NonManagedImplementationManagerFactory(Object instance) {
         this.instance = instance;
-        factory = new SingletonObjectFactory<>(instance);
+        supplier = () -> instance;
     }
 
     public ImplementationManager createManager() {
@@ -51,17 +50,17 @@ public class NonManagedImplementationManagerFactory implements ImplementationMan
     public void endUpdate() {
     }
 
-    public ObjectFactory<?> getObjectFactory(Injectable attribute) {
-        return factory;
+    public Supplier<?> getObjectSupplier(Injectable attribute) {
+        return supplier;
     }
 
-    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
+    public void setSupplier(Injectable injectable, Supplier<?> supplier) {
     }
 
-    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+    public void setSupplier(Injectable injectable, Supplier<?> supplier, InjectionAttributes attributes) {
     }
 
-    public void removeObjectFactory(Injectable injectable) {
+    public void removeSupplier(Injectable injectable) {
     }
 
     public Class<?> getMemberType(Injectable injectable) {

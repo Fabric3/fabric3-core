@@ -19,11 +19,11 @@
 package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.util.UriHelper;
@@ -48,9 +48,9 @@ public class SingletonTargetWireAttacher implements TargetWireAttacher<Singleton
     public void detach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target) throws Fabric3Exception {
     }
 
-    public ObjectFactory<?> createObjectFactory(SingletonWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SingletonWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SingletonComponent targetComponent = (SingletonComponent) manager.getComponent(targetId);
-        return targetComponent.createObjectFactory();
+        return targetComponent.createSupplier();
     }
 }

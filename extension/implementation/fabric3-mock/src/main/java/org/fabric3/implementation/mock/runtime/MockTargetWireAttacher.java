@@ -21,14 +21,13 @@ package org.fabric3.implementation.mock.runtime;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -57,7 +56,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
             //Each invocation chain has a single physical operation associated with it. This physical operation needs a
             //single interceptor to re-direct the invocation to the mock 
-            Method operationMethod = getOperationMethod(mockedInterface, operation, sourceDefinition, targetDefinition);
+            Method operationMethod = getOperationMethod(mockedInterface, operation);
             MockTargetInterceptor interceptor = new MockTargetInterceptor(mock, operationMethod);
             chain.addInterceptor(interceptor);
         }
@@ -68,16 +67,11 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(MockWireTargetDefinition target) throws Fabric3Exception {
-        Class<?> mockedInterface = loadInterface(target);
-        Object mock = createMock(mockedInterface);
-        return new SingletonObjectFactory<>(mock);
+    public Supplier<?> createSupplier(MockWireTargetDefinition target) throws Fabric3Exception {
+        return () -> createMock(loadInterface(target));
     }
 
-    private Method getOperationMethod(Class<?> mockedInterface,
-                                      PhysicalOperationDefinition op,
-                                      PhysicalWireSourceDefinition sourceDefinition,
-                                      MockWireTargetDefinition wireTargetDefinition) throws Fabric3Exception {
+    private Method getOperationMethod(Class<?> mockedInterface, PhysicalOperationDefinition op) {
         List<String> parameters = op.getTargetParameterTypes();
         for (Method method : mockedInterface.getMethods()) {
             if (method.getName().equals(op.getName())) {

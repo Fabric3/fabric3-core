@@ -20,13 +20,12 @@
 package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
@@ -44,30 +43,29 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
         this.manager = manager;
     }
 
-    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
-    public void detachObjectFactory(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detachSupplier(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
-        component.removeObjectFactory(injectable);
+        component.removeSupplier(injectable);
     }
 
-    public void attachObjectFactory(SingletonWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target)
-            throws Fabric3Exception {
+    public void attachSupplier(SingletonWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();
-        // Add the object factory for the target to be reinjected.
+        // Add the Supplier for the target to be reinjected.
         // The Injectable identifies the injection site (a field or method) on the singleton instance.
         String key = source.getKey();
         int order = source.getOrder();
         InjectionAttributes attributes = new InjectionAttributes(key, order);
-        sourceComponent.addObjectFactory(injectable, objectFactory, attributes);
+        sourceComponent.addSupplier(injectable, supplier, attributes);
     }
 }

@@ -24,10 +24,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.management.ManagementService;
 import org.oasisopen.sca.annotation.Reference;
@@ -45,10 +44,10 @@ public class DelegatingManagementService implements ManagementService {
      * Setter to allow for reinjection of new management extensions.
      *
      * @param injected the reinjected management extensions
-     * @throws Fabric3Exception if an error is encountered registering previous export requests
+     * @if an error is encountered registering previous export requests
      */
     @Reference(required = false)
-    public void setExtensions(List<ManagementExtension> injected) throws Fabric3Exception {
+    public void setExtensions(List<ManagementExtension> injected) {
         extensions.clear();
         for (ManagementExtension extension : injected) {
             extensions.put(extension.getType(), extension);
@@ -57,18 +56,18 @@ public class DelegatingManagementService implements ManagementService {
         exportInstances();
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception {
-        ComponentHolder holder = new ComponentHolder(componentUri, info, objectFactory, classLoader);
+    public void export(URI componentUri, ManagementInfo info, Supplier<?> supplier) {
+        ComponentHolder holder = new ComponentHolder(componentUri, info, supplier);
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();
-            extension.export(componentUri, info, objectFactory, classLoader);
+            extension.export(componentUri, info, supplier);
             holder.registered.add(type);
         }
         componentHolders.add(holder);
     }
 
-    public void export(String name, String group, String description, Object instance) throws Fabric3Exception {
+    public void export(String name, String group, String description, Object instance) {
         InstanceHolder holder = new InstanceHolder(name, group, description, instance);
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
@@ -79,7 +78,7 @@ public class DelegatingManagementService implements ManagementService {
         instanceHolders.add(holder);
     }
 
-    public void remove(URI componentUri, ManagementInfo info) throws Fabric3Exception {
+    public void remove(URI componentUri, ManagementInfo info) {
         for (Iterator<ComponentHolder> iterator = componentHolders.iterator(); iterator.hasNext();) {
             ComponentHolder holder = iterator.next();
             if (holder.componentUri.equals(componentUri)) {
@@ -95,7 +94,7 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    public void remove(String name, String group) throws Fabric3Exception {
+    public void remove(String name, String group) {
         for (Iterator<InstanceHolder> iterator = instanceHolders.iterator(); iterator.hasNext();) {
             InstanceHolder holder = iterator.next();
             if (holder.name.equals(name) && holder.group.equals(group)) {
@@ -111,44 +110,38 @@ public class DelegatingManagementService implements ManagementService {
         }
     }
 
-    private void exportComponents() throws Fabric3Exception {
+    private void exportComponents() {
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();
-            for (ComponentHolder holder : componentHolders) {
-                if (!holder.registered.contains(type)) {
-                    extension.export(holder.componentUri, holder.info, holder.objectFactory, holder.classLoader);
-                    holder.registered.add(type);
-                }
-            }
+            componentHolders.stream().filter(holder -> !holder.registered.contains(type)).forEach(holder -> {
+                extension.export(holder.componentUri, holder.info, holder.supplier);
+                holder.registered.add(type);
+            });
         }
     }
 
-    private void exportInstances() throws Fabric3Exception {
+    private void exportInstances() {
         for (Map.Entry<String, ManagementExtension> entry : extensions.entrySet()) {
             String type = entry.getKey();
             ManagementExtension extension = entry.getValue();
-            for (InstanceHolder holder : instanceHolders) {
-                if (!holder.registered.contains(type)) {
-                    extension.export(holder.name, holder.group, holder.description, holder.instance);
-                    holder.registered.add(type);
-                }
-            }
+            instanceHolders.stream().filter(holder -> !holder.registered.contains(type)).forEach(holder -> {
+                extension.export(holder.name, holder.group, holder.description, holder.instance);
+                holder.registered.add(type);
+            });
         }
     }
 
     private class ComponentHolder {
         private URI componentUri;
         private ManagementInfo info;
-        private ObjectFactory objectFactory;
-        private ClassLoader classLoader;
+        private Supplier supplier;
         private List<String> registered = new ArrayList<>();
 
-        public ComponentHolder(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) {
+        public ComponentHolder(URI componentUri, ManagementInfo info, Supplier<?> supplier) {
             this.componentUri = componentUri;
             this.info = info;
-            this.objectFactory = objectFactory;
-            this.classLoader = classLoader;
+            this.supplier = supplier;
         }
     }
 

@@ -26,6 +26,7 @@ import javax.jms.Topic;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.model.CacheLevel;
@@ -52,7 +53,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
@@ -128,6 +128,21 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         containerManager.register(container);
     }
 
+    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+        containerManager.unregister(target.getUri());
+        // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
+        resolver.release(source.getMetadata().getConnectionFactory());
+    }
+
+    public void attachSupplier(JmsWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition definition)
+            throws Fabric3Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    public void detachSupplier(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+        throw new AssertionError();
+    }
+
     private void populateConfiguration(ContainerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
         if (CacheLevel.CONNECTION == cacheLevel) {
@@ -152,21 +167,6 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         //        configuration.setDurableSubscriptionName();
         //        configuration.setExceptionListener();
         //        configuration.setLocalDelivery();
-    }
-
-    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
-        containerManager.unregister(target.getUri());
-        // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
-        resolver.release(source.getMetadata().getConnectionFactory());
-    }
-
-    public void attachObjectFactory(JmsWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition definition)
-            throws Fabric3Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detachObjectFactory(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
     }
 
     private ResolvedObjects resolveAdministeredObjects(JmsWireSourceDefinition source) throws Fabric3Exception {

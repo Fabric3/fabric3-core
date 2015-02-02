@@ -20,10 +20,10 @@
 package org.fabric3.implementation.pojo.manager;
 
 import java.lang.reflect.Type;
+import java.util.function.Supplier;
 
 import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 
 /**
  * Creates {@link ImplementationManager}s.
@@ -55,36 +55,36 @@ public interface ImplementationManagerFactory {
     void endUpdate();
 
     /**
-     * Returns a previously added object factory for the injectable site.
+     * Returns a previously added Supplier for the injectable site.
      *
      * @param attribute the injection site
-     * @return the object factory or null
+     * @return the Supplier or null
      */
-    ObjectFactory<?> getObjectFactory(Injectable attribute);
+    Supplier<?> getObjectSupplier(Injectable attribute);
 
     /**
-     * Sets an object factory for an injectable.
+     * Sets a Supplier for an injectable.
      *
-     * @param injectable    the injection site name
-     * @param objectFactory the object factory
+     * @param injectable the injection site name
+     * @param supplier   the Supplier
      */
-    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory);
+    void setSupplier(Injectable injectable, Supplier<?> supplier);
 
     /**
-     * Sets an object factory that is associated with a key for an injectable.
+     * Sets a Supplier that is associated with a key for an injectable.
      *
-     * @param injectable    the injection site
-     * @param objectFactory the object factory
-     * @param attributes    the injection attributes
+     * @param injectable the injection site
+     * @param supplier   the Supplier
+     * @param attributes the injection attributes
      */
-    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes);
+    void setSupplier(Injectable injectable, Supplier<?> supplier, InjectionAttributes attributes);
 
     /**
-     * Removes an object factory for an injection site.
+     * Removes a Supplier for an injection site.
      *
      * @param injectable the injection site name
      */
-    void removeObjectFactory(Injectable injectable);
+    void removeSupplier(Injectable injectable);
 
     /**
      * Returns the type for the injection site

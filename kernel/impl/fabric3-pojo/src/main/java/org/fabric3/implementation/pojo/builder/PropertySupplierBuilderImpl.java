@@ -23,10 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
@@ -34,24 +33,23 @@ import org.w3c.dom.Document;
 /**
  *
  */
-public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBuilder {
+public class PropertySupplierBuilderImpl implements PropertySupplierBuilder {
     private ArrayBuilder arrayBuilder;
     private CollectionBuilder collectionBuilder;
     private MapBuilder mapBuilder;
     private ObjectBuilder objectBuilder;
 
-    public PropertyObjectFactoryBuilderImpl(@Reference ArrayBuilder arrayBuilder,
-                                            @Reference CollectionBuilder collectionBuilder,
-                                            @Reference MapBuilder mapBuilder,
-                                            @Reference ObjectBuilder objectBuilder) {
+    public PropertySupplierBuilderImpl(@Reference ArrayBuilder arrayBuilder,
+                                       @Reference CollectionBuilder collectionBuilder,
+                                       @Reference MapBuilder mapBuilder,
+                                       @Reference ObjectBuilder objectBuilder) {
         this.arrayBuilder = arrayBuilder;
         this.collectionBuilder = collectionBuilder;
         this.mapBuilder = mapBuilder;
         this.objectBuilder = objectBuilder;
     }
 
-    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader)
-            throws Fabric3Exception {
+    public Supplier<?> createSupplier(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) {
         Class<?> type = dataType.getType();
         if (type.isArray()) {
             return arrayBuilder.createFactory(name, dataType, value, classLoader);

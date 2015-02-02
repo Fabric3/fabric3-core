@@ -19,14 +19,14 @@
 package org.fabric3.jpa.runtime.proxy;
 
 import javax.transaction.TransactionManager;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates StatefulEntityManagerProxy instances.
  */
-public class StatefulEntityManagerProxyFactory implements ObjectFactory<StatefulEntityManagerProxy> {
+public class StatefulEntityManagerProxyFactory implements Supplier<StatefulEntityManagerProxy> {
     private String unitName;
     private EntityManagerService service;
     private TransactionManager tm;
@@ -37,7 +37,7 @@ public class StatefulEntityManagerProxyFactory implements ObjectFactory<Stateful
         this.unitName = unitName;
     }
 
-    public StatefulEntityManagerProxy getInstance() throws Fabric3Exception {
+    public StatefulEntityManagerProxy get() throws Fabric3Exception {
         return new StatefulEntityManagerProxy(unitName, service, tm);
     }
 }

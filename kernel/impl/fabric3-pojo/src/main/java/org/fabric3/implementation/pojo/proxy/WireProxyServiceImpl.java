@@ -21,11 +21,11 @@ package org.fabric3.implementation.pojo.proxy;
 
 import java.net.URI;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Reference;
@@ -57,31 +57,22 @@ public class WireProxyServiceImpl implements WireProxyService {
         }
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws Fabric3Exception {
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, Wire wire, String callbackUri) {
         checkExtension();
-        return extension.createObjectFactory(interfaze, wire, callbackUri);
+        return extension.createSupplier(interfaze, wire, callbackUri);
     }
 
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws Fabric3Exception {
+    public <T> Supplier<T> createCallbackSupplier(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) {
         checkExtension();
-        return extension.createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
+        return extension.createCallbackSupplier(interfaze, multiThreaded, callbackUri, wire);
     }
 
-    public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws Fabric3Exception {
+    public <T> Supplier<?> updateCallbackSupplier(Supplier<?> supplier, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) {
         checkExtension();
-        return extension.updateCallbackObjectFactory(factory, interfaze, multiThreaded, callbackUri, wire);
+        return extension.updateCallbackSupplier(supplier, interfaze, multiThreaded, callbackUri, wire);
     }
 
-    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        if (extension == null) {
-            throw new IllegalArgumentException("Channel proxy service extension not installed");
-        }
-        return extension.cast(target);
-    }
-
-    private void checkExtension() throws Fabric3Exception {
+    private void checkExtension() {
         if (extension == null) {
             throw new Fabric3Exception("Channel proxy service extension not installed");
         }

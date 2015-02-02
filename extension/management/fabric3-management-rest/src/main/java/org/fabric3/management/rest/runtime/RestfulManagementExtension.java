@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
@@ -43,7 +45,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.management.rest.transformer.TransformerPairService;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.Init;
@@ -107,7 +108,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         return "fabric3.rest";
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws Fabric3Exception {
+    public void export(URI componentUri, ManagementInfo info, Supplier<?> supplier) throws Fabric3Exception {
         String root = info.getPath();
         if (root.length() == 0) {
             root = componentUri.getPath();
@@ -140,7 +141,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                 }
             }
             TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-            ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, pair, roles);
+            ResourceMapping mapping = createMapping(identifier, root, path, method, verb, supplier, pair, roles);
             if (Verb.GET == mapping.getVerb()) {
                 getMappings.add(mapping);
             }
@@ -316,10 +317,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      */
     private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws Fabric3Exception {
         ResourceInvoker invoker = new ResourceInvoker(mappings, security);
-        List<Method> methods = new ArrayList<>();
-        for (ResourceMapping mapping : mappings) {
-            methods.add(mapping.getMethod());
-        }
+        List<Method> methods = mappings.stream().map(ResourceMapping::getMethod).collect(Collectors.toList());
         TransformerPair pair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
         root = root.toLowerCase();
         Set<Role> roles = Collections.emptySet();
@@ -380,16 +378,13 @@ public class RestfulManagementExtension implements ManagementExtension {
             resourceHost.unregisterPath(previous.getPath(), previous.getVerb());
         } else {
             List<ResourceMapping> dynamicMappings = createDynamicResourceMappings(mapping, rootResourcePath, createRootResource);
-            for (ResourceMapping dynamicMapping : dynamicMappings) {
-                // add the resources as listeners first as parents need to be notified of children in order to generate links during registration
-                listeners.add((ResourceListener) dynamicMapping.getInstance());
-            }
-            for (ResourceMapping dynamicMapping : dynamicMappings) {
-                if (!resourceHost.isPathRegistered(dynamicMapping.getPath(), dynamicMapping.getVerb())) {
-                    resourceHost.register(dynamicMapping);
-                    notifyExport(dynamicMapping.getRelativePath(), dynamicMapping);
-                }
-            }
+            // add the resources as listeners first as parents need to be notified of children in order to generate links during registration
+            listeners.addAll(dynamicMappings.stream().map(dynamicMapping -> (ResourceListener) dynamicMapping.getInstance()).collect(Collectors.toList()));
+            dynamicMappings.stream().filter(dynamicMapping -> !resourceHost.isPathRegistered(dynamicMapping.getPath(), dynamicMapping.getVerb())).forEach(
+                    dynamicMapping -> {
+                        resourceHost.register(dynamicMapping);
+                        notifyExport(dynamicMapping.getRelativePath(), dynamicMapping);
+                    });
         }
     }
 

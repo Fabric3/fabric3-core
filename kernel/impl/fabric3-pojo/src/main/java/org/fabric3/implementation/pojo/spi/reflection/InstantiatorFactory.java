@@ -19,11 +19,10 @@
 package org.fabric3.implementation.pojo.spi.reflection;
 
 import java.lang.reflect.Constructor;
-
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import java.util.function.Supplier;
 
 /**
- * Creates {@link ObjectFactory}s for instantiating component implementation instances.
+ * Creates Suppliers for instantiating component implementation instances.
  */
 public interface InstantiatorFactory {
 
@@ -35,12 +34,12 @@ public interface InstantiatorFactory {
     boolean isDefault();
 
     /**
-     * Creates an object factory that is used to instantiate instances.
+     * Creates a Supplier that is used to instantiate instances.
      *
      * @param constructor        the constructor to instantiate with
      * @param parameterFactories object factories which return constructor parameters
-     * @return the object factory
+     * @return the supplier
      */
-    <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories);
+    Supplier<?> createInstantiator(Constructor<?> constructor, Supplier<?>[] parameterFactories);
 
 }

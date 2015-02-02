@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -31,7 +32,6 @@ import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -61,8 +61,7 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
     public WebComponent build(WebComponentDefinition definition) throws Fabric3Exception {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        // TODO fix properties
-        Map<String, ObjectFactory<?>> propertyFactories = Collections.emptyMap();
+        Map<String, Supplier<?>> propertyFactories = Collections.emptyMap();
         URI classLoaderId = definition.getClassLoaderId();
         Map<String, Map<String, InjectionSite>> injectorMappings = definition.getInjectionSiteMappings();
         ClassLoader cl = activator.getWebComponentClassLoader(classLoaderId);

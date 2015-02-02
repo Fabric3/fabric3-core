@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -39,7 +40,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationException;
@@ -473,8 +473,8 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
-            if (instance instanceof ObjectFactory) {
-                instance = ((ObjectFactory) instance).getInstance();
+            if (instance instanceof Supplier) {
+                instance = ((Supplier) instance).get();
             }
             Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             Object ret = mapping.getMethod().invoke(instance, params);

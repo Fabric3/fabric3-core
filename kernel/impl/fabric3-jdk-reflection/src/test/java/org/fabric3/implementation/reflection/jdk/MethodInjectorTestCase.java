@@ -20,11 +20,11 @@
 package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *
@@ -32,12 +32,12 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 public class MethodInjectorTestCase extends TestCase {
     private Method fooMethod;
     private Method exceptionMethod;
-    private ObjectFactory objectFactory;
+    private Supplier supplier;
 
     public void testIllegalArgument() throws Exception {
-        EasyMock.expect(objectFactory.getInstance()).andReturn(new Object());
-        EasyMock.replay(objectFactory);
-        MethodInjector injector = new MethodInjector(fooMethod, objectFactory);
+        EasyMock.expect(supplier.get()).andReturn(new Object());
+        EasyMock.replay(supplier);
+        MethodInjector injector = new MethodInjector(fooMethod, supplier);
         try {
             injector.inject(new Foo());
             fail();
@@ -47,9 +47,9 @@ public class MethodInjectorTestCase extends TestCase {
     }
 
     public void testException() throws Exception {
-        EasyMock.expect(objectFactory.getInstance()).andReturn("foo");
-        EasyMock.replay(objectFactory);
-        MethodInjector injector = new MethodInjector(exceptionMethod, objectFactory);
+        EasyMock.expect(supplier.get()).andReturn("foo");
+        EasyMock.replay(supplier);
+        MethodInjector injector = new MethodInjector(exceptionMethod, supplier);
         try {
             injector.inject(new Foo());
             fail();
@@ -59,10 +59,10 @@ public class MethodInjectorTestCase extends TestCase {
     }
 
     public void testReinjectionOfNullValue() throws Exception {
-        EasyMock.replay(objectFactory);
-        MethodInjector injector = new MethodInjector(fooMethod, objectFactory);
+        EasyMock.replay(supplier);
+        MethodInjector injector = new MethodInjector(fooMethod, supplier);
         try {
-            injector.clearObjectFactory();
+            injector.clearSupplier();
             Foo foo = new Foo();
             injector.inject(foo);
             assertNull(foo.getFoo());
@@ -76,7 +76,7 @@ public class MethodInjectorTestCase extends TestCase {
         super.setUp();
         fooMethod = Foo.class.getMethod("setFoo", String.class);
         exceptionMethod = Foo.class.getDeclaredMethod("exception", String.class);
-        objectFactory = EasyMock.createMock(ObjectFactory.class);
+        supplier = EasyMock.createMock(Supplier.class);
     }
 
     private class Foo {

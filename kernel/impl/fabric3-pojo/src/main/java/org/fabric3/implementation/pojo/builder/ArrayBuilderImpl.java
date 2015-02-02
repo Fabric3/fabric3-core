@@ -20,10 +20,9 @@ package org.fabric3.implementation.pojo.builder;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.model.physical.ParamTypes;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
@@ -45,7 +44,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
     }
 
     @SuppressWarnings({"unchecked"})
-    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) {
+    public Supplier<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) {
         Class componentType = dataType.getType().getComponentType();
         Class<?> type = componentType;
         if (type.isPrimitive()) {
@@ -65,7 +64,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
             Object val = transformer.transform(node, classLoader);
             Array.set(array, i, val);
         }
-        return new SingletonObjectFactory<>(array);
+        return () -> array;
     }
 
 }

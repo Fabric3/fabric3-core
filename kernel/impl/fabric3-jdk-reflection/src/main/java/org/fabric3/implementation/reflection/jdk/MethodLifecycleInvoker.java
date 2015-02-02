@@ -29,7 +29,7 @@ import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
  * Performs an invocation on a method of a given instance
  */
 public class MethodLifecycleInvoker implements LifecycleInvoker {
-    private final Method method;
+    private Method method;
 
     /**
      * Instantiates an invoker for the given method.
@@ -42,7 +42,7 @@ public class MethodLifecycleInvoker implements LifecycleInvoker {
         this.method.setAccessible(true);
     }
 
-    public void invoke(Object instance) throws Fabric3Exception {
+    public void invoke(Object instance) {
         try {
             method.invoke(instance);
         } catch (IllegalArgumentException e) {

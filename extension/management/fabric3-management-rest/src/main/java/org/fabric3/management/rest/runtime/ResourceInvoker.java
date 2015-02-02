@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.SecuritySubject;
@@ -34,7 +35,6 @@ import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Collects and reports sub-resource information for a managed artifact.
@@ -128,8 +128,8 @@ public class ResourceInvoker {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
-            if (instance instanceof ObjectFactory) {
-                instance = ((ObjectFactory) instance).getInstance();
+            if (instance instanceof Supplier) {
+                instance = ((Supplier) instance).get();
             }
             Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             return mapping.getMethod().invoke(instance);

@@ -21,9 +21,9 @@ package org.fabric3.implementation.pojo.spi.reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Factory responsible for creating instantiators, injectors, and invokers.
@@ -31,22 +31,22 @@ import org.fabric3.spi.container.objectfactory.ObjectFactory;
 public interface ReflectionFactory {
 
     /**
-     * Creates an object factory that is used to instantiate instances.
+     * Creates a Supplier that is used to instantiate instances.
      *
-     * @param constructor        the constructor to instantiate with
-     * @param parameterFactories object factories which return constructor parameters
-     * @return the object factory
+     * @param constructor the constructor to instantiate with
+     * @param suppliers   object factories which return constructor parameters
+     * @return the Supplier
      */
-    <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories);
+    Supplier<?> createInstantiator(Constructor<?> constructor, Supplier<?>[] suppliers);
 
     /**
      * Creates an injector for a field or method.
      *
-     * @param member           the field or method
-     * @param parameterFactory the factory that returns an instance to be injected
+     * @param member   the field or method
+     * @param supplier the factory that returns an instance to be injected
      * @return the injector
      */
-    Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
+    Injector<?> createInjector(Member member, Supplier<?> supplier);
 
     /**
      * Creates a lifecycle invoker that is used to issue a method callback on an implementation instance.

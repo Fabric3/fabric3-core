@@ -17,11 +17,11 @@
 
 package org.fabric3.cache.runtime;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -44,12 +44,12 @@ public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTarg
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<?> createObjectFactory(CacheWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(CacheWireTargetDefinition target) throws Fabric3Exception {
         String name = target.getCacheName();
         Object cache = registry.getCache(name);
         if (cache == null) {
             throw new Fabric3Exception("Cache not found: " + name);
         }
-        return new SingletonObjectFactory<>(cache);
+        return () -> cache;
     }
 }

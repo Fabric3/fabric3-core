@@ -20,6 +20,7 @@
 package org.fabric3.fabric.container.builder;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.wire.InvocationChainImpl;
@@ -28,7 +29,6 @@ import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -83,8 +83,8 @@ public class ConnectorImpl implements Connector {
         }
 
         if (definition.isOptimizable()) {
-            ObjectFactory<?> objectFactory = targetAttacher.createObjectFactory(targetDefinition);
-            sourceAttacher.attachObjectFactory(sourceDefinition, objectFactory, targetDefinition);
+            Supplier<?> supplier = targetAttacher.createSupplier(targetDefinition);
+            sourceAttacher.attachSupplier(sourceDefinition, supplier, targetDefinition);
         } else {
             Wire wire = createWire(definition);
             sourceAttacher.attach(sourceDefinition, targetDefinition, wire);
@@ -101,7 +101,7 @@ public class ConnectorImpl implements Connector {
 
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
         if (definition.isOptimizable()) {
-            sourceAttacher.detachObjectFactory(sourceDefinition, targetDefinition);
+            sourceAttacher.detachSupplier(sourceDefinition, targetDefinition);
         } else {
             TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
             if (targetAttacher == null) {

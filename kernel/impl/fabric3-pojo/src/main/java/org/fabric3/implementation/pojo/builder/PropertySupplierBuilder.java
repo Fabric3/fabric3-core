@@ -17,26 +17,27 @@
 
 package org.fabric3.implementation.pojo.builder;
 
+import java.util.function.Supplier;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.w3c.dom.Document;
 
 /**
- * Creates ObjectFactory instances for property values.
+ * Creates Supplier instances for property values.
  */
-public interface PropertyObjectFactoryBuilder {
+public interface PropertySupplierBuilder {
 
     /**
-     * Create the ObjectFactory from the given DOM value.
+     * Create the Supplier from the given DOM value.
      *
      * @param name        the property name
      * @param dataType    the property type
      * @param value       the DOM to transform
      * @param many        true if the property is many-valued
      * @param classLoader the classloader for the target type
-     * @return the ObjectFactory
+     * @return the Supplier
      * @throws Fabric3Exception if there is an error building the factory
      */
-    ObjectFactory<?> createFactory(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) throws Fabric3Exception;
+    Supplier<?> createSupplier(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) throws Fabric3Exception;
 }

@@ -18,27 +18,27 @@
 package org.fabric3.implementation.pojo.builder;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.w3c.dom.Document;
 
 /**
- * Builds an object factory that creates a property value map from a DOM.
+ * Builds a Supplier that creates a property value map from a DOM.
  */
 public interface MapBuilder {
 
     /**
-     * Creates the object factory for the property value.
+     * Creates the Supplier for the property value.
      *
      * @param name        the property name
      * @param type        the property type
      * @param value       the DOM
      * @param classLoader the classloader to deserialize the property value
-     * @return the object factory
-     * @throws Fabric3Exception if there is an error creating the object factory
+     * @return the Supplier
+     * @throws Fabric3Exception if there is an error creating the Supplier
      */
-    ObjectFactory<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
+    Supplier<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
 
 }

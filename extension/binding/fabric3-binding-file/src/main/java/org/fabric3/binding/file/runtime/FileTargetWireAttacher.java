@@ -20,6 +20,7 @@ package org.fabric3.binding.file.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.api.host.Fabric3Exception;
@@ -31,7 +32,6 @@ import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -71,7 +71,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         // no-op
     }
 
-    public ObjectFactory<?> createObjectFactory(FileBindingWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(FileBindingWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

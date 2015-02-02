@@ -14,63 +14,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.implementation.pojo.objectfactory;
+package org.fabric3.implementation.pojo.supplier;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 
 /**
  *
  */
-public class MapMultiplicityObjectFactoryTestCase extends TestCase {
-    private MapMultiplicityObjectFactory factory = new MapMultiplicityObjectFactory();
+public class MapMultiplicitySupplierTestCase extends TestCase {
+    private MapMultiplicitySupplier supplier = new MapMultiplicitySupplier();
 
     public void testReinjection() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
+        Supplier<?> mockFactory = EasyMock.createMock(Supplier.class);
+        EasyMock.expect(mockFactory.get()).andReturn(new Object()).times(2);
         EasyMock.replay(mockFactory);
 
-        factory.startUpdate();
+        supplier.startUpdate();
         InjectionAttributes attributes = new InjectionAttributes("baz", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
-        factory.endUpdate();
+        supplier.addSupplier(mockFactory, attributes);
+        supplier.endUpdate();
 
-        factory.startUpdate();
+        supplier.startUpdate();
         attributes = new InjectionAttributes("foo", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
-        factory.endUpdate();
-        Map<Object, Object> map = factory.getInstance();
+        supplier.addSupplier(mockFactory, attributes);
+        supplier.endUpdate();
+        Map<Object, Object> map = supplier.get();
         assertEquals(1, map.size());
 
-        factory.startUpdate();
+        supplier.startUpdate();
         attributes = new InjectionAttributes("bar", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
-        factory.endUpdate();
-        map = factory.getInstance();
+        supplier.addSupplier(mockFactory, attributes);
+        supplier.endUpdate();
+        map = supplier.get();
         assertEquals(1, map.size());
 
         EasyMock.verify(mockFactory);
     }
 
     public void testNoUpdates() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);
+        Supplier<?> mockFactory = EasyMock.createMock(Supplier.class);
+        EasyMock.expect(mockFactory.get()).andReturn(new Object()).times(1);
         EasyMock.replay(mockFactory);
 
-        factory.startUpdate();
+        supplier.startUpdate();
         InjectionAttributes attributes = new InjectionAttributes("baz", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
-        factory.endUpdate();
+        supplier.addSupplier(mockFactory, attributes);
+        supplier.endUpdate();
 
-        factory.startUpdate();
+        supplier.startUpdate();
         // no update
-        factory.endUpdate();
+        supplier.endUpdate();
 
-        Map<Object, Object> map = factory.getInstance();
+        Map<Object, Object> map = supplier.get();
         assertEquals(1, map.size());
 
         EasyMock.verify(mockFactory);

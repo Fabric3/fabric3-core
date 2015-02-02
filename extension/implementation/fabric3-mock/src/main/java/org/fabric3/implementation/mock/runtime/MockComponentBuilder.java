@@ -20,13 +20,13 @@ package org.fabric3.implementation.mock.runtime;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -56,8 +56,8 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
             }
         }
 
-        ObjectFactory<Object> objectFactory = new MockObjectFactory<>(mockedInterfaces, classLoader, control);
-        return new MockComponent(componentDefinition.getComponentUri(), objectFactory);
+        Supplier<Object> supplier = new MockObjectSupplier<>(mockedInterfaces, classLoader, control);
+        return new MockComponent(componentDefinition.getComponentUri(), supplier);
     }
 
     public void dispose(MockComponentDefinition definition, MockComponent component) throws Fabric3Exception {

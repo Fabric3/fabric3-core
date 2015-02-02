@@ -31,31 +31,31 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Wraps a Java-based component as an MBean and allows it to be invoked by an MBean server.
  */
 public class OptimizedMBean<T> extends AbstractMBean {
-    private final ObjectFactory<T> objectFactory;
+    private final Supplier<T> supplier;
     private final Map<String, MethodHolder> getters;
     private final Map<String, MethodHolder> setters;
     private final Map<OperationKey, MethodHolder> operations;
     private boolean authorization;
 
-    public OptimizedMBean(ObjectFactory<T> objectFactory,
+    public OptimizedMBean(Supplier<T> supplier,
                           MBeanInfo mbeanInfo,
                           Map<String, MethodHolder> getters,
                           Map<String, MethodHolder> setters,
                           Map<OperationKey, MethodHolder> operations,
                           boolean authorization) {
         super(mbeanInfo);
-        this.objectFactory = objectFactory;
+        this.supplier = supplier;
         this.getters = getters;
         this.setters = setters;
         this.operations = operations;
@@ -116,7 +116,7 @@ public class OptimizedMBean<T> extends AbstractMBean {
     Object invoke(Method method, Object[] args) throws MBeanException, ReflectionException {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         try {
-            T instance = objectFactory.getInstance();
+            T instance = supplier.get();
             return method.invoke(instance, args);
         } catch (Fabric3Exception e) {
             throw new ReflectionException(e);

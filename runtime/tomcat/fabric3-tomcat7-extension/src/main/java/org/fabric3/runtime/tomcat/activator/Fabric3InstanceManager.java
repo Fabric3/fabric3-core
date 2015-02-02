@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.tomcat.InstanceManager;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Manages reference injection on servlet instances.

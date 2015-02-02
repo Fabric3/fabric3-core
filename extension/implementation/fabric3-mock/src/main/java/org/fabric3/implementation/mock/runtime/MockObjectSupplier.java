@@ -24,14 +24,14 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.easymock.IMocksControl;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates mock instances by delegating to the IMocksControl.
  */
-public class MockObjectFactory<T> implements ObjectFactory<T> {
+public class MockObjectSupplier<T> implements Supplier<T> {
 
     private final Map<Class<?>, Object> mocks = new HashMap<>();
     private final T proxy;
@@ -44,22 +44,20 @@ public class MockObjectFactory<T> implements ObjectFactory<T> {
      * @param classLoader th classloader for creating the dynamic proxies
      * @param control     the mock control
      */
-    public MockObjectFactory(List<Class<?>> interfaces, ClassLoader classLoader, IMocksControl control) {
+    public MockObjectSupplier(List<Class<?>> interfaces, ClassLoader classLoader, IMocksControl control) {
 
         this.control = control;
 
-        for (Class<?> interfaze : interfaces) {
-            if (!interfaze.getName().equals(IMocksControl.class.getName())) {
-                mocks.put(interfaze, control.createMock(interfaze));
-            }
-        }
+        interfaces.stream().filter(interfaze -> !interfaze.getName().equals(IMocksControl.class.getName())).forEach(interfaze -> {
+            mocks.put(interfaze, control.createMock(interfaze));
+        });
 
         this.proxy = createProxy(interfaces, classLoader);
 
     }
 
     @SuppressWarnings("unchecked")
-    public T getInstance() {
+    public T get() {
         return proxy;
     }
 

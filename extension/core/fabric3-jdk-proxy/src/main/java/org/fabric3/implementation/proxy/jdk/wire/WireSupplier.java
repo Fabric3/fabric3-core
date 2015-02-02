@@ -17,40 +17,49 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.implementation.proxy.jdk.channel;
+package org.fabric3.implementation.proxy.jdk.wire;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
- * Creates a proxy for a channel connection that implements a specified interface with a single method.
+ * Creates a proxy for a wire that implements a specified interface.
  */
-public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
+public class WireSupplier<T> implements Supplier<T> {
     private Class<T> interfaze;
-    private JDKChannelProxyService proxyService;
-    private EventStream stream;
+    private String callbackUri;
+    private JDKWireProxyService proxyService;
+    // the cache of proxy interface method to operation mappings
+    private Map<Method, InvocationChain> mappings;
 
+    // lazily created proxies
     private T proxy;
 
     /**
      * Constructor.
      *
      * @param interfaze    the interface the proxy implements
+     * @param callbackUri  the callback URI for the wire or null if the wire is unidirectional
      * @param proxyService the proxy creation service
-     * @param stream       the stream
+     * @param mappings     proxy method to wire invocation chain mappings
      */
-    public ChannelConnectionObjectFactory(Class<T> interfaze, JDKChannelProxyService proxyService, EventStream stream) {
+    public WireSupplier(Class<T> interfaze, String callbackUri, JDKWireProxyService proxyService, Map<Method, InvocationChain> mappings) {
         this.interfaze = interfaze;
+        this.callbackUri = callbackUri;
         this.proxyService = proxyService;
-        this.stream = stream;
+        this.mappings = mappings;
     }
 
-    public T getInstance() throws Fabric3Exception {
+    public T get() throws Fabric3Exception {
         // as an optimization, only create one proxy since they are stateless
         if (proxy == null) {
-            proxy = interfaze.cast(proxyService.createProxy(interfaze, stream));
+            proxy = interfaze.cast(proxyService.createProxy(interfaze, callbackUri, mappings));
         }
         return proxy;
     }
 }
+

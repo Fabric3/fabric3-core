@@ -25,14 +25,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -91,11 +90,11 @@ public class ConnectorImplTestCase extends TestCase {
         TargetWireAttacher targetAttacher = EasyMock.createMock(TargetWireAttacher.class);
         Map sourceAttachers = Collections.singletonMap(MockWireSourceDefinition.class, sourceAttacher);
         Map targetAttachers = Collections.singletonMap(MockWireTargetDefinition.class, targetAttacher);
-        sourceAttacher.attachObjectFactory(EasyMock.isA(PhysicalWireSourceDefinition.class),
-                                           EasyMock.isA(ObjectFactory.class),
-                                           EasyMock.isA(PhysicalWireTargetDefinition.class));
-        targetAttacher.createObjectFactory(EasyMock.isA(PhysicalWireTargetDefinition.class));
-        EasyMock.expectLastCall().andReturn(new SingletonObjectFactory<>(new Object()));
+        sourceAttacher.attachSupplier(EasyMock.isA(PhysicalWireSourceDefinition.class),
+                                      EasyMock.isA(Supplier.class),
+                                      EasyMock.isA(PhysicalWireTargetDefinition.class));
+        targetAttacher.createSupplier(EasyMock.isA(PhysicalWireTargetDefinition.class));
+        EasyMock.expectLastCall().andReturn((Supplier) Object::new);
         EasyMock.replay(sourceAttacher, targetAttacher);
         connector.setSourceAttachers(sourceAttachers);
         connector.setTargetAttachers(targetAttachers);

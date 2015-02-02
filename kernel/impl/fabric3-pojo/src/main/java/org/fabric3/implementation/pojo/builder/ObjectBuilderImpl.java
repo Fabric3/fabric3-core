@@ -19,11 +19,10 @@ package org.fabric3.implementation.pojo.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
@@ -41,14 +40,14 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
         super(transformerRegistry);
     }
 
-    public ObjectFactory<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws Fabric3Exception {
+    public Supplier<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws Fabric3Exception {
         Class<?> type = dataType.getType();
         List<Class<?>> types = new ArrayList<>();
         types.add(type);
         Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, dataType, types);
         Element element = (Element) value.getDocumentElement().getFirstChild();
         Object instance = transformer.transform(element, classLoader);
-        return new SingletonObjectFactory<>(instance);
+        return () -> instance;
     }
 
 }

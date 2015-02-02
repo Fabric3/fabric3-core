@@ -21,11 +21,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
@@ -61,9 +61,9 @@ public class ObjectBuilderImplTestCase extends TestCase {
         value.setTextContent("test1");
         values.appendChild(value);
 
-        ObjectFactory<?> factory = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
 
-        String result = (String) factory.getInstance();
+        String result = (String) supplier.get();
         assertEquals("test1", result);
     }
 

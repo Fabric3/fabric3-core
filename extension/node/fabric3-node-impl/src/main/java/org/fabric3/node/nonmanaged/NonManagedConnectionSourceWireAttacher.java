@@ -41,7 +41,7 @@ public class NonManagedConnectionSourceWireAttacher implements SourceConnectionA
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             Class<?> interfaze = loader.loadClass(source.getInterface());
-            Object proxy = proxyService.createObjectFactory(interfaze, connection).getInstance();
+            Object proxy = proxyService.createSupplier(interfaze, connection).get();
             source.setProxy(proxy);
         } catch (ClassNotFoundException e) {
             throw new Fabric3Exception(e);

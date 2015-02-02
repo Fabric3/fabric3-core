@@ -16,8 +16,8 @@
  */
 package org.fabric3.implementation.spring.runtime.component;
 
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.springframework.beans.BeansException;
+import java.util.function.Supplier;
+
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 
@@ -27,16 +27,15 @@ import org.springframework.context.support.AbstractApplicationContext;
 public class SCAApplicationContext extends AbstractApplicationContext {
     private ProxyBeanFactory beanFactory = new ProxyBeanFactory();
 
-    public void add(String name, Class<?> type, ObjectFactory factory) {
-        beanFactory.add(name, type, factory);
+    public void add(String name, Class<?> type, Supplier supplier) {
+        beanFactory.add(name, type, supplier);
     }
 
-    public ObjectFactory remove(String name) {
+    public Supplier remove(String name) {
         return beanFactory.remove(name);
     }
 
-
-    protected void refreshBeanFactory() throws BeansException, IllegalStateException {
+    protected void refreshBeanFactory() {
 
     }
 
@@ -44,7 +43,7 @@ public class SCAApplicationContext extends AbstractApplicationContext {
 
     }
 
-    public ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException {
+    public ConfigurableListableBeanFactory getBeanFactory() {
         return beanFactory;
     }
 }

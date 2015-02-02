@@ -22,16 +22,16 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Creates proxies for a callback wire.
  */
-public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
+public class CallbackWireSupplier<T> implements Supplier<T> {
     private URI uri;
     private Class<T> interfaze;
     private Method[] methods;
@@ -40,12 +40,12 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
 
     private T proxy;
 
-    public CallbackWireObjectFactory(URI uri,
-                                     Class<T> interfaze,
-                                     Method[] methods,
-                                     String callbackUri,
-                                     InvocationChain[] invocationChains,
-                                     ProxyFactory proxyFactory) {
+    public CallbackWireSupplier(URI uri,
+                                Class<T> interfaze,
+                                Method[] methods,
+                                String callbackUri,
+                                InvocationChain[] invocationChains,
+                                ProxyFactory proxyFactory) {
         this.uri = uri;
         this.interfaze = interfaze;
 
@@ -55,7 +55,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         this.proxyFactory = proxyFactory;
     }
 
-    public T getInstance() throws Fabric3Exception {
+    public T get() throws Fabric3Exception {
         if (proxy != null) {
             return proxy;
         }

@@ -20,11 +20,11 @@ package org.fabric3.implementation.web.runtime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Creates Injector collections for injecting references, properties and context proxies into web application artifacts. These include servlets, filters, the
@@ -45,6 +45,6 @@ public interface InjectorFactory {
      */
     void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                 Map<String, Map<String, InjectionSite>> siteMappings,
-                                Map<String, ObjectFactory<?>> factories,
+                                Map<String, Supplier<?>> factories,
                                 ClassLoader classLoader) throws Fabric3Exception;
 }

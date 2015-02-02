@@ -16,33 +16,33 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.implementation.pojo.objectfactory;
+package org.fabric3.implementation.pojo.supplier;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.InjectionAttributes;
 
 /**
  * Returns a <code>Map</code> containing object instances.
  */
-public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<Map<?, ?>> {
-    private volatile Map<Object, ObjectFactory<?>> factories = new HashMap<>();
-    private Map<Object, ObjectFactory<?>> temporaryFactories;
+public class MapMultiplicitySupplier implements MultiplicitySupplier<Map<?, ?>> {
+    private volatile Map<Object, Supplier<?>> suppliers = new HashMap<>();
+    private Map<Object, Supplier<?>> temporarySuppliers;
 
     private FactoryState state = FactoryState.UPDATED;
 
-    public Map<Object, Object> getInstance() throws Fabric3Exception {
+    public Map<Object, Object> get() throws Fabric3Exception {
         Map<Object, Object> map = new HashMap<>();
-        for (Map.Entry<Object, ObjectFactory<?>> entry : factories.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getInstance());
+        for (Map.Entry<Object, Supplier<?>> entry : suppliers.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().get());
         }
         return map;
     }
 
-    public void addObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+    public void addSupplier(Supplier<?> supplier, InjectionAttributes attributes) {
         if (attributes == null) {
             throw new IllegalArgumentException("Attributes was null");
         }
@@ -53,24 +53,24 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
         if (state != FactoryState.UPDATING) {
             throw new IllegalStateException("Factory not in updating state. The method startUpdate() must be called first.");
         }
-        temporaryFactories.put(attributes.getKey(), objectFactory);
+        temporarySuppliers.put(attributes.getKey(), supplier);
     }
 
     public void clear() {
-        factories.clear();
+        suppliers.clear();
     }
 
     public void startUpdate() {
         state = FactoryState.UPDATING;
-        temporaryFactories = new HashMap<>();
+        temporarySuppliers = new HashMap<>();
     }
 
     public void endUpdate() {
-        if (temporaryFactories != null && !temporaryFactories.isEmpty()) {
+        if (temporarySuppliers != null && !temporarySuppliers.isEmpty()) {
             // The isEmpty() check ensures only updates are applied since startUpdate()/endUpdate() can be called if there are no changes present.
             // Otherwise, if no updates are made, existing factories will be overwritten by the empty collection.
-            factories = temporaryFactories;
-            temporaryFactories = null;
+            suppliers = temporarySuppliers;
+            temporarySuppliers = null;
         }
         state = FactoryState.UPDATED;
     }

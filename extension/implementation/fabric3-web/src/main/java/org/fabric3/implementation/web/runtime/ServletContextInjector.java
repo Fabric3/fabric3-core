@@ -19,34 +19,34 @@
 package org.fabric3.implementation.web.runtime;
 
 import javax.servlet.ServletContext;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
+import org.fabric3.spi.container.injection.InjectionAttributes;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Injects objects (reference proxies, properties, contexts) into a ServletContext.
  */
 public class ServletContextInjector implements Injector<ServletContext> {
-    private ObjectFactory<?> objectFactory;
+    private Supplier<?> supplier;
     private String key;
 
     public void inject(ServletContext context) throws Fabric3Exception {
-        context.setAttribute(key, objectFactory.getInstance());
+        context.setAttribute(key, supplier.get());
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
-        this.objectFactory = objectFactory;
+    public void setSupplier(Supplier<?> supplier, InjectionAttributes attributes) {
+        this.supplier = supplier;
         this.key = attributes.getKey().toString();
     }
 
-    public void clearObjectFactory() {
-        if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).clear();
+    public void clearSupplier() {
+        if (this.supplier instanceof MultiplicitySupplier<?>) {
+            ((MultiplicitySupplier<?>) this.supplier).clear();
         } else {
-            objectFactory = null;
+            supplier = null;
             key = null;
         }
     }

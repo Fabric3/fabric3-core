@@ -21,10 +21,10 @@ import javax.xml.ws.soap.SOAPFaultException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.Message;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
@@ -35,7 +35,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
  * This interceptor requires message payloads to be a JAXB types.
  */
 public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
-    private ObjectFactory<?> proxyFactory;
+    private Supplier<?> supplier;
     private Method method;
     private boolean oneWay;
     private int retries = 0;
@@ -44,18 +44,18 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     /**
      * Constructor.
      *
-     * @param proxyFactory            the service proxy factory
+     * @param supplier            the service proxy factory
      * @param method                  method corresponding to the invoked operation
      * @param oneWay                  true if the operation is non-blocking
      * @param retries                 the number of retries to attempt if the service is unavailable
      * @param monitor                 the monitor
      */
-    public MetroJavaTargetInterceptor(ObjectFactory<?> proxyFactory,
+    public MetroJavaTargetInterceptor(Supplier<?> supplier,
                                       Method method,
                                       boolean oneWay,
                                       int retries,
                                       InterceptorMonitor monitor) {
-        this.proxyFactory = proxyFactory;
+        this.supplier = supplier;
         this.method = method;
         this.oneWay = oneWay;
         this.retries = retries;
@@ -129,7 +129,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
 
     private Object createProxy() {
         try {
-            return proxyFactory.getInstance();
+            return supplier.get();
         } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }

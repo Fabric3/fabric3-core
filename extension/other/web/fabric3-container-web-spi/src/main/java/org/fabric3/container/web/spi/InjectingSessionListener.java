@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.util.List;
 
-import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Injects reference proxies into an HTTP session when it is created.

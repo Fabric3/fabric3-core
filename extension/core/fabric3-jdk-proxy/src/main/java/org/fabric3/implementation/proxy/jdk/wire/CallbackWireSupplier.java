@@ -20,16 +20,16 @@ package org.fabric3.implementation.proxy.jdk.wire;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Returns a proxy instance for a callback wire.
  */
-public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
+public class CallbackWireSupplier<T> implements Supplier<T> {
     private Class<T> interfaze;
     private boolean multiThreaded;
     private JDKWireProxyService proxyService;
@@ -44,10 +44,8 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
      * @param proxyService  the service for creating proxies
      * @param mappings      the callback URI to invocation chain mappings
      */
-    public CallbackWireObjectFactory(Class<T> interfaze,
-                                     boolean multiThreaded,
-                                     JDKWireProxyService proxyService,
-                                     Map<String, Map<Method, InvocationChain>> mappings) {
+    public CallbackWireSupplier(Class<T> interfaze, boolean multiThreaded, JDKWireProxyService proxyService, Map<String, Map<Method, InvocationChain>>
+            mappings) {
         this.interfaze = interfaze;
         this.multiThreaded = multiThreaded;
         this.proxyService = proxyService;
@@ -57,7 +55,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         }
     }
 
-    public T getInstance() throws Fabric3Exception {
+    public T get() throws Fabric3Exception {
         if (multiThreaded) {
             return interfaze.cast(proxyService.createMultiThreadedCallbackProxy(interfaze, mappings));
         } else {

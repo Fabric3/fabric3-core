@@ -20,6 +20,7 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
@@ -29,7 +30,6 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -46,7 +46,7 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
         return false;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception{
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception{
         URI uri = getClassLoaderUri(interfaze);
 
         Method[] methods = interfaze.getMethods();
@@ -59,7 +59,7 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
         EventStream stream = connection.getEventStream();
         Method method = methods[0];
         EventStreamHandler handler = stream.getHeadHandler();
-        return new ChannelProxyObjectFactory<>(uri, interfaze, method, handler, proxyFactory);
+        return new ChannelProxySupplier<>(uri, interfaze, method, handler, proxyFactory);
     }
 
     private <T> URI getClassLoaderUri(Class<T> interfaze) {

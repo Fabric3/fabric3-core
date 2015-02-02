@@ -29,7 +29,7 @@ import java.util.Map;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Injects a servlet or filter with reference proxies, properties, and the component context.

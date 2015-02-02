@@ -19,9 +19,9 @@
 package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Constructor;
+import java.util.function.Supplier;
 
 import org.fabric3.implementation.pojo.spi.reflection.InstantiatorFactory;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * The default factory that uses JDK reflection.
@@ -32,7 +32,7 @@ public class JDKInstantiatorFactory implements InstantiatorFactory {
         return true;
     }
 
-    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return new ReflectiveObjectFactory<>(constructor, parameterFactories);
+    public Supplier<?> createInstantiator(Constructor<?> constructor, Supplier<?>[] parameterSuppliers) {
+        return new ReflectiveSupplier<>(constructor, parameterSuppliers);
     }
 }

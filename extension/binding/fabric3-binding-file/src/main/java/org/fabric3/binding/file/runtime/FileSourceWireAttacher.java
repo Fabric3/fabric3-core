@@ -20,6 +20,7 @@ package org.fabric3.binding.file.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.file.ServiceAdapter;
@@ -36,7 +37,6 @@ import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -107,12 +107,12 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         receiverManager.remove(id);
     }
 
-    public void attachObjectFactory(FileBindingWireSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(FileBindingWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
 
     }
 
-    public void detachObjectFactory(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
 

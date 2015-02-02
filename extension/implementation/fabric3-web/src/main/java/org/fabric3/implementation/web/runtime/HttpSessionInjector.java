@@ -19,34 +19,34 @@
 package org.fabric3.implementation.web.runtime;
 
 import javax.servlet.http.HttpSession;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.container.objectfactory.InjectionAttributes;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
+import org.fabric3.spi.container.injection.InjectionAttributes;
+import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Injects an instance (e.g. a reference proxy) into an HTTP session object.
  */
 public class HttpSessionInjector implements Injector<HttpSession> {
-    private ObjectFactory<?> objectFactory;
+    private Supplier<?> supplier;
     private String name;
 
     public void inject(HttpSession session) throws Fabric3Exception {
-        session.setAttribute(name, objectFactory.getInstance());
+        session.setAttribute(name, supplier.get());
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
-        this.objectFactory = objectFactory;
+    public void setSupplier(Supplier<?> supplier, InjectionAttributes attributes) {
+        this.supplier = supplier;
         this.name = attributes.getKey().toString();
     }
 
-    public void clearObjectFactory() {
-        if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).clear();
+    public void clearSupplier() {
+        if (this.supplier instanceof MultiplicitySupplier<?>) {
+            ((MultiplicitySupplier<?>) this.supplier).clear();
         } else {
-            objectFactory = null;
+            supplier = null;
         }
     }
 

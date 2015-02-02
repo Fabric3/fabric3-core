@@ -19,12 +19,11 @@
 package org.fabric3.execution.runtime;
 
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
-import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -32,11 +31,11 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  */
 public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceWireTargetDefinition> {
-    private SingletonObjectFactory<ExecutorService> factory;
+    private Supplier<ExecutorService> factory;
 
     public ExecutorServiceWireAttacher(@Reference(name = "executorService") ExecutorService executorService) {
         ExecutorServiceProxy proxy = new ExecutorServiceProxy(executorService);
-        this.factory = new SingletonObjectFactory<ExecutorService>(proxy);
+        this.factory = () -> proxy;
     }
 
     public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws Fabric3Exception {
@@ -47,7 +46,7 @@ public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorS
         throw new AssertionError();
     }
 
-    public ObjectFactory<ExecutorService> createObjectFactory(ExecutorServiceWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<ExecutorService> createSupplier(ExecutorServiceWireTargetDefinition target) throws Fabric3Exception {
         return factory;
     }
 

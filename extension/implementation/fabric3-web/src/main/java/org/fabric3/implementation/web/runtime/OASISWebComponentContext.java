@@ -52,15 +52,6 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        try {
-            return (R) component.cast(target);
-        } catch (Fabric3Exception e) {
-            throw new ServiceRuntimeException(e.getMessage(), e);
-        }
-    }
-
     public <B> B getService(Class<B> interfaze, String referenceName) {
         try {
             return interfaze.cast(getSession().getAttribute(referenceName));
@@ -132,6 +123,10 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
             throw new ServiceRuntimeException("HTTP request not bound. Check filter configuration.");
         }
         return request.getSession(true);  // force creation of session
+    }
+
+    public <B, R extends ServiceReference<B>> R cast(B target) {
+        throw new UnsupportedOperationException();
     }
 
 }

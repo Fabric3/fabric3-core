@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
@@ -32,8 +33,7 @@ import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvokerFactory;
-import org.fabric3.spi.container.objectfactory.Injector;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.injection.Injector;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -61,56 +61,35 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
 
     @Reference(required = false)
     public void setInstantiatorFactories(List<InstantiatorFactory> factories) {
-        for (InstantiatorFactory factory : factories) {
-            if (!factory.isDefault() || instantiatorFactory == null) {
-                instantiatorFactory = factory;
-
-            }
-        }
+        factories.stream().filter(factory -> !factory.isDefault() || instantiatorFactory == null).forEach(factory -> instantiatorFactory = factory);
     }
 
     @Reference(required = false)
     public void setInjectorFactories(List<InjectorFactory> factories) {
-        for (InjectorFactory factory : factories) {
-            if (!factory.isDefault() || injectorFactory == null) {
-                injectorFactory = factory;
-            }
-        }
+        factories.stream().filter(factory -> !factory.isDefault() || injectorFactory == null).forEach(factory -> injectorFactory = factory);
     }
 
     @Reference(required = false)
     public void setLifecycleInvokerFactories(List<LifecycleInvokerFactory> factories) {
-        for (LifecycleInvokerFactory factory : factories) {
-            if (!factory.isDefault() || lifecycleInvokerFactory == null) {
-                lifecycleInvokerFactory = factory;
-            }
-        }
+        factories.stream().filter(factory -> !factory.isDefault() || lifecycleInvokerFactory == null).forEach(factory -> lifecycleInvokerFactory = factory);
     }
 
     @Reference(required = false)
     public void setServiceInvokerFactories(List<ServiceInvokerFactory> factories) {
-        for (ServiceInvokerFactory factory : factories) {
-            if (!factory.isDefault() || serviceInvokerFactory == null) {
-                serviceInvokerFactory = factory;
-            }
-        }
+        factories.stream().filter(factory -> !factory.isDefault() || serviceInvokerFactory == null).forEach(factory -> serviceInvokerFactory = factory);
     }
 
     @Reference(required = false)
     public void setConsumerInvokerFactories(List<ConsumerInvokerFactory> factories) {
-        for (ConsumerInvokerFactory factory : factories) {
-            if (!factory.isDefault() || serviceInvokerFactory == null) {
-                consumerInvokerFactory = factory;
-            }
-        }
+        factories.stream().filter(factory -> !factory.isDefault() || serviceInvokerFactory == null).forEach(factory -> consumerInvokerFactory = factory);
     }
 
-    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return instantiatorFactory.createInstantiator(constructor, parameterFactories);
+    public Supplier<?> createInstantiator(Constructor<?> constructor, Supplier<?>[] suppliers) {
+        return instantiatorFactory.createInstantiator(constructor, suppliers);
     }
 
-    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
-        return injectorFactory.createInjector(member, parameterFactory);
+    public Injector<?> createInjector(Member member, Supplier<?> supplier) {
+        return injectorFactory.createInjector(member, supplier);
     }
 
     public LifecycleInvoker createLifecycleInvoker(Method method) {

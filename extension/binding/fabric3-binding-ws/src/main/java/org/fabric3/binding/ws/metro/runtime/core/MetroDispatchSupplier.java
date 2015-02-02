@@ -39,7 +39,7 @@ import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.
  */
-public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFactory<Dispatch<Source>> {
+public class MetroDispatchSupplier extends AbstractMetroBindingProviderFactory<Dispatch<Source>> {
     private QName serviceName;
     private QName portName;
     private WebServiceFeature[] features;
@@ -59,13 +59,13 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
      * @param features                web services features to enable on the generated proxy
      * @param executorService         the executor service used for dispatching invocations
      */
-    public MetroDispatchObjectFactory(ReferenceEndpointDefinition endpointDefinition,
-                                      URL wsdlLocation,
-                                      File wsitConfiguration,
-                                      ConnectionConfiguration connectionConfiguration,
-                                      List<Handler> handlers,
-                                      WebServiceFeature[] features,
-                                      ExecutorService executorService) {
+    public MetroDispatchSupplier(ReferenceEndpointDefinition endpointDefinition,
+                                 URL wsdlLocation,
+                                 File wsitConfiguration,
+                                 ConnectionConfiguration connectionConfiguration,
+                                 List<Handler> handlers,
+                                 WebServiceFeature[] features,
+                                 ExecutorService executorService) {
         super(connectionConfiguration, handlers);
         this.wsdlLocation = wsdlLocation;
         this.serviceName = endpointDefinition.getServiceName();
@@ -75,7 +75,7 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
         this.executorService = executorService;
     }
 
-    public Dispatch<Source> getInstance() throws Fabric3Exception {
+    public Dispatch<Source> get() throws Fabric3Exception {
         if (dispatch == null) {
             // there is a possibility more than one proxy will be created but since this does not have side-effects, avoid synchronization
             dispatch = createProxy();

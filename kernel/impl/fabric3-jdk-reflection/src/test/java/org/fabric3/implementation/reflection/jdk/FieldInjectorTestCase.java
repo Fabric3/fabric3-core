@@ -20,10 +20,10 @@
 package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Field;
+import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *
@@ -32,24 +32,24 @@ public class FieldInjectorTestCase extends TestCase {
 
     protected Field protectedField;
     private Field fooField;
-    private ObjectFactory<String> objectFactory;
+    private Supplier<String> supplier;
     private Foo foo;
 
     public void testIllegalAccess() throws Exception {
         String value = "foo";
-        EasyMock.expect(objectFactory.getInstance()).andReturn(value);
-        EasyMock.replay(objectFactory);
+        EasyMock.expect(supplier.get()).andReturn(value);
+        EasyMock.replay(supplier);
 
-        FieldInjector injector = new FieldInjector(protectedField, objectFactory);
+        FieldInjector injector = new FieldInjector(protectedField, supplier);
         injector.inject(foo);
         assertEquals(value, foo.hidden);
     }
 
     public void testReinjectionOfNullValue() throws Exception {
-        EasyMock.replay(objectFactory);
+        EasyMock.replay(supplier);
 
-        FieldInjector injector = new FieldInjector(fooField, objectFactory);
-        injector.clearObjectFactory();
+        FieldInjector injector = new FieldInjector(fooField, supplier);
+        injector.clearSupplier();
         injector.inject(foo);
         assertNull(foo.foo);
     }
@@ -60,7 +60,7 @@ public class FieldInjectorTestCase extends TestCase {
         super.setUp();
         protectedField = Foo.class.getDeclaredField("hidden");
         fooField = Foo.class.getDeclaredField("foo");
-        objectFactory = EasyMock.createMock(ObjectFactory.class);
+        supplier = EasyMock.createMock(Supplier.class);
         foo = new Foo();
     }
 

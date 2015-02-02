@@ -19,14 +19,14 @@
 package org.fabric3.jpa.runtime.proxy;
 
 import javax.transaction.TransactionManager;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates MultiThreadedSessionProxy instances.
  */
-public class MultiThreadedSessionProxyFactory implements ObjectFactory<MultiThreadedSessionProxy> {
+public class MultiThreadedSessionProxyFactory implements Supplier<MultiThreadedSessionProxy> {
     private String unitName;
     private EntityManagerService service;
     private TransactionManager tm;
@@ -37,7 +37,7 @@ public class MultiThreadedSessionProxyFactory implements ObjectFactory<MultiThre
         this.unitName = unitName;
     }
 
-    public MultiThreadedSessionProxy getInstance() throws Fabric3Exception {
+    public MultiThreadedSessionProxy get() throws Fabric3Exception {
         return new MultiThreadedSessionProxy(unitName, service, tm);
     }
 }

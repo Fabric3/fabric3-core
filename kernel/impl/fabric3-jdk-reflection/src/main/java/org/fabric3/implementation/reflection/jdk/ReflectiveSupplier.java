@@ -21,16 +21,16 @@ package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Reflectively instantiates a Java-based component instance.
  */
-public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
+public class ReflectiveSupplier<T> implements Supplier<T> {
     private final Constructor<T> constructor;
-    private final ObjectFactory<?>[] paramFactories;
+    private final Supplier<?>[] paramFactories;
 
     /**
      * Constructor.
@@ -38,20 +38,20 @@ public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
      * @param constructor    the constructor to use for instance instantiation
      * @param paramFactories factories for creating constructor parameters
      */
-    public ReflectiveObjectFactory(Constructor<T> constructor, ObjectFactory<?>[] paramFactories) {
+    public ReflectiveSupplier(Constructor<T> constructor, Supplier<?>[] paramFactories) {
         this.constructor = constructor;
         this.paramFactories = paramFactories;
     }
 
-    public T getInstance() throws Fabric3Exception {
+    public T get() throws Fabric3Exception {
         try {
             if (paramFactories == null) {
                 return constructor.newInstance();
             } else {
                 Object[] params = new Object[paramFactories.length];
                 for (int i = 0; i < paramFactories.length; i++) {
-                    ObjectFactory<?> paramFactory = paramFactories[i];
-                    params[i] = paramFactory.getInstance();
+                    Supplier<?> paramFactory = paramFactories[i];
+                    params[i] = paramFactory.get();
                 }
                 try {
                     return constructor.newInstance(params);

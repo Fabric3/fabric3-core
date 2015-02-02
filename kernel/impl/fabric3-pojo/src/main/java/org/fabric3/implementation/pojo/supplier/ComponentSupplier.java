@@ -13,32 +13,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.implementation.bytecode.proxy.channel;
+package org.fabric3.implementation.pojo.supplier;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.fabric3.spi.container.channel.EventStreamHandler;
+import java.util.function.Supplier;
+
+import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.component.AtomicComponent;
 
 /**
- *
+ * Delegates to an {@link AtomicComponent} to create an instance.
  */
-public class ChannelProxyObjectFactoryTestCase extends TestCase {
+public class ComponentSupplier implements Supplier<Object> {
+    private AtomicComponent component;
 
-    public void testDispatch() throws Exception {
-        EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
-        handler.handle(EasyMock.isA(String.class), EasyMock.anyBoolean());
-
-        EasyMock.replay(handler);
-
-        ChannelProxyDispatcher dispatcher = new ChannelProxyDispatcher();
-        dispatcher.init(handler);
-
-        dispatcher._f3_invoke(0, "test");
-
-        EasyMock.verify(handler);
+    public ComponentSupplier(AtomicComponent component) {
+        this.component = component;
     }
 
+    public Object get() throws Fabric3Exception {
+        return component.getInstance();
+    }
 }

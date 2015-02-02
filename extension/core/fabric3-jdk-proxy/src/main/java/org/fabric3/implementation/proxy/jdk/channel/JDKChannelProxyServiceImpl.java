@@ -20,10 +20,10 @@
 package org.fabric3.implementation.proxy.jdk.channel;
 
 import java.lang.reflect.Proxy;
+import java.util.function.Supplier;
 
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * The default ChannelProxyService that uses JDK dynamic proxies.
@@ -34,8 +34,8 @@ public class JDKChannelProxyServiceImpl implements JDKChannelProxyService {
         return true;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) {
-        return new ChannelConnectionObjectFactory<>(interfaze, this, connection.getEventStream());
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, ChannelConnection connection) {
+        return new ChannelConnectionSupplier<>(interfaze, this, connection.getEventStream());
     }
 
     public <T> T createProxy(Class<T> interfaze, EventStream stream) {

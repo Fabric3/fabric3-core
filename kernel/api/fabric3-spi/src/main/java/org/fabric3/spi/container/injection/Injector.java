@@ -17,12 +17,14 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.objectfactory;
+package org.fabric3.spi.container.injection;
+
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Implementations inject an ObjectFactory value on an object instance
+ * Implementations inject a Supplier value on an object instance
  */
 public interface Injector<T> {
 
@@ -35,16 +37,16 @@ public interface Injector<T> {
     void inject(T instance) throws Fabric3Exception;
 
     /**
-     * Adds or updates the injector with an ObjectFactory used to inject the pre-configured value.
+     * Adds or updates the injector with a Supplier used to inject the pre-configured value.
      *
-     * @param objectFactory the ObjectFactory
-     * @param attributes    the injection attributes
+     * @param supplier   the Supplier
+     * @param attributes the injection attributes
      */
-    void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes);
+    void setSupplier(Supplier<?> supplier, InjectionAttributes attributes);
 
     /**
-     * Clears the currently set ObjectFactory. Used when a multiplicity reference is reinjected.
+     * Clears the currently set Supplier. Used when a multiplicity reference is reinjected.
      */
-    void clearObjectFactory();
+    void clearSupplier();
 
 }

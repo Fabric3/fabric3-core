@@ -26,10 +26,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -50,26 +50,24 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         return true;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) {
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, Wire wire, String callbackUri) {
         Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
-        return new WireObjectFactory<>(interfaze, callbackUri, this, mappings);
+        return new WireSupplier<>(interfaze, callbackUri, this, mappings);
     }
 
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            {
+    public <T> Supplier<T> createCallbackSupplier(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) {
         Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
         Map<String, Map<Method, InvocationChain>> mappings = new HashMap<>();
         mappings.put(callbackUri.toString(), operationMappings);
-        return new CallbackWireObjectFactory<>(interfaze, multiThreaded, this, mappings);
+        return new CallbackWireSupplier<>(interfaze, multiThreaded, this, mappings);
     }
 
-    public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            {
-        if (!(factory instanceof CallbackWireObjectFactory)) {
-            // a placeholder object factory (i.e. created when the callback is not wired) needs to be replaced 
-            return createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
+    public <T> Supplier<?> updateCallbackSupplier(Supplier<?> supplier, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) {
+        if (!(supplier instanceof CallbackWireSupplier)) {
+            // a placeholder Supplier (i.e. created when the callback is not wired) needs to be replaced
+            return createCallbackSupplier(interfaze, multiThreaded, callbackUri, wire);
         }
-        CallbackWireObjectFactory<?> callbackFactory = (CallbackWireObjectFactory) factory;
+        CallbackWireSupplier<?> callbackFactory = (CallbackWireSupplier) supplier;
         Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
         callbackFactory.updateMappings(callbackUri.toString(), operationMappings);
         return callbackFactory;
@@ -91,20 +89,6 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         ClassLoader cl = interfaze.getClassLoader();
         StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<>(mapping);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    @SuppressWarnings("unchecked")
-    public <B, R extends ServiceReference<B>> R cast(B target) {
-        InvocationHandler handler = Proxy.getInvocationHandler(target);
-        if (handler instanceof JDKInvocationHandler) {
-            JDKInvocationHandler<B> jdkHandler = (JDKInvocationHandler<B>) handler;
-            return (R) jdkHandler.getServiceReference();
-        } else if (handler instanceof MultiThreadedCallbackInvocationHandler) {
-            // TODO return a CallbackReference
-            throw new UnsupportedOperationException();
-        } else {
-            throw new IllegalArgumentException("Not a Fabric3 SCA proxy");
-        }
     }
 
     private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) {
