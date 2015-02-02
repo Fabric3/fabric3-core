@@ -21,8 +21,8 @@ package org.fabric3.fabric.domain.generator.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
@@ -38,7 +38,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Creates a command to un-build a resource on a runtime.
  */
-public class DisposeResourceCommandGenerator implements CommandGenerator {
+public class DisposeResourceCommandGenerator implements CommandGenerator<DisposeResourcesCommand> {
     private GeneratorRegistry generatorRegistry;
 
     public DisposeResourceCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
@@ -50,13 +50,13 @@ public class DisposeResourceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public DisposeResourcesCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<DisposeResourcesCommand> generate(LogicalComponent<?> component) {
         if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.MARKED)) {
-            return null;
+            return Optional.empty();
         }
         LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
         if (composite.getResources().isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         List<PhysicalResourceDefinition> definitions = new ArrayList<>();
         for (LogicalResource<?> resource : composite.getResources()) {
@@ -66,9 +66,9 @@ public class DisposeResourceCommandGenerator implements CommandGenerator {
             definitions.add(definition);
         }
         if (definitions.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return new DisposeResourcesCommand(definitions);
+        return Optional.of(new DisposeResourcesCommand(definitions));
     }
 
 }

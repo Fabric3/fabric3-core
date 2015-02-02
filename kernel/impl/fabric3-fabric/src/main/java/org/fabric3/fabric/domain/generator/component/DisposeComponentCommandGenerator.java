@@ -19,7 +19,8 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.api.host.Fabric3Exception;
+import java.util.Optional;
+
 import org.fabric3.fabric.container.command.DisposeComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -31,7 +32,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Creates a command to remove a component on a runtime.
  */
-public class DisposeComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
+public class DisposeComponentCommandGenerator extends AbstractBuildComponentCommandGenerator<DisposeComponentCommand> {
 
     public DisposeComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
         super(generatorRegistry);
@@ -41,11 +42,11 @@ public class DisposeComponentCommandGenerator extends AbstractBuildComponentComm
         return DISPOSE_COMPONENTS;
     }
 
-    public DisposeComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<DisposeComponentCommand> generate(LogicalComponent<?> component) {
         if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
             PhysicalComponentDefinition definition = generateDefinition(component);
-            return new DisposeComponentCommand(definition);
+            return Optional.of(new DisposeComponentCommand(definition));
         }
-        return null;
+        return Optional.empty();
     }
 }

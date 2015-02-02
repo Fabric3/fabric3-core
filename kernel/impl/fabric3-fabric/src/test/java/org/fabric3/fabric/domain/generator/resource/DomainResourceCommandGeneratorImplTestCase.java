@@ -45,7 +45,7 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
 
         LogicalResource resource = new LogicalResource(new Mock(), null);
 
-        assertNotNull(generator.generateBuild(resource));
+        assertTrue(generator.generateBuild(resource).isPresent());
 
         EasyMock.verify(registry, resourceGenerator);
     }
@@ -60,7 +60,7 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
         LogicalResource resource = new LogicalResource(new Mock(), null);
         resource.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generateBuild(resource));
+        assertFalse(generator.generateBuild(resource).isPresent());
 
         EasyMock.verify(registry);
     }
@@ -92,7 +92,7 @@ public class DomainResourceCommandGeneratorImplTestCase extends TestCase {
         LogicalResource resource = new LogicalResource(new Mock(), null);
         resource.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generateDispose(resource));
+        assertFalse(generator.generateDispose(resource).isPresent());
 
         EasyMock.verify(registry);
     }

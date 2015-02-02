@@ -37,7 +37,7 @@ public class StartComponentCommandGeneratorTestCase extends TestCase {
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
 
-        StartComponentCommand command = generator.generate(component);
+        StartComponentCommand command = generator.generate(component).get();
 
         assertEquals(uri, command.getUri());
     }
@@ -49,7 +49,7 @@ public class StartComponentCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generate(component));
+        assertFalse(generator.generate(component).isPresent());
     }
 
 

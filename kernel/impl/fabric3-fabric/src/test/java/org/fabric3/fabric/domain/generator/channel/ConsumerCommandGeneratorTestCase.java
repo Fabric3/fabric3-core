@@ -92,7 +92,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
 
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         assertNotNull(command);
         List<BuildChannelCommand> buildChannelCommands = command.getBuildChannelCommands();
@@ -115,7 +115,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         assertNotNull(command);
         assertFalse(command.getAttachCommands().isEmpty());
@@ -138,7 +138,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.MARKED);
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         List<DisposeChannelCommand> disposeChannelCommands = command.getDisposeChannelCommands();
         assertEquals(1, disposeChannelCommands.size());
@@ -163,7 +163,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.MARKED);
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         assertNotNull(command);
         assertTrue(command.getAttachCommands().isEmpty());
@@ -179,7 +179,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
-        assertNull(generator.generate(component));
+        assertFalse(generator.generate(component).isPresent());
         EasyMock.verify(connectionGenerator, channelGenerator);
     }
 

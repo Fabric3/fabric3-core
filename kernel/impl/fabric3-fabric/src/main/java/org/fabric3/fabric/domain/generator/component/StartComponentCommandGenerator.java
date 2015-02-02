@@ -19,7 +19,8 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.api.host.Fabric3Exception;
+import java.util.Optional;
+
 import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -29,18 +30,18 @@ import org.fabric3.spi.model.instance.LogicalState;
 /**
  * Creates a command to start an atomic component on a runtime.
  */
-public class StartComponentCommandGenerator implements CommandGenerator {
+public class StartComponentCommandGenerator implements CommandGenerator<StartComponentCommand> {
 
     public int getOrder() {
         return START_COMPONENTS;
     }
 
     @SuppressWarnings("unchecked")
-    public StartComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<StartComponentCommand> generate(LogicalComponent<?> component) {
         // start a component if it is atomic and not provisioned
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW)) {
-            return new StartComponentCommand(component.getUri());
+            return Optional.of(new StartComponentCommand(component.getUri()));
         }
-        return null;
+        return Optional.empty();
     }
 }

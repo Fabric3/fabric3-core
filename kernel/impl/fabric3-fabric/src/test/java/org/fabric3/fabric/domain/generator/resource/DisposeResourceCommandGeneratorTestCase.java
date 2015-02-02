@@ -52,7 +52,7 @@ public class DisposeResourceCommandGeneratorTestCase extends TestCase {
         LogicalResource resource = new LogicalResource(new Mock(), composite);
         composite.addResource(resource);
 
-        DisposeResourcesCommand command = generator.generate(composite);
+        DisposeResourcesCommand command = generator.generate(composite).get();
         assertFalse(command.getDefinitions().isEmpty());
 
         EasyMock.verify(registry, resourceGenerator);
@@ -70,7 +70,7 @@ public class DisposeResourceCommandGeneratorTestCase extends TestCase {
         composite.setState(LogicalState.PROVISIONED);
         composite.addResource(resource);
 
-        assertNull(generator.generate(composite));
+        assertFalse(generator.generate(composite).isPresent());
 
         EasyMock.verify(registry);
     }

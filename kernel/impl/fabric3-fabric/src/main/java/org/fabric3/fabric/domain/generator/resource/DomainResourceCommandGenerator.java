@@ -16,6 +16,8 @@
  */
 package org.fabric3.fabric.domain.generator.resource;
 
+import java.util.Optional;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -33,7 +35,7 @@ public interface DomainResourceCommandGenerator {
      * @return the command
      * @throws Fabric3Exception if a generation error is encountered
      */
-    Command generateBuild(LogicalResource resource) throws Fabric3Exception;
+    Optional<Command> generateBuild(LogicalResource resource) throws Fabric3Exception;
 
     /**
      * Generates an un-build command.
@@ -42,6 +44,6 @@ public interface DomainResourceCommandGenerator {
      * @return the command
      * @throws Fabric3Exception if a generation error is encountered
      */
-    Command generateDispose(LogicalResource resource) throws Fabric3Exception;
+    Optional<Command> generateDispose(LogicalResource resource) throws Fabric3Exception;
 
 }

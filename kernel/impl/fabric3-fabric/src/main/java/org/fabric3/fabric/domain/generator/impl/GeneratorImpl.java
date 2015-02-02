@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -86,35 +87,31 @@ public class GeneratorImpl implements Generator {
         // generate commands for domain-level resources being deployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                Command command = resourceGenerator.generateBuild(resource);
-                if (command != null) {
-                    deployment.addCommand(command);
-                }
+                Optional<Command> command = resourceGenerator.generateBuild(resource);
+                command.ifPresent(deployment::addCommand);
             }
         }
 
-        for (CommandGenerator generator : commandGenerators) {
+        for (CommandGenerator<?> generator : commandGenerators) {
             for (LogicalComponent<?> component : sorted) {
                 if (component.getDefinition().getImplementation() instanceof RemoteImplementation) {
                     continue;
                 }
-                Command command = generator.generate(component);
-                if (command != null) {
-                    if (deployment.getCommands().contains(command)) {
-                        continue;
+                Optional<? extends Command> command = generator.generate(component);
+                command.ifPresent(generated -> {
+                    if (!deployment.getCommands().contains(generated)) {
+                        deployment.addCommand(generated);
                     }
-                    deployment.addCommand(command);
-                }
+                });
+
             }
         }
 
         // generate commands for domain-level resources being undeployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
-                Command command = resourceGenerator.generateDispose(resource);
-                if (command != null) {
-                    deployment.addCommand(command);
-                }
+                Optional<Command> command = resourceGenerator.generateDispose(resource);
+                command.ifPresent(deployment::addCommand);
             }
         }
         // start contexts

@@ -66,7 +66,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(wireGenerator);
         assertEquals(1, command.getAttachCommands().size());
@@ -97,7 +97,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(wireGenerator);
         assertEquals(0, command.getAttachCommands().size());
@@ -122,7 +122,6 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         LogicalBinding<?> binding = new LogicalBinding(null, reference, null);
         reference.addBinding(binding);
 
-
         LogicalBinding<?> markedBinding = new LogicalBinding(null, reference, null);
         markedBinding.setState(LogicalState.MARKED);
         reference.addBinding(markedBinding);
@@ -134,7 +133,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(wireGenerator);
         assertEquals(1, command.getAttachCommands().size());
@@ -162,8 +161,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
-        assertNull(command);
+        assertFalse(generator.generate(source).isPresent());
         EasyMock.verify(wireGenerator);
 
     }
@@ -188,7 +186,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         LogicalBinding<?> binding = new LogicalBinding(null, reference, null);
         reference.addBinding(binding);
         reference.addCallbackBinding(binding);
-        
+
         wireGenerator.generateBoundReference(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
         wireGenerator.generateBoundReferenceCallback(binding);
@@ -196,13 +194,12 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(wireGenerator);
         assertEquals(2, command.getAttachCommands().size());
         assertEquals(0, command.getDetachCommands().size());
     }
-
 
     @Override
     protected void setUp() throws Exception {

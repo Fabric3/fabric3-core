@@ -18,6 +18,7 @@ package org.fabric3.fabric.domain.generator.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
@@ -41,27 +42,27 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Command generateBuild(LogicalResource resource) throws Fabric3Exception {
+    public Optional<Command> generateBuild(LogicalResource resource) throws Fabric3Exception {
         if (resource.getState() != LogicalState.NEW) {
-            return null;
+            return Optional.empty();
         }
 
         List<PhysicalResourceDefinition> definitions = createDefinitions(resource);
         if (definitions.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return new BuildResourcesCommand(definitions);
+        return Optional.of(new BuildResourcesCommand(definitions));
     }
 
-    public Command generateDispose(LogicalResource resource) throws Fabric3Exception {
+    public Optional<Command> generateDispose(LogicalResource resource) throws Fabric3Exception {
         if (resource.getState() != LogicalState.MARKED) {
-            return null;
+            return Optional.empty();
         }
         List<PhysicalResourceDefinition> definitions = createDefinitions(resource);
         if (definitions.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return new DisposeResourcesCommand(definitions);
+        return Optional.of(new DisposeResourcesCommand(definitions));
     }
 
     @SuppressWarnings({"unchecked"})
@@ -73,6 +74,5 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         definitions.add(definition);
         return definitions;
     }
-
 
 }

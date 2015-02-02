@@ -19,7 +19,8 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import org.fabric3.api.host.Fabric3Exception;
+import java.util.Optional;
+
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -31,7 +32,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Creates a command to build a component on a runtime.
  */
-public class BuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
+public class BuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator<BuildComponentCommand> {
 
     public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
         super(generatorRegistry);
@@ -41,11 +42,11 @@ public class BuildComponentCommandGenerator extends AbstractBuildComponentComman
         return BUILD_COMPONENTS;
     }
 
-    public BuildComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<BuildComponentCommand> generate(LogicalComponent<?> component) {
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW)) {
             PhysicalComponentDefinition definition = generateDefinition(component);
-            return new BuildComponentCommand(definition);
+            return Optional.of(new BuildComponentCommand(definition));
         }
-        return null;
+        return Optional.empty();
     }
 }

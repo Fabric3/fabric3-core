@@ -23,8 +23,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
@@ -46,7 +46,7 @@ import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER
  * Generates a command to establish or remove an event channel connection from a producer. Channel build and dispose commands will be generated for producer
  * targets.
  */
-public class ProducerCommandGenerator implements CommandGenerator {
+public class ProducerCommandGenerator implements CommandGenerator<ChannelConnectionCommand> {
     private ConnectionGenerator connectionGenerator;
     private ChannelCommandGenerator channelGenerator;
 
@@ -60,9 +60,9 @@ public class ProducerCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public ChannelConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<ChannelConnectionCommand> generate(LogicalComponent<?> component) {
         if (component instanceof LogicalCompositeComponent) {
-            return null;
+            return Optional.empty();
         }
 
         ChannelConnectionCommand command = new ChannelConnectionCommand();
@@ -71,12 +71,12 @@ public class ProducerCommandGenerator implements CommandGenerator {
             generateCommand(producer, command);
         }
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return command;
+        return Optional.of(command);
     }
 
-    private void generateCommand(LogicalProducer producer, ChannelConnectionCommand command) throws Fabric3Exception {
+    private void generateCommand(LogicalProducer producer, ChannelConnectionCommand command) {
         LogicalComponent<?> component = producer.getParent();
         QName deployable = producer.getParent().getDeployable();
         if (LogicalState.MARKED == component.getState()) {

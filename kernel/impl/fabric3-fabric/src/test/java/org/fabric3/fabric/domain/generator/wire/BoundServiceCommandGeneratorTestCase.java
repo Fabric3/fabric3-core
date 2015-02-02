@@ -49,7 +49,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = createComponent();
 
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
-        ConnectionCommand command = generator.generate(component);
+        ConnectionCommand command = generator.generate(component).get();
         assertEquals(1, command.getAttachCommands().size());
 
         EasyMock.verify(wireGenerator);
@@ -60,7 +60,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.PROVISIONED);
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
-        assertNull(generator.generate(component));
+        assertFalse(generator.generate(component).isPresent());
 
         EasyMock.verify(wireGenerator);
     }
@@ -94,7 +94,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         setBindingState(component, LogicalState.MARKED);
 
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
-        ConnectionCommand command = generator.generate(component);
+        ConnectionCommand command = generator.generate(component).get();
         assertEquals(1, command.getDetachCommands().size());
 
         EasyMock.verify(wireGenerator);
@@ -117,7 +117,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         service.addCallbackBinding(binding);
 
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
-        ConnectionCommand command = generator.generate(component);
+        ConnectionCommand command = generator.generate(component).get();
         assertEquals(2, command.getAttachCommands().size());
 
         EasyMock.verify(wireGenerator);
@@ -142,7 +142,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         setBindingState(component, LogicalState.MARKED);
 
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
-        ConnectionCommand command = generator.generate(component);
+        ConnectionCommand command = generator.generate(component).get();
         assertEquals(2, command.getDetachCommands().size());
 
         EasyMock.verify(wireGenerator);

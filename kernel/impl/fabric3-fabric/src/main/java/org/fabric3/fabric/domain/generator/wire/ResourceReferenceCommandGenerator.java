@@ -18,7 +18,8 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import org.fabric3.api.host.Fabric3Exception;
+import java.util.Optional;
+
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
@@ -33,7 +34,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Generates commands to attach a component to its resources.
  */
-public class ResourceReferenceCommandGenerator implements CommandGenerator {
+public class ResourceReferenceCommandGenerator implements CommandGenerator<ConnectionCommand> {
     private WireGenerator wireGenerator;
 
     public ResourceReferenceCommandGenerator(@Reference WireGenerator wireGenerator) {
@@ -44,9 +45,9 @@ public class ResourceReferenceCommandGenerator implements CommandGenerator {
         return ATTACH;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<ConnectionCommand> generate(LogicalComponent<?> component) {
         if (component instanceof LogicalCompositeComponent || component.getResourceReferences().isEmpty() || (component.getState() != LogicalState.NEW)) {
-            return null;
+            return Optional.empty();
         }
         ConnectionCommand command = new ConnectionCommand(component.getUri());
         for (LogicalResourceReference<?> resourceReference : component.getResourceReferences()) {
@@ -55,7 +56,7 @@ public class ResourceReferenceCommandGenerator implements CommandGenerator {
             attachWireCommand.setPhysicalWireDefinition(pwd);
             command.add(attachWireCommand);
         }
-        return command;
+        return Optional.of(command);
     }
 
 }

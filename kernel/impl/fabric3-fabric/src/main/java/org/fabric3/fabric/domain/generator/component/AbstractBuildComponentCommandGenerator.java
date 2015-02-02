@@ -26,6 +26,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
+import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
@@ -33,7 +34,7 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 /**
  * Base functionality for build/dispose component generators.
  */
-public abstract class AbstractBuildComponentCommandGenerator implements CommandGenerator {
+public abstract class AbstractBuildComponentCommandGenerator<T extends Command> implements CommandGenerator<T> {
     private GeneratorRegistry generatorRegistry;
 
     public AbstractBuildComponentCommandGenerator(GeneratorRegistry generatorRegistry) {

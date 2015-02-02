@@ -18,6 +18,8 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
+import java.util.Optional;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.StopComponentCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
@@ -28,17 +30,17 @@ import org.fabric3.spi.model.instance.LogicalState;
 /**
  * Creates a command to stop an atomic component on a runtime.
  */
-public class StopComponentCommandGenerator implements CommandGenerator {
+public class StopComponentCommandGenerator implements CommandGenerator<StopComponentCommand> {
 
     public int getOrder() {
         return PREPARE;
     }
 
     @SuppressWarnings("unchecked")
-    public StopComponentCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<StopComponentCommand> generate(LogicalComponent<?> component) throws Fabric3Exception {
         if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
-            return new StopComponentCommand(component.getUri());
+            return Optional.of(new StopComponentCommand(component.getUri()));
         }
-        return null;
+        return Optional.empty();
     }
 }

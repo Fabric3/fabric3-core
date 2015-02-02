@@ -51,7 +51,7 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
         Component<MockImplementation> definition = new Component<>("component", new MockImplementation());
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
 
-        BuildComponentCommand command = generator.generate(component);
+        BuildComponentCommand command = generator.generate(component).get();
         assertNotNull(command.getDefinition());
         EasyMock.verify(registry, componentGenerator);
     }
@@ -67,7 +67,7 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
         component.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generate(component));
+        assertFalse(generator.generate(component).isPresent());
         EasyMock.verify(registry);
     }
 

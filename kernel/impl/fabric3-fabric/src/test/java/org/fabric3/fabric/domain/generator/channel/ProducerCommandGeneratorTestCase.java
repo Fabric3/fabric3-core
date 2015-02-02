@@ -90,7 +90,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
         ProducerCommandGenerator generator = new ProducerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         assertNotNull(command);
         assertFalse(command.getAttachCommands().isEmpty());
@@ -112,7 +112,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         ProducerCommandGenerator generator = new ProducerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.MARKED);
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         assertNotNull(command);
         assertFalse(command.getDetachCommands().isEmpty());
@@ -134,7 +134,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         ProducerCommandGenerator generator = new ProducerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.MARKED);
-        ChannelConnectionCommand command = generator.generate(component);
+        ChannelConnectionCommand command = generator.generate(component).get();
 
         assertNotNull(command);
         assertTrue(command.getAttachCommands().isEmpty());
@@ -150,7 +150,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         ProducerCommandGenerator generator = new ProducerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
-        assertNull(generator.generate(component));
+        assertFalse(generator.generate(component).isPresent());
         EasyMock.verify(connectionGenerator, channelGenerator);
     }
 

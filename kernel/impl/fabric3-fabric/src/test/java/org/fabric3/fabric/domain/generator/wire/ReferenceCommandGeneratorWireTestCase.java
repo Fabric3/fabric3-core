@@ -81,7 +81,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
         EasyMock.replay(lcm, wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(lcm, wireGenerator);
         assertEquals(1, command.getAttachCommands().size());
@@ -124,7 +124,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
         EasyMock.replay(lcm, wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(lcm, wireGenerator);
         assertEquals(0, command.getAttachCommands().size());
@@ -181,7 +181,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
         EasyMock.replay(lcm, wireGenerator);
 
-        ConnectionCommand command = generator.generate(source);
+        ConnectionCommand command = generator.generate(source).get();
 
         EasyMock.verify(lcm, wireGenerator);
         // The generator should create:

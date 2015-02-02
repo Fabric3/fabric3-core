@@ -21,6 +21,7 @@ package org.fabric3.fabric.domain.generator.wire;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
@@ -44,7 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Generates a command to bind or attach a wire to a reference.
  */
-public class ReferenceCommandGenerator implements CommandGenerator {
+public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCommand> {
     private WireGenerator wireGenerator;
     private Map<Class<?>, CallbackBindingGenerator> generators = Collections.emptyMap();
 
@@ -66,9 +67,9 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         return ATTACH;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<ConnectionCommand> generate(LogicalComponent<?> component) {
         if (component instanceof LogicalCompositeComponent) {
-            return null;
+            return Optional.empty();
         }
         ConnectionCommand command = new ConnectionCommand(component.getUri());
 
@@ -81,12 +82,12 @@ public class ReferenceCommandGenerator implements CommandGenerator {
 
         }
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return command;
+        return Optional.of(command);
     }
 
-    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) throws Fabric3Exception {
+    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, ConnectionCommand command) {
         boolean reinjection = isBoundReinjection(reference);
 
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
@@ -115,7 +116,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
                                  LogicalBinding<?> logicalBinding,
                                  ConnectionCommand command,
                                  boolean reinjection,
-                                 boolean callback) throws Fabric3Exception {
+                                 boolean callback) {
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
@@ -141,7 +142,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
 
     }
 
-    private void generateWires(LogicalReference reference, ConnectionCommand command) throws Fabric3Exception {
+    private void generateWires(LogicalReference reference, ConnectionCommand command) {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
         boolean reinjection = isWireReinjection(reference);
@@ -204,7 +205,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private void generateCallbackBindings(LogicalReference reference) throws Fabric3Exception {
+    private void generateCallbackBindings(LogicalReference reference) {
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {

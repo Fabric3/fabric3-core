@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
@@ -44,7 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Generates commands to attach/detach the source end of physical wires to their transports for components being deployed or undeployed.
  */
-public class BoundServiceCommandGenerator implements CommandGenerator {
+public class BoundServiceCommandGenerator implements CommandGenerator<ConnectionCommand> {
     private WireGenerator wireGenerator;
 
     private Map<Class<?>, CallbackBindingGenerator> generators = Collections.emptyMap();
@@ -62,9 +63,9 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         this.generators = generators;
     }
 
-    public ConnectionCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<ConnectionCommand> generate(LogicalComponent<?> component) {
         if (component instanceof LogicalCompositeComponent) {
-            return null;
+            return Optional.empty();
         }
 
         // determine if a binding is being added or removed. If so, an AttachWireCommand or DetachWireCommand must be generated.
@@ -78,18 +79,18 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             }
         }
         if (LogicalState.PROVISIONED == component.getState() && !bindingChange) {
-            return null;
+            return Optional.empty();
         }
 
         ConnectionCommand command = new ConnectionCommand(component.getUri());
         generatePhysicalWires(component, command);
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return command;
+        return Optional.of(command);
     }
 
-    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command) throws Fabric3Exception {
+    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command)  {
         for (LogicalService service : component.getServices()) {
             if (service.getBindings().isEmpty()) {
                 continue;
@@ -110,7 +111,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
                     throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be specified on service: " + uri);
                 }
                 callbackBinding = callbackBindings.get(0);
-                // xcv FIXME should be on the logical binding
+                // FIXME should be on the logical binding
                 callbackUri = callbackBinding.getDefinition().getTargetUri();
             }
 
@@ -146,7 +147,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private void generateCallbackBindings(LogicalService service) throws Fabric3Exception {
+    private void generateCallbackBindings(LogicalService service)  {
         for (LogicalBinding<?> logicalBinding : service.getBindings()) {
             CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
             if (generator == null) {

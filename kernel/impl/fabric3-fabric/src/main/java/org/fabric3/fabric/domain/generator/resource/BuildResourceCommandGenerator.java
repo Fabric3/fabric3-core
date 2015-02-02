@@ -21,8 +21,8 @@ package org.fabric3.fabric.domain.generator.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
@@ -38,7 +38,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Creates a command to build resources defined in a composite on a runtime.
  */
-public class BuildResourceCommandGenerator implements CommandGenerator {
+public class BuildResourceCommandGenerator implements CommandGenerator<BuildResourcesCommand> {
     private GeneratorRegistry generatorRegistry;
 
     public BuildResourceCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
@@ -50,13 +50,13 @@ public class BuildResourceCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public BuildResourcesCommand generate(LogicalComponent<?> component) throws Fabric3Exception {
+    public Optional<BuildResourcesCommand> generate(LogicalComponent<?> component) {
         if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.NEW)) {
-            return null;
+            return Optional.empty();
         }
         LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
         if (composite.getResources().isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         List<PhysicalResourceDefinition> definitions = new ArrayList<>();
         for (LogicalResource<?> resource : composite.getResources()) {
@@ -66,9 +66,9 @@ public class BuildResourceCommandGenerator implements CommandGenerator {
             definitions.add(definition);
         }
         if (definitions.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return new BuildResourcesCommand(definitions);
+        return Optional.of(new BuildResourcesCommand(definitions));
     }
 
 }

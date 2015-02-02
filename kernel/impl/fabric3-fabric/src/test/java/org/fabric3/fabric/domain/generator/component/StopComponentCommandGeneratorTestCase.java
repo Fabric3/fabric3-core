@@ -38,7 +38,7 @@ public class StopComponentCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.MARKED);
 
-        StopComponentCommand command = generator.generate(component);
+        StopComponentCommand command = generator.generate(component).get();
 
         assertEquals(uri, command.getUri());
     }
@@ -50,7 +50,7 @@ public class StopComponentCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.PROVISIONED);
 
-        assertNull(generator.generate(component));
+        assertFalse(generator.generate(component).isPresent());
     }
 
 
