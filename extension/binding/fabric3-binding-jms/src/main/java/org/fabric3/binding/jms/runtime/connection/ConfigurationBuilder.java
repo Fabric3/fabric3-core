@@ -40,9 +40,8 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_C
  *    &lt;/connection.factories&gt;
  * &lt;/jms&gt;
  * </pre>
- * <p/>
- * Note that the unqualified forms for connection factory and template definitions may be used: <code>&lt;connection.factory ...&gt;</code>. In this case, if
- * more than one JMS provider is present, one will be selected.
+ * <p/> Note that the unqualified forms for connection factory and template definitions may be used: <code>&lt;connection.factory ...&gt;</code>. In this case,
+ * if more than one JMS provider is present, one will be selected.
  */
 @EagerInit
 public class ConfigurationBuilder {
@@ -57,6 +56,7 @@ public class ConfigurationBuilder {
     private List<ConnectionFactoryConfiguration> factoryConfigurations = new ArrayList<>();
 
     private List<ConnectionFactory> factories = new ArrayList<>();
+    private XMLStreamReader connectionFactoryReader;
 
     public ConfigurationBuilder(@Reference ConnectionFactoryCreatorRegistry creatorRegistry, @Reference ConnectionFactoryManager manager) {
         this.creatorRegistry = creatorRegistry;
@@ -80,12 +80,20 @@ public class ConfigurationBuilder {
 
     @Property(required = false)
     public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
+        this.connectionFactoryReader = reader;   // lazily read configuration so connection factory config parsers can be injected
         factoryConfigurations.clear();
-        parseConfigurations(factoryConfigurations, reader);
     }
 
     @Init
-    public void init() throws Fabric3Exception {
+    public void init() throws Fabric3Exception, XMLStreamException {
+        if (connectionFactoryReader != null) {
+            try {
+                parseConfigurations(factoryConfigurations, connectionFactoryReader);
+            } finally {
+                 connectionFactoryReader.close();
+            }
+        }
+
         // initialize and register the connection factories
         for (ConnectionFactoryConfiguration configuration : factoryConfigurations) {
             ConnectionFactory factory = creatorRegistry.create(configuration);
@@ -141,11 +149,10 @@ public class ConfigurationBuilder {
      *
      * @param configurations the collection to populate
      * @param reader         the XML stream
-     * @throws XMLStreamException            if there is an error parsing the stream
-     * @throws Fabric3Exception if the configuration contains an error or is invalid
+     * @throws XMLStreamException if there is an error parsing the stream
+     * @throws Fabric3Exception   if the configuration contains an error or is invalid
      */
-    private void parseConfigurations(List<ConnectionFactoryConfiguration> configurations, XMLStreamReader reader)
-            throws XMLStreamException, Fabric3Exception {
+    private void parseConfigurations(List<ConnectionFactoryConfiguration> configurations, XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
