@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -168,7 +169,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
                               IntrospectionContext context) {
         Class<?> type = helper.getBaseType(parameterType, typeMapping);
         ServiceContract contract = contractProcessor.introspect(type, context, componentType);
-        Reference reference = new Reference(name, contract);
+        Reference<ComponentType> reference = new Reference<>(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         componentType.add(reference, site);
     }

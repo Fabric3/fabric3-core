@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 
 import org.fabric3.api.annotation.Target;
 import org.fabric3.api.annotation.Targets;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -59,7 +60,7 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         Annotation[] annotations = field.getAnnotations();
-        Reference definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
+        Reference<ComponentType> definition = createDefinition(name, required, type, clazz, componentType, context);
         componentType.add(definition, site);
         addTargets(field, field, context, definition);
     }
@@ -74,7 +75,7 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Annotation[] annotations = method.getAnnotations();
-        Reference definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
+        Reference<ComponentType> definition = createDefinition(name, required, type, clazz, componentType, context);
         addTargets(method, method, context, definition);
         componentType.add(definition, site);
     }
@@ -90,23 +91,22 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         Annotation[] annotations = constructor.getParameterAnnotations()[index];
-        Reference definition = createDefinition(name, required, type, clazz, annotations, componentType, context);
+        Reference<ComponentType> definition = createDefinition(name, required, type, clazz, componentType, context);
         componentType.add(definition, site);
         addTargets(constructor, constructor, context, definition);
 
     }
 
-    private Reference createDefinition(String name,
-                                       boolean required,
-                                       Type type,
-                                       Class<?> implClass,
-                                       Annotation[] annotations,
-                                       InjectingComponentType componentType,
-                                       IntrospectionContext context) {
+    private Reference<ComponentType> createDefinition(String name,
+                                                      boolean required,
+                                                      Type type,
+                                                      Class<?> implClass,
+                                                      InjectingComponentType componentType,
+                                                      IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
         ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
-        Reference definition = new Reference(name, contract);
+        Reference<ComponentType> definition = new Reference<>(name, contract);
         helper.processMultiplicity(definition, required, type, typeMapping);
         return definition;
     }

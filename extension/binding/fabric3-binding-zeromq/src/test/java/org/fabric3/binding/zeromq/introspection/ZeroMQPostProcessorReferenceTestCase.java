@@ -19,6 +19,7 @@ package org.fabric3.binding.zeromq.introspection;
 import junit.framework.TestCase;
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -39,15 +40,15 @@ public class ZeroMQPostProcessorReferenceTestCase extends TestCase {
 
         ServiceContract contract = new JavaServiceContract(Service.class);
 
-        Reference fieldReference = new Reference("fieldService", contract);
+        Reference<ComponentType> fieldReference = new Reference<>("fieldService", contract);
         FieldInjectionSite fieldSite = new FieldInjectionSite(ServiceClientImpl.class.getDeclaredField("fieldService"));
         type.add(fieldReference, fieldSite);
 
-        Reference methodReference = new Reference("methodService", contract);
+        Reference<ComponentType> methodReference = new Reference<>("methodService", contract);
         MethodInjectionSite methodSite = new MethodInjectionSite(ServiceClientImpl.class.getDeclaredMethod("setMethodService", Service.class), 0);
         type.add(methodReference, methodSite);
 
-        Reference ctorReference = new Reference("methodService", contract);
+        Reference<ComponentType> ctorReference = new Reference<>("methodService", contract);
         ConstructorInjectionSite ctorSite = new ConstructorInjectionSite(ServiceClientImpl.class.getDeclaredConstructor(Service.class), 0);
         type.add(ctorReference, ctorSite);
 

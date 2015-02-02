@@ -113,8 +113,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                     for (Annotation[] annotations : constructor.getParameterAnnotations()) {
                         for (Annotation annotation : annotations) {
                             if (annotation.annotationType().equals(org.oasisopen.sca.annotation.Reference.class)
-                                    || annotation.annotationType().equals(Producer.class)
-                                    || annotation.annotationType().equals(Monitor.class)) {
+                                || annotation.annotationType().equals(Producer.class) || annotation.annotationType().equals(Monitor.class)) {
                                 if (selected != null) {
                                     context.addError(new AmbiguousConstructor(implClass, componentType));
                                     return null;
@@ -160,8 +159,7 @@ public class JavaHeuristic implements HeuristicProcessor {
             Class<?> parameterType = helper.getBaseType(parameterTypes[i], typeMapping);
 
             String name = helper.getSiteName(constructor, i, null);
-            Annotation[] annotations = constructor.getParameterAnnotations()[i];
-            processSite(componentType, name, constructor, parameterType, implClass, site, annotations, context);
+            processSite(componentType, name, constructor, parameterType, implClass, site, context);
         }
     }
 
@@ -180,8 +178,7 @@ public class JavaHeuristic implements HeuristicProcessor {
             TypeMapping typeMapping = context.getTypeMapping(implClass);
             Type genericType = setter.getGenericParameterTypes()[0];
             Class<?> parameterType = helper.getBaseType(genericType, typeMapping);
-            Annotation[] annotations = setter.getAnnotations();
-            processSite(componentType, name, setter, parameterType, implClass, site, annotations, context);
+            processSite(componentType, name, setter, parameterType, implClass, site, context);
         }
     }
 
@@ -199,34 +196,30 @@ public class JavaHeuristic implements HeuristicProcessor {
             String name = helper.getSiteName(field, null);
             TypeMapping typeMapping = context.getTypeMapping(implClass);
             Class<?> parameterType = helper.getBaseType(field.getGenericType(), typeMapping);
-            Annotation[] annotations = field.getAnnotations();
-            processSite(componentType, name, field, parameterType, implClass, site, annotations, context);
+            processSite(componentType, name, field, parameterType, implClass, site, context);
         }
     }
-
 
     private void processSite(InjectingComponentType componentType,
                              String name,
                              Member member,
                              Class<?> parameterType,
                              Class<?> declaringClass,
-                             InjectionSite site,
-                             Annotation[] annotations,
-                             IntrospectionContext context) {
+                             InjectionSite site, IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(declaringClass);
         InjectableType type = helper.inferType(parameterType, typeMapping);
         switch (type) {
-        case PROPERTY:
-            addProperty(componentType, name, parameterType, declaringClass, site, context);
-            break;
-        case REFERENCE:
-            addReference(componentType, name, parameterType, declaringClass, site, annotations, context);
-            break;
-        case CALLBACK:
-            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
-            break;
-        default:
-            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
+            case PROPERTY:
+                addProperty(componentType, name, parameterType, declaringClass, site, context);
+                break;
+            case REFERENCE:
+                addReference(componentType, name, parameterType, declaringClass, site, context);
+                break;
+            case CALLBACK:
+                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
+                break;
+            default:
+                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
         }
     }
 
@@ -249,7 +242,6 @@ public class JavaHeuristic implements HeuristicProcessor {
                               Class<?> parameterType,
                               Class<?> declaringClass,
                               InjectionSite site,
-                              Annotation[] annotations,
                               IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(declaringClass);
         ServiceContract contract = contractProcessor.introspect(parameterType, context, componentType);

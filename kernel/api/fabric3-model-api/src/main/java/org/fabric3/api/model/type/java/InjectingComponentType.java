@@ -154,7 +154,7 @@ public class InjectingComponentType extends ComponentType {
      * @param reference     the reference to add
      * @param injectionSite the injection site for the reference
      */
-    public void add(Reference reference, InjectionSite injectionSite) {
+    public void add(Reference<ComponentType> reference, InjectionSite injectionSite) {
         super.add(reference);
         Injectable injectable = new Injectable(InjectableType.REFERENCE, reference.getName());
         addInjectionSite(injectionSite, injectable);
@@ -167,7 +167,7 @@ public class InjectingComponentType extends ComponentType {
      * @param producer      the producer to add
      * @param injectionSite the injection site for the producer
      */
-    public void add(Producer producer, InjectionSite injectionSite) {
+    public void add(Producer<ComponentType> producer, InjectionSite injectionSite) {
         super.add(producer);
         Injectable injectable = new Injectable(InjectableType.PRODUCER, producer.getName());
         addInjectionSite(injectionSite, injectable);
@@ -180,7 +180,7 @@ public class InjectingComponentType extends ComponentType {
      * @param consumer  the consumer to add
      * @param signature the consumer method signature
      */
-    public void add(Consumer consumer, Signature signature) {
+    public void add(Consumer<ComponentType> consumer, Signature signature) {
         super.add(consumer);
         consumerSignatures.put(consumer.getName(), signature);
     }

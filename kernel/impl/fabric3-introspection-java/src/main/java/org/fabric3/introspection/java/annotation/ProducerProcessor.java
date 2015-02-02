@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -65,7 +66,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         String name = helper.getSiteName(field, annotation.value());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        Producer producer = createProducer(name, type, implClass, componentType, field, context);
+        Producer<ComponentType> producer = createProducer(name, type, implClass, componentType, field, context);
 
         Class<?> clazz = field.getDeclaringClass();
         processTargets(annotation, producer, field, clazz, context);
@@ -82,7 +83,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         String name = helper.getSiteName(method, annotation.value());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        Producer definition = createProducer(name, type, implClass, componentType, method, context);
+        Producer<ComponentType> definition = createProducer(name, type, implClass, componentType, method, context);
         Class<?> clazz = method.getDeclaringClass();
         processTargets(annotation, definition, method, clazz, context);
         componentType.add(definition, site);
@@ -98,13 +99,13 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         String name = helper.getSiteName(constructor, index, annotation.value());
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        Producer definition = createProducer(name, type, implClass, componentType, constructor, context);
+        Producer<ComponentType> definition = createProducer(name, type, implClass, componentType, constructor, context);
         Class<?> clazz = constructor.getDeclaringClass();
         processTargets(annotation, definition, constructor, clazz, context);
         componentType.add(definition, site);
     }
 
-    private Producer createProducer(String name,
+    private Producer<ComponentType> createProducer(String name,
                                     Type type,
                                     Class<?> implClass,
                                     InjectingComponentType componentType,
@@ -118,8 +119,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
             InvalidProducerInterface error = new InvalidProducerInterface("Producer interfaces must have one method: " + interfaceName, member, componentType);
             context.addError(error);
         }
-        // TODO handle policies
-        return new Producer(name, contract);
+        return new Producer<>(name, contract);
     }
 
     private void processTargets(org.fabric3.api.annotation.Producer annotation,

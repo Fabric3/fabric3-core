@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -74,7 +75,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         // TODO handle policies
         String name = helper.getSiteName(method, annotation.value());
         Signature signature = new Signature(method);
-        Consumer consumer = new Consumer(name, types);
+        Consumer<ComponentType> consumer = new Consumer<>(name, types);
 
         int sequence = annotation.sequence();
         if (sequence < 0) {
