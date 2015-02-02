@@ -59,7 +59,7 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
 
     public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
         String className = componentType.getImplClass();
-        componentType.setScope("STATELESS");
+        componentType.setScope(Scope.STATELESS);
 
         ClassLoader cl = context.getClassLoader();
 
@@ -104,8 +104,8 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
     }
 
     private void validateScope(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
-        String scope = componentType.getScope();
-        if (componentType.isEagerInit() && !Scope.COMPOSITE.getScope().equals(scope) && !Scope.DOMAIN.getScope().equals(scope)) {
+        Scope scope = componentType.getScope();
+        if (componentType.isEagerInit() && Scope.COMPOSITE != scope && Scope.DOMAIN != scope) {
             EagerInitNotSupported warning = new EagerInitNotSupported(implClass, componentType);
             context.addWarning(warning);
         }

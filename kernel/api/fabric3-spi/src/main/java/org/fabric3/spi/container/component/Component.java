@@ -26,7 +26,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.Monitorable;
 
 /**
- * The runtime instantiation of an SCA component
+ * The runtime instantiation of a component
  */
 public interface Component extends Monitorable {
 

@@ -19,6 +19,7 @@
  */
 package org.fabric3.implementation.pojo.provision;
 
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
@@ -29,7 +30,7 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
     private static final long serialVersionUID = 297672484973345029L;
 
     private ImplementationManagerDefinition managerDefinition;
-    private String scope;
+    private Scope scope;
     private boolean eager;
     private boolean managed;
     private ManagementInfo managementInfo;
@@ -57,7 +58,7 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
      *
      * @return the component scope.
      */
-    public String getScope() {
+    public Scope getScope() {
         return scope;
     }
 
@@ -66,7 +67,7 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
      *
      * @param scope the component scope.
      */
-    public void setScope(String scope) {
+    public void setScope(Scope scope) {
         this.scope = scope;
     }
 

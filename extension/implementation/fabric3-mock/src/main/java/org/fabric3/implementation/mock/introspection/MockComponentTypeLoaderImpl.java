@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.easymock.IMocksControl;
 import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -78,7 +79,7 @@ public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
             componentType.add(new Service<>(name, serviceContract));
         }
         componentType.add(controlService);
-        componentType.setScope("STATELESS");
+        componentType.setScope(Scope.STATELESS);
 
         return componentType;
     }

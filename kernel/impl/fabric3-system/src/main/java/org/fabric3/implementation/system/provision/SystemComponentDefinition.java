@@ -19,7 +19,7 @@
  */
 package org.fabric3.implementation.system.provision;
 
-import org.fabric3.api.annotation.scope.Scopes;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 
 /**
@@ -28,8 +28,7 @@ import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 public class SystemComponentDefinition extends PojoComponentDefinition {
     private static final long serialVersionUID = -2856401849421585868L;
 
-    @Override
-    public String getScope() {
-        return Scopes.COMPOSITE;
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 }

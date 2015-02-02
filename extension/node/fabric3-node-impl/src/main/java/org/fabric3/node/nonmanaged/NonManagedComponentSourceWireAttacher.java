@@ -60,5 +60,6 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
     }
 
     public void detachSupplier(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+        // no-op
     }
 }

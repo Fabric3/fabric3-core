@@ -20,7 +20,6 @@ package org.fabric3.binding.file.runtime;
 
 import java.io.File;
 import java.net.URI;
-import java.util.function.Supplier;
 
 import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.api.host.Fabric3Exception;
@@ -69,10 +68,6 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
 
     public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws Fabric3Exception {
         // no-op
-    }
-
-    public Supplier<?> createSupplier(FileBindingWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
     }
 
     /**

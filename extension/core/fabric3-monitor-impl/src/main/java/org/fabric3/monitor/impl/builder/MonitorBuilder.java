@@ -39,20 +39,20 @@ public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalMonitorDefinition definition) throws Fabric3Exception {
+    public void build(PhysicalMonitorDefinition definition) {
         PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
         MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
         builder.build(destinationDefinition);
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalMonitorDefinition definition) throws Fabric3Exception {
+    public void remove(PhysicalMonitorDefinition definition) {
         PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
         MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
         builder.remove(destinationDefinition);
     }
 
-    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestinationDefinition destinationDefinition) throws Fabric3Exception {
+    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestinationDefinition destinationDefinition) {
         MonitorDestinationBuilder builder = builders.get(destinationDefinition.getClass());
         if (builder == null) {
             throw new Fabric3Exception("Unknown destination type: " + destinationDefinition.getClass().getName());

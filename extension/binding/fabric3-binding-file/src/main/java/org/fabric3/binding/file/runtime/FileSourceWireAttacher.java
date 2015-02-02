@@ -20,7 +20,6 @@ package org.fabric3.binding.file.runtime;
 
 import java.io.File;
 import java.net.URI;
-import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.file.ServiceAdapter;
@@ -105,15 +104,6 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
     public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
         String id = source.getUri().toString();
         receiverManager.remove(id);
-    }
-
-    public void attachSupplier(FileBindingWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
-        throw new UnsupportedOperationException();
-
-    }
-
-    public void detachSupplier(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
-        throw new UnsupportedOperationException();
     }
 
     private File getLocation(FileBindingWireSourceDefinition source) {

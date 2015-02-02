@@ -26,7 +26,6 @@ import java.util.List;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.oasisopen.sca.annotation.Destroy;
@@ -45,7 +44,6 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super(Scope.STATELESS, monitor);
     }
 
-    @Override
     @Init
     public void start() {
         super.start();
@@ -70,7 +68,7 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         return Collections.emptyList();
     }
 
-    public void startContext(QName deployable) throws GroupInitializationException {
+    public void startContext(QName deployable) {
         // no-op
     }
 

@@ -132,10 +132,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
     }
 
-    public Supplier<?> createSupplier(MetroJavaWireTargetDefinition target) throws Fabric3Exception {
-        return null;
-    }
-
     public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws Fabric3Exception {
         // no-op
     }

@@ -46,9 +46,9 @@ import org.oasisopen.sca.annotation.Reference;
  * Default ChannelConnector implementation.
  */
 public class ChannelConnectorImpl implements ChannelConnector {
-    private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers;
-    private Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers;
-    private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders;
+    private Map<Class<?>, SourceConnectionAttacher<?>> sourceAttachers;
+    private Map<Class<?>, TargetConnectionAttacher<?>> targetAttachers;
+    private Map<Class<?>, EventFilterBuilder<?>> filterBuilders;
 
     private ClassLoaderRegistry classLoaderRegistry;
     private TransformerHandlerFactory transformerHandlerFactory;
@@ -62,20 +62,17 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @Reference(required = false)
-    public void setSourceAttachers(Map<Class<? extends PhysicalConnectionSourceDefinition>,
-            SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers) {
+    public void setSourceAttachers(Map<Class<?>, SourceConnectionAttacher<?>> sourceAttachers) {
         this.sourceAttachers = sourceAttachers;
     }
 
     @Reference(required = false)
-    public void setTargetAttachers(Map<Class<? extends PhysicalConnectionTargetDefinition>,
-            TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers) {
+    public void setTargetAttachers(Map<Class<?>, TargetConnectionAttacher<?>> targetAttachers) {
         this.targetAttachers = targetAttachers;
     }
 
     @Reference(required = false)
-    public void setFilterBuilders(Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
-                                              filterBuilders) {
+    public void setFilterBuilders(Map<Class<?>, EventFilterBuilder<?>> filterBuilders) {
         this.filterBuilders = filterBuilders;
     }
 
@@ -85,7 +82,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void connect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception {
+    public void connect(PhysicalChannelConnectionDefinition definition) {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -104,7 +101,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void disconnect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception {
+    public void disconnect(PhysicalChannelConnectionDefinition definition) {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -124,9 +121,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param definition the connection definition
      * @return the connection
-     * @throws Fabric3Exception if there is an error creating the connection
+     * @ if there is an error creating the connection
      */
-    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception {
+    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
         ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
 
         PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
@@ -138,7 +135,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         return new ChannelConnectionImpl(stream, sequence);
     }
 
-    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) throws Fabric3Exception {
+    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) {
         if (transformerHandlerFactory == null) {
             return;  // bootstrap
         }
@@ -174,10 +171,10 @@ public class ChannelConnectorImpl implements ChannelConnector {
      *
      * @param streamDefinition the stream definition
      * @param stream           the stream being created
-     * @throws Fabric3Exception if there is an error adding a filter
+     * @ if there is an error adding a filter
      */
     @SuppressWarnings({"unchecked"})
-    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws Fabric3Exception {
+    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) {
         for (PhysicalEventFilterDefinition definition : streamDefinition.getFilters()) {
             EventFilterBuilder builder = filterBuilders.get(definition.getClass());
             EventFilter filter = builder.build(definition);

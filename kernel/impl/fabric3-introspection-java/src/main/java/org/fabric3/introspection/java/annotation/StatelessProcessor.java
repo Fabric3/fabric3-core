@@ -23,7 +23,6 @@ import org.fabric3.api.annotation.scope.Stateless;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.oasisopen.sca.annotation.Scope;
 
 
 public class StatelessProcessor extends AbstractAnnotationProcessor<Stateless> {
@@ -33,8 +32,6 @@ public class StatelessProcessor extends AbstractAnnotationProcessor<Stateless> {
     }
 
     public void visitType(Stateless annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
-        Scope scopeMetaAnnotation = annotation.annotationType().getAnnotation(Scope.class);
-        String scopeName = scopeMetaAnnotation.value();
-        componentType.setScope(scopeName);
+        componentType.setScope(org.fabric3.api.model.type.component.Scope.STATELESS);
     }
 }

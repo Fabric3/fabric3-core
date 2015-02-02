@@ -96,7 +96,7 @@ public interface ScopeContainer {
     /**
      * Reinjects all live instances with updated wires
      *
-     * @throws Fabric3Exception if an error occurs during reinjection
+     * @throws Fabric3Exception if an error occurs during re-injection
      */
     void reinject() throws Fabric3Exception;
 

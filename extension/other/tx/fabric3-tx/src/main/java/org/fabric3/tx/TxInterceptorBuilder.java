@@ -22,7 +22,6 @@ import javax.transaction.TransactionManager;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.wire.Key;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.oasisopen.sca.annotation.Reference;
@@ -40,9 +39,8 @@ public class TxInterceptorBuilder implements InterceptorBuilder<TxInterceptorDef
         this.monitor = monitor;
     }
 
-    public Interceptor build(TxInterceptorDefinition interceptorDefinition) throws Fabric3Exception {
+    public Interceptor build(TxInterceptorDefinition interceptorDefinition) {
         return new TxInterceptor(transactionManager, interceptorDefinition.getAction(), monitor);
     }
-
 
 }

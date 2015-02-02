@@ -20,6 +20,7 @@
 package org.fabric3.implementation.system.introspection;
 
 import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -51,7 +52,7 @@ public class SystemImplementationIntrospectorImpl implements ImplementationIntro
 
     public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
         String className = componentType.getImplClass();
-        componentType.setScope("COMPOSITE");
+        componentType.setScope(Scope.COMPOSITE);
 
         ClassLoader cl = context.getClassLoader();
         Class<?> implClass;

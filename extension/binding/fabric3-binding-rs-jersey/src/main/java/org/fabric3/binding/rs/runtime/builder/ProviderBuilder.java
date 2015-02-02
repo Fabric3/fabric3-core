@@ -63,7 +63,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
+    public void build(PhysicalProviderResourceDefinition definition) {
         URI providerUri = definition.getProviderUri();
 
         Object provider = createProvider(definition);
@@ -78,7 +78,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
+    public void remove(PhysicalProviderResourceDefinition definition) {
         if (definition.getBindingAnnotation() != null) {
             String bindingAnnotation = definition.getBindingAnnotation();
             URI contributionUri = definition.getContributionUri();
@@ -92,7 +92,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    private Object createProvider(PhysicalProviderResourceDefinition definition) throws Fabric3Exception {
+    private Object createProvider(PhysicalProviderResourceDefinition definition) {
 
         try {
             URI contributionUri = definition.getContributionUri();
@@ -131,9 +131,9 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
      *
      * @param mapperClass the ExceptionMapper class
      * @return the signature
-     * @throws Fabric3Exception if there is an error creating the signature
+     * @ if there is an error creating the signature
      */
-    private String getGenericExceptionMapperSignature(Class<? extends ExceptionMapper> mapperClass) throws Fabric3Exception {
+    private String getGenericExceptionMapperSignature(Class<? extends ExceptionMapper> mapperClass) {
         Class<?> exceptionType = RsReflectionHelper.getExceptionType(mapperClass);
         String exceptionName = Type.getInternalName(exceptionType);
         return "<E:L" + exceptionName + ";>L" + Type.getInternalName(ProxyExceptionMapper.class) + "<L" + exceptionName + ";>;L" + Type.getInternalName(

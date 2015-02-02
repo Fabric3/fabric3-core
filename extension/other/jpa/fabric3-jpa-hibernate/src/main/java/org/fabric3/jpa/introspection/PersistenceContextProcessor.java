@@ -56,11 +56,7 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         assert !context.hasErrors(); // should not happen
     }
 
-    public void visitField(PersistenceContext annotation,
-                           Field field,
-                           Class<?> implClass,
-                           InjectingComponentType componentType,
-                           IntrospectionContext context) {
+    public void visitField(PersistenceContext annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         FieldInjectionSite site = new FieldInjectionSite(field);
         String name = helper.getSiteName(field, null);
         if (EntityManager.class.equals(field.getType())) {
@@ -96,19 +92,18 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         if (PersistenceContextType.EXTENDED == type) {
-            InvalidPersistenceContextType error =
-                    new InvalidPersistenceContextType("Extended persistence contexts not supported: " + unitName, member, componentType);
+            InvalidPersistenceContextType error = new InvalidPersistenceContextType("Extended persistence contexts not supported: " + unitName,
+                                                                                    member,
+                                                                                    componentType);
             context.addError(error);
         }
-        boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
+        boolean multiThreaded = Scope.COMPOSITE == componentType.getScope();
         return new PersistenceContextResourceReference(name, unitName, factoryServiceContract, multiThreaded);
     }
 
-    private HibernateSessionResourceReference createSessionDefinition(String name,
-                                                                      PersistenceContext annotation,
-                                                                      InjectingComponentType componentType) {
+    private HibernateSessionResourceReference createSessionDefinition(String name, PersistenceContext annotation, InjectingComponentType componentType) {
         String unitName = annotation.unitName();
-        boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
+        boolean multiThreaded = Scope.COMPOSITE == componentType.getScope();
         return new HibernateSessionResourceReference(name, unitName, factoryServiceContract, multiThreaded);
     }
 

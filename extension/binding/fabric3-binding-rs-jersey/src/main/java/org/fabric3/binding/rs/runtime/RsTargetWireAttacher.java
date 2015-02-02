@@ -2,7 +2,6 @@ package org.fabric3.binding.rs.runtime;
 
 import java.net.URI;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
@@ -45,10 +44,6 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         } catch (Exception e) {
             throw new Fabric3Exception(e);
         }
-    }
-
-    public Supplier<?> createSupplier(RsWireTargetDefinition def) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
     }
 
     public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws Fabric3Exception {

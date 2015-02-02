@@ -38,7 +38,7 @@ public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDe
         this.manager = manager;
     }
 
-    public void build(PhysicalJndiContextDefinition definition) throws Fabric3Exception {
+    public void build(PhysicalJndiContextDefinition definition) {
         for (Map.Entry<String, Properties> entry : definition.getContexts().entrySet()) {
             try {
                 manager.register(entry.getKey(), entry.getValue());
@@ -48,7 +48,7 @@ public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDe
         }
     }
 
-    public void remove(PhysicalJndiContextDefinition definition) throws Fabric3Exception {
+    public void remove(PhysicalJndiContextDefinition definition) {
         for (String name : definition.getContexts().keySet()) {
             try {
                 manager.unregister(name);

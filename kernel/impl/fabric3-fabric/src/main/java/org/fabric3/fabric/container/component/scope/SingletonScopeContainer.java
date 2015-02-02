@@ -42,10 +42,8 @@ import org.fabric3.spi.container.component.ScopedComponent;
 import org.oasisopen.sca.annotation.Destroy;
 
 /**
- * Abstract container for components that have only one implementation instance.
- * <p/>
- * Components deployed via a deployable composite are associated with the same context. When a context starts and stops, components will receive initialization
- * and destruction callbacks. Eager initialization is also supported.
+ * Abstract container for components that have only one implementation instance. <p/> Components deployed via a deployable composite are associated with the
+ * same context. When a context starts and stops, components will receive initialization and destruction callbacks. Eager initialization is also supported.
  */
 public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     private static final Object EMPTY = new Object();
@@ -137,7 +135,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     }
 
     @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
-    public Object getInstance(ScopedComponent component) throws Fabric3Exception {
+    public Object getInstance(ScopedComponent component) {
         Object instance = instances.get(component);
         if (instance != EMPTY && instance != null) {
             return instance;
@@ -201,7 +199,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         return Collections.singletonList(instance);
     }
 
-    public void reinject() throws Fabric3Exception {
+    public void reinject() {
         for (Map.Entry<ScopedComponent, Object> entry : instances.entrySet()) {
             ScopedComponent component = entry.getKey();
             Object instance = entry.getValue();
@@ -222,7 +220,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    private void eagerInitialize(QName contextId) throws GroupInitializationException {
+    private void eagerInitialize(QName contextId) {
         // get and clone initialization queue
         List<ScopedComponent> initQueue;
         synchronized (initQueues) {

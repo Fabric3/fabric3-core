@@ -27,11 +27,11 @@ import org.fabric3.spi.container.channel.Channel;
  */
 public class JmsChannelBindingBuilder implements ChannelBindingBuilder<JmsChannelBindingDefinition> {
 
-    public void build(JmsChannelBindingDefinition definition, Channel channel) throws Fabric3Exception {
+    public void build(JmsChannelBindingDefinition definition, Channel channel)  {
         // no-op
     }
 
-    public void dispose(JmsChannelBindingDefinition definition, Channel channel) throws Fabric3Exception {
+    public void dispose(JmsChannelBindingDefinition definition, Channel channel)  {
         // no-op
     }
 }

@@ -64,12 +64,12 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         Component<? extends JavaImplementation> logical = component.getDefinition();
         JavaImplementation implementation = logical.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
-        String scope = type.getScope();
+        Scope scope = type.getScope();
 
         // create the instance factory definition
         ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
         managerDefinition.setComponentUri(component.getUri());
-        managerDefinition.setReinjectable(Scope.COMPOSITE.getScope().equals(scope));
+        managerDefinition.setReinjectable(Scope.COMPOSITE == scope);
         managerDefinition.setConstructor(type.getConstructor());
         managerDefinition.setInitMethod(type.getInitMethod());
         managerDefinition.setDestroyMethod(type.getDestroyMethod());
@@ -179,8 +179,8 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         Component<JavaImplementation> componentDefinition = component.getDefinition();
         JavaImplementation implementation = componentDefinition.getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
-        String scope = componentType.getScope();
-        definition.setOptimizable(Scope.getScope(scope).isSingleton());
+        Scope scope = componentType.getScope();
+        definition.setOptimizable(scope.isSingleton());
     }
 
 }

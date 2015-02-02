@@ -38,13 +38,12 @@ public class OASISScopeProcessor extends AbstractAnnotationProcessor<Scope> {
 
     public void visitType(Scope annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         String scopeName = annotation.value();
-        if (!COMPOSITE.getScope().equals(scopeName)
-                && !STATELESS.getScope().equals(scopeName)
-                && !DOMAIN.getScope().equals(scopeName)) {
+        if (!COMPOSITE.getScope().equals(scopeName) && !STATELESS.getScope().equals(scopeName) && !DOMAIN.getScope().equals(scopeName)) {
             InvalidScope failure = new InvalidScope(type, scopeName, componentType);
             context.addError(failure);
             return;
         }
-        componentType.setScope(scopeName);
+        org.fabric3.api.model.type.component.Scope scope = org.fabric3.api.model.type.component.Scope.getScope(scopeName);
+        componentType.setScope(scope);
     }
 }

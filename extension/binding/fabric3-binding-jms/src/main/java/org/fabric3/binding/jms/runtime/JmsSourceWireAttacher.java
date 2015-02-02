@@ -134,15 +134,6 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         resolver.release(source.getMetadata().getConnectionFactory());
     }
 
-    public void attachSupplier(JmsWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition definition)
-            throws Fabric3Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detachSupplier(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
-    }
-
     private void populateConfiguration(ContainerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
         if (CacheLevel.CONNECTION == cacheLevel) {

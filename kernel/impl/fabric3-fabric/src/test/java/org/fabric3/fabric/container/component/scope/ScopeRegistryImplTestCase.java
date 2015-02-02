@@ -39,15 +39,6 @@ public class ScopeRegistryImplTestCase extends TestCase {
         EasyMock.verify(container);
     }
 
-    public void testGetScopeString() throws Exception {
-        registry.register(container);
-        assertEquals(container, registry.getScopeContainer("COMPOSITE"));
-        registry.unregister(container);
-        assertNull(registry.getScopeContainer("COMPOSITE"));
-        EasyMock.verify(container);
-    }
-
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         container = EasyMock.createMock(ScopeContainer.class);

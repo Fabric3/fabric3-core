@@ -21,7 +21,7 @@ package org.fabric3.introspection.java.annotation;
 
 import junit.framework.TestCase;
 import org.fabric3.api.annotation.scope.Composite;
-import org.fabric3.api.annotation.scope.Scopes;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
@@ -35,7 +35,7 @@ public class CompositeProcessorTestCase extends TestCase {
         InjectingComponentType type = new InjectingComponentType();
         processor.visitType(annotation, componentToProcess.getClass(), type, null);
 
-        assertEquals(Scopes.COMPOSITE, type.getScope());
+        assertEquals(Scope.COMPOSITE, type.getScope());
     }
 
     @Composite

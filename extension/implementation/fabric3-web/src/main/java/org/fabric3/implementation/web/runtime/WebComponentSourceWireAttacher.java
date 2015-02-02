@@ -53,7 +53,7 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
     }
 
     public void detachSupplier(WebComponentWireSourceDefinition source, PhysicalWireTargetDefinition target) {
-        // TODO implement
+        // no-op
     }
 
     public void attachSupplier(WebComponentWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {

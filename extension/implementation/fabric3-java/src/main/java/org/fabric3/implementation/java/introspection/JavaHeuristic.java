@@ -83,8 +83,8 @@ public class JavaHeuristic implements HeuristicProcessor {
             evaluateFields(componentType, implClass, context);
         }
 
-        String scope = componentType.getScope();
-        if (componentType.isManaged() && !Scope.getScope(scope).isSingleton()) {
+        Scope scope = componentType.getScope();
+        if (componentType.isManaged() && !scope.isSingleton()) {
             IllegalManagementAttribute warning = new IllegalManagementAttribute(implClass, componentType);
             context.addWarning(warning);
         }

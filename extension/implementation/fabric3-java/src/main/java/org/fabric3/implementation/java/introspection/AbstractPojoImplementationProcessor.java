@@ -26,6 +26,7 @@ import java.util.Map;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Consumer;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -76,7 +77,7 @@ public abstract class AbstractPojoImplementationProcessor implements Implementat
         if (instance == null) {
             introspector.introspect(componentType, context);
         } else {
-            componentType.setScope("COMPOSITE");
+            componentType.setScope(Scope.COMPOSITE);
 
             if (componentType.getServices().isEmpty()) {
                 // introspect services if not defined

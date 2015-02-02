@@ -20,7 +20,6 @@ package org.fabric3.binding.zeromq.runtime;
 
 import java.net.URI;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
@@ -56,10 +55,6 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTarget
         String id = source.getUri().toString();
         URI uri = target.getUri();
         broker.releaseSender(id, uri);
-    }
-
-    public Supplier<?> createSupplier(ZeroMQWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
     }
 
 }

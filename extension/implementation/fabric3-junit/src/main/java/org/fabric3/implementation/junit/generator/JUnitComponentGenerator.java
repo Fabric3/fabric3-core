@@ -70,11 +70,11 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         Component<JUnitImplementation> definition = component.getDefinition();
         JUnitImplementation implementation = definition.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
-        String scope = type.getScope();
+        Scope scope = type.getScope();
 
         ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
         managerDefinition.setComponentUri(component.getUri());
-        managerDefinition.setReinjectable(Scope.COMPOSITE.getScope().equals(scope));
+        managerDefinition.setReinjectable(Scope.COMPOSITE == scope);
         managerDefinition.setConstructor(type.getConstructor());
         managerDefinition.setInitMethod(type.getInitMethod());
         managerDefinition.setDestroyMethod(type.getDestroyMethod());
@@ -127,7 +127,6 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         javaHelper.generateConnectionTarget(definition, consumer);
         return definition;
     }
-
 
     public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
 

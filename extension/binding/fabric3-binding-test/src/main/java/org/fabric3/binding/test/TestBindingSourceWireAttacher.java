@@ -19,7 +19,6 @@
 package org.fabric3.binding.test;
 
 import java.net.URI;
-import java.util.function.Supplier;
 
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
@@ -45,10 +44,4 @@ public class TestBindingSourceWireAttacher implements SourceWireAttacher<TestBin
     public void detach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
-    public void detachSupplier(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
-    }
-
-    public void attachSupplier(TestBindingWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition definition) {
-        throw new AssertionError();
-    }
 }

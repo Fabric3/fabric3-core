@@ -18,6 +18,7 @@
  */
 package org.fabric3.implementation.java.generator;
 
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
@@ -59,7 +60,7 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         if (instance != null) {
             // deploying an un managed instance
             JavaComponentDefinition definition = new JavaComponentDefinition(instance);
-            definition.setScope("COMPOSITE");
+            definition.setScope(Scope.COMPOSITE);
             return definition;
         }
         JavaComponentDefinition definition = new JavaComponentDefinition();

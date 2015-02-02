@@ -28,7 +28,6 @@ import javax.transaction.TransactionManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
@@ -125,10 +124,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws Fabric3Exception {
         resolver.release(target.getMetadata().getConnectionFactory());
-    }
-
-    public Supplier<?> createSupplier(JmsWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
     }
 
     /**

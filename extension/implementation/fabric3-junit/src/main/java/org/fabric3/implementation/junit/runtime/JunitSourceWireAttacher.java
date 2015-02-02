@@ -18,8 +18,6 @@
  */
 package org.fabric3.implementation.junit.runtime;
 
-import java.util.function.Supplier;
-
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
@@ -75,14 +73,7 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         holder.add(testName, wire);
     }
 
-    public void attachSupplier(JUnitWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
-        throw new UnsupportedOperationException();
-    }
-
     public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) {
-    }
-
-    public void detachSupplier(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) {
     }
 
 }

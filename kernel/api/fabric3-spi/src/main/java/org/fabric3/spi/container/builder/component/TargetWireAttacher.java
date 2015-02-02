@@ -56,6 +56,8 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @return a Supplier that returns the target instance
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    Supplier<?> createSupplier(PTD target) throws Fabric3Exception;
+    default Supplier<?> createSupplier(PTD target) throws Fabric3Exception {
+        throw new UnsupportedOperationException();
+    }
 
 }

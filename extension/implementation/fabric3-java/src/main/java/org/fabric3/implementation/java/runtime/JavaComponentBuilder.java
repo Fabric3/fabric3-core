@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
@@ -57,11 +58,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
     }
 
     public JavaComponent build(JavaComponentDefinition definition)  {
-        if (definition.getInstance() != null) {
-            return buildNonManagedComponent(definition);
-        } else {
-            return buildManagedComponent(definition);
-        }
+        return definition.getInstance() != null ? buildNonManagedComponent(definition) : buildManagedComponent(definition);
     }
 
     public void dispose(JavaComponentDefinition definition, JavaComponent component)  {
@@ -75,7 +72,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
         // get the scope container for this component
-        String scopeName = definition.getScope();
+        Scope scopeName = definition.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         // create the InstanceFactoryProvider based on the definition in the model
@@ -94,7 +91,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
 
     private JavaComponent buildNonManagedComponent(JavaComponentDefinition definition) {
         URI componentUri = definition.getComponentUri();
-        String scopeName = definition.getScope();
+        Scope scopeName = definition.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
         Object instance = definition.getInstance();
         NonManagedImplementationManagerFactory factory = new NonManagedImplementationManagerFactory(instance);

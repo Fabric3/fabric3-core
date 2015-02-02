@@ -32,13 +32,14 @@ import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.ResourceReference;
+import org.fabric3.api.model.type.component.Scope;
 
 /**
  * A component type associated with an implementation that supports injection.
  */
 public class InjectingComponentType extends ComponentType {
     private String implClass;
-    private String scope;
+    private Scope scope;
     private int initLevel;
     private boolean managed;
     private ManagementInfo managementInfo;
@@ -80,7 +81,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @return the lifecycle scope for the component
      */
-    public String getScope() {
+    public Scope getScope() {
         return scope;
     }
 
@@ -89,7 +90,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @param scope the lifecycle scope for the component
      */
-    public void setScope(String scope) {
+    public void setScope(Scope scope) {
         this.scope = scope;
     }
 

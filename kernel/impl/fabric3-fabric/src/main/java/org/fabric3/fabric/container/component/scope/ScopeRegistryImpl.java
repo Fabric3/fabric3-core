@@ -19,8 +19,8 @@
  */
 package org.fabric3.fabric.container.component.scope;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.ScopeContainer;
@@ -30,22 +30,19 @@ import org.fabric3.spi.container.component.ScopeRegistry;
  * The default implementation of a scope registry.
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
-    private final Map<String, ScopeContainer> scopes = new ConcurrentHashMap<>();
+    private Map<Scope, ScopeContainer> containers = new HashMap<>();
 
     public void register(ScopeContainer container) {
         Scope scope = container.getScope();
-        scopes.put(scope.getScope(), container);
+        containers.put(scope, container);
     }
 
     public void unregister(ScopeContainer container) {
-        scopes.remove(container.getScope().getScope());
+        containers.remove(container.getScope());
     }
 
     public ScopeContainer getScopeContainer(Scope scope) {
-        return scopes.get(scope.getScope());
+        return containers.get(scope);
     }
 
-    public ScopeContainer getScopeContainer(String scopeName) {
-        return scopes.get(scopeName);
-    }
 }

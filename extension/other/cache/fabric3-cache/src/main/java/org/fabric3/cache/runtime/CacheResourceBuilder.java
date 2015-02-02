@@ -42,7 +42,7 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void build(PhysicalCacheSetDefinition definition) throws Fabric3Exception {
+    public void build(PhysicalCacheSetDefinition definition) {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.build(cacheDefinition);
@@ -50,14 +50,14 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void remove(PhysicalCacheSetDefinition definition) throws Fabric3Exception {
+    public void remove(PhysicalCacheSetDefinition definition) {
         for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
             CacheBuilder builder = getCacheBuilder(cacheDefinition);
             builder.remove(cacheDefinition);
         }
     }
 
-    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws Fabric3Exception {
+    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) {
         Class<? extends PhysicalResourceDefinition> type = cacheDefinition.getClass();
         CacheBuilder<?> builder = builders.get(type);
         if (builder == null) {

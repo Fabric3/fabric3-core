@@ -19,6 +19,7 @@
 package org.fabric3.implementation.junit.introspection;
 
 import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
@@ -48,7 +49,7 @@ public class JUnitImplementationIntrospectorImpl implements JUnitImplementationI
 
     public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
         String className = componentType.getImplClass();
-        componentType.setScope("STATELESS");
+        componentType.setScope(Scope.STATELESS);
 
         ClassLoader cl = context.getClassLoader();
         Class<?> implClass;

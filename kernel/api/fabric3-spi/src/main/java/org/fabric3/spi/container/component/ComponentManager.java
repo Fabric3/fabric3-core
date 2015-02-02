@@ -27,7 +27,7 @@ import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
- * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
+ * and hence may be sparse in comparison to the assembly component hierarchy for the domain.
  */
 public interface ComponentManager {
 

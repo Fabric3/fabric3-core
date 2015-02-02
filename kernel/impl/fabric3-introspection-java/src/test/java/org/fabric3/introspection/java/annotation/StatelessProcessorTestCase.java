@@ -20,8 +20,8 @@
 package org.fabric3.introspection.java.annotation;
 
 import junit.framework.TestCase;
-import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.api.annotation.scope.Stateless;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
@@ -36,7 +36,7 @@ public class StatelessProcessorTestCase extends TestCase {
 
         processor.visitType(annotation, componentToProcess.getClass(), type, null);
 
-        assertEquals(Scopes.STATELESS, type.getScope());
+        assertEquals(Scope.STATELESS, type.getScope());
     }
 
     @SuppressWarnings("serial")

@@ -100,7 +100,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         super.stopContext(deployable);
     }
 
-    public Object getInstance(ScopedComponent component) throws Fabric3Exception {
+    public Object getInstance(ScopedComponent component){
         if (topologyService != null && !activated) {
             throw new Fabric3Exception("Component instance not active: " + component.getUri());
         }

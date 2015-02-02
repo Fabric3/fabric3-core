@@ -28,6 +28,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
@@ -90,12 +91,12 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         this.topologyService = topologyService;
     }
 
-    public TimerComponent build(TimerComponentDefinition definition) throws Fabric3Exception {
+    public TimerComponent build(TimerComponentDefinition definition) {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
-        String scopeName = definition.getScope();
+        Scope scopeName = definition.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
@@ -132,16 +133,14 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         return component;
     }
 
-    public void dispose(TimerComponentDefinition definition, TimerComponent component) throws Fabric3Exception {
+    public void dispose(TimerComponentDefinition definition, TimerComponent component) {
         dispose(definition);
     }
 
     public void onEvent(RuntimeStart event) {
         // runtime has started, schedule any deferred components
         runtimeStarted = true;
-        for (TimerComponent component : scheduleQueue) {
-            component.schedule();
-        }
+        scheduleQueue.forEach(TimerComponent::schedule);
         scheduleQueue.clear();
     }
 }

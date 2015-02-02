@@ -35,14 +35,6 @@ public interface ScopeRegistry {
     ScopeContainer getScopeContainer(Scope scope);
 
     /**
-     * Returns the scope container for the given scope name or null if one not found.
-     *
-     * @param scopeName the scope name
-     * @return the scope container for the given scope or null if one not found
-     */
-    ScopeContainer getScopeContainer(String scopeName);
-
-    /**
      * Register a scope container with this registry.
      *
      * @param container the container to register
