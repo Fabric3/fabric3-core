@@ -36,7 +36,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.management.rest.framework.DynamicResourceService;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
@@ -113,55 +112,49 @@ public class RestfulManagementExtension implements ManagementExtension {
         if (root.length() == 0) {
             root = componentUri.getPath();
         }
-        try {
-            Class<?> clazz = classLoader.loadClass(info.getManagementClass());
-            List<ResourceMapping> getMappings = new ArrayList<>();
+        List<ResourceMapping> getMappings = new ArrayList<>();
 
-            String identifier = componentUri.toString();
+        String identifier = componentUri.toString();
 
-            boolean rootResourcePathOverride = false;
-            for (ManagementOperationInfo operationInfo : info.getOperations()) {
-                // calculate if a root resource needs to be created
-                String path = operationInfo.getPath();
-                if (ROOT_PATH.equals(path)) {
-                    rootResourcePathOverride = true;
+        boolean rootResourcePathOverride = false;
+        for (ManagementOperationInfo operationInfo : info.getOperations()) {
+            // calculate if a root resource needs to be created
+            String path = operationInfo.getPath();
+            if (ROOT_PATH.equals(path)) {
+                rootResourcePathOverride = true;
+            }
+        }
+        for (ManagementOperationInfo operationInfo : info.getOperations()) {
+            Method method = operationInfo.getMethod();
+            String path = operationInfo.getPath();
+            OperationType type = operationInfo.getOperationType();
+            Verb verb = getVerb(method, type);
+
+            Set<Role> roles = operationInfo.getRoles();
+            if (roles.isEmpty()) {
+                // No roles specified for operation. Default to read/write roles specified on the class.
+                if (Verb.GET == verb) {
+                    roles = info.getReadRoles();
+                } else {
+                    roles = info.getWriteRoles();
                 }
             }
-            for (ManagementOperationInfo operationInfo : info.getOperations()) {
-                Signature signature = operationInfo.getSignature();
-                Method method = signature.getMethod(clazz);
-                String path = operationInfo.getPath();
-                OperationType type = operationInfo.getOperationType();
-                Verb verb = getVerb(method, type);
-
-                Set<Role> roles = operationInfo.getRoles();
-                if (roles.isEmpty()) {
-                    // No roles specified for operation. Default to read/write roles specified on the class. 
-                    if (Verb.GET == verb) {
-                        roles = info.getReadRoles();
-                    } else {
-                        roles = info.getWriteRoles();
-                    }
-                }
-                TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-                ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, pair, roles);
-                if (Verb.GET == mapping.getVerb()) {
-                    getMappings.add(mapping);
-                }
-
-                createDynamicResources(mapping, root, rootResourcePathOverride);
-
-                if (dynamicResources.remove(mapping.getPath()) != null) {
-                    resourceHost.unregisterPath(mapping.getPath(), mapping.getVerb());
-                }
-                resourceHost.register(mapping);
-                notifyExport(path, mapping);
+            TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
+            ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, pair, roles);
+            if (Verb.GET == mapping.getVerb()) {
+                getMappings.add(mapping);
             }
-            if (!rootResourcePathOverride) {
-                createRootResource(identifier, root, getMappings);
+
+            createDynamicResources(mapping, root, rootResourcePathOverride);
+
+            if (dynamicResources.remove(mapping.getPath()) != null) {
+                resourceHost.unregisterPath(mapping.getPath(), mapping.getVerb());
             }
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new Fabric3Exception(e);
+            resourceHost.register(mapping);
+            notifyExport(path, mapping);
+        }
+        if (!rootResourcePathOverride) {
+            createRootResource(identifier, root, getMappings);
         }
     }
 

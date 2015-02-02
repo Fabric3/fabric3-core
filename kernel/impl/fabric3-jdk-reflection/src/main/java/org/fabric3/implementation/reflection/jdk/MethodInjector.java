@@ -58,11 +58,12 @@ public class MethodInjector implements Injector<Object> {
         }
         try {
             method.invoke(instance, target);
-        } catch (IllegalAccessException e) {
-            throw new AssertionError("Method is not accessible:" + method);
-        } catch (IllegalArgumentException | InvocationTargetException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             String id = method.toString();
             throw new Fabric3Exception("Exception thrown by setter: " + id, e);
+        } catch (InvocationTargetException e) {
+            String id = method.toString();
+            throw new Fabric3Exception("Exception thrown by setter: " + id, e.getCause());
         }
     }
 

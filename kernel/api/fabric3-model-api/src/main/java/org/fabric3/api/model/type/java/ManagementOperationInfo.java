@@ -19,6 +19,7 @@
  */
 package org.fabric3.api.model.type.java;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.fabric3.api.Role;
@@ -28,22 +29,22 @@ import org.fabric3.api.model.type.ModelObject;
  * Encapsulates management information about a component operation.
  */
 public class ManagementOperationInfo extends ModelObject<ManagementInfo> {
-    private Signature signature;
+    private Method method;
     private String path;
     private String description;
     private Set<Role> roles;
     private OperationType type;
 
-    public ManagementOperationInfo(Signature signature, String path, OperationType type, String description, Set<Role> roles) {
-        this.signature = signature;
+    public ManagementOperationInfo(Method method, String path, OperationType type, String description, Set<Role> roles) {
+        this.method = method;
         this.path = path;
         this.type = type;
         this.description = description;
         this.roles = roles;
     }
 
-    public Signature getSignature() {
-        return signature;
+    public Method getMethod() {
+        return method;
     }
 
     public String getPath() {

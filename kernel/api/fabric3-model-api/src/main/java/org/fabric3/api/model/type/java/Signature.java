@@ -96,29 +96,6 @@ public class Signature implements Serializable {
         setParameterTypes(constructor.getParameterTypes());
         isConstructor = true;
     }
-
-    /**
-     * Return the method on the supplied class that matches this signature.
-     *
-     * @param clazz the class whose method should be returned
-     * @return the matching method
-     * @throws ClassNotFoundException if the class for one of the parameters could not be loaded
-     * @throws NoSuchMethodException  if no matching method could be found
-     */
-    public Method getMethod(Class<?> clazz) throws ClassNotFoundException, NoSuchMethodException {
-        if (isConstructor) throw new AssertionError("Illegal call to getMethod on a Constructor Signature");
-        Class<?>[] types = getParameterTypes(clazz.getClassLoader());
-        while (clazz != null) {
-            try {
-                // TODO do we need to reject package, private, static or synthetic methods?
-                return clazz.getDeclaredMethod(name, types);
-            } catch (NoSuchMethodException e) {
-                clazz = clazz.getSuperclass();
-            }
-        }
-        throw new NoSuchMethodException(toString());
-    }
-
     /**
      * Return the constructor on the supplied class that matches this signature.
      *

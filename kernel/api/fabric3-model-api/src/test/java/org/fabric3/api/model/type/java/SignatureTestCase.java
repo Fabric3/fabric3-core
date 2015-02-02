@@ -19,8 +19,6 @@
  */
 package org.fabric3.api.model.type.java;
 
-import java.lang.reflect.Method;
-
 import junit.framework.TestCase;
 
 /**
@@ -29,51 +27,43 @@ import junit.framework.TestCase;
 public class SignatureTestCase extends TestCase {
 
     public void testComplexType() throws Exception {
-        Method method = Foo.class.getMethod("complex", Foo.class);
         Signature signature = new Signature("complex", Foo.class.getName());
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Foo.class.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveInt() throws Exception {
-        Method method = Foo.class.getMethod("primitiveInt", Integer.TYPE);
         Signature signature = new Signature("primitiveInt", "int");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Integer.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveDouble() throws Exception {
-        Method method = Foo.class.getMethod("primitiveDouble", Double.TYPE);
         Signature signature = new Signature("primitiveDouble", "double");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Double.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveBoolean() throws Exception {
-        Method method = Foo.class.getMethod("primitiveBoolean", Boolean.TYPE);
         Signature signature = new Signature("primitiveBoolean", "boolean");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Boolean.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveByte() throws Exception {
-        Method method = Foo.class.getMethod("primitiveByte", Byte.TYPE);
         Signature signature = new Signature("primitiveByte", "byte");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Byte.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveShort() throws Exception {
-        Method method = Foo.class.getMethod("primitiveShort", Short.TYPE);
         Signature signature = new Signature("primitiveShort", "short");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Short.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveLong() throws Exception {
-        Method method = Foo.class.getMethod("primitiveLong", Long.TYPE);
         Signature signature = new Signature("primitiveLong", "long");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Long.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     public void testPrimitiveFloat() throws Exception {
-        Method method = Foo.class.getMethod("primitiveFloat", Float.TYPE);
         Signature signature = new Signature("primitiveFloat", "float");
-        assertEquals(method, signature.getMethod(Foo.class));
+        assertEquals(Float.TYPE.getName(), signature.getParameterTypes().get(0));
     }
 
     private class Foo {

@@ -44,7 +44,6 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementExtension;
@@ -201,14 +200,13 @@ public class JMXManagementExtension implements ManagementExtension {
             if (description.trim().length() == 0) {
                 description = null;
             }
-            Signature signature = new Signature(method);
             String[] roleNames = annotation.rolesAllowed();
             Set<Role> roles = new HashSet<>();
             for (String name : roleNames) {
                 roles.add(new Role(name));
             }
             String path = annotation.path();
-            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, OperationType.UNDEFINED, description, roles);
+            ManagementOperationInfo operationInfo = new ManagementOperationInfo(method, path, OperationType.UNDEFINED, description, roles);
             info.addOperation(operationInfo);
         }
 
@@ -243,48 +241,47 @@ public class JMXManagementExtension implements ManagementExtension {
     private <T> OptimizedMBean<T> createOptimizedMBean(ManagementInfo info, ObjectFactory<T> objectFactory, ClassLoader loader)
             throws IntrospectionException, ClassNotFoundException, NoSuchMethodException {
         String className = info.getManagementClass();
-        Class<?> clazz = loader.loadClass(className);
         Set<AttributeDescription> attributes = new HashSet<>();
         Map<String, MethodHolder> getters = new HashMap<>();
         Map<String, MethodHolder> setters = new HashMap<>();
         Map<OperationKey, MethodHolder> operations = new HashMap<>();
         for (ManagementOperationInfo operationInfo : info.getOperations()) {
-            Method method = operationInfo.getSignature().getMethod(clazz);
+            Method method = operationInfo.getMethod();
             String description = operationInfo.getDescription();
             Set<Role> roles = operationInfo.getRoles();
 
             switch (getType(method)) {
-            case GETTER:
-                String getterName = getAttributeName(method);
-                AttributeDescription attribute = new AttributeDescription(getterName, description);
-                attributes.add(attribute);
-                if (roles.isEmpty()) {
-                    // default to read roles specified on the implementation
-                    roles = info.getReadRoles();
-                }
-                MethodHolder holder = new MethodHolder(method, roles);
-                getters.put(getterName, holder);
-                break;
-            case SETTER:
-                String setterName = getAttributeName(method);
-                attribute = new AttributeDescription(setterName, description);
-                attributes.add(attribute);
-                if (roles.isEmpty()) {
-                    // default to write roles specified on the implementation
-                    roles = info.getWriteRoles();
-                }
-                holder = new MethodHolder(method, roles);
-                setters.put(setterName, holder);
-                break;
-            case OPERATION:
-                OperationKey key = new OperationKey(method, description);
-                if (roles.isEmpty()) {
-                    // default to write roles specified on the implementation
-                    roles = info.getWriteRoles();
-                }
-                holder = new MethodHolder(method, roles);
-                operations.put(key, holder);
-                break;
+                case GETTER:
+                    String getterName = getAttributeName(method);
+                    AttributeDescription attribute = new AttributeDescription(getterName, description);
+                    attributes.add(attribute);
+                    if (roles.isEmpty()) {
+                        // default to read roles specified on the implementation
+                        roles = info.getReadRoles();
+                    }
+                    MethodHolder holder = new MethodHolder(method, roles);
+                    getters.put(getterName, holder);
+                    break;
+                case SETTER:
+                    String setterName = getAttributeName(method);
+                    attribute = new AttributeDescription(setterName, description);
+                    attributes.add(attribute);
+                    if (roles.isEmpty()) {
+                        // default to write roles specified on the implementation
+                        roles = info.getWriteRoles();
+                    }
+                    holder = new MethodHolder(method, roles);
+                    setters.put(setterName, holder);
+                    break;
+                case OPERATION:
+                    OperationKey key = new OperationKey(method, description);
+                    if (roles.isEmpty()) {
+                        // default to write roles specified on the implementation
+                        roles = info.getWriteRoles();
+                    }
+                    holder = new MethodHolder(method, roles);
+                    operations.put(key, holder);
+                    break;
             }
         }
 
@@ -376,13 +373,17 @@ public class JMXManagementExtension implements ManagementExtension {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             AttributeDescription that = (AttributeDescription) o;
 
-            return !(description != null ? !description.equals(that.description) : that.description != null)
-                    && !(name != null ? !name.equals(that.name) : that.name != null);
+            return !(description != null ? !description.equals(that.description) : that.description != null) && !(
+                    name != null ? !name.equals(that.name) : that.name != null);
 
         }
 

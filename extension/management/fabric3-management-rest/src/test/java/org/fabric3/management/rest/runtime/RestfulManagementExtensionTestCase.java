@@ -31,7 +31,6 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
@@ -65,8 +64,7 @@ public class RestfulManagementExtensionTestCase extends TestCase {
 
         ManagementInfo info = new ManagementInfo("component", "group", path, "description", clazz, readRoles, writeRoles);
         Method method = TestComponent.class.getMethod("setOperation", String.class);
-        Signature signature = new Signature(method);
-        ManagementOperationInfo operation = new ManagementOperationInfo(signature, "operation", OperationType.POST, "description", writeRoles);
+        ManagementOperationInfo operation = new ManagementOperationInfo(method, "operation", OperationType.POST, "description", writeRoles);
         info.addOperation(operation);
 
         ObjectFactory<?> factory = new SingletonObjectFactory<>(new TestComponent());

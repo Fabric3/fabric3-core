@@ -30,7 +30,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.api.model.type.java.ManagementOperationInfo;
 import org.fabric3.api.model.type.java.OperationType;
-import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
@@ -61,7 +60,6 @@ public class ManagementOperationProcessor extends AbstractAnnotationProcessor<Ma
         if (description.trim().length() == 0) {
             description = null;
         }
-        Signature signature = new Signature(method);
         Set<Role> roles = new HashSet<>();
         for (String roleName : annotation.rolesAllowed()) {
             roles.add(new Role(roleName));
@@ -71,7 +69,7 @@ public class ManagementOperationProcessor extends AbstractAnnotationProcessor<Ma
         org.fabric3.api.annotation.management.OperationType operationType = annotation.type();
         OperationType type = OperationType.valueOf(operationType.toString());
 
-        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, type, description, roles);
+        ManagementOperationInfo operationInfo = new ManagementOperationInfo(method, path, type, description, roles);
         info.addOperation(operationInfo);
     }
 
