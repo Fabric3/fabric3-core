@@ -66,7 +66,7 @@ public class WireGeneratorImpl implements WireGenerator {
         this.operationGenerator = operationGenerator;
     }
 
-    public <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) throws Fabric3Exception {
+    public <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
@@ -98,7 +98,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return pwd;
     }
 
-    public <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws Fabric3Exception {
+    public <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
@@ -122,7 +122,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    public <T extends Binding> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws Fabric3Exception {
+    public <T extends Binding> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) {
         checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent component = reference.getParent();
@@ -156,7 +156,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    public <T extends Binding> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws Fabric3Exception {
+    public <T extends Binding> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) {
         checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent<?> component = reference.getParent();
@@ -180,7 +180,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operation);
     }
 
-    public PhysicalWireDefinition generateWire(LogicalWire wire) throws Fabric3Exception {
+    public PhysicalWireDefinition generateWire(LogicalWire wire) {
         if (isLocal(wire)) {
             return generateLocalWire(wire);
         } else {
@@ -188,7 +188,7 @@ public class WireGeneratorImpl implements WireGenerator {
         }
     }
 
-    public PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws Fabric3Exception {
+    public PhysicalWireDefinition generateWireCallback(LogicalWire wire) {
         if (isLocal(wire)) {
             return generateLocalWireCallback(wire);
         } else {
@@ -196,7 +196,7 @@ public class WireGeneratorImpl implements WireGenerator {
         }
     }
 
-    public <T extends ResourceReference> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws Fabric3Exception {
+    public <T extends ResourceReference> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) {
         T resourceDefinition = resourceReference.getDefinition();
         LogicalComponent<?> component = resourceReference.getParent();
 
@@ -231,9 +231,8 @@ public class WireGeneratorImpl implements WireGenerator {
      *
      * @param wire the logical wire
      * @return the physical wire definition
-     * @throws Fabric3Exception if an error occurs during generation
      */
-    private PhysicalWireDefinition generateLocalWire(LogicalWire wire) throws Fabric3Exception {
+    private PhysicalWireDefinition generateLocalWire(LogicalWire wire) {
         LogicalReference reference = wire.getSource();
 
         // use the leaf service to optimize data paths - e.g. a promoted service may use a different service contract and databinding than the leaf
@@ -284,10 +283,9 @@ public class WireGeneratorImpl implements WireGenerator {
      *
      * @param wire the logical wire
      * @return the physical wire definition
-     * @throws Fabric3Exception if an error occurs during generation
      */
     @SuppressWarnings({"unchecked"})
-    private <BD extends Binding> PhysicalWireDefinition generateRemoteWire(LogicalWire wire) throws Fabric3Exception {
+    private <BD extends Binding> PhysicalWireDefinition generateRemoteWire(LogicalWire wire) {
         LogicalReference reference = wire.getSource();
         LogicalService service = wire.getTarget();
         LogicalComponent source = reference.getParent();
@@ -332,7 +330,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    private PhysicalWireDefinition generateLocalWireCallback(LogicalWire wire) throws Fabric3Exception {
+    private PhysicalWireDefinition generateLocalWireCallback(LogicalWire wire) {
         LogicalReference reference = wire.getSource();
         LogicalService service = wire.getTarget();
         LogicalComponent<?> targetComponent = reference.getParent();
@@ -361,7 +359,7 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private PhysicalWireDefinition generateRemoteWireCallback(LogicalWire wire) throws Fabric3Exception {
+    private PhysicalWireDefinition generateRemoteWireCallback(LogicalWire wire) {
         LogicalReference reference = wire.getSource();
         LogicalComponent target = reference.getParent();
         ServiceContract referenceContract = reference.getServiceContract();
@@ -389,7 +387,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName) throws Fabric3Exception {
+    private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName) {
         LogicalService candidate = null;
         for (LogicalService entry : source.getServices()) {
             MatchResult result = matcher.isAssignableFrom(contract, entry.getServiceContract(), false);
@@ -453,18 +451,18 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) throws Fabric3Exception {
+    private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         return (ComponentGenerator<C>) generatorRegistry.getComponentGenerator(implementation.getClass());
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends ResourceReference> ResourceReferenceGenerator<T> getGenerator(T definition) throws Fabric3Exception {
+    private <T extends ResourceReference> ResourceReferenceGenerator<T> getGenerator(T definition) {
         return (ResourceReferenceGenerator<T>) generatorRegistry.getResourceReferenceGenerator(definition.getClass());
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Binding> WireBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws Fabric3Exception {
+    private <T extends Binding> WireBindingGenerator<T> getGenerator(LogicalBinding<T> binding) {
         return (WireBindingGenerator<T>) generatorRegistry.getBindingGenerator(binding.getDefinition().getClass());
     }
 

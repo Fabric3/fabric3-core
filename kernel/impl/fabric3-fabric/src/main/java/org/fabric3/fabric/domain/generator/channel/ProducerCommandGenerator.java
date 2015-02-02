@@ -43,8 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
 
 /**
- * Generates a command to establish or remove an event channel connection from a producer. Channel build and dispose commands will be generated for producer
- * targets.
+ * Generates a command to establish or remove a channel connection from a producer. Channel build and dispose commands will be generated for producer targets.
  */
 public class ProducerCommandGenerator implements CommandGenerator<ChannelConnectionCommand> {
     private ConnectionGenerator connectionGenerator;

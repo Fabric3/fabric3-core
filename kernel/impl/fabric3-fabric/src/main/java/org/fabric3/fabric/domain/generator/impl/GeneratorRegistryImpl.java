@@ -94,7 +94,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws Fabric3Exception {
+    public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) {
         ComponentGenerator<LogicalComponent<T>> generator = (ComponentGenerator<LogicalComponent<T>>) componentGenerators.get(clazz);
         if (generator == null) {
             throw new Fabric3Exception("Component generator not found for " + clazz.getName());
@@ -103,7 +103,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) throws Fabric3Exception {
+    public <T extends Binding> WireBindingGenerator<T> getBindingGenerator(Class<T> clazz) {
         WireBindingGenerator<T> generator = (WireBindingGenerator<T>) bindingGenerators.get(clazz);
         if (generator == null) {
             throw new Fabric3Exception("Wire binding generator not found for " + clazz.getName());
@@ -112,7 +112,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends Binding> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) throws Fabric3Exception {
+    public <T extends Binding> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) {
         ConnectionBindingGenerator<T> generator = (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
         if (generator == null) {
             throw new Fabric3Exception("Connection binding generator not found for " + clazz.getName());
@@ -121,7 +121,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws Fabric3Exception {
+    public <T extends ResourceReference> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) {
         ResourceReferenceGenerator<T> generator = (ResourceReferenceGenerator<T>) resourceReferenceGenerators.get(clazz);
         if (generator == null) {
             throw new Fabric3Exception("Resource reference generator not found for " + clazz.getName());
@@ -134,7 +134,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws Fabric3Exception {
+    public <T extends Resource> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) {
         ResourceGenerator<T> generator = (ResourceGenerator<T>) resourceGenerators.get(clazz);
         if (generator == null) {
             throw new Fabric3Exception("Resource generator not found for " + clazz.getName());

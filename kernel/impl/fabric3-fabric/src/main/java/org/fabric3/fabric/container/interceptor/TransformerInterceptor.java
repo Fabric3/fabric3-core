@@ -23,8 +23,7 @@ import org.fabric3.spi.transform.Transformer;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * Converts the input parameters of an invocation to a target format and the output parameters from the target format by delegating to underlying
- * transformers.
+ * Converts the input parameters of an invocation to a target format and the output parameters from the target format by delegating to underlying transformers.
  */
 public class TransformerInterceptor implements Interceptor {
     private Transformer<Object, Object> inTransformer;

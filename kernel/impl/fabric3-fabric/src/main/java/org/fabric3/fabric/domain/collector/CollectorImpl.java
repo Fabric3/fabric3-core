@@ -49,36 +49,26 @@ public class CollectorImpl implements Collector {
                 component.setState(LogicalState.PROVISIONED);
             }
             for (LogicalService service : component.getServices()) {
-                for (LogicalBinding<?> binding : service.getBindings()) {
-                    if (LogicalState.NEW == binding.getState()) {
-                        binding.setState(LogicalState.PROVISIONED);
-                    }
-                }
-                for (LogicalBinding<?> binding : service.getCallbackBindings()) {
-                    if (LogicalState.NEW == binding.getState()) {
-                        binding.setState(LogicalState.PROVISIONED);
-                    }
-                }
+                service.getBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
+                    binding.setState(LogicalState.PROVISIONED);
+                });
+                service.getCallbackBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
+                    binding.setState(LogicalState.PROVISIONED);
+                });
             }
             for (LogicalReference reference : component.getReferences()) {
-                for (LogicalBinding<?> binding : reference.getBindings()) {
-                    if (LogicalState.NEW == binding.getState()) {
-                        binding.setState(LogicalState.PROVISIONED);
-                    }
-                }
-                for (LogicalBinding<?> binding : reference.getCallbackBindings()) {
-                    if (LogicalState.NEW == binding.getState()) {
-                        binding.setState(LogicalState.PROVISIONED);
-                    }
-                }
+                reference.getBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
+                    binding.setState(LogicalState.PROVISIONED);
+                });
+                reference.getCallbackBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
+                    binding.setState(LogicalState.PROVISIONED);
+                });
             }
         }
         for (List<LogicalWire> wires : composite.getWires().values()) {
-            for (LogicalWire wire : wires) {
-                if (LogicalState.NEW == wire.getState()) {
-                    wire.setState(LogicalState.PROVISIONED);
-                }
-            }
+            wires.stream().filter(wire -> LogicalState.NEW == wire.getState()).forEach(wire -> {
+                wire.setState(LogicalState.PROVISIONED);
+            });
         }
         for (LogicalChannel channel : composite.getChannels()) {
             if (LogicalState.NEW == channel.getState()) {
@@ -89,11 +79,9 @@ public class CollectorImpl implements Collector {
                 binding.setState(LogicalState.PROVISIONED);
             }
         }
-        for (LogicalResource resource : composite.getResources()) {
-            if (LogicalState.NEW == resource.getState()) {
-                resource.setState(LogicalState.PROVISIONED);
-            }
-        }
+        composite.getResources().stream().filter(resource -> LogicalState.NEW == resource.getState()).forEach(resource -> {
+            resource.setState(LogicalState.PROVISIONED);
+        });
 
     }
 
@@ -122,16 +110,12 @@ public class CollectorImpl implements Collector {
             } else {
                 // mark service and callback bindings that were dynamically added to satisfy a wire when the deployable was provisioned
                 for (LogicalService service : component.getServices()) {
-                    for (LogicalBinding<?> binding : service.getBindings()) {
-                        if (deployable.equals(binding.getDeployable())) {
-                            binding.setState(LogicalState.MARKED);
-                        }
-                    }
-                    for (LogicalBinding<?> binding : service.getCallbackBindings()) {
-                        if (deployable.equals(binding.getDeployable())) {
-                            binding.setState(LogicalState.MARKED);
-                        }
-                    }
+                    service.getBindings().stream().filter(binding -> deployable.equals(binding.getDeployable())).forEach(binding -> {
+                        binding.setState(LogicalState.MARKED);
+                    });
+                    service.getCallbackBindings().stream().filter(binding -> deployable.equals(binding.getDeployable())).forEach(binding -> {
+                        binding.setState(LogicalState.MARKED);
+                    });
                 }
                 // recurse through wires and mark any that were part of the deployable being undeployed
                 // this can occur when a wire is configured in a deployable other than its source component

@@ -26,7 +26,7 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 
 /**
- * Default implementation of a Wire
+ *
  */
 public class WireImpl implements Wire {
     private final List<InvocationChain> chains = new ArrayList<>();

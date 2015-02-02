@@ -106,7 +106,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         // are destroyed after the eagerly initialized components (the destroy queues are iterated in reverse order).
         synchronized (destroyQueues) {
             if (!destroyQueues.containsKey(deployable)) {
-                destroyQueues.put(deployable, new ArrayList<Pair>());
+                destroyQueues.put(deployable, new ArrayList<>());
             }
         }
     }

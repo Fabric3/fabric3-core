@@ -32,7 +32,7 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  */
 public class OperationResolverImpl implements OperationResolver {
 
-    public LogicalOperation resolve(LogicalOperation source, List<LogicalOperation> targets) throws Fabric3Exception {
+    public LogicalOperation resolve(LogicalOperation source, List<LogicalOperation> targets) {
         Operation sourceDefinition = source.getDefinition();
         for (LogicalOperation target : targets) {
             Operation targetDefinition = target.getDefinition();

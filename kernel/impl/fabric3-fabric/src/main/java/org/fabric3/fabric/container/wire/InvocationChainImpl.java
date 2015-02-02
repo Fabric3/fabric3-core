@@ -24,7 +24,7 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 
 /**
- * Default implementation of an invocation chain.
+ *
  */
 public class InvocationChainImpl implements InvocationChain {
     protected PhysicalOperationDefinition physicalOperation;

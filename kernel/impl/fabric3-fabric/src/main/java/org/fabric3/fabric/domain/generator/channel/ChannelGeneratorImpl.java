@@ -51,8 +51,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction)
-            throws Fabric3Exception {
+    public PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) {
 
         LogicalBinding<?> binding = channel.getBinding();
         String type = channel.getDefinition().getType();
@@ -75,7 +74,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws Fabric3Exception {
+    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) {
         return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 

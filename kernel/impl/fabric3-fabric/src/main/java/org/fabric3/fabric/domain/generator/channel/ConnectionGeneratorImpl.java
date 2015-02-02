@@ -60,8 +60,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels)
-            throws Fabric3Exception {
+    public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels) {
         List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<>();
 
         LogicalComponent<?> component = producer.getParent();
@@ -93,8 +92,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         return definitions;
     }
 
-    public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels)
-            throws Fabric3Exception {
+    public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels) {
         List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<>();
         LogicalComponent<?> component = consumer.getParent();
 
@@ -133,7 +131,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                            LogicalChannel channel,
                                                                            PhysicalConnectionTargetDefinition targetDefinition,
                                                                            URI classLoaderId,
-                                                                           PhysicalEventStreamDefinition eventStream) throws Fabric3Exception {
+                                                                           PhysicalEventStreamDefinition eventStream) {
         // the channel does not have bindings, which means it is a local channel
         if (!channel.getZone().equals(consumer.getParent().getZone()) && !channel.isBound()) {
             String name = channel.getDefinition().getName();
@@ -151,7 +149,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                         LogicalChannel channel,
                                                                         ChannelDeliveryType deliveryType,
                                                                         URI classLoaderId,
-                                                                        PhysicalEventStreamDefinition eventStream) throws Fabric3Exception {
+                                                                        PhysicalEventStreamDefinition eventStream) {
         // use the bindings on the channel to create a consumer binding configuration
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
@@ -167,7 +165,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                            LogicalChannel channel,
                                                                            PhysicalConnectionSourceDefinition sourceDefinition,
                                                                            URI classLoaderId,
-                                                                           PhysicalEventStreamDefinition eventStream) throws Fabric3Exception {
+                                                                           PhysicalEventStreamDefinition eventStream) {
         if (!channel.getZone().equals(producer.getParent().getZone()) && !channel.isBound()) {
             String name = channel.getDefinition().getName();
             throw new Fabric3Exception("Binding not configured on a channel where the producer is in a different zone: " + name);
@@ -182,7 +180,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                         LogicalChannel channel,
                                                                         ChannelDeliveryType deliveryType,
                                                                         URI classLoaderId,
-                                                                        PhysicalEventStreamDefinition eventStream) throws Fabric3Exception {
+                                                                        PhysicalEventStreamDefinition eventStream) {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionTargetDefinition targetDefinition = bindingGenerator.generateConnectionTarget(producer, binding, deliveryType);
@@ -192,7 +190,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 
-    private PhysicalEventStreamDefinition generateEventStream(LogicalProducer producer) throws Fabric3Exception {
+    private PhysicalEventStreamDefinition generateEventStream(LogicalProducer producer) {
         Operation operation = producer.getStreamOperation().getDefinition();
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(operation.getName());
         definition.setName(operation.getName());
@@ -236,13 +234,13 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) throws Fabric3Exception {
+    private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         return (ComponentGenerator<C>) generatorRegistry.getComponentGenerator(implementation.getClass());
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws Fabric3Exception {
+    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) {
         return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 

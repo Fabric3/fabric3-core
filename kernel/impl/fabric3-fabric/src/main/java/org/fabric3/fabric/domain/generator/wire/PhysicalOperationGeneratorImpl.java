@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
@@ -47,7 +46,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws Fabric3Exception {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) {
 
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(operations.size());
 
@@ -58,8 +57,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         return physicalOperations;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote)
-            throws Fabric3Exception {
+    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) {
         Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(sources.size());
         for (LogicalOperation source : sources) {
             LogicalOperation target = operationResolver.resolve(source, targets);
@@ -79,9 +77,8 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param source the operation
      * @param target the target operation
      * @return the interceptor definitions
-     * @throws Fabric3Exception if a generation error occurs
      */
-    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) throws Fabric3Exception {
+    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) {
         Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<>();
         for (InterceptorGenerator interceptorGenerator : generatorRegistry.getInterceptorGenerators()) {
             Optional<PhysicalInterceptorDefinition> optional = interceptorGenerator.generate(source, target);
