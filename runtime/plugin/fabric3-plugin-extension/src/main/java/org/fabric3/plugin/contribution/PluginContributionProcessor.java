@@ -42,7 +42,6 @@ import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
-import org.fabric3.spi.introspection.xml.LoaderException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -158,11 +157,11 @@ public class PluginContributionProcessor implements ContributionProcessor {
         try {
             Source source = new UrlSource(manifestUrl);
             return loader.load(source, ContributionManifest.class, childContext);
-        } catch (LoaderException e) {
+        } catch (Fabric3Exception e) {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new Fabric3Exception(e);
+                throw e;
             }
         }
         return null;

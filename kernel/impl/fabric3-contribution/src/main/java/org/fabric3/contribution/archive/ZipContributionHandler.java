@@ -45,7 +45,6 @@ import org.fabric3.spi.contribution.manifest.JarManifestHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
-import org.fabric3.spi.introspection.xml.LoaderException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -98,11 +97,11 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                 return;
             }
             contribution.setManifest(manifest);
-        } catch (LoaderException e) {
+        } catch (Fabric3Exception e) {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new Fabric3Exception(e);
+                throw e;
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found

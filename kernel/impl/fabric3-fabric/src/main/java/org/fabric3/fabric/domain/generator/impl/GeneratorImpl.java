@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
@@ -130,31 +131,28 @@ public class GeneratorImpl implements Generator {
      * @return a sorted collection
      */
     private List<LogicalComponent<?>> topologicalSort(LogicalCompositeComponent domain) {
-        List<LogicalComponent<?>> sorted = new ArrayList<>();
-        for (LogicalComponent<?> component : domain.getComponents()) {
-            sorted.add(component);
-            if (component instanceof LogicalCompositeComponent) {
-                flatten((LogicalCompositeComponent) component, sorted);
-            }
-        }
+        List<LogicalComponent<?>> sorted = domain.getComponents().stream().collect(Collectors.toList());
+        //            if (component instanceof LogicalCompositeComponent) {
+        //                flatten((LogicalCompositeComponent) component, sorted);
+        //            }
         Collections.sort(sorted, COMPARATOR);
         return sorted;
     }
 
-    /**
-     * Recursively adds composite children to the collection of components
-     *
-     * @param component  the top-level composite component
-     * @param components the collection
-     */
-    private void flatten(LogicalCompositeComponent component, List<LogicalComponent<?>> components) {
-        for (LogicalComponent<?> child : component.getComponents()) {
-            components.add(child);
-            if (child instanceof LogicalCompositeComponent) {
-                flatten((LogicalCompositeComponent) child, components);
-            }
-        }
-    }
+//    /**
+//     * Recursively adds composite children to the collection of components
+//     *
+//     * @param component  the top-level composite component
+//     * @param components the collection
+//     */
+//    private void flatten(LogicalCompositeComponent component, List<LogicalComponent<?>> components) {
+//        for (LogicalComponent<?> child : component.getComponents()) {
+//            components.add(child);
+//            if (child instanceof LogicalCompositeComponent) {
+//                flatten((LogicalCompositeComponent) child, components);
+//            }
+//        }
+//    }
 
     private List<CommandGenerator> sortGenerators(List<? extends CommandGenerator> commandGenerators) {
         Comparator<CommandGenerator> generatorComparator = (first, second) -> first.getOrder() - second.getOrder();

@@ -41,7 +41,6 @@ import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
-import org.fabric3.spi.introspection.xml.LoaderException;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
 
@@ -95,11 +94,11 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                 context.addWarnings(childContext.getWarnings());
             }
             contribution.setManifest(manifest);
-        } catch (LoaderException e) {
+        } catch (Fabric3Exception e) {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new Fabric3Exception(e);
+                throw e;
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found

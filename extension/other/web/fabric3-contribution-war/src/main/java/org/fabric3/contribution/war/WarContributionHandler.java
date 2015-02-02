@@ -42,7 +42,6 @@ import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
-import org.fabric3.spi.introspection.xml.LoaderException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -89,11 +88,11 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                 context.addWarnings(childContext.getWarnings());
             }
             contribution.setManifest(manifest);
-        } catch (LoaderException e) {
+        } catch (Fabric3Exception e) {
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
-                throw new Fabric3Exception(e);
+                throw e;
             }
         } catch (MalformedURLException e) {
             // ignore no manifest found
