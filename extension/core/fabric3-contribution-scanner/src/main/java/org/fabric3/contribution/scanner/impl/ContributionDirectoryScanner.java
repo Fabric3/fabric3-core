@@ -265,7 +265,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 long timestamp = resource.getTimestamp();
                 // undeploy any deployed composites in the reverse order that they were deployed in
                 try {
-                    domain.undeploy(artifactUri, false);
+                    domain.undeploy(artifactUri);
                 } catch (Fabric3Exception e) {
                     monitor.error(e);
                     return;
@@ -406,7 +406,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     iterator.remove();
                     // check that the resource was not deleted by another process
                     if (contributionService.exists(uri)) {
-                        domain.undeploy(uri, false);
+                        domain.undeploy(uri);
                         contributionService.uninstall(uri);
                         contributionService.remove(uri);
                     }

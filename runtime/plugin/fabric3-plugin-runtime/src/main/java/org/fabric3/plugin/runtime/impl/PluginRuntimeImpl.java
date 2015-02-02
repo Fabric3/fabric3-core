@@ -86,7 +86,7 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
                 QNameSymbol symbol = new QNameSymbol(qName);
                 ResourceElement<QNameSymbol, Composite> resourceElement = metaDataStore.find(uri, Composite.class, symbol);
                 if (resourceElement != null) {
-                    domain.include(resourceElement.getValue(), false);
+                    domain.include(resourceElement.getValue());
                     startContext(qName);
                 }
             }

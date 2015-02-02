@@ -51,30 +51,25 @@ public interface Domain {
      * Include a composite in the domain.
      *
      * @param composite the composite to include
-     * @param simulated true if the include is a simulation. Simulated includes skip generation and deployment to runtimes. In addition, simulated deployments
-     *                  are not fail-fast, i.e. they will be completed if assembly errors exist.
      * @throws Fabric3Exception if an error is encountered during inclusion
      */
-    void include(Composite composite, boolean simulated) throws Fabric3Exception;
+    void include(Composite composite) throws Fabric3Exception;
 
     /**
      * Remove all deployables in a contribution from the domain.
      *
      * @param uri   the contribution URI
-     * @param force true if the undeployment operation should ignore errors from runtimes and remove logical components on the controller. If true, undeployment
-     *              will also succeed if no participants are available.
      * @throws Fabric3Exception if an error is encountered during undeployment
      */
-    void undeploy(URI uri, boolean force) throws Fabric3Exception;
+    void undeploy(URI uri) throws Fabric3Exception;
 
     /**
      * Undeploys the composite.
      *
      * @param composite the composite
-     * @param simulated true if the include is a simulation. Simulated includes skip generation and deployment to runtimes.
      * @throws Fabric3Exception if an error is encountered during undeployment
      */
-    void undeploy(Composite composite, boolean simulated) throws Fabric3Exception;
+    void undeploy(Composite composite) throws Fabric3Exception;
 
 
 }

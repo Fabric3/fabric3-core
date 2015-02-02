@@ -122,7 +122,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
 
-        domain.undeploy(composite.getContributionUri(), false);
+        domain.undeploy(composite.getContributionUri());
         // verify the component contained in the composite was added to the logical model
         assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
         control.verify();

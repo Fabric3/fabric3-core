@@ -107,18 +107,18 @@ public abstract class AbstractDomain implements Domain {
         for (DeployListener listener : listeners) {
             listener.onDeploy(deployable);
         }
-        instantiateAndDeploy(wrapper, false);
+        instantiateAndDeploy(wrapper);
         for (DeployListener listener : listeners) {
             listener.onDeployCompleted(deployable);
         }
     }
 
-    public synchronized void include(Composite composite, boolean simulated) throws Fabric3Exception {
+    public synchronized void include(Composite composite) throws Fabric3Exception {
         QName name = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onDeploy(name);
         }
-        instantiateAndDeploy(composite, simulated);
+        instantiateAndDeploy(composite);
         for (DeployListener listener : listeners) {
             listener.onDeployCompleted(name);
         }
@@ -128,7 +128,7 @@ public abstract class AbstractDomain implements Domain {
         include(uris, false);
     }
 
-    public synchronized void undeploy(URI uri, boolean force) throws Fabric3Exception {
+    public synchronized void undeploy(URI uri) throws Fabric3Exception {
         Contribution contribution = metadataStore.find(uri);
         if (contribution == null) {
             throw new Fabric3Exception("Contribution not found: " + uri);
@@ -163,14 +163,7 @@ public abstract class AbstractDomain implements Domain {
         }
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
-        try {
-            deployer.deploy(deployment);
-        } catch (Fabric3Exception e) {
-            if (!force) {
-                throw e;
-            }
-            // force undeployment in effect: ignore deployment exceptions
-        }
+        deployer.deploy(deployment);
         names.forEach(contribution::releaseLock);
         logicalComponentManager.replaceRootComponent(domain);
         for (QName deployable : names) {
@@ -183,7 +176,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void undeploy(Composite composite, boolean simulated) throws Fabric3Exception {
+    public synchronized void undeploy(Composite composite) throws Fabric3Exception {
         QName deployable = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onUndeploy(deployable);
@@ -191,13 +184,9 @@ public abstract class AbstractDomain implements Domain {
 
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         collector.markForCollection(deployable, domain);
-        if (!simulated) {
-            Deployment deployment = generator.generate(domain);
-            collector.collect(domain);
-            deployer.deploy(deployment);
-        } else {
-            collector.collect(domain);
-        }
+        Deployment deployment = generator.generate(domain);
+        collector.collect(domain);
+        deployer.deploy(deployment);
         URI uri = composite.getContributionUri();
         Contribution contribution = metadataStore.find(uri);
         contribution.releaseLock(deployable);
@@ -319,10 +308,9 @@ public abstract class AbstractDomain implements Domain {
      * Instantiates and deploys the given composite.
      *
      * @param composite the composite to instantiate and deploy
-     * @param simulated true if the deployment is simulated
      * @throws Fabric3Exception if a deployment error occurs
      */
-    private void instantiateAndDeploy(Composite composite, boolean simulated) throws Fabric3Exception {
+    private void instantiateAndDeploy(Composite composite) throws Fabric3Exception {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         QName name = composite.getName();
@@ -344,29 +332,19 @@ public abstract class AbstractDomain implements Domain {
         contribution.acquireLock(name);
         InstantiationContext context = logicalModelInstantiator.include(composite, domain);
         if (context.hasErrors()) {
-            if (!simulated) {
+            contribution.releaseLock(name);
+            throw new AssemblyException(context.getErrors());
+        }
+        try {
+            allocateAndDeploy(domain);
+        } catch (Fabric3Exception e) {
+            // release the contribution lock if there was an error
+            if (contribution.getLockOwners().contains(name)) {
                 contribution.releaseLock(name);
-                throw new AssemblyException(context.getErrors());
             }
+            throw e;
         }
-        if (!simulated) {
-            try {
-                allocateAndDeploy(domain);
-            } catch (Fabric3Exception e) {
-                // release the contribution lock if there was an error
-                if (contribution.getLockOwners().contains(name)) {
-                    contribution.releaseLock(name);
-                }
-                throw e;
-            }
-            logicalComponentManager.replaceRootComponent(domain);
-        } else {
-            collector.markAsProvisioned(domain);
-            logicalComponentManager.replaceRootComponent(domain);
-            if (context.hasErrors()) {
-                throw new AssemblyException(context.getErrors());
-            }
-        }
+        logicalComponentManager.replaceRootComponent(domain);
     }
 
     /**

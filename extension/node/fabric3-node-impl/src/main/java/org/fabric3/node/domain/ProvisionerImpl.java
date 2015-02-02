@@ -99,7 +99,7 @@ public class ProvisionerImpl implements Provisioner {
 
         setContributionUris(composite);
         addCompositeToContribution(composite);
-        domain.include(composite, false);
+        domain.include(composite);
     }
 
     public void deploy(Component<?> component) throws Fabric3Exception {
@@ -113,13 +113,13 @@ public class ProvisionerImpl implements Provisioner {
         Composite wrapper = createWrapperComposite(component.getName());
         wrapper.add(component);
 
-        domain.include(wrapper, false);
+        domain.include(wrapper);
     }
 
     public void deploy(Channel channel) throws Fabric3Exception {
         Composite wrapper = createWrapperComposite(channel.getName());
         wrapper.add(channel);
-        domain.include(wrapper, false);
+        domain.include(wrapper);
     }
 
     public void undeploy(QName name) throws Fabric3Exception {
@@ -129,7 +129,7 @@ public class ProvisionerImpl implements Provisioner {
             throw new Fabric3Exception("Component not deployed: " + name);
         }
         Composite composite = element.getValue();
-        domain.undeploy(composite, false);
+        domain.undeploy(composite);
 
         Resource resource = element.getResource();
         Contribution contribution = resource.getContribution();

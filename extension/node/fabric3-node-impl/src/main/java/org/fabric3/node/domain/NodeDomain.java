@@ -131,7 +131,7 @@ public class NodeDomain implements Domain {
     public Domain undeploy(URL url) {
         try {
             URI uri = url.toURI();
-            domain.undeploy(uri, true);
+            domain.undeploy(uri);
             contributionService.uninstall(uri);
             contributionService.remove(uri);
             return this;

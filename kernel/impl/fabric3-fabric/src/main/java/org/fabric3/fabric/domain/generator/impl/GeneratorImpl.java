@@ -132,27 +132,9 @@ public class GeneratorImpl implements Generator {
      */
     private List<LogicalComponent<?>> topologicalSort(LogicalCompositeComponent domain) {
         List<LogicalComponent<?>> sorted = domain.getComponents().stream().collect(Collectors.toList());
-        //            if (component instanceof LogicalCompositeComponent) {
-        //                flatten((LogicalCompositeComponent) component, sorted);
-        //            }
         Collections.sort(sorted, COMPARATOR);
         return sorted;
     }
-
-//    /**
-//     * Recursively adds composite children to the collection of components
-//     *
-//     * @param component  the top-level composite component
-//     * @param components the collection
-//     */
-//    private void flatten(LogicalCompositeComponent component, List<LogicalComponent<?>> components) {
-//        for (LogicalComponent<?> child : component.getComponents()) {
-//            components.add(child);
-//            if (child instanceof LogicalCompositeComponent) {
-//                flatten((LogicalCompositeComponent) child, components);
-//            }
-//        }
-//    }
 
     private List<CommandGenerator> sortGenerators(List<? extends CommandGenerator> commandGenerators) {
         Comparator<CommandGenerator> generatorComparator = (first, second) -> first.getOrder() - second.getOrder();
