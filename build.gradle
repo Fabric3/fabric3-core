@@ -57,6 +57,14 @@ allprojects {
 
 }
 
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+      tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+  }
+
 def deployProjects() {
     // define projects that are deployed to Maven Central, i.e. they contain source files; project parent directories will be ignored
     return subprojects.findAll { new File(it.projectDir, "src").exists() }
