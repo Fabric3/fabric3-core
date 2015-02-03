@@ -121,8 +121,8 @@ public class ZeroMQBindingProvider implements BindingProvider {
     }
 
     public void bind(LogicalWire wire) throws Fabric3Exception {
-        LogicalReference source = wire.getSource().getLeafReference();
-        LogicalService target = wire.getTarget().getLeafService();
+        LogicalReference source = wire.getSource();
+        LogicalService target = wire.getTarget();
         QName deployable = source.getParent().getDeployable();
 
         ZeroMQMetadata metadata = createMetadata();

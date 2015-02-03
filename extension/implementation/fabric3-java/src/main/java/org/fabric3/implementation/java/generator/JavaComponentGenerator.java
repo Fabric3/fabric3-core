@@ -78,7 +78,7 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
     public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
-        LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
+        LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getParent();
         generationHelper.generateCallbackWireSource(definition, source, callbackContract);
         return definition;
     }

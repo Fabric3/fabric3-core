@@ -31,8 +31,6 @@ public class LogicalService extends LogicalBindable {
     private static final long serialVersionUID = -2417797075030173948L;
 
     private Service<ComponentType> definition;
-    private LogicalComponent<?> leafComponent;
-    private LogicalService leafService;
 
     /**
      * Default constructor
@@ -45,8 +43,6 @@ public class LogicalService extends LogicalBindable {
     public LogicalService(URI uri, Service<ComponentType> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
-        leafComponent = parent;
-        leafService = this;
     }
 
     /**
@@ -56,20 +52,6 @@ public class LogicalService extends LogicalBindable {
      */
     public Service<ComponentType> getDefinition() {
         return definition;
-    }
-
-    /**
-     * Returns the leaf component this service is promoted from. The leaf component is determined by descending down the service promotion hierarchy
-     * to the original service provided by a component.
-     *
-     * @return the leaf component
-     */
-    public LogicalComponent<?> getLeafComponent() {
-        return leafComponent;
-    }
-
-    public LogicalService getLeafService() {
-        return leafService;
     }
 
 }

@@ -77,7 +77,7 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
     public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
-        LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
+        LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getParent();
         generationHelper.generateCallbackWireSource(definition, source, callbackContract);
         return definition;
     }

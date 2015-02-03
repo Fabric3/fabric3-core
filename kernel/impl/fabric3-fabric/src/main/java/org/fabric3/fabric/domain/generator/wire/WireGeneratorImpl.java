@@ -49,6 +49,7 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.remote.RemoteServiceContract;
+import org.fabric3.spi.util.Cast;
 
 /**
  * Default implementation of WireGenerator.
@@ -69,13 +70,9 @@ public class WireGeneratorImpl implements WireGenerator {
     public <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
-        LogicalComponent<?> component = service.getLeafComponent();
+        LogicalComponent<?> component = service.getParent();
 
-        // Use the leaf service contract to bind to the transport in case of service promotions.
-        // The overriding service contract (i.e. the one on the promoted service) is used for wire matching but not for binding to the transport
-        // since doing so would require matching to the original contract and potential parameter data transformation. For example, a promoted
-        // service contract may be expressed in WSDL and the target service contract in Java.
-        ServiceContract contract = service.getLeafService().getServiceContract();
+        ServiceContract contract = service.getServiceContract();
 
         List<LogicalOperation> operations = service.getOperations();
 
@@ -101,8 +98,8 @@ public class WireGeneratorImpl implements WireGenerator {
     public <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
-        LogicalComponent<?> component = service.getLeafComponent();
-        ServiceContract contract = service.getLeafService().getServiceContract();
+        LogicalComponent<?> component = service.getParent();
+        ServiceContract contract = service.getServiceContract();
         ServiceContract callbackContract = contract.getCallbackContract();
         List<LogicalOperation> operations = service.getCallbackOperations();
 
@@ -235,10 +232,9 @@ public class WireGeneratorImpl implements WireGenerator {
     private PhysicalWireDefinition generateLocalWire(LogicalWire wire) {
         LogicalReference reference = wire.getSource();
 
-        // use the leaf service to optimize data paths - e.g. a promoted service may use a different service contract and databinding than the leaf
-        LogicalService service = wire.getTarget().getLeafService();
+        LogicalService service = wire.getTarget();
         LogicalComponent source = reference.getParent();
-        LogicalComponent target = service.getLeafComponent();
+        LogicalComponent target = service.getParent();
         Reference<ComponentType> referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
 
@@ -336,7 +332,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalComponent<?> targetComponent = reference.getParent();
         ServiceContract referenceCallbackContract = reference.getServiceContract().getCallbackContract();
         LogicalService callbackService = targetComponent.getService(referenceCallbackContract.getInterfaceName());
-        LogicalComponent sourceComponent = service.getLeafComponent();
+        LogicalComponent sourceComponent = service.getParent();
 
         List<LogicalOperation> targetOperations = callbackService.getOperations();
         List<LogicalOperation> sourceOperations = service.getCallbackOperations();
@@ -450,20 +446,17 @@ public class WireGeneratorImpl implements WireGenerator {
         return order;
     }
 
-    @SuppressWarnings("unchecked")
     private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) {
         Implementation<?> implementation = component.getDefinition().getImplementation();
-        return (ComponentGenerator<C>) generatorRegistry.getComponentGenerator(implementation.getClass());
+        return Cast.cast(generatorRegistry.getComponentGenerator(implementation.getClass()));
     }
 
-    @SuppressWarnings("unchecked")
     private <T extends ResourceReference> ResourceReferenceGenerator<T> getGenerator(T definition) {
-        return (ResourceReferenceGenerator<T>) generatorRegistry.getResourceReferenceGenerator(definition.getClass());
+        return Cast.cast(generatorRegistry.getResourceReferenceGenerator(definition.getClass()));
     }
 
-    @SuppressWarnings("unchecked")
     private <T extends Binding> WireBindingGenerator<T> getGenerator(LogicalBinding<T> binding) {
-        return (WireBindingGenerator<T>) generatorRegistry.getBindingGenerator(binding.getDefinition().getClass());
+        return Cast.cast(generatorRegistry.getBindingGenerator(binding.getDefinition().getClass()));
     }
 
     private void checkService(LogicalBinding<?> binding) {

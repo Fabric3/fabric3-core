@@ -110,7 +110,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             }
         }
 
-        boolean targeted = !logicalReference.getLeafReference().getWires().isEmpty();
+        boolean targeted = !logicalReference.getWires().isEmpty();
         if (!targeted && reference.isRequired() && !logicalReference.isBound()) {
             String referenceUri = logicalReference.getUri().toString();
             ReferenceNotFound error = new ReferenceNotFound("Unable to resolve reference " + referenceUri, logicalReference);
@@ -135,11 +135,9 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             return false;
         }
 
-        // use the leaf component reference since the reference may be a composite reference and only leaf/atomic references are generated
-        LogicalReference leafReference = logicalReference.getLeafReference();
-        LogicalComponent<?> parent = leafReference.getParent();
+        LogicalComponent<?> parent = logicalReference.getParent();
         LogicalCompositeComponent parentComposite = parent.getParent();
-        List<LogicalWire> existingWires = parentComposite.getWires(leafReference);
+        List<LogicalWire> existingWires = parentComposite.getWires(logicalReference);
 
         // create the wires
         for (LogicalService target : candidates) {
@@ -154,11 +152,11 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 }
             }
             if (!skip) {
-                LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable);
-                parentComposite.addWire(leafReference, wire);
+                LogicalWire wire = new LogicalWire(parentComposite, logicalReference, target, deployable);
+                parentComposite.addWire(logicalReference, wire);
                 for (LogicalWire existingWire : existingWires) {
-                    // existing wires must be marked as new so they can be reinjected 
-                    if (LogicalState.PROVISIONED == existingWire.getTarget().getLeafComponent().getState()) {
+                    // existing wires must be marked as new so they can be reinjected
+                    if (LogicalState.PROVISIONED == existingWire.getTarget().getParent().getState()) {
                         existingWire.setState(LogicalState.NEW);
                     }
                 }

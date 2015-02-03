@@ -41,8 +41,8 @@ public class ZeroMQBindingProviderWireTestCase extends TestCase {
 
     public void testBindWire() throws Exception {
         provider.bind(wire);
-        LogicalReference source = wire.getSource().getLeafReference();
-        LogicalService target = wire.getTarget().getLeafService();
+        LogicalReference source = wire.getSource();
+        LogicalService target = wire.getTarget();
 
         assertFalse(source.getBindings().isEmpty());
         assertFalse(source.getCallbackBindings().isEmpty());
@@ -78,6 +78,5 @@ public class ZeroMQBindingProviderWireTestCase extends TestCase {
 
         wire = new LogicalWire(null, reference, service, deployable);
     }
-
 
 }

@@ -133,7 +133,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
                 throw new Fabric3Exception("Target service not found on component " + targetUri + ": " + tokens[1]);
             }
             // get the leaf service as the target may be a promotion
-            targetUri = service.getLeafService().getUri();
+            targetUri = service.getUri();
         } else {
             targetUri = URI.create(parent.toString() + "/" + bindingTarget);
             if (targetUri.getFragment() == null) {
@@ -147,7 +147,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
                 Collection<LogicalService> services = component.getServices();
                 LogicalService service = services.iterator().next();
                 // get the leaf service as the target may be a promotion
-                targetUri = service.getLeafService().getUri();
+                targetUri = service.getUri();
             } else {
                 URI defragmented = UriHelper.getDefragmentedName(targetUri);
                 LogicalComponent component = composite.getComponent(defragmented);

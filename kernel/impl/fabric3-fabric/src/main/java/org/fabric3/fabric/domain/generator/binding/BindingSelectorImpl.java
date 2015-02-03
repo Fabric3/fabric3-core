@@ -119,20 +119,20 @@ public class BindingSelectorImpl implements BindingSelector {
                 source.getBindings().clear();
                 target.getBindings().clear();
                 provider.bind(wire);
-                if (source.getLeafReference().getBindings().isEmpty()) {
+                if (source.getBindings().isEmpty()) {
                     QName type = result.getType();
                     throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the reference: " + type);
                 }
                 wire.setSourceBinding(source.getBindings().get(0));
                 if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
-                    if (target.getLeafService().getBindings().isEmpty()) {
+                    if (target.getBindings().isEmpty()) {
                         QName type = result.getType();
                         throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the service: " + type);
                     }
                     if (!target.getBindings().isEmpty()) {
                         wire.setTargetBinding(target.getBindings().get(0));
                     } else {
-                        wire.setTargetBinding(target.getLeafService().getBindings().get(0));
+                        wire.setTargetBinding(target.getBindings().get(0));
                     }
                 }
                 return;
@@ -215,7 +215,7 @@ public class BindingSelectorImpl implements BindingSelector {
      * @return true if the target should be bound
      */
     private boolean bindService(LogicalService service) {
-        if (!service.getBindings().isEmpty() || !service.getLeafService().getServiceContract().isRemotable()) {
+        if (!service.getBindings().isEmpty() || !service.getServiceContract().isRemotable()) {
             return false;
         }
         if (service.getServiceContract() instanceof RemoteServiceContract) {

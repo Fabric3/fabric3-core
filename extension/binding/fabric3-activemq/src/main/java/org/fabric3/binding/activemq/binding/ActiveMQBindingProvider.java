@@ -126,8 +126,8 @@ public class ActiveMQBindingProvider implements BindingProvider {
     }
 
     public void bind(LogicalWire wire) {
-        LogicalReference source = wire.getSource().getLeafReference();
-        LogicalService target = wire.getTarget().getLeafService();
+        LogicalReference source = wire.getSource();
+        LogicalService target = wire.getTarget();
         QName deployable = source.getParent().getDeployable();
 
         ServiceContract targetContract = target.getDefinition().getServiceContract();

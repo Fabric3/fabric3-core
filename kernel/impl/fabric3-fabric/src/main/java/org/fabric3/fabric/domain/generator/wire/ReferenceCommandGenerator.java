@@ -149,7 +149,7 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
 
         for (LogicalWire wire : reference.getWires()) {
             LogicalService service = wire.getTarget();
-            LogicalComponent<?> targetComponent = service.getLeafComponent();
+            LogicalComponent<?> targetComponent = service.getParent();
             if (!reinjection && (wire.getState() == LogicalState.PROVISIONED && targetComponent.getState() != LogicalState.MARKED)) {
                 continue;
             }
@@ -222,7 +222,7 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
         Multiplicity multiplicity = logicalReference.getDefinition().getMultiplicity();
         if (multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
             for (LogicalWire wire : logicalReference.getWires()) {
-                LogicalComponent<?> targetComponent = wire.getTarget().getLeafComponent();
+                LogicalComponent<?> targetComponent = wire.getTarget().getParent();
                 // check the source and target sides since a target may have been added or removed
                 if (wire.getState() == LogicalState.NEW || wire.getState() == LogicalState.MARKED || targetComponent.getState() == LogicalState.NEW
                     || targetComponent.getState() == LogicalState.MARKED) {

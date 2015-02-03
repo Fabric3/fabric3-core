@@ -85,7 +85,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
-        ServiceContract contract = reference.getLeafReference().getServiceContract();
+        ServiceContract contract = reference.getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring reference contracts are always defined by Java interfaces
             throw new Fabric3Exception("Unexpected interface type for " + reference.getUri() + ": " + contract.getClass().getName());
@@ -97,11 +97,11 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
-        if (!(service.getLeafService().getDefinition() instanceof SpringService)) {
+        if (!(service.getDefinition() instanceof SpringService)) {
             // programming error
             throw new Fabric3Exception("Expected service type: " + service.getDefinition().getClass().getName());
         }
-        SpringService springService = (SpringService) service.getLeafService().getDefinition();
+        SpringService springService = (SpringService) service.getDefinition();
         ServiceContract contract = springService.getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring service contracts are always defined by Java interfaces

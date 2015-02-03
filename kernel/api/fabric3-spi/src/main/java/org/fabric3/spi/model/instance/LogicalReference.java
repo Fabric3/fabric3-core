@@ -34,7 +34,6 @@ public class LogicalReference extends LogicalBindable {
 
     private Reference<ComponentType> definition;
     private boolean resolved;
-    private LogicalReference leafReference;
 
     /**
      * Constructor.
@@ -46,7 +45,6 @@ public class LogicalReference extends LogicalBindable {
     public LogicalReference(URI uri, Reference<ComponentType> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
-        leafReference = this;
     }
 
     /**
@@ -92,10 +90,6 @@ public class LogicalReference extends LogicalBindable {
      */
     public Reference<Component> getComponentReference() {
         return getParent().getDefinition().getReferences().get(getDefinition().getName());
-    }
-
-    public LogicalReference getLeafReference() {
-        return leafReference;
     }
 
     public boolean equals(Object obj) {

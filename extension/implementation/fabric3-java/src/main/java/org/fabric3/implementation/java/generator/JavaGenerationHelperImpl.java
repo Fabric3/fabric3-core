@@ -171,7 +171,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
     @SuppressWarnings({"unchecked"})
     public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service)  {
-        LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
+        LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getParent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);
 

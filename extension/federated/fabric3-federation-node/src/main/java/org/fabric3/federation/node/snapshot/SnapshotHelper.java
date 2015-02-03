@@ -176,7 +176,7 @@ public class SnapshotHelper {
      */
     private static boolean isReplicable(LogicalComponent<?> component) {
         for (LogicalService service : component.getServices()) {
-            ServiceContract contract = service.getLeafService().getServiceContract();
+            ServiceContract contract = service.getServiceContract();
             if (contract.isRemotable() || !service.getBindings().isEmpty()) {
                 return true;
             }
