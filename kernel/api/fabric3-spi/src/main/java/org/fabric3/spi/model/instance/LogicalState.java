@@ -19,14 +19,12 @@
 package org.fabric3.spi.model.instance;
 
 /**
- * Used to track the state of a logical instance such as a component or wire. Three states are defined:
- * <pre>
- * <ul>
- * <li> NEW - The component has been instantiated but has not been provisioned to a zone
- * <li> PROVISIONED - The component is running in a zone
- * <li> MARKED - The component has been marked for removal from the domain
- * </ul>
- * </pre>
+ * Used to track the state of a logical instance such as a component or wire. Three states are defined: NEW - The component has been instantiated but has not
+ * been provisioned to a zone
+ *
+ * PROVISIONED - The component is running in a zone
+ *
+ * MARKED - The component has been marked for removal from the domain
  */
 public enum LogicalState {
 

@@ -34,14 +34,14 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles the /domain/deployments resource and its sub-resources:
- * <pre>
- * <ul>
- *  <li>GET /deployments - Returns deployed contributions</ul>
- *  <li>PUT /deployments/contribution/{uri} - Deploys a contribution</ul>
- *  <li>DELETE /deployments/contribution/{uri} - Un-deploys a contribution</ul>
- * </ul>
- * </pre>
- *  Note this resource is only present on the controller.
+ *
+ * GET /deployments - Returns deployed contributions
+ *
+ * PUT /deployments/contribution/{uri} - Deploys a contribution
+ *
+ * DELETE /deployments/contribution/{uri} - Un-deploys a contribution
+ *
+ * Note this resource is only present on the controller.
  */
 @EagerInit
 @Management(path = "/domain/deployments")

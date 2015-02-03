@@ -28,13 +28,14 @@ import org.fabric3.api.host.Fabric3Exception;
 /**
  * Manages artifacts contributed to a domain. Contributions can be application or extension artifacts. Contributions may be in a variety of formats, for
  * example, a JAR or XML document.  The lifecycle of a contribution is defined as follows:
- * <pre>
- * <ul>
- * <li>Stored - The contribution artifact is persisted.
- * <li>Installed - The contribution is introspected, validated, and loaded.
- * <li>Uninstalled - The contribution is unloaded.
- * <li>Removed - the contribution is removed from persistent storage.
- * </ul>
+ *
+ * Stored - The contribution artifact is persisted.
+ *
+ * Installed - The contribution is introspected, validated, and loaded.
+ *
+ * Uninstalled - The contribution is unloaded.
+ *
+ * Removed - the contribution is removed from persistent storage.
  */
 public interface ContributionService {
 

@@ -18,14 +18,14 @@ package org.fabric3.spi.container.channel;
 
 /**
  * Contains one or more event streams for transmitting events to or from a channel. Channel connections may exist between:
- * <pre>
- * <ul>
- * <li>A component producer and a channel
- * <li>A component producer and a channel binding
- * <li>A channel binding and a channel
- * <li>A channel and a component consumer
- * </ul>
- * </pre>
+ *
+ * - A component producer and a channel
+ *
+ * - A component producer and a channel binding
+ *
+ * - A channel binding and a channel
+ *
+ * - A channel and a component consumer
  */
 public interface ChannelConnection {
 

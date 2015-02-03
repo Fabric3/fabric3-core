@@ -22,13 +22,13 @@ import java.util.List;
 import org.fabric3.api.model.type.ModelObject;
 
 /**
- * Represents resolved type information for a Java generic type. Type parameters are resolved and recursively represented as
- * <code>JavaTypeInfo</code>s. Non-generic types have a raw type and empty parameter type information. For example:
- * <pre>
- *  <ul>
- *      <li><code>List&lt;String&gt;</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: String)])
- *      <li><code>List&lt;List&lt;String&gt;&gt</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
- *  </ul>
+ * Represents resolved type information for a Java generic type. Type parameters are resolved and recursively represented as <code>JavaTypeInfo</code>s.
+ * Non-generic types have a raw type and empty parameter type information. For example:
+ *
+ * <code>List&lt;String&gt;</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: String)])
+ *
+ * <code>List&lt;List&lt;String&gt;&gt</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
+ *
  * Note that unbound TypeVariables and WildCardTypes will be evaluated using their raw type.
  */
 public class JavaTypeInfo extends ModelObject {
@@ -66,8 +66,8 @@ public class JavaTypeInfo extends ModelObject {
     }
 
     /**
-     * Returns the resolved parameter types or an empty list if the type is a generic or unbound type.  For example, a list of <code>String</code>s
-     * will be returned for <code>List&lt;String&gt;</code>.
+     * Returns the resolved parameter types or an empty list if the type is a generic or unbound type.  For example, a list of <code>String</code>s will be
+     * returned for <code>List&lt;String&gt;</code>.
      *
      * @return the resolved parameter types
      */
@@ -80,8 +80,12 @@ public class JavaTypeInfo extends ModelObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         JavaTypeInfo that = (JavaTypeInfo) o;
 
@@ -114,7 +118,7 @@ public class JavaTypeInfo extends ModelObject {
             }
         }
         return !(parameterTypeInfos != null ? !parameterTypeInfos.equals(that.parameterTypeInfos) : that.parameterTypeInfos != null)
-                && rawType.equals(that.rawType);
+               && rawType.equals(that.rawType);
 
     }
 

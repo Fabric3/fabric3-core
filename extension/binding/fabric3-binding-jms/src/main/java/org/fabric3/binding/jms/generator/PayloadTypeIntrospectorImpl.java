@@ -33,13 +33,11 @@ import org.fabric3.binding.jms.spi.provision.PayloadType;
  *
  * JMS Payload types are mapped as follows:
  * <pre>
- * <ul>
- * <li>If the data type are primitives, the specific primitive payload type is returned
- * <li>If the data type are a stream, a stream payload type is returned
- * <li>If the data type is a String, a text payload type is returned
- * <li>If the data type has an associated JAXB databinding, a text payload type is returned
- * <li>Otherwise an object payload type is returned
- * <ul>
+ * - If the data type are primitives, the specific primitive payload type is returned
+ * - If the data type are a stream, a stream payload type is returned
+ * - If the data type is a String, a text payload type is returned
+ * - If the data type has an associated JAXB databinding, a text payload type is returned
+ * - Otherwise an object payload type is returned
  * </pre>
  *
  * Note that this implementation currently supports mapping JAXB data types; additional data types such as Protobufs could be supported in the future.

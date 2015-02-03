@@ -28,10 +28,8 @@ public interface InterfaceGenerator {
     /**
      * Determines if a service interface or class needs to be enhanced with JAX-WS annotations. Enhancement via bytecode generation will need to be done if:
      * <pre>
-     * <ul>
-     * <li> The class does not contain a <code>WebService</code> annotation
-     * <li> The class contains a method marked with the <code>org.oasisopen.sca.annotation.OneWay</code> annotation
-     * </ul>
+     * - The class does not contain a <code>WebService</code> annotation
+     * - The class contains a method marked with the <code>org.oasisopen.sca.annotation.OneWay</code> annotation
      * </pre>
      *
      * @param clazz the class to check

@@ -22,14 +22,14 @@ import java.util.StringTokenizer;
 
 /**
  * A version identifier. Version identifiers have four components:
- * <pre>
- *  <ol>
- * <li>Major version. A non-negative integer.</li>
- * <li>Minor version. A non-negative integer.</li>
- * <li>Micro version. A non-negative integer.</li>
- * <li>Qualifier. A text string. </li>
- * </ol>
- * </pre>
+ *
+ * - Major version. A non-negative integer.
+ *
+ * - Minor version. A non-negative integer.
+ *
+ * - Micro version. A non-negative integer.
+ *
+ * - Qualifier. A text string.
  *
  * This implementation is based on org.osgi.framework.Version from the OSGi Alliance issued under the Apache 2.0 License.
  */
@@ -68,8 +68,7 @@ public class Version implements Comparable, Serializable {
      * @param major     Major component of the version identifier.
      * @param minor     Minor component of the version identifier.
      * @param micro     Micro component of the version identifier.
-     * @param qualifier Qualifier component of the version identifier. If <code>null</code> is specified, then the qualifier will be set to the empty
-     *                  string.
+     * @param qualifier Qualifier component of the version identifier. If <code>null</code> is specified, then the qualifier will be set to the empty string.
      * @throws IllegalArgumentException If the numerical components are negative or the qualifier string is invalid.
      */
     public Version(int major, int minor, int micro, String qualifier) {
@@ -133,8 +132,7 @@ public class Version implements Comparable, Serializable {
                     }
                 }
             }
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("invalid format: " + version);
         }
 
@@ -151,8 +149,8 @@ public class Version implements Comparable, Serializable {
      * See <code>Version(String)</code> for the format of the version string.
      *
      * @param version String representation of the version identifier. Leading and trailing whitespace will be ignored.
-     * @return A <code>Version</code> object representing the version identifier. If <code>version</code> is <code>null</code> or the empty string
-     *         then <code>emptyVersion</code> will be returned.
+     * @return A <code>Version</code> object representing the version identifier. If <code>version</code> is <code>null</code> or the empty string then
+     * <code>emptyVersion</code> will be returned.
      * @throws IllegalArgumentException If <code>version</code> is improperly formatted.
      */
     public static Version parseVersion(String version) {
@@ -208,8 +206,8 @@ public class Version implements Comparable, Serializable {
      * Returns the string representation of this version identifier.
      *
      *
-     * The format of the version string will be <code>major.minor.micro</code> if qualifier is the empty string or
-     * <code>major.minor.micro.qualifier</code> otherwise.
+     * The format of the version string will be <code>major.minor.micro</code> if qualifier is the empty string or <code>major.minor.micro.qualifier</code>
+     * otherwise.
      *
      * @return The string representation of this version identifier.
      */
@@ -235,8 +233,8 @@ public class Version implements Comparable, Serializable {
      * Compares this <code>Version</code> object to another object.
      *
      *
-     * A version is considered to be <b>equal to </b> another version if the major, minor and micro components are equal and the qualifier component
-     * is equal (using <code>String.equals</code>).
+     * A version is considered to be <b>equal to </b> another version if the major, minor and micro components are equal and the qualifier component is equal
+     * (using <code>String.equals</code>).
      *
      * @param object The <code>Version</code> object to be compared.
      * @return <code>true</code> if <code>object</code> is a <code>Version</code> and is equal to this object; <code>false</code> otherwise.
@@ -258,17 +256,16 @@ public class Version implements Comparable, Serializable {
      * Compares this <code>Version</code> object to another object.
      *
      *
-     * A version is considered to be <b>less than </b> another version if its major component is less than the other version's major component, or the
-     * major components are equal and its minor component is less than the other version's minor component, or the major and minor components are
-     * equal and its micro component is less than the other version's micro component, or the major, minor and micro components are equal and it's
-     * qualifier component is less than the other version's qualifier component (using <code>String.compareTo</code>).
+     * A version is considered to be <b>less than </b> another version if its major component is less than the other version's major component, or the major
+     * components are equal and its minor component is less than the other version's minor component, or the major and minor components are equal and its micro
+     * component is less than the other version's micro component, or the major, minor and micro components are equal and it's qualifier component is less than
+     * the other version's qualifier component (using <code>String.compareTo</code>).
      *
-     * A version is considered to be <b>equal to</b> another version if the major, minor and micro components are equal and the qualifier component is
-     * equal (using <code>String.compareTo</code>).
+     * A version is considered to be <b>equal to</b> another version if the major, minor and micro components are equal and the qualifier component is equal
+     * (using <code>String.compareTo</code>).
      *
      * @param object The <code>Version</code> object to be compared.
-     * @return A negative integer, zero, or a positive integer if this object is less than, equal to, or greater than the specified
-     *         <code>Version</code> object.
+     * @return A negative integer, zero, or a positive integer if this object is less than, equal to, or greater than the specified <code>Version</code> object.
      * @throws ClassCastException If the specified object is not a <code>Version</code>.
      */
     public int compareTo(Object object) {
@@ -318,6 +315,5 @@ public class Version implements Comparable, Serializable {
             }
         }
     }
-
 
 }
