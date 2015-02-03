@@ -32,8 +32,8 @@ import org.fabric3.spi.management.ManagementService;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * An implementation that delegates exporting managed resources to a collection of {@link ManagementExtension}s. This implementation caches export
- * requests so that management extensions which come online after an export request has been made will receive that request.
+ * An implementation that delegates exporting managed resources to a collection of {@link ManagementExtension}s. This implementation caches export requests so
+ * that management extensions which come online after an export request has been made will receive that request.
  */
 public class DelegatingManagementService implements ManagementService {
     private Map<String, ManagementExtension> extensions = new HashMap<>();
@@ -44,7 +44,6 @@ public class DelegatingManagementService implements ManagementService {
      * Setter to allow for reinjection of new management extensions.
      *
      * @param injected the reinjected management extensions
-     * @if an error is encountered registering previous export requests
      */
     @Reference(required = false)
     public void setExtensions(List<ManagementExtension> injected) {
@@ -79,7 +78,7 @@ public class DelegatingManagementService implements ManagementService {
     }
 
     public void remove(URI componentUri, ManagementInfo info) {
-        for (Iterator<ComponentHolder> iterator = componentHolders.iterator(); iterator.hasNext();) {
+        for (Iterator<ComponentHolder> iterator = componentHolders.iterator(); iterator.hasNext(); ) {
             ComponentHolder holder = iterator.next();
             if (holder.componentUri.equals(componentUri)) {
                 for (String type : holder.registered) {
@@ -95,7 +94,7 @@ public class DelegatingManagementService implements ManagementService {
     }
 
     public void remove(String name, String group) {
-        for (Iterator<InstanceHolder> iterator = instanceHolders.iterator(); iterator.hasNext();) {
+        for (Iterator<InstanceHolder> iterator = instanceHolders.iterator(); iterator.hasNext(); ) {
             InstanceHolder holder = iterator.next();
             if (holder.name.equals(name) && holder.group.equals(group)) {
                 for (String type : holder.registered) {

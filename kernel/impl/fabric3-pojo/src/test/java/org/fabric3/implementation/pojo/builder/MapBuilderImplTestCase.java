@@ -71,7 +71,7 @@ public class MapBuilderImplTestCase extends TestCase {
 
         createValue("key2", "val2", document, values);
 
-        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createSupplier("test", type, document, getClass().getClassLoader());
 
         Map<String, String> result = (Map<String, String>) supplier.get();
         assertEquals(2, result.size());
@@ -121,7 +121,7 @@ public class MapBuilderImplTestCase extends TestCase {
         mapValue.setTextContent("val2");
         entry.appendChild(mapValue);
 
-        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createSupplier("test", type, document, getClass().getClassLoader());
 
         Map<String, String> result = (Map<String, String>) supplier.get();
         assertEquals(2, result.size());

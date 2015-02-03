@@ -44,7 +44,7 @@ public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBu
     }
 
     @SuppressWarnings({"unchecked"})
-    public Supplier<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) {
+    public Supplier<?> createSupplier(String name, DataType dataType, Document value, ClassLoader classLoader) {
         Class componentType = dataType.getType().getComponentType();
         Class<?> type = componentType;
         if (type.isPrimitive()) {

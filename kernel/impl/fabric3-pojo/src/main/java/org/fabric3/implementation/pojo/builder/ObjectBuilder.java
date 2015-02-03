@@ -38,6 +38,6 @@ public interface ObjectBuilder {
      * @return the Supplier
      * @throws Fabric3Exception if there is an error creating the Supplier
      */
-    Supplier<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
+    Supplier<?> createSupplier(String name, DataType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
 
 }

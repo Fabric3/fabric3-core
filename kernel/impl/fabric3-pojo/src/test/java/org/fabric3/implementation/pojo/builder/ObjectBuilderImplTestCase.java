@@ -61,7 +61,7 @@ public class ObjectBuilderImplTestCase extends TestCase {
         value.setTextContent("test1");
         values.appendChild(value);
 
-        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createSupplier("test", type, document, getClass().getClassLoader());
 
         String result = (String) supplier.get();
         assertEquals("test1", result);

@@ -69,7 +69,7 @@ public class CollectionBuilderImplTestCase extends TestCase {
         values.appendChild(value);
 
         ArrayList<String> arrayList = new ArrayList<>();
-        Supplier<?> supplier = builder.createFactory(arrayList, "test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createSupplier(arrayList, "test", type, document, getClass().getClassLoader());
 
         List result = (List) supplier.get();
         assertEquals(2, result.size());

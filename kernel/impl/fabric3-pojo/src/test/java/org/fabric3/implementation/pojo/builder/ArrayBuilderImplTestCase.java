@@ -63,7 +63,7 @@ public class ArrayBuilderImplTestCase extends TestCase {
         value.setTextContent("test2");
         values.appendChild(value);
 
-        Supplier<?> supplier = builder.createFactory("test", type, document, getClass().getClassLoader());
+        Supplier<?> supplier = builder.createSupplier("test", type, document, getClass().getClassLoader());
 
         String[] array = (String[]) supplier.get();
         assertEquals(2, array.length);

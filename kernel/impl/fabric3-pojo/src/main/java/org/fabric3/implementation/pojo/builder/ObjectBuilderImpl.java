@@ -40,7 +40,7 @@ public class ObjectBuilderImpl extends AbstractPropertyBuilder implements Object
         super(transformerRegistry);
     }
 
-    public Supplier<?> createFactory(String name, DataType dataType, Document value, ClassLoader classLoader) throws Fabric3Exception {
+    public Supplier<?> createSupplier(String name, DataType dataType, Document value, ClassLoader classLoader) throws Fabric3Exception {
         Class<?> type = dataType.getType();
         List<Class<?>> types = new ArrayList<>();
         types.add(type);

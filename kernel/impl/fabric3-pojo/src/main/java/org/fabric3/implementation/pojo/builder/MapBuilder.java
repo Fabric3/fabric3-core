@@ -39,6 +39,6 @@ public interface MapBuilder {
      * @return the Supplier
      * @throws Fabric3Exception if there is an error creating the Supplier
      */
-    Supplier<Map> createFactory(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
+    Supplier<Map> createSupplier(String name, JavaGenericType type, Document value, ClassLoader classLoader) throws Fabric3Exception;
 
 }

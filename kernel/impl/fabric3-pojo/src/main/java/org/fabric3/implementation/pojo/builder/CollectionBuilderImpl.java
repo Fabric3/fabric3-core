@@ -45,11 +45,8 @@ public class CollectionBuilderImpl extends AbstractPropertyBuilder implements Co
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T> Supplier<Collection<T>> createFactory(Collection<T> collection,
-                                                          String name,
-                                                          JavaGenericType dataType,
-                                                          Document value,
-                                                          ClassLoader classLoader) {
+    public <T> Supplier<Collection<T>> createSupplier(Collection<T> collection, String name, JavaGenericType dataType, Document value, ClassLoader
+            classLoader) {
         List<JavaTypeInfo> typeInfos = dataType.getTypeInfo().getParameterTypesInfos();
         if (typeInfos.size() < 1) {
             // programming error

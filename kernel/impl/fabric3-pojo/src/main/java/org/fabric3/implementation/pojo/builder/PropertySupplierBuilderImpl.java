@@ -52,17 +52,17 @@ public class PropertySupplierBuilderImpl implements PropertySupplierBuilder {
     public Supplier<?> createSupplier(String name, DataType dataType, Document value, boolean many, ClassLoader classLoader) {
         Class<?> type = dataType.getType();
         if (type.isArray()) {
-            return arrayBuilder.createFactory(name, dataType, value, classLoader);
+            return arrayBuilder.createSupplier(name, dataType, value, classLoader);
         } else if (Map.class.equals(type)) {
-            return mapBuilder.createFactory(name, (JavaGenericType) dataType, value, classLoader);
+            return mapBuilder.createSupplier(name, (JavaGenericType) dataType, value, classLoader);
         } else if (List.class.equals(type)) {
-            return collectionBuilder.createFactory(new ArrayList<>(), name, (JavaGenericType) dataType, value, classLoader);
+            return collectionBuilder.createSupplier(new ArrayList<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else if (Set.class.equals(type)) {
-            return collectionBuilder.createFactory(new HashSet<>(), name, (JavaGenericType) dataType, value, classLoader);
+            return collectionBuilder.createSupplier(new HashSet<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else if (LinkedList.class.equals(type)) {
-            return collectionBuilder.createFactory(new LinkedList<>(), name, (JavaGenericType) dataType, value, classLoader);
+            return collectionBuilder.createSupplier(new LinkedList<>(), name, (JavaGenericType) dataType, value, classLoader);
         } else {
-            return objectBuilder.createFactory(name, dataType, value, classLoader);
+            return objectBuilder.createSupplier(name, dataType, value, classLoader);
         }
     }
 }

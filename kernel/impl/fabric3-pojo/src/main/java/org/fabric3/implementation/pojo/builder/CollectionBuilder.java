@@ -40,6 +40,6 @@ public interface CollectionBuilder {
      * @return the Supplier
      * @throws Fabric3Exception if there is an error creating the Supplier
      */
-    <T> Supplier<Collection<T>> createFactory(Collection<T> collection, String name, JavaGenericType type, Document value, ClassLoader classLoader)
+    <T> Supplier<Collection<T>> createSupplier(Collection<T> collection, String name, JavaGenericType type, Document value, ClassLoader classLoader)
             throws Fabric3Exception;
 }
