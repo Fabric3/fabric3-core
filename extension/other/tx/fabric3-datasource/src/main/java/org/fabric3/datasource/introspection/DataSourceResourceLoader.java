@@ -38,8 +38,8 @@ import org.oasisopen.sca.annotation.EagerInit;
  * <pre>
  *      &lt;datasources&gt;
  *          &lt;datasource name="test" driver="foo.Bar" type="xa" url="jdbc:test"&gt;
- *               &lt;username>user&lt;username&gt;
- *               &lt;password>pass&lt;password&gt;
+ *               &lt;username&gt;user&lt;username&gt;
+ *               &lt;password&gt;pass&lt;password&gt;
  *           &lt;/datasource&gt;
  *      &lt;/datasources&gt;
  * </pre>

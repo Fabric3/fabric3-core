@@ -39,7 +39,7 @@ public interface UnitOfWork {
      *
      * @param session the session the work is associated with
      * @param message the message the work is associated with
-     * @throws Fabric3Exception
+     * @throws Fabric3Exception if there is an exception committing the work
      */
     void end(Session session, Message message) throws Fabric3Exception;
 
