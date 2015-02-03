@@ -1,0 +1,22 @@
+configurations {
+    all {
+        transitive = false
+    }
+}
+
+dependencies {
+
+    compile project(':extension:management:fabric3-management-jmx')
+    compile project(':extension:management:fabric3-management-jmx-agent')
+
+}
+
+
+task distZip(type: Zip) {
+    archiveName = project.name + '-' + version + '-bin.zip'
+    into('extensions') {
+        from configurations.compile
+    }
+
+    from { 'src/main' }
+}
