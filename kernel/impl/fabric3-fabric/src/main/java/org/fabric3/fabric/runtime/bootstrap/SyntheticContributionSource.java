@@ -16,11 +16,12 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.api.host.contribution;
+package org.fabric3.fabric.runtime.bootstrap;
 
 import java.net.URI;
 import java.net.URL;
 
+import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 

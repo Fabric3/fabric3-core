@@ -28,7 +28,6 @@ import java.util.List;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
-import org.fabric3.api.host.contribution.SyntheticContributionSource;
 import org.fabric3.api.host.runtime.HostInfo;
 
 /**

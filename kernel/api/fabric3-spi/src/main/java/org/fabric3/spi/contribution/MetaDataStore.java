@@ -90,8 +90,7 @@ public interface MetaDataStore {
      * @return the resource element or null if not found
      * @throws Fabric3Exception if an error occurs during resolution
      */
-    <S extends Symbol, V> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
-            throws Fabric3Exception;
+    <S extends Symbol, V> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context) throws Fabric3Exception;
 
     /**
      * Resolves resource elements for a given type that are visible to the contribution.

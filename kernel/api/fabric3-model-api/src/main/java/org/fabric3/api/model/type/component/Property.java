@@ -179,7 +179,7 @@ public class Property extends ModelObject<ComponentType> {
      */
     public void addNamespace(String prefix, String uri) {
         if (namespaces.isEmpty()) {
-            namespaces = new HashMap<String, String>();
+            namespaces = new HashMap<>();
         }
         namespaces.put(prefix, uri);
     }
