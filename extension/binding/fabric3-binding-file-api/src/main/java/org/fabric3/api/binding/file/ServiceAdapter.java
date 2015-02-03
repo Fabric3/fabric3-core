@@ -30,7 +30,7 @@ public interface ServiceAdapter {
      * Called to return expected service parameter types for a detected file as an array. For example, the service may require an input stream If data
      * in error.
      *
-     * If an implementation throws an exception, the invocation will be aborted and {@link #afterInvoke(File, Object[])} will <strong>NOT</string> be
+     * If an implementation throws an exception, the invocation will be aborted and {@link #afterInvoke(File, Object[])} will <strong>NOT</strong> be
      * called. Instead, the detected file will be moved to the error directory. It is therefore important to ensure all resource streams are closed
      * prior to throwing an exception.
      *
