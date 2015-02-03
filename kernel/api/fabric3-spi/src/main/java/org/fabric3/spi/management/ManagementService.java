@@ -32,7 +32,6 @@ public interface ManagementService {
     /**
      * Exposes a component for management.
      *
-     * @param classLoader  the classloader
      * @param componentUri the component URI
      * @param info         the management metadata
      * @param supplier     the Supplier responsible for returning the managed component instance

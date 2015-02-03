@@ -27,7 +27,7 @@ import org.fabric3.api.model.type.ModelObject;
  *
  * <code>List&lt;String&gt;</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: String)])
  *
- * <code>List&lt;List&lt;String&gt;&gt</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
+ * <code>List&lt;List&lt;String&gt;&gt;</code> is represented as JavaTypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
  *
  * Note that unbound TypeVariables and WildCardTypes will be evaluated using their raw type.
  */
