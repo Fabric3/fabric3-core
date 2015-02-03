@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.domain.Domain;
@@ -131,8 +130,6 @@ import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.transform.DefaultTransformerRegistry;
@@ -288,22 +285,17 @@ public class BootstrapAssemblyFactory {
                                              DefaultTransformerRegistry transformerRegistry,
                                              ClassLoaderRegistry classLoaderRegistry,
                                              MonitorProxyService monitorService) {
-        Map<Class<? extends PhysicalWireSourceDefinition>, SourceWireAttacher<? extends PhysicalWireSourceDefinition>> sourceAttachers
-                = new ConcurrentHashMap<>();
+        Map<Class<?>, SourceWireAttacher<?>> sourceAttachers = new HashMap<>();
         SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry, classLoaderRegistry);
         sourceAttachers.put(SystemWireSourceDefinition.class, wireAttacher);
         sourceAttachers.put(SingletonWireSourceDefinition.class, new SingletonSourceWireAttacher(componentManager));
 
-        Map<Class<? extends PhysicalWireTargetDefinition>, TargetWireAttacher<? extends PhysicalWireTargetDefinition>> targetAttachers
-                = new ConcurrentHashMap<>();
+        Map<Class<?>, TargetWireAttacher<?>> targetAttachers = new HashMap<>();
         targetAttachers.put(SingletonWireTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
         targetAttachers.put(SystemWireTargetDefinition.class, new SystemTargetWireAttacher(componentManager, classLoaderRegistry));
         targetAttachers.put(MonitorWireTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager, classLoaderRegistry));
 
-        ConnectorImpl connector = new ConnectorImpl();
-        connector.setSourceAttachers(sourceAttachers);
-        connector.setTargetAttachers(targetAttachers);
-        return connector;
+        return new ConnectorImpl(sourceAttachers, targetAttachers);
     }
 
     private static Generator createGenerator(ContractMatcher matcher) {

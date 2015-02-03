@@ -34,15 +34,12 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
     private ChannelManager channelManager;
-    private Map<String, ChannelBuilder> builders = new HashMap<>();
+
+    @Reference(required = false)
+    protected Map<String, ChannelBuilder> builders = new HashMap<>();
 
     public ChannelBuilderRegistryImpl(@Reference ChannelManager channelManager) {
         this.channelManager = channelManager;
-    }
-
-    @Reference(required = false)
-    public void setBuilders(Map<String, ChannelBuilder> builders) {
-        this.builders = builders;
     }
 
     public Channel build(PhysicalChannelDefinition definition) {

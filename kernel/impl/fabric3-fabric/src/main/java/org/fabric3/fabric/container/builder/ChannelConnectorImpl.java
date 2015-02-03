@@ -17,6 +17,7 @@
 package org.fabric3.fabric.container.builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,40 +47,20 @@ import org.oasisopen.sca.annotation.Reference;
  * Default ChannelConnector implementation.
  */
 public class ChannelConnectorImpl implements ChannelConnector {
-    private Map<Class<?>, SourceConnectionAttacher<?>> sourceAttachers;
-    private Map<Class<?>, TargetConnectionAttacher<?>> targetAttachers;
-    private Map<Class<?>, EventFilterBuilder<?>> filterBuilders;
+    @Reference(required = false)
+    protected Map<Class<?>, SourceConnectionAttacher<?>> sourceAttachers = new HashMap<>();
 
-    private ClassLoaderRegistry classLoaderRegistry;
-    private TransformerHandlerFactory transformerHandlerFactory;
+    @Reference(required = false)
+    protected Map<Class<?>, TargetConnectionAttacher<?>> targetAttachers = new HashMap<>();
 
-    public ChannelConnectorImpl() {
-    }
+    @Reference(required = false)
+    protected Map<Class<?>, EventFilterBuilder<?>> filterBuilders = new HashMap<>();
 
     @Reference
-    public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
+    protected ClassLoaderRegistry classLoaderRegistry;
 
-    @Reference(required = false)
-    public void setSourceAttachers(Map<Class<?>, SourceConnectionAttacher<?>> sourceAttachers) {
-        this.sourceAttachers = sourceAttachers;
-    }
-
-    @Reference(required = false)
-    public void setTargetAttachers(Map<Class<?>, TargetConnectionAttacher<?>> targetAttachers) {
-        this.targetAttachers = targetAttachers;
-    }
-
-    @Reference(required = false)
-    public void setFilterBuilders(Map<Class<?>, EventFilterBuilder<?>> filterBuilders) {
-        this.filterBuilders = filterBuilders;
-    }
-
-    @Reference(required = false)
-    public void setTransformerHandlerFactory(TransformerHandlerFactory factory) {
-        this.transformerHandlerFactory = factory;
-    }
+    @Reference
+    protected TransformerHandlerFactory transformerHandlerFactory;
 
     @SuppressWarnings({"unchecked"})
     public void connect(PhysicalChannelConnectionDefinition definition) {

@@ -52,6 +52,11 @@ public class GeneratorImpl implements Generator {
     private List<CommandGenerator> commandGenerators;
     private StartContextCommandGenerator startContextCommandGenerator;
     private StopContextCommandGenerator stopContextCommandGenerator;
+
+    /**
+     * Injected after bootstrap.
+     */
+    @Reference
     private DomainResourceCommandGenerator resourceGenerator;
 
     @Constructor
@@ -62,16 +67,6 @@ public class GeneratorImpl implements Generator {
         this.stopContextCommandGenerator = stopContextCommandGenerator;
         // sort the command generators
         this.commandGenerators = sortGenerators(commandGenerators);
-    }
-
-    /**
-     * Injected after bootstrap.
-     *
-     * @param generator the resource generator
-     */
-    @Reference
-    public void setResourceGenerator(DomainResourceCommandGenerator generator) {
-        this.resourceGenerator = generator;
     }
 
     public Deployment generate(LogicalCompositeComponent domain) throws Fabric3Exception {

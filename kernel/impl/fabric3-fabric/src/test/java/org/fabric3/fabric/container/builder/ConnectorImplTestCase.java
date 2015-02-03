@@ -47,7 +47,6 @@ public class ConnectorImplTestCase extends TestCase {
     private PhysicalWireDefinition definition;
     private PhysicalOperationDefinition operation;
     private PhysicalOperationDefinition callback;
-    private Map<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>> builders;
 
     @SuppressWarnings({"unchecked"})
     public void testConnect() throws Exception {
@@ -60,8 +59,8 @@ public class ConnectorImplTestCase extends TestCase {
         targetAttacher.attach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class), EasyMock.isA(Wire.class));
 
         EasyMock.replay(sourceAttacher, targetAttacher);
-        connector.setSourceAttachers(sourceAttachers);
-        connector.setTargetAttachers(targetAttachers);
+        connector.sourceAttachers = sourceAttachers;
+        connector.targetAttachers = targetAttachers;
 
         connector.connect(definition);
         EasyMock.verify(sourceAttacher, targetAttacher);
@@ -77,8 +76,8 @@ public class ConnectorImplTestCase extends TestCase {
         targetAttacher.detach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class));
         EasyMock.replay(sourceAttacher, targetAttacher);
 
-        connector.setSourceAttachers(sourceAttachers);
-        connector.setTargetAttachers(targetAttachers);
+        connector.sourceAttachers = sourceAttachers;
+        connector.targetAttachers = targetAttachers;
 
         connector.disconnect(definition);
         EasyMock.verify(sourceAttacher, targetAttacher);
@@ -96,8 +95,8 @@ public class ConnectorImplTestCase extends TestCase {
         targetAttacher.createSupplier(EasyMock.isA(PhysicalWireTargetDefinition.class));
         EasyMock.expectLastCall().andReturn((Supplier) Object::new);
         EasyMock.replay(sourceAttacher, targetAttacher);
-        connector.setSourceAttachers(sourceAttachers);
-        connector.setTargetAttachers(targetAttachers);
+        connector.sourceAttachers = sourceAttachers;
+        connector.targetAttachers = targetAttachers;
         definition.setOptimizable(true);
 
         connector.connect(definition);
@@ -114,8 +113,11 @@ public class ConnectorImplTestCase extends TestCase {
         InterceptorBuilder builder = EasyMock.createMock(InterceptorBuilder.class);
         EasyMock.expect(builder.build(EasyMock.isA(PhysicalInterceptorDefinition.class))).andReturn(null).times(2);
         EasyMock.replay(builder);
+        Map<Class<?>, InterceptorBuilder<?>> builders = new HashMap<>();
+
         builders.put(PhysicalInterceptorDefinition.class, builder);
 
+        connector.interceptorBuilders = builders;
         PhysicalInterceptorDefinition interceptorDefinition = new PhysicalInterceptorDefinition();
         operation.addInterceptor(interceptorDefinition);
         callback.addInterceptor(interceptorDefinition);
@@ -127,9 +129,6 @@ public class ConnectorImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         connector = new ConnectorImpl();
-        builders = new HashMap<>();
-        connector.setInterceptorBuilders(builders);
-
         createDefinition();
     }
 

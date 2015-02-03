@@ -87,7 +87,7 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
         channelManager = EasyMock.createMock(ChannelManager.class);
         registry = new ChannelBuilderRegistryImpl(channelManager);
         builder = EasyMock.createMock(ChannelBuilder.class);
-        registry.setBuilders(Collections.singletonMap("default", builder));
+        registry.builders = Collections.singletonMap("default", builder);
 
         channel = EasyMock.createMock(Channel.class);
 

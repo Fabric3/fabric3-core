@@ -21,7 +21,6 @@ package org.fabric3.fabric.domain.generator.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -53,8 +52,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.replay(registry, channelGenerator);
 
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        Map<String, ChannelGeneratorExtension> map = Collections.singletonMap("default", channelGenerator);
-        generator.setExtensions(map);
+        generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
 
@@ -71,8 +69,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.replay(registry, channelGenerator);
 
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        Map<String, ChannelGeneratorExtension> map = Collections.singletonMap("default", channelGenerator);
-        generator.setExtensions(map);
+        generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.PROVISIONED);
         PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
@@ -97,8 +94,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.replay(registry, bindingGenerator, channelGenerator);
 
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        Map<String, ChannelGeneratorExtension> map = Collections.singletonMap("default", channelGenerator);
-        generator.setExtensions(map);
+        generator.extensions = Collections.singletonMap("default", channelGenerator);
 
         LogicalChannel channel = createChannel();
         LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
@@ -119,8 +115,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.replay(registry, channelGenerator);
 
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        Map<String, ChannelGeneratorExtension> map = Collections.singletonMap("default", channelGenerator);
-        generator.setExtensions(map);
+        generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
         PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
@@ -146,8 +141,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.replay(registry, bindingGenerator, channelGenerator);
 
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        Map<String, ChannelGeneratorExtension> map = Collections.singletonMap("default", channelGenerator);
-        generator.setExtensions(map);
+        generator.extensions = Collections.singletonMap("default", channelGenerator);
 
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);

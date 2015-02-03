@@ -37,11 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Default TransformerRegistry implementation.
  */
 public class DefaultTransformerRegistry implements TransformerRegistry {
-    private static final Comparator<TransformerFactory> COMPARATOR = new Comparator<TransformerFactory>() {
-        public int compare(TransformerFactory first, TransformerFactory second) {
-            return first.getOrder() - second.getOrder();
-        }
-    };
+    private static final Comparator<TransformerFactory> COMPARATOR = (first, second) -> first.getOrder() - second.getOrder();
 
     // cache of single type transformers
     private Map<Key, SingleTypeTransformer<?, ?>> transformers = new HashMap<>();

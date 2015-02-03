@@ -19,6 +19,7 @@
  */
 package org.fabric3.fabric.container.builder;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -37,47 +38,40 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.util.Cast;
+import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * The default connector implementation.
  */
 public class ConnectorImpl implements Connector {
-    private Map<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>> interceptorBuilders;
-    private Map<Class<? extends PhysicalWireSourceDefinition>, SourceWireAttacher<? extends PhysicalWireSourceDefinition>> sourceAttachers;
-    private Map<Class<? extends PhysicalWireTargetDefinition>, TargetWireAttacher<? extends PhysicalWireTargetDefinition>> targetAttachers;
+    @Reference(required = false)
+    protected Map<Class<?>, InterceptorBuilder<?>> interceptorBuilders = new HashMap<>();
 
-    /**
-     * Constructor used during bootstrap
-     */
+    @Reference(required = false)
+    protected Map<Class<?>, SourceWireAttacher<?>> sourceAttachers = new HashMap<>();
+
+    @Reference(required = false)
+    protected Map<Class<?>, TargetWireAttacher<?>> targetAttachers = new HashMap<>();
+
+    @Constructor
     public ConnectorImpl() {
     }
 
-    @Reference(required = false)
-    public void setInterceptorBuilders(Map<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>> interceptorBuilders) {
-        this.interceptorBuilders = interceptorBuilders;
-    }
-
-    @Reference(required = false)
-    public void setSourceAttachers(Map<Class<? extends PhysicalWireSourceDefinition>, SourceWireAttacher<? extends PhysicalWireSourceDefinition>>
-                                               sourceAttachers) {
+    public ConnectorImpl(Map<Class<?>, SourceWireAttacher<?>> sourceAttachers, Map<Class<?>, TargetWireAttacher<?>> targetAttachers) {
         this.sourceAttachers = sourceAttachers;
-    }
-
-    @Reference
-    public void setTargetAttachers(Map<Class<? extends PhysicalWireTargetDefinition>, TargetWireAttacher<? extends PhysicalWireTargetDefinition>>
-                                               targetAttachers) {
         this.targetAttachers = targetAttachers;
     }
 
     public void connect(PhysicalWireDefinition definition) throws Fabric3Exception {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
-        SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
+        SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = Cast.cast(sourceAttachers.get(sourceDefinition.getClass()));
         if (sourceAttacher == null) {
             throw new Fabric3Exception("Source attacher not found for type: " + sourceDefinition.getClass());
         }
         PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
-        TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
+        TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = Cast.cast(targetAttachers.get(targetDefinition.getClass()));
         if (targetAttacher == null) {
             throw new Fabric3Exception("Target attacher not found for type: " + targetDefinition.getClass());
         }
@@ -94,7 +88,7 @@ public class ConnectorImpl implements Connector {
 
     public void disconnect(PhysicalWireDefinition definition) throws Fabric3Exception {
         PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
-        SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
+        SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = Cast.cast(sourceAttachers.get(sourceDefinition.getClass()));
         if (sourceAttacher == null) {
             throw new Fabric3Exception("Source attacher not found for type: " + sourceDefinition.getClass());
         }
@@ -103,7 +97,7 @@ public class ConnectorImpl implements Connector {
         if (definition.isOptimizable()) {
             sourceAttacher.detachSupplier(sourceDefinition, targetDefinition);
         } else {
-            TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = getAttacher(targetDefinition);
+            TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = Cast.cast(targetAttachers.get(targetDefinition.getClass()));
             if (targetAttacher == null) {
                 throw new Fabric3Exception("Target attacher not found for type: " + targetDefinition.getClass());
             }
@@ -117,7 +111,7 @@ public class ConnectorImpl implements Connector {
         for (PhysicalOperationDefinition operation : definition.getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
-                InterceptorBuilder<? super PhysicalInterceptorDefinition> builder = getBuilder(interceptorDefinition);
+                InterceptorBuilder<? super PhysicalInterceptorDefinition> builder = Cast.cast(interceptorBuilders.get(interceptorDefinition.getClass()));
                 Interceptor interceptor = builder.build(interceptorDefinition);
                 chain.addInterceptor(interceptor);
             }
@@ -126,19 +120,4 @@ public class ConnectorImpl implements Connector {
         return wire;
     }
 
-    @SuppressWarnings("unchecked")
-    private <PID extends PhysicalInterceptorDefinition> InterceptorBuilder<PID> getBuilder(PID definition) {
-        return (InterceptorBuilder<PID>) interceptorBuilders.get(definition.getClass());
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private <PSD extends PhysicalWireSourceDefinition> SourceWireAttacher<PSD> getAttacher(PSD source) {
-        return (SourceWireAttacher<PSD>) sourceAttachers.get(source.getClass());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <PSD extends PhysicalWireTargetDefinition> TargetWireAttacher<PSD> getAttacher(PSD target) {
-        return (TargetWireAttacher<PSD>) targetAttachers.get(target.getClass());
-    }
 }

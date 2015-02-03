@@ -19,11 +19,10 @@
  */
 package org.fabric3.fabric.domain.generator.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Binding;
@@ -43,43 +42,25 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
+@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 public class GeneratorRegistryImpl implements GeneratorRegistry {
-    private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<>();
-    private Map<Class<?>, WireBindingGenerator<?>> bindingGenerators = new HashMap<>();
-    private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new ConcurrentHashMap<>();
-    private List<InterceptorGenerator> interceptorGenerators = Collections.emptyList();
-    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<>();
-    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<>();
+    @Reference(required = false)
+    protected Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<>();
 
     @Reference(required = false)
-    public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
-        this.componentGenerators = componentGenerators;
-    }
+    protected Map<Class<?>, WireBindingGenerator<?>> bindingGenerators = new HashMap<>();
 
     @Reference(required = false)
-    public void setBindingGenerators(Map<Class<?>, WireBindingGenerator<?>> bindingGenerators) {
-        this.bindingGenerators = bindingGenerators;
-    }
+    protected Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new HashMap<>();
 
     @Reference(required = false)
-    public void setConnectionBindingGenerators(Map<Class<?>, ConnectionBindingGenerator<?>> bindingGenerators) {
-        this.connectionBindingGenerators = bindingGenerators;
-    }
+    protected List<InterceptorGenerator> interceptorGenerators = new ArrayList<>();
 
     @Reference(required = false)
-    public void setResourceReferenceGenerators(Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators) {
-        this.resourceReferenceGenerators = resourceReferenceGenerators;
-    }
+    protected Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<>();
 
     @Reference(required = false)
-    public void setInterceptorGenerators(List<InterceptorGenerator> interceptorGenerators) {
-        this.interceptorGenerators = interceptorGenerators;
-    }
-
-    @Reference(required = false)
-    public void setResourceGenerators(Map<Class<?>, ResourceGenerator<?>> resourceGenerators) {
-        this.resourceGenerators = resourceGenerators;
-    }
+    protected Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<>();
 
     public <T extends Implementation<?>> void register(Class<T> clazz, ComponentGenerator<LogicalComponent<T>> generator) {
         componentGenerators.put(clazz, generator);

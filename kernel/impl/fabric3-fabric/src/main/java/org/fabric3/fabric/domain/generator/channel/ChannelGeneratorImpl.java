@@ -38,13 +38,10 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ChannelGeneratorImpl implements ChannelGenerator {
-    private Map<String, ChannelGeneratorExtension> extensions;
-    private GeneratorRegistry generatorRegistry;
-
     @Reference
-    public void setExtensions(Map<String, ChannelGeneratorExtension> extensions) {
-        this.extensions = extensions;
-    }
+    protected Map<String, ChannelGeneratorExtension> extensions;
+
+    private GeneratorRegistry generatorRegistry;
 
     public ChannelGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
         this.generatorRegistry = generatorRegistry;

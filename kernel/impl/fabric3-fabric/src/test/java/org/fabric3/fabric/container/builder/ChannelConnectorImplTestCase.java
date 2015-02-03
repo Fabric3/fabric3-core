@@ -58,9 +58,7 @@ public class ChannelConnectorImplTestCase extends TestCase {
         EventFilterBuilder filterBuilder = EasyMock.createMock(EventFilterBuilder.class);
         EasyMock.expect(filterBuilder.build(EasyMock.isA(MockFilterDefinition.class))).andReturn(new MockEventFilter());
 
-
-        Map filterBuilderMap = Collections.singletonMap(MockFilterDefinition.class, filterBuilder);
-        connector.setFilterBuilders(filterBuilderMap);
+        connector.filterBuilders = Collections.singletonMap(MockFilterDefinition.class, filterBuilder);;
 
         EasyMock.replay(sourceAttacher, targetAttacher, filterBuilder);
 
@@ -93,11 +91,11 @@ public class ChannelConnectorImplTestCase extends TestCase {
         targetAttacher = EasyMock.createMock(TargetConnectionAttacher.class);
 
         connector = new ChannelConnectorImpl();
-        connector.setClassLoaderRegistry(classLoaderRegistry);
+        connector.classLoaderRegistry = classLoaderRegistry;
         Map sourceAttachers = Collections.singletonMap(MockSourceDefinition.class, sourceAttacher);
         Map targetAttachers = Collections.singletonMap(MockTargetDefinition.class, targetAttacher);
-        connector.setSourceAttachers(sourceAttachers);
-        connector.setTargetAttachers(targetAttachers);
+        connector.sourceAttachers = sourceAttachers;
+        connector.targetAttachers = targetAttachers;
         definition = createDefinition();
     }
 
