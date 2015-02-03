@@ -24,7 +24,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
@@ -38,7 +37,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
  */
 public class ContributionsResourceServiceTestCase extends TestCase {
     private ContributionsResourceService service;
-    private ContributionService contributionService;
     private MetaDataStore store;
 
     public void testGetContribution() throws Exception {
@@ -47,20 +45,20 @@ public class ContributionsResourceServiceTestCase extends TestCase {
 
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
 
-        EasyMock.replay(contributionService, store);
+        EasyMock.replay(store);
 
         ContributionResource resource = service.getContribution("contribution");
         List<Deployable> deployables = contribution.getManifest().getDeployables();
         assertTrue(resource.getDeployables().contains(deployables.get(0).getName()));
         assertEquals(ContributionState.INSTALLED.toString(), resource.getState());
-        EasyMock.verify(contributionService, store);
+        EasyMock.verify(store);
     }
 
     public void testGetContributionNotFound() throws Exception {
         URI contributionUri = URI.create("contribution");
         EasyMock.expect(store.find(contributionUri)).andReturn(null);
 
-        EasyMock.replay(contributionService, store);
+        EasyMock.replay(store);
 
         try {
             service.getContribution("contribution");
@@ -68,7 +66,7 @@ public class ContributionsResourceServiceTestCase extends TestCase {
         } catch (ResourceException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
         }
-        EasyMock.verify(contributionService, store);
+        EasyMock.verify(store);
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +78,7 @@ public class ContributionsResourceServiceTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http:/localhost/management/domain/contributions")).atLeastOnce();
-        EasyMock.replay(contributionService, store, request);
+        EasyMock.replay(store, request);
 
         Resource resource = service.getContributions(request);
         List<ContributionStatus> contributions = (List<ContributionStatus>) resource.getProperties().get("contributions");
@@ -88,7 +86,7 @@ public class ContributionsResourceServiceTestCase extends TestCase {
         assertEquals("thecontribution", status.getLink().getName());
         assertEquals("edit", status.getLink().getRel());
         assertEquals("http:/localhost/management/domain/contributions/contribution/thecontribution", status.getLink().getHref().toString());
-        EasyMock.verify(contributionService, store, request);
+        EasyMock.verify(store, request);
     }
 
     private Contribution createContribution(URI contributionUri) {
@@ -104,13 +102,9 @@ public class ContributionsResourceServiceTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        ContributionsResourceMonitor monitor = EasyMock.createNiceMock(ContributionsResourceMonitor.class);
-        EasyMock.replay(monitor);
-
-        contributionService = EasyMock.createMock(ContributionService.class);
         store = EasyMock.createMock(MetaDataStore.class);
 
-        service = new ContributionsResourceService(contributionService, store, monitor);
+        service = new ContributionsResourceService(store);
     }
 
 

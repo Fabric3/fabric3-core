@@ -26,8 +26,6 @@ import java.util.Set;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.contribution.ContributionService;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.HttpStatus;
@@ -51,16 +49,10 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 @EagerInit
 @Management(path = "/domain/contributions")
 public class ContributionsResourceService {
-    private ContributionService contributionService;
     private MetaDataStore store;
-    private ContributionsResourceMonitor monitor;
 
-    public ContributionsResourceService(@Reference ContributionService contributionService,
-                                        @Reference MetaDataStore store,
-                                        @Monitor ContributionsResourceMonitor monitor) {
-        this.contributionService = contributionService;
+    public ContributionsResourceService(@Reference MetaDataStore store) {
         this.store = store;
-        this.monitor = monitor;
     }
 
     @ManagementOperation(path = "/")
