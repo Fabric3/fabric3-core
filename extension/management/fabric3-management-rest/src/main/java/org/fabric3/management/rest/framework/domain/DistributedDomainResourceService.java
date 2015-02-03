@@ -33,7 +33,7 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
  * Produces the /domain resource.
- * <p/>
+ *
  * Note this resource is only present on the controller.
  */
 @EagerInit

@@ -42,7 +42,7 @@ import org.fabric3.spi.container.component.ScopedComponent;
 import org.oasisopen.sca.annotation.Destroy;
 
 /**
- * Abstract container for components that have only one implementation instance. <p/> Components deployed via a deployable composite are associated with the
+ * Abstract container for components that have only one implementation instance.  Components deployed via a deployable composite are associated with the
  * same context. When a context starts and stops, components will receive initialization and destruction callbacks. Eager initialization is also supported.
  */
 public abstract class SingletonScopeContainer extends AbstractScopeContainer {

@@ -42,7 +42,7 @@ public interface LoaderHelper {
     /**
      * Loads one or more property values configured in a composite or on a component from a Stax stream. Each property value is returned as child of
      * the document root.
-     * <p/>
+     *
      * The reader must be positioned at the composite or component &lt;property&gt; element.
      *
      * @param reader the stream reader

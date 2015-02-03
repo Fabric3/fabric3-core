@@ -26,7 +26,7 @@ import org.zeromq.ZMQ;
 
 /**
  * Implementations return an available socket from a collection based on a selection algorithm such as round-robin.
- * <p/>
+ *
  * Note multiplexers are not thread safe and are designed to be called from a single thread.
  */
 public interface SocketMultiplexer {

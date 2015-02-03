@@ -26,7 +26,7 @@ import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Responsible for dispatching to a callback invocation from multi-threaded component instances such as composite scope components.
- * <p/>
+ *
  * Since callback proxies for multi-threaded components may dispatch to multiple callback services, this implementation must determine the correct target
  * service based on the current callback reference. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy
  * representing C must correctly dispatch back to A and A'. This is done by recording the callback URI as the forward invoke is made.

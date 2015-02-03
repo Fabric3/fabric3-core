@@ -68,7 +68,7 @@ public class Operation extends ModelObject<ServiceContract> implements PolicyAwa
     }
 
     /**
-     * Returns the data types of the parameters passed to the operation. <p/> The inputType's logical type is a list of DataTypes which describes the parameter
+     * Returns the data types of the parameters passed to the operation.  The inputType's logical type is a list of DataTypes which describes the parameter
      * types
      *
      * @return the data types of the parameters passed to the operation

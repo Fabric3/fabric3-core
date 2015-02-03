@@ -33,10 +33,10 @@ import org.fabric3.api.host.util.CompositeEnumeration;
  * ClassLoader.findResources() respectively. After this is done, the J9 ClassLoader attempts to resolve resources against the bootstrap classpath.
  * Doing the latter circumvents masking resources present in parent classloaders and on the boot classpath. To avoid this, the classloader overrides
  * resource resolution using a parent delegation strategy.
- * <p/>
+ *
  * Hierarchical classloaders that are not masking classloaders instantiated by Fabric3 should inherit from this class to ensure proper resource
  * resolution.
- * <p/>
+ *
  * Note that this classloader must have a parent as it does not resolve resources against the boot classpath. Doing so requires accessing
  * vendor-specific APIs and this implementation is intended to work across VMs.
  */

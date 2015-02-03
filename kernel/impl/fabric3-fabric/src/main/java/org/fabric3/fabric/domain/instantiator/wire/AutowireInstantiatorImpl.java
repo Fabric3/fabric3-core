@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Target;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.ReferenceNotFound;
@@ -92,9 +91,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            ServiceContract requiredContract = logicalReference.getServiceContract();
-
-            instantiateWires(logicalReference, requiredContract, compositeComponent);
+            instantiateWires(logicalReference, compositeComponent);
 
         } else if (componentReference != null) {
             // The reference is explicitly configured on the component definition in the composite or in the component type
@@ -103,10 +100,9 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            ServiceContract requiredContract = reference.getServiceContract();
-            boolean resolved = instantiateWires(logicalReference, requiredContract, component.getParent());
+            boolean resolved = instantiateWires(logicalReference, component.getParent());
             if (!resolved) {
-                instantiateWires(logicalReference, requiredContract, compositeComponent);
+                instantiateWires(logicalReference, compositeComponent);
             }
         }
 
@@ -125,12 +121,11 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
      * LogicalWires is created.
      *
      * @param logicalReference the logical reference
-     * @param contract         the contract to match against
      * @param composite        the composite to resolve against
      * @return true if the reference has been resolved.
      */
-    private boolean instantiateWires(LogicalReference logicalReference, ServiceContract contract, LogicalCompositeComponent composite) {
-        List<LogicalService> candidates = resolver.resolve(logicalReference, contract, composite);
+    private boolean instantiateWires(LogicalReference logicalReference, LogicalCompositeComponent composite) {
+        List<LogicalService> candidates = resolver.resolve(logicalReference, composite);
         if (candidates.isEmpty()) {
             return false;
         }

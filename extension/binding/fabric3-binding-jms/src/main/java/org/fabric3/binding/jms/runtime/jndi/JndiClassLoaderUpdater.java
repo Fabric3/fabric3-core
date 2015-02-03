@@ -28,7 +28,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Makes the <code>javax.jms</code> and <code>javax.transaction</code> packages imported by the JMS extension visible to the dynamic JNDI extension
  * classloader. This is required since the client libraries of some JMS providers (e.g. WebLogic) bundle <code>javax</code> classes, resulting in
  * class cast exceptions as those bundled classes will not be the same as the <code>javax</code> classes loaded by the JMS extension classloader.
- * <p/>
+ *
  * Note the "correct" way to do this would be for the JNDI extension to import the packages directly. However, this would introduce the complexity of
  * requiring users to add a manifest to the /jndi directory. Adding the extension classloader as a parent expediently avoids this.
  */

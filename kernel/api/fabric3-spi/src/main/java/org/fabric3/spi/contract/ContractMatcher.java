@@ -22,7 +22,7 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  * Determines if two <code>ServiceContract</code>s are compatible for wiring. Specifically, tests whether the target contract can be converted to the
  * source contract type. Some interface languages, such as Java, allow for inheritance. In these cases, compatibility will include checking if a
  * widening conversion is possible from the target contract to source contract.
- * <p/>
+ *
  * This service delegates to {@link ContractMatcherExtension}s for particular mappings such as WSDL-to-Java.
  */
 public interface ContractMatcher {

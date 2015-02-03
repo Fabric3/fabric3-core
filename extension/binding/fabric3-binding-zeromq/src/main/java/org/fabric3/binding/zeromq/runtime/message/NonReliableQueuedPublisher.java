@@ -38,7 +38,7 @@ import org.zeromq.ZMQ.Socket;
 
 /**
  * Implements a basic PUB client with no qualities of service.
- * <p/>
+ *
  * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for publishing messages. Messages are provided to the thread
  * via a queue.
  */

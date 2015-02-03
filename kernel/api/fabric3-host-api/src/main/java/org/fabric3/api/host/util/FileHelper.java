@@ -66,8 +66,8 @@ public class FileHelper {
     }
 
     /**
-     * Returns the index of the last directory separator character. <p/> This method will handle a file in either Unix or Windows format. The position of the
-     * last forward or backslash is returned. <p/> The output will be the same irrespective of the machine that the code is running on.
+     * Returns the index of the last directory separator character.  This method will handle a file in either Unix or Windows format. The position of the
+     * last forward or backslash is returned.  The output will be the same irrespective of the machine that the code is running on.
      *
      * @param filename the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there is no such character
@@ -82,8 +82,8 @@ public class FileHelper {
     }
 
     /**
-     * Returns the index of the last extension separator character, which is a dot. <p/> This method also checks that there is no directory separator after the
-     * last dot. To do this it uses {@link #indexOfLastSeparator(String)} which will handle a file in either Unix or Windows format. <p/> The output will be the
+     * Returns the index of the last extension separator character, which is a dot.  This method also checks that there is no directory separator after the
+     * last dot. To do this it uses {@link #indexOfLastSeparator(String)} which will handle a file in either Unix or Windows format.  The output will be the
      * same irrespective of the machine that the code is running on.
      *
      * @param filename the filename to find the last path separator in, null returns -1
@@ -99,15 +99,15 @@ public class FileHelper {
     }
 
     /**
-     * Gets the name minus the path from a full filename. <p/> This method will handle a file in either Unix or Windows format. The text after the last forward
-     * or backslash is returned. <p/>
+     * Gets the name minus the path from a full filename.  This method will handle a file in either Unix or Windows format. The text after the last forward
+     * or backslash is returned.
      * <pre>
      * a/b/c.txt --&gt; c.txt
      * a.txt     --&gt; a.txt
      * a/b/c     --&gt; c
      * a/b/c/    --&gt; &quot;&quot;
      * </pre>
-     * <p/> <p/> The output will be the same irrespective of the machine that the code is running on.
+     *   The output will be the same irrespective of the machine that the code is running on.
      *
      * @param fileName the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
@@ -121,15 +121,15 @@ public class FileHelper {
     }
 
     /**
-     * Gets the extension of a filename. <p/> This method returns the textual part of the filename after the last dot. There must be no directory separator
-     * after the dot. <p/>
+     * Gets the extension of a filename.  This method returns the textual part of the filename after the last dot. There must be no directory separator
+     * after the dot.
      * <pre>
      * foo.txt      --&gt; &quot;txt&quot;
      * a/b/c.jpg    --&gt; &quot;jpg&quot;
      * a/b.txt/c    --&gt; &quot;&quot;
      * a/b/c        --&gt; &quot;&quot;
      * </pre>
-     * <p/> <p/> The output will be the same irrespective of the machine that the code is running on.
+     *   The output will be the same irrespective of the machine that the code is running on.
      *
      * @param filename the filename to retrieve the extension of.
      * @return the extension of the file or an empty string if none exists.
@@ -172,7 +172,7 @@ public class FileHelper {
     }
 
     /**
-     * Delete a file. If file is a directory, delete it and all sub-directories. <p/> The difference between File.delete() and this method are: <ul> <li>A
+     * Delete a file. If file is a directory, delete it and all sub-directories.  The difference between File.delete() and this method are: <ul> <li>A
      * directory to be deleted does not have to be empty.</li> <li>You get exceptions when a file or directory cannot be deleted. (java.io.File methods returns
      * a boolean)</li> </ul>
      *
@@ -194,7 +194,7 @@ public class FileHelper {
     }
 
     /**
-     * Convert from a <code>URL</code> to a <code>File</code>. <p/> From version 1.1 this method will decode the URL. Syntax such as
+     * Convert from a <code>URL</code> to a <code>File</code>.  From version 1.1 this method will decode the URL. Syntax such as
      * <code>file:///my%20docs/file.txt</code> will be correctly decoded to <code>/my docs/file.txt</code>.
      *
      * @param url the file URL to convert, null returns null
@@ -210,7 +210,7 @@ public class FileHelper {
     }
 
     /**
-     * Convert from a <code>URL</code> to a <code>File</code>. <p/> From version 1.1 this method will decode the URL. Syntax such as
+     * Convert from a <code>URL</code> to a <code>File</code>.  From version 1.1 this method will decode the URL. Syntax such as
      * <code>file:///my%20docs/file.txt</code> will be correctly decoded to <code>/my docs/file.txt</code>.
      *
      * @param url the file URL to convert, null returns null
@@ -310,8 +310,8 @@ public class FileHelper {
     }
 
     /**
-     * Copies a whole directory to a new location preserving the file dates. <p/> This method copies the specified directory and all its child directories and
-     * files to the specified destination. The destination is the new location and name of the directory. <p/> The destination directory is created if it does
+     * Copies a whole directory to a new location preserving the file dates.  This method copies the specified directory and all its child directories and
+     * files to the specified destination. The destination is the new location and name of the directory.  The destination directory is created if it does
      * not exist. If the destination directory did exist, then this method merges the source with the destination, with the source taking precedence.
      *
      * @param srcDir  an existing directory to copy, must not be <code>null</code>
@@ -324,8 +324,8 @@ public class FileHelper {
     }
 
     /**
-     * Copies a whole directory to a new location. <p/> This method copies the contents of the specified source directory to within the specified destination
-     * directory. <p/> The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source
+     * Copies a whole directory to a new location.  This method copies the contents of the specified source directory to within the specified destination
+     * directory.  The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source
      * with the destination, with the source taking precedence.
      *
      * @param srcDir           an existing directory to copy, must not be <code>null</code>
@@ -357,8 +357,8 @@ public class FileHelper {
     }
 
     /**
-     * Copies a directory to within another directory preserving the file dates. <p/> This method copies the source directory and all its contents to a
-     * directory of the same name in the specified destination directory. <p/> The destination directory is created if it does not exist. If the destination
+     * Copies a directory to within another directory preserving the file dates.  This method copies the source directory and all its contents to a
+     * directory of the same name in the specified destination directory.  The destination directory is created if it does not exist. If the destination
      * directory did exist, then this method merges the source with the destination, with the source taking precedence.
      *
      * @param srcDir  an existing directory to copy, must not be <code>null</code>
@@ -382,7 +382,7 @@ public class FileHelper {
     }
 
     /**
-     * Copies a file to a new location preserving the file date. <p/> This method copies the contents of the specified source file to the specified destination
+     * Copies a file to a new location preserving the file date.  This method copies the contents of the specified source file to the specified destination
      * file. The directory holding the destination file is created if it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile  an existing file to copy, must not be <code>null</code>
@@ -394,7 +394,7 @@ public class FileHelper {
     }
 
     /**
-     * Copies a file to a new location. <p/> This method copies the contents of the specified source file to the specified destination file. The directory
+     * Copies a file to a new location.  This method copies the contents of the specified source file to the specified destination file. The directory
      * holding the destination file is created if it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile          an existing file to copy, must not be <code>null</code>
@@ -434,7 +434,7 @@ public class FileHelper {
     }
 
     /**
-     * Copies a file to a directory preserving the file date. <p/> This method copies the contents of the specified source file to a file of the same name in
+     * Copies a file to a directory preserving the file date.  This method copies the contents of the specified source file to a file of the same name in
      * the specified destination directory. The destination directory is created if it does not exist. If the destination file exists, then this method will
      * overwrite it.
      *
@@ -447,7 +447,7 @@ public class FileHelper {
     }
 
     /**
-     * Copies a file to a directory optionally preserving the file date. <p/> This method copies the contents of the specified source file to a file of the same
+     * Copies a file to a directory optionally preserving the file date.  This method copies the contents of the specified source file to a file of the same
      * name in the specified destination directory. The destination directory is created if it does not exist. If the destination file exists, then this method
      * will overwrite it.
      *

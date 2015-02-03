@@ -48,9 +48,9 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.w3c.dom.Document;
 
 /**
- * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy. <p/> The parent context contains
+ * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.  The parent context contains
  * object factories for creating wire proxies for references configured on the component. In addition, the parent context also contains system components
- * configured to be aliased as Spring beans. <p/> The child context contains beans defined in the configuration file specified by the location attribute of the
+ * configured to be aliased as Spring beans.  The child context contains beans defined in the configuration file specified by the location attribute of the
  * Spring component.
  */
 @EagerInit

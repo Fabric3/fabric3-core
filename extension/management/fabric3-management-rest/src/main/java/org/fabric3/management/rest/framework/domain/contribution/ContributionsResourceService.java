@@ -48,7 +48,7 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
  *  <li>GET /contributions - Returns installed contributions</ul>
  * </ul>
  * </pre>
- * <p/> Note this resource is only present on the controller.
+ *  Note this resource is only present on the controller.
  */
 @EagerInit
 @Management(path = "/domain/contributions")

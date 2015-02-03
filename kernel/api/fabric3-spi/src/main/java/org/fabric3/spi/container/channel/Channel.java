@@ -23,7 +23,7 @@ import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  * An event channel. Responsible for transmitting events from producers to consumers.
- * <p/>
+ *
  * A logical channel is divided into two physical channels on a runtime: one for receiving events from producers and transmitting them to a binding; and one for
  * receiving events from a binding and transmitting them to consumers. If the channel is not bound, it is collocated and only one physical channel will exist.
  */

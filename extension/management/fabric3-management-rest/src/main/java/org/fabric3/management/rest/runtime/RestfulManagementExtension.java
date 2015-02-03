@@ -52,7 +52,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Responsible for exporting components and instances as management resources. <p/> As part of this process, a fully-navigable management resource hierarchy
+ * Responsible for exporting components and instances as management resources.  As part of this process, a fully-navigable management resource hierarchy
  * will be dynamically created. For example, if a component is exported to /runtime/foo/bar and a /runtime/foo resource is not configured, one will be created
  * dynamically with a link to runtime/foo/bar. If a configured resource is later exported, any previously generated dynamic resource will be overriden.
  */

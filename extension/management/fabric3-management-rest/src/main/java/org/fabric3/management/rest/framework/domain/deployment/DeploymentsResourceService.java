@@ -41,7 +41,7 @@ import org.oasisopen.sca.annotation.Reference;
  *  <li>DELETE /deployments/contribution/{uri} - Un-deploys a contribution</ul>
  * </ul>
  * </pre>
- * <p/> Note this resource is only present on the controller.
+ *  Note this resource is only present on the controller.
  */
 @EagerInit
 @Management(path = "/domain/deployments")

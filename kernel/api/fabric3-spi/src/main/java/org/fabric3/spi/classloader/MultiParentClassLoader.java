@@ -46,7 +46,7 @@ import sun.security.util.SecurityConstants;
  * The extension mechanism allows classes to be dynamically loaded via Class.forName() and ClassLoader.loadClass(). This is used to accommodate contributions
  * and libraries that rely on Java reflection to add additional capabilities provided by another contribution. Since resolution is performed dynamically, cycles
  * between classloaders are supported where one classloader is a parent of the other and the former is an extension of the latter.
- * <p/>
+ *
  * Each classloader has a name that can be used to reference it in the runtime.
  */
 public class MultiParentClassLoader extends DelegatingResourceClassLoader {

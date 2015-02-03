@@ -31,7 +31,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Enables lazy-loading of a monitor destination by caching messages received before the destination has been loaded.
- * <p/>
+ *
  * This is used to allow bootstrap components to send monitor messages before a destination router has been loaded from a runtime extension.
  */
 public class DelegatingDestinationRouter implements DestinationRouter {

@@ -30,7 +30,7 @@ import org.fabric3.api.SecuritySubject;
 /**
  * Tracks information associated with a request as it is processed by the runtime. Requests originate at a domain boundary (e.g. a service bound to a
  * transport).
- * <p/>
+ *
  * WorkContext instances are cached per runtime thread and reused. This implementation is <em>not</em> thread safe.
  */
 public class WorkContext implements Serializable {

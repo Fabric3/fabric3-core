@@ -31,7 +31,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
 /**
  * Interceptor for invoking a JAX-WS proxy generated from a Java interface.  Used by invocation chains that dispatch to a web service endpoint defined
  * by a Java interface (as opposed to a WSDL contract).
- * <p/>
+ *
  * This interceptor requires message payloads to be a JAXB types.
  */
 public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {

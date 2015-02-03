@@ -36,7 +36,7 @@ import org.zeromq.ZMQ;
 
 /**
  * Implementation of a {@link Receiver} the implements one-way with no qualities of service.
- * <p/>
+ *
  * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The receiver
  * listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket, if an update is
  * received the original socket will be closed and a new one created to connect to the updated set of addresses.

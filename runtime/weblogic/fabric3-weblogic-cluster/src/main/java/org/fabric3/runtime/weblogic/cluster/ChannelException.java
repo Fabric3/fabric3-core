@@ -18,7 +18,7 @@ package org.fabric3.runtime.weblogic.cluster;
 
 /**
  * Used to report exceptions when communicating through a {@link RuntimeChannel}.
- * <p/>
+ *
  * Note nested exception classes must be available on the WebLogic server classpath as instances are passed through the WebLogic RMI layer.
  */
 public class ChannelException extends Exception {

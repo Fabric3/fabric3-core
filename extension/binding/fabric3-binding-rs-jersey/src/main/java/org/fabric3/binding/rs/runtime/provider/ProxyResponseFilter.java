@@ -24,7 +24,7 @@ import java.io.IOException;
 
 /**
  * Dispatches to a component-based filter
- * <p/>
+ *
  * This implementation performs a lazy lookup of the component instance since filters are provisioned with composite resources, which occurs before components
  * are provisioned.
  */

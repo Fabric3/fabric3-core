@@ -34,7 +34,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles the /domain/components resource by mapping the HTTP GET URL to the logical component hierarchy for a domain.
- * <p/>
+ *
  * Note this resource is only present on the controller.
  */
 @EagerInit

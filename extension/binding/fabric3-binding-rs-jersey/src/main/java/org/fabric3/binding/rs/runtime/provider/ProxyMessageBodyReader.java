@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 
 /**
  * Dispatches to a component-based <code>MessageBodyReader</code>.
- * <p/>
+ *
  * This implementation performs a lazy lookup of the component instance since readers are provisioned with composite resources, which occurs before components
  * are provisioned.
  */

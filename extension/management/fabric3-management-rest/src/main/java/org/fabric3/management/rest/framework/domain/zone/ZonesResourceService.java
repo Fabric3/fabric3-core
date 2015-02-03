@@ -39,7 +39,7 @@ import static org.fabric3.spi.federation.addressing.EndpointConstants.HTTP_SERVE
 /**
  * Produces the /domain/zones resource. This is a collection of links to active zone resources in the domain. The links correspond to zone leaders, which
  * provide /zone resources.
- * <p/>
+ *
  * Note this resource is only present on the controller.
  */
 @EagerInit

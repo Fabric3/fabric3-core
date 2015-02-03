@@ -27,7 +27,7 @@ public interface Fabric {
     /**
      * Adds a profile to the fabric configuration. The profile name is either the full artifact id without version information or its shortened for, i.e.
      * without the 'profile-' prefix.
-     * <p/>
+     *
      * This method must be called before {@link #start()}.
      *
      * @param name the profile name
@@ -37,7 +37,7 @@ public interface Fabric {
 
     /**
      * Adds a profile to the fabric configuration.
-     * <p/>
+     *
      * This method must be called before {@link #start()}.
      *
      * @param location the profile location
@@ -47,7 +47,7 @@ public interface Fabric {
 
     /**
      * Adds an extension to the fabric configuration. The profile name is the full artifact id without version information.
-     * <p/>
+     *
      * This method must be called before {@link #start()}.
      *
      * @param name the extension name
@@ -57,7 +57,7 @@ public interface Fabric {
 
     /**
      * Adds an extension to the fabric configuration.
-     * <p/>
+     *
      * This method must be called before {@link #start()}.
      *
      * @param location the extension location

@@ -18,7 +18,7 @@ package org.fabric3.api;
 
 /**
  * A holder for events sent through a channel ring buffer.
- * <p/>
+ *
  * Sequenced consumers may use this as the event type to modify contents for consumers in a later sequence. For example, a consumer responsible for
  * deserialization may set a parsed value using {@link #setParsed(Object)}.
  */

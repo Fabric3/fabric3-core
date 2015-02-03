@@ -32,7 +32,7 @@ import org.zeromq.ZMQ.Socket;
 
 /**
  * Implements a basic PUB client with no qualities of service.
- * <p/>
+ *
  * This implementation dispatches to the ZeroMQ socket on the same thread that invoked it. Since ZeroMQ requires a socket to only be invoked by the thread that
  * created it, this implementation can only be used with a single worker thread that receives from a channel (e.g. a ring buffer setup).
  */

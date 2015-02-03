@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Dispatches monitor events to destinations via a ring buffer. <p/> This implementation also supports synchronous dispatch. This mode should only be used in
+ * Dispatches monitor events to destinations via a ring buffer.  This implementation also supports synchronous dispatch. This mode should only be used in
  * development to avoid startup time associated with pre-allocating ring buffer entries.
  */
 public class RingBufferDestinationRouterImpl implements RingBufferDestinationRouter {

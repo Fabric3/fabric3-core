@@ -44,7 +44,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * An EntityManager proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread may be
  * accessing the proxy at a time.
- * <p/>
+ *
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the EntityManager instance associated with the
  * current transaction context from the EntityManagerService.
  */

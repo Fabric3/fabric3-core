@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Broadcasts new deployment snapshots to domain members if the current runtime is a zone leader. Snapshots are created when a deployment or un-deployment is
  * performed
- * <p/>
+ *
  * Note only zone leaders need broadcast as other members are replicas and hence have the same state.
  */
 @EagerInit

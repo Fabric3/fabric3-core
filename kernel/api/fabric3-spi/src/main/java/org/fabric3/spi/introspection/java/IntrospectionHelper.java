@@ -118,7 +118,7 @@ public interface IntrospectionHelper {
 
     /**
      * Introspects the type Returns true if the supplied type should be treated as many-valued.
-     * <p/>
+     *
      * This is generally true for arrays, Collection or Map types.
      *
      * @param type        the type to check
@@ -138,7 +138,7 @@ public interface IntrospectionHelper {
 
     /**
      * Determine if an annotation is present on this interface or any super interface.
-     * <p/>
+     *
      * This is similar to the use of @Inherited on classes (given @Inherited does not apply to interfaces).
      *
      * @param type           the interface to check
@@ -167,7 +167,7 @@ public interface IntrospectionHelper {
 
     /**
      * Returns the base type for the supplied type.
-     * <p/>
+     *
      * The base type is the actual type of a property or reference having removed any decoration for arrays or collections.
      *
      * @param type        the type of a field or parameter
@@ -178,7 +178,7 @@ public interface IntrospectionHelper {
 
     /**
      * Returns all service interfaces directly implemented by a class or any super class.
-     * <p/>
+     *
      * Class#getInterfaces only returns interfaces directly implemented by the class. This method returns all interfaces including those implemented
      * by any super classes. It excludes interfaces that are super-interfaces of those implemented by subclasses.
      *
@@ -189,7 +189,7 @@ public interface IntrospectionHelper {
 
     /**
      * Returns method injection sites provided by a class or any super class.
-     * <p/>
+     *
      * Methods that are part of any service contract are excluded.
      *
      * @param type     the class whose method sites should be returned
@@ -200,7 +200,7 @@ public interface IntrospectionHelper {
 
     /**
      * Returns method injection sites provided by a class or any super class.
-     * <p/>
+     *
      * Methods that are part of any service contract are excluded.
      *
      * @param type the class whose field injection sites should be returned

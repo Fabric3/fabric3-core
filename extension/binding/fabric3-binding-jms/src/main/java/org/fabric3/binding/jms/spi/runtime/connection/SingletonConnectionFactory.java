@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Proxies a connection factory to create a single connection that can be shared among multiple clients. This is class is used for durable subscriptions that
  * require a unique connection id.
- * <p/>
+ *
  * This implementation will re-initialize the singleton connection if a connection exception is reported by the JMS provider.
  */
 public class SingletonConnectionFactory implements ConnectionFactory, QueueConnectionFactory, TopicConnectionFactory, ExceptionListener {

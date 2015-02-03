@@ -32,7 +32,7 @@ public class IndexHelper {
 
     /**
      * Creates an index entry in the given contribution for the web implementation.
-     * <p/>
+     *
      * Only one web implementation can exist per web contribution.
      *
      * @param implementation the implementation

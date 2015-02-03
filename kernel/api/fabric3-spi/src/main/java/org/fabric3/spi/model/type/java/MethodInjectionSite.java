@@ -25,7 +25,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
 
 /**
  * Represents a setter method that is injected into when a component implementation instance is instantiated.
- * <p/>
+ *
  * Note this class implements <code>Externalizable</code> to support deserialization of containing <code>HashMap</code>s. During deserialization, {@link
  * #hashCode()} is called by the containing map before a <code>Signature</code> has been set, leading to a null pointer. Implement Externalizable avoids this by
  * setting the Signature before <code>hashCode</code> is invoked.
@@ -42,7 +42,7 @@ public class MethodInjectionSite extends InjectionSite {
 
     /**
      * Returns the index of the parameter being injected.
-     * <p/>
+     *
      * This will be 0 for a normal setter method.
      *
      * @return the index of the parameter being injected

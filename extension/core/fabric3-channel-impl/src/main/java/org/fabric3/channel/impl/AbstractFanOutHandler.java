@@ -26,7 +26,7 @@ import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Base FanOutHandler functionality.
- * <p/>
+ *
  * Supports registering a connection multiple times. This is required for producer-side channels where a connection from the channel to a binding may be
  * provisioned multiple times if there is more than one producer connected to the same channel provisioned in a zone.
  */

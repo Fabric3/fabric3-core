@@ -24,7 +24,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Processes composite files deployed as a contribution. <p/> During processing, a synthetic deployable composite is created and added to the contribution. In
+ * Processes composite files deployed as a contribution.  During processing, a synthetic deployable composite is created and added to the contribution. In
  * addition, a synthetic QName export equal to the composite target namespace is created and added to the contribution, which can be used for contribution
  * ordering during deployment.
  */

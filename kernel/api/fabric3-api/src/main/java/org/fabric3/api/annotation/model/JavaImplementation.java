@@ -25,7 +25,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Specifies a class is a Java component implementation.
- * <p/>
+ *
  * This annotation is optional. If a class is annotated with {@link Component} and no implementation annotation is specified, the Java implementation type is
  * assumed.
  */

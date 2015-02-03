@@ -40,7 +40,7 @@ import org.zeromq.ZMQ.Socket;
 
 /**
  * Implements a basic SUB server with no qualities of service.
- * <p/>
+ *
  * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for connecting to one or more publishers and receiving
  * messages. The subscriber listens for address updates (e.g. a publisher coming online or going away). Since ZeroMQ does not implement disconnect semantics on
  * a socket, if an update is received the original socket will be closed and a new one created to connect to the update set of addresses.

@@ -24,7 +24,7 @@ import java.net.URI;
 import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Creates a bytecode generated proxy that dispatches to a target. <p/> Bytecode proxies are designed to be more performant than traditional JDK proxies as they
+ * Creates a bytecode generated proxy that dispatches to a target.  Bytecode proxies are designed to be more performant than traditional JDK proxies as they
  * dispatch based on a method index.
  */
 public interface ProxyFactory {

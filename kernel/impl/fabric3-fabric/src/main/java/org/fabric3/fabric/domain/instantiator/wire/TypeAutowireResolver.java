@@ -40,16 +40,17 @@ public class TypeAutowireResolver implements AutowireResolver {
         this.matcher = matcher;
     }
 
-    public List<LogicalService> resolve(LogicalReference logicalReference, ServiceContract contract, LogicalCompositeComponent composite) {
+    public List<LogicalService> resolve(LogicalReference reference, LogicalCompositeComponent composite) {
         List<LogicalService> candidates = new ArrayList<>();
-        Multiplicity refMultiplicity = logicalReference.getDefinition().getMultiplicity();
+        ServiceContract contract = reference.getServiceContract();
+        Multiplicity refMultiplicity = reference.getDefinition().getMultiplicity();
         boolean multiplicity = Multiplicity.ZERO_N.equals(refMultiplicity) || Multiplicity.ONE_N.equals(refMultiplicity);
         for (LogicalComponent<?> child : composite.getComponents()) {
-            if (logicalReference.getParent() == child) {
+            if (reference.getParent() == child) {
                 // don't wire to self
                 continue;
             }
-            if (validKey(logicalReference, child)) {  // if the reference is keyed and the target does not have a key, skip
+            if (validKey(reference, child)) {  // if the reference is keyed and the target does not have a key, skip
                 for (LogicalService service : child.getServices()) {
                     ServiceContract targetContract = service.getServiceContract();
                     if (targetContract == null) {

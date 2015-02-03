@@ -34,7 +34,7 @@ import org.zeromq.ZMQ;
 
 /**
  * Implements a round-robin strategy for selecting an available socket from a collection of sockets.
- * <p/>
+ *
  * Note: Due to restrictions imposed by ZeroMQ, an instance of this class must be called on the same thread at all times.
  */
 public class RoundRobinSocketMultiplexer implements SocketMultiplexer {

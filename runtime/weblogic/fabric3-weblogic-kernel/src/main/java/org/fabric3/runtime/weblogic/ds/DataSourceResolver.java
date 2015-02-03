@@ -49,14 +49,14 @@ import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBE
  *                        ---JDBCResource[]
  *                              |
  *                              ---JDBCDataSourceParams#JNDINames
- * <p/>
+ *
  * </pre>
  * The <code>JDBCResource</code> beans are iterated to determine the JNDI names where all system datasources are bound. The corresponding DataSource
  * instances are then resolved through JNDI and the Fabric3 DataSourceRegistry is populated.
- * <p/>
+ *
  * This implementation also dynamically updates the Fabric3 datasource registry if a configuration change is made to a live WebLogic domain or
  * runtime.
- * <p/>
+ *
  * Note that only system datasources will be resolved, not application-level datasources (i.e. those defined in Java EE modules).
  */
 @EagerInit

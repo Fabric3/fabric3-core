@@ -31,7 +31,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public interface Loader {
     /**
      * Parse the supplied XML stream, dispatching to the appropriate registered loader for each element encountered in the stream.
-     * <p/>
+     *
      * This method must be called with the XML cursor positioned on a START_ELEMENT event. When this method returns, the stream will be positioned on
      * the corresponding END_ELEMENT event.
      *

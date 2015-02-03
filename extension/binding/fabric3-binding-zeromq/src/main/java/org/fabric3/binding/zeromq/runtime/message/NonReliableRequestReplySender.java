@@ -47,7 +47,7 @@ import org.zeromq.ZMQ.Socket;
 
 /**
  * A {@link RequestReplySender} that provides no qualities of service.
- * <p/>
+ *
  * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for sending messages. Messages are provided to the thread via
  * a queue.
  */

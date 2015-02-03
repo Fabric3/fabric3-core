@@ -42,7 +42,7 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
     }
 
     /**
-     * Find the constructor to use. <p/> For now, we require that the class have a single constructor or one annotated with @Constructor. If there is more than
+     * Find the constructor to use.  For now, we require that the class have a single constructor or one annotated with @Constructor. If there is more than
      * one, the default constructor will be selected or an org.osoa.sca.annotations.Constructor annotation must be used.
      *
      * @param implClass     the class we are inspecting

@@ -47,8 +47,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 
 /**
- * Implements binding.sca using ActiveMQ. <p/> <p/> By default, this provider uses an embedded broker, which forwards messages to peer brokers in a zone. To
- * configure the provider to use a remote broker, the <code>brokerUrl</code> property may be set to the appropriate broker location. <p/> <p/> Also, the
+ * Implements binding.sca using ActiveMQ.   By default, this provider uses an embedded broker, which forwards messages to peer brokers in a zone. To
+ * configure the provider to use a remote broker, the <code>brokerUrl</code> property may be set to the appropriate broker location.   Also, the
  * provider uses default connection factory configurations; to use specific connection factories, set the <code>connectionFactory</code> and
  * <code>xaConnectionFactory</code> properties.
  */

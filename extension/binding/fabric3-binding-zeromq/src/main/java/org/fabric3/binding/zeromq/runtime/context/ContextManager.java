@@ -23,7 +23,7 @@ import org.zeromq.ZMQ.Context;
 
 /**
  * Manages the ZeroMQ Context lifecycle.
- * <p/>
+ *
  * Note when sockets are created from the managed <code>Context</code>, clients must reserve a lease using {@link #reserve(String)}. When a socket is closed,
  * clients must call {@link #release(String)}.
  */

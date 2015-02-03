@@ -38,7 +38,7 @@ import static org.fabric3.spi.federation.addressing.EndpointConstants.HTTP_SERVE
 
 /**
  * Produces the /domain/runtimes resource. This is a collection of links to active runtime resources in the domain.
- * <p/>
+ *
  * Note this resource is only present on the controller.
  */
 @EagerInit

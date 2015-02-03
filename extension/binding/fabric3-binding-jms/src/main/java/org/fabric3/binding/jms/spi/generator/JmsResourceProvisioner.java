@@ -25,7 +25,7 @@ import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 /**
  * Called by the JMS binding after generation has run to allow a host environment to provision JMS resources such as destinations. Implementations may
  * update generated definitions.
- * <p/>
+ *
  * Note this extension is optional.
  */
 public interface JmsResourceProvisioner {

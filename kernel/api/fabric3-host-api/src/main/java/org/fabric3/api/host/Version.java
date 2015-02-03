@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * <li>Qualifier. A text string. </li>
  * </ol>
  * </pre>
- * <p/>
+ *
  * This implementation is based on org.osgi.framework.Version from the OSGi Alliance issued under the Apache 2.0 License.
  */
 public class Version implements Comparable, Serializable {
@@ -49,8 +49,8 @@ public class Version implements Comparable, Serializable {
 
     /**
      * Creates a version identifier from the specified numerical components.
-     * <p/>
-     * <p/>
+     *
+     *
      * The qualifier is set to the empty string.
      *
      * @param major Major component of the version identifier.
@@ -86,10 +86,10 @@ public class Version implements Comparable, Serializable {
 
     /**
      * Created a version identifier from the specified string.
-     * <p/>
-     * <p/>
+     *
+     *
      * Here is the grammar for version strings.
-     * <p/>
+     *
      * <pre>
      * version ::= major('.'minor('.'micro('.'qualifier)?)?)?
      * major ::= digit+
@@ -99,7 +99,7 @@ public class Version implements Comparable, Serializable {
      * digit ::= [0..9]
      * alpha ::= [a..zA..Z]
      * </pre>
-     * <p/>
+     *
      * There must be no whitespace in version.
      *
      * @param version String representation of the version identifier.
@@ -147,7 +147,7 @@ public class Version implements Comparable, Serializable {
 
     /**
      * Parses a version identifier from the specified string.
-     * <p/>
+     *
      * See <code>Version(String)</code> for the format of the version string.
      *
      * @param version String representation of the version identifier. Leading and trailing whitespace will be ignored.
@@ -206,8 +206,8 @@ public class Version implements Comparable, Serializable {
 
     /**
      * Returns the string representation of this version identifier.
-     * <p/>
-     * <p/>
+     *
+     *
      * The format of the version string will be <code>major.minor.micro</code> if qualifier is the empty string or
      * <code>major.minor.micro.qualifier</code> otherwise.
      *
@@ -233,8 +233,8 @@ public class Version implements Comparable, Serializable {
 
     /**
      * Compares this <code>Version</code> object to another object.
-     * <p/>
-     * <p/>
+     *
+     *
      * A version is considered to be <b>equal to </b> another version if the major, minor and micro components are equal and the qualifier component
      * is equal (using <code>String.equals</code>).
      *
@@ -256,13 +256,13 @@ public class Version implements Comparable, Serializable {
 
     /**
      * Compares this <code>Version</code> object to another object.
-     * <p/>
-     * <p/>
+     *
+     *
      * A version is considered to be <b>less than </b> another version if its major component is less than the other version's major component, or the
      * major components are equal and its minor component is less than the other version's minor component, or the major and minor components are
      * equal and its micro component is less than the other version's micro component, or the major, minor and micro components are equal and it's
      * qualifier component is less than the other version's qualifier component (using <code>String.compareTo</code>).
-     * <p/>
+     *
      * A version is considered to be <b>equal to</b> another version if the major, minor and micro components are equal and the qualifier component is
      * equal (using <code>String.compareTo</code>).
      *

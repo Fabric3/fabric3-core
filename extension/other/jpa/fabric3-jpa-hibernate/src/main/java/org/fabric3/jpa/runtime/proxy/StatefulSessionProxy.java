@@ -54,7 +54,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * An Hibernate Session proxy that delegates to a cached instance. This proxy is injected on stateless-scoped components. This proxy is <strong>not</strong>
  * safe to inject on composite-scoped implementations.
- * <p/>
+ *
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the current
  * transaction context from the EntityManagerService. The proxy will cache the Session instance until the transaction completes (or aborts).
  */

@@ -61,7 +61,7 @@ public class ResourceInvoker {
      * Invokes all GET operations managed artifact and returns values as a single (root) resource representation. The merged values will be included a
      * properties where the property name is the relative path of the sub-resource. In addition to the merged values, the representation will contain
      * a links property to sub-resources, keyed by sub-resource name (relative path). For example:
-     * <p/>
+     *
      * <pre>
      * {"selfLink":{...},
      * "count":10,

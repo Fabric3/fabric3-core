@@ -16,7 +16,7 @@ import org.fabric3.spi.security.NotAuthorizedException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * Dispatches an invocation from Jersey to a component's interceptor chains. <p/> This instance assumes the resource instance is a Map of operation names to
+ * Dispatches an invocation from Jersey to a component's interceptor chains.  This instance assumes the resource instance is a Map of operation names to
  * interceptor chains for the component.
  */
 public class F3ResourceHandler {

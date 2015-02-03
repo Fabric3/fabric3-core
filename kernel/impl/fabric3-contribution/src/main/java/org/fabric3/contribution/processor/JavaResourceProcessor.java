@@ -47,7 +47,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes a Java component resource in two phases. During contribution indexing, the Java class is introspected. At contribution processing, the component
- * resource is added to its containing composite or a new composite is created if one is not found. <p/> Note adding the component to the composite must be done
+ * resource is added to its containing composite or a new composite is created if one is not found.  Note adding the component to the composite must be done
  * after the contribution is indexed so that composites loaded from XML and model providers are in place.
  */
 @EagerInit
@@ -162,7 +162,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
 
     /**
      * Updates composites that include the given composite after a component has been added to the later. This is necessary since the including composite caches
-     * a view of the included components. <p/> Note only the current contribution needs to be searched as contributions are ordered on install.
+     * a view of the included components.  Note only the current contribution needs to be searched as contributions are ordered on install.
      *
      * @param contribution the current contribution
      * @param composite    the composite

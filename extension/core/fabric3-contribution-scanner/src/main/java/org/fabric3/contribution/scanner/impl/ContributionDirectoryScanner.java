@@ -59,7 +59,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Scans deployment directories for contributions. In production mode, deployment directories will be scanned once at startup and any contained contributions
- * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions. <p/>
+ * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions.
  * In dynamic mode, the scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a
  * consistent view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are
  * determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the

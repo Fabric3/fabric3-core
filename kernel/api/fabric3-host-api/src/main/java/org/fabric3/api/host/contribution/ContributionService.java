@@ -27,7 +27,7 @@ import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Manages artifacts contributed to a domain. Contributions can be application or extension artifacts. Contributions may be in a variety of formats, for
- * example, a JAR or XML document. <p/> The lifecycle of a contribution is defined as follows:
+ * example, a JAR or XML document.  The lifecycle of a contribution is defined as follows:
  * <pre>
  * <ul>
  * <li>Stored - The contribution artifact is persisted.

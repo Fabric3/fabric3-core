@@ -43,7 +43,7 @@ import org.springframework.security.core.Authentication;
 /**
  * Serves as a bridge between the Fabric3 security SPI and SpringSecurity for authentication by implementing {@link AuthenticationService} and
  * <code>AuthenticationManager</code> respectively. This allows Fabric3 code (e.g. transports) to authenticate a request using the Fabric3 security SPI and
- * Spring code to authenticate against the Spring Security API. <p/> Authentication is done using a set of Spring <code>AuthenticationProvider</code>s.
+ * Spring code to authenticate against the Spring Security API.  Authentication is done using a set of Spring <code>AuthenticationProvider</code>s.
  */
 @Service({AuthenticationManager.class, AuthenticationService.class})
 public class Fabric3ProviderManager extends ProviderManager implements AuthenticationService {

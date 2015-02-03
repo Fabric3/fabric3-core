@@ -18,7 +18,6 @@ package org.fabric3.spi.domain.instantiator;
 
 import java.util.List;
 
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -28,6 +27,6 @@ import org.fabric3.spi.model.instance.LogicalService;
  */
 public interface AutowireResolver {
 
-    List<LogicalService> resolve(LogicalReference logicalReference, ServiceContract contract, LogicalCompositeComponent composite);
+    List<LogicalService> resolve(LogicalReference reference, LogicalCompositeComponent composite);
 
 }

@@ -27,7 +27,7 @@ import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Implementations are responsible for configuring a concrete binding for an inter-process (remote) wire or channel that uses binding.sca.
- * <p/>
+ *
  * For a given wire or chanel, a variety of transport protocols may potentially be used for the concrete binding. Which provider is selected depends on the
  * algorithm in-force in a particular domain. For example, a domain may use a weighted algorithm where a particular provider is preferred.
  */

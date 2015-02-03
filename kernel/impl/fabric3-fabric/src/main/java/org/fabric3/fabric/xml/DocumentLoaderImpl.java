@@ -33,7 +33,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Default implementation that creates a new DocumentBuilder for every invocation. <p/> URI resolution is handled by the underlying JAXP implementation.
+ * Default implementation that creates a new DocumentBuilder for every invocation.  URI resolution is handled by the underlying JAXP implementation.
  */
 public class DocumentLoaderImpl implements DocumentLoader {
     private static final DocumentBuilderFactory DOCUMENT_FACTORY;
@@ -71,8 +71,8 @@ public class DocumentLoaderImpl implements DocumentLoader {
     }
 
     /**
-     * Recursively strips whitespace nodes starting at a DOM element. <p/> This is necessary as <code>DocumentBuilderFactory
-     * .setIgnoringElementContentWhitespace(boolean)</code> is broken in JDK 6: <p/> http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6564400
+     * Recursively strips whitespace nodes starting at a DOM element.  This is necessary as <code>DocumentBuilderFactory
+     * .setIgnoringElementContentWhitespace(boolean)</code> is broken in JDK 6:  http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6564400
      *
      * @param element the element
      */

@@ -45,7 +45,7 @@ import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 /**
  * Introspects a web application to create a component type. One component type per web contribution is created and stored as a resource to be used to configure
  * the web component.
- * <p/>
+ *
  * Since introspection is performed during contribution indexing, it is guaranteed to be available when the web component configuration is created during the
  * contribution processing phase.
  */

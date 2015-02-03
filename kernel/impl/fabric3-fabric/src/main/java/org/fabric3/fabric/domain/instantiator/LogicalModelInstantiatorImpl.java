@@ -239,7 +239,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     }
 
     /**
-     * Synthesizes a composite from a collection of composites using inclusion. <p/> A counter is maintained for each include name and used to generate include
+     * Synthesizes a composite from a collection of composites using inclusion.  A counter is maintained for each include name and used to generate include
      * names in situations where they may clash, e.g. when two composites from different contributions with the same name are deployed together.
      *
      * @param composites the composites to synthesize

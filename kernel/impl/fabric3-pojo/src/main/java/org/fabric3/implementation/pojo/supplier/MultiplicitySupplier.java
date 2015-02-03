@@ -25,7 +25,7 @@ import org.fabric3.spi.container.injection.InjectionAttributes;
 /**
  * Implementations use a backing collection of Supplier instances that create a collection of instances for injection on a component,
  * e.g. a multiplicity reference.
- * <p/>
+ *
  * Implementations should implement Suppliers in a lock-free manner. The semantics of this contract require that update
  * operations are synchronized. That is, access to {@link #clear()}, {@link #startUpdate()} ()}, and {@link #endUpdate()} can only be made from a
  * single thread from the time {@link #startUpdate()} is called to when {@link #endUpdate()} is invoked. This means that implementations can cache

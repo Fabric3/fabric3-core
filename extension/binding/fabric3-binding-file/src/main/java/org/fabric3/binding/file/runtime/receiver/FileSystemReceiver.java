@@ -48,7 +48,7 @@ import org.fabric3.spi.container.wire.Interceptor;
  * Periodically scans a directory for new files. When a new file is detected, the service bound to the directory is invoked with expected data types associated
  * with each file. After an invocation completes, the detected file is either archived or deleted according to the configured {@link Strategy} value. If an
  * error is encountered, the file will be moved to the configured error location.
- * <p/>
+ *
  * This receiver is non-transactional but supports clustered locking through the use of file locks placed in the &lt;location&gt;/locks directory.
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})

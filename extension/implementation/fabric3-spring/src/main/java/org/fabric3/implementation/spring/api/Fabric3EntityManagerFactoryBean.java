@@ -30,7 +30,7 @@ import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER
 /**
  * Integrates Fabric3 EntityManagerFactory parsing with Spring. This class can be configured in an end-user Spring application context to make entity
  * manager factories created by Fabric3 available to Spring.
- * <p/>
+ *
  * An example configuration is as follows:
  * <pre>
  *          &lt;bean id="EntityManagerFactory" class="org.fabric3.implementation.spring.api.Fabric3EntityManagerFactoryBean"&gt;

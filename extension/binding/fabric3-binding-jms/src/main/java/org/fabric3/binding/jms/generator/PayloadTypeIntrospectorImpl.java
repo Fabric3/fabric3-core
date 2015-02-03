@@ -30,7 +30,7 @@ import org.fabric3.binding.jms.spi.provision.PayloadType;
 
 /**
  * Default implementation of the PayloadTypeIntrospector.
- * <p/>
+ *
  * JMS Payload types are mapped as follows:
  * <pre>
  * <ul>
@@ -41,7 +41,7 @@ import org.fabric3.binding.jms.spi.provision.PayloadType;
  * <li>Otherwise an object payload type is returned
  * <ul>
  * </pre>
- * <p/>
+ *
  * Note that this implementation currently supports mapping JAXB data types; additional data types such as Protobufs could be supported in the future.
  */
 public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {

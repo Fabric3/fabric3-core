@@ -24,7 +24,7 @@ import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Responsible for allocating ports for use by a binding transport or other extension.
- * <p/>
+ *
  * A runtime can be configured with a range of ports, which serves as a pool for transports to obtain an open port using {@link #allocate(String,
  * String)}. If the runtime is not configured with a port range, services requiring sockets should use #{link #reserve} to reserve a port.
  */

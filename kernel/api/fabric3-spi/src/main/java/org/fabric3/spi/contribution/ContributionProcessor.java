@@ -24,7 +24,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 /**
  * Interface for services that process contributions. Contribution processing occurs in several phases. Contribution metadata is first processed, after which
  * contained resources are indexed. Indexed {@link Resource}s contain 0..n {@link ResourceElement}s, which are addressable parts. ResourceElements contain a key
- * for a symbol space and a value. When a resource is indexed, only ResourceElement keys are available; their values have not yet been loaded. <p/> The final
+ * for a symbol space and a value. When a resource is indexed, only ResourceElement keys are available; their values have not yet been loaded.  The final
  * processing phase is when the contribution is loaded. At this point, all contribution artifacts, including those in dependent contributions, are made
  * available through the provided classloader. Indexed Resources are iterated and all ResourceElement values are loaded via the loader framework. As
  * ResourceElements may refer to other ResourceElements, loading may occur recursively.

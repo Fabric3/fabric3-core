@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.Property;
 /**
  * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads. When a
  * stalled thread is encountered (i.e. when the processing time for a runnable has exceeded a threshold), an event is sent to the monitor.
- * <p/>
+ *
  * The default configuration uses a bounded queue to accept work. If the queue size is exceeded, work will be rejected. This allows the runtime to degrade
  * gracefully under load by pushing requests back to the client and avoid out-of-memory conditions.
  */

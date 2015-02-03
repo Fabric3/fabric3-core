@@ -100,13 +100,12 @@ public class ServiceResolverImpl implements ServiceResolver {
     }
 
     private <T> LogicalWire createWire(Class<T> interfaze) throws Fabric3Exception {
-        JavaServiceContract contract = introspector.introspect(interfaze);
 
-        LogicalReference logicalReference = createReference(contract);
+        LogicalReference logicalReference = createReference(interfaze);
 
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();
 
-        List<LogicalService> services = autowireResolver.resolve(logicalReference, contract, domainComponent);
+        List<LogicalService> services = autowireResolver.resolve(logicalReference, domainComponent);
         if (services.isEmpty()) {
             throw new NotFoundException("Service not found for type: " + interfaze.getName());
         }
@@ -115,7 +114,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         return new LogicalWire(domainComponent, logicalReference, targetService, SYNTHETIC_DEPLOYABLE);
     }
 
-    private LogicalReference createReference(JavaServiceContract contract) {
+    private LogicalReference createReference(Class<?> interfaze) {
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();
 
         int id = idCounter.getAndIncrement();
@@ -131,6 +130,8 @@ public class ServiceResolverImpl implements ServiceResolver {
         component.setImplementation(implementation);
         Reference<ComponentType> reference = new Reference<>("reference", Multiplicity.ONE_ONE);
         composite.add(reference);
+
+        JavaServiceContract contract = introspector.introspect(interfaze);
 
         LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, component, domainComponent);
         logicalComponent.setZone(info.getZoneName());

@@ -48,7 +48,7 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener on
- * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing. <p/> Note
+ * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.  Note
  * this implementation supports dispatching transactional and non-transactional messages.
  */
 @Management

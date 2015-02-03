@@ -20,9 +20,9 @@ import org.hibernate.dialect.H2Dialect;
 
 /**
  * Workaround for the following Hibernate bug when using the H2 dialect:
- * <p/>
+ *
  * https://hibernate.atlassian.net/browse/HHH-7002
- * <p/>
+ *
  * Note that the fix was never applied to 4.3.5.Final, although the issue states it was applied to 4.3.0.Beta4.
  */
 public class Fabric3H2Dialect extends H2Dialect {

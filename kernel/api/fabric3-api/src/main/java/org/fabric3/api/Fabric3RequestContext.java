@@ -52,7 +52,7 @@ public interface Fabric3RequestContext extends RequestContext {
      * Sets a header value for the current request context. Headers will be propagated across threads for non-blocking invocations made by a component
      * when processing a request. However, headers propagation across process boundaries is binding-specific. Some bindings may propagate headers
      * while others may ignore them.
-     * <p/>
+     *
      * Note that header values should be immutable since, unlike purely synchronous programming models, SCA's asynchronous model may result in
      * multiple threads simultaneously accessing a header. For example, two non-blocking invocations to local services may access the same header.
      *

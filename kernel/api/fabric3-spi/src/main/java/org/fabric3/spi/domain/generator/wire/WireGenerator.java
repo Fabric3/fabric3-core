@@ -31,10 +31,10 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 /**
  * Generates physical wire definitions from logical wires, bound references and bound services. The methods correspond to how the physical wire
  * generation scheme works, which is described below:
- * <p/>
+ *
  * For unidirectional bound references and services, one physical wire will be generated. For bidirectional bound references and services (i.e. those
  * with callbacks), two physical wires will be generated.
- * <p/>
+ *
  * The number of physical wires generated from a logical wire will vary depending on whether the target service is collocated or remote. A
  * unidirectional wire to a collocated service will generate one physical wire. A bidirectional wire (i.e. with a callback) to a collocated service
  * will generate two physical wires. A unidirecitonal wire to a remote service offered by a component will generate two physical wires:

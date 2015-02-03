@@ -42,12 +42,12 @@ import org.objectweb.asm.Type;
 import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
- * Performs bytecode generation at runtime to create a monitor proxy. <p/> The monitor proxy avoids object creation such as auto-boxing and varargs for highly
+ * Performs bytecode generation at runtime to create a monitor proxy.  The monitor proxy avoids object creation such as auto-boxing and varargs for highly
  * performant environments. This is done by dynamically generating writeParameters method with a specific number of arguments for each proxy interface method.
  * The implementation of the proxy interface method invokes this writeParameters method. Performance characteristics should therefore be the same as
- * hand-implementing the proxy interface. <p/> As a further optimization, the {@link DispatchInfo} for an invoked proxy method will be looked up in an array
- * based on the method index. This will be noticeably faster than looking up the DispatchInfo in a Map keyed by Method as required by JDK proxies. <p/> The
- * implementation creates code similar to the following: <p/>
+ * hand-implementing the proxy interface.  As a further optimization, the {@link DispatchInfo} for an invoked proxy method will be looked up in an array
+ * based on the method index. This will be noticeably faster than looking up the DispatchInfo in a Map keyed by Method as required by JDK proxies.  The
+ * implementation creates code similar to the following:
  * <pre>
  * <code>
  *      public void invoke([Type]arg1, [Type]arg2...) throws Throwable {

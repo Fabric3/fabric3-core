@@ -26,7 +26,7 @@ public interface RingBufferDestinationRouter extends DestinationRouter {
 
     /**
      * Returns a buffer entry to writePrefix to.
-     * <p/>
+     *
      * This call should be wrapped in a <code>try..finally</code> block where {@link #publish(MonitorEventEntry)} is called in the finally section.
      *
      * @return the buffer entry

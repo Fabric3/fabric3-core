@@ -273,7 +273,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
     /**
      * Generates a physical wire definition for a wire that is bound to a remote transport - i.e. it is between two components hosted in different runtime
-     * processes. <p/> The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the
+     * processes.  The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the
      * reference binding. Note that metadata for the service-side binding is not generated since the service endpoint will either be provisioned previously from
      * another deployable composite or when metadata for the bound service is created by another generator.
      *

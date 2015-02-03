@@ -46,7 +46,7 @@ import org.springframework.security.core.Authentication;
  * Serves as a bridge between the Fabric3 security SPI and SpringSecurity for access control by implementing {@link AuthorizationService} and
  * <code>AccessDecisionManager</code> respectively. This allows Fabric3 code (e.g. transports) to check authorization using the Fabric3 security SPI
  * and Spring code to use the Spring Security API.
- * <p/>
+ *
  * Access decisions are delegated to a Spring <code>AccessDecisionManager<code> instance.
  */
 @Service({AccessDecisionManager.class, AuthorizationService.class})

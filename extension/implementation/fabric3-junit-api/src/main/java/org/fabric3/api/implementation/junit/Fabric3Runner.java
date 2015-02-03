@@ -22,7 +22,7 @@ import org.junit.runner.notification.RunNotifier;
 
 /**
  * Runner used to indicate Fabric3 integration test components.
- * <p/>
+ *
  * The runner ignores tests when executed during the unit test phase of a build (or from an IDE test runner) as the tests will be run during the integration
  * test phase of a build via a plugin.
  */

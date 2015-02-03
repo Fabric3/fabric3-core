@@ -182,10 +182,10 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     /**
-     * Resolves an import where the contribution also exports the same symbol as the import (e.g. a Java package or qualified name). <p/> The following OSGi
-     * resolution algorithm defined in R4 Section 3.1 is followed: <p/> <p/> <strong>External</strong> If the import resolves to an export statement in another
-     * bundle, then the overlapping export definition in this contribution is discarded. <p/> <p/> <strong>Internal</strong>  If the import is resolved to an
-     * export statement in this module, then the overlapping import definition in this contribution is discarded. <p/> <p/> When an import is resolved by an
+     * Resolves an import where the contribution also exports the same symbol as the import (e.g. a Java package or qualified name).  The following OSGi
+     * resolution algorithm defined in R4 Section 3.1 is followed:   <strong>External</strong> If the import resolves to an export statement in another
+     * bundle, then the overlapping export definition in this contribution is discarded.   <strong>Internal</strong>  If the import is resolved to an
+     * export statement in this module, then the overlapping import definition in this contribution is discarded.   When an import is resolved by an
      * export from a contribution in the DAG, the later will be updated with an edge from the source contribution vertex to the target contribution vertex.
      *
      * @param imprt    the import to resolve

@@ -9,18 +9,18 @@ import javax.xml.transform.stream.StreamResult
 
 /**
  * Build for the Fabric3 core project.
- * <p/>
+ *
  * The default build cleans, compiles, builds archives and installs the latter in the local Maven repo. To build without running clean, execute:
  * <code>./gradlew -Pbuild=local</code>.
- * <p/>
+ *
  * To execute a full build where Javadoc and source archives are generated and installed in the local Maven repo,
  * execute: <code>./gradlew -Pbuild=full</code>.
- * <p/>
+ *
  * To deploy to the Nexus release staging repository, change the version and execute:
  * <code>./gradlew -Pbuild=deploy -Dcom.sun.net.ssl.rsaPreMasterSecretFix=true</code>
  * after a full build has been run. Note the 'rsaPreMasterSecretFix' parameter is required as a workaround for this JDK bug:
  * https://bugs.openjdk.java.net/browse/JDK-8030806
- * <p/>
+ *
  * Note the 'uploadArchives' tasks requires a gradle.properties file to be present containing private key information and authentication parameters
  * (sonatypeUsername and sonatypePassword).
  *

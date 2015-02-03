@@ -40,9 +40,9 @@ import weblogic.logging.LoggingHelper;
 
 /**
  * Delegates to a WebLogic <code>WorkManager</code>.
- * <p/>
+ *
  * If no WorkManager is configured for the runtime, the default WebLogic WorkManager will be used.
- * <p/>
+ *
  * TODO Implement lookup of configured work managers
  */
 @EagerInit

@@ -40,7 +40,7 @@ import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_C
  *    &lt;/connection.factories&gt;
  * &lt;/jms&gt;
  * </pre>
- * <p/> Note that the unqualified forms for connection factory and template definitions may be used: <code>&lt;connection.factory ...&gt;</code>. In this case,
+ *  Note that the unqualified forms for connection factory and template definitions may be used: <code>&lt;connection.factory ...&gt;</code>. In this case,
  * if more than one JMS provider is present, one will be selected.
  */
 @EagerInit

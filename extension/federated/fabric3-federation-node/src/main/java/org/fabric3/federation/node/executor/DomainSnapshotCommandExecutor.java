@@ -34,7 +34,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Executes a request for a snapshot from another runtime by returning this runtime's logical domain view.
- * <p/>
+ *
  * The current snapshot is cached until it is invalidated by a deployment event.
  */
 @EagerInit

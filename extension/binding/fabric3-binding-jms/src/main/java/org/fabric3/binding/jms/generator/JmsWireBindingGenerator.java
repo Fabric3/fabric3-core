@@ -187,7 +187,7 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
 
     /**
      * Verifies a response connection factory destination is provided on a service for request-response MEP.  If not, the request connection factory is used.
-     * <p/> Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of
+     *  Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of
      * the message request.
      *
      * @param metadata the JMS metadata

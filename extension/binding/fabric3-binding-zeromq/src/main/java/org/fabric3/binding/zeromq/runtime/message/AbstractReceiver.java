@@ -116,7 +116,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
 
     /**
      * Creates a WorkContext for the request.
-     * <p/>
+     *
      * client that is wired to it. Otherwise, it is null.
      *
      * @param header the serialized work context header

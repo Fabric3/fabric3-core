@@ -58,7 +58,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
- * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite. <p/> request/responseConnection are specified per the SCA JMS spec
+ * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite.  request/responseConnection are specified per the SCA JMS spec
  */
 @EagerInit
 public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBinding> {

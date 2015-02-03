@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
  * A wire from a reference to a service in the domain. A wire always targets a service in the domain (as opposed to a service hosted externally) and hence is
  * expressed using the SCA URI of the target service. A wire is expressed by using the <code>target</code> attribute of a <code>reference</code> element or
  * using the <code>wire</code> element. Furthermore, a wire may be unbound or explicitly configured with a binding. If the wire is unbound and crosses process
- * boundaries, it will be bound by the runtime using the SCA binding. <p/> During deployment, wires are created and resolved incrementally. A wire is created
+ * boundaries, it will be bound by the runtime using the SCA binding.  During deployment, wires are created and resolved incrementally. A wire is created
  * for When a wire is instantiated, its source reference and target service URI are resolved against the domain.
  */
 public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {

@@ -72,7 +72,7 @@ public class ArchiveUtils {
 
     /**
      * Returns the archive file for the given profile in the Maven-based repository directory.
-     * <p/>
+     *
      * The search algorithm is simple: calculate the Maven archive name using profile-[name]-[version]-bin.zip and find it relative to the provided directory
      *
      * @param profile   the profile name; if not prefixed with 'profile-', it will be appended/
@@ -108,7 +108,7 @@ public class ArchiveUtils {
 
     /**
      * Returns the archive file for the given extension in the Maven-based repository directory.
-     * <p/>
+     *
      * The search algorithm is simple: calculate the Maven archive name using [name]-[version].jar and find it relative to the provided directory
      *
      * @param extension the extension name, which is the Maven artifact id

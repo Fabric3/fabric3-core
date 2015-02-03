@@ -47,8 +47,8 @@ public class JAXBQNameMapperImpl implements JAXBQNameMapper {
 
     /**
      * Derives an XML namespace from a Java package according to JAXB rules. For example, org.foo is rendered as http://foo.org/.
-     * <p/>
-     * <p/>
+     *
+     *
      * TODO this is duplicated in the Metro extension
      *
      * @param type the Java type
