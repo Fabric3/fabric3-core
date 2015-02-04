@@ -34,7 +34,6 @@ import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
@@ -52,18 +51,12 @@ import org.w3c.dom.Document;
  * Base class for component builders that create Java-based components.
  */
 public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
-    protected ClassLoaderRegistry classLoaderRegistry;
     protected IntrospectionHelper helper;
     private HostInfo info;
     private PropertySupplierBuilder propertyBuilder;
     private ManagementService managementService;
 
-    protected PojoComponentBuilder(ClassLoaderRegistry registry,
-                                   PropertySupplierBuilder propertyBuilder,
-                                   ManagementService managementService,
-                                   IntrospectionHelper helper,
-                                   HostInfo info) {
-        this.classLoaderRegistry = registry;
+    protected PojoComponentBuilder(PropertySupplierBuilder propertyBuilder, ManagementService managementService, IntrospectionHelper helper, HostInfo info) {
         this.propertyBuilder = propertyBuilder;
         this.managementService = managementService;
         this.helper = helper;
@@ -87,14 +80,14 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
                 Type type = factory.getGenericType(source);
                 DataType dataType = getDataType(type, typeMapping);
 
-                ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
+                ClassLoader classLoader = factory.getImplementationClass().getClassLoader();
                 boolean many = propertyDefinition.isMany();
                 factory.setSupplier(source, propertyBuilder.createSupplier(name, dataType, value, many, classLoader));
             }
         }
     }
 
-    protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws Fabric3Exception {
+    protected void export(PojoComponentDefinition definition, AtomicComponent component) throws Fabric3Exception {
         if (definition.isManaged()) {
             ManagementInfo info = definition.getManagementInfo();
             URI uri = definition.getComponentUri();

@@ -33,6 +33,6 @@ public class InvalidTimerInterface extends JavaValidationFailure {
     }
 
     public String getMessage() {
-        return "Component must implement java.lang.Runnable: " + implementation.getImplementationClass();
+        return "Component must implement java.lang.Runnable: " + implementation.getImplementationClass().getName();
     }
 }

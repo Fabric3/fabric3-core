@@ -31,9 +31,8 @@ public interface ImplementationManagerFactoryBuilder {
      * Builds a manager from a definition.
      *
      * @param managerDefinition the definition that describes the provider
-     * @param classLoader       the classloader to use to load any implementation classes
      * @return a provider built from the supplied definition
      * @throws Fabric3Exception if there was a problem with the definition
      */
-    ImplementationManagerFactory build(ImplementationManagerDefinition managerDefinition, ClassLoader classLoader) throws Fabric3Exception;
+    ImplementationManagerFactory build(ImplementationManagerDefinition managerDefinition) throws Fabric3Exception;
 }

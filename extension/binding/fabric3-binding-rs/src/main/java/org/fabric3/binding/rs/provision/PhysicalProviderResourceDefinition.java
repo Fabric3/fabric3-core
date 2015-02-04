@@ -29,14 +29,12 @@ public class PhysicalProviderResourceDefinition extends PhysicalResourceDefiniti
 
     private URI providerUri;
     private Class<? extends Annotation> bindingAnnotation;
-    private URI contributionUri;
     private Class<?> providerClass;
 
-    public PhysicalProviderResourceDefinition(URI providerUri, Class<? extends Annotation> bindingAnnotation, Class<?> providerClass, URI contributionUri) {
+    public PhysicalProviderResourceDefinition(URI providerUri, Class<? extends Annotation> bindingAnnotation, Class<?> providerClass) {
         this.providerUri = providerUri;
         this.bindingAnnotation = bindingAnnotation;
         this.providerClass = providerClass;
-        this.contributionUri = contributionUri;
     }
 
     public URI getProviderUri() {
@@ -49,10 +47,6 @@ public class PhysicalProviderResourceDefinition extends PhysicalResourceDefiniti
 
     public Class<?> getProviderClass() {
         return providerClass;
-    }
-
-    public URI getContributionUri() {
-        return contributionUri;
     }
 
 }

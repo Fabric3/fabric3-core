@@ -78,7 +78,7 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
         processIntervalMethod(context, implementation);
         validateData(startLocation, context, data);
 
-        String implClass = implementation.getImplementationClass();
+        String implClass = implementation.getImplementationClass().getName();
         InjectingComponentType componentType = new InjectingComponentType(implClass);
         introspector.introspect(componentType, context);
         implementation.setComponentType(componentType);
@@ -133,21 +133,23 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
             LoaderUtil.skipToEndElement(reader);
             return false;
         }
-        implementation.setImplementationClass(implClass);
+        Class<?> clazz;
         try {
-            Class<?> clazz = context.getClassLoader().loadClass(implClass);
-            if (!(Runnable.class.isAssignableFrom(clazz))) {
-                InvalidTimerInterface failure = new InvalidTimerInterface(clazz, implementation);
-                context.addError(failure);
-                LoaderUtil.skipToEndElement(reader);
-                return false;
-
-            }
+            clazz = context.getClassLoader().loadClass(implClass);
         } catch (ClassNotFoundException e) {
             ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(implClass, e.getMessage(), implementation);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return false;
+        }
+
+        implementation.setImplementationClass(clazz);
+        if (!(Runnable.class.isAssignableFrom(clazz))) {
+            InvalidTimerInterface failure = new InvalidTimerInterface(clazz, implementation);
+            context.addError(failure);
+            LoaderUtil.skipToEndElement(reader);
+            return false;
+
         }
         return true;
     }
@@ -178,7 +180,7 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
 
     private void processIntervalMethod(IntrospectionContext context, TimerImplementation implementation) throws XMLStreamException {
         try {
-            String name = implementation.getImplementationClass();
+            String name = implementation.getImplementationClass().getName();
             Class<?> clazz = context.getClassLoader().loadClass(name);
             Method intervalMethod = clazz.getMethod("nextInterval");
             Class<?> type = intervalMethod.getReturnType();

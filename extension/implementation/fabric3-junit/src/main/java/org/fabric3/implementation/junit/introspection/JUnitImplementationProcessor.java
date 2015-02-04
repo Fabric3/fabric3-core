@@ -48,7 +48,7 @@ public class JUnitImplementationProcessor implements ImplementationProcessor<JUn
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
         for (Service<ComponentType> service : componentType.getServices().values()) {
-            if (service.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
+            if (service.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass().getName())) {
                 JUnitBinding bindingDefinition = new JUnitBinding(null);
                 service.addBinding(bindingDefinition);
                 break;
@@ -57,9 +57,8 @@ public class JUnitImplementationProcessor implements ImplementationProcessor<JUn
     }
 
     public void process(Component<JUnitImplementation> component, Class<?> clazz, IntrospectionContext context) {
-        String name = clazz.getName();
-        JUnitImplementation implementation = new JUnitImplementation(name);
-        InjectingComponentType componentType = new InjectingComponentType(name);
+        JUnitImplementation implementation = new JUnitImplementation(clazz);
+        InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
         implementation.setComponentType(componentType);
         component.setImplementation(implementation);
         process(component, context);

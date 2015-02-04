@@ -46,7 +46,7 @@ public class TimerImplementationProcessor extends AbstractPojoImplementationProc
 
     protected JavaImplementation createImplementation(Class<?> clazz, IntrospectionContext context) {
         TimerImplementation implementation = new TimerImplementation();
-        implementation.setImplementationClass(clazz.getName());
+        implementation.setImplementationClass(clazz);
         InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
         implementation.setComponentType(componentType);
 

@@ -29,6 +29,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.model.type.system.SystemImplementation;
@@ -65,9 +66,17 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
             introspectionContext.addError(failure);
             return null;
         }
+        Class<?> clazz;
+        try {
+            clazz = introspectionContext.getClassLoader().loadClass(implClass);
+        } catch (ClassNotFoundException e) {
+            InvalidValue failure = new InvalidValue("Implementation class not found:" + implClass, startLocation);
+            introspectionContext.addError(failure);
+            return null;
+        }
         LoaderUtil.skipToEndElement(reader);
 
-        implementation.setImplementationClass(implClass);
+        implementation.setImplementationClass(clazz);
         InjectingComponentType componentType = new InjectingComponentType(implClass);
         implementationIntrospector.introspect(componentType, introspectionContext);
         implementation.setComponentType(componentType);

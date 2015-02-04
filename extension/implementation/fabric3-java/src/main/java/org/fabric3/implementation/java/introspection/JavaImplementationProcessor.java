@@ -37,7 +37,7 @@ public class JavaImplementationProcessor extends AbstractPojoImplementationProce
 
     protected JavaImplementation createImplementation(Class<?> clazz, IntrospectionContext context) {
         JavaImplementation implementation = new JavaImplementation();
-        implementation.setImplementationClass(clazz.getName());
+        implementation.setImplementationClass(clazz);
         InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
         implementation.setComponentType(componentType);
         return implementation;

@@ -19,6 +19,7 @@ package org.fabric3.implementation.junit.introspection;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.StringReader;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -35,8 +36,8 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  *
  */
 public class JUnitImplementationLoaderTestCase extends TestCase {
-    private static final String XML = "<junit class='org.fabric3.test.Foo'/>";
-    private static final String CONFIGURATION_XML = "<junit class='org.fabric3.test.Foo'>" +
+    private static final String XML = "<junit class='" + JUnitImplementationLoaderTestCase.Foo.class.getName() + "'/>";
+    private static final String CONFIGURATION_XML = "<junit class='" + JUnitImplementationLoaderTestCase.Foo.class.getName() + "'>" +
                                                     "   <configuration>" +
                                                     "      <username>username</username>" +
                                                     "      <password>password</password>" +
@@ -46,16 +47,16 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
     private JUnitImplementationLoader loader;
 
     public void testLoad() throws Exception {
-        IntrospectionContext context = new DefaultIntrospectionContext();
+        IntrospectionContext context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(XML));
         reader.nextTag();
         JUnitImplementation definition = loader.load(reader, context);
-        assertEquals("org.fabric3.test.Foo", definition.getImplementationClass());
+        assertEquals(JUnitImplementationLoaderTestCase.Foo.class.getName(), definition.getImplementationClass().getName());
     }
 
     public void testConfigurationLoad() throws Exception {
-        IntrospectionContext context = new DefaultIntrospectionContext();
+        IntrospectionContext context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(CONFIGURATION_XML));
         reader.nextTag();
@@ -77,7 +78,7 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
             service.setServiceContract(new JavaServiceContract() {
 
                 public String getQualifiedInterfaceName() {
-                    return "org.fabric3.test.Foo";
+                    return JUnitImplementationLoaderTestCase.Foo.class.getName();
                 }
             });
             componentType.add(service);
@@ -85,5 +86,9 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
         });
         EasyMock.replay(processor);
         loader = new JUnitImplementationLoader(processor);
+    }
+
+    public static class Foo {
+
     }
 }

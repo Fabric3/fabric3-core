@@ -25,11 +25,13 @@ import javax.xml.stream.XMLStreamReader;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBinding;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
+import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -50,7 +52,16 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
 
     public JUnitImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         String className = reader.getAttributeValue(null, "class");
-        JUnitImplementation implementation = new JUnitImplementation(className);
+        Class<?> clazz;
+        try {
+            clazz = context.getClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) {
+            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(className, e.getMessage(), null);
+            context.addError(failure);
+            LoaderUtil.skipToEndElement(reader);
+            return null;
+        }
+        JUnitImplementation implementation = new JUnitImplementation(clazz);
 
         validateAttributes(reader, context, implementation);
 
@@ -62,7 +73,7 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
         ContextConfiguration configuration = loadConfiguration(reader, implementation, context);
         for (Service<ComponentType> service : implementation.getComponentType().getServices().values()) {
-            if (service.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
+            if (service.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass().getName())) {
                 JUnitBinding bindingDefinition = new JUnitBinding(configuration);
                 service.addBinding(bindingDefinition);
                 break;

@@ -54,7 +54,7 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
                                   @Reference ManagementService managementService,
                                   @Reference IntrospectionHelper helper,
                                   @Reference HostInfo info) {
-        super(classLoaderRegistry, propertyBuilder, managementService, helper, info);
+        super(propertyBuilder, managementService, helper, info);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }
@@ -62,26 +62,24 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
     public SystemComponent build(SystemComponentDefinition definition) throws Fabric3Exception {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
         // get the scope container for this component
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
 
         // create the InstanceFactoryProvider based on the definition in the model
         ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
-        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
+        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
         createPropertyFactories(definition, factory);
 
         boolean eager = definition.isEagerInit();
         SystemComponent component = new SystemComponent(uri, factory, scopeContainer, deployable, eager);
-        export(definition, classLoader, component);
+        export(definition, component);
         return component;
     }
 
     public void dispose(SystemComponentDefinition definition, SystemComponent component) throws Fabric3Exception {
         dispose(definition);
     }
-
 
 }

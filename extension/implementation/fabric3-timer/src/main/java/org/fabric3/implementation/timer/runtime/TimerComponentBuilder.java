@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.model.type.component.Scope;
@@ -75,7 +74,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                  @Reference EventService eventService,
                                  @Reference HostInfo info,
                                  @Monitor InvokerMonitor monitor) {
-        super(classLoaderRegistry, propertyBuilder, managementService, helper, info);
+        super(propertyBuilder, managementService, helper, info);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
         this.timerService = timerService;
@@ -94,19 +93,13 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     public TimerComponent build(TimerComponentDefinition definition) {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
         Scope scopeName = definition.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
-        Class<?> implClass;
-        try {
-            implClass = classLoader.loadClass(managerDefinition.getImplementationClass());
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
-        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
+        Class<?> implClass = managerDefinition.getImplementationClass();
+        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
         createPropertyFactories(definition, factory);
         TimerData data = definition.getTriggerData();
@@ -129,7 +122,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
             scheduleQueue.add(component);
         }
         buildContexts(component, factory);
-        export(definition, classLoader, component);
+        export(definition, component);
         return component;
     }
 

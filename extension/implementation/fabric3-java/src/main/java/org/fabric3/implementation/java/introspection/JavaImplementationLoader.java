@@ -60,9 +60,19 @@ public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaI
             LoaderUtil.skipToEndElement(reader);
             return implementation;
         }
+        Class<?> clazz;
+        try {
+            clazz = introspectionContext.getClassLoader().loadClass(implClass);
+        } catch (ClassNotFoundException e) {
+            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(implClass, e.getMessage(), implementation);
+            introspectionContext.addError(failure);
+            LoaderUtil.skipToEndElement(reader);
+            return null;
+        }
+
         LoaderUtil.skipToEndElement(reader);
 
-        implementation.setImplementationClass(implClass);
+        implementation.setImplementationClass(clazz);
         InjectingComponentType componentType = new InjectingComponentType(implClass);
         introspector.introspect(componentType, introspectionContext);
         implementation.setComponentType(componentType);

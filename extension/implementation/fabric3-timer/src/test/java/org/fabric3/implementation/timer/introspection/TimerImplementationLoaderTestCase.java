@@ -70,14 +70,14 @@ public class TimerImplementationLoaderTestCase extends TestCase {
 
     public void testRecurringScheduleLoad() throws Exception {
         TimerImplementation implementation = loader.load(createReader(RECURRING), context);
-        assertEquals(TestTimer.class.getName(), implementation.getImplementationClass());
+        assertEquals(TestTimer.class, implementation.getImplementationClass());
         assertEquals(TestInterval.class.getName(), implementation.getTimerData().getIntervalClass());
         assertFalse(context.hasErrors());
     }
 
     public void testFixedLoad() throws Exception {
         TimerImplementation implementation = loader.load(createReader(FIXED), context);
-        assertEquals(TestTimer.class.getName(), implementation.getImplementationClass());
+        assertEquals(TestTimer.class, implementation.getImplementationClass());
         assertEquals(1000, implementation.getTimerData().getFixedRate());
         assertEquals(2000, implementation.getTimerData().getInitialDelay());
         assertEquals(TimeUnit.SECONDS, implementation.getTimerData().getTimeUnit());
@@ -86,7 +86,7 @@ public class TimerImplementationLoaderTestCase extends TestCase {
 
     public void testRepeatIntervalLoad() throws Exception {
         TimerImplementation implementation = loader.load(createReader(INTERVAL), context);
-        assertEquals(TestTimer.class.getName(), implementation.getImplementationClass());
+        assertEquals(TestTimer.class, implementation.getImplementationClass());
         assertEquals(1000, implementation.getTimerData().getRepeatInterval());
         assertEquals(2000, implementation.getTimerData().getInitialDelay());
         assertEquals(TimeUnit.SECONDS, implementation.getTimerData().getTimeUnit());
@@ -95,7 +95,7 @@ public class TimerImplementationLoaderTestCase extends TestCase {
 
     public void testRepeatFireOnceLoad() throws Exception {
         TimerImplementation implementation = loader.load(createReader(FIRE_ONCE), context);
-        assertEquals(TestTimer.class.getName(), implementation.getImplementationClass());
+        assertEquals(TestTimer.class, implementation.getImplementationClass());
         assertEquals(1000, implementation.getTimerData().getFireOnce());
         assertEquals(TimeUnit.SECONDS, implementation.getTimerData().getTimeUnit());
         assertFalse(context.hasErrors());

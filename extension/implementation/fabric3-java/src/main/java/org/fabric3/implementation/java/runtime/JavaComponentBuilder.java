@@ -29,7 +29,6 @@ import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -47,29 +46,27 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
 
     public JavaComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                 @Reference ImplementationManagerFactoryBuilder factoryBuilder,
-                                @Reference ClassLoaderRegistry classLoaderRegistry,
                                 @Reference PropertySupplierBuilder propertyBuilder,
                                 @Reference ManagementService managementService,
                                 @Reference IntrospectionHelper helper,
                                 @Reference HostInfo info) {
-        super(classLoaderRegistry, propertyBuilder, managementService, helper, info);
+        super(propertyBuilder, managementService, helper, info);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }
 
-    public JavaComponent build(JavaComponentDefinition definition)  {
+    public JavaComponent build(JavaComponentDefinition definition) {
         return definition.getInstance() != null ? buildNonManagedComponent(definition) : buildManagedComponent(definition);
     }
 
-    public void dispose(JavaComponentDefinition definition, JavaComponent component)  {
+    public void dispose(JavaComponentDefinition definition, JavaComponent component) {
         dispose(definition);
     }
 
-    private JavaComponent buildManagedComponent(JavaComponentDefinition definition)  {
+    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) {
         URI uri = definition.getComponentUri();
 
         QName deployable = definition.getDeployable();
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
         // get the scope container for this component
         Scope scopeName = definition.getScope();
@@ -77,7 +74,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
 
         // create the InstanceFactoryProvider based on the definition in the model
         ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
-        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
+        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
         createPropertyFactories(definition, factory);
 
@@ -85,7 +82,7 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
 
         JavaComponent component = new JavaComponent(uri, factory, scopeContainer, deployable, eager);
         buildContexts(component, factory);
-        export(definition, classLoader, component);
+        export(definition, component);
         return component;
     }
 

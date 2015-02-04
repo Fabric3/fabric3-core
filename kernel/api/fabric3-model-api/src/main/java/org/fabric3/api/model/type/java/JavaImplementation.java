@@ -24,31 +24,35 @@ import org.fabric3.api.model.type.component.Implementation;
  * Represents a Java component implementation type.
  */
 public class JavaImplementation extends Implementation<InjectingComponentType> {
-    private String implementationClass;
+    private Class<?> implementationClass;
     private transient Object instance;
 
     public JavaImplementation() {
     }
 
+    public JavaImplementation(Class<?> clazz) {
+        this.implementationClass = clazz;
+    }
+
     public JavaImplementation(Object instance) {
         this.instance = instance;
-        this.implementationClass = instance.getClass().getName();
+        this.implementationClass = instance.getClass();
     }
 
     public String getType() {
         return "java";
     }
 
-    public String getImplementationClass() {
+    public Class<?> getImplementationClass() {
         return implementationClass;
     }
 
-    public void setImplementationClass(String implementationClass) {
-        this.implementationClass = implementationClass;
+    public void setImplementationClass(Class<?> clazz) {
+        this.implementationClass = clazz;
     }
 
     public String getImplementationName() {
-        return getImplementationClass();
+        return getImplementationClass().getName();
     }
 
     public Object getInstance() {

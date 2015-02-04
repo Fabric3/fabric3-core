@@ -38,7 +38,6 @@ public class ProviderResourceGenerator implements ResourceGenerator<ProviderReso
         URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);
         Class<? extends Annotation> bindingAnnotation = definition.getBindingAnnotation();
         Class<?> providerClass = definition.getProviderClass();
-        URI contributionUri = definition.getContributionUri();
-        return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, providerClass, contributionUri);
+        return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, providerClass);
     }
 }

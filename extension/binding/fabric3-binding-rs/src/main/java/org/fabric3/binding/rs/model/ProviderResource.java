@@ -17,7 +17,6 @@
 package org.fabric3.binding.rs.model;
 
 import java.lang.annotation.Annotation;
-import java.net.URI;
 
 import org.fabric3.api.model.type.component.Resource;
 
@@ -29,13 +28,11 @@ public class ProviderResource extends Resource {
     private String providerName;
     private Class<? extends Annotation> bindingAnnotation;
     private Class<?> providerClass;
-    private URI contributionUri;
 
-    public ProviderResource(String providerName, Class<? extends Annotation> bindingAnnotation, Class<?> providerClass, URI contributionUri) {
+    public ProviderResource(String providerName, Class<? extends Annotation> bindingAnnotation, Class<?> providerClass) {
         this.providerName = providerName;
         this.bindingAnnotation = bindingAnnotation;
         this.providerClass = providerClass;
-        this.contributionUri = contributionUri;
     }
 
     public String getProviderName() {
@@ -50,8 +47,5 @@ public class ProviderResource extends Resource {
         return providerClass;
     }
 
-    public URI getContributionUri() {
-        return contributionUri;
-    }
 
 }

@@ -24,33 +24,18 @@ import org.fabric3.api.model.type.java.JavaImplementation;
  *
  */
 public class JUnitImplementation extends JavaImplementation {
-    private static final long serialVersionUID = -5048471724313487914L;
-    private String implementationClass;
 
     /**
      * Constructor supplying the name of the JUnit test class
      *
-     * @param className the name of the JUnit test class
+     * @param clazz the JUnit test class
      */
-    public JUnitImplementation(String className) {
-        this.implementationClass = className;
+    public JUnitImplementation(Class<?> clazz) {
+        super(clazz);
     }
 
     public String getType() {
         return "junit";
-    }
-
-    /**
-     * Returns the name of the JUnit test class.
-     *
-     * @return the name of the JUnit test class
-     */
-    public String getImplementationClass() {
-        return implementationClass;
-    }
-
-    public String getImplementationName() {
-        return getImplementationClass();
     }
 
 }

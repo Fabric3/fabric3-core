@@ -118,8 +118,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         return logical;
     }
 
-    private <S, I extends S> Component<Implementation<?>> createDefinition(String name, Class<S> type, I instance, boolean introspect)
-            throws InvalidServiceContractException {
+    private <S, I extends S> Component<Implementation<?>> createDefinition(String name, Class<S> type, I instance, boolean introspect) {
 
         String implClassName = instance.getClass().getName();
 
@@ -128,7 +127,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         if (introspect) {
             // introspect the instance so it may be injected by the runtime with additional services
             SystemImplementation implementation = new SystemImplementation();
-            implementation.setImplementationClass(implClassName);
+            implementation.setImplementationClass(instance.getClass());
             InjectingComponentType componentType = new InjectingComponentType(implClassName);
             implementationIntrospector.introspect(componentType, context);
             implementation.setComponentType(componentType);

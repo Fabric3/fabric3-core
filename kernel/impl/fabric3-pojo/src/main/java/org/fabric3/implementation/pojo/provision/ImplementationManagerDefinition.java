@@ -33,7 +33,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
  */
 public class ImplementationManagerDefinition {
 
-    private String implementationClass;
+    private Class<?>  implementationClass;
     private Constructor<?> constructor;
     private Method initMethod;
     private Method destroyMethod;
@@ -120,17 +120,17 @@ public class ImplementationManagerDefinition {
      *
      * @return Implementation class.
      */
-    public String getImplementationClass() {
+    public Class<?>  getImplementationClass() {
         return implementationClass;
     }
 
     /**
      * Sets the implementation class.
      *
-     * @param implementationClass Implementation class.
+     * @param clazz Implementation class.
      */
-    public void setImplementationClass(String implementationClass) {
-        this.implementationClass = implementationClass;
+    public void setImplementationClass(Class<?>  clazz) {
+        this.implementationClass = clazz;
     }
 
     /**

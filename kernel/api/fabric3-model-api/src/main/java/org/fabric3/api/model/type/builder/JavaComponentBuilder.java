@@ -78,7 +78,7 @@ public class JavaComponentBuilder extends ComponentBuilder<JavaComponentBuilder>
         InjectingComponentType componentType = new InjectingComponentType(className);
         JavaImplementation implementation = new JavaImplementation(instance);
         implementation.setComponentType(componentType);
-        implementation.setImplementationClass(className);
+        implementation.setImplementationClass(clazz);
         component = new Component<>(name);
         component.setImplementation(implementation);
     }
@@ -87,14 +87,14 @@ public class JavaComponentBuilder extends ComponentBuilder<JavaComponentBuilder>
         String className = clazz.getName();
         InjectingComponentType componentType = new InjectingComponentType(className);
         JavaImplementation implementation = new JavaImplementation();
-        implementation.setImplementationClass(className);
+        implementation.setImplementationClass(clazz);
         implementation.setComponentType(componentType);
         component = new Component<>(name);
         component.setImplementation(implementation);
     }
 
     private JavaComponentBuilder implementation(Class<?> clazz) {
-        component.getImplementation().setImplementationClass(clazz.getName());
+        component.getImplementation().setImplementationClass(clazz);
         return this;
     }
 

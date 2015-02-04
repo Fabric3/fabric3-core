@@ -45,8 +45,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
     private ImplementationManagerFactoryBuilderImpl builder;
     private ImplementationManagerDefinition definition;
-    private Constructor<Foo> constructor;
-    private ClassLoader cl;
 
     /**
      * Verifies an InjectableAttribute is set properly for constructor parameters
@@ -54,7 +52,7 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
      * @throws Exception
      */
     public void testCdiSource() throws Exception {
-        ImplementationManagerFactory factory = builder.build(definition, cl);
+        ImplementationManagerFactory factory = builder.build(definition);
         assertEquals(String.class, factory.getMemberType(new Injectable(InjectableType.PROPERTY, "a")));
     }
 
@@ -69,7 +67,7 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
         InjectionSite injectionSite = new FieldInjectionSite(field);
         definition.getPostConstruction().put(injectionSite, injectable);
 
-        ImplementationManagerFactory factory = builder.build(definition, cl);
+        ImplementationManagerFactory factory = builder.build(definition);
         Class<?> clazz = factory.getMemberType(injectable);
         assertEquals(Bar.class, clazz);
     }
@@ -85,7 +83,7 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
         InjectionSite injectionSite = new MethodInjectionSite(method, 0);
         definition.getPostConstruction().put(injectionSite, injectable);
 
-        ImplementationManagerFactory factory = builder.build(definition, cl);
+        ImplementationManagerFactory factory = builder.build(definition);
         Class<?> clazz = factory.getMemberType(injectable);
         assertEquals(Bar.class, clazz);
     }
@@ -99,11 +97,10 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
         EasyMock.replay(reflectionFactory);
 
         builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory);
-        cl = getClass().getClassLoader();
-        constructor = Foo.class.getConstructor(String.class, Long.class);
+        Constructor<Foo> constructor = Foo.class.getConstructor(String.class, Long.class);
 
         definition = new ImplementationManagerDefinition();
-        definition.setImplementationClass(Foo.class.getName());
+        definition.setImplementationClass(Foo.class);
         definition.setConstructor(constructor);
         definition.setInitMethod(Foo.class.getMethod("init"));
         definition.setDestroyMethod(Foo.class.getMethod("destroy"));

@@ -22,9 +22,12 @@ package org.fabric3.implementation.system.introspection;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.model.type.system.SystemImplementation;
@@ -50,9 +53,8 @@ public class SystemImplementationLoaderTestCase extends TestCase {
         EasyMock.replay(reader);
 
         SystemImplementation impl = loader.load(reader, context);
-        assertEquals(getClass().getName(), impl.getImplementationClass());
+        assertEquals(getClass(), impl.getImplementationClass());
         EasyMock.verify(reader);
-        EasyMock.verify(context);
         EasyMock.verify(implementationIntrospector);
     }
 
@@ -61,8 +63,7 @@ public class SystemImplementationLoaderTestCase extends TestCase {
         super.setUp();
         implementationIntrospector = EasyMock.createMock(ImplementationIntrospector.class);
 
-        context = EasyMock.createMock(IntrospectionContext.class);
-        EasyMock.replay(context);
+        context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
 
         reader = EasyMock.createMock(XMLStreamReader.class);
 

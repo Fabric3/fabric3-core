@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  * Represents the system composite implementation
  */
 public class SystemImplementation extends Implementation<InjectingComponentType> {
-    private String implementationClass;
+    private Class<?> implementationClass;
 
     public SystemImplementation() {
     }
@@ -35,20 +35,20 @@ public class SystemImplementation extends Implementation<InjectingComponentType>
         return "system";
     }
 
-    public SystemImplementation(String implementationClass) {
+    public SystemImplementation(Class<?> implementationClass) {
         this.implementationClass = implementationClass;
     }
 
-    public String getImplementationClass() {
+    public Class<?> getImplementationClass() {
         return implementationClass;
     }
 
-    public void setImplementationClass(String implementationClass) {
+    public void setImplementationClass(Class<?> implementationClass) {
         this.implementationClass = implementationClass;
     }
 
     public String getImplementationName() {
-        return getImplementationClass();
+        return getImplementationClass().getName();
     }
 
 }

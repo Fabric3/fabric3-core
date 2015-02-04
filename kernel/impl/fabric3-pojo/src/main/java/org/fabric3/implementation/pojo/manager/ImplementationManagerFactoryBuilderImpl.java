@@ -47,7 +47,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         this.reflectionFactory = reflectionFactory;
     }
 
-    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws Fabric3Exception {
+    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition) throws Fabric3Exception {
         URI componentUri = definition.getComponentUri();
         Constructor<?> ctr = definition.getConstructor();
 
@@ -80,7 +80,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
                                                     initInvoker,
                                                     destroyInvoker,
                                                     reinjectable,
-                                                    cl,
+                                                    definition.getImplementationClass().getClassLoader(),
                                                     reflectionFactory);
     }
 
