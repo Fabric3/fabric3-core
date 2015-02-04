@@ -30,12 +30,7 @@ import org.fabric3.api.model.type.java.Signature;
  * Represents a service contract specified using a Java interface
  */
 public class JavaServiceContract extends ServiceContract {
-
-    private static final long serialVersionUID = -7360275776965712638L;
-    // NOTE: this class cannot reference the actual Java class it represents as contract comparison may be performed
-    // across classloaders. This class may also be deserialized as part of a domain assembly in a context where the
-    // Java class may not be present on the classpath.
-    private String interfaceClass;
+    private Class<?> interfaceClass;
     private List<String> interfaces;
     private String superType;
     private List<Signature> methodSignatures;
@@ -56,15 +51,15 @@ public class JavaServiceContract extends ServiceContract {
     }
 
     public String getQualifiedInterfaceName() {
-        return getInterfaceClass();
+        return getInterfaceClass().getName();
     }
 
     /**
-     * Returns the fully qualified class name used to represent the service contract.
+     * Returns the class used to represent the service contract.
      *
      * @return the class name used to represent the service contract
      */
-    public String getInterfaceClass() {
+    public Class<?> getInterfaceClass() {
         return interfaceClass;
     }
 
@@ -81,7 +76,7 @@ public class JavaServiceContract extends ServiceContract {
     }
 
     private void introspectInterface(Class<?> interfaceClass) {
-        this.interfaceClass = interfaceClass.getName();
+        this.interfaceClass = interfaceClass;
         methodSignatures = new ArrayList<>();
         Class<?> superClass = interfaceClass.getSuperclass();
         if (superClass != null) {

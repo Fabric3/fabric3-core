@@ -28,15 +28,15 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public class RsWireTargetDefinition extends PhysicalWireTargetDefinition {
     private static final long serialVersionUID = -4324727803731009324L;
 	
-    private final String rsInterface;
+    private Class<?> rsInterface;
 	
-    public RsWireTargetDefinition(URI targetURI, String clazz) {
+    public RsWireTargetDefinition(URI targetURI, Class<?> clazz) {
 		super();
 		setUri(targetURI);
 		rsInterface = clazz;
 	}
 
-	public String getProxyInterface() {
+	public Class<?> getProxyInterface() {
 		return rsInterface;
 	}
     

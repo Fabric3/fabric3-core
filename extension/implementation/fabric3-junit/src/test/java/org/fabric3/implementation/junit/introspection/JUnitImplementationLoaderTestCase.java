@@ -75,7 +75,6 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
             InjectingComponentType componentType = (InjectingComponentType) EasyMock.getCurrentArguments()[0];
             Service<ComponentType> service = new Service<>("Foo");
             service.setServiceContract(new JavaServiceContract() {
-                private static final long serialVersionUID = 6696779955276690454L;
 
                 public String getQualifiedInterfaceName() {
                     return "org.fabric3.test.Foo";

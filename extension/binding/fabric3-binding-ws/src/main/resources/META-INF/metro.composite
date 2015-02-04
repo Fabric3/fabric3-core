@@ -39,10 +39,6 @@
         <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>
 
-    <component name="WireAttacherHelper">
-        <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.WireAttacherHelperImpl"/>
-    </component>
-
     <component name="EndpointService">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.runtime.core.EndpointServiceImpl"/>
         <reference name="executorService" target="RuntimeThreadPoolExecutor"/>

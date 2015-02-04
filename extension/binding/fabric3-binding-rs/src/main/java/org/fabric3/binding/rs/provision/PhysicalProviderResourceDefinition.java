@@ -16,6 +16,7 @@
  */
 package org.fabric3.binding.rs.provision;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
@@ -27,11 +28,11 @@ public class PhysicalProviderResourceDefinition extends PhysicalResourceDefiniti
     private static final long serialVersionUID = 122854501779816160L;
 
     private URI providerUri;
-    private String bindingAnnotation;
+    private Class<? extends Annotation> bindingAnnotation;
     private URI contributionUri;
-    private String providerClass;
+    private Class<?> providerClass;
 
-    public PhysicalProviderResourceDefinition(URI providerUri, String bindingAnnotation, String providerClass, URI contributionUri) {
+    public PhysicalProviderResourceDefinition(URI providerUri, Class<? extends Annotation> bindingAnnotation, Class<?> providerClass, URI contributionUri) {
         this.providerUri = providerUri;
         this.bindingAnnotation = bindingAnnotation;
         this.providerClass = providerClass;
@@ -42,11 +43,11 @@ public class PhysicalProviderResourceDefinition extends PhysicalResourceDefiniti
         return providerUri;
     }
 
-    public String getBindingAnnotation() {
+    public Class<? extends Annotation> getBindingAnnotation() {
         return bindingAnnotation;
     }
 
-    public String getProviderClass() {
+    public Class<?> getProviderClass() {
         return providerClass;
     }
 

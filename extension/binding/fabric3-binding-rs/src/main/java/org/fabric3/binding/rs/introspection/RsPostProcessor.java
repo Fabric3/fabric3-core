@@ -35,6 +35,7 @@ import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.PostProcessor;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -57,19 +58,12 @@ public class RsPostProcessor implements PostProcessor {
         Path path = implClass.getAnnotation(Path.class);
         Service<ComponentType> bindingService = null;
         if (path == null) {
-            ClassLoader classLoader = implClass.getClassLoader();
             for (Service<ComponentType> service : componentType.getServices().values()) {
-                try {
-                    Class<?> interfaze = classLoader.loadClass(service.getServiceContract().getQualifiedInterfaceName());
-                    path = interfaze.getAnnotation(Path.class);
-                    if (path != null) {
-                        bindingService = service;
-                        break;
-                    }
-
-                } catch (ClassNotFoundException e) {
-                    // cannot happen
-                    throw new AssertionError(e);
+                Class<?> interfaze = ((JavaServiceContract) service.getServiceContract()).getInterfaceClass();
+                path = interfaze.getAnnotation(Path.class);
+                if (path != null) {
+                    bindingService = service;
+                    break;
                 }
             }
             if (path == null) {

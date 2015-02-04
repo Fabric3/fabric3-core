@@ -16,7 +16,6 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -35,33 +34,33 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
  */
 public class NonManagedComponentGenerator implements ComponentGenerator<LogicalComponent<NonManagedImplementation>> {
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
         String interfaze = reference.getServiceContract().getQualifiedInterfaceName();
         return new NonManagedPhysicalWireSourceDefinition(interfaze);
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<NonManagedImplementation> component) throws Fabric3Exception {
+    public PhysicalComponentDefinition generate(LogicalComponent<NonManagedImplementation> component) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
         String interfaze = producer.getServiceContract().getQualifiedInterfaceName();
         return new NonManagedPhysicalConnectionSourceDefinition(interfaze);
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
         throw new UnsupportedOperationException();
     }
 }

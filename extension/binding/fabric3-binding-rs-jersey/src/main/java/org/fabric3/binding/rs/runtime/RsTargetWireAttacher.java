@@ -28,9 +28,8 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(def.getClassLoaderId());
         List<InvocationChain> invocationChains = wire.getInvocationChains();
         URI uri = def.getUri();
-        String interfaze = def.getProxyInterface();
+        Class<?> interfaceClass = def.getProxyInterface();
         try {
-            Class<?> interfaceClass = targetClassLoader.loadClass(interfaze);
             for (InvocationChain chain : invocationChains) {
                 PhysicalOperationDefinition operation = chain.getPhysicalOperation();
                 String operationName = operation.getName();

@@ -32,7 +32,6 @@ import org.fabric3.binding.rs.runtime.container.RsContainer;
 import org.fabric3.binding.rs.runtime.container.RsContainerManager;
 import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -51,7 +50,6 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefinition> {
     private ServletHost servletHost;
-    private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
     private ProviderRegistry providerRegistry;
     private NameBindingFilterProvider provider;
@@ -59,13 +57,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     private Level logLevel = Level.WARNING;
 
     public RsSourceWireAttacher(@Reference ServletHost servletHost,
-                                @Reference ClassLoaderRegistry registry,
                                 @Reference RsContainerManager containerManager,
                                 @Reference ProviderRegistry providerRegistry,
                                 @Reference NameBindingFilterProvider provider,
                                 @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
-        this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
         this.providerRegistry = providerRegistry;
         this.provider = provider;
@@ -93,13 +89,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
             servletHost.registerMapping(mapping, container);
         }
 
-        try {
-            provision(source, wire, container);
-            monitor.provisionedEndpoint(sourceUri);
-        } catch (ClassNotFoundException e) {
-            String name = source.getRsClass();
-            throw new Fabric3Exception("Unable to load interface class " + name, e);
-        }
+        provision(source, wire, container);
+        monitor.provisionedEndpoint(sourceUri);
     }
 
     public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) {
@@ -118,15 +109,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         return servletMapping;
     }
 
-    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException, Fabric3Exception {
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
+    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container) {
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             invocationChains.put(operation.getName(), chain);
         }
 
-        Class<?> interfaze = classLoader.loadClass(sourceDefinition.getRsClass());
+        Class<?> interfaze = sourceDefinition.getRsClass();
         F3ResourceHandler handler = new F3ResourceHandler(interfaze, invocationChains);
 
         // Set the class loader to the runtime one so Jersey loads the Resource config properly

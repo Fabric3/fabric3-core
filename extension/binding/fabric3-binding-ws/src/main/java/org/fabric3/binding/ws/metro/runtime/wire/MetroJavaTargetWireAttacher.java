@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxySupplier;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -52,23 +50,18 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaWireTargetDefinition> {
 
-    private ClassLoaderRegistry registry;
-    private WireAttacherHelper wireAttacherHelper;
+    //    private ClassLoaderRegistry registry;
     private ArtifactCache artifactCache;
     private ExecutorService executorService;
     private XMLInputFactory xmlInputFactory;
     private InterceptorMonitor monitor;
 
-    public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
-                                       @Reference EndpointService endpointService,
-                                       @Reference WireAttacherHelper wireAttacherHelper,
+    public MetroJavaTargetWireAttacher(@Reference EndpointService endpointService,
                                        @Reference ArtifactCache artifactCache,
                                        @Reference(name = "executorService") ExecutorService executorService,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Monitor InterceptorMonitor monitor) {
         super(handlerRegistry);
-        this.registry = registry;
-        this.wireAttacherHelper = wireAttacherHelper;
         this.artifactCache = artifactCache;
         this.executorService = executorService;
         this.xmlInputFactory = XMLInputFactory.newFactory();
@@ -79,17 +72,9 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
-            URI classLoaderId = target.getSEIClassLoaderUri();
 
-            ClassLoader classLoader = registry.getClassLoader(classLoaderId);
-
-            String interfaze = target.getInterface();
-            byte[] bytes = target.getGeneratedInterface();
-
-            if (!(classLoader instanceof SecureClassLoader)) {
-                throw new Fabric3Exception("Classloader for " + interfaze + " must be a SecureClassLoader");
-            }
-            Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
+            Class<?> seiClass = target.getInterface();
+            ClassLoader classLoader = seiClass.getClassLoader();
 
             ClassLoader old = Thread.currentThread().getContextClassLoader();
 
@@ -114,13 +99,13 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
                 // if the target service is a callback, add the resolver
                 Supplier<?> proxyFactory = new MetroProxySupplier(endpointDefinition,
-                                                                       wsdlLocation,
-                                                                       generatedWsdl,
-                                                                       seiClass,
-                                                                       connectionConfiguration,
-                                                                       handlers,
-                                                                       executorService,
-                                                                       xmlInputFactory);
+                                                                  wsdlLocation,
+                                                                  generatedWsdl,
+                                                                  seiClass,
+                                                                  connectionConfiguration,
+                                                                  handlers,
+                                                                  executorService,
+                                                                  xmlInputFactory);
 
                 attachInterceptors(seiClass, target, wire, proxyFactory);
             } finally {

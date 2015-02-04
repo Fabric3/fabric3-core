@@ -16,6 +16,7 @@
  */
 package org.fabric3.binding.rs.model;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.fabric3.api.model.type.component.Resource;
@@ -24,14 +25,13 @@ import org.fabric3.api.model.type.component.Resource;
  *
  */
 public class ProviderResource extends Resource {
-    private static final long serialVersionUID = -2165312623150769527L;
 
     private String providerName;
-    private String bindingAnnotation;
-    private String providerClass;
+    private Class<? extends Annotation> bindingAnnotation;
+    private Class<?> providerClass;
     private URI contributionUri;
 
-    public ProviderResource(String providerName, String bindingAnnotation, String providerClass, URI contributionUri) {
+    public ProviderResource(String providerName, Class<? extends Annotation> bindingAnnotation, Class<?> providerClass, URI contributionUri) {
         this.providerName = providerName;
         this.bindingAnnotation = bindingAnnotation;
         this.providerClass = providerClass;
@@ -42,11 +42,11 @@ public class ProviderResource extends Resource {
         return providerName;
     }
 
-    public String getBindingAnnotation() {
+    public Class<? extends Annotation> getBindingAnnotation() {
         return bindingAnnotation;
     }
 
-    public String getProviderClass() {
+    public Class<?> getProviderClass() {
         return providerClass;
     }
 

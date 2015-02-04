@@ -29,6 +29,7 @@ import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -37,14 +38,13 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class RsWireBindingGenerator implements WireBindingGenerator<RsBinding> {
     public RsWireSourceDefinition generateSource(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
-        String interfaze = contract.getQualifiedInterfaceName();
+        Class<?> interfaze = ((JavaServiceContract) contract).getInterfaceClass();
         URI uri = binding.getDefinition().getTargetUri();
-
         return new RsWireSourceDefinition(interfaze, uri);
     }
 
     public RsWireTargetDefinition generateTarget(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
-        return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
+        return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), ((JavaServiceContract) contract).getInterfaceClass());
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBinding> binding,

@@ -29,9 +29,7 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
     private static final long serialVersionUID = 2898989563911925959L;
 
-    private String interfaze;
-    private byte[] generatedInterface;
-    private URI classLoaderUri;
+    private Class<?> interfaze;
     private Map<String, String> schemas;
 
     private URL wsdlLocation;
@@ -42,8 +40,6 @@ public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
      * @param serviceUri         the structural service URI
      * @param endpointDefinition endpoint metadata
      * @param interfaze          the service contract (SEI) name.
-     * @param generatedInterface the generated SEI bytes or null if no interface needed to be generated
-     * @param classLoaderUri     the classloader for SEI types
      * @param wsdl               the generated WSDL containing merged policy or null if no policy applies to the endpoint
      * @param schemas            the schemas imported by the generated WSDL or null
      * @param wsdlLocation       optional URL to the WSDL location
@@ -52,9 +48,7 @@ public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
      */
     public MetroJavaWireSourceDefinition(URI serviceUri,
                                          ServiceEndpointDefinition endpointDefinition,
-                                         String interfaze,
-                                         byte[] generatedInterface,
-                                         URI classLoaderUri,
+                                         Class<?> interfaze,
                                          String wsdl,
                                          Map<String, String> schemas,
                                          URL wsdlLocation,
@@ -62,28 +56,17 @@ public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
                                          List<PhysicalBindingHandlerDefinition> handlers) {
         super(serviceUri, endpointDefinition, wsdl, bidirectional, handlers);
         this.interfaze = interfaze;
-        this.generatedInterface = generatedInterface;
-        this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;
         this.wsdlLocation = wsdlLocation;
     }
 
     /**
-     * Returns the service contract name.
+     * Returns the service contract.
      *
-     * @return the service contract name
+     * @return the service contract
      */
-    public String getInterface() {
+    public Class<?> getInterface() {
         return interfaze;
-    }
-
-    /**
-     * Returns the generated SEI interface bytes.
-     *
-     * @return the generated SEI interface bytes
-     */
-    public byte[] getGeneratedInterface() {
-        return generatedInterface;
     }
 
     /**
@@ -104,12 +87,4 @@ public class MetroJavaWireSourceDefinition extends MetroWireSourceDefinition {
         return wsdlLocation;
     }
 
-    /**
-     * Returns the SEI classloader URI.
-     *
-     * @return the SEI classloader URI
-     */
-    public URI getSEIClassLoaderUri() {
-        return classLoaderUri;
-    }
 }

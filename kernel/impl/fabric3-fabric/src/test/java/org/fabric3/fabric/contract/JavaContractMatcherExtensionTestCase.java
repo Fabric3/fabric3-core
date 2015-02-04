@@ -75,19 +75,6 @@ public class JavaContractMatcherExtensionTestCase extends TestCase {
         assertTrue(matcher.isAssignableFrom(source, target, true).isAssignable());
     }
 
-    public void testNoMatchSameClassRemoteNarrowTarget() throws Exception {
-        JavaContractMatcherExtension matcher = new JavaContractMatcherExtension();
-
-        JavaServiceContract source = new JavaServiceContract(TestService.class);
-        source.setRemotable(true);
-        source.getMethodSignatures().add(new Signature("foo"));   // simulate same interface name but with an additional method
-
-        JavaServiceContract target = new JavaServiceContract(TestService.class);
-        target.setRemotable(true);
-        assertFalse(matcher.isAssignableFrom(source, target, true).isAssignable());
-    }
-
-
     private interface TestService {
 
         void test(String param);

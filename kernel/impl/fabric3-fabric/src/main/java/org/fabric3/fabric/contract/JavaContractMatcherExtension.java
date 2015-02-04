@@ -41,6 +41,9 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
         if (source == target) {
             return MATCH;
         }
+        if (source.getInterfaceClass().isAssignableFrom(target.getInterfaceClass())) {
+            return MATCH;
+        }
         if ((source.getSuperType() == null && target.getSuperType() != null)
                 || (source.getSuperType() != null && !source.getSuperType().equals(target.getSuperType()))) {
             if (reportErrors) {
@@ -49,7 +52,7 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
                 return NO_MATCH;
             }
         }
-        if (source.getInterfaceClass().equals(target.getInterfaceClass())) {
+        if (source.getQualifiedInterfaceName().equals(target.getQualifiedInterfaceName())) {
             for (Signature signature : source.getMethodSignatures()) {
                 if (!target.getMethodSignatures().contains(signature)) {
                     if (reportErrors) {
@@ -63,7 +66,7 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
         } else {
             // check the interfaces
             for (String superType : target.getInterfaces()) {
-                if (superType.equals(source.getInterfaceClass())) {
+                if (superType.equals(source.getInterfaceClass().getName())) {
                     // need to match params as well
                     return MATCH;
                 }

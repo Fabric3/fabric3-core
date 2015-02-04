@@ -37,7 +37,6 @@ import org.fabric3.binding.rs.runtime.provider.ProxyMessageBodyWriter;
 import org.fabric3.binding.rs.runtime.provider.ProxyObjectMapperContextResolver;
 import org.fabric3.binding.rs.runtime.provider.ProxyRequestFilter;
 import org.fabric3.binding.rs.runtime.provider.ProxyResponseFilter;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.Reference;
@@ -48,16 +47,13 @@ import org.objectweb.asm.Type;
  */
 public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResourceDefinition> {
     private ProviderRegistry providerRegistry;
-    private ClassLoaderRegistry classLoaderRegistry;
     private ComponentManager componentManager;
     private ProviderGenerator providerGenerator;
 
     public ProviderBuilder(@Reference ProviderRegistry providerRegistry,
-                           @Reference ClassLoaderRegistry classLoaderRegistry,
                            @Reference ComponentManager componentManager,
                            @Reference ProviderGenerator providerGenerator) {
         this.providerRegistry = providerRegistry;
-        this.classLoaderRegistry = classLoaderRegistry;
         this.componentManager = componentManager;
         this.providerGenerator = providerGenerator;
     }
@@ -68,9 +64,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
 
         Object provider = createProvider(definition);
         if (definition.getBindingAnnotation() != null) {
-            String bindingAnnotation = definition.getBindingAnnotation();
-            URI contributionUri = definition.getContributionUri();
-            Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
+            Class<? extends Annotation> annotationClass = definition.getBindingAnnotation();
             providerRegistry.registerNameFilter(providerUri, annotationClass, provider);
         } else {
             providerRegistry.registerGlobalProvider(providerUri, provider);
@@ -80,9 +74,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     @SuppressWarnings("unchecked")
     public void remove(PhysicalProviderResourceDefinition definition) {
         if (definition.getBindingAnnotation() != null) {
-            String bindingAnnotation = definition.getBindingAnnotation();
-            URI contributionUri = definition.getContributionUri();
-            Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
+            Class<? extends Annotation> annotationClass = definition.getBindingAnnotation();
             URI filterUri = definition.getProviderUri();
             providerRegistry.unregisterNameFilter(filterUri, annotationClass);
         } else {
@@ -95,8 +87,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     private Object createProvider(PhysicalProviderResourceDefinition definition) {
 
         try {
-            URI contributionUri = definition.getContributionUri();
-            Class<?> providerClass = classLoaderRegistry.loadClass(contributionUri, definition.getProviderClass());
+            Class<?> providerClass = definition.getProviderClass();
 
             URI filterUri = definition.getProviderUri();
 

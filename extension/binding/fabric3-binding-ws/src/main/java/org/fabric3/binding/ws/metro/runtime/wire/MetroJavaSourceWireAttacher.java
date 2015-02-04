@@ -21,7 +21,6 @@ import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URL;
-import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.JaxbInvoker;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -44,18 +42,12 @@ import org.oasisopen.sca.annotation.Reference;
  * Source wire attacher that provisions Java-based web service endpoints.
  */
 public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroJavaWireSourceDefinition> {
-    private ClassLoaderRegistry classLoaderRegistry;
-    private WireAttacherHelper wireAttacherHelper;
     private ArtifactCache artifactCache;
 
-    public MetroJavaSourceWireAttacher(@Reference ClassLoaderRegistry classLoaderRegistry,
-                                       @Reference WireAttacherHelper wireAttacherHelper,
-                                       @Reference ArtifactCache artifactCache,
+    public MetroJavaSourceWireAttacher(@Reference ArtifactCache artifactCache,
                                        @Reference EndpointService endpointService,
                                        @Reference BindingHandlerRegistry handlerRegistry) {
         super(endpointService, handlerRegistry);
-        this.classLoaderRegistry = classLoaderRegistry;
-        this.wireAttacherHelper = wireAttacherHelper;
         this.artifactCache = artifactCache;
     }
 
@@ -65,18 +57,10 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         QName portName = endpointDefinition.getPortName();
         URI servicePath = endpointDefinition.getServicePath();
         List<InvocationChain> invocationChains = wire.getInvocationChains();
-        URI classLoaderId = source.getSEIClassLoaderUri();
         URL wsdlLocation = source.getWsdlLocation();
 
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
-
-        String interfaze = source.getInterface();
-        byte[] bytes = source.getGeneratedInterface();
-
-        if (!(classLoader instanceof SecureClassLoader)) {
-            throw new Fabric3Exception("Classloader for " + interfaze + " must be a SecureClassLoader");
-        }
-        Class<?> seiClass = wireAttacherHelper.loadSEI(interfaze, bytes, (SecureClassLoader) classLoader);
+        Class<?> seiClass = source.getInterface();
+        ClassLoader classLoader = seiClass.getClassLoader();
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
 

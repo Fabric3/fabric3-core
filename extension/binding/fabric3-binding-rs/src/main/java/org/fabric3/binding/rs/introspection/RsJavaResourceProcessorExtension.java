@@ -81,16 +81,16 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
             }
 
         }
-        String bindingAnnotation = null;
+        Class<? extends Annotation> bindingAnnotation = null;
         for (Annotation annotation : clazz.getAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
             if (type.isAnnotationPresent(NameBinding.class)) {
-                bindingAnnotation = type.getName();
+                bindingAnnotation = type;
                 break;
             }
         }
         String name = component.getName();
-        ProviderResource providerResource = new ProviderResource(name, bindingAnnotation, implClass, contributionUri);
+        ProviderResource providerResource = new ProviderResource(name, bindingAnnotation, clazz, contributionUri);
         component.getParent().add(providerResource);
     }
 

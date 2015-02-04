@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -29,20 +28,16 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
     private static final long serialVersionUID = 5332578680612891881L;
 
-    private byte[] generatedInterface;
     private Map<String, String> schemas;
     private URL wsdlLocation;
-    private String interfaze;
-    private URI classLoaderUri;
+    private Class<?> interfaze;
     private int retries;
 
     /**
      * Constructor.
      *
      * @param endpointDefinition      endpoint metadata
-     * @param interfaze               the service contract (SEI) name
-     * @param generatedInterface      the generated SEI bytes or null if generation is not needed
-     * @param classLoaderUri          the SEI classloader URI
+     * @param interfaze               the service contract (SEI)
      * @param wsdl                    the generated WSDL or null if the WSDL can be derived from the SEI or is not explicitly specified via wsdlElement or
      *                                wsdlLocation
      * @param schemas                 the generated schemas or null
@@ -53,9 +48,7 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
      * @param handlers                optional binding handlers
      */
     public MetroJavaWireTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
-                                         String interfaze,
-                                         byte[] generatedInterface,
-                                         URI classLoaderUri,
+                                         Class<?> interfaze,
                                          String wsdl,
                                          Map<String, String> schemas,
                                          URL wsdlLocation,
@@ -64,8 +57,6 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
                                          boolean bidirectional,
                                          List<PhysicalBindingHandlerDefinition> handlers) {
         super(endpointDefinition, wsdl, connectionConfiguration, bidirectional, handlers);
-        this.generatedInterface = generatedInterface;
-        this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;
         this.wsdlLocation = wsdlLocation;
         this.interfaze = interfaze;
@@ -77,17 +68,8 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
      *
      * @return the service contract name
      */
-    public String getInterface() {
+    public Class<?> getInterface() {
         return interfaze;
-    }
-
-    /**
-     * Returns the generated SEI interface bytes.
-     *
-     * @return the generated SEI interface bytes
-     */
-    public byte[] getGeneratedInterface() {
-        return generatedInterface;
     }
 
     /**
@@ -106,15 +88,6 @@ public class MetroJavaWireTargetDefinition extends MetroWireTargetDefinition {
      */
     public URL getWsdlLocation() {
         return wsdlLocation;
-    }
-
-    /**
-     * Returns the SEI classloader URI.
-     *
-     * @return the SEI classloader URI
-     */
-    public URI getSEIClassLoaderUri() {
-        return classLoaderUri;
     }
 
     /**

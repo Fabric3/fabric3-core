@@ -16,6 +16,7 @@
  */
 package org.fabric3.binding.rs.generator;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.fabric3.binding.rs.model.ProviderResource;
@@ -35,8 +36,8 @@ public class ProviderResourceGenerator implements ResourceGenerator<ProviderReso
         ProviderResource definition = resource.getDefinition();
         String providerName = definition.getProviderName();
         URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);
-        String bindingAnnotation = definition.getBindingAnnotation();
-        String providerClass = definition.getProviderClass();
+        Class<? extends Annotation> bindingAnnotation = definition.getBindingAnnotation();
+        Class<?> providerClass = definition.getProviderClass();
         URI contributionUri = definition.getContributionUri();
         return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, providerClass, contributionUri);
     }

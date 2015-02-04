@@ -46,7 +46,7 @@ public class RsProviderIntrospector implements JavaArtifactIntrospector {
         UrlSource source = new UrlSource(url);
         Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
         JavaSymbol symbol = new JavaSymbol(clazz.getName());
-        ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
+        ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<>(symbol, clazz);
         resource.addResourceElement(resourceElement);
         return resource;
     }

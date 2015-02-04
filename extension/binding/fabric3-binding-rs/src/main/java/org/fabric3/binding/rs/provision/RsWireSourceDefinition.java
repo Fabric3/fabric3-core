@@ -28,7 +28,7 @@ import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 public class RsWireSourceDefinition extends PhysicalWireSourceDefinition {
     private static final long serialVersionUID = 2180952036516977449L;
 
-    private String rsClass;
+    private Class<?> rsClass;
 
     /**
      * Constructor.
@@ -36,12 +36,12 @@ public class RsWireSourceDefinition extends PhysicalWireSourceDefinition {
      * @param rsClass the class or interface containing JAX-RS annotations to use for mapping Java operations to REST resources.
      * @param uri     the source URI.
      */
-    public RsWireSourceDefinition(String rsClass, URI uri) {
+    public RsWireSourceDefinition(Class<?> rsClass, URI uri) {
         this.rsClass = rsClass;
         setUri(uri);
     }
 
-    public String getRsClass() {
+    public Class<?> getRsClass() {
         return rsClass;
     }
 

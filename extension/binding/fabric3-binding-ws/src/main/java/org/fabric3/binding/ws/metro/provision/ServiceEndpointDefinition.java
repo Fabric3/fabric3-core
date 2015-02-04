@@ -52,9 +52,9 @@ public class ServiceEndpointDefinition extends AbstractEndpointDefinition {
     }
 
     /**
-     * Returns the service path relative to the runtme base HTTP address.
+     * Returns the service path relative to the runtime base HTTP address.
      *
-     * @return the service path relative to the runtme base HTTP address
+     * @return the service path relative to the runtime base HTTP address
      */
     public URI getServicePath() {
         return servicePath;
