@@ -21,7 +21,6 @@ package org.fabric3.implementation.timer.generator;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.api.implementation.timer.model.TimerImplementation;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
@@ -40,6 +39,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -76,7 +76,7 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
     @SuppressWarnings({"unchecked"})
     public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
+        JavaServiceContract callbackContract = (JavaServiceContract) service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getParent();
         generationHelper.generateCallbackWireSource(definition, source, callbackContract);
         return definition;

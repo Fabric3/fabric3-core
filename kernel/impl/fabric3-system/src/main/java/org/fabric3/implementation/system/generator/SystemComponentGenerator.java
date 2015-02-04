@@ -21,7 +21,6 @@ import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Component;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -44,6 +43,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -92,9 +92,8 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         definition.setOptimizable(true);
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
-        ServiceContract serviceContract = reference.getDefinition().getServiceContract();
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
-        definition.setInterfaceName(interfaceName);
+        JavaServiceContract serviceContract = (JavaServiceContract) reference.getDefinition().getServiceContract();
+        definition.setInterfaceClass(serviceContract.getInterfaceClass());
 
         if (reference.getDefinition().isKeyed()) {
             definition.setKeyed(true);
@@ -119,11 +118,10 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
         SystemConnectionSourceDefinition definition = new SystemConnectionSourceDefinition();
         URI uri = producer.getUri();
-        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
-        definition.setInterfaceName(interfaceName);
+        definition.setServiceInterface(serviceContract.getInterfaceClass());
         return definition;
     }
 
@@ -153,6 +151,5 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         definition.setInjectable(injectable);
         return definition;
     }
-
 
 }

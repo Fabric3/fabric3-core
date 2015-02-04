@@ -27,27 +27,27 @@ import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
  */
 public class PojoWireSourceDefinition extends PhysicalWireSourceDefinition {
     private static final long serialVersionUID = -7594088400247150995L;
-    private String interfaceName;
+    private Class<?> interfaceClass;
     private Injectable injectable;
     private boolean keyed;
     private String keyClassName;
 
     /**
-     * Returns the name of the Java interface for the service contract.
+     * Returns the Java interface for the service contract.
      *
-     * @return the name of the Java interface for the service contract
+     * @return the Java interface for the service contract
      */
-    public String getInterfaceName() {
-        return interfaceName;
+    public Class<?> getInterfaceClass() {
+        return interfaceClass;
     }
 
     /**
-     * Sets the name of the Java interface for the service contract.
+     * Sets the Java interface for the service contract.
      *
-     * @param interfaceName the name of the Java interface for the service contract
+     * @param interfaceClass the Java interface for the service contract
      */
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
+    public void setInterfaceClass(Class<?> interfaceClass) {
+        this.interfaceClass = interfaceClass;
     }
 
     /**

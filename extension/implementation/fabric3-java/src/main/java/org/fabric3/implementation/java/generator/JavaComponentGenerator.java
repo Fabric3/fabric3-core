@@ -19,7 +19,6 @@
 package org.fabric3.implementation.java.generator;
 
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
@@ -39,6 +38,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -77,7 +77,7 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
     @SuppressWarnings({"unchecked"})
     public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
         JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
+        JavaServiceContract callbackContract = (JavaServiceContract) service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getParent();
         generationHelper.generateCallbackWireSource(definition, source, callbackContract);
         return definition;

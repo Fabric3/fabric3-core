@@ -153,10 +153,6 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
             return null;
         }
 
-        public Class<?> loadClass(URI classLoaderId, String className) {
-            return null;
-        }
-
         public Class<?> loadClass(ClassLoader cl, String className) {
             try {
                 return Class.forName(className, true, cl);

@@ -40,12 +40,6 @@ public class ClassLoaderRegistryImplTestCase extends TestCase {
         assertEquals(Test.class, registry.loadClass(getClass().getClassLoader(), Test.class.getName()));
     }
 
-    public void testLoadClassByUri() throws Exception {
-        ClassLoader loader = getClass().getClassLoader();
-        registry.register(CLassLOADER_URI, loader);
-        assertEquals(Test.class, registry.loadClass(CLassLOADER_URI, Test.class.getName()));
-    }
-
     public void testRegisterUnregister() throws Exception {
         ClassLoader loader = getClass().getClassLoader();
         registry.register(CLassLOADER_URI, loader);

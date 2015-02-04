@@ -66,7 +66,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
         Injectable injectable = sourceDefinition.getInjectable();
 
-        Class<?> type = classLoaderRegistry.loadClass(sourceDefinition.getClassLoaderId(), sourceDefinition.getInterfaceName());
+        Class<?> type = sourceDefinition.getInterfaceClass();
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             processCallback(wire, targetDefinition, source, injectable, type);
         } else {

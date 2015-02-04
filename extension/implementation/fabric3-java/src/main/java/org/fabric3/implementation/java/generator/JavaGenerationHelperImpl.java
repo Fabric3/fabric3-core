@@ -46,6 +46,7 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -60,7 +61,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         this.matcher = matcher;
     }
 
-    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component)  {
+    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) {
         Component<? extends JavaImplementation> logical = component.getDefinition();
         JavaImplementation implementation = logical.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
@@ -86,14 +87,13 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         helper.processPropertyValues(component, definition);
     }
 
-    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference)  {
+    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) {
         URI uri = reference.getUri();
-        ServiceContract serviceContract = reference.getDefinition().getServiceContract();
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        JavaServiceContract serviceContract = (JavaServiceContract) reference.getDefinition().getServiceContract();
 
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
-        definition.setInterfaceName(interfaceName);
+        definition.setInterfaceClass(serviceContract.getInterfaceClass());
         // assume for now that any wire from a Java component can be optimized
         definition.setOptimizable(true);
 
@@ -105,17 +105,17 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
     }
 
-    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer)  {
+    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) {
         URI uri = producer.getUri();
-        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
+        Class<?> interfaze = serviceContract.getInterfaceClass();
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
-        definition.setInterfaceName(interfaceName);
+        definition.setServiceInterface(interfaze);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer)  {
+    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) {
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
         // TODO support promotion by returning the leaf component URI instead of the parent component URI
         URI uri = component.getUri();
@@ -131,13 +131,11 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
     public void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                            LogicalComponent<? extends JavaImplementation> component,
-                                           ServiceContract serviceContract)  {
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
+                                           JavaServiceContract serviceContract) {
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         String name = null;
         for (Callback entry : type.getCallbacks().values()) {
             // NB: This currently only supports the case where one callback injection site of the same type is on an implementation.
-            // TODO clarify with the spec if having more than one callback injection site of the same type is valid
             ServiceContract candidate = entry.getServiceContract();
             MatchResult result = matcher.isAssignableFrom(candidate, serviceContract, false);
             if (result.isAssignable()) {
@@ -152,24 +150,23 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);
         definition.setInjectable(injectable);
-        definition.setInterfaceName(interfaceName);
+        definition.setInterfaceClass(serviceContract.getInterfaceClass());
         URI uri = URI.create(component.getUri().toString() + "#" + name);
         definition.setUri(uri);
         definition.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference)  {
+    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) {
         URI uri = resourceReference.getUri();
-        ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        JavaServiceContract serviceContract = (JavaServiceContract) resourceReference.getDefinition().getServiceContract();
 
         wireDefinition.setUri(uri);
         wireDefinition.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
-        wireDefinition.setInterfaceName(interfaceName);
+        wireDefinition.setInterfaceClass(serviceContract.getInterfaceClass());
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service)  {
+    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) {
         LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getParent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);

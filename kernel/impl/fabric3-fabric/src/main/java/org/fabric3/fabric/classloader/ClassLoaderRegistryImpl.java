@@ -68,11 +68,6 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
         return registry;
     }
 
-    public Class<?> loadClass(URI classLoaderId, String className) {
-        ClassLoader cl = getClassLoader(classLoaderId);
-        return loadClass(cl, className);
-    }
-
     public Class<?> loadClass(ClassLoader cl, String className) {
         Class<?> clazz = PRIMITIVES.get(className);
         if (clazz == null) {

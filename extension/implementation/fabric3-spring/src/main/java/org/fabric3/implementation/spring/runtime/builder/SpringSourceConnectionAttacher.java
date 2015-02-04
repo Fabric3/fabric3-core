@@ -25,7 +25,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -41,14 +40,10 @@ import org.oasisopen.sca.annotation.Reference;
 public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<SpringConnectionSourceDefinition> {
     private ComponentManager manager;
     private ChannelProxyService proxyService;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public SpringSourceConnectionAttacher(@Reference ComponentManager manager,
-                                          @Reference ChannelProxyService proxyService,
-                                          @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public SpringSourceConnectionAttacher(@Reference ComponentManager manager, @Reference ChannelProxyService proxyService) {
         this.manager = manager;
         this.proxyService = proxyService;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
@@ -59,7 +54,7 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
         if (component == null) {
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
-        Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
+        Class<?> type = source.getServiceInterface();
         Supplier<?> supplier = proxyService.createSupplier(type, connection);
         component.attach(source.getProducerName(), type, supplier);
     }

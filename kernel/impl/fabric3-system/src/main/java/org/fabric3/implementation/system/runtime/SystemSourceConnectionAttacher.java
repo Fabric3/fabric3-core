@@ -42,7 +42,6 @@ import org.oasisopen.sca.annotation.Reference;
 public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<SystemConnectionSourceDefinition> {
     private ComponentManager manager;
     private ChannelProxyService proxyService;
-    private ClassLoaderRegistry classLoaderRegistry;
 
     // loaded after bootstrap
     @Reference(required = false)
@@ -52,22 +51,14 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
 
     public SystemSourceConnectionAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
-        if (proxyService == null) {
-            throw new Fabric3Exception("Channel proxy service not found");
-        }
+    public void attach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
-        if (component == null) {
-            throw new Fabric3Exception("Source component not found: " + sourceName);
-        }
         Injectable injectable = source.getInjectable();
-        Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
+        Class<?> type = source.getServiceInterface();
         Supplier<?> supplier = proxyService.createSupplier(type, connection);
         component.setSupplier(injectable, supplier);
     }

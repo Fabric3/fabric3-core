@@ -117,9 +117,8 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
         String producerName = producer.getDefinition().getName();
         URI uri = producer.getParent().getUri();
-        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
-        String interfaceName = serviceContract.getQualifiedInterfaceName();
-        return new SpringConnectionSourceDefinition(producerName, interfaceName, uri);
+        JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
+        return new SpringConnectionSourceDefinition(producerName, serviceContract.getInterfaceClass(), uri);
     }
 
     @SuppressWarnings({"unchecked"})

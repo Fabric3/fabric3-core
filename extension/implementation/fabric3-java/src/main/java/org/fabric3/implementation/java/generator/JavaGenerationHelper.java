@@ -19,7 +19,6 @@
 package org.fabric3.implementation.java.generator;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
@@ -32,6 +31,7 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * Handles generation for Java components and specialized subtypes.
@@ -66,7 +66,7 @@ public interface JavaGenerationHelper {
      */
     void generateCallbackWireSource(JavaWireSourceDefinition definition,
                                     LogicalComponent<? extends JavaImplementation> component,
-                                    ServiceContract serviceContract) throws Fabric3Exception;
+                                    JavaServiceContract serviceContract) throws Fabric3Exception;
 
     /**
      * Populates the JavaWireTargetDefinition with wiring information.

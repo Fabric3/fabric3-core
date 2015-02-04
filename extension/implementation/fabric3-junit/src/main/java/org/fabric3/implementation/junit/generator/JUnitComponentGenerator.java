@@ -20,11 +20,9 @@ package org.fabric3.implementation.junit.generator;
 
 import java.net.URI;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -49,6 +47,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -65,7 +64,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         this.javaHelper = javaHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws Fabric3Exception {
+    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) {
 
         Component<JUnitImplementation> definition = component.getDefinition();
         JUnitImplementation implementation = definition.getImplementation();
@@ -88,15 +87,14 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
+    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
         URI uri = reference.getUri();
-        ServiceContract serviceContract = reference.getDefinition().getServiceContract();
-        String interfaceName = getInterfaceName(serviceContract);
+        JavaServiceContract serviceContract = (JavaServiceContract) reference.getDefinition().getServiceContract();
 
         JavaWireSourceDefinition wireDefinition = new JavaWireSourceDefinition();
         wireDefinition.setUri(uri);
         wireDefinition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
-        wireDefinition.setInterfaceName(interfaceName);
+        wireDefinition.setInterfaceClass(serviceContract.getInterfaceClass());
 
         // assume for now that any wire from a JUnit component can be optimized
         wireDefinition.setOptimizable(true);
@@ -111,40 +109,34 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return wireDefinition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
         JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
         javaHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) {
         JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
         javaHelper.generateConnectionTarget(definition, consumer);
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
-
+    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
         URI uri = resourceReference.getUri();
-        ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
-        String interfaceName = getInterfaceName(serviceContract);
+        JavaServiceContract serviceContract = (JavaServiceContract) resourceReference.getDefinition().getServiceContract();
 
         JavaWireSourceDefinition wireDefinition = new JavaWireSourceDefinition();
         wireDefinition.setUri(uri);
         wireDefinition.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
-        wireDefinition.setInterfaceName(interfaceName);
+        wireDefinition.setInterfaceClass(serviceContract.getInterfaceClass());
         return wireDefinition;
     }
 
-    private String getInterfaceName(ServiceContract contract) {
-        return contract.getQualifiedInterfaceName();
-    }
-
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireTargetDefinition generateTarget(LogicalService service) {
         JUnitWireTargetDefinition wireDefinition = new JUnitWireTargetDefinition();
         wireDefinition.setUri(service.getUri());
         return wireDefinition;

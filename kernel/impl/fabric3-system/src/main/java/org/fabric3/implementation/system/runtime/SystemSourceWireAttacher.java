@@ -75,7 +75,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
 
-        Class<?> type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
+        Class<?> type = source.getInterfaceClass();
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
             throw new UnsupportedOperationException("Callbacks are not supported on system components");
         } else {

@@ -62,16 +62,6 @@ public interface ClassLoaderRegistry {
     /**
      * Load and define a class from a specific classloader.
      *
-     * @param classLoaderId the id of the ClassLoader to use
-     * @param className     the name of the class
-     * @return the class
-     * @throws Fabric3Exception if the class could not be found by that classloader
-     */
-    Class<?> loadClass(URI classLoaderId, String className) throws Fabric3Exception;
-
-    /**
-     * Load and define a class from a specific classloader.
-     *
      * @param cl        the ClassLoader to use
      * @param className the name of the class
      * @return the class

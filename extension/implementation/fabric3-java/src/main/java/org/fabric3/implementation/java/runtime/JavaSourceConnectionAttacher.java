@@ -25,7 +25,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -41,14 +40,10 @@ import org.oasisopen.sca.annotation.Reference;
 public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<JavaConnectionSourceDefinition> {
     private ComponentManager manager;
     private ChannelProxyService proxyService;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public JavaSourceConnectionAttacher(@Reference ComponentManager manager,
-                                        @Reference ChannelProxyService proxyService,
-                                        @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JavaSourceConnectionAttacher(@Reference ComponentManager manager, @Reference ChannelProxyService proxyService) {
         this.manager = manager;
         this.proxyService = proxyService;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
@@ -59,8 +54,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
         Injectable injectable = source.getInjectable();
-        Class<?> type;
-        type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
+        Class<?> type = source.getServiceInterface();
         Supplier<?> supplier = proxyService.createSupplier(type, connection);
         component.setSupplier(injectable, supplier);
     }

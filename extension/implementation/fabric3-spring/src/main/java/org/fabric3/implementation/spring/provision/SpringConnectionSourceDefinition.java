@@ -34,12 +34,12 @@ public class SpringConnectionSourceDefinition extends PojoConnectionSourceDefini
      * Constructor.
      *
      * @param producerName  the producer name.
-     * @param interfaceName the producer interface name
+     * @param interfaze the producer interface name
      * @param uri           the source Spring component URI;
      */
-    public SpringConnectionSourceDefinition(String producerName, String interfaceName, URI uri) {
+    public SpringConnectionSourceDefinition(String producerName, Class<?> interfaze, URI uri) {
         this.producerName = producerName;
-        setInterfaceName(interfaceName);
+        setServiceInterface(interfaze);
         setUri(uri);
     }
 
