@@ -19,14 +19,12 @@
 package org.fabric3.jpa.runtime;
 
 import javax.persistence.EntityManagerFactory;
-import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
@@ -37,17 +35,14 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitWireTargetDefinition> {
     private EntityManagerFactoryResolver emfResolver;
-    private ClassLoaderRegistry registry;
 
     /**
      * Constructor.
      *
      * @param emfResolver EntityManagerFactory builder.
-     * @param registry    the classloader registry
      */
-    public PersistenceUnitWireAttacher(@Reference EntityManagerFactoryResolver emfResolver, @Reference ClassLoaderRegistry registry) {
+    public PersistenceUnitWireAttacher(@Reference EntityManagerFactoryResolver emfResolver) {
         this.emfResolver = emfResolver;
-        this.registry = registry;
     }
 
     public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws Fabric3Exception {
@@ -56,8 +51,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
 
     public Supplier<?> createSupplier(PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
         String unitName = target.getUnitName();
-        URI classLoaderUri = target.getClassLoaderId();
-        ClassLoader classLoader = registry.getClassLoader(classLoaderUri);
+        ClassLoader classLoader = target.getClassLoader();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
 
         try {

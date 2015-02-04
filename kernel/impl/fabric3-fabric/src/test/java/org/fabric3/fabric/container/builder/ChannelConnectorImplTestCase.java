@@ -58,7 +58,7 @@ public class ChannelConnectorImplTestCase extends TestCase {
         EventFilterBuilder filterBuilder = EasyMock.createMock(EventFilterBuilder.class);
         EasyMock.expect(filterBuilder.build(EasyMock.isA(MockFilterDefinition.class))).andReturn(new MockEventFilter());
 
-        connector.filterBuilders = Collections.singletonMap(MockFilterDefinition.class, filterBuilder);;
+        connector.filterBuilders = Collections.singletonMap(MockFilterDefinition.class, filterBuilder);
 
         EasyMock.replay(sourceAttacher, targetAttacher, filterBuilder);
 
@@ -91,7 +91,6 @@ public class ChannelConnectorImplTestCase extends TestCase {
         targetAttacher = EasyMock.createMock(TargetConnectionAttacher.class);
 
         connector = new ChannelConnectorImpl();
-        connector.classLoaderRegistry = classLoaderRegistry;
         Map sourceAttachers = Collections.singletonMap(MockSourceDefinition.class, sourceAttacher);
         Map targetAttachers = Collections.singletonMap(MockTargetDefinition.class, targetAttacher);
         connector.sourceAttachers = sourceAttachers;
@@ -100,11 +99,10 @@ public class ChannelConnectorImplTestCase extends TestCase {
     }
 
     private PhysicalChannelConnectionDefinition createDefinition() {
-        URI classLoaderUri = URI.create("classLoaderUri");
         PhysicalConnectionSourceDefinition sourceDefinition = new MockSourceDefinition();
-        sourceDefinition.setClassLoaderId(classLoaderUri);
+        sourceDefinition.setClassLoader(getClass().getClassLoader());
         PhysicalConnectionTargetDefinition targetDefinition = new MockTargetDefinition();
-        targetDefinition.setClassLoaderId(classLoaderUri);
+        targetDefinition.setClassLoader(getClass().getClassLoader());
         PhysicalEventStreamDefinition stream = new PhysicalEventStreamDefinition("stream");
         stream.addEventType("java.lang.Object");
         stream.addFilterDefinition(new MockFilterDefinition());

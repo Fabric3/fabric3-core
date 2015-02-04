@@ -31,7 +31,7 @@ public abstract class PhysicalAttachPointDefinition implements Serializable {
     private static final long serialVersionUID = -1905533250691356716L;
 
     private URI uri;
-    private URI classLoaderId;
+    private ClassLoader classLoader;
     protected List<DataType> dataTypes = new ArrayList<>();
 
     public PhysicalAttachPointDefinition() {
@@ -64,21 +64,21 @@ public abstract class PhysicalAttachPointDefinition implements Serializable {
     }
 
     /**
-     * Returns the id of the classloader associated with the attach point.
+     * Returns the classloader associated with the attach point.
      *
-     * @return the id of the classloader associated with the attach point
+     * @return the classloader associated with the attach point
      */
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     /**
      * Sets the id of the classloader associated with the attach point.
      *
-     * @param classLoaderId the id of the classloader associated with the attach point
+     * @param classLoader the id of the classloader associated with the attach point
      */
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     /**

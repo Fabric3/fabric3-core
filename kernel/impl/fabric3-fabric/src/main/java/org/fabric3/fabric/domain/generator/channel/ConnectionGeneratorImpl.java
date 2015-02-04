@@ -32,6 +32,7 @@ import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
@@ -54,9 +55,11 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private GeneratorRegistry generatorRegistry;
+    private ClassLoaderRegistry classLoaderRegistry;
 
-    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
+    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.generatorRegistry = generatorRegistry;
+        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -67,7 +70,8 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         ComponentGenerator<?> componentGenerator = getGenerator(component);
         PhysicalConnectionSourceDefinition sourceDefinition = componentGenerator.generateConnectionSource(producer);
         URI classLoaderId = component.getDefinition().getContributionUri();
-        sourceDefinition.setClassLoaderId(classLoaderId);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+        sourceDefinition.setClassLoader(classLoader);
 
         PhysicalEventStreamDefinition eventStream = generateEventStream(producer);
 
@@ -100,7 +104,8 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         PhysicalConnectionTargetDefinition targetDefinition = generator.generateConnectionTarget(consumer);
         URI classLoaderId = component.getDefinition().getContributionUri();
-        targetDefinition.setClassLoaderId(classLoaderId);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+        targetDefinition.setClassLoader(classLoader);
 
         PhysicalEventStreamDefinition eventStream = generateEventStream(consumer);
 
@@ -140,7 +145,8 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         // construct a local connection to the channel
         PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri(), ChannelSide.CONSUMER);
         sourceDefinition.setSequence(consumer.getDefinition().getSequence());
-        sourceDefinition.setClassLoaderId(classLoaderId);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+        sourceDefinition.setClassLoader(classLoader);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 
@@ -155,9 +161,12 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionSourceDefinition sourceDefinition = bindingGenerator.generateConnectionSource(consumer, binding, deliveryType);
         sourceDefinition.setSequence(consumer.getDefinition().getSequence());
-        sourceDefinition.setClassLoaderId(classLoaderId);
+
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+
+        sourceDefinition.setClassLoader(classLoader);
         ChannelTargetDefinition targetDefinition = new ChannelTargetDefinition(channel.getUri(), ChannelSide.CONSUMER);
-        targetDefinition.setClassLoaderId(classLoaderId);
+        targetDefinition.setClassLoader(classLoader);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 
@@ -171,7 +180,10 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             throw new Fabric3Exception("Binding not configured on a channel where the producer is in a different zone: " + name);
         }
         PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(channel.getUri(), ChannelSide.PRODUCER);
-        targetDefinition.setClassLoaderId(classLoaderId);
+
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+        targetDefinition.setClassLoader(classLoader);
+
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 
@@ -184,9 +196,10 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionTargetDefinition targetDefinition = bindingGenerator.generateConnectionTarget(producer, binding, deliveryType);
-        targetDefinition.setClassLoaderId(classLoaderId);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+        targetDefinition.setClassLoader(classLoader);
         ChannelSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri(), ChannelSide.PRODUCER);
-        sourceDefinition.setClassLoaderId(classLoaderId);
+        sourceDefinition.setClassLoader(classLoader);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 

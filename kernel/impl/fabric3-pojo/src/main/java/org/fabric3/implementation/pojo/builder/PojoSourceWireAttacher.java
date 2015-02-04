@@ -19,14 +19,12 @@
  */
 package org.fabric3.implementation.pojo.builder;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -40,11 +38,9 @@ import org.fabric3.spi.util.ClassLoading;
 public abstract class PojoSourceWireAttacher {
 
     protected TransformerRegistry transformerRegistry;
-    protected ClassLoaderRegistry classLoaderRegistry;
 
-    protected PojoSourceWireAttacher(TransformerRegistry transformerRegistry, ClassLoaderRegistry loaderRegistry) {
+    protected PojoSourceWireAttacher(TransformerRegistry transformerRegistry) {
         this.transformerRegistry = transformerRegistry;
-        this.classLoaderRegistry = loaderRegistry;
     }
 
     /**
@@ -62,10 +58,8 @@ public abstract class PojoSourceWireAttacher {
         }
         String key = sourceDefinition.getKey();
 
-        // The target classloader must be used since the key class may not be visible to the source classloader, for example, when subclasses are
-        // used a keys
-        URI targetId = targetDefinition.getClassLoaderId();
-        ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(targetId);
+        // The target classloader must be used since the key class may not be visible to the source classloader, for example, when subclasses are used as keys
+        ClassLoader targetClassLoader = targetDefinition.getClassLoader();
 
         Class<?> keyType = ClassLoading.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
         if (String.class.equals(keyType)) {

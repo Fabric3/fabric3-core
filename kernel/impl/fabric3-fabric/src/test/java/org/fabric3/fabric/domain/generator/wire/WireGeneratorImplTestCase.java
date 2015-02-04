@@ -33,6 +33,7 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
@@ -52,6 +53,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public class WireGeneratorImplTestCase extends TestCase {
     private static final URI CONTRIBUTION_URI = URI.create("contribution");
     private static final QName DEPLOYABLE = new QName("test", "deployable");
+    private ClassLoaderRegistry classLoaderRegistry;
 
     @SuppressWarnings({"unchecked"})
     public void testGenerateBoundService() throws Exception {
@@ -63,7 +65,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createServiceBinding();
         PhysicalWireDefinition definition = generator.generateBoundService(binding, null);
         assertNotNull(definition.getSource());
@@ -81,7 +83,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createServiceCallbackBinding();
         PhysicalWireDefinition definition = generator.generateBoundServiceCallback(binding);
         assertNotNull(definition.getSource());
@@ -100,7 +102,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createReferenceBinding();
         PhysicalWireDefinition definition = generator.generateBoundReference(binding);
         assertNotNull(definition.getSource());
@@ -119,7 +121,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createReferenceCallbackBinding();
 
         PhysicalWireDefinition definition = generator.generateBoundReferenceCallback(binding);
@@ -141,7 +143,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, sourceComponentGenerator, targetComponentGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
 
         LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
         PhysicalWireDefinition definition = generator.generateWire(wire);
@@ -163,7 +165,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, sourceComponentGenerator, targetComponentGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
 
         LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
         PhysicalWireDefinition definition = generator.generateWireCallback(wire);
@@ -187,7 +189,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
 
         LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
         wire.setSourceBinding(referenceBinding);
@@ -215,7 +217,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, sourceBindingGenerator);
 
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator);
+        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
 
         LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
         wire.setSourceBinding(referenceBinding);
@@ -423,4 +425,9 @@ public class WireGeneratorImplTestCase extends TestCase {
         private static final long serialVersionUID = 7905560274906591901L;
     }
 
+    public void setUp() throws Exception {
+        classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.isA(URI.class))).andReturn(getClass().getClassLoader()).anyTimes();
+        EasyMock.replay(classLoaderRegistry);
+    }
 }

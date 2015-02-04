@@ -19,7 +19,6 @@
 package org.fabric3.jpa.runtime;
 
 import javax.transaction.TransactionManager;
-import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
@@ -28,7 +27,6 @@ import org.fabric3.jpa.provision.SessionWireTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxy;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -37,7 +35,6 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class SessionWireAttacher implements TargetWireAttacher<SessionWireTargetDefinition> {
     private EntityManagerFactoryResolver emfResolver;
-    private ClassLoaderRegistry registry;
     private TransactionManager tm;
     private EntityManagerService emService;
 
@@ -47,25 +44,20 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
      * @param emService   the service for creating EntityManagers
      * @param tm          the transaction manager
      * @param emfResolver the EMF builder
-     * @param registry    the classloader registry
      */
     public SessionWireAttacher(@Reference EntityManagerService emService,
                                @Reference TransactionManager tm,
-                               @Reference EntityManagerFactoryResolver emfResolver,
-                               @Reference ClassLoaderRegistry registry) {
+                               @Reference EntityManagerFactoryResolver emfResolver) {
         this.emfResolver = emfResolver;
-        this.registry = registry;
         this.emService = emService;
         this.tm = tm;
     }
 
     public Supplier<?> createSupplier(SessionWireTargetDefinition definition) {
         String unitName = definition.getUnitName();
-        URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
-            // get the classloader for the entity manager factory
-            ClassLoader classLoader = registry.getClassLoader(classLoaderId);
+            ClassLoader classLoader = definition.getClassLoader();
             Thread.currentThread().setContextClassLoader(classLoader);
             // eagerly build the the EntityManagerFactory
             PersistenceOverrides overrides = definition.getOverrides();

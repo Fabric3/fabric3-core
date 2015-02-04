@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
+import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -32,6 +33,7 @@ import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
@@ -57,6 +59,7 @@ public class ServiceResolverImpl implements ServiceResolver {
     private BindingSelector bindingSelector;
     private WireGenerator wireGenerator;
     private Connector connector;
+    private ClassLoaderRegistry classLoaderRegistry;
     private HostInfo info;
     private AtomicInteger idCounter = new AtomicInteger();
 
@@ -66,6 +69,7 @@ public class ServiceResolverImpl implements ServiceResolver {
                                @org.oasisopen.sca.annotation.Reference BindingSelector bindingSelector,
                                @org.oasisopen.sca.annotation.Reference WireGenerator wireGenerator,
                                @org.oasisopen.sca.annotation.Reference Connector connector,
+                               @org.oasisopen.sca.annotation.Reference ClassLoaderRegistry classLoaderRegistry,
                                @org.oasisopen.sca.annotation.Reference HostInfo info) {
         this.introspector = introspector;
         this.lcm = lcm;
@@ -73,6 +77,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         this.bindingSelector = bindingSelector;
         this.wireGenerator = wireGenerator;
         this.connector = connector;
+        this.classLoaderRegistry = classLoaderRegistry;
         this.info = info;
     }
 
@@ -92,8 +97,9 @@ public class ServiceResolverImpl implements ServiceResolver {
 
         NonManagedPhysicalWireSourceDefinition source = (NonManagedPhysicalWireSourceDefinition) pwd.getSource();
         URI uri = ContributionResolver.getContribution(interfaze);
-        pwd.getTarget().setClassLoaderId(uri);
-        source.setClassLoaderId(uri);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+        pwd.getTarget().setClassLoader(classLoader);
+        source.setClassLoader(classLoader);
 
         connector.connect(pwd);
         return interfaze.cast(source.getProxy());
@@ -126,6 +132,7 @@ public class ServiceResolverImpl implements ServiceResolver {
 
         Component<NonManagedImplementation> component = new Component<>(name);
         component.setParent(composite);
+        component.setContributionUri(Names.HOST_CONTRIBUTION);
         NonManagedImplementation implementation = new NonManagedImplementation();
         component.setImplementation(implementation);
         Reference<ComponentType> reference = new Reference<>("reference", Multiplicity.ONE_ONE);

@@ -19,9 +19,7 @@
 package org.fabric3.binding.zeromq.runtime;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
@@ -32,23 +30,20 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
     private ZeroMQPubSubBroker broker;
-    private ClassLoaderRegistry registry;
 
-    public ZeroMQConnectionTargetAttacher(@Reference ZeroMQPubSubBroker broker, @Reference ClassLoaderRegistry registry) {
+    public ZeroMQConnectionTargetAttacher(@Reference ZeroMQPubSubBroker broker) {
         this.broker = broker;
-        this.registry = registry;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target, ChannelConnection connection) {
         ZeroMQMetadata metadata = target.getMetadata();
         String connectionId = source.getUri().toString();
-        ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
+        ClassLoader loader = target.getClassLoader();
         boolean dedicatedThread = target.isDedicatedThread();
         broker.connect(connectionId, metadata, dedicatedThread, connection, loader);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) {
         ZeroMQMetadata metadata = target.getMetadata();
         String connectionId = source.getUri().toString();
         broker.release(connectionId, metadata);

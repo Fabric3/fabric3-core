@@ -47,8 +47,6 @@ public class JndiClassLoaderUpdater {
             return;
         }
         MultiParentClassLoader extensionClassLoader = (MultiParentClassLoader) getClass().getClassLoader();
-        for (ClassLoader classLoader : extensionClassLoader.getParents()) {
-            jndiClassLoader.addParent(classLoader);
-        }
+        extensionClassLoader.getParents().forEach(jndiClassLoader::addParent);
     }
 }

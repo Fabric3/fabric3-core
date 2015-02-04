@@ -26,7 +26,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
@@ -34,6 +33,7 @@ import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -45,12 +45,10 @@ import org.oasisopen.sca.annotation.Reference;
 public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWireTargetDefinition> {
     private static final ReferenceAdapter ADAPTER = new DefaultReferenceAdapter();
 
-    private ClassLoaderRegistry registry;
     private File baseDir;
     private ComponentManager manager;
 
-    public FileTargetWireAttacher(@Reference ClassLoaderRegistry registry, @Reference ComponentManager manager, @Reference HostInfo hostInfo) {
-        this.registry = registry;
+    public FileTargetWireAttacher(@Reference ComponentManager manager, @Reference HostInfo hostInfo) {
         this.manager = manager;
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
@@ -103,17 +101,9 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
             }
             return new ReferenceAdaptorWrapper((AtomicComponent) component);
         }
-        URI uri = source.getClassLoaderId();
-        ClassLoader loader = registry.getClassLoader(uri);
-        if (loader == null) {
-            // this should not happen
-            throw new Fabric3Exception("ClassLoader not found: " + uri);
-        }
-        try {
-            return (ReferenceAdapter) loader.loadClass(adapterClass).newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new Fabric3Exception(e);
-        }
+
+        ClassLoader loader = source.getClassLoader();
+        return ClassLoading.instantiate(ReferenceAdapter.class, loader, adapterClass);
     }
 
 }

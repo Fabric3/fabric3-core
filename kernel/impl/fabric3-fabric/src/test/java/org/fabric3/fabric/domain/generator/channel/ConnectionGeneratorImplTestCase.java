@@ -35,6 +35,7 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -55,6 +56,8 @@ import org.fabric3.spi.model.type.java.JavaType;
  */
 public class ConnectionGeneratorImplTestCase extends TestCase {
 
+    private ClassLoaderRegistry classLoaderRegistry;
+
     @SuppressWarnings({"unchecked"})
     public void testGenerateLocalConsumer() throws Exception {
         ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
@@ -66,7 +69,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(componentGenerator, generatorRegistry);
 
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, classLoaderRegistry);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
@@ -105,7 +108,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(componentGenerator, bindingGenerator, generatorRegistry);
 
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, classLoaderRegistry);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
@@ -135,7 +138,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(componentGenerator, generatorRegistry);
 
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, classLoaderRegistry);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
@@ -173,7 +176,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(componentGenerator, bindingGenerator, generatorRegistry);
 
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry);
+        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, classLoaderRegistry);
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
         Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
@@ -234,10 +237,19 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     private LogicalComponent<?> createComponent(LogicalCompositeComponent parent) {
         MockImplementation impl = new MockImplementation();
         Component<MockImplementation> definition = new Component<>("component");
+        definition.setContributionUri(URI.create("test"));
         definition.setImplementation(impl);
         LogicalComponent<?> component = new LogicalComponent<>(URI.create("composite/component"), definition, parent);
         parent.addComponent(component);
         return component;
+    }
+
+    @Override
+    public void setUp() throws Exception {
+        classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.isA(URI.class))).andReturn(getClass().getClassLoader()).anyTimes();
+        EasyMock.replay(classLoaderRegistry);
+
     }
 
     private class MockImplementation extends Implementation<ComponentType> {

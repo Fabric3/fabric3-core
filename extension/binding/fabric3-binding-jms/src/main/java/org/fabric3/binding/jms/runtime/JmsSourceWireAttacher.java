@@ -26,7 +26,6 @@ import javax.jms.Topic;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.model.CacheLevel;
@@ -49,7 +48,6 @@ import org.fabric3.binding.jms.runtime.wire.WireHolder;
 import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
@@ -73,7 +71,6 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDefinition> {
 
     private AdministeredObjectResolver resolver;
-    private ClassLoaderRegistry classLoaderRegistry;
     private MessageContainerFactory containerFactory;
     private MessageContainerManager containerManager;
     private TransformerInterceptorFactory interceptorFactory;
@@ -81,14 +78,12 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
     private BindingHandlerRegistry handlerRegistry;
 
     public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
-                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference MessageContainerFactory containerFactory,
                                  @Reference MessageContainerManager containerManager,
                                  @Reference BindingHandlerRegistry handlerRegistry,
                                  @Reference TransformerInterceptorFactory interceptorFactory,
                                  @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
-        this.classLoaderRegistry = classLoaderRegistry;
         this.containerFactory = containerFactory;
         this.containerManager = containerManager;
         this.interceptorFactory = interceptorFactory;
@@ -98,7 +93,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
 
     public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         URI serviceUri = target.getUri();
-        ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        ClassLoader loader = source.getClassLoader();
         SessionType trxType = source.getSessionType();
         WireHolder wireHolder = createWireHolder(wire, source, target);
 
@@ -270,10 +265,12 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         return handlers;
     }
 
-    private void addJAXBInterceptor(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, PhysicalOperationDefinition op, InvocationChain chain)
-            throws Fabric3Exception {
-        ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
-        ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+    private void addJAXBInterceptor(JmsWireSourceDefinition source,
+                                    PhysicalWireTargetDefinition target,
+                                    PhysicalOperationDefinition op,
+                                    InvocationChain chain) {
+        ClassLoader sourceClassLoader = source.getClassLoader();
+        ClassLoader targetClassLoader = target.getClassLoader();
         List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
         Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, DataTypeHelper.JAXB_TYPES, jaxTypes, targetClassLoader, sourceClassLoader);
         chain.addInterceptor(jaxbInterceptor);

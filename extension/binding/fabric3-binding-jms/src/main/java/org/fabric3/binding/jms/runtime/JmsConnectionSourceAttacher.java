@@ -36,7 +36,6 @@ import org.fabric3.binding.jms.runtime.container.MessageContainerFactory;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
@@ -54,18 +53,15 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<JmsConnectionSource> {
 
     private AdministeredObjectResolver resolver;
-    private ClassLoaderRegistry classLoaderRegistry;
     private MessageContainerFactory containerFactory;
     private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
 
     public JmsConnectionSourceAttacher(@Reference AdministeredObjectResolver resolver,
-                                       @Reference ClassLoaderRegistry classLoaderRegistry,
                                        @Reference MessageContainerFactory containerFactory,
                                        @Reference MessageContainerManager containerManager,
                                        @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
-        this.classLoaderRegistry = classLoaderRegistry;
         this.containerFactory = containerFactory;
         this.containerManager = containerManager;
         this.monitor = monitor;
@@ -73,7 +69,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
     public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws Fabric3Exception {
         URI serviceUri = source.getUri();
-        ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        ClassLoader sourceClassLoader = source.getClassLoader();
 
         JmsBindingMetadata metadata = source.getMetadata();
 

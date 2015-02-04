@@ -31,7 +31,6 @@ import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
@@ -40,6 +39,7 @@ import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -52,18 +52,15 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
     private static final ServiceAdapter JAF_ADAPTER = new DataHandlerServiceAdapter();
 
     private ReceiverManager receiverManager;
-    private ClassLoaderRegistry registry;
     private ComponentManager manager;
     private ReceiverMonitor monitor;
     private File baseDir;
 
     public FileSourceWireAttacher(@Reference ReceiverManager receiverManager,
-                                  @Reference ClassLoaderRegistry registry,
                                   @Reference ComponentManager manager,
                                   @Reference HostInfo hostInfo,
                                   @Monitor ReceiverMonitor monitor) {
         this.receiverManager = receiverManager;
-        this.registry = registry;
         this.manager = manager;
         this.monitor = monitor;
         this.baseDir = new File(hostInfo.getDataDir(), "inbox");
@@ -166,13 +163,8 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
             }
             return new ServiceAdaptorWrapper((AtomicComponent) component);
         }
-        URI uri = source.getClassLoaderId();
-        ClassLoader loader = registry.getClassLoader(uri);
-        try {
-            return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new Fabric3Exception(e);
-        }
+        ClassLoader loader = source.getClassLoader();
+        return ClassLoading.instantiate(ServiceAdapter.class, loader, adapterClass);
     }
 
 }

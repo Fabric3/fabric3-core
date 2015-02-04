@@ -26,7 +26,6 @@ import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
@@ -43,14 +42,10 @@ import org.oasisopen.sca.annotation.Reference;
 public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<JavaConnectionTargetDefinition> {
     private ComponentManager manager;
     private ReflectionFactory reflectionFactory;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public JavaTargetConnectionAttacher(@Reference ComponentManager manager,
-                                        @Reference ReflectionFactory reflectionFactory,
-                                        @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JavaTargetConnectionAttacher(@Reference ComponentManager manager, @Reference ReflectionFactory reflectionFactory) {
         this.manager = manager;
         this.reflectionFactory = reflectionFactory;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection) {
@@ -60,7 +55,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         if (component == null) {
             throw new Fabric3Exception("Target component not found: " + targetName);
         }
-        ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+        ClassLoader loader = target.getClassLoader();
 
         Method method = target.getConsumerMethod();
         ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);

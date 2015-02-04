@@ -46,7 +46,6 @@ import org.fabric3.binding.jms.runtime.wire.ResponseListener;
 import org.fabric3.binding.jms.runtime.wire.WireConfiguration;
 import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
@@ -66,26 +65,23 @@ import org.oasisopen.sca.annotation.Reference;
 public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDefinition> {
     private AdministeredObjectResolver resolver;
     private TransactionManager tm;
-    private ClassLoaderRegistry classLoaderRegistry;
     private BindingHandlerRegistry handlerRegistry;
     private TransformerInterceptorFactory interceptorFactory;
 
     public JmsTargetWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference TransactionManager tm,
-                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference BindingHandlerRegistry handlerRegistry,
                                  @Reference TransformerInterceptorFactory interceptorFactory) {
         this.resolver = resolver;
         this.tm = tm;
-        this.classLoaderRegistry = classLoaderRegistry;
         this.handlerRegistry = handlerRegistry;
         this.interceptorFactory = interceptorFactory;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target, Wire wire) {
 
         WireConfiguration wireConfiguration = new WireConfiguration();
-        ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+        ClassLoader targetClassLoader = target.getClassLoader();
         wireConfiguration.setClassloader(targetClassLoader);
         wireConfiguration.setTransactionManager(tm);
         wireConfiguration.setCorrelationScheme(target.getMetadata().getCorrelationScheme());
@@ -122,7 +118,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalWireSourceDefinition source, JmsWireTargetDefinition target) {
         resolver.release(target.getMetadata().getConnectionFactory());
     }
 
@@ -132,9 +128,8 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
      *
      * @param configuration the interceptor configuration
      * @param metadata      the JMS binding metadata
-     * @throws Fabric3Exception if an error processing headers occurs
      */
-    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws Fabric3Exception {
+    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) {
         HeadersDefinition uriHeaders = metadata.getUriHeaders();
         HeadersDefinition headers = metadata.getHeaders();
         Map<String, OperationPropertiesDefinition> properties = metadata.getOperationProperties();
@@ -181,7 +176,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws Fabric3Exception {
+    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) {
         for (Map.Entry<String, String> entry : definition.getProperties().entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -220,15 +215,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
         }
     }
 
-    private void addJAXBInterceptor(PhysicalWireSourceDefinition source, PhysicalOperationDefinition op, InvocationChain chain, ClassLoader targetClassLoader)
-            throws Fabric3Exception {
-        ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+    private void addJAXBInterceptor(PhysicalWireSourceDefinition source, PhysicalOperationDefinition op, InvocationChain chain, ClassLoader targetClassLoader) {
+        ClassLoader sourceClassLoader = source.getClassLoader();
         List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
         Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, jaxTypes, DataTypeHelper.JAXB_TYPES, targetClassLoader, sourceClassLoader);
         chain.addInterceptor(jaxbInterceptor);
     }
 
-    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) throws Fabric3Exception {
+    private void resolveAdministeredObjects(JmsWireTargetDefinition target, WireConfiguration wireConfiguration) {
         JmsBindingMetadata metadata = target.getMetadata();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -272,7 +266,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     }
 
-    private void validateDestination(javax.jms.Destination requestDestination, Destination requestDestinationDefinition) throws Fabric3Exception {
+    private void validateDestination(javax.jms.Destination requestDestination, Destination requestDestinationDefinition) {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
             throw new Fabric3Exception("Destination is not a queue: " + requestDestinationDefinition.getName());

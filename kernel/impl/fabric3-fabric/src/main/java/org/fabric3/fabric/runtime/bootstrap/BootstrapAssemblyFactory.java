@@ -172,7 +172,7 @@ public class BootstrapAssemblyFactory {
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
 
-        Generator generator = createGenerator(matcher);
+        Generator generator = createGenerator(matcher, classLoaderRegistry);
 
         LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
@@ -202,7 +202,7 @@ public class BootstrapAssemblyFactory {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry();
 
-        Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, monitorService);
+        Connector connector = createConnector(componentManager, transformerRegistry, monitorService);
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class);
@@ -283,10 +283,9 @@ public class BootstrapAssemblyFactory {
 
     private static Connector createConnector(ComponentManager componentManager,
                                              DefaultTransformerRegistry transformerRegistry,
-                                             ClassLoaderRegistry classLoaderRegistry,
                                              MonitorProxyService monitorService) {
         Map<Class<?>, SourceWireAttacher<?>> sourceAttachers = new HashMap<>();
-        SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry, classLoaderRegistry);
+        SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry);
         sourceAttachers.put(SystemWireSourceDefinition.class, wireAttacher);
         sourceAttachers.put(SingletonWireSourceDefinition.class, new SingletonSourceWireAttacher(componentManager));
 
@@ -298,9 +297,9 @@ public class BootstrapAssemblyFactory {
         return new ConnectorImpl(sourceAttachers, targetAttachers);
     }
 
-    private static Generator createGenerator(ContractMatcher matcher) {
+    private static Generator createGenerator(ContractMatcher matcher, ClassLoaderRegistry classLoaderRegistry) {
         GeneratorRegistry generatorRegistry = createGeneratorRegistry();
-        List<CommandGenerator> commandGenerators = createCommandGenerators(matcher, generatorRegistry);
+        List<CommandGenerator> commandGenerators = createCommandGenerators(matcher, generatorRegistry, classLoaderRegistry);
 
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
@@ -320,7 +319,9 @@ public class BootstrapAssemblyFactory {
         return registry;
     }
 
-    private static List<CommandGenerator> createCommandGenerators(ContractMatcher matcher, GeneratorRegistry generatorRegistry) {
+    private static List<CommandGenerator> createCommandGenerators(ContractMatcher matcher,
+                                                                  GeneratorRegistry generatorRegistry,
+                                                                  ClassLoaderRegistry classLoaderRegistry) {
 
         List<CommandGenerator> commandGenerators = new ArrayList<>();
 
@@ -329,7 +330,7 @@ public class BootstrapAssemblyFactory {
         // command generators for wires
         OperationResolver operationResolver = new OperationResolverImpl();
         PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
-        WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, operationGenerator);
+        WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, operationGenerator, classLoaderRegistry);
         commandGenerators.add(new ReferenceCommandGenerator(wireGenerator));
         commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator));
         commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator));

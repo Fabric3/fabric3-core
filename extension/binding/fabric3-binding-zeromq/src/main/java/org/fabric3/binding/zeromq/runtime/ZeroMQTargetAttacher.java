@@ -21,9 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -35,23 +33,21 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTargetDefinition> {
     private ZeroMQWireBroker broker;
-    private ClassLoaderRegistry registry;
 
-    public ZeroMQTargetAttacher(@Reference ZeroMQWireBroker broker, @Reference ClassLoaderRegistry registry) {
+    public ZeroMQTargetAttacher(@Reference ZeroMQWireBroker broker) {
         this.broker = broker;
-        this.registry = registry;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) {
         URI sourceUri = source.getUri();
         String id = sourceUri.getPath().substring(1) + "/" + sourceUri.getFragment();   // strip leading '/'
         URI targetUri = target.getUri();
-        ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
+        ClassLoader loader = target.getClassLoader();
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         broker.connectToSender(id, targetUri, chains, target.getMetadata(), loader);
     }
 
-    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) {
         String id = source.getUri().toString();
         URI uri = target.getUri();
         broker.releaseSender(id, uri);

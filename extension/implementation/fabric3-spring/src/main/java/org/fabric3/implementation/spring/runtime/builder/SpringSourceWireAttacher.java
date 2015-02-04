@@ -25,7 +25,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Wire;
@@ -42,14 +41,10 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
     private ComponentManager manager;
     private WireProxyService proxyService;
 
-    private ClassLoaderRegistry classLoaderRegistry;
     private List<WireListener> listeners = Collections.emptyList();
 
-    public SpringSourceWireAttacher(@Reference ComponentManager manager,
-                                    @Reference WireProxyService proxyService,
-                                    @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public SpringSourceWireAttacher(@Reference ComponentManager manager, @Reference WireProxyService proxyService) {
         this.manager = manager;
-        this.classLoaderRegistry = classLoaderRegistry;
         this.proxyService = proxyService;
     }
 
@@ -61,7 +56,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
     public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
-        ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        ClassLoader loader = source.getClassLoader();
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(source.getInterface());
@@ -79,7 +74,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
     public void attachSupplier(SpringWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
-        ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        ClassLoader loader = source.getClassLoader();
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(source.getInterface());

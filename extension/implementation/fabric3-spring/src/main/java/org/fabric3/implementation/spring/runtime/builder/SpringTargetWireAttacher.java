@@ -27,7 +27,6 @@ import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringInvoker;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -45,12 +44,10 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTargetDefinition> {
     private ComponentManager manager;
-    private ClassLoaderRegistry classLoaderRegistry;
     private List<WireListener> listeners = Collections.emptyList();
 
-    public SpringTargetWireAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public SpringTargetWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     @Reference(required = false)
@@ -60,7 +57,7 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
 
     public void attach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target, Wire wire) throws Fabric3Exception {
         String beanName = target.getBeanName();
-        ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+        ClassLoader loader = target.getClassLoader();
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(target.getBeanInterface());

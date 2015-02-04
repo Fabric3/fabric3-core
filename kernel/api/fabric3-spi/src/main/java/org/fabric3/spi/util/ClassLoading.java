@@ -68,6 +68,14 @@ public final class ClassLoading {
         return clazz;
     }
 
+    public static <T> T instantiate(Class<T> type, ClassLoader cl, String className) {
+        try {
+            return type.cast(loadClass(cl, className).newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new Fabric3Exception(e);
+        }
+    }
+
     private ClassLoading() {
     }
 }

@@ -26,23 +26,21 @@ import java.util.function.Supplier;
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTargetDefinition> {
-    private final ClassLoaderRegistry classLoaderRegistry;
     private final IMocksControl control;
 
-    public MockTargetWireAttacher(@Reference ClassLoaderRegistry classLoaderRegistry, @Reference IMocksControl control) {
-        this.classLoaderRegistry = classLoaderRegistry;
+    public MockTargetWireAttacher(@Reference IMocksControl control) {
         this.control = control;
     }
 
@@ -98,12 +96,8 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     private Class<?> loadInterface(MockWireTargetDefinition target) {
         String interfaceClass = target.getMockedInterface();
-        try {
-            ClassLoader classLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
-            return classLoader.loadClass(interfaceClass);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Unable to load interface " + interfaceClass);
-        }
+        ClassLoader classLoader = target.getClassLoader();
+        return ClassLoading.loadClass(classLoader, interfaceClass);
     }
 
 }

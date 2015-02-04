@@ -29,7 +29,6 @@ import org.fabric3.implementation.pojo.component.InvokerInterceptor;
 import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -47,14 +46,10 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
 
     private final ComponentManager manager;
     private ReflectionFactory reflectionFactory;
-    private final ClassLoaderRegistry classLoaderRegistry;
 
-    public JavaTargetWireAttacher(@Reference ComponentManager manager,
-                                  @Reference ReflectionFactory reflectionFactory,
-                                  @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JavaTargetWireAttacher(@Reference ComponentManager manager, @Reference ReflectionFactory reflectionFactory) {
         this.manager = manager;
         this.reflectionFactory = reflectionFactory;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(PhysicalWireSourceDefinition sourceDefinition, JavaWireTargetDefinition targetDefinition, Wire wire) {
@@ -66,7 +61,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         JavaComponent target = (JavaComponent) component;
 
         Class<?> implementationClass = target.getImplementationClass();
-        ClassLoader loader = classLoaderRegistry.getClassLoader(targetDefinition.getClassLoaderId());
+        ClassLoader loader = targetDefinition.getClassLoader();
 
         // attach the invoker interceptor to forward invocation chains
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -74,7 +69,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
             Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader);
             ServiceInvoker invoker = reflectionFactory.createServiceInvoker(method);
             InvokerInterceptor interceptor;
-            if (sourceDefinition instanceof PojoWireSourceDefinition && targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
+            if (sourceDefinition instanceof PojoWireSourceDefinition && targetDefinition.getClassLoader().equals(sourceDefinition.getClassLoader())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
                 interceptor = new InvokerInterceptor(invoker, target);
             } else {

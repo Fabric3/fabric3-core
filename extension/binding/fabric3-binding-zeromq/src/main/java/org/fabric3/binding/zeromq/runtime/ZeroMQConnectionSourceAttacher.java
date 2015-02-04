@@ -21,9 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -34,23 +32,19 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSourceDefinition> {
     private ZeroMQPubSubBroker broker;
-    private ClassLoaderRegistry registry;
 
-    public ZeroMQConnectionSourceAttacher(@Reference ZeroMQPubSubBroker broker, @Reference ClassLoaderRegistry registry) {
+    public ZeroMQConnectionSourceAttacher(@Reference ZeroMQPubSubBroker broker) {
         this.broker = broker;
-        this.registry = registry;
     }
 
-    public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
-
-        ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
+    public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+        ClassLoader loader = source.getClassLoader();
         URI subscriberId = source.getUri();
         ZeroMQMetadata metadata = source.getMetadata();
         broker.subscribe(subscriberId, metadata, connection, loader);
     }
 
-    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
         ZeroMQMetadata metadata = source.getMetadata();
         URI subscriberId = source.getUri();
         broker.unsubscribe(subscriberId, metadata);

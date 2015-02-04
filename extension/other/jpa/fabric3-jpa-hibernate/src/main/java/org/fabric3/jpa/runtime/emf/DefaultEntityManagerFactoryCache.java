@@ -73,9 +73,9 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
     }
 
     public void onUninstall(Contribution contribution) {
-        URI key;
         URI uri = contribution.getUri();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+        URI key;
         if (classLoader instanceof MultiParentClassLoader) {
             key = ((MultiParentClassLoader) classLoader).getName();
         } else {

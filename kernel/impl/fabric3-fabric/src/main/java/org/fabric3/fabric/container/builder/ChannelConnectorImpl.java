@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.fabric.container.channel.FilterHandler;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
@@ -55,9 +54,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
     @Reference(required = false)
     protected Map<Class<?>, EventFilterBuilder<?>> filterBuilders = new HashMap<>();
-
-    @Reference
-    protected ClassLoaderRegistry classLoaderRegistry;
 
     @Reference
     protected TransformerHandlerFactory transformerHandlerFactory;
@@ -105,7 +101,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
      * @ if there is an error creating the connection
      */
     private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
-        ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
+        ClassLoader loader = definition.getTarget().getClassLoader();
 
         PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
         EventStream stream = new EventStreamImpl(streamDefinition);

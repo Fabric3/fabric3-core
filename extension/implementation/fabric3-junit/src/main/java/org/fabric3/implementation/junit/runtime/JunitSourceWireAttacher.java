@@ -22,7 +22,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
@@ -42,10 +41,8 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
     private TestWireHolder holder;
     private AuthenticationService authenticationService;
 
-    public JunitSourceWireAttacher(@Reference ClassLoaderRegistry classLoaderRegistry,
-                                   @Reference TransformerRegistry transformerRegistry,
-                                   @Reference TestWireHolder holder) {
-        super(transformerRegistry, classLoaderRegistry);
+    public JunitSourceWireAttacher(@Reference TransformerRegistry transformerRegistry, @Reference TestWireHolder holder) {
+        super(transformerRegistry);
         this.holder = holder;
     }
 

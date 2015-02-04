@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
@@ -35,33 +34,21 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSourceDefinition> {
     private ZeroMQWireBroker broker;
-    private ClassLoaderRegistry registry;
 
-    public ZeroMQSourceAttacher(@Reference ZeroMQWireBroker broker, @Reference ClassLoaderRegistry registry) {
+    public ZeroMQSourceAttacher(@Reference ZeroMQWireBroker broker) {
         this.broker = broker;
-        this.registry = registry;
     }
 
     public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
-        URI uri;
-        if (source.getCallbackUri() != null) {
-            uri = source.getCallbackUri();
-        } else {
-            uri = target.getUri();
-        }
-        ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
+        URI uri = source.getCallbackUri() != null ? source.getCallbackUri() : target.getUri();
+        ClassLoader loader = target.getClassLoader();
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         ZeroMQMetadata metadata = source.getMetadata();
         broker.connectToReceiver(uri, chains, metadata, loader);
     }
 
     public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) {
-        URI uri;
-        if (source.getCallbackUri() != null) {
-            uri = source.getCallbackUri();
-        } else {
-            uri = target.getUri();
-        }
+        URI uri = source.getCallbackUri() != null ? source.getCallbackUri() : target.getUri();
         broker.releaseReceiver(uri);
     }
 

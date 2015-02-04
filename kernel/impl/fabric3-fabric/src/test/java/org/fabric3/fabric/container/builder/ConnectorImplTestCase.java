@@ -139,9 +139,8 @@ public class ConnectorImplTestCase extends TestCase {
         targetDefinition.setUri(URI.create("target"));
         Set<PhysicalOperationDefinition> operations = new HashSet<>();
         definition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
-        URI classLoaderUri = URI.create("classloader");
-        sourceDefinition.setClassLoaderId(classLoaderUri);
-        targetDefinition.setClassLoaderId(classLoaderUri);
+        sourceDefinition.setClassLoader(getClass().getClassLoader());
+        targetDefinition.setClassLoader(getClass().getClassLoader());
 
         operation = new PhysicalOperationDefinition();
         operation.setName("operation");

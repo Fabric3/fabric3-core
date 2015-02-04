@@ -28,7 +28,6 @@ import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.injection.InjectionAttributes;
@@ -48,10 +47,8 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
     private final ComponentManager manager;
     private WireProxyService proxyService;
 
-    public SystemSourceWireAttacher(@Reference ComponentManager manager,
-                                    @Reference TransformerRegistry transformerRegistry,
-                                    @Reference ClassLoaderRegistry classLoaderRegistry) {
-        super(transformerRegistry, classLoaderRegistry);
+    public SystemSourceWireAttacher(@Reference ComponentManager manager, @Reference TransformerRegistry transformerRegistry) {
+        super(transformerRegistry);
         this.manager = manager;
     }
 
