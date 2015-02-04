@@ -20,9 +20,6 @@
 package org.fabric3.spi.classloader;
 
 import java.net.URI;
-import java.util.Map;
-
-import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Registry for classloaders available to the local runtime.
@@ -51,23 +48,6 @@ public interface ClassLoaderRegistry {
      * @return the ClassLoader registered with that id, or null
      */
     ClassLoader getClassLoader(URI id);
-
-    /**
-     * Returns all registered classloaders.
-     *
-     * @return all registered classloaders
-     */
-    Map<URI, ClassLoader> getClassLoaders();
-
-    /**
-     * Load and define a class from a specific classloader.
-     *
-     * @param cl        the ClassLoader to use
-     * @param className the name of the class
-     * @return the class
-     * @throws Fabric3Exception if the class could not be found by that classloader
-     */
-    Class<?> loadClass(ClassLoader cl, String className) throws Fabric3Exception;
 
     /**
      * Closes all classloaders.

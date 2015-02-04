@@ -32,6 +32,7 @@ import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.fabric3.spi.util.ClassLoading;
 
 /**
  * Contains functionality common to Java-based SourceWireAttachers.
@@ -66,7 +67,7 @@ public abstract class PojoSourceWireAttacher {
         URI targetId = targetDefinition.getClassLoaderId();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(targetId);
 
-        Class<?> keyType = classLoaderRegistry.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
+        Class<?> keyType = ClassLoading.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
         if (String.class.equals(keyType)) {
             // short-circuit the transformation and return the string
             return key;

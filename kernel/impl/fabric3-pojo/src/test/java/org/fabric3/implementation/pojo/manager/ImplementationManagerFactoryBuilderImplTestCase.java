@@ -22,19 +22,16 @@ package org.fabric3.implementation.pojo.manager;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
@@ -131,35 +128,4 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
 
     }
 
-    private class MockClassLoaderRegistry implements ClassLoaderRegistry {
-
-        public void close() {
-
-        }
-
-        public void register(URI id, ClassLoader classLoader) {
-
-        }
-
-        public ClassLoader unregister(URI id) {
-            return null;
-        }
-
-        public ClassLoader getClassLoader(URI id) {
-            return null;
-        }
-
-        public Map<URI, ClassLoader> getClassLoaders() {
-            return null;
-        }
-
-        public Class<?> loadClass(ClassLoader cl, String className) {
-            try {
-                return Class.forName(className, true, cl);
-            } catch (ClassNotFoundException e) {
-                throw new Fabric3Exception(e);
-            }
-        }
-
-    }
 }

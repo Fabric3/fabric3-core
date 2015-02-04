@@ -29,6 +29,7 @@ import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -57,7 +58,7 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
 
     public Supplier<?> createSupplier(MonitorWireTargetDefinition target) throws Fabric3Exception {
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
-        Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
+        Class<?> type = ClassLoading.loadClass(loader, target.getMonitorType());
         Component monitorable = componentManager.getComponent(target.getMonitorable());
         Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
         return () -> monitor;

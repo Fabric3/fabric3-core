@@ -22,6 +22,7 @@ package org.fabric3.fabric.classloader;
 import java.net.URI;
 
 import junit.framework.TestCase;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
@@ -31,14 +32,6 @@ public class ClassLoaderRegistryImplTestCase extends TestCase {
     private static final URI CLassLOADER_URI = URI.create("classloader");
 
     private ClassLoaderRegistry registry;
-
-    public void testLoadPrimitive() throws Exception {
-        assertEquals(Integer.TYPE, registry.loadClass(getClass().getClassLoader(), Integer.TYPE.getName()));
-    }
-
-    public void testLoadClassByClassLoader() throws Exception {
-        assertEquals(Test.class, registry.loadClass(getClass().getClassLoader(), Test.class.getName()));
-    }
 
     public void testRegisterUnregister() throws Exception {
         ClassLoader loader = getClass().getClassLoader();
@@ -55,16 +48,9 @@ public class ClassLoaderRegistryImplTestCase extends TestCase {
         try {
             registry.register(CLassLOADER_URI, loader);
             fail();
-        } catch (AssertionError e) {
+        } catch (Fabric3Exception e) {
             // expected
         }
-    }
-
-    public void testGetClassLoaders() throws Exception {
-        ClassLoader loader = getClass().getClassLoader();
-        registry.register(CLassLOADER_URI, loader);
-        assertEquals(1, registry.getClassLoaders().size());
-        assertTrue(registry.getClassLoaders().containsValue(loader));
     }
 
     public void testGetClassLoader() throws Exception {

@@ -28,7 +28,6 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class SpringComponentType extends InjectingComponentType {
-    private static final long serialVersionUID = -8894733979791676532L;
 
     // bean id to definition
     private Map<String, BeanDefinition> beansById = new HashMap<>();

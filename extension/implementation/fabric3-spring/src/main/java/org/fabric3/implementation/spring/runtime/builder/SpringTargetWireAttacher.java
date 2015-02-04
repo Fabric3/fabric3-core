@@ -73,7 +73,7 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         SpringComponent component = getComponent(target);
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
-            Method beanMethod = MethodUtils.findMethod(source, target, operation, interfaze, loader, classLoaderRegistry);
+            Method beanMethod = MethodUtils.findMethod(source, target, operation, interfaze, loader);
             SpringInvoker invoker = new SpringInvoker(beanName, beanMethod, component);
             chain.addInterceptor(invoker);
         }

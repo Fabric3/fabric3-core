@@ -54,6 +54,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Document;
@@ -157,7 +158,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
         ServiceContract contract = definition.getServiceContract();
-        Class<?> interfaceClass = classLoaderRegistry.loadClass(classLoader, contract.getQualifiedInterfaceName());
+        Class<?> interfaceClass = ClassLoading.loadClass(classLoader, contract.getQualifiedInterfaceName());
         // inject the reference into the session context
         WebContextInjectionSite site = new WebContextInjectionSite(interfaceClass, SESSION_CONTEXT);
         mapping.put(SESSION_CONTEXT_SITE, site);
@@ -183,7 +184,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
         ServiceContract contract = definition.getServiceContract();
-        Class<?> interfaceClass = classLoaderRegistry.loadClass(classLoader, contract.getQualifiedInterfaceName());
+        Class<?> interfaceClass = ClassLoading.loadClass(classLoader, contract.getQualifiedInterfaceName());
 
         // also inject the reference into the servlet context
         WebContextInjectionSite servletContextSite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
@@ -207,7 +208,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
         ServiceContract contract = definition.getServiceContract();
-        Class<?> interfaceClass = classLoaderRegistry.loadClass(classLoader, contract.getQualifiedInterfaceName());
+        Class<?> interfaceClass = ClassLoading.loadClass(classLoader, contract.getQualifiedInterfaceName());
         // also inject the reference into the servlet context
         WebContextInjectionSite servletContextSite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
         mapping.put(SERVLET_CONTEXT_SITE, servletContextSite);

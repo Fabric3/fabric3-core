@@ -20,11 +20,10 @@ package org.fabric3.transform.property;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.oasisopen.sca.annotation.Reference;
+import org.fabric3.spi.util.ClassLoading;
 import org.w3c.dom.Node;
 
 /**
@@ -33,14 +32,8 @@ import org.w3c.dom.Node;
 public class Property2ClassTransformer implements SingleTypeTransformer<Node, Class<?>> {
     private static final JavaType TARGET = new JavaType(Class.class);
 
-    private final ClassLoaderRegistry classLoaderRegistry;
-
     public DataType getSourceType() {
         return TypeConstants.PROPERTY_TYPE;
-    }
-
-    public Property2ClassTransformer(@Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public DataType getTargetType() {
@@ -48,6 +41,6 @@ public class Property2ClassTransformer implements SingleTypeTransformer<Node, Cl
     }
 
     public Class<?> transform(Node node, ClassLoader loader) throws Fabric3Exception {
-        return classLoaderRegistry.loadClass(loader, node.getTextContent());
+        return ClassLoading.loadClass(loader, node.getTextContent());
     }
 }

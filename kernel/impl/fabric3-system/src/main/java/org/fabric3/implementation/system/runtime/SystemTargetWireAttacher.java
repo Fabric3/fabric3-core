@@ -26,13 +26,13 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -44,11 +44,9 @@ import org.oasisopen.sca.annotation.Reference;
 public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTargetDefinition> {
 
     private final ComponentManager manager;
-    private final ClassLoaderRegistry classLoaderRegistry;
 
-    public SystemTargetWireAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public SystemTargetWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws Fabric3Exception {
@@ -65,7 +63,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
             Class<?>[] paramTypes = new Class<?>[params.size()];
             for (int i = 0; i < params.size(); i++) {
                 String param = params.get(i);
-                paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
+                paramTypes[i] = ClassLoading.loadClass(loader, param);
             }
             Method method;
             try {

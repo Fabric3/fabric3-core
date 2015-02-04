@@ -21,28 +21,27 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.util.ClassLoading;
 
 /**
  *
  */
 public final class MethodUtils {
 
-    public static Method findMethod(PhysicalWireSourceDefinition sourceDefinition,
-                                    PhysicalWireTargetDefinition targetDefinition,
+    public static Method findMethod(PhysicalWireSourceDefinition source,
+                                    PhysicalWireTargetDefinition target,
                                     PhysicalOperationDefinition operation,
                                     Class<?> implementationClass,
-                                    ClassLoader loader,
-                                    ClassLoaderRegistry classLoaderRegistry) throws Fabric3Exception {
+                                    ClassLoader loader) throws Fabric3Exception {
         List<String> params = operation.getTargetParameterTypes();
         Class<?>[] paramTypes = new Class<?>[params.size()];
         assert loader != null;
         for (int i = 0; i < params.size(); i++) {
             String param = params.get(i);
-            paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
+            paramTypes[i] = ClassLoading.loadClass(loader, param);
         }
         Method method = null;
         if (operation.isRemotable()) {
@@ -56,8 +55,8 @@ public final class MethodUtils {
                 }
             }
             if (method == null) {
-                URI sourceUri = sourceDefinition.getUri();
-                URI targetUri = targetDefinition.getUri();
+                URI sourceUri = source.getUri();
+                URI targetUri = target.getUri();
                 throw new Fabric3Exception("No matching method found when wiring " + sourceUri + " to " + targetUri);
             }
         } else {
@@ -65,8 +64,8 @@ public final class MethodUtils {
             try {
                 method = implementationClass.getMethod(operation.getName(), paramTypes);
             } catch (NoSuchMethodException e) {
-                URI sourceUri = sourceDefinition.getUri();
-                URI targetUri = targetDefinition.getUri();
+                URI sourceUri = source.getUri();
+                URI targetUri = target.getUri();
                 throw new Fabric3Exception("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
             }
         }

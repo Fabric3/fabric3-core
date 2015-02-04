@@ -200,7 +200,7 @@ public class BootstrapAssemblyFactory {
                                                                          ManagementService managementService,
                                                                          HostInfo info) {
 
-        DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
+        DefaultTransformerRegistry transformerRegistry = createTransformerRegistry();
 
         Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, monitorService);
 
@@ -265,7 +265,7 @@ public class BootstrapAssemblyFactory {
         return executor;
     }
 
-    private static DefaultTransformerRegistry createTransformerRegistry(ClassLoaderRegistry classLoaderRegistry) {
+    private static DefaultTransformerRegistry createTransformerRegistry() {
         DefaultTransformerRegistry transformerRegistry = new DefaultTransformerRegistry();
         List<SingleTypeTransformer<?, ?>> transformers = new ArrayList<>();
         transformers.add(new Property2StringTransformer());
@@ -274,7 +274,7 @@ public class BootstrapAssemblyFactory {
         transformers.add(new Property2ElementTransformer());
         transformers.add(new Property2QNameTransformer());
         transformers.add(new Property2StreamTransformer());
-        transformers.add(new String2ClassTransformer(classLoaderRegistry));
+        transformers.add(new String2ClassTransformer());
         transformers.add(new String2QNameTransformer());
         transformers.add(new String2IntegerTransformer());
         transformerRegistry.setTransformers(transformers);
@@ -292,7 +292,7 @@ public class BootstrapAssemblyFactory {
 
         Map<Class<?>, TargetWireAttacher<?>> targetAttachers = new HashMap<>();
         targetAttachers.put(SingletonWireTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
-        targetAttachers.put(SystemWireTargetDefinition.class, new SystemTargetWireAttacher(componentManager, classLoaderRegistry));
+        targetAttachers.put(SystemWireTargetDefinition.class, new SystemTargetWireAttacher(componentManager));
         targetAttachers.put(MonitorWireTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager, classLoaderRegistry));
 
         return new ConnectorImpl(sourceAttachers, targetAttachers);

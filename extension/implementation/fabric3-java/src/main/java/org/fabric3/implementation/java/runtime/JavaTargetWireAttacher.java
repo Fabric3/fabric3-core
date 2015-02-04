@@ -71,7 +71,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         // attach the invoker interceptor to forward invocation chains
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
-            Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader, classLoaderRegistry);
+            Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader);
             ServiceInvoker invoker = reflectionFactory.createServiceInvoker(method);
             InvokerInterceptor interceptor;
             if (sourceDefinition instanceof PojoWireSourceDefinition && targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {

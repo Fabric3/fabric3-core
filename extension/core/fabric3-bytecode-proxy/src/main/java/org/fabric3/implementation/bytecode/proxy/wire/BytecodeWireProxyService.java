@@ -31,12 +31,11 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.oasisopen.sca.ServiceReference;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -46,11 +45,9 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class BytecodeWireProxyService implements WireProxyServiceExtension {
     private ProxyFactory proxyFactory;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public BytecodeWireProxyService(@Reference ProxyFactory proxyFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public BytecodeWireProxyService(@Reference ProxyFactory proxyFactory) {
         this.proxyFactory = proxyFactory;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public boolean isDefault() {
@@ -141,7 +138,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
         List<String> params = operation.getSourceParameterTypes();
         Class<?>[] types = new Class<?>[params.size()];
         for (int i = 0; i < params.size(); i++) {
-            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), params.get(i));
+            types[i] = ClassLoading.loadClass(clazz.getClassLoader(), params.get(i));
         }
         return clazz.getMethod(name, types);
     }

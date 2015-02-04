@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.proxy.jdk.wire;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URI;
@@ -29,22 +28,15 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.oasisopen.sca.ServiceReference;
-import org.oasisopen.sca.annotation.Reference;
+import org.fabric3.spi.util.ClassLoading;
 
 /**
  * The default WireProxyService implementation that uses JDK dynamic proxies.
  */
 public class JDKWireProxyServiceImpl implements JDKWireProxyService {
-    private ClassLoaderRegistry classLoaderRegistry;
-
-    public JDKWireProxyServiceImpl(@Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
 
     public boolean isDefault() {
         return true;
@@ -124,7 +116,7 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         List<String> params = operation.getSourceParameterTypes();
         Class<?>[] types = new Class<?>[params.size()];
         for (int i = 0; i < params.size(); i++) {
-            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), params.get(i));
+            types[i] = ClassLoading.loadClass(clazz.getClassLoader(), params.get(i));
         }
         return clazz.getMethod(name, types);
     }

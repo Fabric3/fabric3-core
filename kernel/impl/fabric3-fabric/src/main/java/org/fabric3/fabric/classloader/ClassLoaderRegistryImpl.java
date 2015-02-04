@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLClassLoader;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,23 +34,10 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  */
 public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
     private Map<URI, ClassLoader> registry = new ConcurrentHashMap<>();
-    private static final Map<String, Class<?>> PRIMITIVES;
-
-    static {
-        PRIMITIVES = new HashMap<>();
-        PRIMITIVES.put("boolean", Boolean.TYPE);
-        PRIMITIVES.put("byte", Byte.TYPE);
-        PRIMITIVES.put("short", Short.TYPE);
-        PRIMITIVES.put("int", Integer.TYPE);
-        PRIMITIVES.put("long", Long.TYPE);
-        PRIMITIVES.put("float", Float.TYPE);
-        PRIMITIVES.put("double", Double.TYPE);
-        PRIMITIVES.put("void", Void.TYPE);
-    }
 
     public synchronized void register(URI id, ClassLoader classLoader) {
         if (registry.containsKey(id)) {
-            throw new AssertionError("Duplicate class loader: " + id);
+            throw new Fabric3Exception("Duplicate classloader: " + id);
         }
         registry.put(id, classLoader);
     }
@@ -62,22 +48,6 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
 
     public ClassLoader getClassLoader(URI id) {
         return registry.get(id);
-    }
-
-    public Map<URI, ClassLoader> getClassLoaders() {
-        return registry;
-    }
-
-    public Class<?> loadClass(ClassLoader cl, String className) {
-        Class<?> clazz = PRIMITIVES.get(className);
-        if (clazz == null) {
-            try {
-                clazz = Class.forName(className, true, cl);
-            } catch (ClassNotFoundException e) {
-                throw new Fabric3Exception(e);
-            }
-        }
-        return clazz;
     }
 
     public void close() {
