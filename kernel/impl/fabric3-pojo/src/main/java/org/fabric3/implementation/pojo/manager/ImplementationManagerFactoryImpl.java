@@ -23,7 +23,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -35,13 +34,13 @@ import java.util.function.Supplier;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.supplier.ArrayMultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.ListMultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.MapMultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.SetMultiplicitySupplier;
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
@@ -54,7 +53,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 public class ImplementationManagerFactoryImpl implements ImplementationManagerFactory {
     private static final Supplier<?> NULL_FACTORY = () -> null;
 
-    private final URI componentUri;
     private final Class<?> implementationClass;
     private final Constructor<?> constructor;
     private final List<Injectable> cdiSources;
@@ -67,8 +65,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
 
     private final Map<Injectable, Supplier<?>> factories;
 
-    public ImplementationManagerFactoryImpl(URI componentUri,
-                                            Constructor<?> constructor,
+    public ImplementationManagerFactoryImpl(Constructor<?> constructor,
                                             List<Injectable> cdiSources,
                                             Map<InjectionSite, Injectable> postConstruction,
                                             LifecycleInvoker initInvoker,
@@ -76,7 +73,6 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                                             boolean reinjectable,
                                             ClassLoader cl,
                                             ReflectionFactory reflectionFactory) {
-        this.componentUri = componentUri;
         this.reflectionFactory = reflectionFactory;
         this.implementationClass = constructor.getDeclaringClass();
         this.constructor = constructor;
@@ -98,7 +94,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
         Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
 
-        return new ImplementationManagerImpl(componentUri, factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
+        return new ImplementationManagerImpl(factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
     }
 
     public Class<?> getImplementationClass() {

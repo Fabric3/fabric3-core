@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -27,15 +26,14 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.invocation.MessageCache;
-import org.fabric3.spi.container.injection.Injector;
 
 /**
  *
  */
 public class ImplementationManagerImpl implements ImplementationManager {
-    private URI componentUri;
     private final Supplier<?> constructor;
     private Injectable[] injectables;
     private final Injector<Object>[] injectors;
@@ -45,15 +43,13 @@ public class ImplementationManagerImpl implements ImplementationManager {
     private final boolean reinjectable;
     private Set<Injector<Object>> updatedInjectors;
 
-    public ImplementationManagerImpl(URI componentUri,
-                                     Supplier<?> constructor,
+    public ImplementationManagerImpl(Supplier<?> constructor,
                                      Injectable[] injectables,
                                      Injector<Object>[] injectors,
                                      LifecycleInvoker initInvoker,
                                      LifecycleInvoker destroyInvoker,
                                      boolean reinjectable,
                                      ClassLoader cl) {
-        this.componentUri = componentUri;
         this.constructor = constructor;
         this.injectables = injectables;
         this.injectors = injectors;
@@ -116,7 +112,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
 
     public void reinject(Object instance) throws Fabric3Exception {
         if (!reinjectable) {
-            throw new IllegalStateException("Implementation is not reinjectable:" + componentUri);
+            throw new IllegalStateException("Implementation is not reinjectable:" + instance.getClass().getName());
         }
         for (Injector<Object> injector : updatedInjectors) {
             injector.inject(instance);
@@ -126,7 +122,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
 
     public void updated(Object instance, String referenceName) {
         if (instance != null && !reinjectable) {
-            throw new IllegalStateException("Implementation is not reinjectable: " + componentUri);
+            throw new IllegalStateException("Implementation is not reinjectable: " + instance.getClass().getName());
         }
         for (int i = 0; i < injectables.length; i++) {
             Injectable attribute = injectables[i];
@@ -141,7 +137,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
 
     public void removed(Object instance, String referenceName) {
         if (instance != null && !reinjectable) {
-            throw new IllegalStateException("Implementation is not reinjectable: " + componentUri);
+            throw new IllegalStateException("Implementation is not reinjectable: " + instance.getClass().getName());
         }
         for (int i = 0; i < injectables.length; i++) {
             Injectable attribute = injectables[i];

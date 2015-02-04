@@ -73,7 +73,6 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         Scope scope = type.getScope();
 
         ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
-        managerDefinition.setComponentUri(component.getUri());
         managerDefinition.setReinjectable(Scope.COMPOSITE == scope);
         managerDefinition.setConstructor(type.getConstructor());
         managerDefinition.setInitMethod(type.getInitMethod());

@@ -68,7 +68,6 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
         // create the instance factory definition
         ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
-        managerDefinition.setComponentUri(component.getUri());
         managerDefinition.setReinjectable(Scope.COMPOSITE == scope);
         managerDefinition.setConstructor(type.getConstructor());
         managerDefinition.setInitMethod(type.getInitMethod());

@@ -21,7 +21,6 @@ package org.fabric3.implementation.pojo.manager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,6 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
     }
 
     public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition) throws Fabric3Exception {
-        URI componentUri = definition.getComponentUri();
         Constructor<?> ctr = definition.getConstructor();
 
         Map<InjectionSite, Injectable> injectionSites = definition.getConstruction();
@@ -73,8 +71,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         List<Injectable> construction = Arrays.asList(cdiSources);
         boolean reinjectable = definition.isReinjectable();
 
-        return new ImplementationManagerFactoryImpl(componentUri,
-                                                    ctr,
+        return new ImplementationManagerFactoryImpl(ctr,
                                                     construction,
                                                     postConstruction,
                                                     initInvoker,

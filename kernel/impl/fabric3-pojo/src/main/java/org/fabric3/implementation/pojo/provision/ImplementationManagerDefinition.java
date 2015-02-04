@@ -21,7 +21,6 @@ package org.fabric3.implementation.pojo.provision;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import org.fabric3.api.model.type.java.InjectionSite;
  * Base class for implementation manager factory definitions.
  */
 public class ImplementationManagerDefinition {
-
     private Class<?>  implementationClass;
     private Constructor<?> constructor;
     private Method initMethod;
@@ -41,25 +39,6 @@ public class ImplementationManagerDefinition {
     private Map<InjectionSite, Injectable> construction = new HashMap<>();
     private Map<InjectionSite, Injectable> postConstruction = new HashMap<>();
     private Map<InjectionSite, Injectable> reinjection = new HashMap<>();
-    private URI componentUri;
-
-    /**
-     * Returns the component URI for this implementation definition.
-     *
-     * @return the component URI for this implementation definition
-     */
-    public URI getComponentUri() {
-        return componentUri;
-    }
-
-    /**
-     * Sets the component URI for this implementation definition.
-     *
-     * @param componentUri the component URI for this implementation definition
-     */
-    public void setComponentUri(URI componentUri) {
-        this.componentUri = componentUri;
-    }
 
     /**
      * Returns the signature of the constructor that should be used.
