@@ -31,7 +31,6 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.implementation.pojo.supplier.ComponentSupplier;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.container.injection.InjectionAttributes;
@@ -132,7 +131,7 @@ public abstract class PojoComponent implements ScopedComponent {
     }
 
     public Supplier<Object> createSupplier() {
-        return new ComponentSupplier(this);
+        return this::getInstance;
     }
 
     public void startInstance(Object instance) throws Fabric3Exception {

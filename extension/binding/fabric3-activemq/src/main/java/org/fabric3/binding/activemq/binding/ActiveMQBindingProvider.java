@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
@@ -69,21 +70,25 @@ public class ActiveMQBindingProvider implements BindingProvider {
     private ProviderMonitor monitor;
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:binding.sca/@factory")
     public void setConnectionFactory(String name) {
         this.connectionFactory = name;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:binding.sca/@xa.factory")
     public void setXaConnectionFactory(String name) {
         this.xaConnectionFactory = name;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/@jmsBindingProvider")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:binding.sca/@cache")
     public void setLevel(String cacheLevel) {
         if ("connection".equalsIgnoreCase(cacheLevel)) {
             level = CacheLevel.CONNECTION;

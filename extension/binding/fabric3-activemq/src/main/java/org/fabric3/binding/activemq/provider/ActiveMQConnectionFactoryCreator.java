@@ -22,6 +22,7 @@ import java.net.URI;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.api.host.Fabric3Exception;
@@ -37,6 +38,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Creates ActiveMQ connection factories on demand.
  */
 @EagerInit
+@Key("activemq")
 public class ActiveMQConnectionFactoryCreator implements ConnectionFactoryCreator {
     private URI brokerUri;
     private HostInfo info;

@@ -28,6 +28,7 @@ import java.net.URI;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.store.amq.AMQPersistenceAdapter;
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -71,42 +72,38 @@ public class BrokerEngine {
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:runtime/@broker.name")
     public void setConfiguredBrokerName(String configuredBrokerName) {
         this.configuredBrokerName = configuredBrokerName;
     }
 
     @Property(required = false)
-    public void setMinPort(int minPort) {
-        throw new IllegalArgumentException("Port ranges no longer supported via JMS configuration. Use the runtime port.range attribute");
-    }
-
-    @Property(required = false)
-    public void setMaxPort(int maxPort) {
-        throw new IllegalArgumentException("Port ranges no longer supported via JMS configuration. Use the runtime port.range attribute");
-    }
-
-    @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:activemq/@port")
     public void setJmsPort(int port) {
         this.jmsPort = port;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:activemq/@logging")
     public void setMonitorLevel(String monitorLevel) {
         this.monitorLevel = MonitorLevel.valueOf(monitorLevel);
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:runtime/@host.address")
     public void setDefaultBindAddress(String bindAddress) {
         this.bindAddress = bindAddress;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:activemq")
     public void setBrokerConfig(XMLStreamReader reader) throws Fabric3Exception, XMLStreamException {
         BrokerParser parser = new BrokerParser();
         brokerConfiguration = parser.parse(reader);
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:activemq/@broker.disabled")
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
     }

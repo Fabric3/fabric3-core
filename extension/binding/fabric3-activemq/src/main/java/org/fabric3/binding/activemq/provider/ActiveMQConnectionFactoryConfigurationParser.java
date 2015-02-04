@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
@@ -39,6 +40,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Parses {@link ConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory templates.
  */
 @EagerInit
+@Key("connection.factory.activemq")
 public class ActiveMQConnectionFactoryConfigurationParser implements ConnectionFactoryConfigurationParser {
     private String defaultBrokerName;
 
