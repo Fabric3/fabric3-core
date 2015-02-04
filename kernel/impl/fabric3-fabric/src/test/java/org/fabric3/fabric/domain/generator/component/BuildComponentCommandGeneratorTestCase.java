@@ -28,6 +28,7 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -37,6 +38,7 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
  *
  */
 public class BuildComponentCommandGeneratorTestCase extends TestCase {
+    private ClassLoaderRegistry classLoaderRegistry;
 
     @SuppressWarnings({"unchecked"})
     public void testBuild() throws Exception {
@@ -46,7 +48,7 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
         EasyMock.expect(registry.getComponentGenerator(EasyMock.eq(MockImplementation.class))).andReturn(componentGenerator);
         EasyMock.replay(registry, componentGenerator);
 
-        BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry);
+        BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry, classLoaderRegistry);
 
         Component<MockImplementation> definition = new Component<>("component", new MockImplementation());
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
@@ -61,7 +63,7 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
-        BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry);
+        BuildComponentCommandGenerator generator = new BuildComponentCommandGenerator(registry, classLoaderRegistry);
 
         Component<MockImplementation> definition = new Component<>("component", new MockImplementation());
         LogicalComponent<MockImplementation> component = new LogicalComponent<>(URI.create("component"), definition, null);
@@ -80,4 +82,10 @@ public class BuildComponentCommandGeneratorTestCase extends TestCase {
     private class MockDefinition extends PhysicalComponentDefinition {
         private static final long serialVersionUID = 1097054400657294542L;
     }
+
+    public void setUp() throws Exception {
+        classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.isA(URI.class))).andReturn(getClass().getClassLoader()).anyTimes();
+    }
+
 }

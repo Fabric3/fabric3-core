@@ -163,7 +163,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         InjectingComponentType type = (InjectingComponentType) logicalComponent.getDefinition().getComponentType();
         type.getInjectionSites();
         SingletonComponent component = new SingletonComponent(uri, instance, type.getInjectionSites());
-        component.setClassLoaderId(BOOT_CONTRIBUTION);
+        component.setContributionUri(BOOT_CONTRIBUTION);
         return component;
     }
 

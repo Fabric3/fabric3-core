@@ -38,7 +38,7 @@ public class BuildComponentCommandTestCase extends TestCase {
         super.setUp();
         definition = new MockDefinition();
         definition.setDeployable(new QName("test", "composite"));
-        definition.setClassLoaderId(URI.create("classloader"));
+        definition.setContributionUri(URI.create("classloader"));
         definition.setComponentUri(URI.create("component"));
         command = new BuildComponentCommand(definition);
     }

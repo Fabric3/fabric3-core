@@ -36,7 +36,6 @@ import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.ContextAnnotationPostProcessor;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
@@ -61,7 +60,6 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
 
     private List<BeanPostProcessor> POST_PROCESSORS = Collections.<BeanPostProcessor>singletonList(new ContextAnnotationPostProcessor());
 
-    private ClassLoaderRegistry classLoaderRegistry;
     private boolean validating = true;
     private List<ApplicationContextListener> listeners = Collections.emptyList();
 
@@ -75,12 +73,8 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         this.listeners = listeners;
     }
 
-    public SpringComponentBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
     public SpringComponent build(SpringComponentDefinition definition) throws Fabric3Exception {
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
+        ClassLoader classLoader = definition.getClassLoader();
         if (classLoader instanceof MultiParentClassLoader) {
             // add the extension classloader as a parent of the app classloader since Spring classes must be visible to the application
             // TODO add a filtering classloader to only expose specific Spring packages

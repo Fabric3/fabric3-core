@@ -33,7 +33,8 @@ public abstract class PhysicalComponentDefinition implements Serializable {
 
     private URI uri;
     private QName deployable;
-    private URI classLoaderId;
+    private URI contributionUri;
+    private ClassLoader classLoader;
     private List<PhysicalPropertyDefinition> propertyDefinitions = new ArrayList<>();
 
     /**
@@ -73,21 +74,39 @@ public abstract class PhysicalComponentDefinition implements Serializable {
     }
 
     /**
-     * Gets the classloader id.
+     * Gets the contribution URI.
      *
-     * @return Classloader id.
+     * @return contribution URI
      */
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
     /**
-     * Set the classloader id.
+     * Sets the contribution URI.
      *
-     * @param classLoaderId Classloader id.
+     * @param contributionUri contribution URI.
      */
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    public void setContributionUri(URI contributionUri) {
+        this.contributionUri = contributionUri;
+    }
+
+    /**
+     * Returns the implementation classloader.
+     *
+     * @return the implementation classloader
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    /**
+     * Returns the implementation classloader.
+     *
+     * @param classLoader the implementation classloader
+     */
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     /**

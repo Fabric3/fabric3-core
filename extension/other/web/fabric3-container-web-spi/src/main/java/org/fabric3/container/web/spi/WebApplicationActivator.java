@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.injection.Injector;
-import org.oasisopen.sca.ComponentContext;
 
 /**
  * Responsible for activating a web application in an embedded servlet container.
@@ -36,28 +35,18 @@ public interface WebApplicationActivator {
     public static final String OASIS_CONTEXT_ATTRIBUTE = "org.oasisopen.sca.ComponentContext";
 
     /**
-     * Returns the classloader to use for the web component corresponding the given id
-     *
-     * @param componentId the web component id
-     * @return the classloader
-     */
-    ClassLoader getWebComponentClassLoader(URI componentId);
-
-    /**
      * Perform the activation, which will result in making the web application available for incoming requests to the runtime.
      *
-     * @param contextPath         the context path the web application will be available at. The context path is relative to the absolute address of the
-     *                            embedded servlet container.
-     * @param uri                 the URI of the contribution containing the web application assets
-     * @param parentClassLoaderId the id for parent classloader to use for the web application
-     * @param injectors           the map of artifact ids to injectors. An artifact id identifies an artifact type such as a servlet class name or
-     *                            ServletContext.
-     * @param context             the component context for the web component
+     * @param contextPath       the context path the web application will be available at. The context path is relative to the absolute address of the embedded
+     *                          servlet container.
+     * @param uri               the URI of the contribution containing the web application assets
+     * @param parentClassLoader the parent classloader to use for the web application
+     * @param injectors         the map of artifact ids to injectors. An artifact id identifies an artifact type such as a servlet class name or
+     *                          ServletContext.
      * @return the servlet context associated with the activated web application
      * @throws Fabric3Exception if an error occurs activating the web application
      */
-    ServletContext activate(String contextPath, URI uri, URI parentClassLoaderId, Map<String, List<Injector<?>>> injectors, ComponentContext context)
-            throws Fabric3Exception;
+    ServletContext activate(String contextPath, URI uri, ClassLoader parentClassLoader, Map<String, List<Injector<?>>> injectors) throws Fabric3Exception;
 
     /**
      * Removes an activated web application

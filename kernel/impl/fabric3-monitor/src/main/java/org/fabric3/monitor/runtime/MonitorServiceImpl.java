@@ -184,7 +184,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
         URI uri = URI.create(key);
         contributionLevels.put(uri, parsed);
         for (Component component : manager.getComponents()) {
-            if (uri.equals(component.getClassLoaderId())) {
+            if (uri.equals(component.getContributionUri())) {
                 component.setLevel(parsed);
             }
         }
@@ -213,7 +213,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
             component.setLevel(level);
         }
 
-        level = contributionLevels.get(component.getClassLoaderId());
+        level = contributionLevels.get(component.getContributionUri());
         if (level != null) {
             component.setLevel(level);
         }

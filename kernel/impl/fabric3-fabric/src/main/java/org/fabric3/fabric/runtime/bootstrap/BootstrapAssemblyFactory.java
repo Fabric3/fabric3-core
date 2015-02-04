@@ -325,7 +325,7 @@ public class BootstrapAssemblyFactory {
 
         List<CommandGenerator> commandGenerators = new ArrayList<>();
 
-        commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry));
+        commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry, classLoaderRegistry));
 
         // command generators for wires
         OperationResolver operationResolver = new OperationResolverImpl();

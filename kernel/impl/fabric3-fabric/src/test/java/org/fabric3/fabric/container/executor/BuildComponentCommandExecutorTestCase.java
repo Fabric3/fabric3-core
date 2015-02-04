@@ -43,7 +43,7 @@ public class BuildComponentCommandExecutorTestCase extends TestCase {
         PhysicalComponentDefinition definition = new MockDefinition();
 
         Component component = EasyMock.createMock(Component.class);
-        component.setClassLoaderId(null);
+        component.setContributionUri(null);
 
         ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
         EasyMock.expect(builder.build(EasyMock.isA(PhysicalComponentDefinition.class))).andReturn(component);

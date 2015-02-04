@@ -45,7 +45,7 @@ import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEX
 public class WebComponent implements Component {
 
     private final URI uri;
-    private URI classLoaderId;
+    private URI contributionUri;
     private ClassLoader classLoader;
     private InjectorFactory injectorFactory;
     private final WebApplicationActivator activator;
@@ -92,12 +92,12 @@ public class WebComponent implements Component {
         return uri;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
     }
 
     public String getName() {
@@ -123,7 +123,7 @@ public class WebComponent implements Component {
 
         injectorFactory.createInjectorMappings(injectors, siteMappings, contextSuppliers, classLoader);
         // activate the web application
-        activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
+        activator.activate(contextUrl, archiveUri, classLoader, injectors);
     }
 
     public void stop() throws Fabric3Exception {

@@ -40,7 +40,7 @@ public class SpringComponent implements Component {
     private QName deployable;
     private List<URL> sources;
     private ClassLoader classLoader;
-    private URI classLoaderId;
+    private URI contributionUri;
     private GenericXmlApplicationContext applicationContext;
     private SCAApplicationContext parent;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -86,12 +86,12 @@ public class SpringComponent implements Component {
         return deployable;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
-    public void setClassLoaderId(URI id) {
-        this.classLoaderId = id;
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
     }
 
     public String getName() {

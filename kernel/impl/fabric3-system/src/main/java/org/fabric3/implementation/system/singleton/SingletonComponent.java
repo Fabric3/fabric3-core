@@ -57,7 +57,7 @@ public class SingletonComponent implements ScopedComponent {
     private Object instance;
     private Map<Member, Injectable> sites;
     private Map<Supplier, Injectable> reinjectionMappings;
-    private URI classLoaderId;
+    private URI contributionUri;
     private MonitorLevel level = MonitorLevel.INFO;
     private AtomicBoolean started = new AtomicBoolean(false);
 
@@ -68,12 +68,12 @@ public class SingletonComponent implements ScopedComponent {
         initializeInjectionSites(mappings);
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
     }
 
     public String getKey() {

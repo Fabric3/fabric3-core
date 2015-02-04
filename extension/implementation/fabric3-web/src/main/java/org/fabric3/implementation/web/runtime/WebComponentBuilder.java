@@ -62,14 +62,14 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         Map<String, Supplier<?>> propertyFactories = Collections.emptyMap();
-        URI classLoaderId = definition.getClassLoaderId();
+        URI contributionUri = definition.getContributionUri();
         Map<String, Map<String, InjectionSite>> injectorMappings = definition.getInjectionSiteMappings();
-        ClassLoader cl = activator.getWebComponentClassLoader(classLoaderId);
+        ClassLoader cl = definition.getClassLoader();
         String contextUrl = definition.getContextUrl();
         return new WebComponent(uri,
                                 contextUrl,
                                 deployable,
-                                classLoaderId,
+                                contributionUri,
                                 cl,
                                 injectorFactory,
                                 activator,
@@ -80,7 +80,4 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
                                 info);
     }
 
-    public void dispose(WebComponentDefinition definition, WebComponent component) throws Fabric3Exception {
-        // no-op
-    }
 }

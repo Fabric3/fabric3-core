@@ -36,11 +36,9 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.runtime.tomcat.connector.ConnectorService;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.contribution.ContributionResolver;
-import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -50,20 +48,16 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class TomcatWebApplicationActivator implements WebApplicationActivator {
     private ConnectorService connectorService;
-    private ClassLoaderRegistry classLoaderRegistry;
     private ContributionResolver resolver;
     private Connector connector;
     // mappings from component URI to Tomcat context path
     private Map<URI, String> mappings = new ConcurrentHashMap<>();
     private ActivatorMonitor monitor;
 
-    public TomcatWebApplicationActivator(
-            @Reference ConnectorService connectorService,
-            @Reference ClassLoaderRegistry registry,
-            @Reference ContributionResolver resolver,
-            @Monitor ActivatorMonitor monitor) {
+    public TomcatWebApplicationActivator(@Reference ConnectorService connectorService,
+                                         @Reference ContributionResolver resolver,
+                                         @Monitor ActivatorMonitor monitor) {
         this.connectorService = connectorService;
-        this.classLoaderRegistry = registry;
         this.resolver = resolver;
         this.monitor = monitor;
     }
@@ -85,16 +79,8 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    public ClassLoader getWebComponentClassLoader(URI componentId) {
-        return classLoaderRegistry.getClassLoader(componentId);
-    }
-
     @SuppressWarnings({"unchecked"})
-    public ServletContext activate(String contextPath,
-                                   URI uri,
-                                   URI parentClassLoaderId,
-                                   Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws Fabric3Exception {
+    public ServletContext activate(String contextPath, URI uri, ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {
         if (mappings.containsKey(uri)) {
             throw new Fabric3Exception("Mapping already exists: " + uri.toString());
         }
@@ -102,7 +88,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         try {
             // resolve the url to a local artifact
             URL resolved = resolver.resolve(uri);
-            ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
+            ClassLoader parentClassLoader = new MultiParentClassLoader(URI.create("syntheticparent"), classLoader);
             StandardContext context = createContext(contextPath, resolved.getFile(), parentClassLoader, injectors);
             for (Container container : connector.getService().getContainer().findChildren()) {
                 if (container instanceof StandardHost) {
@@ -133,7 +119,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
 
     }
 
-    public void deactivate(URI uri) throws Fabric3Exception {
+    public void deactivate(URI uri) {
         String contextPath = mappings.remove(uri);
         if (contextPath == null) {
             throw new Fabric3Exception("Context not registered for component: " + uri);
@@ -146,11 +132,6 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
                 break;
             }
         }
-    }
-
-    private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {
-        ClassLoader cl = classLoaderRegistry.getClassLoader(parentClassLoaderId);
-        return new MultiParentClassLoader(id, cl);
     }
 
     private StandardContext createContext(String path, String docBase, ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {
@@ -179,7 +160,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws Fabric3Exception {
+    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) {
         List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
         if (list == null) {
             // nothing to inject

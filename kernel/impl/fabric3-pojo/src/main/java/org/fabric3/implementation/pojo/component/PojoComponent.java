@@ -46,7 +46,7 @@ public abstract class PojoComponent implements ScopedComponent {
     private QName deployable;
     private boolean eager;
     private ImplementationManager implementationManager;
-    private URI classLoaderId;
+    private URI contributionUri;
     private MonitorLevel level = MonitorLevel.INFO;
     private AtomicBoolean recreate = new AtomicBoolean(true);
     private Object cachedInstance;
@@ -85,12 +85,12 @@ public abstract class PojoComponent implements ScopedComponent {
         return deployable;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
     }
 
     public String getName() {

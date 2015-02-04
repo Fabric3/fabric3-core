@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -34,8 +35,8 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class BuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator<BuildComponentCommand> {
 
-    public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
-        super(generatorRegistry);
+    public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Reference ClassLoaderRegistry classLoaderRegistry) {
+        super(generatorRegistry, classLoaderRegistry);
     }
 
     public int getOrder() {

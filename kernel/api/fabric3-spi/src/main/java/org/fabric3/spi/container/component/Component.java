@@ -45,18 +45,18 @@ public interface Component extends Monitorable {
     URI getUri();
 
     /**
-     * Returns the classloader the component is associated with.
+     * Returns the URI of the contribution the component is contained in.
      *
-     * @return the classloader the component is associated with.
+     * @return the contribution URI
      */
-    URI getClassLoaderId();
+    URI getContributionUri();
 
     /**
-     * Sets the classloader the component is associated with.
+     * Sets the URI of the contribution the component is contained in.
      *
-     * @param classLoaderId the classloader the component is associated with.
+     * @param uri the contribution URI
      */
-    void setClassLoaderId(URI classLoaderId);
+    void setContributionUri(URI uri);
 
     /**
      * Starts the component;

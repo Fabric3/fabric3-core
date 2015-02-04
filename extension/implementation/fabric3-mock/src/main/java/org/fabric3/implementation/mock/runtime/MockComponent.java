@@ -33,7 +33,7 @@ public class MockComponent implements AtomicComponent {
 
     private final URI componentId;
     private final Supplier<Object> supplier;
-    private URI classLoaderId;
+    private URI contributionUri;
 
     public MockComponent(URI componentId, Supplier<Object> supplier) {
         this.componentId = componentId;
@@ -44,12 +44,12 @@ public class MockComponent implements AtomicComponent {
         return componentId;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
     }
 
     public Supplier<Object> createSupplier() {

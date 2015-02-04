@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -35,17 +34,15 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class MockComponentBuilder implements ComponentBuilder<MockComponentDefinition, MockComponent> {
-    private ClassLoaderRegistry classLoaderRegistry;
     private IMocksControl control;
 
-    public MockComponentBuilder(@Reference ClassLoaderRegistry classLoaderRegistry, @Reference IMocksControl control) {
-        this.classLoaderRegistry = classLoaderRegistry;
+    public MockComponentBuilder(@Reference IMocksControl control) {
         this.control = control;
     }
 
     public MockComponent build(MockComponentDefinition componentDefinition) throws Fabric3Exception {
         List<String> interfaces = componentDefinition.getInterfaces();
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(componentDefinition.getClassLoaderId());
+        ClassLoader classLoader = componentDefinition.getClassLoader();
 
         List<Class<?>> mockedInterfaces = new LinkedList<>();
         for (String interfaze : interfaces) {
@@ -58,10 +55,6 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
 
         Supplier<Object> supplier = new MockObjectSupplier<>(mockedInterfaces, classLoader, control);
         return new MockComponent(componentDefinition.getComponentUri(), supplier);
-    }
-
-    public void dispose(MockComponentDefinition definition, MockComponent component) throws Fabric3Exception {
-        //no-op
     }
 
 }

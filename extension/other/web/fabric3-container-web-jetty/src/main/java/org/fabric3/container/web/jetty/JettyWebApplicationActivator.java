@@ -46,13 +46,11 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivator;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.transport.jetty.JettyService;
-import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -61,19 +59,16 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class JettyWebApplicationActivator implements WebApplicationActivator {
     private JettyService jettyService;
-    private ClassLoaderRegistry classLoaderRegistry;
     private ContributionResolver resolver;
     private ManagementService managementService;
-    private WebApplicationActivatorMonitor monitor;
+    private ActivatorMonitor monitor;
     private Map<URI, Holder> mappings;
 
     public JettyWebApplicationActivator(@Reference JettyService jettyService,
-                                        @Reference ClassLoaderRegistry classLoaderRegistry,
                                         @Reference ContributionResolver resolver,
                                         @Reference ManagementService managementService,
-                                        @Monitor WebApplicationActivatorMonitor monitor) {
+                                        @Monitor ActivatorMonitor monitor) {
         this.jettyService = jettyService;
-        this.classLoaderRegistry = classLoaderRegistry;
         this.resolver = resolver;
         this.managementService = managementService;
         this.monitor = monitor;
@@ -91,23 +86,16 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    public ClassLoader getWebComponentClassLoader(URI componentId) {
-        return classLoaderRegistry.getClassLoader(componentId);
-    }
-
     @SuppressWarnings({"unchecked"})
-    public ServletContext activate(String contextPath,
-                                   final URI uri,
-                                   URI parentClassLoaderId,
-                                   final Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws Fabric3Exception {
+    public ServletContext activate(String contextPath, final URI uri, ClassLoader classLoader, final Map<String, List<Injector<?>>> injectors) {
         if (mappings.containsKey(uri)) {
             throw new Fabric3Exception("Mapping already exists: " + uri.toString());
         }
         try {
             // resolve the url to a local artifact
             List<URL> locations = resolver.resolveAllLocations(uri);
-            ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
+
+            ClassLoader parentClassLoader = createParentClassLoader(classLoader, uri);
             final WebAppContext context = createWebAppContext("/" + contextPath, injectors, locations, parentClassLoader);
 
             // Use a ServletContextListener to setup session injectors and perform context injection.
@@ -149,7 +137,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    public void deactivate(URI uri) throws Fabric3Exception {
+    public void deactivate(URI uri) {
         Holder holder = mappings.remove(uri);
         if (holder == null) {
             throw new Fabric3Exception("Mapping does not exist: " + uri.toString());
@@ -170,9 +158,8 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         monitor.deactivated(holder.getContextPath());
     }
 
-    private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {
-        ClassLoader cl = classLoaderRegistry.getClassLoader(parentClassLoaderId);
-        MultiParentClassLoader parentClassLoader = new MultiParentClassLoader(id, cl);
+    private ClassLoader createParentClassLoader(ClassLoader classLoader, URI id) {
+        MultiParentClassLoader parentClassLoader = new MultiParentClassLoader(id, classLoader);
         // we need to make user and web container extensions available for JSP compilation
         parentClassLoader.addParent(getClass().getClassLoader());
         return parentClassLoader;
@@ -211,7 +198,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws Fabric3Exception {
+    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) {
         List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
         if (list == null) {
             // nothing to inject
@@ -222,7 +209,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    private void export(WebAppContext context) throws Fabric3Exception {
+    private void export(WebAppContext context) {
         String displayName = context.getDisplayName();
         if (displayName == null) {
             displayName = UUID.randomUUID().toString();
@@ -236,7 +223,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
     }
 
-    private void remove(WebAppContext context) throws Fabric3Exception {
+    private void remove(WebAppContext context) {
         String displayName = context.getDisplayName();
         if (displayName == null) {
             displayName = context.toString();

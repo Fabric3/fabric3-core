@@ -44,5 +44,7 @@ public interface ComponentBuilder<D extends PhysicalComponentDefinition, C exten
      * @param component  the component
      * @throws Fabric3Exception if unable to build the component
      */
-    void dispose(D definition, C component) throws Fabric3Exception;
+    default void dispose(D definition, C component) throws Fabric3Exception {
+
+    }
 }

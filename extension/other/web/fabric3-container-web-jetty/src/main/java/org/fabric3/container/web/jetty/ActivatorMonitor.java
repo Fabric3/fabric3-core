@@ -24,7 +24,7 @@ import org.fabric3.api.annotation.monitor.Severe;
 /**
  * Receives events related to web application activation and deactivation.
  */
-public interface WebApplicationActivatorMonitor {
+public interface ActivatorMonitor {
 
     /**
      * An error was encountered.
