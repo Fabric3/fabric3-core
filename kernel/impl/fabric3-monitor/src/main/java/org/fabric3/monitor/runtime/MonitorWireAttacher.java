@@ -23,13 +23,9 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -38,27 +34,14 @@ import org.oasisopen.sca.annotation.Reference;
 public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTargetDefinition> {
     private final MonitorProxyService monitorService;
     private ComponentManager componentManager;
-    private final ClassLoaderRegistry classLoaderRegistry;
 
-    public MonitorWireAttacher(@Reference MonitorProxyService monitorService,
-                               @Reference ComponentManager componentManager,
-                               @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public MonitorWireAttacher(@Reference MonitorProxyService monitorService, @Reference ComponentManager componentManager) {
         this.monitorService = monitorService;
         this.componentManager = componentManager;
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    public void attach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target, Wire wire) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detach(PhysicalWireSourceDefinition source, MonitorWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
     }
 
     public Supplier<?> createSupplier(MonitorWireTargetDefinition target) throws Fabric3Exception {
-        ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
-        Class<?> type = ClassLoading.loadClass(loader, target.getMonitorType());
+        Class<?> type = target.getMonitorType();
         Component monitorable = componentManager.getComponent(target.getMonitorable());
         Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());
         return () -> monitor;

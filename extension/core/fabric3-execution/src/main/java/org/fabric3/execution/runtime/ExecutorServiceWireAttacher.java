@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -36,14 +34,6 @@ public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorS
     public ExecutorServiceWireAttacher(@Reference(name = "executorService") ExecutorService executorService) {
         ExecutorServiceProxy proxy = new ExecutorServiceProxy(executorService);
         this.factory = () -> proxy;
-    }
-
-    public void attach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target, Wire wire) throws Fabric3Exception {
-        throw new AssertionError();
-    }
-
-    public void detach(PhysicalWireSourceDefinition source, ExecutorServiceWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
     }
 
     public Supplier<ExecutorService> createSupplier(ExecutorServiceWireTargetDefinition target) throws Fabric3Exception {

@@ -97,10 +97,6 @@ public class JUnitTargetWireAttacher implements TargetWireAttacher<JUnitWireTarg
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JUnitWireTargetDefinition target) throws Fabric3Exception {
-        // no-op
-    }
-
     public Supplier<?> createSupplier(JUnitWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);

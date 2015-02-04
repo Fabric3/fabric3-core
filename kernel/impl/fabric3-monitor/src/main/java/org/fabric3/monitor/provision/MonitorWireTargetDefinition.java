@@ -28,11 +28,11 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public class MonitorWireTargetDefinition extends PhysicalWireTargetDefinition {
     private static final long serialVersionUID = 9010394726444606704L;
     private URI classLoaderId;
-    private String monitorType;
+    private Class<?> monitorType;
     private URI monitorable;
     private String destination;
 
-    public MonitorWireTargetDefinition(String monitorType, URI monitorable, String destination) {
+    public MonitorWireTargetDefinition(Class<?> monitorType, URI monitorable, String destination) {
         this.monitorType = monitorType;
         this.monitorable = monitorable;
         this.destination = destination;
@@ -47,7 +47,7 @@ public class MonitorWireTargetDefinition extends PhysicalWireTargetDefinition {
         this.classLoaderId = classLoaderId;
     }
 
-    public String getMonitorType() {
+    public Class<?> getMonitorType() {
         return monitorType;
     }
 

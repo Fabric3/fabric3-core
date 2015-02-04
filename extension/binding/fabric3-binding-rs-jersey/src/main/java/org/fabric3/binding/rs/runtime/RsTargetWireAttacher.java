@@ -45,8 +45,4 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def) throws Fabric3Exception {
-        // no-op
-    }
-
 }

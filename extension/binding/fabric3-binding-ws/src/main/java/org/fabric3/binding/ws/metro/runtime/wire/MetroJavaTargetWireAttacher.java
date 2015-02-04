@@ -117,10 +117,6 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target) throws Fabric3Exception {
-        // no-op
-    }
-
     private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTargetDefinition target) throws Fabric3Exception {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : target.getSchemas().entrySet()) {

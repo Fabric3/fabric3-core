@@ -87,10 +87,6 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaWireTarget
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, JavaWireTargetDefinition target) {
-        // no-op
-    }
-
     public Supplier<?> createSupplier(JavaWireTargetDefinition target) {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);

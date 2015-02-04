@@ -49,7 +49,7 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
     default void attachSupplier(PSD source, Supplier<?> supplier, PhysicalWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
+
     }
 
     /**
@@ -69,7 +69,7 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @throws Fabric3Exception if an exception occurs during the deattach operation
      */
     default void detachSupplier(PSD source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
+
     }
 
 }

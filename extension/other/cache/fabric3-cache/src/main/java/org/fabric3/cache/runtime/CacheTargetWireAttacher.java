@@ -22,8 +22,6 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.provision.CacheWireTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -34,14 +32,6 @@ public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTarg
 
     public CacheTargetWireAttacher(@Reference CacheRegistry registry) {
         this.registry = registry;
-    }
-
-    public void attach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target, Wire wire) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detach(PhysicalWireSourceDefinition source, CacheWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
     }
 
     public Supplier<?> createSupplier(CacheWireTargetDefinition target) throws Fabric3Exception {

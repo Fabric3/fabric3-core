@@ -79,10 +79,6 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SpringWireTargetDefinition target) throws Fabric3Exception {
-        // no-op
-    }
-
     public Supplier<?> createSupplier(SpringWireTargetDefinition target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }

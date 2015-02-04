@@ -38,7 +38,9 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param wire   the wire
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws Fabric3Exception;
+    default void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws Fabric3Exception {
+
+    }
 
     /**
      * Detaches a wire from a target component or outgoing transport binding.
@@ -47,7 +49,9 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param target metadata for performing the attach
      * @throws Fabric3Exception if an exception occurs during the detach operation
      */
-    void detach(PhysicalWireSourceDefinition source, PTD target) throws Fabric3Exception;
+    default void detach(PhysicalWireSourceDefinition source, PTD target) throws Fabric3Exception {
+
+    }
 
     /**
      * Create a Supplier that returns a direct target instance.

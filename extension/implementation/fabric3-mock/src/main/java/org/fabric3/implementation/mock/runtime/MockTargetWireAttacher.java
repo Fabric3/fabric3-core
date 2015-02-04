@@ -46,7 +46,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         this.control = control;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) {
 
         Class<?> mockedInterface = loadInterface(targetDefinition);
         Object mock = createMock(mockedInterface);
@@ -63,11 +63,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     }
 
-    public void detach(PhysicalWireSourceDefinition source, MockWireTargetDefinition target) throws Fabric3Exception {
-        // no-op
-    }
-
-    public Supplier<?> createSupplier(MockWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(MockWireTargetDefinition target) {
         return () -> createMock(loadInterface(target));
     }
 
@@ -100,7 +96,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         }
     }
 
-    private Class<?> loadInterface(MockWireTargetDefinition target) throws Fabric3Exception {
+    private Class<?> loadInterface(MockWireTargetDefinition target) {
         String interfaceClass = target.getMockedInterface();
         try {
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());

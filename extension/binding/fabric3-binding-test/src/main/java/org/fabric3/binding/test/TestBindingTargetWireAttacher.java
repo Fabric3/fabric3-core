@@ -51,7 +51,4 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target) throws Fabric3Exception {
-    }
-
 }

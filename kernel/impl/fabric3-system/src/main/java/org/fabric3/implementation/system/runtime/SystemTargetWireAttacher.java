@@ -77,10 +77,6 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
-    }
-
     public Supplier<?> createSupplier(SystemWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);

@@ -31,8 +31,6 @@ import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxy;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -81,14 +79,6 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
-    }
-
-    public void attach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target, Wire wire) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detach(PhysicalWireSourceDefinition source, PersistenceContextWireTargetDefinition target) throws Fabric3Exception {
-        throw new UnsupportedOperationException();
     }
 
 }

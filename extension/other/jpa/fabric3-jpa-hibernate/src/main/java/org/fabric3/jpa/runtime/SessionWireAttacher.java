@@ -30,8 +30,6 @@ import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxy;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -80,14 +78,6 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
-    }
-
-    public void attach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target, Wire wire) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detach(PhysicalWireSourceDefinition source, SessionWireTargetDefinition target) {
-        throw new UnsupportedOperationException();
     }
 
 }

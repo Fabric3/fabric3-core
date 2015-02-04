@@ -66,10 +66,6 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         }
     }
 
-    public void detach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target) throws Fabric3Exception {
-        // no-op
-    }
-
     /**
      * Resolve the location as an absolute address or relative to the runtime data/outbox directory.
      *

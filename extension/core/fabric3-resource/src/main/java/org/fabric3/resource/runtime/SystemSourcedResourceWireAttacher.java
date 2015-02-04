@@ -45,10 +45,6 @@ public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<Sys
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
-    }
-
     public Supplier<?> createSupplier(SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);

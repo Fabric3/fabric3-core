@@ -25,6 +25,7 @@ import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -35,7 +36,7 @@ public class MonitorResourceReferenceGenerator implements ResourceReferenceGener
 
     public MonitorWireTargetDefinition generateWireTarget(LogicalResourceReference<MonitorResourceReference> resourceReference) {
         LogicalComponent<?> component = resourceReference.getParent();
-        String type = resourceReference.getDefinition().getServiceContract().getQualifiedInterfaceName();
+        Class<?> type = ((JavaServiceContract)resourceReference.getDefinition().getServiceContract()).getInterfaceClass();
         URI monitorable = component.getUri();
         String destination = resourceReference.getDefinition().getDestination();
         MonitorWireTargetDefinition definition = new MonitorWireTargetDefinition(type, monitorable, destination);

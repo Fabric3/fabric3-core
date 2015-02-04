@@ -293,7 +293,7 @@ public class BootstrapAssemblyFactory {
         Map<Class<?>, TargetWireAttacher<?>> targetAttachers = new HashMap<>();
         targetAttachers.put(SingletonWireTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
         targetAttachers.put(SystemWireTargetDefinition.class, new SystemTargetWireAttacher(componentManager));
-        targetAttachers.put(MonitorWireTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager, classLoaderRegistry));
+        targetAttachers.put(MonitorWireTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager));
 
         return new ConnectorImpl(sourceAttachers, targetAttachers);
     }

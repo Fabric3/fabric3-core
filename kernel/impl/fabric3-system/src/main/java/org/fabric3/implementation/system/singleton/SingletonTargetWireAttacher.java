@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -39,13 +37,6 @@ public class SingletonTargetWireAttacher implements TargetWireAttacher<Singleton
 
     public SingletonTargetWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
-    }
-
-    public void attach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target, Wire wire)
-            throws Fabric3Exception {
-    }
-
-    public void detach(PhysicalWireSourceDefinition source, SingletonWireTargetDefinition target) throws Fabric3Exception {
     }
 
     public Supplier<?> createSupplier(SingletonWireTargetDefinition target) throws Fabric3Exception {

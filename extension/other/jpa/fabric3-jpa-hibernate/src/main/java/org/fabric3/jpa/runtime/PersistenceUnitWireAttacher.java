@@ -54,10 +54,6 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         throw new AssertionError();
     }
 
-    public void detach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
-        throw new AssertionError();
-    }
-
     public Supplier<?> createSupplier(PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
