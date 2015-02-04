@@ -168,10 +168,6 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         }
         URI uri = source.getClassLoaderId();
         ClassLoader loader = registry.getClassLoader(uri);
-        if (loader == null) {
-            // this should not happen
-            throw new Fabric3Exception("ClassLoader not found: " + uri);
-        }
         try {
             return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
