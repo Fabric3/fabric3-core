@@ -222,7 +222,8 @@ public class JUnitHeuristic implements HeuristicProcessor {
                 // ignore
                 break;
             default:
-                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
+                String className = componentType.getImplClass().getName();
+                context.addError(new UnknownInjectionType(site, type, className, member, componentType));
                 break;
         }
     }

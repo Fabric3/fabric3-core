@@ -104,8 +104,7 @@ public class TimerComponentBuilder extends ComponentBuilder<TimerComponentBuilde
     }
 
     protected TimerComponentBuilder(String name, Class<?> clazz, TimerType type) {
-        String className = clazz.getName();
-        InjectingComponentType componentType = new InjectingComponentType(className);
+        InjectingComponentType componentType = new InjectingComponentType(clazz);
         TimerImplementation implementation = new TimerImplementation();
         implementation.setImplementationClass(clazz);
         TimerData data = new TimerData();

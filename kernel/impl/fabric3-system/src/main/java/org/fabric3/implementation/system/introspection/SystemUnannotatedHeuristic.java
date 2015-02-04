@@ -142,7 +142,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
                 addReference(componentType, typeMapping, name, parameterType, site, context);
                 break;
             default:
-                String clazz = componentType.getImplClass();
+                String clazz = componentType.getImplClass().getName();
                 UnknownInjectionType error = new UnknownInjectionType(site, type, clazz, member, componentType);
                 context.addError(error);
         }

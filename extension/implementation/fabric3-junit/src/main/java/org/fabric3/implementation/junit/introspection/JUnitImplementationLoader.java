@@ -65,7 +65,7 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
 
         validateAttributes(reader, context, implementation);
 
-        InjectingComponentType componentType = new InjectingComponentType(className);
+        InjectingComponentType componentType = new InjectingComponentType(clazz);
         introspector.introspect(componentType, context);
         implementation.setComponentType(componentType);
 

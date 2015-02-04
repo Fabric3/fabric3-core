@@ -205,10 +205,10 @@ public class JavaHeuristic implements HeuristicProcessor {
                 addReference(componentType, name, parameterType, declaringClass, site, context);
                 break;
             case CALLBACK:
-                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
+                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass().getName(), member, componentType));
                 break;
             default:
-                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
+                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass().getName(), member, componentType));
         }
     }
 

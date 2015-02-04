@@ -106,7 +106,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        componentType = new InjectingComponentType(NoInterface.class.getName());
+        componentType = new InjectingComponentType(NoInterface.class);
 
         noInterfaceContract = createServiceContract(NoInterface.class);
         serviceInterfaceContract = createServiceContract(ServiceInterface.class);

@@ -18,6 +18,7 @@ package org.fabric3.binding.zeromq.introspection;
 
 import junit.framework.TestCase;
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
@@ -31,7 +32,7 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
     private ZeroMQPostProcessor processor = new ZeroMQPostProcessor();
 
     public void testServiceBinding() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(SingleService.class.getName());
+        InjectingComponentType type = new InjectingComponentType(SingleService.class);
         org.fabric3.api.model.type.component.Service service = addService(Service.class, type);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -43,7 +44,7 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
     }
 
     public void testMultiServiceBinding() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(MultiService.class.getName());
+        InjectingComponentType type = new InjectingComponentType(MultiService.class);
         org.fabric3.api.model.type.component.Service service = addService(Service.class, type);
         org.fabric3.api.model.type.component.Service service2 = addService(Service2.class, type);
 
@@ -57,7 +58,7 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
     }
 
     public void testMultiNoService() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(MultiNoServiceSpecified.class.getName());
+        InjectingComponentType type = new InjectingComponentType(MultiNoServiceSpecified.class);
         addService(Service.class, type);
         addService(Service2.class, type);
 
@@ -70,7 +71,7 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
     }
 
     public void testWrongServiceSpecified() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(WrongServiceSpecified.class.getName());
+        InjectingComponentType type = new InjectingComponentType(WrongServiceSpecified.class);
         addService(Service.class, type);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -82,7 +83,7 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
     }
 
     public void testBiDirectionalServiceBinding() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(BiDirectionalServiceImpl.class.getName());
+        InjectingComponentType type = new InjectingComponentType(BiDirectionalServiceImpl.class);
         org.fabric3.api.model.type.component.Service service = addService(BiDirectionalService.class, type);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -94,7 +95,7 @@ public class ZeroMQPostProcessorServiceTestCase extends TestCase {
     }
 
     private org.fabric3.api.model.type.component.Service addService(Class<?> interfaze, InjectingComponentType type) {
-        org.fabric3.api.model.type.component.Service service = new org.fabric3.api.model.type.component.Service(interfaze.getSimpleName());
+        org.fabric3.api.model.type.component.Service<ComponentType> service = new org.fabric3.api.model.type.component.Service<>(interfaze.getSimpleName());
         service.setServiceContract(new JavaServiceContract(interfaze));
         type.add(service);
         return service;

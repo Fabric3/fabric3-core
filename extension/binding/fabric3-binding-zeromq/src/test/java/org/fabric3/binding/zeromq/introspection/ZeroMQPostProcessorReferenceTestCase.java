@@ -36,7 +36,7 @@ public class ZeroMQPostProcessorReferenceTestCase extends TestCase {
     private ZeroMQPostProcessor processor = new ZeroMQPostProcessor();
 
     public void testServiceBinding() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(ServiceClientImpl.class.getName());
+        InjectingComponentType type = new InjectingComponentType(ServiceClientImpl.class);
 
         ServiceContract contract = new JavaServiceContract(Service.class);
 

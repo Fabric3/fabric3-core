@@ -75,7 +75,7 @@ public class JavaComponentBuilder extends ComponentBuilder<JavaComponentBuilder>
     protected JavaComponentBuilder(String name, Object instance) {
         Class<?> clazz = instance.getClass();
         String className = clazz.getName();
-        InjectingComponentType componentType = new InjectingComponentType(className);
+        InjectingComponentType componentType = new InjectingComponentType(clazz);
         JavaImplementation implementation = new JavaImplementation(instance);
         implementation.setComponentType(componentType);
         implementation.setImplementationClass(clazz);
@@ -85,7 +85,7 @@ public class JavaComponentBuilder extends ComponentBuilder<JavaComponentBuilder>
 
     protected JavaComponentBuilder(String name, Class<?> clazz) {
         String className = clazz.getName();
-        InjectingComponentType componentType = new InjectingComponentType(className);
+        InjectingComponentType componentType = new InjectingComponentType(clazz);
         JavaImplementation implementation = new JavaImplementation();
         implementation.setImplementationClass(clazz);
         implementation.setComponentType(componentType);

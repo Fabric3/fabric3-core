@@ -33,7 +33,7 @@ public class RsPostProcessorTestCase extends TestCase {
     private RsPostProcessor processor = new RsPostProcessor();
 
     public void testIntrospectImplClass() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(TestImpl.class.getName());
+        InjectingComponentType type = new InjectingComponentType(TestImpl.class);
         Service<ComponentType> service = new Service<>("TestImpl", new JavaServiceContract(TestImpl.class));
         type.add(service);
 
@@ -46,7 +46,7 @@ public class RsPostProcessorTestCase extends TestCase {
     }
 
     public void testIntrospectSingleService() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(TestSingleService.class.getName());
+        InjectingComponentType type = new InjectingComponentType(TestSingleService.class);
         Service<ComponentType> service = new Service<>("TestService", new JavaServiceContract(TestService.class));
         type.add(service);
 
@@ -59,7 +59,7 @@ public class RsPostProcessorTestCase extends TestCase {
     }
 
     public void testIntrospectMultiService() throws Exception {
-        InjectingComponentType type = new InjectingComponentType(TestMultiService.class.getName());
+        InjectingComponentType type = new InjectingComponentType(TestMultiService.class);
         Service<ComponentType> service = new Service<>("TestService", new JavaServiceContract(TestService.class));
         type.add(service);
         Service<ComponentType> service2 = new Service<>("TestService2", new JavaServiceContract(TestService2.class));

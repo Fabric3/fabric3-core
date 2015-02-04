@@ -120,7 +120,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
     private <S, I extends S> Component<Implementation<?>> createDefinition(String name, Class<S> type, I instance, boolean introspect) {
 
-        String implClassName = instance.getClass().getName();
+        Class<?> instanceClass = instance.getClass();
 
         ClassLoader loader = getClass().getClassLoader();
         IntrospectionContext context = new DefaultIntrospectionContext(BOOT_CONTRIBUTION, loader);
@@ -128,12 +128,12 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             // introspect the instance so it may be injected by the runtime with additional services
             SystemImplementation implementation = new SystemImplementation();
             implementation.setImplementationClass(instance.getClass());
-            InjectingComponentType componentType = new InjectingComponentType(implClassName);
+            InjectingComponentType componentType = new InjectingComponentType(instanceClass);
             implementationIntrospector.introspect(componentType, context);
             implementation.setComponentType(componentType);
 
             Component<Implementation<?>> def = new Component<>(name);
-            SingletonImplementation singletonImplementation = new SingletonImplementation(implementation.getComponentType(), implClassName);
+            SingletonImplementation singletonImplementation = new SingletonImplementation(implementation.getComponentType());
             def.setImplementation(singletonImplementation);
             def.setContributionUri(BOOT_CONTRIBUTION);
             return def;
@@ -146,10 +146,10 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             String serviceName = contract.getInterfaceName();
             Service<ComponentType> service = new Service<>(serviceName, contract);
 
-            InjectingComponentType componentType = new InjectingComponentType(implClassName);
+            InjectingComponentType componentType = new InjectingComponentType(instanceClass);
             componentType.add(service);
 
-            SingletonImplementation implementation = new SingletonImplementation(componentType, implClassName);
+            SingletonImplementation implementation = new SingletonImplementation(componentType);
             implementation.setComponentType(componentType);
             Component<Implementation<?>> def = new Component<>(name);
             def.setImplementation(implementation);

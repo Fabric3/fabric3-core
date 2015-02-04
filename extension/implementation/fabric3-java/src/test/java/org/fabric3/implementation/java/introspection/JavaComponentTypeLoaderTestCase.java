@@ -44,11 +44,11 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
         classVisitor.visit(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
         heuristic.applyHeuristics(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
         control.replay();
-        InjectingComponentType componentType = new InjectingComponentType(Simple.class.getName());
+        InjectingComponentType componentType = new InjectingComponentType(Simple.class);
         loader.introspect(componentType, context);
 
         assertNotNull(componentType);
-        assertEquals(Simple.class.getName(), componentType.getImplClass());
+        assertEquals(Simple.class, componentType.getImplClass());
         control.verify();
     }
 

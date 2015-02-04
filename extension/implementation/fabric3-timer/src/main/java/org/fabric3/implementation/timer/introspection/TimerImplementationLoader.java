@@ -78,8 +78,7 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
         processIntervalMethod(context, implementation);
         validateData(startLocation, context, data);
 
-        String implClass = implementation.getImplementationClass().getName();
-        InjectingComponentType componentType = new InjectingComponentType(implClass);
+        InjectingComponentType componentType = new InjectingComponentType(implementation.getImplementationClass());
         introspector.introspect(componentType, context);
         implementation.setComponentType(componentType);
 

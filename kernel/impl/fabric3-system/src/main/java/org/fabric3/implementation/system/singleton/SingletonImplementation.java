@@ -26,19 +26,13 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  *
  */
 public class SingletonImplementation extends Implementation<InjectingComponentType> {
-    private String implementationClass;
 
-    public SingletonImplementation(InjectingComponentType componentType, String implementationClass) {
+    public SingletonImplementation(InjectingComponentType componentType) {
         super(componentType);
-        this.implementationClass = implementationClass;
     }
 
     public String getType() {
         return "singleton";
-    }
-
-    public String getImplementationClass() {
-        return implementationClass;
     }
 
 }

@@ -22,14 +22,12 @@ package org.fabric3.implementation.system.introspection;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidImplementation;
-import org.fabric3.spi.introspection.java.MissingResource;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -51,25 +49,9 @@ public class SystemImplementationIntrospectorImpl implements ImplementationIntro
     }
 
     public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
-        String className = componentType.getImplClass();
         componentType.setScope(Scope.COMPOSITE);
 
-        ClassLoader cl = context.getClassLoader();
-        Class<?> implClass;
-        try {
-            implClass = helper.loadClass(className, cl);
-        } catch (ImplementationNotFoundException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
-                // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
-                // If this is the case, ensure the correct class name is reported, not just the implementation
-                String message = e.getCause().getMessage();
-                context.addError(new MissingResource("Class referenced from system implementation not found on classpath", message, componentType));
-            } else {
-                context.addError(new MissingResource("System implementation class not found on classpath", className, componentType));
-            }
-            return;
-        }
+        Class<?> implClass = componentType.getImplClass();
         if (implClass.isInterface()) {
             InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClass, componentType);
             context.addError(failure);

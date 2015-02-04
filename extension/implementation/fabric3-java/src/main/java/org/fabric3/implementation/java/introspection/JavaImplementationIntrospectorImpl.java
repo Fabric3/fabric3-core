@@ -24,7 +24,6 @@ import java.util.List;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -58,25 +57,8 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
     }
 
     public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
-        String className = componentType.getImplClass();
         componentType.setScope(Scope.STATELESS);
-
-        ClassLoader cl = context.getClassLoader();
-
-        Class<?> implClass;
-        try {
-            implClass = helper.loadClass(className, cl);
-        } catch (ImplementationNotFoundException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
-                // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
-                // If this is the case, ensure the correct class name is reported, not just the implementation 
-                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage(), componentType));
-            } else {
-                context.addError(new ImplementationArtifactNotFound(className, componentType));
-            }
-            return;
-        }
+        Class<?> implClass = componentType.getImplClass();
         if (implClass.isInterface()) {
             InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClass, componentType);
             context.addError(failure);
@@ -95,7 +77,7 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
             heuristic.applyHeuristics(componentType, implClass, context);
         } catch (NoClassDefFoundError e) {
             // May be thrown as a result of a referenced class not being on the classpath
-            context.addError(new ImplementationArtifactNotFound(className, e.getMessage(), componentType));
+            context.addError(new ImplementationArtifactNotFound(implClass.getName(), e.getMessage(), componentType));
         }
         validateScope(componentType, implClass, context);
         for (PostProcessor postProcessor : postProcessors) {

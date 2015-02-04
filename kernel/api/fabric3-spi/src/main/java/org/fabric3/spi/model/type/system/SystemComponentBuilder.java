@@ -62,7 +62,7 @@ public class SystemComponentBuilder extends ComponentBuilder<SystemComponentBuil
     }
 
     protected SystemComponentBuilder(String name, Class<?> clazz) {
-        InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
+        InjectingComponentType componentType = new InjectingComponentType(clazz);
         SystemImplementation implementation = new SystemImplementation(clazz);
         implementation.setComponentType(componentType);
         component = new Component<>(name);

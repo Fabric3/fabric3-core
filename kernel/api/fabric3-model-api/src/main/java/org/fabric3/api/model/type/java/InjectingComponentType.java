@@ -38,7 +38,7 @@ import org.fabric3.api.model.type.component.Scope;
  * A component type associated with an implementation that supports injection.
  */
 public class InjectingComponentType extends ComponentType {
-    private String implClass;
+    private Class<?> implClass;
     private Scope scope;
     private int initLevel;
     private boolean managed;
@@ -57,7 +57,7 @@ public class InjectingComponentType extends ComponentType {
      *
      * @param implClass the class this component type represents.
      */
-    public InjectingComponentType(String implClass) {
+    public InjectingComponentType(Class<?> implClass) {
         this.implClass = implClass;
     }
 
@@ -68,11 +68,11 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Returns the java class name for this component type.
+     * Returns the java class for this component type.
      *
-     * @return the the java class name for this component type
+     * @return the the java class for this component type
      */
-    public String getImplClass() {
+    public Class<?> getImplClass() {
         return implClass;
     }
 

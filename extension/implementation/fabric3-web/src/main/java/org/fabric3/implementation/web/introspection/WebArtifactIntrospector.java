@@ -84,7 +84,7 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
         WebComponentType componentType = element.getValue();
         // introspect the class and generate a component type that will be merged into the web component type
         WebArtifactImplementation artifactImpl = new WebArtifactImplementation();
-        InjectingComponentType tempType = new InjectingComponentType(clazz.getName());
+        InjectingComponentType tempType = new InjectingComponentType(clazz);
         artifactImpl.setComponentType(tempType);
         TypeMapping mapping = context.getTypeMapping(clazz);
         if (mapping == null) {
@@ -175,7 +175,7 @@ public class WebArtifactIntrospector implements JavaArtifactIntrospector {
 
         // apply all injection sites
         for (Map.Entry<InjectionSite, Injectable> entry : tempType.getInjectionSites().entrySet()) {
-            componentType.addMapping(tempType.getImplClass(), entry.getKey(), entry.getValue());
+            componentType.addMapping(tempType.getImplClass().getName(), entry.getKey(), entry.getValue());
         }
     }
 

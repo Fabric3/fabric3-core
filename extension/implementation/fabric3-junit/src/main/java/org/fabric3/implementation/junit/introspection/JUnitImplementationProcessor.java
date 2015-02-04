@@ -58,7 +58,7 @@ public class JUnitImplementationProcessor implements ImplementationProcessor<JUn
 
     public void process(Component<JUnitImplementation> component, Class<?> clazz, IntrospectionContext context) {
         JUnitImplementation implementation = new JUnitImplementation(clazz);
-        InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
+        InjectingComponentType componentType = new InjectingComponentType(clazz);
         implementation.setComponentType(componentType);
         component.setImplementation(implementation);
         process(component, context);
