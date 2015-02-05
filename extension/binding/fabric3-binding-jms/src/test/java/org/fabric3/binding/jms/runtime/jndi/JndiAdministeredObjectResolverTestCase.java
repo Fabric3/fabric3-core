@@ -43,7 +43,7 @@ public class JndiAdministeredObjectResolverTestCase extends TestCase {
 
         ConnectionFactoryDefinition definition = new ConnectionFactoryDefinition();
         definition.setName("test");
-        assertNotNull(resolver.resolve(definition));
+        assertNotNull(resolver.resolve(definition).get());
 
         EasyMock.verify(factory, contextManager, factoryManager);
     }
@@ -55,7 +55,7 @@ public class JndiAdministeredObjectResolverTestCase extends TestCase {
 
         Destination definition = new Destination();
         definition.setName("test");
-        assertNotNull(resolver.resolve(definition));
+        assertNotNull(resolver.resolve(definition).get());
 
         EasyMock.verify(destination, factoryManager);
     }
@@ -66,7 +66,7 @@ public class JndiAdministeredObjectResolverTestCase extends TestCase {
 
         ConnectionFactoryDefinition definition = new ConnectionFactoryDefinition();
         definition.setName("test");
-        assertNull(resolver.resolve(definition));
+        assertFalse(resolver.resolve(definition).isPresent());
 
         EasyMock.verify(contextManager, factoryManager);
     }

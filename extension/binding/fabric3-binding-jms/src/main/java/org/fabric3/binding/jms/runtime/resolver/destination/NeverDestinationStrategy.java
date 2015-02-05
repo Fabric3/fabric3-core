@@ -21,6 +21,7 @@ package org.fabric3.binding.jms.runtime.resolver.destination;
 
 import javax.jms.ConnectionFactory;
 import java.util.List;
+import java.util.Optional;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.Destination;
@@ -43,9 +44,9 @@ public class NeverDestinationStrategy implements DestinationStrategy {
 
     public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws Fabric3Exception {
         for (DestinationResolver resolver : resolvers) {
-            javax.jms.Destination destination = resolver.resolve(definition);
-            if (destination != null) {
-                return destination;
+            Optional<javax.jms.Destination> destination = resolver.resolve(definition);
+            if (destination.isPresent()) {
+                return destination.get();
             }
         }
         throw new Fabric3Exception("Destination not found: " + definition.getName());

@@ -43,7 +43,7 @@ public interface AdministeredObjectResolver {
      * Resolves a destination.
      *
      * @param destination the destination definition
-     * @param factory    the connection factory
+     * @param factory     the connection factory
      * @return the destination
      * @throws Fabric3Exception if there is an error during resolution
      */

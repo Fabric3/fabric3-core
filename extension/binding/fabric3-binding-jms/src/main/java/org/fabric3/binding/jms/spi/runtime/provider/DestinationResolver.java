@@ -16,6 +16,8 @@
  */
 package org.fabric3.binding.jms.spi.runtime.provider;
 
+import java.util.Optional;
+
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.host.Fabric3Exception;
 
@@ -31,6 +33,6 @@ public interface DestinationResolver {
      * @return the resolved destination
      * @throws Fabric3Exception if there is a resolution error
      */
-    javax.jms.Destination resolve(Destination definition) throws Fabric3Exception;
+    Optional<javax.jms.Destination> resolve(Destination definition) throws Fabric3Exception;
 
 }

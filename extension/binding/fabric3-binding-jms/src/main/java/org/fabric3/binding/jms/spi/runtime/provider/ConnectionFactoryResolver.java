@@ -17,6 +17,7 @@
 package org.fabric3.binding.jms.spi.runtime.provider;
 
 import javax.jms.ConnectionFactory;
+import java.util.Optional;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.host.Fabric3Exception;
@@ -33,6 +34,6 @@ public interface ConnectionFactoryResolver {
      * @return the resolved factory
      * @throws Fabric3Exception if there is a resolution error
      */
-    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception;
+    Optional<ConnectionFactory> resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception;
 
 }

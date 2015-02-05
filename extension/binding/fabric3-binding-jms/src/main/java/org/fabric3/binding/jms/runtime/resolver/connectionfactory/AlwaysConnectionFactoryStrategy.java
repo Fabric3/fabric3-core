@@ -52,23 +52,23 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
     }
 
     public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws Fabric3Exception {
-            Map<String, String> properties = definition.getProperties();
-            String className = properties.get("class");
-            ConnectionFactory factory = instantiate(className, properties);
-            String name = definition.getName();
-            created.add(name);
-            return manager.register(name, factory, definition.getProperties());
+        Map<String, String> properties = definition.getProperties();
+        String className = properties.get("class");
+        ConnectionFactory factory = instantiate(className, properties);
+        String name = definition.getName();
+        created.add(name);
+        return manager.register(name, factory, definition.getProperties());
     }
 
     public void release(ConnectionFactoryDefinition definition) throws Fabric3Exception {
-            String name = definition.getName();
-            if (created.remove(name)) {
-                ConnectionFactory factory = manager.unregister(name);
-                if (factory == null) {
-                    throw new Fabric3Exception("Connection factory not found: " + name);
-                }
-                creatorRegistry.release(factory);
+        String name = definition.getName();
+        if (created.remove(name)) {
+            ConnectionFactory factory = manager.unregister(name);
+            if (factory == null) {
+                throw new Fabric3Exception("Connection factory not found: " + name);
             }
+            creatorRegistry.release(factory);
+        }
     }
 
     private ConnectionFactory instantiate(String className, Map<String, String> props) throws Fabric3Exception {

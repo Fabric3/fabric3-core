@@ -21,6 +21,7 @@ package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
 import javax.jms.ConnectionFactory;
 import java.util.List;
+import java.util.Optional;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
@@ -55,12 +56,12 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
         }
 
         for (ConnectionFactoryResolver resolver : resolvers) {
-            factory = resolver.resolve(definition);
-            if (factory != null) {
-                break;
+            Optional<ConnectionFactory> optional = resolver.resolve(definition);
+            if (optional.isPresent()) {
+                return manager.register(name, optional.get(), definition.getProperties());
             }
         }
-        return manager.register(name, factory, definition.getProperties());
+        throw new Fabric3Exception("Unable to resolve ConnectionFactory: " + name);
     }
 
     public void release(ConnectionFactoryDefinition definition) {

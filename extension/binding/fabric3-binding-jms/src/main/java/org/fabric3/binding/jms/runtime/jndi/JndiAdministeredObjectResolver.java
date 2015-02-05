@@ -18,6 +18,7 @@ package org.fabric3.binding.jms.runtime.jndi;
 
 import javax.jms.ConnectionFactory;
 import javax.naming.NamingException;
+import java.util.Optional;
 
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
@@ -40,22 +41,22 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
         this.factoryManager = factoryManager;
     }
 
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception {
+    public Optional<ConnectionFactory> resolve(ConnectionFactoryDefinition definition) throws Fabric3Exception {
         try {
             String name = definition.getName();
             ConnectionFactory factory = contextManager.lookup(ConnectionFactory.class, name);
             if (factory == null) {
-                return null;
+                return Optional.empty();
             }
-            return factoryManager.register(name, factory, definition.getProperties());
+            return Optional.ofNullable(factoryManager.register(name, factory, definition.getProperties()));
         } catch (NamingException e) {
             throw new Fabric3Exception(e);
         }
     }
 
-    public javax.jms.Destination resolve(Destination definition) throws Fabric3Exception {
+    public Optional<javax.jms.Destination> resolve(Destination definition) throws Fabric3Exception {
         try {
-            return contextManager.lookup(javax.jms.Destination.class, definition.getName());
+            return Optional.ofNullable(contextManager.lookup(javax.jms.Destination.class, definition.getName()));
         } catch (NamingException e) {
             throw new Fabric3Exception(e);
         }

@@ -21,6 +21,7 @@ package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
 import javax.jms.ConnectionFactory;
 import java.util.List;
+import java.util.Optional;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
@@ -60,9 +61,9 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
                 return factory;
             }
             for (ConnectionFactoryResolver resolver : resolvers) {
-                factory = resolver.resolve(definition);
-                if (factory != null) {
-                    return factory;
+                Optional<ConnectionFactory> optional = resolver.resolve(definition);
+                if (optional.isPresent()){
+                    return optional.get();
                 }
             }
         }

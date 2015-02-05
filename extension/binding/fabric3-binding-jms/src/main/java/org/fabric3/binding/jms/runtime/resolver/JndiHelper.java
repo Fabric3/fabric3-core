@@ -38,8 +38,7 @@ public class JndiHelper {
      * @param name the object name
      * @param env  environment properties
      * @return the object
-     * @throws NamingException if there was an error looking up the object. NameNotFoundException will be thrown if the object is not found in the
-     *                         JNDI tree.
+     * @throws NamingException if there was an error looking up the object. NameNotFoundException will be thrown if the object is not found in the JNDI tree.
      */
     public static Object lookup(String name, Hashtable<String, String> env) throws NamingException {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();

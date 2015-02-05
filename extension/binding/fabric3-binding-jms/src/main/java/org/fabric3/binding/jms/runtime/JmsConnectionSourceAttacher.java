@@ -90,7 +90,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         configuration.setSessionType(source.getSessionType());
         populateConfiguration(configuration, metadata);
         if (containerManager.isRegistered(serviceUri)) {
-            // the wire has changed and it is being reprovisioned
+            // the wire has changed and it is being re-provisioned
             containerManager.unregister(serviceUri);
         }
         AdaptiveMessageContainer container = containerFactory.create(configuration);
