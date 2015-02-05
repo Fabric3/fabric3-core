@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
@@ -128,6 +129,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
      * @param timeout the timeout in milliseconds for polling operations
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@poll.timeout")
     public void setPollTimeout(long timeout) {
         this.pollTimeout = timeout * 1000; // convert milliseconds to microseconds
     }
@@ -138,6 +140,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
      * @param host the host
      */
     @Property(required = false)
+    @Source("$systemConfig/f3:runtime/@host.address")
     public void setHost(String host) {
         this.host = host;
     }

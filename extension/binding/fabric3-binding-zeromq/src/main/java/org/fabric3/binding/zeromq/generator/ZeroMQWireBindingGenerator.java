@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.host.Fabric3Exception;
@@ -43,6 +44,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
+@Key("org.fabric3.api.binding.zeromq.model.ZeroMQBinding")
 public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBinding> {
     private static final String TARGET_URI = "targetUri";
 

@@ -18,12 +18,14 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.spi.transport.Transport;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
+@Key("zeromq")
 public class ZeroMQTransport implements Transport {
     private ZeroMQPubSubBroker pubSubBroker;
     private ZeroMQWireBroker wireBroker;

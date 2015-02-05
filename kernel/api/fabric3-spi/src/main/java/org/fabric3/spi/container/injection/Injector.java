@@ -45,7 +45,7 @@ public interface Injector<T> {
     void setSupplier(Supplier<?> supplier, InjectionAttributes attributes);
 
     /**
-     * Clears the currently set Supplier. Used when a multiplicity reference is reinjected.
+     * Clears the currently set Supplier. Used when a multiplicity reference is re-injected.
      */
     void clearSupplier();
 

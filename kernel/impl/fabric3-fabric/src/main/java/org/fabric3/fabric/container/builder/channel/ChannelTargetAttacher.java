@@ -40,18 +40,17 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         this.channelManager = channelManager;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection) {
         URI uri = target.getUri();
         Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) {
         // no-op since channel do not maintain references to incoming handlers
     }
 
-    private Channel getChannel(URI uri, ChannelSide channelSide) throws Fabric3Exception {
+    private Channel getChannel(URI uri, ChannelSide channelSide) {
         Channel channel = channelManager.getChannel(uri, channelSide);
         if (channel == null) {
             throw new Fabric3Exception("Channel not found");

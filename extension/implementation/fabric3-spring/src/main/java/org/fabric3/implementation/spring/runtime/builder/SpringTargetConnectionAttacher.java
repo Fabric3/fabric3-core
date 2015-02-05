@@ -44,8 +44,7 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
         this.manager = manager;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target, ChannelConnection connection) {
         URI targetUri = target.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(targetUri);
         if (component == null) {
@@ -59,7 +58,7 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) {
         // no-op
     }
 

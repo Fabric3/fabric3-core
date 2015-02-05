@@ -16,11 +16,11 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -33,18 +33,11 @@ public class NonManagedConnectionSourceWireAttacher implements SourceConnectionA
         this.proxyService = proxyService;
     }
 
-    public void attach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
-        try {
-            ClassLoader loader = target.getClassLoader();
-            Class<?> interfaze = loader.loadClass(source.getInterface());
-            Object proxy = proxyService.createSupplier(interfaze, connection).get();
-            source.setProxy(proxy);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
+    public void attach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+        ClassLoader loader = target.getClassLoader();
+        Class<?> interfaze = ClassLoading.loadClass(loader, source.getInterface());
+        Object proxy = proxyService.createSupplier(interfaze, connection).get();
+        source.setProxy(proxy);
     }
 
-    public void detach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
-    }
 }

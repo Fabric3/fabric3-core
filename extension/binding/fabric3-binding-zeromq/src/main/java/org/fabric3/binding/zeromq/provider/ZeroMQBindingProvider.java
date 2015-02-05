@@ -19,6 +19,7 @@ package org.fabric3.binding.zeromq.provider;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.host.Fabric3Exception;
@@ -52,31 +53,37 @@ public class ZeroMQBindingProvider implements BindingProvider {
     private long receiveBuffer = -1;
 
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@bindingProvider")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@high.water")
     public void setHighWater(long highWater) {
         this.highWater = highWater;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@multicast.rate")
     public void setMulticastRate(long multicastRate) {
         this.multicastRate = multicastRate;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@multicast.recovery")
     public void setMulticastRecovery(long multicastRecovery) {
         this.multicastRecovery = multicastRecovery;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@send.buffer")
     public void setSendBuffer(long sendBuffer) {
         this.sendBuffer = sendBuffer;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:zeromq.binding/@receive.buffer")
     public void setReceiveBuffer(long receiveBuffer) {
         this.receiveBuffer = receiveBuffer;
     }

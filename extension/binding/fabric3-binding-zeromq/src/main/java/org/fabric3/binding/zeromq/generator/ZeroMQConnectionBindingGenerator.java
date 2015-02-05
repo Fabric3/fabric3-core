@@ -20,6 +20,7 @@ package org.fabric3.binding.zeromq.generator;
 
 import java.net.URI;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.host.Fabric3Exception;
@@ -41,6 +42,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
+@Key("org.fabric3.api.binding.zeromq.model.ZeroMQBinding")
 public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenerator<ZeroMQBinding> {
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,

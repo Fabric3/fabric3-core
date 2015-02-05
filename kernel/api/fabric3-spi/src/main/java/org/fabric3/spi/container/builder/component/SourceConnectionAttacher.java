@@ -46,6 +46,8 @@ public interface SourceConnectionAttacher<P extends PhysicalConnectionSourceDefi
      * @param target the target metadata
      * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    void detach(P source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception;
+    default void detach(P source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+
+    }
 
 }

@@ -22,8 +22,6 @@ import org.fabric3.api.model.type.component.Resource;
  * A monitor resource configuration.
  */
 public class MonitorResource extends Resource {
-    private static final long serialVersionUID = -1549812994321886622L;
-
     private String name;
     private MonitorDestinationDefinition destinationDefinition;
 

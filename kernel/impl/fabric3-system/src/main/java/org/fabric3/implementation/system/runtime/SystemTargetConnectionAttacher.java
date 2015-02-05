@@ -48,8 +48,7 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         this.reflectionFactory = reflectionFactory;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target, ChannelConnection connection) {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         SystemComponent component = (SystemComponent) manager.getComponent(targetName);
@@ -66,7 +65,7 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target) {
         // no-op
     }
 

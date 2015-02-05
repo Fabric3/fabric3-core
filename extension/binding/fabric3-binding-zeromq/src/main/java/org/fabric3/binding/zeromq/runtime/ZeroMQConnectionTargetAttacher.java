@@ -18,6 +18,7 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
@@ -28,6 +29,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition")
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
     private ZeroMQPubSubBroker broker;
 

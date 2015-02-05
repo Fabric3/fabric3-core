@@ -33,7 +33,9 @@ public interface ComponentBuilderListener {
      * @param component  the built component
      * @param definition physical component definition of the component being built.
      */
-    void onBuild(Component component, PhysicalComponentDefinition definition);
+    default void onBuild(Component component, PhysicalComponentDefinition definition) {
+
+    }
 
     /**
      * Callback when a component is disposed.
@@ -41,5 +43,7 @@ public interface ComponentBuilderListener {
      * @param component  the built component
      * @param definition physical component definition of the component being disposed.
      */
-    void onDispose(Component component, PhysicalComponentDefinition definition);
+    default void onDispose(Component component, PhysicalComponentDefinition definition) {
+
+    }
 }

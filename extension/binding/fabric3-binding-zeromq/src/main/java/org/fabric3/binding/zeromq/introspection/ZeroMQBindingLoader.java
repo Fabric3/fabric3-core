@@ -24,6 +24,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
@@ -37,6 +39,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Loads a <code>binding.zeromq</code> element in a composite.
  */
 @EagerInit
+@Key(Namespaces.F3_PREFIX + "binding.zeromq")
 public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBinding> {
 
     public ZeroMQBindingLoader() {

@@ -21,6 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
@@ -32,6 +33,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition")
 public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSourceDefinition> {
     private ZeroMQWireBroker broker;
 
