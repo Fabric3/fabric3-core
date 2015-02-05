@@ -21,6 +21,7 @@ package org.fabric3.binding.ws.metro.generator;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -34,6 +35,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Generates PhysicalWireSourceDefinitions and PhysicalWireTargetDefinitions for the Metro web services binding.
  */
+@Key("org.fabric3.api.binding.ws.model.WsBinding")
 public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding> {
     private Map<Class<?>, MetroGeneratorDelegate> delegates;
 

@@ -21,6 +21,7 @@ package org.fabric3.binding.ws.metro;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.fabric3.api.annotation.Source;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -36,6 +37,7 @@ public class MetroBinding {
     private Level logLevel = Level.WARNING;
 
     @Property(required = false)
+    @Source("$systemConfig//f3:web.services/f3:metro/@logging")
     public void setLogLevel(String logLevel) {
         this.logLevel = Level.parse(logLevel);
     }

@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
@@ -48,6 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a Java interface contract to a wire.
  */
+@Key("org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition")
 public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaWireTargetDefinition> {
 
     //    private ClassLoaderRegistry registry;

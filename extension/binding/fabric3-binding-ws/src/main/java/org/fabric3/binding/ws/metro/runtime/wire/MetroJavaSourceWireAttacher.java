@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
@@ -41,6 +42,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Source wire attacher that provisions Java-based web service endpoints.
  */
+@Key("org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition")
 public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroJavaWireSourceDefinition> {
     private ArtifactCache artifactCache;
 

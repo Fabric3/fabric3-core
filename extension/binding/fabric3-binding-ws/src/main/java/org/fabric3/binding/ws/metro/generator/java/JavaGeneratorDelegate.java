@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -52,6 +53,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Generates source and target definitions for an endpoint defined by a Java-based service contract.
  */
+@Key("org.fabric3.spi.model.type.java.JavaServiceContract")
 public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaServiceContract> {
 
     private EndpointSynthesizer synthesizer;

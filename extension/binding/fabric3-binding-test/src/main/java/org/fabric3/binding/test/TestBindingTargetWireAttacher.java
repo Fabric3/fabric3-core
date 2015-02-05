@@ -20,6 +20,7 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Interceptor;
@@ -34,6 +35,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("org.fabric3.binding.test.TestBindingWireTargetDefinition")
 public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBindingWireTargetDefinition> {
     private final BindingChannel channel;
 

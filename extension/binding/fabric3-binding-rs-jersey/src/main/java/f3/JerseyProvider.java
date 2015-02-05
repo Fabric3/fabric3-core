@@ -21,16 +21,16 @@ import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 public class JerseyProvider {
     private static final QName QNAME = new QName(Namespaces.F3, "RsJerseyExtension");
 
-       @Provides
-       public static Composite getComposite() {
-           CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(RsContainerManagerImpl.class).build());
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderRegistryImpl.class).build());
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderGeneratorImpl.class).build());
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(NameBindingFilterProviderImpl.class).build());
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(RsSourceWireAttacher.class).build());
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(RsTargetWireAttacher.class).build());
-           compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderBuilder.class).build());
-           return compositeBuilder.build();
-       }
+    @Provides
+    public static Composite getComposite() {
+        CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(RsContainerManagerImpl.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderRegistryImpl.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderGeneratorImpl.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(NameBindingFilterProviderImpl.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(RsSourceWireAttacher.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(RsTargetWireAttacher.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderBuilder.class).build());
+        return compositeBuilder.build();
+    }
 }

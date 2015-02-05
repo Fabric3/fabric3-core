@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.ws.model.EndpointReference;
 import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.model.type.component.BindingHandler;
@@ -35,6 +36,7 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -44,6 +46,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  *
  */
 @EagerInit
+@Key(Constants.SCA_PREFIX + "binding.ws")
 public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBinding> {
     private static final String WSDL_NS = "http://www.w3.org/ns/wsdl-instance";
     private static final String WSDL_2004_NS = "http://www.w3.org/2004/08/wsdl-instance";

@@ -13,8 +13,8 @@
 
     <!-- MetroConfigBinding must be the first composite deployed as it configures the Metro extension -->
     <deployable composite="f3:MetroConfigBinding"/>
-    <deployable composite="f3:introspection"/>
-    <deployable composite="f3:MetroExtension"/>
+    <deployable composite="f3:MetroIntrospection"/>
+    <deployable composite="f3:MetroBase"/>
 
 
     <f3:extends name="jaxws"/>
