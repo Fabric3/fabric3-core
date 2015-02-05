@@ -24,7 +24,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
 import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
@@ -48,6 +50,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("org.fabric3.binding.rs.provision.RsWireSourceDefinition")
 public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefinition> {
     private ServletHost servletHost;
     private RsContainerManager containerManager;
@@ -70,6 +73,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:binding.rs/@log.level")
     public void setLogLevel(String level) {
         this.logLevel = Level.parse(level);
     }

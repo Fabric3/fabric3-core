@@ -25,6 +25,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
 import org.fabric3.binding.rs.runtime.bytecode.ProviderGenerator;
@@ -45,6 +46,7 @@ import org.objectweb.asm.Type;
 /**
  *
  */
+@Key("org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition")
 public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResourceDefinition> {
     private ProviderRegistry providerRegistry;
     private ComponentManager componentManager;

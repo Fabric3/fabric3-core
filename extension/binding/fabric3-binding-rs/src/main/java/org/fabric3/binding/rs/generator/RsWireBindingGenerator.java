@@ -21,6 +21,7 @@ package org.fabric3.binding.rs.generator;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.rs.model.RsBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
@@ -36,6 +37,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Implementation of the REST binding generator.
  */
 @EagerInit
+@Key("org.fabric3.api.binding.rs.model.RsBinding")
 public class RsWireBindingGenerator implements WireBindingGenerator<RsBinding> {
     public RsWireSourceDefinition generateSource(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         Class<?> interfaze = ((JavaServiceContract) contract).getInterfaceClass();
@@ -44,7 +46,8 @@ public class RsWireBindingGenerator implements WireBindingGenerator<RsBinding> {
     }
 
     public RsWireTargetDefinition generateTarget(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
-        return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), ((JavaServiceContract) contract).getInterfaceClass());
+        Class<?> interfaceClass = ((JavaServiceContract) contract).getInterfaceClass();
+        return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), interfaceClass);
     }
 
     public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBinding> binding,

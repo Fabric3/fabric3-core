@@ -19,6 +19,7 @@ package org.fabric3.binding.rs.generator;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.binding.rs.model.ProviderResource;
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -30,6 +31,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
+@Key("org.fabric3.binding.rs.model.ProviderResource")
 public class ProviderResourceGenerator implements ResourceGenerator<ProviderResource> {
 
     public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResource> resource) {

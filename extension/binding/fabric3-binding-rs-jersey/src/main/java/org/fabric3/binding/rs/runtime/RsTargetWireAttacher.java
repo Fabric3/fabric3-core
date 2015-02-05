@@ -3,6 +3,7 @@ package org.fabric3.binding.rs.runtime;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
 import org.fabric3.binding.rs.runtime.container.RsClientInterceptor;
@@ -16,6 +17,7 @@ import org.fabric3.spi.util.ClassLoading;
 /**
  * Attaches a reference to the RS binding.
  */
+@Key("org.fabric3.binding.rs.provision.RsWireTargetDefinition")
 public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefinition> {
 
     public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws Fabric3Exception {

@@ -22,6 +22,8 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.rs.model.RsBinding;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -34,6 +36,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
+@Key(Namespaces.F3_PREFIX + "binding.rs")
 public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBinding> {
 
     public RsBindingLoader() {
