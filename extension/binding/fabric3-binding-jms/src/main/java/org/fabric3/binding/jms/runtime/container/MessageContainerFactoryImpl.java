@@ -21,6 +21,7 @@ import javax.transaction.TransactionManager;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.jms.spi.provision.SessionType;
@@ -42,6 +43,7 @@ public class MessageContainerFactoryImpl implements MessageContainerFactory {
     private int transactionTimeout = DEFAULT_TRX_TIMEOUT;   // in seconds per the JTA spec
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/@transaction.timeout")
     public void setTransactionTimeout(int timeout) {
         if (timeout <= 0) {
             throw new IllegalArgumentException("Invalid transaction timeout: " + timeout);

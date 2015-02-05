@@ -22,6 +22,7 @@ package org.fabric3.binding.jms.runtime.resolver.destination;
 import javax.jms.ConnectionFactory;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
@@ -31,6 +32,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Implementation that always resolves a destination against JNDI and never attempts to create it.
  */
+@Key("NEVER")
 public class NeverDestinationStrategy implements DestinationStrategy {
     private List<DestinationResolver> resolvers;
 

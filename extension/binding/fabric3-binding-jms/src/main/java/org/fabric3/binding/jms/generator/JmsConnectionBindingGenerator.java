@@ -22,6 +22,7 @@ package org.fabric3.binding.jms.generator;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
@@ -49,6 +50,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.
  */
 @EagerInit
+@Key("org.fabric3.api.binding.jms.model.JmsBinding")
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBinding> {
     private static final String JAXB = "JAXB";
 

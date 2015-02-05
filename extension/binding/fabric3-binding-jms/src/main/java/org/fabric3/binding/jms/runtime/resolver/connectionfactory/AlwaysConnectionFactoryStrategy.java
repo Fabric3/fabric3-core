@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
@@ -39,6 +40,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Implementation that always attempts to create a connection factory.
  */
+@Key("ALWAYS")
 public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryCreatorRegistry creatorRegistry;
     private ConnectionFactoryManager manager;

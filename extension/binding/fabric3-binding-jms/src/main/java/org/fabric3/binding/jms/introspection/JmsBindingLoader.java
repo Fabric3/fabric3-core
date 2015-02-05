@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.fabric3.api.annotation.Source;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ActivationSpec;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
@@ -51,6 +52,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -61,6 +63,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite.  request/responseConnection are specified per the SCA JMS spec
  */
 @EagerInit
+@Key(Constants.SCA_PREFIX + "binding.jms")
 public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBinding> {
     private LoaderRegistry registry;
     private int defaultResponseTimeout = 600000;  // set the default response wait to 10 minutes

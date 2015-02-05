@@ -16,6 +16,7 @@
  */
 package org.fabric3.binding.jms.generator;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -26,6 +27,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Generates connection factory definitions.
  */
 @EagerInit
+@Key("org.fabric3.api.binding.jms.resource.ConnectionFactoryResource")
 public class ConnectionFactoryResourceGenerator implements ResourceGenerator<ConnectionFactoryResource> {
 
     public PhysicalConnectionFactoryResource generateResource(LogicalResource<ConnectionFactoryResource> resource) {

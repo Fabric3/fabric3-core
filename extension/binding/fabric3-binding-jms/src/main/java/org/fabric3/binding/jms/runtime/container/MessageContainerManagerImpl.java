@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.management.ManagementService;
@@ -61,6 +62,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/@pause.on.start")
     public void setPauseOnStart(boolean pauseOnStart) {
         this.pausedOnStart = pauseOnStart;
     }

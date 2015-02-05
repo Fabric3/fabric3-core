@@ -21,6 +21,8 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.Collections;
 import java.util.Map;
 
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.introspection.ConnectionFactoryConfigurationParser;
@@ -37,6 +39,7 @@ import org.oasisopen.sca.annotation.Reference;
  * </pre>
  */
 @EagerInit
+@Key(Namespaces.F3_PREFIX + "connection.factory")
 public class ConnectionFactoryResourceLoader implements TypeLoader<ConnectionFactoryResource> {
 
     @Reference(required = false)

@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.api.host.Fabric3Exception;
@@ -46,6 +47,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("org.fabric3.api.binding.file.model.FileBinding")
 public class FileWireBindingGenerator implements WireBindingGenerator<FileBinding> {
     private static final String REGEX_ALL = ".*";
     private HostInfo info;

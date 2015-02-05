@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ActivationSpec;
 import org.fabric3.api.binding.jms.model.CreateOption;
 import org.fabric3.api.binding.jms.model.Destination;
@@ -51,6 +52,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
  */
 @EagerInit
+@Key("org.fabric3.api.binding.jms.model.JmsBinding")
 public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding> {
     private static final String JAXB = "JAXB";
 

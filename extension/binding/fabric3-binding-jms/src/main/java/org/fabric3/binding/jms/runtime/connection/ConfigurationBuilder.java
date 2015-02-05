@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryType;
 import org.fabric3.api.host.Fabric3Exception;
@@ -74,11 +75,13 @@ public class ConfigurationBuilder {
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/@default.provider")
     public void setDefaultProvider(String defaultProvider) {
         this.defaultProvider = defaultProvider;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/f3:connection.factories")
     public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, Fabric3Exception {
         this.connectionFactoryReader = reader;   // lazily read configuration so connection factory config parsers can be injected
         factoryConfigurations.clear();

@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.host.Fabric3Exception;
@@ -47,6 +48,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("org.fabric3.binding.file.provision.FileBindingWireSourceDefinition")
 public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWireSourceDefinition> {
     private static final ServiceAdapter ADAPTER = new DefaultServiceAdapter();
     private static final ServiceAdapter JAF_ADAPTER = new DataHandlerServiceAdapter();

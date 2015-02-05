@@ -21,6 +21,7 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 import java.net.URI;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -40,8 +41,9 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
-@SuppressWarnings({"ResultOfMethodCallIgnored"})
 @EagerInit
+@Key("org.fabric3.binding.file.provision.FileBindingWireTargetDefinition")
+@SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWireTargetDefinition> {
     private static final ReferenceAdapter ADAPTER = new DefaultReferenceAdapter();
 

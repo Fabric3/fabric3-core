@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
@@ -68,6 +69,7 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 /**
  * Attaches a channel or consumer to a JMS destination.
  */
+@Key("org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition")
 public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDefinition> {
 
     private AdministeredObjectResolver resolver;

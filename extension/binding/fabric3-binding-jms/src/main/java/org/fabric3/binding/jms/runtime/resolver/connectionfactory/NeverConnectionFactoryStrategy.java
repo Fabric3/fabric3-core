@@ -22,6 +22,7 @@ package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 import javax.jms.ConnectionFactory;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
@@ -32,6 +33,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, and then JNDI.
  */
+@Key("NEVER")
 public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;
     private List<ConnectionFactoryResolver> resolvers;

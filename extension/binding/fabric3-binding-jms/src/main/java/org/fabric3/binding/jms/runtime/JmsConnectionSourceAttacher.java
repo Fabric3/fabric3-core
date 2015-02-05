@@ -23,6 +23,7 @@ import javax.jms.ConnectionFactory;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.Destination;
@@ -50,6 +51,7 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 /**
  * Attaches a consumer to a JMS destination.
  */
+@Key("org.fabric3.binding.jms.spi.provision.JmsConnectionSource")
 public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<JmsConnectionSource> {
 
     private AdministeredObjectResolver resolver;

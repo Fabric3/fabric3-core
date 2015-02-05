@@ -22,6 +22,7 @@ package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 import javax.jms.ConnectionFactory;
 import java.util.List;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
@@ -34,6 +35,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Implementation that attempts to resolve a connection by searching the {@link }ConnectionFactoryManager}, {@link ConnectionFactoryResolver}, JNDI and then, if
  * not found, creating it.
  */
+@Key("IF_NOT_EXIST")
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private AlwaysConnectionFactoryStrategy always;
     private ConnectionFactoryManager manager;

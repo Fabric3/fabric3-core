@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
@@ -33,6 +34,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
+@Key("org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource")
 public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnectionFactoryResource> {
     private ConnectionFactoryCreatorRegistry registry;
     private ConnectionFactoryManager manager;

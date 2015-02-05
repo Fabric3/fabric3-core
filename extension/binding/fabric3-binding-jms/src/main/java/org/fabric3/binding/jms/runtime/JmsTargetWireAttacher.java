@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
@@ -62,6 +63,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches the reference end of a wire to a JMS destination.
  */
+@Key("org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition")
 public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDefinition> {
     private AdministeredObjectResolver resolver;
     private TransactionManager tm;

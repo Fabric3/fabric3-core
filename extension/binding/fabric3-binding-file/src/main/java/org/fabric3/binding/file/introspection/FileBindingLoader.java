@@ -20,6 +20,8 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -33,6 +35,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Loads a <code>binding.file</code> element in a composite.
  */
 @EagerInit
+@Key(Namespaces.F3_PREFIX + "binding.file")
 public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBinding> {
 
     public FileBindingLoader() {

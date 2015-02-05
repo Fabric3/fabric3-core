@@ -21,6 +21,7 @@ package org.fabric3.binding.jms.runtime;
 
 import javax.jms.ConnectionFactory;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.Destination;
@@ -40,6 +41,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches a producer to a JMS destination.
  */
+@Key("org.fabric3.binding.jms.spi.provision.JmsConnectionTarget")
 public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTarget> {
     private AdministeredObjectResolver resolver;
 

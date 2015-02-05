@@ -26,6 +26,7 @@ import javax.jms.QueueConnection;
 import javax.jms.Session;
 import javax.jms.TopicConnection;
 
+import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.Destination;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
@@ -34,6 +35,7 @@ import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 /**
  * Implementation that attempts to always create the destination.
  */
+@Key("ALWAYS")
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
     public javax.jms.Destination getDestination(Destination definition, ConnectionFactory factory) throws Fabric3Exception {
