@@ -48,9 +48,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBinding> {
     private static final String TARGET_URI = "targetUri";
 
-    public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBinding> binding,
-                                                     ServiceContract contract,
-                                                     List<LogicalOperation> operations) throws Fabric3Exception {
+    public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         if (binding.isCallback()) {
             URI uri = URI.create("zmq://" + contract.getInterfaceName());
@@ -60,9 +58,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         }
     }
 
-    public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBinding> binding,
-                                                     ServiceContract contract,
-                                                     List<LogicalOperation> operations) throws Fabric3Exception {
+    public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         validateServiceContract(contract);
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
 
@@ -86,7 +82,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
 
     public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding,
                                                                    ServiceContract contract,
-                                                                   List<LogicalOperation> operations) throws Fabric3Exception {
+                                                                   List<LogicalOperation> operations) {
         URI targetUri = binding.getParent().getUri();
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         return generateTarget(contract, targetUri, metadata);
@@ -106,9 +102,9 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
      *
      * @param binding the binding
      * @return the URI or null
-     * @throws Fabric3Exception if there is a parsing error
+     * @ if there is a parsing error
      */
-    private URI parseTargetUri(LogicalBinding<ZeroMQBinding> binding) throws Fabric3Exception {
+    private URI parseTargetUri(LogicalBinding<ZeroMQBinding> binding) {
         URI bindingTargetUri = binding.getDefinition().getTargetUri();
         if (bindingTargetUri == null) {
             // create a synthetic name
@@ -162,7 +158,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         return targetUri;
     }
 
-    private void validateServiceContract(ServiceContract contract) throws Fabric3Exception {
+    private void validateServiceContract(ServiceContract contract) {
         boolean oneway = false;
         boolean first = true;
         for (Operation operation : contract.getOperations()) {

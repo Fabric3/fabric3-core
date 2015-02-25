@@ -23,7 +23,6 @@ import java.net.URI;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
@@ -47,7 +46,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<ZeroMQBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws Fabric3Exception {
+                                                                       ChannelDeliveryType deliveryType) {
         URI uri = consumer.getUri();
 
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
@@ -58,7 +57,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<ZeroMQBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws Fabric3Exception {
+                                                                       ChannelDeliveryType deliveryType) {
         ZeroMQBinding bindingDefinition = binding.getDefinition();
         URI targetUri = bindingDefinition.getTargetUri();
         if (targetUri == null) {
@@ -72,8 +71,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
         return new ZeroMQConnectionTargetDefinition(targetUri, metadata, dedicatedThread);
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBinding> binding, ChannelDeliveryType deliveryType)
-            throws Fabric3Exception {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBinding> binding, ChannelDeliveryType deliveryType) {
         return new ZeroMQChannelBindingDefinition(deliveryType);
     }
 
