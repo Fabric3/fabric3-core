@@ -158,6 +158,9 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         methodBuilder.consumes(template.getConsumedTypes());
         methodBuilder.produces(template.getProducedTypes());
         methodBuilder.handledBy(handler, template.getInvocable().getHandlingMethod());
+        if (template.isSuspendDeclared()) {
+            methodBuilder.suspended(template.getSuspendTimeout(), template.getSuspendTimeoutUnit());
+        }
     }
 
     private void setDebugLevel() {
