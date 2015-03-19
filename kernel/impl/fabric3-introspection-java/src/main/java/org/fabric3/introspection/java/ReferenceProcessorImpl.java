@@ -59,7 +59,6 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         name = helper.getSiteName(field, name);
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        Annotation[] annotations = field.getAnnotations();
         Reference<ComponentType> definition = createDefinition(name, required, type, clazz, componentType, context);
         componentType.add(definition, site);
         addTargets(field, field, context, definition);
@@ -74,7 +73,6 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         name = helper.getSiteName(method, name);
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        Annotation[] annotations = method.getAnnotations();
         Reference<ComponentType> definition = createDefinition(name, required, type, clazz, componentType, context);
         addTargets(method, method, context, definition);
         componentType.add(definition, site);
@@ -90,7 +88,6 @@ public class ReferenceProcessorImpl implements ReferenceProcessor {
         name = helper.getSiteName(constructor, index, name);
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        Annotation[] annotations = constructor.getParameterAnnotations()[index];
         Reference<ComponentType> definition = createDefinition(name, required, type, clazz, componentType, context);
         componentType.add(definition, site);
         addTargets(constructor, constructor, context, definition);

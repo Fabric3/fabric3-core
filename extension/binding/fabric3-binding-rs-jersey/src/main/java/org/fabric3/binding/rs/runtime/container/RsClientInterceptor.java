@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.List;
 
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
@@ -36,7 +37,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class RsClientInterceptor implements Interceptor {
     private RsClientResponse response;
 
-    public RsClientInterceptor(String operName, Class<?> interfaze, URI uri, Class<?>... classes) throws Exception {
+    public RsClientInterceptor(String operName, Class<?> interfaze, URI uri, List<Class<?>> classes) throws Exception {
         response = createResponseConfiguration(uri, interfaze, operName, classes);
     }
 
@@ -64,11 +65,11 @@ public class RsClientInterceptor implements Interceptor {
         return null;
     }
 
-    private RsClientResponse createResponseConfiguration(URI uri, Class<?> interfaze, String operation, Class<?>... args) throws Exception {
+    private RsClientResponse createResponseConfiguration(URI uri, Class<?> interfaze, String operation, List<Class<?>> args) throws Exception {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            Method m = interfaze.getMethod(operation, args);
+            Method m = interfaze.getMethod(operation, args.toArray(new Class[args.size()]));
             RsClientResponse cfg = new RsClientResponse(m.getReturnType(), uri);
             cfg = cfg.
                     // Class level

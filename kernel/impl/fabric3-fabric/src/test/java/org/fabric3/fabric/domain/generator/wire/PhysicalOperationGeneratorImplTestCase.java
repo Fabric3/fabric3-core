@@ -59,12 +59,12 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
 
         assertEquals(1, definitions.size());
         PhysicalOperationDefinition definition = definitions.iterator().next();
-        assertEquals("java.lang.String", definition.getSourceParameterTypes().get(0));
-        assertEquals("java.lang.String", definition.getSourceReturnType());
-        assertEquals("java.lang.Exception", definition.getSourceFaultTypes().get(0));
-        assertEquals("java.lang.String", definition.getTargetParameterTypes().get(0));
-        assertEquals("java.lang.String", definition.getTargetReturnType());
-        assertEquals("java.lang.Exception", definition.getTargetFaultTypes().get(0));
+        assertEquals(String.class, definition.getSourceParameterTypes().get(0));
+        assertEquals(String.class, definition.getSourceReturnType());
+        assertEquals(Exception.class, definition.getSourceFaultTypes().get(0));
+        assertEquals(String.class, definition.getTargetParameterTypes().get(0));
+        assertEquals(String.class, definition.getTargetReturnType());
+        assertEquals(Exception.class, definition.getTargetFaultTypes().get(0));
         EasyMock.verify(resolver, registry);
     }
 
@@ -82,12 +82,12 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
 
         assertEquals(1, definitions.size());
         PhysicalOperationDefinition definition = definitions.iterator().next();
-        assertEquals("java.lang.String", definition.getSourceParameterTypes().get(0));
-        assertEquals("java.lang.String", definition.getSourceReturnType());
-        assertEquals("java.lang.Exception", definition.getSourceFaultTypes().get(0));
-        assertEquals("java.lang.String", definition.getTargetParameterTypes().get(0));
-        assertEquals("java.lang.String", definition.getTargetReturnType());
-        assertEquals("java.lang.Exception", definition.getTargetFaultTypes().get(0));
+        assertEquals(String.class, definition.getSourceParameterTypes().get(0));
+        assertEquals(String.class, definition.getSourceReturnType());
+        assertEquals(Exception.class, definition.getSourceFaultTypes().get(0));
+        assertEquals(String.class, definition.getTargetParameterTypes().get(0));
+        assertEquals(String.class, definition.getTargetReturnType());
+        assertEquals(Exception.class, definition.getTargetFaultTypes().get(0));
         assertTrue(definition.isRemotable());
         EasyMock.verify(resolver, registry);
     }

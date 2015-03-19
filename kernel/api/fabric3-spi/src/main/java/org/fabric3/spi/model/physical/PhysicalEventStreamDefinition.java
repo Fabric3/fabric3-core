@@ -31,7 +31,7 @@ import org.fabric3.api.ChannelEvent;
 public class PhysicalEventStreamDefinition implements Serializable {
     private static final long serialVersionUID = 8684345140369447283L;
     private String name;
-    private List<String> eventTypes = new ArrayList<>();
+    private List<Class<?>> eventTypes = new ArrayList<>();
     private List<PhysicalEventFilterDefinition> filters = new ArrayList<>();
     private boolean channelEvent;
 
@@ -62,7 +62,7 @@ public class PhysicalEventStreamDefinition implements Serializable {
      *
      * @return the stream parameter types.
      */
-    public List<String> getEventTypes() {
+    public List<Class<?>> getEventTypes() {
         return eventTypes;
     }
 
@@ -71,7 +71,7 @@ public class PhysicalEventStreamDefinition implements Serializable {
      *
      * @param type the source event type to be added.
      */
-    public void addEventType(String type) {
+    public void addEventType(Class<?> type) {
         eventTypes.add(type);
     }
 

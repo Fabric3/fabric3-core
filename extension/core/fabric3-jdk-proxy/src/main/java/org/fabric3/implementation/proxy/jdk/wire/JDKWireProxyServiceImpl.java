@@ -31,7 +31,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.util.ClassLoading;
 
 /**
  * The default WireProxyService implementation that uses JDK dynamic proxies.
@@ -113,12 +112,8 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
      */
     private Method findMethod(Class<?> clazz, PhysicalOperationDefinition operation) throws NoSuchMethodException, ClassNotFoundException {
         String name = operation.getName();
-        List<String> params = operation.getSourceParameterTypes();
-        Class<?>[] types = new Class<?>[params.size()];
-        for (int i = 0; i < params.size(); i++) {
-            types[i] = ClassLoading.loadClass(clazz.getClassLoader(), params.get(i));
-        }
-        return clazz.getMethod(name, types);
+        List<Class<?>> params = operation.getSourceParameterTypes();
+        return clazz.getMethod(name, params.toArray(new Class[params.size()]));
     }
 
 }

@@ -104,7 +104,7 @@ public class ChannelConnectorImplTestCase extends TestCase {
         PhysicalConnectionTargetDefinition targetDefinition = new MockTargetDefinition();
         targetDefinition.setClassLoader(getClass().getClassLoader());
         PhysicalEventStreamDefinition stream = new PhysicalEventStreamDefinition("stream");
-        stream.addEventType("java.lang.Object");
+        stream.addEventType(Object.class);
         stream.addFilterDefinition(new MockFilterDefinition());
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, stream);
     }

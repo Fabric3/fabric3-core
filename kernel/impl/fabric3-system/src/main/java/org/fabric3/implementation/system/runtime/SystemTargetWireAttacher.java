@@ -32,7 +32,6 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.util.ClassLoading;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -54,20 +53,14 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
         Class<?> implementationClass = targetComponent.getImplementationClass();
-        ClassLoader loader = implementationClass.getClassLoader();
 
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
 
-            List<String> params = operation.getSourceParameterTypes();
-            Class<?>[] paramTypes = new Class<?>[params.size()];
-            for (int i = 0; i < params.size(); i++) {
-                String param = params.get(i);
-                paramTypes[i] = ClassLoading.loadClass(loader, param);
-            }
+            List<Class<?>> params = operation.getSourceParameterTypes();
             Method method;
             try {
-                method = implementationClass.getMethod(operation.getName(), paramTypes);
+                method = implementationClass.getMethod(operation.getName(), params.toArray(new Class[params.size()]));
             } catch (NoSuchMethodException e) {
                 throw new Fabric3Exception("No matching method found", e);
             }

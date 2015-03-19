@@ -24,16 +24,6 @@ import javax.xml.namespace.QName;
 public interface ChannelConstants {
 
     /**
-     * Indicates a channel must send events in a durable (persistent) fashion.
-     */
-    QName DURABLE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "durable");
-
-    /**
-     * Indicates a channel must send events in a non-durable (persistent) fashion.
-     */
-    QName NON_PERSISTENT_INTENT = new QName(org.fabric3.api.Namespaces.F3, "nonPersistent");
-
-    /**
      * The channel metadata key.
      */
     QName METADATA = new QName(org.fabric3.api.Namespaces.F3, "metadata");

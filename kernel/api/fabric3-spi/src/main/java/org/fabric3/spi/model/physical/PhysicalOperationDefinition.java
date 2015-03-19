@@ -26,22 +26,22 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents a service operation and its invocation chain on a runtime. Since the source side of a wire (reference or forward service making a
- * callback) may have a service contract that is different from the target side (forward service or client being called back), in-, out- and fault
- * parameter types are stored for both sides. When attaching a wire to its source or target, the appropriate parameter types must be used.
+ * Represents a service operation and its invocation chain on a runtime. Since the source side of a wire (reference or forward service making a callback) may
+ * have a service contract that is different from the target side (forward service or client being called back), in-, out- and fault parameter types are stored
+ * for both sides. When attaching a wire to its source or target, the appropriate parameter types must be used.
  */
 public class PhysicalOperationDefinition implements Serializable, Comparable {
     private static final long serialVersionUID = -4270990709748460450L;
 
     private String name;
 
-    private List<String> parameterTypes = new ArrayList<>();
-    private List<String> faultTypes = new ArrayList<>();
-    private String returnType;
+    private List<Class<?>> parameterTypes = new ArrayList<>();
+    private List<Class<?>> faultTypes = new ArrayList<>();
+    private Class<?> returnType;
 
-    private List<String> targetParameterTypes = new ArrayList<>();
-    private List<String> targetFaultTypes = new ArrayList<>();
-    private String targetReturnType;
+    private List<Class<?>> targetParameterTypes = new ArrayList<>();
+    private List<Class<?>> targetFaultTypes = new ArrayList<>();
+    private Class<?> targetReturnType;
 
     private boolean callback;
     private boolean oneWay;
@@ -74,7 +74,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @return the source parameter types.
      */
-    public List<String> getSourceParameterTypes() {
+    public List<Class<?>> getSourceParameterTypes() {
         return parameterTypes;
     }
 
@@ -83,7 +83,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @param type the source parameter type to be added.
      */
-    public void addSourceParameterType(String type) {
+    public void addSourceParameterType(Class<?> type) {
         parameterTypes.add(type);
     }
 
@@ -92,7 +92,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @return the source return type for this operation.
      */
-    public String getSourceReturnType() {
+    public Class<?> getSourceReturnType() {
         return returnType;
     }
 
@@ -101,7 +101,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @param type the source return type for this operation.
      */
-    public void setSourceReturnType(String type) {
+    public void setSourceReturnType(Class<?> type) {
         this.returnType = type;
     }
 
@@ -110,7 +110,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @return the source fault types
      */
-    public List<String> getSourceFaultTypes() {
+    public List<Class<?>> getSourceFaultTypes() {
         return faultTypes;
     }
 
@@ -119,7 +119,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @param type the source fault type
      */
-    public void addSourceFaultType(String type) {
+    public void addSourceFaultType(Class<?> type) {
         faultTypes.add(type);
     }
 
@@ -128,7 +128,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @return the target parameter types.
      */
-    public List<String> getTargetParameterTypes() {
+    public List<Class<?>> getTargetParameterTypes() {
         return targetParameterTypes;
     }
 
@@ -137,7 +137,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @param type the target parameter type to be added.
      */
-    public void addTargetParameterType(String type) {
+    public void addTargetParameterType(Class<?> type) {
         this.targetParameterTypes.add(type);
     }
 
@@ -146,7 +146,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @return the target fault types
      */
-    public List<String> getTargetFaultTypes() {
+    public List<Class<?>> getTargetFaultTypes() {
         return targetFaultTypes;
     }
 
@@ -155,7 +155,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @param type the target fault type
      */
-    public void addTargetFaultType(String type) {
+    public void addTargetFaultType(Class<?> type) {
         targetFaultTypes.add(type);
     }
 
@@ -164,7 +164,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @return the target return type for this operation.
      */
-    public String getTargetReturnType() {
+    public Class<?> getTargetReturnType() {
         return targetReturnType;
     }
 
@@ -173,7 +173,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      *
      * @param type the target return type for this operation.
      */
-    public void setTargetReturnType(String type) {
+    public void setTargetReturnType(Class<?> type) {
         this.targetReturnType = type;
     }
 
@@ -275,11 +275,11 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
     protected String getCompareString() {
         if (compareString == null) {
             StringBuilder builder = new StringBuilder(name);
-            for (String type : parameterTypes) {
-                builder.append(type);
+            for (Class<?> type : parameterTypes) {
+                builder.append(type.getName());
             }
-            for (String type : targetParameterTypes) {
-                builder.append(type);
+            for (Class<?> type : targetParameterTypes) {
+                builder.append(type.getName());
             }
             compareString = builder.toString();
         }

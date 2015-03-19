@@ -20,6 +20,7 @@ package org.fabric3.implementation.mock.runtime;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -66,16 +67,13 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
     }
 
     private Method getOperationMethod(Class<?> mockedInterface, PhysicalOperationDefinition op) {
-        List<String> parameters = op.getTargetParameterTypes();
+        List<Class<?>> parameters = op.getTargetParameterTypes();
         for (Method method : mockedInterface.getMethods()) {
             if (method.getName().equals(op.getName())) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes.length == parameters.size()) {
-                    List<String> methodParameters = new ArrayList<>();
-                    for (Class<?> parameter : parameterTypes) {
-                        methodParameters.add(parameter.getName());
-                    }
-
+                    List<Class<?>> methodParameters = new ArrayList<>();
+                    Collections.addAll(methodParameters, parameterTypes);
                     if (parameters.equals(methodParameters)) {
                         return method;
                     }

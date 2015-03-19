@@ -219,7 +219,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsWireTargetDe
 
     private void addJAXBInterceptor(PhysicalWireSourceDefinition source, PhysicalOperationDefinition op, InvocationChain chain, ClassLoader targetClassLoader) {
         ClassLoader sourceClassLoader = source.getClassLoader();
-        List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
+        List<DataType> jaxTypes = DataTypeHelper.createTypes(op);
         Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, jaxTypes, DataTypeHelper.JAXB_TYPES, targetClassLoader, sourceClassLoader);
         chain.addInterceptor(jaxbInterceptor);
     }

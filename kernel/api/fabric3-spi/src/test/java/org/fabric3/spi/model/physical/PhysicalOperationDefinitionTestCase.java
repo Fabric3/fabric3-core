@@ -24,11 +24,11 @@ import junit.framework.TestCase;
 public class PhysicalOperationDefinitionTestCase extends TestCase {
 
     public void testCompareTo() {
-        PhysicalOperationDefinition definition1 = createDefinition("foo", String.class.getName());
-        PhysicalOperationDefinition definition1a = createDefinition("foo", String.class.getName());
+        PhysicalOperationDefinition definition1 = createDefinition("foo", String.class);
+        PhysicalOperationDefinition definition1a = createDefinition("foo", String.class);
 
-        PhysicalOperationDefinition definition2 = createDefinition("foo", Integer.class.getName());
-        PhysicalOperationDefinition definition2a = createDefinition("foo", Integer.class.getName());
+        PhysicalOperationDefinition definition2 = createDefinition("foo", Integer.class);
+        PhysicalOperationDefinition definition2a = createDefinition("foo", Integer.class);
 
         assertEquals(0, definition1.compareTo(definition1a));
         assertEquals(0, definition1a.compareTo(definition1));
@@ -48,7 +48,7 @@ public class PhysicalOperationDefinitionTestCase extends TestCase {
         assertNotSame(val1ato2a, val2ato1a);
     }
 
-    private PhysicalOperationDefinition createDefinition(String name, String type) {
+    private PhysicalOperationDefinition createDefinition(String name, Class<?> type) {
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
         definition.setName(name);
         definition.addTargetParameterType(type);

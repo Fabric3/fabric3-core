@@ -102,23 +102,20 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
 
         // the source and target in-, out- and fault types are the same since the source and target contracts are the same
         Class<?> returnType = o.getOutputType().getType();
-        String returnName = returnType.getName();
-        operation.setSourceReturnType(returnName);
-        operation.setTargetReturnType(returnName);
+        operation.setSourceReturnType(returnType);
+        operation.setTargetReturnType(returnType);
 
         for (DataType fault : o.getFaultTypes()) {
             Class<?> faultType = fault.getType();
-            String faultName = faultType.getName();
-            operation.addSourceFaultType(faultName);
-            operation.addTargetFaultType(faultName);
+            operation.addSourceFaultType(faultType);
+            operation.addTargetFaultType(faultType);
         }
 
         List<DataType> params = o.getInputTypes();
         for (DataType param : params) {
             Class<?> paramType = param.getType();
-            String paramName = paramType.getName();
-            operation.addSourceParameterType(paramName);
-            operation.addTargetParameterType(paramName);
+            operation.addSourceParameterType(paramType);
+            operation.addTargetParameterType(paramType);
         }
         return operation;
 
@@ -139,32 +136,32 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         operation.setRemotable(o.isRemotable());
         operation.setOneWay(o.isOneWay());
         Class<?> returnType = o.getOutputType().getType();
-        operation.setSourceReturnType(returnType.getName());
+        operation.setSourceReturnType(returnType);
 
         for (DataType fault : o.getFaultTypes()) {
             Class<?> faultType = fault.getType();
-            operation.addSourceFaultType(faultType.getName());
+            operation.addSourceFaultType(faultType);
         }
 
         List<DataType> params = o.getInputTypes();
         for (DataType param : params) {
             Class<?> paramType = param.getType();
-            operation.addSourceParameterType(paramType.getName());
+            operation.addSourceParameterType(paramType);
         }
         Operation targetDefinition = target.getDefinition();
 
         Class<?> targetReturnType = targetDefinition.getOutputType().getType();
-        operation.setTargetReturnType(targetReturnType.getName());
+        operation.setTargetReturnType(targetReturnType);
 
         for (DataType targetFault : targetDefinition.getFaultTypes()) {
             Class<?> faultType = targetFault.getType();
-            operation.addTargetFaultType(faultType.getName());
+            operation.addTargetFaultType(faultType);
         }
 
         List<DataType> targetParams = targetDefinition.getInputTypes();
         for (DataType param : targetParams) {
             Class<?> paramType = param.getType();
-            operation.addTargetParameterType(paramType.getName());
+            operation.addTargetParameterType(paramType);
         }
 
         return operation;

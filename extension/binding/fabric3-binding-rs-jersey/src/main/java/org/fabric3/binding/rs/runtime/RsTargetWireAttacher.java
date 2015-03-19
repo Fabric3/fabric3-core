@@ -12,7 +12,6 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.util.ClassLoading;
 
 /**
  * Attaches a reference to the RS binding.
@@ -21,7 +20,6 @@ import org.fabric3.spi.util.ClassLoading;
 public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefinition> {
 
     public void attach(PhysicalWireSourceDefinition sourceDefinition, RsWireTargetDefinition def, Wire wire) throws Fabric3Exception {
-        ClassLoader targetClassLoader = def.getClassLoader();
         List<InvocationChain> invocationChains = wire.getInvocationChains();
         URI uri = def.getUri();
         Class<?> interfaceClass = def.getProxyInterface();
@@ -29,12 +27,8 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTargetDefi
             for (InvocationChain chain : invocationChains) {
                 PhysicalOperationDefinition operation = chain.getPhysicalOperation();
                 String operationName = operation.getName();
-                List<String> targetParameterTypes = operation.getTargetParameterTypes();
-                Class<?> args[] = new Class<?>[targetParameterTypes.size()];
-                for (int i = 0; i < args.length; i++) {
-                    args[i] = ClassLoading.loadClass(targetClassLoader, targetParameterTypes.get(i));
-                }
-                chain.addInterceptor(new RsClientInterceptor(operationName, interfaceClass, uri, args));
+                List<Class<?>> targetParameterTypes = operation.getTargetParameterTypes();
+                chain.addInterceptor(new RsClientInterceptor(operationName, interfaceClass, uri, targetParameterTypes));
             }
         } catch (Exception e) {
             throw new Fabric3Exception(e);

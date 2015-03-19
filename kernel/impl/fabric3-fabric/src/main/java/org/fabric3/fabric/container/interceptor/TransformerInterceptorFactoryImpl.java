@@ -16,14 +16,13 @@
  */
 package org.fabric3.fabric.container.interceptor;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
@@ -45,8 +44,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
                                          List<DataType> targets,
                                          ClassLoader targetLoader,
                                          ClassLoader sourceLoader) throws Fabric3Exception {
-        List<Class<?>> targetTypes = loadTargetInputTypes(definition, targetLoader);
-        List<Class<?>> sourceTypes = loadSourceInputTypes(definition, targetLoader);
+        List<Class<?>> targetTypes = definition.getTargetParameterTypes();
+        List<Class<?>> sourceTypes = definition.getSourceParameterTypes();
         // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
         // or binding. A search is performed by iterating the supported source and target types in order of preference.
         Transformer<Object, Object> inTransformer = null;
@@ -71,8 +70,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
         }
 
         // create the output transformer which flips the source and target types of the forward interceptor
-        List<Class<?>> sourceOutTypes = loadSourceOutputTypes(definition, targetLoader);
-        List<Class<?>> targetOutTypes = loadTargetOutputTypes(definition, targetLoader);
+        List<Class<?>> sourceOutTypes = Collections.singletonList(definition.getSourceReturnType());
+        List<Class<?>> targetOutTypes = Collections.singletonList(definition.getTargetReturnType());
         Transformer<Object, Object> outTransformer = (Transformer<Object, Object>) registry.getTransformer(selectedTarget,
                                                                                                            selectedSource,
                                                                                                            targetOutTypes,
@@ -81,82 +80,6 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             throw new Fabric3Exception("No transformer from type " + selectedTarget + " to type " + selectedSource);
         }
         return new TransformerInterceptor(inTransformer, outTransformer, targetLoader, sourceLoader);
-    }
-
-    /**
-     * Loads the source-side parameter types in the contribution classloader associated with the source component.
-     *
-     * @param definition the physical operation definition
-     * @param loader     the  contribution classloader
-     * @return a collection of loaded parameter types
-     * @throws Fabric3Exception if an error occurs loading the parameter types
-     */
-    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
-        try {
-            return ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
-    }
-
-    /**
-     * Loads the target-side parameter types in the contribution classloader associated with the target service.
-     *
-     * @param definition the physical operation definition
-     * @param loader     the  contribution classloader
-     * @return a collection of loaded parameter types
-     * @throws Fabric3Exception if an error occurs loading the parameter types
-     */
-    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
-        try {
-            return ParameterTypeHelper.loadTargetInParameterTypes(definition, loader);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
-    }
-
-    /**
-     * Loads the source-side output parameter types in the contribution classloader associated of the source component.
-     *
-     * @param definition the physical operation definition
-     * @param loader     the  contribution classloader
-     * @return a collection of loaded parameter types
-     * @throws Fabric3Exception if an error occurs loading the parameter types
-     */
-    private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
-        List<Class<?>> types = new ArrayList<>();
-        try {
-            Class<?> outParam = ParameterTypeHelper.loadSourceOutputType(definition, loader);
-            types.add(outParam);
-            // TODO handle fault types
-            //  Set<Class<?>> faults = ParameterTypeHelper.loadFaultTypes(definition, loader);
-            //  types.addAll(faults);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
-        return types;
-    }
-
-    /**
-     * Loads the target-side output parameter types in the contribution classloader associated of the target service.
-     *
-     * @param definition the physical operation definition
-     * @param loader     the  contribution classloader
-     * @return a collection of loaded parameter types
-     * @throws Fabric3Exception if an error occurs loading the parameter types
-     */
-    private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws Fabric3Exception {
-        List<Class<?>> types = new ArrayList<>();
-        try {
-            Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
-            types.add(outParam);
-            // TODO handle fault types
-            //  Set<Class<?>> faults = ParameterTypeHelper.loadFaultTypes(definition, loader);
-            //  types.addAll(faults);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
-        return types;
     }
 
 }

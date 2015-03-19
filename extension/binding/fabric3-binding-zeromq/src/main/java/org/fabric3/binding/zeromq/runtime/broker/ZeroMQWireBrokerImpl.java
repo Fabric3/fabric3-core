@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -61,7 +62,6 @@ import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.runtime.event.EventService;
@@ -166,7 +166,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
             PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
-            List<DataType> sourceTypes = createTypes(physicalOperation, loader);
+            List<DataType> sourceTypes = createTypes(physicalOperation);
             Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, sourceTypes, TRANSPORT_TYPES, loader, loader);
             chain.addInterceptor(interceptor);
             chain.addInterceptor(new UnwrappingInterceptor());
@@ -281,18 +281,14 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     public void startAll() {
-        for (Receiver receiver : receivers.values()) {
-            receiver.start();
-        }
+        receivers.values().forEach(Receiver::start);
         for (SenderHolder holder : senders.values()) {
             holder.getSender().start();
         }
     }
 
     public void stopAll() {
-        for (Receiver receiver : receivers.values()) {
-            receiver.stop();
-        }
+        receivers.values().forEach(Receiver::stop);
         for (SenderHolder holder : senders.values()) {
             holder.getSender().stop();
         }
@@ -377,7 +373,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws Fabric3Exception {
         for (InvocationChain chain : chains) {
             PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
-            List<DataType> targetTypes = createTypes(physicalOperation, loader);
+            List<DataType> targetTypes = createTypes(physicalOperation);
             Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, TRANSPORT_TYPES, targetTypes, loader, loader);
             chain.addInterceptor(new WrappingInterceptor());
             chain.addInterceptor(interceptor);
@@ -385,22 +381,16 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws Fabric3Exception {
-        try {
-            List<DataType> dataTypes = new ArrayList<>();
-            if (physicalOperation.getSourceParameterTypes().isEmpty()) {
-                // no params
-                dataTypes.add(EMPTY_TYPE);
-            } else {
-                List<Class<?>> types = ParameterTypeHelper.loadSourceInParameterTypes(physicalOperation, loader);
-                for (Class<?> type : types) {
-                    dataTypes.add(new JavaType((type)));
-                }
-            }
-            return dataTypes;
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Error transforming parameter", e);
+    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation) throws Fabric3Exception {
+        List<DataType> dataTypes = new ArrayList<>();
+        if (physicalOperation.getSourceParameterTypes().isEmpty()) {
+            // no params
+            dataTypes.add(EMPTY_TYPE);
+        } else {
+            List<Class<?>> types = physicalOperation.getSourceParameterTypes();
+            dataTypes.addAll(types.stream().map(type -> new JavaType((type))).collect(Collectors.toList()));
         }
+        return dataTypes;
     }
 
     private Interceptor createInterceptor(SenderHolder holder, int i) {

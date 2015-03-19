@@ -60,10 +60,10 @@ public class TransformerInterceptorFactoryImplTestCase extends TestCase {
         TransformerInterceptorFactoryImpl factory = new TransformerInterceptorFactoryImpl(registry);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
-        definition.addSourceParameterType("java.lang.String");
-        definition.setSourceReturnType("java.lang.String");
-        definition.addTargetParameterType(Document.class.getName());
-        definition.setTargetReturnType(Document.class.getName());
+        definition.addSourceParameterType(String.class);
+        definition.setSourceReturnType(String.class);
+        definition.addTargetParameterType(Document.class);
+        definition.setTargetReturnType(Document.class);
 
         assertNotNull(factory.createInterceptor(definition, sourceTypes, targetTypes, loader, loader));
 

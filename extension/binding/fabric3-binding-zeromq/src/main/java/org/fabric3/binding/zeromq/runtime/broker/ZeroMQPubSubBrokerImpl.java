@@ -54,7 +54,6 @@ import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.runtime.event.EventService;
@@ -277,18 +276,14 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     public void startAll() {
-        for (Subscriber subscriber : subscribers.values()) {
-            subscriber.start();
-        }
+        subscribers.values().forEach(Subscriber::start);
         for (PublisherHolder holder : publishers.values()) {
             holder.getPublisher().start();
         }
     }
 
     public void stopAll() {
-        for (Subscriber subscriber : subscribers.values()) {
-            subscriber.stop();
-        }
+        subscribers.values().forEach(Subscriber::stop);
         for (PublisherHolder holder : publishers.values()) {
             holder.getPublisher().stop();
         }
@@ -301,7 +296,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private void attachConnection(ChannelConnection connection, Publisher publisher, ClassLoader loader) throws Fabric3Exception {
         EventStream stream = connection.getEventStream();
         try {
-            DataType dataType = getEventType(stream, loader);
+            DataType dataType = getEventType(stream);
             EventStreamHandler transformer;
             if (dataType.getType().equals(byte[][].class)) {
                 // multi-frame data
@@ -319,7 +314,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws Fabric3Exception {
-        DataType dataType = getEventTypeForConnection(connection, loader);
+        DataType dataType = getEventTypeForConnection(connection);
         EventStreamHandler head;
         if (dataType.getType().equals(byte[][].class)) {
             // multi-frame data
@@ -332,29 +327,18 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType getEventType(EventStream stream, ClassLoader loader) throws ClassNotFoundException {
-        Class<?> type;
-        List<String> eventTypes = stream.getDefinition().getEventTypes();
-        if (eventTypes.isEmpty()) {
-            // default to Object if there are no event types
-            type = Object.class;
-        } else {
-            type = ParameterTypeHelper.loadClass(eventTypes.get(0), loader);
-        }
+    private DataType getEventType(EventStream stream) throws ClassNotFoundException {
+        List<Class<?>> eventTypes = stream.getDefinition().getEventTypes();
+        Class<?> type = eventTypes.isEmpty() ? Object.class : eventTypes.get(0);
         return new JavaType(type);
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType getEventTypeForConnection(ChannelConnection connection, ClassLoader loader) throws Fabric3Exception {
+    private DataType getEventTypeForConnection(ChannelConnection connection) throws Fabric3Exception {
         PhysicalEventStreamDefinition eventStreamDefinition = connection.getEventStream().getDefinition();
         if (!eventStreamDefinition.getEventTypes().isEmpty()) {
-            try {
-                String eventType = eventStreamDefinition.getEventTypes().get(0);
-                Class<?> type = ParameterTypeHelper.loadClass(eventType, loader);
-                return new JavaType(type);
-            } catch (ClassNotFoundException e) {
-                throw new Fabric3Exception(e);
-            }
+            Class<?> type = eventStreamDefinition.getEventTypes().get(0);
+            return new JavaType(type);
         } else {
             return new JavaType(Object.class);
         }

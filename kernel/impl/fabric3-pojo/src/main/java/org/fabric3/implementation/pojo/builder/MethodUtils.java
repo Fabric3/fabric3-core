@@ -24,7 +24,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
-import org.fabric3.spi.util.ClassLoading;
 
 /**
  *
@@ -36,12 +35,11 @@ public final class MethodUtils {
                                     PhysicalOperationDefinition operation,
                                     Class<?> implementationClass,
                                     ClassLoader loader) throws Fabric3Exception {
-        List<String> params = operation.getTargetParameterTypes();
+        List<Class<?>> params = operation.getTargetParameterTypes();
         Class<?>[] paramTypes = new Class<?>[params.size()];
         assert loader != null;
         for (int i = 0; i < params.size(); i++) {
-            String param = params.get(i);
-            paramTypes[i] = ClassLoading.loadClass(loader, param);
+            paramTypes[i] = params.get(i);
         }
         Method method = null;
         if (operation.isRemotable()) {

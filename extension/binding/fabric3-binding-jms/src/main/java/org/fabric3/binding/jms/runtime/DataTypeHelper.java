@@ -22,10 +22,10 @@ package org.fabric3.binding.jms.runtime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 
@@ -37,19 +37,13 @@ public class DataTypeHelper {
     public static final DataType JAXB_TYPE = new JavaType(String.class, "JAXB");
     public static List<DataType> JAXB_TYPES = Arrays.asList(JAXB_TYPE);
 
-    public static List<DataType> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws Fabric3Exception {
-        try {
-            List<DataType> dataTypes = new ArrayList<>();
-            if (!physicalOperation.getSourceParameterTypes().isEmpty()) {
-                List<Class<?>> types = ParameterTypeHelper.loadSourceInParameterTypes(physicalOperation, loader);
-                for (Class<?> type : types) {
-                    dataTypes.add(new JavaType((type)));
-                }
-            }
-            return dataTypes;
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Error transforming parameter", e);
+    public static List<DataType> createTypes(PhysicalOperationDefinition physicalOperation) throws Fabric3Exception {
+        List<DataType> dataTypes = new ArrayList<>();
+        if (!physicalOperation.getSourceParameterTypes().isEmpty()) {
+            List<Class<?>> types = physicalOperation.getSourceParameterTypes();
+            dataTypes.addAll(types.stream().map(type -> new JavaType((type))).collect(Collectors.toList()));
         }
+        return dataTypes;
     }
 
     private DataTypeHelper() {

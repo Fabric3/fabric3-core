@@ -16,10 +16,10 @@
  */
 package org.fabric3.fabric.container.builder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
@@ -130,17 +130,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
         if (sourceType.equals(targetType)) {
             return;
         }
-        try {
-            List<Class<?>> eventTypes = new ArrayList<>();
-            for (String type : stream.getDefinition().getEventTypes()) {
-                Class<?> clazz = loader.loadClass(type);
-                eventTypes.add(clazz);
-            }
-            EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
-            stream.addHandler(handler);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
+        List<Class<?>> eventTypes = stream.getDefinition().getEventTypes().stream().collect(Collectors.toList());
+        EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
+        stream.addHandler(handler);
     }
 
     /**

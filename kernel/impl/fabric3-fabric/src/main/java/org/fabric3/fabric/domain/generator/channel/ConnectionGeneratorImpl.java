@@ -214,8 +214,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         }
         for (DataType param : params) {
             Class<?> paramType = param.getType();
-            String paramName = paramType.getName();
-            definition.addEventType(paramName);
+            definition.addEventType(paramType);
         }
         return definition;
     }
@@ -237,7 +236,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                 }
             }
             definition.setChannelEvent(takesChannelEvent);
-            definition.addEventType(dataType.getType().getName());
+            definition.addEventType(dataType.getType());
         }
         if (typed) {
             TypeEventFilterDefinition typeFilter = new TypeEventFilterDefinition(types);

@@ -273,7 +273,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
                                     InvocationChain chain) {
         ClassLoader sourceClassLoader = source.getClassLoader();
         ClassLoader targetClassLoader = target.getClassLoader();
-        List<DataType> jaxTypes = DataTypeHelper.createTypes(op, sourceClassLoader);
+        List<DataType> jaxTypes = DataTypeHelper.createTypes(op);
         Interceptor jaxbInterceptor = interceptorFactory.createInterceptor(op, DataTypeHelper.JAXB_TYPES, jaxTypes, targetClassLoader, sourceClassLoader);
         chain.addInterceptor(jaxbInterceptor);
     }
