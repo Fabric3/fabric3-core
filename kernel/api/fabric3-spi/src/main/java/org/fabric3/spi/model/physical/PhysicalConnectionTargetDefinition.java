@@ -19,8 +19,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -28,21 +26,12 @@ import org.fabric3.api.model.type.contract.DataType;
  */
 public class PhysicalConnectionTargetDefinition extends PhysicalAttachPointDefinition {
     private static final long serialVersionUID = 3395589699751449558L;
-    private QName deployable;
 
     public PhysicalConnectionTargetDefinition() {
     }
 
     public PhysicalConnectionTargetDefinition(DataType... types) {
         super(types);
-    }
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
     }
 
 }

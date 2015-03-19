@@ -19,8 +19,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -32,7 +30,6 @@ public class PhysicalConnectionSourceDefinition extends PhysicalAttachPointDefin
     public static final int NO_SEQUENCE = 0;
 
     private int sequence = NO_SEQUENCE;
-    private QName deployable;
 
     public PhysicalConnectionSourceDefinition() {
     }
@@ -57,14 +54,6 @@ public class PhysicalConnectionSourceDefinition extends PhysicalAttachPointDefin
      */
     public void setSequence(int sequence) {
         this.sequence = sequence;
-    }
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
     }
 
 }

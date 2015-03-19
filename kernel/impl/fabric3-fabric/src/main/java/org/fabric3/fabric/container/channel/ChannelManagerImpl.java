@@ -128,26 +128,17 @@ public class ChannelManagerImpl implements ChannelManager {
 
     private void checkAndPut(Channel channel, Map<URI, Holder> map) throws Fabric3Exception {
         URI uri = channel.getUri();
-        if (map.containsKey(uri)) {
+        if (map.put(uri, new Holder(channel)) != null) {
             throw new Fabric3Exception("Channel already exists: " + uri);
         }
-        map.put(uri, new Holder(channel));
     }
 
     private void doStart(QName deployable, Map<URI, Holder> map) {
-        for (Holder holder : map.values()) {
-            if (deployable.equals(holder.channel.getDeployable())) {
-                holder.channel.start();
-            }
-        }
+        map.values().stream().filter(holder -> deployable.equals(holder.channel.getDeployable())).forEach(holder -> holder.channel.start());
     }
 
     private void doStop(QName deployable, Map<URI, Holder> map) {
-        for (Holder holder : map.values()) {
-            if (deployable.equals(holder.channel.getDeployable())) {
-                holder.channel.stop();
-            }
-        }
+        map.values().stream().filter(holder -> deployable.equals(holder.channel.getDeployable())).forEach(holder -> holder.channel.stop());
     }
 
     private class Holder {

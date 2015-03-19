@@ -40,8 +40,7 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
         this.channelManager = channelManager;
     }
 
-    public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws Fabric3Exception {
+    public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws Fabric3Exception {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();
