@@ -26,19 +26,4 @@ import java.io.Serializable;
  */
 public abstract class PhysicalChannelBindingDefinition implements Serializable {
     private static final long serialVersionUID = -448452657885276687L;
-
-    private ChannelDeliveryType deliveryType;
-
-    protected PhysicalChannelBindingDefinition(ChannelDeliveryType deliveryType) {
-        this.deliveryType = deliveryType;
-    }
-
-    /**
-     * Returns the {@link ChannelDeliveryType}.
-     *
-     * @return the delivery type
-     */
-    public ChannelDeliveryType getDeliveryType() {
-        return deliveryType;
-    }
 }

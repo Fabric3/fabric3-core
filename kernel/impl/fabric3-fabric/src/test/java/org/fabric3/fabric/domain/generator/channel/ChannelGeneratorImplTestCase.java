@@ -169,10 +169,6 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
     private class MockPhysicalDefinition extends PhysicalChannelBindingDefinition {
         private static final long serialVersionUID = -5237182726243360124L;
-
-        private MockPhysicalDefinition() {
-            super(ChannelDeliveryType.DEFAULT);
-        }
     }
 
 }

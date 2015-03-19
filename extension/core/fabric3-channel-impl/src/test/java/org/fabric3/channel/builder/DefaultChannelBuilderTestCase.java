@@ -61,9 +61,5 @@ public class DefaultChannelBuilderTestCase extends TestCase {
 
     private class MockBindingDefinition extends PhysicalChannelBindingDefinition {
         private static final long serialVersionUID = -474926224717103363L;
-
-        private MockBindingDefinition() {
-            super(ChannelDeliveryType.DEFAULT);
-        }
     }
 }

@@ -72,7 +72,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
     }
 
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBinding> binding, ChannelDeliveryType deliveryType) {
-        return new ZeroMQChannelBindingDefinition(deliveryType);
+        return new ZeroMQChannelBindingDefinition();
     }
 
     private void setChannelName(LogicalBinding binding, ZeroMQMetadata metadata) {

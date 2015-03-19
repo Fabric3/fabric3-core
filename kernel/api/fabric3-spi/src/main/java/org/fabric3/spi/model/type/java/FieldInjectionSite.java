@@ -46,9 +46,9 @@ public class FieldInjectionSite extends InjectionSite {
     }
 
     /**
-     * Returns the field, which may be null if this class is deserialized.
+     * Returns the field
      *
-     * @return the field or null
+     * @return the field
      */
     public Field getField() {
         return field;

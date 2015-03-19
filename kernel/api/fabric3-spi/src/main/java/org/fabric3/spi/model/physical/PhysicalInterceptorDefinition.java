@@ -29,7 +29,7 @@ import java.net.URI;
 public class PhysicalInterceptorDefinition implements Serializable {
     private static final long serialVersionUID = -1850310857357736392L;
     private URI wireClassLoaderId;
-    private URI policyClassLoaderId;
+    private URI interceptorClassLoaderId;
 
     /**
      * Returns the classloader id for the wire. That is, the classloader for the wire source which is associated with the user contribution.
@@ -55,8 +55,8 @@ public class PhysicalInterceptorDefinition implements Serializable {
      *
      * @return the classloader id for the policy
      */
-    public URI getPolicyClassLoaderId() {
-        return policyClassLoaderId;
+    public URI getInterceptorClassLoaderId() {
+        return interceptorClassLoaderId;
     }
 
     /**
@@ -65,7 +65,7 @@ public class PhysicalInterceptorDefinition implements Serializable {
      *
      * @param id classloader id for the policy
      */
-    public void setPolicyClassLoaderId(URI id) {
-        this.policyClassLoaderId = id;
+    public void setInterceptorClassLoaderId(URI id) {
+        this.interceptorClassLoaderId = id;
     }
 }

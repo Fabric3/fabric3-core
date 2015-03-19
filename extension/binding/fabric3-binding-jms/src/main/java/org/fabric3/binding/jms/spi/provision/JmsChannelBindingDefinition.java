@@ -25,7 +25,4 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 public class JmsChannelBindingDefinition extends PhysicalChannelBindingDefinition {
     private static final long serialVersionUID = 5081156645494935343L;
 
-    public JmsChannelBindingDefinition() {
-        super(ChannelDeliveryType.SYNCHRONOUS);
-    }
 }
