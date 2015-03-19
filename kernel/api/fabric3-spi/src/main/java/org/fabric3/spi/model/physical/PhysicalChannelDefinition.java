@@ -35,7 +35,7 @@ public class PhysicalChannelDefinition implements Serializable {
     private ChannelDeliveryType deliveryType;
     private ChannelSide channelSide = ChannelSide.PRODUCER;
 
-    private Serializable metadata;
+    private Object metadata;
 
     public PhysicalChannelDefinition(URI uri, QName deployable) {
         this(uri, deployable, ChannelConstants.DEFAULT_TYPE, ChannelDeliveryType.DEFAULT);
@@ -108,7 +108,7 @@ public class PhysicalChannelDefinition implements Serializable {
      *
      * @param metadata the channel metadata
      */
-    public void setMetadata(Serializable metadata) {
+    public void setMetadata(Object metadata) {
         this.metadata = metadata;
     }
 

@@ -45,7 +45,7 @@ public class RingBufferChannelBuilder extends AbstractBuilder {
     protected RingBufferChannelBuilder(String name) {
         definition = new Channel(name);
         data = new RingBufferData();
-        definition.addMetadata(METADATA, data);
+        definition.setMetadata(data);
     }
 
     public RingBufferChannelBuilder type(String type) {

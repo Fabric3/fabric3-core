@@ -23,7 +23,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import static org.fabric3.spi.model.physical.ChannelDeliveryType.ASYNCHRONOUS_WORKER;
@@ -40,7 +39,7 @@ public class RingBufferChannelGeneratorExtension implements ChannelGeneratorExte
         String channelType = channelDefinition.getType();
 
         PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ASYNCHRONOUS_WORKER);
-        physicalDefinition.setMetadata(channelDefinition.getMetadata().get(ChannelConstants.METADATA));
+        physicalDefinition.setMetadata(channelDefinition.getMetadata(Object.class));
 
         return physicalDefinition;
     }

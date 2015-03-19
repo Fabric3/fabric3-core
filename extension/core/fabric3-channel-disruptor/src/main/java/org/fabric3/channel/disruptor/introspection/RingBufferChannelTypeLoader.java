@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.model.physical.ChannelConstants;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -55,7 +54,7 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
 
         RingBufferData data = new RingBufferData();
 
-        int ringSize = parseRingSize(definition, reader, startLocation, context, data);
+        int ringSize = parseRingSize(definition, reader, startLocation, context);
         data.setRingSize(ringSize);
 
         String waitStrategy = reader.getAttributeValue(null, WAIT_STRATEGY);
@@ -88,10 +87,10 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
 
         }
 
-        definition.addMetadata(ChannelConstants.METADATA, data);
+        definition.setMetadata(data);
     }
 
-    private int parseRingSize(Channel definition, XMLStreamReader reader, Location startLocation, IntrospectionContext context, RingBufferData data) {
+    private int parseRingSize(Channel definition, XMLStreamReader reader, Location startLocation, IntrospectionContext context) {
         String sizeStr = reader.getAttributeValue(null, RING_SIZE);
         int ringSize = DEFAULT_RING_SIZE;
         if (sizeStr != null) {

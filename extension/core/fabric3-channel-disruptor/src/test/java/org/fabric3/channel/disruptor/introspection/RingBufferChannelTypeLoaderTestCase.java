@@ -26,7 +26,6 @@ import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.model.physical.ChannelConstants;
 
 /**
  *
@@ -55,7 +54,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(10, data.getRingSize());
     }
 
@@ -65,7 +64,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.WaitStrategyType.BLOCKING, data.getWaitStrategy());
     }
 
@@ -75,7 +74,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.WaitStrategyType.BACKOFF, data.getWaitStrategy());
     }
 
@@ -85,7 +84,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.WaitStrategyType.YIELDING, data.getWaitStrategy());
     }
 
@@ -95,7 +94,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.WaitStrategyType.SLEEPING, data.getWaitStrategy());
     }
 
@@ -105,7 +104,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.WaitStrategyType.SPIN, data.getWaitStrategy());
     }
 
@@ -115,7 +114,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.WaitStrategyType.TIMEOUT, data.getWaitStrategy());
     }
 
@@ -125,7 +124,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.PhasedBlockingType.LOCK, data.getPhasedBlockingType());
     }
 
@@ -135,7 +134,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(RingBufferData.PhasedBlockingType.SLEEP, data.getPhasedBlockingType());
     }
 
@@ -145,7 +144,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(10, data.getBlockingTimeoutNanos());
     }
 
@@ -155,7 +154,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(10, data.getSpinTimeoutNanos());
     }
 
@@ -165,7 +164,7 @@ public class RingBufferChannelTypeLoaderTestCase extends TestCase {
         loader.load(definition, reader, context);
 
         assertFalse(context.hasErrors());
-        RingBufferData data = definition.getMetadata(ChannelConstants.METADATA, RingBufferData.class);
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
         assertEquals(10, data.getYieldTimeoutNanos());
     }
 

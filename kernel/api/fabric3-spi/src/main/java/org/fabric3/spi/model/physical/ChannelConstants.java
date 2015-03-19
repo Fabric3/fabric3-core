@@ -16,17 +16,10 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
-
 /**
  *
  */
 public interface ChannelConstants {
-
-    /**
-     * The channel metadata key.
-     */
-    QName METADATA = new QName(org.fabric3.api.Namespaces.F3, "metadata");
 
     /**
      * The default channel type.

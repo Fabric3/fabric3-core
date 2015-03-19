@@ -16,9 +16,7 @@
  */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
-import java.io.Serializable;
 
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -36,7 +34,7 @@ public interface ChannelTypeLoader {
     String[] getAttributes();
 
     /**
-     * Loads the data into {@link Channel#addMetadata(QName, Serializable)}.
+     * Loads the data into {@link Channel#setMetadata(Object)}.
      *
      * @param channel the channel definition
      * @param reader            the XML stream
