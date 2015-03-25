@@ -54,11 +54,9 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
         HeadersDefinition headers = metadata.getHeaders();
         boolean persistent = DeliveryMode.PERSISTENT == headers.getDeliveryMode() || headers.getDeliveryMode() == null;
-        javax.jms.Destination destination;
-        ConnectionFactory connectionFactory;
-        connectionFactory = resolver.resolve(connectionFactoryDefinition);
+        ConnectionFactory connectionFactory = resolver.resolve(connectionFactoryDefinition);
         Destination destinationDefinition = metadata.getDestination();
-        destination = resolver.resolve(destinationDefinition, connectionFactory);
+        javax.jms.Destination destination = resolver.resolve(destinationDefinition, connectionFactory);
         EventStream stream = connection.getEventStream();
         JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent);
         stream.addHandler(handler);

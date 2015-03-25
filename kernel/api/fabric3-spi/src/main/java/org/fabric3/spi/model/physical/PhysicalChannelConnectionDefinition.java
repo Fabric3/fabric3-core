@@ -20,6 +20,7 @@
 package org.fabric3.spi.model.physical;
 
 import java.io.Serializable;
+import java.net.URI;
 
 /**
  * Metadata for provisioning a channel connection on a runtime. Specifically, contains metadata for establishing a connection from a source (component producer,
@@ -28,16 +29,30 @@ import java.io.Serializable;
 public class PhysicalChannelConnectionDefinition implements Serializable {
     private static final long serialVersionUID = -3810294574460985743L;
 
+    private URI channelUri;
+    private boolean bound;
     private PhysicalConnectionSourceDefinition source;
     private PhysicalConnectionTargetDefinition target;
     private PhysicalEventStreamDefinition eventStream;
+    private String topic;
 
-    public PhysicalChannelConnectionDefinition(PhysicalConnectionSourceDefinition source,
+    public PhysicalChannelConnectionDefinition(URI channelUri,
+                                               PhysicalConnectionSourceDefinition source,
                                                PhysicalConnectionTargetDefinition target,
-                                               PhysicalEventStreamDefinition eventStream) {
+                                               PhysicalEventStreamDefinition eventStream, boolean bound) {
+        this.channelUri = channelUri;
         this.source = source;
         this.target = target;
         this.eventStream = eventStream;
+        this.bound = bound;
+    }
+
+    public URI getChannelUri() {
+        return channelUri;
+    }
+
+    public boolean isBound() {
+        return bound;
     }
 
     public PhysicalConnectionSourceDefinition getSource() {
@@ -51,4 +66,13 @@ public class PhysicalChannelConnectionDefinition implements Serializable {
     public PhysicalEventStreamDefinition getEventStream() {
         return eventStream;
     }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
 }

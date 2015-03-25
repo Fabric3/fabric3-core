@@ -16,6 +16,8 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.util.Optional;
+
 /**
  * A channel configuration in a composite.
  */
@@ -27,6 +29,7 @@ public class Channel extends Bindable<Composite> {
     private boolean local;
 
     private Object metadata;
+    private Optional<Class<?>> connectionType = Optional.empty();
 
     public Channel(String name) {
         this.name = name;
@@ -89,4 +92,21 @@ public class Channel extends Bindable<Composite> {
         return type.cast(metadata);
     }
 
+    /**
+     * Sets the direct connection type for this channel.
+     *
+     * @param type the direct connection type
+     */
+    public void setConnectionType(Class<?> type) {
+        this.connectionType = Optional.of(type);
+    }
+
+    /**
+     * Returns the direct connection type for this channel.
+     *
+     * @return the direct connection type for this channel
+     */
+    public Optional<Class<?>> getConnectionType() {
+        return connectionType;
+    }
 }

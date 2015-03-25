@@ -29,6 +29,7 @@ import java.util.Map;
 import org.fabric3.api.annotation.model.Environment;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -42,6 +43,7 @@ import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.dsl.ChannelIntrospector;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -53,6 +55,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class ProviderResourceProcessor implements ResourceProcessor {
     private HostInfo info;
     private Map<String, ImplementationIntrospector> introspectors = Collections.emptyMap();
+    private Map<String, ChannelIntrospector> channelIntrospectors = Collections.emptyMap();
 
     public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference HostInfo info) {
         this.info = info;
@@ -62,6 +65,11 @@ public class ProviderResourceProcessor implements ResourceProcessor {
     @Reference(required = false)
     public void setIntrospectors(Map<String, ImplementationIntrospector> processors) {
         this.introspectors = processors;
+    }
+
+    @Reference(required = false)
+    public void setChannelIntrospectors(Map<String, ChannelIntrospector> channelIntrospectors) {
+        this.channelIntrospectors = channelIntrospectors;
     }
 
     public String getContentType() {
@@ -130,14 +138,21 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                 URI contributionUri = context.getContributionUri();
                 composite.setContributionUri(contributionUri);
 
+                // introspect channels
+                for (Channel channel : composite.getChannels().values()) {
+                    ChannelIntrospector channelIntrospector = channelIntrospectors.get(channel.getType());
+                    if (channelIntrospector != null) {
+                        channelIntrospector.introspect(channel);
+                    }
+                }
+
                 // introspect definitions
                 for (Component<?> definition : composite.getComponents().values()) {
-                    ImplementationIntrospector introspector = introspectors.get(definition.getImplementation().getType());
-                    if (introspector == null) {
-                        continue;
-                    }
                     definition.setContributionUri(contributionUri);
-                    introspector.introspect((InjectingComponentType) definition.getComponentType(), context);
+                    ImplementationIntrospector introspector = introspectors.get(definition.getImplementation().getType());
+                    if (introspector != null) {
+                        introspector.introspect((InjectingComponentType) definition.getComponentType(), context);
+                    }
                 }
 
                 QName compositeName = composite.getName();

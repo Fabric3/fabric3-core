@@ -16,6 +16,9 @@
  */
 package org.fabric3.spi.container.channel;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 /**
  * Contains one or more event streams for transmitting events to or from a channel. Channel connections may exist between:
  *
@@ -42,5 +45,13 @@ public interface ChannelConnection {
      * @return the connection event stream
      */
     EventStream getEventStream();
+
+    /**
+     * Returns a supplier that provides a direct connection to the channel, which is typically a dispatcher for collocated channels or a transport API for a
+     * binding.
+     *
+     * @return the supplier
+     */
+    <T> Optional<Supplier<T>> getDirectConnection();
 
 }

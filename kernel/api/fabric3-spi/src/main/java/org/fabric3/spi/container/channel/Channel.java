@@ -103,4 +103,11 @@ public interface Channel {
      */
     ChannelSide getChannelSide();
 
+    /**
+     * Returns a direct connection to the channel, typically the dispatcher such as a ring buffer.
+     *
+     * @return a direct connection ot the channel
+     */
+    Object getDirectConnection();
+
 }

@@ -23,7 +23,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -38,7 +38,7 @@ public class DefaultChannelGeneratorExtensionImpl implements ChannelGeneratorExt
         Channel definition = channel.getDefinition();
         String channelType = definition.getType();
 
-        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ChannelDeliveryType.DEFAULT);
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, DeliveryType.DEFAULT);
         physicalDefinition.setMetadata(definition.getMetadata(Object.class));
 
         return physicalDefinition;

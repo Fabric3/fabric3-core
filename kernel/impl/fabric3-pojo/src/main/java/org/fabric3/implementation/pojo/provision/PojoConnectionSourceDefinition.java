@@ -27,26 +27,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
  */
 public class PojoConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -4308379086425414609L;
-    private Class<?> serviceInterface;
     private Injectable injectable;
-
-    /**
-     * Returns the Java interface for the service contract.
-     *
-     * @return the Java interface for the service contract
-     */
-    public Class<?> getServiceInterface() {
-        return serviceInterface;
-    }
-
-    /**
-     * Sets the Java interface for the service contract.
-     *
-     * @param interfaze the Java interface for the service contract
-     */
-    public void setServiceInterface(Class<?> interfaze) {
-        this.serviceInterface = interfaze;
-    }
 
     /**
      * Returns the Injectable this wire applies to.

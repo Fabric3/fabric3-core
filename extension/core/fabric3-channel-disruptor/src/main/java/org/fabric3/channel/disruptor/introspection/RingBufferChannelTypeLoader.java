@@ -19,6 +19,7 @@ package org.fabric3.channel.disruptor.introspection;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
+import com.lmax.disruptor.RingBuffer;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -86,7 +87,7 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
             }
 
         }
-
+        definition.setConnectionType(RingBuffer.class);
         definition.setMetadata(data);
     }
 

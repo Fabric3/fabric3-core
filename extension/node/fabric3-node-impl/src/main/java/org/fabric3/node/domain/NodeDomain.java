@@ -64,7 +64,7 @@ public class NodeDomain implements Domain {
 
     public <T> T getChannel(Class<T> interfaze, String name) {
         try {
-            return channelResolver.resolve(interfaze, name);
+            return channelResolver.getProducer(interfaze, name);
         } catch (Fabric3Exception e) {
             throw new ServiceRuntimeException(e);
         }

@@ -48,15 +48,6 @@ public class DefaultChannelImpl implements Channel {
         inHandler.setNext(this.fanOutHandler);
     }
 
-    public DefaultChannelImpl(URI uri, QName deployable, EventStreamHandler inHandler, FanOutHandler fanOutHandler, ChannelSide channelSide) {
-        this.uri = uri;
-        this.deployable = deployable;
-        this.inHandler = inHandler;
-        this.fanOutHandler = fanOutHandler;
-        this.channelSide = channelSide;
-        this.inHandler.setNext(fanOutHandler);
-    }
-
     public URI getUri() {
         return uri;
     }
@@ -125,5 +116,9 @@ public class DefaultChannelImpl implements Channel {
 
     public ChannelSide getChannelSide() {
         return channelSide;
+    }
+
+    public Object getDirectConnection() {
+        return headHandler;
     }
 }

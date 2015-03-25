@@ -38,7 +38,7 @@ import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -64,7 +64,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<JmsBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws Fabric3Exception {
+                                                                       DeliveryType deliveryType) throws Fabric3Exception {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         SessionType sessionType = getSessionType(binding);
@@ -95,7 +95,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<JmsBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) throws Fabric3Exception {
+                                                                       DeliveryType deliveryType) throws Fabric3Exception {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
@@ -110,7 +110,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return connectionTarget;
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBinding> binding, ChannelDeliveryType deliveryType) {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBinding> binding, DeliveryType deliveryType) {
         // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
         return new JmsChannelBindingDefinition();
     }

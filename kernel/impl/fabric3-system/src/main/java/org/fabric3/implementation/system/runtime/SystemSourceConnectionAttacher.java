@@ -59,7 +59,14 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         Class<?> type = source.getServiceInterface();
-        Supplier<?> supplier = proxyService.createSupplier(type, connection);
+
+        Supplier<?> supplier;
+        if (source.isDirectConnection()) {
+            supplier = connection.getDirectConnection().get();
+        } else {
+            supplier = proxyService.createSupplier(type, connection);
+        }
+
         component.setSupplier(injectable, supplier);
     }
 

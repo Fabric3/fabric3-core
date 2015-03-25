@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
@@ -57,7 +57,7 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
 
         builder = new RingBufferChannelBuilder(executorService);
 
-        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, "ring.buffer", ChannelDeliveryType.ASYNCHRONOUS_WORKER);
+        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, "ring.buffer", DeliveryType.ASYNCHRONOUS_WORKER);
         definition.setMetadata(new RingBufferData());
     }
 }

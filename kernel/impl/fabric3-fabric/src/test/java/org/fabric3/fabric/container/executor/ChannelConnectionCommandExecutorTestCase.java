@@ -32,7 +32,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
  */
 public class ChannelConnectionCommandExecutorTestCase extends TestCase {
 
-
     @SuppressWarnings({"unchecked"})
     public void testDetachBeforeAttach() throws Exception {
         PhysicalChannelConnectionDefinition definition = new MockDefinition();
@@ -57,7 +56,7 @@ public class ChannelConnectionCommandExecutorTestCase extends TestCase {
         private static final long serialVersionUID = -809769047230911419L;
 
         private MockDefinition() {
-            super(null, null, null);
+            super(null, null, null, null, false);
         }
     }
 

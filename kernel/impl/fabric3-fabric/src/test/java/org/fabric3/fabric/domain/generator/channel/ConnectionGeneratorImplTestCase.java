@@ -45,7 +45,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -73,8 +73,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
-        channels.put(channel, ChannelDeliveryType.DEFAULT);
+        Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
+        channels.put(channel, DeliveryType.DEFAULT);
 
         LogicalConsumer consumer = createConsumer(parent, "testChannel");
 
@@ -99,7 +99,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         PhysicalConnectionSourceDefinition sourceDefinition = new PhysicalConnectionSourceDefinition();
         EasyMock.expect(bindingGenerator.generateConnectionSource(EasyMock.isA(LogicalConsumer.class),
                                                                   EasyMock.isA(LogicalBinding.class),
-                                                                  EasyMock.isA(ChannelDeliveryType.class))).andReturn(sourceDefinition);
+                                                                  EasyMock.isA(DeliveryType.class))).andReturn(sourceDefinition);
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
@@ -112,8 +112,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
-        channels.put(channel, ChannelDeliveryType.DEFAULT);
+        Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
+        channels.put(channel, DeliveryType.DEFAULT);
 
         LogicalConsumer consumer = createConsumer(parent, "testChannel");
 
@@ -142,8 +142,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, false);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
-        channels.put(channel, ChannelDeliveryType.DEFAULT);
+        Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
+        channels.put(channel, DeliveryType.DEFAULT);
 
         LogicalProducer producer = createProducer(parent, "testChannel");
 
@@ -167,7 +167,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         PhysicalConnectionTargetDefinition targetDefinition = new PhysicalConnectionTargetDefinition();
         EasyMock.expect(bindingGenerator.generateConnectionTarget(EasyMock.isA(LogicalProducer.class),
                                                                   EasyMock.isA(LogicalBinding.class),
-                                                                  EasyMock.isA(ChannelDeliveryType.class))).andReturn(targetDefinition);
+                                                                  EasyMock.isA(DeliveryType.class))).andReturn(targetDefinition);
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
@@ -179,8 +179,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, classLoaderRegistry);
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
         LogicalChannel channel = createChannel(parent, true);
-        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
-        channels.put(channel, ChannelDeliveryType.DEFAULT);
+        Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
+        channels.put(channel, DeliveryType.DEFAULT);
 
         LogicalProducer producer = createProducer(parent, "testChannel");
 

@@ -16,9 +16,11 @@
  */
 package org.fabric3.fabric.container.builder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -29,12 +31,16 @@ import org.fabric3.fabric.container.channel.FilterHandler;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
+import org.fabric3.spi.container.builder.component.DirectConnectionFactory;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -46,6 +52,10 @@ import org.oasisopen.sca.annotation.Reference;
  * Default ChannelConnector implementation.
  */
 public class ChannelConnectorImpl implements ChannelConnector {
+
+    @Reference
+    protected ChannelManager channelManager;
+
     @Reference(required = false)
     protected Map<Class<?>, SourceConnectionAttacher<?>> sourceAttachers = new HashMap<>();
 
@@ -54,6 +64,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
     @Reference(required = false)
     protected Map<Class<?>, EventFilterBuilder<?>> filterBuilders = new HashMap<>();
+
+    @Reference(required = false)
+    protected Map<Class<?>, DirectConnectionFactory> connectionFactories = new HashMap<>();
 
     @Reference
     protected TransformerHandlerFactory transformerHandlerFactory;
@@ -101,15 +114,39 @@ public class ChannelConnectorImpl implements ChannelConnector {
      * @ if there is an error creating the connection
      */
     private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
-        ClassLoader loader = definition.getTarget().getClassLoader();
+        PhysicalConnectionSourceDefinition source = definition.getSource();
+        if (source.isDirectConnection()) {
+            // producer or binding source
+            int sequence = source.getSequence();
+            URI channelUri = definition.getChannelUri();
 
-        PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
-        EventStream stream = new EventStreamImpl(streamDefinition);
-        addTypeTransformer(definition, stream, loader);
-        addFilters(streamDefinition, stream);
-        int sequence = definition.getSource().getSequence();
+            Supplier<?> supplier;
+            if (definition.isBound()) {
+                Class<?> type = source.getServiceInterface();
+                DirectConnectionFactory<?> factory = connectionFactories.get(type);
+                if (factory == null) {
+                    throw new Fabric3Exception("Factory type not found: " + type.getName());
+                }
+                supplier = factory.getConnection(channelUri);
+            } else {
+                // get the direct connection to the local channel
+                Channel channel = channelManager.getChannel(channelUri, ChannelSide.COLLOCATED);
+                if (channel == null) {
+                    throw new Fabric3Exception("Channel not found: " + channelUri);
+                }
+                supplier = channel::getDirectConnection;
+            }
 
-        return new ChannelConnectionImpl(stream, sequence);
+            return new ChannelConnectionImpl(supplier, sequence);
+        } else {
+            ClassLoader loader = definition.getTarget().getClassLoader();
+            PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
+            EventStream stream = new EventStreamImpl(streamDefinition);
+            addTypeTransformer(definition, stream, loader);
+            addFilters(streamDefinition, stream);
+            int sequence = source.getSequence();
+            return new ChannelConnectionImpl(stream, sequence);
+        }
     }
 
     private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) {

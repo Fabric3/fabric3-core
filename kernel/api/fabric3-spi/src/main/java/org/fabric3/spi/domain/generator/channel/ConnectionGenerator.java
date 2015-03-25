@@ -25,7 +25,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
@@ -41,7 +41,7 @@ public interface ConnectionGenerator {
      * @return the event channel connection metadata
      * @throws Fabric3Exception if a generation error is encountered
      */
-    List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels)
+    List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, DeliveryType> channels)
             throws Fabric3Exception;
 
     /**
@@ -52,6 +52,6 @@ public interface ConnectionGenerator {
      * @return the event channel connection metadata
      * @throws Fabric3Exception if a generation error is encountered
      */
-    List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels)
+    List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, DeliveryType> channels)
             throws Fabric3Exception;
 }

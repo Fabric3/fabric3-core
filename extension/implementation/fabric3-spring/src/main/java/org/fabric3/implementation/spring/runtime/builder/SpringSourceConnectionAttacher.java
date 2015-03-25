@@ -55,7 +55,13 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
         Class<?> type = source.getServiceInterface();
-        Supplier<?> supplier = proxyService.createSupplier(type, connection);
+
+        Supplier<?> supplier;
+        if (source.isDirectConnection()) {
+            supplier = connection.getDirectConnection().get();
+        } else {
+            supplier = proxyService.createSupplier(type, connection);
+        }
         component.attach(source.getProducerName(), type, supplier);
     }
 

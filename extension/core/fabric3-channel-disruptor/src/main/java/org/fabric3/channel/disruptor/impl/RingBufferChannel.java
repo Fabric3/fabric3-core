@@ -168,4 +168,7 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         return null;
     }
 
+    public Object getDirectConnection() {
+        return ringBuffer;
+    }
 }

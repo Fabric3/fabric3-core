@@ -41,6 +41,10 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection) {
+        if (source.isDirectConnection()) {
+            // no event stream to attach since this is a direct connection
+            return;
+        }
         URI uri = target.getUri();
         Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);

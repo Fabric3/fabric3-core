@@ -24,7 +24,6 @@ package org.fabric3.api.binding.jms.model;
  * Defines common attributes for a destination or connection factory configuration.
  */
 public abstract class AdministeredObjectDefinition extends PropertyAwareObject {
-    private static final long serialVersionUID = 3952595885616542808L;
     private String name;
     private CreateOption create = CreateOption.IF_NOT_EXIST;
 

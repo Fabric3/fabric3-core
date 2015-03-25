@@ -14,14 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.binding.jms.spi.provision;
+package org.fabric3.channel.disruptor.introspection;
 
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
+import com.lmax.disruptor.RingBuffer;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.spi.introspection.dsl.ChannelIntrospector;
 
 /**
  *
  */
-public class JmsChannelBindingDefinition extends PhysicalChannelBindingDefinition {
-    private static final long serialVersionUID = 5081156645494935343L;
-
+public class RingBufferChannelIntrospector implements ChannelIntrospector {
+    public void introspect(Channel channel) {
+        channel.setConnectionType(RingBuffer.class);
+    }
 }

@@ -49,13 +49,22 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
     public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
+
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         if (component == null) {
             throw new Fabric3Exception("Source component not found: " + sourceName);
         }
+
         Injectable injectable = source.getInjectable();
         Class<?> type = source.getServiceInterface();
-        Supplier<?> supplier = proxyService.createSupplier(type, connection);
+
+        Supplier<?> supplier;
+        if (source.isDirectConnection()) {
+            supplier = connection.getDirectConnection().get();
+        } else {
+            supplier = proxyService.createSupplier(type, connection);
+        }
+
         component.setSupplier(injectable, supplier);
     }
 

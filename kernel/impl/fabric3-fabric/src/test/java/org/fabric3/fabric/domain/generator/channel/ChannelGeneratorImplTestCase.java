@@ -33,7 +33,7 @@ import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -85,7 +85,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class),
-                                                                EasyMock.isA(ChannelDeliveryType.class))).andReturn(new MockPhysicalDefinition());
+                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysicalDefinition());
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         registry.getConnectionBindingGenerator(MockBinding.class);
@@ -131,7 +131,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class),
-                                                                EasyMock.isA(ChannelDeliveryType.class))).andReturn(new MockPhysicalDefinition());
+                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysicalDefinition());
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
 

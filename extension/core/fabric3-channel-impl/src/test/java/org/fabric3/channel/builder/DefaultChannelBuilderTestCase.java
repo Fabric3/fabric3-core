@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 

@@ -26,10 +26,10 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
-public class NonManagedConnectionSourceWireAttacher implements SourceConnectionAttacher<NonManagedPhysicalConnectionSourceDefinition> {
+public class NonManagedConnectionSourceAttacher implements SourceConnectionAttacher<NonManagedPhysicalConnectionSourceDefinition> {
     private ChannelProxyService proxyService;
 
-    public NonManagedConnectionSourceWireAttacher(@Reference ChannelProxyService proxyService) {
+    public NonManagedConnectionSourceAttacher(@Reference ChannelProxyService proxyService) {
         this.proxyService = proxyService;
     }
 

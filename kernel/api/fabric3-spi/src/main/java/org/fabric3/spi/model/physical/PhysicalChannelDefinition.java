@@ -32,16 +32,16 @@ public class PhysicalChannelDefinition implements Serializable {
     private QName deployable;
     private PhysicalChannelBindingDefinition bindingDefinition;
     private String type;
-    private ChannelDeliveryType deliveryType;
+    private DeliveryType deliveryType;
     private ChannelSide channelSide = ChannelSide.PRODUCER;
 
     private Object metadata;
 
     public PhysicalChannelDefinition(URI uri, QName deployable) {
-        this(uri, deployable, ChannelConstants.DEFAULT_TYPE, ChannelDeliveryType.DEFAULT);
+        this(uri, deployable, ChannelConstants.DEFAULT_TYPE, DeliveryType.DEFAULT);
     }
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, String type, ChannelDeliveryType deliveryType) {
+    public PhysicalChannelDefinition(URI uri, QName deployable, String type, DeliveryType deliveryType) {
         this.uri = uri;
         this.deployable = deployable;
         this.type = type;
@@ -99,7 +99,7 @@ public class PhysicalChannelDefinition implements Serializable {
      *
      * @return the channel delivery type
      */
-    public ChannelDeliveryType getDeliveryType() {
+    public DeliveryType getDeliveryType() {
         return deliveryType;
     }
 

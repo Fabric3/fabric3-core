@@ -467,9 +467,9 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
-        if (contract.getOperations().size() != 1) {
+        if (contract.getOperations().isEmpty()) {
             String interfaceName = contract.getInterfaceName();
-            InvalidValue error = new InvalidValue("Producer interfaces must have one method: " + interfaceName, startLocation, type);
+            InvalidValue error = new InvalidValue("Producer interfaces must have at lease one method: " + interfaceName, startLocation, type);
             context.addError(error);
         }
 

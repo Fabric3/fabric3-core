@@ -37,7 +37,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.CONSUMER;
@@ -80,7 +80,7 @@ public class ConsumerCommandGenerator implements CommandGenerator<ChannelConnect
         LogicalComponent<?> component = consumer.getParent();
         QName deployable = consumer.getParent().getDeployable();
         if (LogicalState.MARKED == component.getState()) {
-            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
+            Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
                 DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, deployable, CONSUMER);
@@ -93,7 +93,7 @@ public class ConsumerCommandGenerator implements CommandGenerator<ChannelConnect
                 command.add(connectionCommand);
             }
         } else if (LogicalState.NEW == component.getState()) {
-            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<>();
+            Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
                 BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, deployable, CONSUMER);

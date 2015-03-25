@@ -39,7 +39,7 @@
     </component>
 
     <component name="NonManagedConnectionSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition">
-        <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedConnectionSourceWireAttacher"/>
+        <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedConnectionSourceAttacher"/>
     </component>
 
 </composite>

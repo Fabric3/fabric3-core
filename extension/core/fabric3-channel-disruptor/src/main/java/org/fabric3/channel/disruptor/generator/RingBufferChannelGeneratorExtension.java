@@ -25,7 +25,7 @@ import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
-import static org.fabric3.spi.model.physical.ChannelDeliveryType.ASYNCHRONOUS_WORKER;
+import static org.fabric3.spi.model.physical.DeliveryType.ASYNCHRONOUS_WORKER;
 
 /**
  *

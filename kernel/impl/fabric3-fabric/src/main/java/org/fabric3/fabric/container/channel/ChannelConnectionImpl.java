@@ -16,8 +16,12 @@
  */
 package org.fabric3.fabric.container.channel;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.util.Cast;
 
 /**
  * Default implementation of a channel connection.
@@ -25,9 +29,15 @@ import org.fabric3.spi.container.channel.EventStream;
 public class ChannelConnectionImpl implements ChannelConnection {
     private int sequence;
     private EventStream stream;
+    private Optional<Supplier<?>> directConnection = Optional.empty();
 
     public ChannelConnectionImpl(EventStream stream, int sequence) {
         this.stream = stream;
+        this.sequence = sequence;
+    }
+
+    public ChannelConnectionImpl(Supplier<?> directConnection, int sequence) {
+        this.directConnection = Optional.of(directConnection);
         this.sequence = sequence;
     }
 
@@ -37,5 +47,9 @@ public class ChannelConnectionImpl implements ChannelConnection {
 
     public EventStream getEventStream() {
         return stream;
+    }
+
+    public <T> Optional<Supplier<T>> getDirectConnection() {
+        return Cast.cast(directConnection);
     }
 }

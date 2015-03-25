@@ -48,6 +48,8 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public class ProducerCommandGeneratorTestCase extends TestCase {
     private static final QName DEPLOYABLE = new QName("test", "test");
 
+    private URI uri = URI.create("testChannel");
+
     private BuildChannelCommand buildChannelCommand;
     private DisposeChannelCommand disposeChannelCommand;
 
@@ -79,7 +81,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateAttach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(null, null, null));
+        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -100,7 +102,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(null, null, null));
+        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -122,7 +124,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateFullDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(null, null, null));
+        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);

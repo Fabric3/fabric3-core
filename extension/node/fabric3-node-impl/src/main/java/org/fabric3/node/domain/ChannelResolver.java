@@ -24,13 +24,23 @@ import org.fabric3.api.host.Fabric3Exception;
 public interface ChannelResolver {
 
     /**
-     * Resolves the channel and returns a connection proxy to it.
+     * Creates a producer proxy to a channel using the default topic.
      *
-     * @param interfaze the service interface
+     * @param interfaze the producer interface
      * @param name      the channel name
      * @return the connection proxy
      * @throws Fabric3Exception if there is a resolution exception
      */
-    <T> T resolve(Class<T> interfaze, String name) throws Fabric3Exception;
+    <T> T getProducer(Class<T> interfaze, String name) throws Fabric3Exception;
 
+    /**
+     * Creates a producer proxy to a channel using the default topic.
+     *
+     * @param interfaze the producer interface
+     * @param name      the channel name
+     * @param topic     the topic name
+     * @return the connection proxy
+     * @throws Fabric3Exception if there is a resolution exception
+     */
+    <T> T getProducer(Class<T> interfaze, String name, String topic);
 }

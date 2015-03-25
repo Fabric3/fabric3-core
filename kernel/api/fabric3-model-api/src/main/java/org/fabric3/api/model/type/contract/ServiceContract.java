@@ -119,6 +119,10 @@ public abstract class ServiceContract extends ModelObject<ModelObject> {
 
     public abstract String getQualifiedInterfaceName();
 
+    public Class<?> getInterfaceClass() {
+        return null;
+    }
+
     public String toString() {
         if (interfaceName != null) {
             return "ServiceContract[" + interfaceName + "]";

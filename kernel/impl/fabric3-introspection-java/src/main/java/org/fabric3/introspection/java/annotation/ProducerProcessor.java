@@ -106,17 +106,19 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
     }
 
     private Producer<ComponentType> createProducer(String name,
-                                    Type type,
-                                    Class<?> implClass,
-                                    InjectingComponentType componentType,
-                                    Member member,
-                                    IntrospectionContext context) {
+                                                   Type type,
+                                                   Class<?> implClass,
+                                                   InjectingComponentType componentType,
+                                                   Member member,
+                                                   IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
         ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
-        if (contract.getOperations().size() != 1) {
+        if (contract.getOperations().isEmpty()) {
             String interfaceName = contract.getInterfaceName();
-            InvalidProducerInterface error = new InvalidProducerInterface("Producer interfaces must have one method: " + interfaceName, member, componentType);
+            InvalidProducerInterface error = new InvalidProducerInterface("Producer interfaces must have at least one method: " + interfaceName,
+                                                                          member,
+                                                                          componentType);
             context.addError(error);
         }
         return new Producer<>(name, contract);

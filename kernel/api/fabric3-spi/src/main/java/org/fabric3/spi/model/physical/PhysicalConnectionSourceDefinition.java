@@ -30,6 +30,8 @@ public class PhysicalConnectionSourceDefinition extends PhysicalAttachPointDefin
     public static final int NO_SEQUENCE = 0;
 
     private int sequence = NO_SEQUENCE;
+    private boolean directConnection;
+    private Class<?> serviceInterface;
 
     public PhysicalConnectionSourceDefinition() {
     }
@@ -54,6 +56,32 @@ public class PhysicalConnectionSourceDefinition extends PhysicalAttachPointDefin
      */
     public void setSequence(int sequence) {
         this.sequence = sequence;
+    }
+
+    public void setDirectConnection(boolean directConnection) {
+        this.directConnection = directConnection;
+    }
+
+    public boolean isDirectConnection() {
+        return directConnection;
+    }
+
+    /**
+     * Returns the Java interface for the service contract.
+     *
+     * @return the Java interface for the service contract
+     */
+    public Class<?> getServiceInterface() {
+        return serviceInterface;
+    }
+
+    /**
+     * Sets the Java interface for the service contract.
+     *
+     * @param interfaze the Java interface for the service contract
+     */
+    public void setServiceInterface(Class<?> interfaze) {
+        this.serviceInterface = interfaze;
     }
 
 }

@@ -3,7 +3,7 @@ package org.fabric3.spi.model.physical;
 /**
  * Defines the delivery semantics for a channel.
  */
-public enum ChannelDeliveryType {
+public enum DeliveryType {
 
     /**
      * Events are sent through a channel using default semantics

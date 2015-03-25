@@ -22,6 +22,7 @@ package org.fabric3.api.model.type.component;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.fabric3.api.model.type.ModelObject;
 
@@ -94,4 +95,12 @@ public abstract class Binding extends ModelObject<Bindable> {
         handlers.add(handler);
     }
 
+    /**
+     * Returns the type for making direct connections to the transport.
+     *
+     * @return the type for making direct connections to the transport
+     */
+    public Optional<Class<?>> getConnectionType() {
+        return Optional.empty();
+    }
 }

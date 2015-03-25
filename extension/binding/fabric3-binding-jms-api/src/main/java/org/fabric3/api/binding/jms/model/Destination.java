@@ -23,7 +23,6 @@ package org.fabric3.api.binding.jms.model;
  * A destination configuration.
  */
 public class Destination extends AdministeredObjectDefinition {
-    private static final long serialVersionUID = 2175092846182913179L;
     private DestinationType type = DestinationType.QUEUE;
 
     public DestinationType geType() {

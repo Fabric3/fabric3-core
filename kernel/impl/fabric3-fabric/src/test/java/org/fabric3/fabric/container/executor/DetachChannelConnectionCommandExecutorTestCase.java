@@ -19,6 +19,8 @@
  */
 package org.fabric3.fabric.container.executor;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
@@ -41,7 +43,8 @@ public class DetachChannelConnectionCommandExecutorTestCase extends TestCase {
 
         DetachChannelConnectionCommandExecutor executor = new DetachChannelConnectionCommandExecutor(executorRegistry, connector);
         executor.init();
-        PhysicalChannelConnectionDefinition definition = new PhysicalChannelConnectionDefinition(null, null, null);
+        URI uri = URI.create("testChannel");
+        PhysicalChannelConnectionDefinition definition = new PhysicalChannelConnectionDefinition(uri, null, null, null, false);
         DetachChannelConnectionCommand command = new DetachChannelConnectionCommand(definition);
         executor.execute(command);
         EasyMock.verify(executorRegistry, connector);

@@ -31,7 +31,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -46,7 +46,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<ZeroMQBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) {
+                                                                       DeliveryType deliveryType) {
         URI uri = consumer.getUri();
 
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
@@ -57,7 +57,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<ZeroMQBinding> binding,
-                                                                       ChannelDeliveryType deliveryType) {
+                                                                       DeliveryType deliveryType) {
         ZeroMQBinding bindingDefinition = binding.getDefinition();
         URI targetUri = bindingDefinition.getTargetUri();
         if (targetUri == null) {
@@ -66,12 +66,12 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
         }
         ZeroMQMetadata metadata = bindingDefinition.getZeroMQMetadata();
         setChannelName(binding, metadata);
-        boolean dedicatedThread = ChannelDeliveryType.ASYNCHRONOUS_WORKER == deliveryType;
+        boolean dedicatedThread = DeliveryType.ASYNCHRONOUS_WORKER == deliveryType;
 
         return new ZeroMQConnectionTargetDefinition(targetUri, metadata, dedicatedThread);
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBinding> binding, ChannelDeliveryType deliveryType) {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBinding> binding, DeliveryType deliveryType) {
         return new ZeroMQChannelBindingDefinition();
     }
 

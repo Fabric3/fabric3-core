@@ -28,7 +28,7 @@ import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
@@ -60,7 +60,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
             ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-            ChannelDeliveryType deliveryType = definition.getDeliveryType();
+            DeliveryType deliveryType = definition.getDeliveryType();
             PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding, deliveryType);
             definition.setBindingDefinition(bindingDefinition);
             definition.setChannelSide(ChannelDirection.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
