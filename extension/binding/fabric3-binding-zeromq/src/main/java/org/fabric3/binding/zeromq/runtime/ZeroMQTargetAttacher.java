@@ -22,25 +22,25 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.annotation.wire.Key;
-import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-@Key("org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition")
-public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTargetDefinition> {
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQWireTarget")
+public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTarget> {
     private ZeroMQWireBroker broker;
 
     public ZeroMQTargetAttacher(@Reference ZeroMQWireBroker broker) {
         this.broker = broker;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target, Wire wire) {
+    public void attach(PhysicalWireSource source, ZeroMQWireTarget target, Wire wire) {
         URI sourceUri = source.getUri();
         String id = sourceUri.getPath().substring(1) + "/" + sourceUri.getFragment();   // strip leading '/'
         URI targetUri = target.getUri();
@@ -49,7 +49,7 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQWireTarget
         broker.connectToSender(id, targetUri, chains, target.getMetadata(), loader);
     }
 
-    public void detach(PhysicalWireSourceDefinition source, ZeroMQWireTargetDefinition target) {
+    public void detach(PhysicalWireSource source, ZeroMQWireTarget target) {
         String id = source.getUri().toString();
         URI uri = target.getUri();
         broker.releaseSender(id, uri);

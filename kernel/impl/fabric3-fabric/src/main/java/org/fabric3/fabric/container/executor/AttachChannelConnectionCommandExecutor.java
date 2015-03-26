@@ -48,6 +48,6 @@ public class AttachChannelConnectionCommandExecutor implements CommandExecutor<A
     }
 
     public void execute(AttachChannelConnectionCommand command) {
-        connector.connect(command.getDefinition());
+        connector.connect(command.getConnection());
     }
 }

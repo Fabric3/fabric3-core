@@ -19,13 +19,13 @@ package org.fabric3.fabric.container.builder.channel;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
+import org.fabric3.fabric.model.physical.ChannelTarget;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -33,14 +33,14 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches the target side of a channel connection to a channel.
  */
 @EagerInit
-public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {
+public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTarget> {
     private ChannelManager channelManager;
 
     public ChannelTargetAttacher(@Reference ChannelManager channelManager) {
         this.channelManager = channelManager;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection) {
+    public void attach(PhysicalConnectionSource source, ChannelTarget target, ChannelConnection connection) {
         if (source.isDirectConnection()) {
             // no event stream to attach since this is a direct connection
             return;
@@ -50,7 +50,7 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         channel.attach(connection);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) {
+    public void detach(PhysicalConnectionSource source, ChannelTarget target) {
         // no-op since channel do not maintain references to incoming handlers
     }
 

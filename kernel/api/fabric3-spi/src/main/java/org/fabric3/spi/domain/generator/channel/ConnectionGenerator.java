@@ -26,7 +26,7 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  * Generates physical metadata for an event channel connection.
@@ -34,24 +34,22 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 public interface ConnectionGenerator {
 
     /**
-     * Generate event channel connection metadata from a logical producer.
+     * Generate channel connection metadata from a logical producer.
      *
      * @param producer the logical producer
      * @param channels the a map of channels and delivery semantics the consumer is connected to
      * @return the event channel connection metadata
      * @throws Fabric3Exception if a generation error is encountered
      */
-    List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, DeliveryType> channels)
-            throws Fabric3Exception;
+    List<PhysicalChannelConnection> generateProducer(LogicalProducer producer, Map<LogicalChannel, DeliveryType> channels) throws Fabric3Exception;
 
     /**
-     * Generate event channel connection metadata from a logical consumer.
+     * Generate channel connection metadata from a logical consumer.
      *
      * @param consumer the logical consumer
      * @param channels the a map of channels and delivery semantics the consumer is connected to
      * @return the event channel connection metadata
      * @throws Fabric3Exception if a generation error is encountered
      */
-    List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, DeliveryType> channels)
-            throws Fabric3Exception;
+    List<PhysicalChannelConnection> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, DeliveryType> channels) throws Fabric3Exception;
 }

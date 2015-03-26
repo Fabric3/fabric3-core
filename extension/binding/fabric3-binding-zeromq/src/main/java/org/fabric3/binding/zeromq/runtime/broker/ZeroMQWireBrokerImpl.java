@@ -62,7 +62,7 @@ import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -165,7 +165,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
-            PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
+            PhysicalOperation physicalOperation = chain.getPhysicalOperation();
             List<DataType> sourceTypes = createTypes(physicalOperation);
             Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, sourceTypes, TRANSPORT_TYPES, loader, loader);
             chain.addInterceptor(interceptor);
@@ -372,7 +372,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
 
     private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws Fabric3Exception {
         for (InvocationChain chain : chains) {
-            PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
+            PhysicalOperation physicalOperation = chain.getPhysicalOperation();
             List<DataType> targetTypes = createTypes(physicalOperation);
             Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, TRANSPORT_TYPES, targetTypes, loader, loader);
             chain.addInterceptor(new WrappingInterceptor());
@@ -381,7 +381,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<DataType> createTypes(PhysicalOperationDefinition physicalOperation) throws Fabric3Exception {
+    private List<DataType> createTypes(PhysicalOperation physicalOperation) throws Fabric3Exception {
         List<DataType> dataTypes = new ArrayList<>();
         if (physicalOperation.getSourceParameterTypes().isEmpty()) {
             // no params

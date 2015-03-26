@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  * Generates metadata used to provision a channel to a runtime.
@@ -28,7 +28,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public interface ChannelGeneratorExtension {
 
     /**
-     * Generates a {@link PhysicalChannelDefinition} for the channel.
+     * Generates a {@link PhysicalChannel} for the channel.
      *
      * @param channel    the logical channel to generate
      * @param deployable the deployable this channel is being provisioned under. This may be different than the deployable where the channel is defined, e.g. if
@@ -36,5 +36,5 @@ public interface ChannelGeneratorExtension {
      * @return the physical channel definition
      * @throws Fabric3Exception if there is an error generating the channel
      */
-    PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws Fabric3Exception;
+    PhysicalChannel generate(LogicalChannel channel, QName deployable) throws Fabric3Exception;
 }

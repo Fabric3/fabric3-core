@@ -13,7 +13,7 @@
         <f3:implementation.system class="org.fabric3.jndi.generator.JndiContextGenerator"/>
     </component>
 
-    <component name="JndiContextBuilder" f3:key="org.fabric3.jndi.provision.PhysicalJndiContextDefinition">
+    <component name="JndiContextBuilder" f3:key="org.fabric3.jndi.provision.PhysicalJndiContext">
         <f3:implementation.system class="org.fabric3.jndi.runtime.JndiContextBuilder"/>
     </component>
 

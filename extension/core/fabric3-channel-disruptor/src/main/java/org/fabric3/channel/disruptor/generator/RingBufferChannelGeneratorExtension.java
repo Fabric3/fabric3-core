@@ -23,7 +23,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.EagerInit;
 import static org.fabric3.spi.model.physical.DeliveryType.ASYNCHRONOUS_WORKER;
 
@@ -33,15 +33,15 @@ import static org.fabric3.spi.model.physical.DeliveryType.ASYNCHRONOUS_WORKER;
 @EagerInit
 public class RingBufferChannelGeneratorExtension implements ChannelGeneratorExtension {
 
-    public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws Fabric3Exception {
+    public PhysicalChannel generate(LogicalChannel channel, QName deployable) throws Fabric3Exception {
         URI uri = channel.getUri();
         Channel channelDefinition = channel.getDefinition();
         String channelType = channelDefinition.getType();
 
-        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ASYNCHRONOUS_WORKER);
-        physicalDefinition.setMetadata(channelDefinition.getMetadata(Object.class));
+        PhysicalChannel physicalChannel = new PhysicalChannel(uri, deployable, channelType, ASYNCHRONOUS_WORKER);
+        physicalChannel.setMetadata(channelDefinition.getMetadata(Object.class));
 
-        return physicalDefinition;
+        return physicalChannel;
     }
 
 }

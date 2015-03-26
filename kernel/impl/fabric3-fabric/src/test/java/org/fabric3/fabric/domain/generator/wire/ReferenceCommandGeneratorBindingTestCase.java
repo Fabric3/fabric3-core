@@ -31,7 +31,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
@@ -62,7 +62,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         reference.addBinding(binding);
 
         wireGenerator.generateBoundReference(binding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
 
@@ -93,7 +93,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         reference.addBinding(binding);
 
         wireGenerator.generateBoundReference(binding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
 
@@ -127,9 +127,9 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         reference.addBinding(markedBinding);
 
         wireGenerator.generateBoundReference(binding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
         wireGenerator.generateBoundReference(markedBinding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
 
@@ -188,9 +188,9 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         reference.addCallbackBinding(binding);
 
         wireGenerator.generateBoundReference(binding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
         wireGenerator.generateBoundReferenceCallback(binding);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
 

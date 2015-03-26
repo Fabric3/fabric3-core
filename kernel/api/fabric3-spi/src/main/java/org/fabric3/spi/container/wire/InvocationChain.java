@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.wire;
 
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 
 /**
  * A wire consists of 1..n invocation chains associated with the operations of its source service contract.
@@ -33,7 +33,7 @@ public interface InvocationChain {
      *
      * @return the target physical operation for this invocation chain
      */
-    PhysicalOperationDefinition getPhysicalOperation();
+    PhysicalOperation getPhysicalOperation();
 
     /**
      * Adds an interceptor to the chain

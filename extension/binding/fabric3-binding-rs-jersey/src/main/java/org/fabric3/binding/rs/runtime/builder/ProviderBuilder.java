@@ -27,7 +27,7 @@ import java.net.URI;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
+import org.fabric3.binding.rs.provision.PhysicalProviderResource;
 import org.fabric3.binding.rs.runtime.bytecode.ProviderGenerator;
 import org.fabric3.binding.rs.runtime.bytecode.RsReflectionHelper;
 import org.fabric3.binding.rs.runtime.provider.AbstractProxyProvider;
@@ -46,8 +46,8 @@ import org.objectweb.asm.Type;
 /**
  *
  */
-@Key("org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition")
-public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResourceDefinition> {
+@Key("org.fabric3.binding.rs.provision.PhysicalProviderResource")
+public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource> {
     private ProviderRegistry providerRegistry;
     private ComponentManager componentManager;
     private ProviderGenerator providerGenerator;
@@ -61,12 +61,12 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalProviderResourceDefinition definition) {
-        URI providerUri = definition.getProviderUri();
+    public void build(PhysicalProviderResource providerResource) {
+        URI providerUri = providerResource.getProviderUri();
 
-        Object provider = createProvider(definition);
-        if (definition.getBindingAnnotation() != null) {
-            Class<? extends Annotation> annotationClass = definition.getBindingAnnotation();
+        Object provider = createProvider(providerResource);
+        if (providerResource.getBindingAnnotation() != null) {
+            Class<? extends Annotation> annotationClass = providerResource.getBindingAnnotation();
             providerRegistry.registerNameFilter(providerUri, annotationClass, provider);
         } else {
             providerRegistry.registerGlobalProvider(providerUri, provider);
@@ -74,24 +74,24 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalProviderResourceDefinition definition) {
-        if (definition.getBindingAnnotation() != null) {
-            Class<? extends Annotation> annotationClass = definition.getBindingAnnotation();
-            URI filterUri = definition.getProviderUri();
+    public void remove(PhysicalProviderResource providerResource) {
+        if (providerResource.getBindingAnnotation() != null) {
+            Class<? extends Annotation> annotationClass = providerResource.getBindingAnnotation();
+            URI filterUri = providerResource.getProviderUri();
             providerRegistry.unregisterNameFilter(filterUri, annotationClass);
         } else {
-            URI filterUri = definition.getProviderUri();
+            URI filterUri = providerResource.getProviderUri();
             providerRegistry.unregisterGlobalFilter(filterUri);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private Object createProvider(PhysicalProviderResourceDefinition definition) {
+    private Object createProvider(PhysicalProviderResource providerResource) {
 
         try {
-            Class<?> providerClass = definition.getProviderClass();
+            Class<?> providerClass = providerResource.getProviderClass();
 
-            URI filterUri = definition.getProviderUri();
+            URI filterUri = providerResource.getProviderUri();
 
             AbstractProxyProvider<?> provider;
             if (ContainerRequestFilter.class.isAssignableFrom(providerClass)) {

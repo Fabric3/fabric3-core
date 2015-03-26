@@ -28,7 +28,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -52,8 +52,8 @@ public class ResourceReferenceCommandGenerator implements CommandGenerator<Conne
         ConnectionCommand command = new ConnectionCommand(component.getUri());
         for (LogicalResourceReference<?> resourceReference : component.getResourceReferences()) {
             AttachWireCommand attachWireCommand = new AttachWireCommand();
-            PhysicalWireDefinition pwd = wireGenerator.generateResource(resourceReference);
-            attachWireCommand.setPhysicalWireDefinition(pwd);
+            PhysicalWire physicalWire = wireGenerator.generateResource(resourceReference);
+            attachWireCommand.setPhysicalWireDefinition(physicalWire);
             command.add(attachWireCommand);
         }
         return Optional.of(command);

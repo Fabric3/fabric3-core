@@ -96,9 +96,9 @@ import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
 import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.federation.addressing.AddressCacheImpl;
 import org.fabric3.fabric.host.PortAllocatorImpl;
-import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
+import org.fabric3.fabric.model.physical.ChannelSource;
+import org.fabric3.fabric.model.physical.ChannelTarget;
+import org.fabric3.fabric.model.physical.TypePhysicalEventFilter;
 import org.fabric3.fabric.repository.ArtifactCacheImpl;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
@@ -170,11 +170,11 @@ public class FabricProvider {
 
         compositeBuilder.component(newBuilder(ClassLoaderWireBuilderImpl.class).build());
 
-        compositeBuilder.component(newBuilder(ChannelSourceAttacher.class).key(ChannelSourceDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(ChannelSourceAttacher.class).key(ChannelSource.class.getName()).build());
 
-        compositeBuilder.component(newBuilder(ChannelTargetAttacher.class).key(ChannelTargetDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(ChannelTargetAttacher.class).key(ChannelTarget.class.getName()).build());
 
-        compositeBuilder.component(newBuilder(TypeEventFilterBuilder.class).key(TypeEventFilterDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(TypeEventFilterBuilder.class).key(TypePhysicalEventFilter.class.getName()).build());
 
         compositeBuilder.component(newBuilder(ChannelBuilderRegistryImpl.class).build());
     }

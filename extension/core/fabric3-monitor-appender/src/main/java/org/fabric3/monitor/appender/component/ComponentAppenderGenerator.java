@@ -21,12 +21,12 @@ import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Generates a {@link PhysicalComponentAppenderDefinition} from a {@link ComponentAppenderDefinition}.
+ * Generates a {@link PhysicalComponentAppender} from a {@link ComponentAppenderDefinition}.
  */
 @EagerInit
 public class ComponentAppenderGenerator implements AppenderGenerator<ComponentAppenderDefinition> {
 
-    public PhysicalComponentAppenderDefinition generateResource(ComponentAppenderDefinition definition) throws Fabric3Exception {
-        return new PhysicalComponentAppenderDefinition(definition.getComponentName());
+    public PhysicalComponentAppender generateResource(ComponentAppenderDefinition definition) throws Fabric3Exception {
+        return new PhysicalComponentAppender(definition.getComponentName());
     }
 }

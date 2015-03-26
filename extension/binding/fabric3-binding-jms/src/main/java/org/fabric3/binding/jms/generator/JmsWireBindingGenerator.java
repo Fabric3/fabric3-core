@@ -35,15 +35,15 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
-import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireSource;
+import org.fabric3.binding.jms.spi.provision.JmsWireTarget;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -76,7 +76,8 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         this.provisioner = provisioner;
     }
 
-    public JmsWireSourceDefinition generateSource(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
+    public JmsWireSource generateSource(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+            throws Fabric3Exception {
 
         SessionType sessionType = getSessionType(binding.getParent().getParent());
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
@@ -90,23 +91,24 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
         URI uri = binding.getDefinition().getTargetUri();
 
-        List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
-        JmsWireSourceDefinition definition;
+        List<PhysicalBindingHandler> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
+        JmsWireSource source;
         if (isJAXB(contract)) {
-            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, sessionType, handlers, PhysicalDataTypes.JAXB);
+            source = new JmsWireSource(uri, metadata, payloadTypes, sessionType, handlers, PhysicalDataTypes.JAXB);
         } else {
-            definition = new JmsWireSourceDefinition(uri, metadata, payloadTypes, sessionType, handlers);
+            source = new JmsWireSource(uri, metadata, payloadTypes, sessionType, handlers);
         }
         if (provisioner != null) {
-            provisioner.generateSource(definition);
+            provisioner.generateSource(source);
         }
 
         processDestinationDefinitions(metadata, false);
 
-        return definition;
+        return source;
     }
 
-    public JmsWireTargetDefinition generateTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
+    public JmsWireTarget generateTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+            throws Fabric3Exception {
 
         SessionType sessionType = getSessionType(binding.getParent().getParent());
 
@@ -122,12 +124,12 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
-        List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
-        JmsWireTargetDefinition definition;
+        List<PhysicalBindingHandler> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
+        JmsWireTarget definition;
         if (isJAXB(contract)) {
-            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, sessionType, handlers, PhysicalDataTypes.JAXB);
+            definition = new JmsWireTarget(uri, metadata, payloadTypes, sessionType, handlers, PhysicalDataTypes.JAXB);
         } else {
-            definition = new JmsWireTargetDefinition(uri, metadata, payloadTypes, sessionType, handlers);
+            definition = new JmsWireTarget(uri, metadata, payloadTypes, sessionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateTarget(definition);
@@ -147,9 +149,8 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         return definition;
     }
 
-    public JmsWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBinding> binding,
-                                                                ServiceContract contract,
-                                                                List<LogicalOperation> operations) throws Fabric3Exception {
+    public JmsWireTarget generateServiceBindingTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+            throws Fabric3Exception {
         return generateTarget(binding, contract, operations);
     }
 
@@ -189,8 +190,8 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
 
     /**
      * Verifies a response connection factory destination is provided on a service for request-response MEP.  If not, the request connection factory is used.
-     *  Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of
-     * the message request.
+     * Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header of the
+     * message request.
      *
      * @param metadata the JMS metadata
      * @param contract the service contract

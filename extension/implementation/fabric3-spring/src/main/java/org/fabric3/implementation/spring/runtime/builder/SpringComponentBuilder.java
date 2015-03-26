@@ -32,13 +32,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
+import org.fabric3.implementation.spring.provision.PhysicalSpringComponent;
 import org.fabric3.implementation.spring.runtime.component.ContextAnnotationPostProcessor;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
-import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
+import org.fabric3.spi.model.physical.PhysicalProperty;
 import org.fabric3.spring.spi.ApplicationContextListener;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
@@ -47,13 +46,13 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.w3c.dom.Document;
 
 /**
- * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.  The parent context contains
- * object factories for creating wire proxies for references configured on the component. In addition, the parent context also contains system components
- * configured to be aliased as Spring beans.  The child context contains beans defined in the configuration file specified by the location attribute of the
- * Spring component.
+ * Builds a {@link org.fabric3.implementation.spring.runtime.component.SpringComponent} from a physical definition. Each SpringComponent contains an application
+ * context hierarchy.  The parent context contains object factories for creating wire proxies for references configured on the component. In addition, the
+ * parent context also contains system components configured to be aliased as Spring beans.  The child context contains beans defined in the configuration file
+ * specified by the location attribute of the Spring component.
  */
 @EagerInit
-public class SpringComponentBuilder implements ComponentBuilder<SpringComponentDefinition, SpringComponent> {
+public class SpringComponentBuilder implements ComponentBuilder<PhysicalSpringComponent, org.fabric3.implementation.spring.runtime.component.SpringComponent> {
     private static final String XSD_NS = XMLConstants.W3C_XML_SCHEMA_NS_URI;
     private static final QName XSD_BOOLEAN = new QName(XSD_NS, "boolean");
     private static final QName XSD_INT = new QName(XSD_NS, "integer");
@@ -73,8 +72,8 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         this.listeners = listeners;
     }
 
-    public SpringComponent build(SpringComponentDefinition definition) throws Fabric3Exception {
-        ClassLoader classLoader = definition.getClassLoader();
+    public org.fabric3.implementation.spring.runtime.component.SpringComponent build(PhysicalSpringComponent springComponent) throws Fabric3Exception {
+        ClassLoader classLoader = springComponent.getClassLoader();
         if (classLoader instanceof MultiParentClassLoader) {
             // add the extension classloader as a parent of the app classloader since Spring classes must be visible to the application
             // TODO add a filtering classloader to only expose specific Spring packages
@@ -85,43 +84,50 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
             }
         }
         List<URL> sources = new ArrayList<>();
-        if (SpringComponentDefinition.LocationType.JAR == definition.getLocationType()) {
+        if (PhysicalSpringComponent.LocationType.JAR == springComponent.getLocationType()) {
             // jar
-            resolveJarSources(definition, classLoader, sources);
-        } else if (SpringComponentDefinition.LocationType.DIRECTORY == definition.getLocationType()) {
+            resolveJarSources(springComponent, classLoader, sources);
+        } else if (PhysicalSpringComponent.LocationType.DIRECTORY == springComponent.getLocationType()) {
             // directory
-            resolveDirectorySources(definition, classLoader, sources);
+            resolveDirectorySources(springComponent, classLoader, sources);
         } else {
             // file
-            List<String> contextLocations = definition.getContextLocations();
+            List<String> contextLocations = springComponent.getContextLocations();
             for (String location : contextLocations) {
                 sources.add(classLoader.getResource(location));
             }
         }
-        URI componentUri = definition.getComponentUri();
-        QName deployable = definition.getDeployable();
+        URI componentUri = springComponent.getComponentUri();
+        QName deployable = springComponent.getDeployable();
 
-        Map<String, Pair> properties = createProperties(definition);
+        Map<String, Pair> properties = createProperties(springComponent);
 
         SCAApplicationContext parent = createParentContext(classLoader, properties);
-        Map<String, String> alias = definition.getDefaultReferenceMappings();
-        return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias, POST_PROCESSORS);
+        Map<String, String> alias = springComponent.getDefaultReferenceMappings();
+        return new org.fabric3.implementation.spring.runtime.component.SpringComponent(componentUri,
+                                                                                       deployable,
+                                                                                       parent,
+                                                                                       sources,
+                                                                                       classLoader,
+                                                                                       validating,
+                                                                                       alias,
+                                                                                       POST_PROCESSORS);
     }
 
-    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws Fabric3Exception {
+    public void dispose(PhysicalSpringComponent physicalComponent, org.fabric3.implementation.spring.runtime.component.SpringComponent component) {
         for (ApplicationContextListener listener : listeners) {
             SCAApplicationContext context = component.getParent();
             listener.onDispose(context);
         }
     }
 
-    private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws Fabric3Exception {
-        List<String> contextLocations = definition.getContextLocations();
+    private void resolveDirectorySources(PhysicalSpringComponent springComponent, ClassLoader classLoader, List<URL> sources) throws Fabric3Exception {
+        List<String> contextLocations = springComponent.getContextLocations();
         for (String location : contextLocations) {
 
-            URL resource = classLoader.getResource(definition.getBaseLocation());
+            URL resource = classLoader.getResource(springComponent.getBaseLocation());
             if (resource == null) {
-                throw new Fabric3Exception("Resource path not found:" + definition.getBaseLocation());
+                throw new Fabric3Exception("Resource path not found:" + springComponent.getBaseLocation());
             }
             String path = resource.getPath();
             File filePath = new File(path);
@@ -160,12 +166,12 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         }
     }
 
-    private void resolveJarSources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws Fabric3Exception {
+    private void resolveJarSources(PhysicalSpringComponent springComponent, ClassLoader classLoader, List<URL> sources) throws Fabric3Exception {
         try {
-            for (String location : definition.getContextLocations()) {
-                URL resource = classLoader.getResource(definition.getBaseLocation());
+            for (String location : springComponent.getContextLocations()) {
+                URL resource = classLoader.getResource(springComponent.getBaseLocation());
                 if (resource == null) {
-                    throw new Fabric3Exception("Resource was null: " + definition.getBaseLocation());
+                    throw new Fabric3Exception("Resource was null: " + springComponent.getBaseLocation());
                 }
                 URL url = new URL("jar:" + resource.toExternalForm() + location);
                 sources.add(url);
@@ -176,19 +182,19 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         }
     }
 
-    protected Map<String, Pair> createProperties(SpringComponentDefinition definition) throws Fabric3Exception {
-        List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
+    protected Map<String, Pair> createProperties(PhysicalSpringComponent springComponent) throws Fabric3Exception {
+        List<PhysicalProperty> properties = springComponent.getProperties();
         Map<String, Pair> values = new HashMap<>();
 
-        for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
-            String name = propertyDefinition.getName();
-            if (propertyDefinition.getInstanceValue() != null) {
-                Pair pair = new Pair(Object.class, propertyDefinition::getInstanceValue);
+        for (PhysicalProperty property : properties) {
+            String name = property.getName();
+            if (property.getInstanceValue() != null) {
+                Pair pair = new Pair(Object.class, property::getInstanceValue);
                 values.put(name, pair);
             } else {
-                Document document = propertyDefinition.getValue();
+                Document document = property.getValue();
                 String value = document.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
-                QName type = propertyDefinition.getType();
+                QName type = property.getType();
                 if (XSD_BOOLEAN.equals(type)) {
                     Pair pair = new Pair(Boolean.class, () -> Boolean.valueOf(value));
                     values.put(name, pair);

@@ -53,6 +53,6 @@ public class AttachWireCommandExecutor implements CommandExecutor<AttachWireComm
     }
 
     public void execute(AttachWireCommand command) {
-        connector.connect(command.getPhysicalWireDefinition());
+        connector.connect(command.getPhysicalWire());
     }
 }

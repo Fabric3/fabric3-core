@@ -5,7 +5,7 @@ import org.fabric3.api.host.Fabric3Exception;
 /**
  * Specialized builder for a runtime cache. Implementations create and remove cache resources on a runtime.
  */
-public interface CacheBuilder<R extends PhysicalCacheResourceDefinition> {
+public interface CacheBuilder<R extends PhysicalCacheResource> {
 
     /**
      * Creates cache resources on a runtime.

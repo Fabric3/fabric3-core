@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.easymock.IMocksControl;
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.mock.model.MockComponentDefinition;
+import org.fabric3.implementation.mock.model.MockPhysicalComponent;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -33,14 +32,14 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class MockComponentBuilder implements ComponentBuilder<MockComponentDefinition, MockComponent> {
+public class MockComponentBuilder implements ComponentBuilder<MockPhysicalComponent, MockComponent> {
     private IMocksControl control;
 
     public MockComponentBuilder(@Reference IMocksControl control) {
         this.control = control;
     }
 
-    public MockComponent build(MockComponentDefinition componentDefinition) throws Fabric3Exception {
+    public MockComponent build(MockPhysicalComponent componentDefinition) {
         List<String> interfaces = componentDefinition.getInterfaces();
         ClassLoader classLoader = componentDefinition.getClassLoader();
 

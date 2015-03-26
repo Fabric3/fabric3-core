@@ -22,7 +22,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestination;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorResource;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -36,7 +36,7 @@ public class MonitorGeneratorTestCase extends TestCase {
     public void testBuild() throws Exception {
         MonitorDestinationGenerator destinationGenerator = EasyMock.createMock(MonitorDestinationGenerator.class);
         destinationGenerator.generateResource(EasyMock.isA(MockDefinition.class));
-        EasyMock.expectLastCall().andReturn(new MockPhysicalDefinition());
+        EasyMock.expectLastCall().andReturn(new MockDestination());
 
         EasyMock.replay(destinationGenerator);
 
@@ -57,10 +57,8 @@ public class MonitorGeneratorTestCase extends TestCase {
     private class MockDefinition extends MonitorDestinationDefinition {
     }
 
-    private class MockPhysicalDefinition extends PhysicalMonitorDestinationDefinition {
-        private static final long serialVersionUID = 6515557610052777779L;
-
-        public MockPhysicalDefinition() {
+    private class MockDestination extends PhysicalMonitorDestination {
+        public MockDestination() {
             super("test");
         }
     }

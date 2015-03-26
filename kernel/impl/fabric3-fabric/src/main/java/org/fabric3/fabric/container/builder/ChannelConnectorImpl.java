@@ -41,11 +41,11 @@ import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalEventFilter;
+import org.fabric3.spi.model.physical.PhysicalEventStream;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -72,9 +72,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
     protected TransformerHandlerFactory transformerHandlerFactory;
 
     @SuppressWarnings({"unchecked"})
-    public void connect(PhysicalChannelConnectionDefinition definition) {
-        PhysicalConnectionSourceDefinition source = definition.getSource();
-        PhysicalConnectionTargetDefinition target = definition.getTarget();
+    public void connect(PhysicalChannelConnection physicalConnection) {
+        PhysicalConnectionSource source = physicalConnection.getSource();
+        PhysicalConnectionTarget target = physicalConnection.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
             throw new Fabric3Exception("Attacher not found for type: " + source.getClass().getName());
@@ -84,16 +84,16 @@ public class ChannelConnectorImpl implements ChannelConnector {
             throw new Fabric3Exception("Attacher not found for type: " + target.getClass().getName());
         }
 
-        ChannelConnection connection = createConnection(definition);
+        ChannelConnection connection = createConnection(physicalConnection);
 
         sourceAttacher.attach(source, target, connection);
         targetAttacher.attach(source, target, connection);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void disconnect(PhysicalChannelConnectionDefinition definition) {
-        PhysicalConnectionSourceDefinition source = definition.getSource();
-        PhysicalConnectionTargetDefinition target = definition.getTarget();
+    public void disconnect(PhysicalChannelConnection physicalConnection) {
+        PhysicalConnectionSource source = physicalConnection.getSource();
+        PhysicalConnectionTarget target = physicalConnection.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
             throw new Fabric3Exception("Attacher not found for type: " + source.getClass().getName());
@@ -109,19 +109,19 @@ public class ChannelConnectorImpl implements ChannelConnector {
     /**
      * Creates the connection.
      *
-     * @param definition the connection definition
+     * @param physicalConnection the connection
      * @return the connection
      * @ if there is an error creating the connection
      */
-    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
-        PhysicalConnectionSourceDefinition source = definition.getSource();
+    private ChannelConnection createConnection(PhysicalChannelConnection physicalConnection) {
+        PhysicalConnectionSource source = physicalConnection.getSource();
         if (source.isDirectConnection()) {
             // producer or binding source
             int sequence = source.getSequence();
-            URI channelUri = definition.getChannelUri();
+            URI channelUri = physicalConnection.getChannelUri();
 
             Supplier<?> supplier;
-            if (definition.isBound()) {
+            if (physicalConnection.isBound()) {
                 Class<?> type = source.getServiceInterface();
                 DirectConnectionFactory<?> factory = connectionFactories.get(type);
                 if (factory == null) {
@@ -139,22 +139,22 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
             return new ChannelConnectionImpl(supplier, sequence);
         } else {
-            ClassLoader loader = definition.getTarget().getClassLoader();
-            PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
-            EventStream stream = new EventStreamImpl(streamDefinition);
-            addTypeTransformer(definition, stream, loader);
-            addFilters(streamDefinition, stream);
+            ClassLoader loader = physicalConnection.getTarget().getClassLoader();
+            PhysicalEventStream physicalStream = physicalConnection.getEventStream();
+            EventStream stream = new EventStreamImpl(physicalStream);
+            addTypeTransformer(physicalConnection, stream, loader);
+            addFilters(physicalStream, stream);
             int sequence = source.getSequence();
             return new ChannelConnectionImpl(stream, sequence);
         }
     }
 
-    private void addTypeTransformer(PhysicalChannelConnectionDefinition definition, EventStream stream, ClassLoader loader) {
+    private void addTypeTransformer(PhysicalChannelConnection connection, EventStream stream, ClassLoader loader) {
         if (transformerHandlerFactory == null) {
             return;  // bootstrap
         }
-        List<DataType> sourceTypes = definition.getSource().getDataTypes();
-        List<DataType> targetTypes = definition.getTarget().getDataTypes();
+        List<DataType> sourceTypes = connection.getSource().getDataTypes();
+        List<DataType> targetTypes = connection.getTarget().getDataTypes();
         if (sourceTypes.isEmpty() || targetTypes.isEmpty()) {
             return;
         }
@@ -175,15 +175,15 @@ public class ChannelConnectorImpl implements ChannelConnector {
     /**
      * Adds event filters if they are defined for the stream.
      *
-     * @param streamDefinition the stream definition
-     * @param stream           the stream being created
+     * @param physicalStream the physical stream
+     * @param stream         the stream being created
      * @ if there is an error adding a filter
      */
     @SuppressWarnings({"unchecked"})
-    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) {
-        for (PhysicalEventFilterDefinition definition : streamDefinition.getFilters()) {
-            EventFilterBuilder builder = filterBuilders.get(definition.getClass());
-            EventFilter filter = builder.build(definition);
+    private void addFilters(PhysicalEventStream physicalStream, EventStream stream) {
+        for (PhysicalEventFilter physicalFilter : physicalStream.getFilters()) {
+            EventFilterBuilder builder = filterBuilders.get(physicalFilter.getClass());
+            EventFilter filter = builder.build(physicalFilter);
             FilterHandler handler = new FilterHandler(filter);
             stream.addHandler(handler);
         }

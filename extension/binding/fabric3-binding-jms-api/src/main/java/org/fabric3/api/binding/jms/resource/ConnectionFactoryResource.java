@@ -22,8 +22,6 @@ import org.fabric3.api.model.type.component.Resource;
  *
  */
 public class ConnectionFactoryResource extends Resource {
-    private static final long serialVersionUID = -329206086748364401L;
-
     private ConnectionFactoryConfiguration configuration;
 
     public ConnectionFactoryResource(ConnectionFactoryConfiguration configuration) {

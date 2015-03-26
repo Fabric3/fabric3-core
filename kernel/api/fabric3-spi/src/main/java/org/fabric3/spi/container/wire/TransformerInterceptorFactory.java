@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 
 
 /**
@@ -44,7 +44,7 @@ public interface TransformerInterceptorFactory {
      * @throws Fabric3Exception if there is an error creating the interceptor such a transformer not being available for any of the
      *                                      source-target type combinations
      */
-    Interceptor createInterceptor(PhysicalOperationDefinition operation,
+    Interceptor createInterceptor(PhysicalOperation operation,
                                   List<DataType> sources,
                                   List<DataType> targets,
                                   ClassLoader targetLoader,

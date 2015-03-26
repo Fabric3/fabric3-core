@@ -96,9 +96,9 @@ import org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory;
 import org.fabric3.implementation.reflection.jdk.JDKServiceInvokerFactory;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
-import org.fabric3.implementation.system.provision.SystemComponentDefinition;
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
+import org.fabric3.implementation.system.provision.PhysicalSystemComponent;
+import org.fabric3.implementation.system.provision.SystemWireSource;
+import org.fabric3.implementation.system.provision.SystemWireTarget;
 import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
@@ -106,12 +106,12 @@ import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
 import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
-import org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition;
-import org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition;
+import org.fabric3.implementation.system.singleton.SingletonWireSource;
+import org.fabric3.implementation.system.singleton.SingletonWireTarget;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
 import org.fabric3.monitor.model.MonitorResourceReference;
-import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
+import org.fabric3.monitor.provision.MonitorWireTarget;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.Connector;
@@ -259,7 +259,7 @@ public class BootstrapAssemblyFactory {
                                                                     helper,
                                                                     info);
 
-        builders.put(SystemComponentDefinition.class, builder);
+        builders.put(PhysicalSystemComponent.class, builder);
         BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);
         executor.setBuilders(builders);
         return executor;
@@ -286,13 +286,13 @@ public class BootstrapAssemblyFactory {
                                              MonitorProxyService monitorService) {
         Map<Class<?>, SourceWireAttacher<?>> sourceAttachers = new HashMap<>();
         SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry);
-        sourceAttachers.put(SystemWireSourceDefinition.class, wireAttacher);
-        sourceAttachers.put(SingletonWireSourceDefinition.class, new SingletonSourceWireAttacher(componentManager));
+        sourceAttachers.put(SystemWireSource.class, wireAttacher);
+        sourceAttachers.put(SingletonWireSource.class, new SingletonSourceWireAttacher(componentManager));
 
         Map<Class<?>, TargetWireAttacher<?>> targetAttachers = new HashMap<>();
-        targetAttachers.put(SingletonWireTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
-        targetAttachers.put(SystemWireTargetDefinition.class, new SystemTargetWireAttacher(componentManager));
-        targetAttachers.put(MonitorWireTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager));
+        targetAttachers.put(SingletonWireTarget.class, new SingletonTargetWireAttacher(componentManager));
+        targetAttachers.put(SystemWireTarget.class, new SystemTargetWireAttacher(componentManager));
+        targetAttachers.put(MonitorWireTarget.class, new MonitorWireAttacher(monitorService, componentManager));
 
         return new ConnectorImpl(sourceAttachers, targetAttachers);
     }

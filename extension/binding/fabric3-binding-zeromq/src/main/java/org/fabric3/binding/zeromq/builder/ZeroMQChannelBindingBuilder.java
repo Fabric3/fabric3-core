@@ -17,21 +17,21 @@
 package org.fabric3.binding.zeromq.builder;
 
 import org.fabric3.api.annotation.wire.Key;
-import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQChannelBinding;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
 
 /**
  * A {@link ChannelBindingBuilder} that does nothing. Used to trigger creation of a channel that the ZeroMQ binding will connect to.
  */
-@Key("org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition")
-public class ZeroMQChannelBindingBuilder implements ChannelBindingBuilder<ZeroMQChannelBindingDefinition>{
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQChannelBinding")
+public class ZeroMQChannelBindingBuilder implements ChannelBindingBuilder<ZeroMQChannelBinding> {
 
-    public void build(ZeroMQChannelBindingDefinition definition, Channel channel) {
+    public void build(ZeroMQChannelBinding binding, Channel channel) {
         // no-op
     }
 
-    public void dispose(ZeroMQChannelBindingDefinition definition, Channel channel) {
+    public void dispose(ZeroMQChannelBinding binding, Channel channel) {
         //no-op
     }
 }

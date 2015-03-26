@@ -19,21 +19,21 @@ package org.fabric3.node.nonmanaged;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-public class NonManagedConnectionSourceAttacher implements SourceConnectionAttacher<NonManagedPhysicalConnectionSourceDefinition> {
+public class NonManagedConnectionSourceAttacher implements SourceConnectionAttacher<NonManagedConnectionSource> {
     private ChannelProxyService proxyService;
 
     public NonManagedConnectionSourceAttacher(@Reference ChannelProxyService proxyService) {
         this.proxyService = proxyService;
     }
 
-    public void attach(NonManagedPhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(NonManagedConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) {
         ClassLoader loader = target.getClassLoader();
         Class<?> interfaze = ClassLoading.loadClass(loader, source.getInterface());
         Object proxy = proxyService.createSupplier(interfaze, connection).get();

@@ -20,11 +20,11 @@ package org.fabric3.implementation.java.generator;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSource;
+import org.fabric3.implementation.java.provision.JavaConnectionTarget;
+import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
+import org.fabric3.implementation.java.provision.JavaWireSource;
+import org.fabric3.implementation.java.provision.JavaWireTarget;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -41,67 +41,66 @@ public interface JavaGenerationHelper {
     /**
      * Populates the JavaComponentDefinition with generation information
      *
-     * @param definition the JavaComponentDefinition to populate
-     * @param component  the component being generated
+     * @param physicalComponent the JavaComponentDefinition to populate
+     * @param component         the component being generated
      * @throws Fabric3Exception if there is an error generating the JavaComponentDefinition
      */
-    void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) throws Fabric3Exception;
+    void generate(PhysicalJavaComponent physicalComponent, LogicalComponent<? extends JavaImplementation> component) throws Fabric3Exception;
 
     /**
-     * Populates the JavaWireSourceDefinition with reference wiring information.
+     * Populates the source with reference wiring information.
      *
-     * @param definition the JavaWireSourceDefinition to populate
-     * @param reference  the reference the wire is being generated for
-     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
+     * @param source    the source to populate
+     * @param reference the reference the wire is being generated for
+     * @throws Fabric3Exception if there is an error generating the source
      */
-    void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) throws Fabric3Exception;
+    void generateWireSource(JavaWireSource source, LogicalReference reference) throws Fabric3Exception;
 
     /**
-     * Populates the JavaWireSourceDefinition with callback wiring information.
+     * Populates the source with callback wiring information.
      *
-     * @param definition      the JavaWireSourceDefinition to populate
-     * @param component       the component to be injected with the callback, i.e. the component providing the forward service
-     * @param serviceContract the callback service contract
-     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
+     * @param source    the source to populate
+     * @param component the component to be injected with the callback, i.e. the component providing the forward service
+     * @param contract  the callback service contract
+     * @throws Fabric3Exception if there is an error generating the source
      */
-    void generateCallbackWireSource(JavaWireSourceDefinition definition,
-                                    LogicalComponent<? extends JavaImplementation> component,
-                                    JavaServiceContract serviceContract) throws Fabric3Exception;
+    void generateCallbackWireSource(JavaWireSource source, LogicalComponent<? extends JavaImplementation> component, JavaServiceContract contract)
+            throws Fabric3Exception;
 
     /**
      * Populates the JavaWireTargetDefinition with wiring information.
      *
-     * @param definition the JavaWireTargetDefinition to populate
-     * @param service    the target service for the wire
-     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
+     * @param target  the JavaWireTargetDefinition to populate
+     * @param service the target service for the wire
+     * @throws Fabric3Exception if there is an error generating the source
      */
-    void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) throws Fabric3Exception;
+    void generateWireTarget(JavaWireTarget target, LogicalService service) throws Fabric3Exception;
 
     /**
      * Populates the JavaConnectionSourceDefinition with information for connecting it to a component producer.
      *
-     * @param definition the JavaConnectionSourceDefinition to populate
-     * @param producer   the producer
+     * @param source   the JavaConnectionSourceDefinition to populate
+     * @param producer the producer
      * @throws Fabric3Exception if there is an error generating the JavaConnectionSourceDefinition
      */
-    void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws Fabric3Exception;
+    void generateConnectionSource(JavaConnectionSource source, LogicalProducer producer) throws Fabric3Exception;
 
     /**
      * Populates the JavaConnectionTargetDefinition with information for connecting it to a component consumer .
      *
-     * @param definition the JavaConnectionTargetDefinition to populate
-     * @param consumer   the consumer
+     * @param target   the JavaConnectionTargetDefinition to populate
+     * @param consumer the consumer
      * @throws Fabric3Exception if there is an error generating the JavaConnectionSourceDefinition
      */
-    void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws Fabric3Exception;
+    void generateConnectionTarget(JavaConnectionTarget target, LogicalConsumer consumer) throws Fabric3Exception;
 
     /**
-     * Populates the JavaWireSourceDefinition with resource wiring information.
+     * Populates the source with resource wiring information.
      *
-     * @param definition        the JavaWireSourceDefinition to populate
+     * @param source            the source to populate
      * @param resourceReference the resource to be wired
-     * @throws Fabric3Exception if there is an error generating the JavaWireSourceDefinition
+     * @throws Fabric3Exception if there is an error generating the source
      */
-    void generateResourceWireSource(JavaWireSourceDefinition definition, LogicalResourceReference<?> resourceReference) throws Fabric3Exception;
+    void generateResourceWireSource(JavaWireSource source, LogicalResourceReference<?> resourceReference) throws Fabric3Exception;
 
 }

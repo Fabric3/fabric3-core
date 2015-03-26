@@ -30,47 +30,44 @@ import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  *
  */
 public class BuildComponentCommandExecutorTestCase extends TestCase {
 
-
     @SuppressWarnings({"unchecked"})
     public void testRegisterAndNotifyListener() throws Exception {
-        PhysicalComponentDefinition definition = new MockDefinition();
+        PhysicalComponent physicalComponent = new Mock();
 
         Component component = EasyMock.createMock(Component.class);
         component.setContributionUri(null);
 
         ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(PhysicalComponentDefinition.class))).andReturn(component);
+        EasyMock.expect(builder.build(EasyMock.isA(PhysicalComponent.class))).andReturn(component);
 
         ComponentManager componentManager = EasyMock.createMock(ComponentManager.class);
         componentManager.register(component);
 
         ComponentBuilderListener listener = EasyMock.createMock(ComponentBuilderListener.class);
-        listener.onBuild(EasyMock.isA(Component.class), EasyMock.isA(PhysicalComponentDefinition.class));
+        listener.onBuild(EasyMock.isA(Component.class), EasyMock.isA(PhysicalComponent.class));
         EasyMock.replay(componentManager, builder, component, listener);
 
         BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);
-        Map<Class<?>, ComponentBuilder> map = Collections.<Class<?>, ComponentBuilder>singletonMap(MockDefinition.class, builder);
+        Map<Class<?>, ComponentBuilder> map = Collections.<Class<?>, ComponentBuilder>singletonMap(Mock.class, builder);
         executor.setBuilders(map);
 
         executor.setListeners(Collections.singletonList(listener));
 
-        BuildComponentCommand command = new BuildComponentCommand(definition);
+        BuildComponentCommand command = new BuildComponentCommand(physicalComponent);
         executor.execute(command);
 
         EasyMock.verify(componentManager, builder, component, listener);
     }
 
-    private class MockDefinition extends PhysicalComponentDefinition {
-        private static final long serialVersionUID = -809769047230911419L;
-
-        private MockDefinition() {
+    private class Mock extends PhysicalComponent {
+        private Mock() {
             setComponentUri(URI.create("test"));
         }
     }

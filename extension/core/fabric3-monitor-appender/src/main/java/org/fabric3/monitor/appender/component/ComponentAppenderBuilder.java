@@ -30,17 +30,17 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Instantiates a component based appender from a {@link PhysicalComponentAppenderDefinition}.
+ * Instantiates a component based appender from a {@link PhysicalComponentAppender}.
  */
 @EagerInit
-public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalComponentAppenderDefinition> {
+public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalComponentAppender> {
     private ComponentManager componentManager;
 
     public ComponentAppenderBuilder(@Reference ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
-    public Appender build(PhysicalComponentAppenderDefinition definition) throws Fabric3Exception {
+    public Appender build(PhysicalComponentAppender definition) throws Fabric3Exception {
         URI uri = URI.create(Names.RUNTIME_NAME + "/" + definition.getComponentName());
 
         Component component = componentManager.getComponent(uri);

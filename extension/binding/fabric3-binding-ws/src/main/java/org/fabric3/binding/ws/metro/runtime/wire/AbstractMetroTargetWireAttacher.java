@@ -21,32 +21,32 @@ import javax.xml.ws.handler.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireTarget;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  * Base {@link TargetWireAttacher} functionality for web services.
  */
-public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalWireTargetDefinition> implements TargetWireAttacher<T> {
+public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalWireTarget> implements TargetWireAttacher<T> {
     private BindingHandlerRegistry handlerRegistry;
 
     public AbstractMetroTargetWireAttacher(BindingHandlerRegistry handlerRegistry) {
         this.handlerRegistry = handlerRegistry;
     }
 
-    protected List<Handler> createHandlers(MetroWireTargetDefinition target) {
+    protected List<Handler> createHandlers(MetroWireTarget target) {
         if (target.getHandlers().isEmpty() && !target.isBidirectional() && !target.isCallback()) {
             return null;
         }
         List<Handler> handlers = new ArrayList<>();
 
-        for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
-            BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, handlerDefinition);
+        for (PhysicalBindingHandler physicalHandler : target.getHandlers()) {
+            BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, physicalHandler);
             SOAPMessageHandlerAdapter adaptor = new SOAPMessageHandlerAdapter(handler);
             handlers.add(adaptor);
         }

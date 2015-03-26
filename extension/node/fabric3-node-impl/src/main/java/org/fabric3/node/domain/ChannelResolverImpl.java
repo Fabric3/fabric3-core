@@ -29,7 +29,7 @@ import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
-import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
+import org.fabric3.node.nonmanaged.NonManagedConnectionSource;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -40,9 +40,9 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
+import org.fabric3.spi.model.physical.PhysicalChannel;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
@@ -81,21 +81,21 @@ public class ChannelResolverImpl implements ChannelResolver {
     public <T> T getProducer(Class<T> interfaze, String name, String topic) {
         LogicalChannel logicalChannel = getChannel(name);
         LogicalProducer producer = createProducer(interfaze, logicalChannel.getUri());
-        PhysicalChannelDefinition channelDefinition = channelGenerator.generateChannelDefinition(logicalChannel, SYNTHETIC_DEPLOYABLE, PRODUCER);
+        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, PRODUCER);
 
-        channelBuilderRegistry.build(channelDefinition);
+        channelBuilderRegistry.build(physicalChannel);
 
         Map<LogicalChannel, DeliveryType> channels = Collections.singletonMap(logicalChannel, DeliveryType.DEFAULT);
-        List<PhysicalChannelConnectionDefinition> connections = connectionGenerator.generateProducer(producer, channels);
+        List<PhysicalChannelConnection> connections = connectionGenerator.generateProducer(producer, channels);
         connections.forEach(c -> c.setTopic(topic));
         connections.forEach(channelConnector::connect);
-        for (PhysicalChannelConnectionDefinition physicalDefinition : connections) {
-            PhysicalConnectionSourceDefinition source = physicalDefinition.getSource();
-            if (!(source instanceof NonManagedPhysicalConnectionSourceDefinition)) {
+        for (PhysicalChannelConnection connection : connections) {
+            PhysicalConnectionSource source = connection.getSource();
+            if (!(source instanceof NonManagedConnectionSource)) {
                 continue;
             }
-            NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
-            return interfaze.cast(sourceDefinition.getProxy());
+            NonManagedConnectionSource nonManagedSource = (NonManagedConnectionSource) source;
+            return interfaze.cast(nonManagedSource.getProxy());
         }
         throw new Fabric3Exception("Source generator not found");
     }

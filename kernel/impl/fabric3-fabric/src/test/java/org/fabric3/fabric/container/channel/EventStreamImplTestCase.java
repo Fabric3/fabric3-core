@@ -19,7 +19,7 @@ package org.fabric3.fabric.container.channel;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventStream;
 
 /**
  *
@@ -33,9 +33,9 @@ public class EventStreamImplTestCase extends TestCase {
         handler1.setNext(handler2);
         EasyMock.replay(handler1, handler2);
 
-        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("test");
+        PhysicalEventStream physicalStream = new PhysicalEventStream("test");
 
-        EventStreamImpl stream = new EventStreamImpl(definition);
+        EventStreamImpl stream = new EventStreamImpl(physicalStream);
         stream.addHandler(handler1);
         assertEquals(handler1, stream.getTailHandler());
 
@@ -63,9 +63,9 @@ public class EventStreamImplTestCase extends TestCase {
 
         EasyMock.replay(handler1, handler2, handler3);
 
-        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("test");
+        PhysicalEventStream physicalStream = new PhysicalEventStream("test");
 
-        EventStreamImpl stream = new EventStreamImpl(definition);
+        EventStreamImpl stream = new EventStreamImpl(physicalStream);
         stream.addHandler(handler1);
         stream.addHandler(2, handler3);
         stream.addHandler(2, handler2);

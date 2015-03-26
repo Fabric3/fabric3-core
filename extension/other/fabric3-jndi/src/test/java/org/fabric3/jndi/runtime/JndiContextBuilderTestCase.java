@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
+import org.fabric3.jndi.provision.PhysicalJndiContext;
 import org.fabric3.jndi.spi.JndiContextManager;
 
 /**
@@ -31,13 +31,13 @@ import org.fabric3.jndi.spi.JndiContextManager;
 public class JndiContextBuilderTestCase extends TestCase {
     private JndiContextBuilder builder;
     private JndiContextManager manager;
-    private PhysicalJndiContextDefinition definition;
+    private PhysicalJndiContext physicalContext;
 
     public void testBuild() throws Exception {
         manager.register(EasyMock.eq("context1"), EasyMock.isA(Properties.class));
         EasyMock.replay(manager);
 
-        builder.build(definition);
+        builder.build(physicalContext);
 
         EasyMock.verify(manager);
     }
@@ -46,7 +46,7 @@ public class JndiContextBuilderTestCase extends TestCase {
         manager.unregister("context1");
         EasyMock.replay(manager);
 
-        builder.remove(definition);
+        builder.remove(physicalContext);
 
         EasyMock.verify(manager);
     }
@@ -59,7 +59,7 @@ public class JndiContextBuilderTestCase extends TestCase {
 
         Map<String, Properties> contexts = new HashMap<>();
         contexts.put("context1", new Properties());
-        definition = new PhysicalJndiContextDefinition(contexts);
+        physicalContext = new PhysicalJndiContext(contexts);
     }
 
 }

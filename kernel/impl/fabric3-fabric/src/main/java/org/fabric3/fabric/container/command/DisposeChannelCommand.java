@@ -20,21 +20,21 @@
 package org.fabric3.fabric.container.command;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  * Removes a channel on a runtime.
  */
 public class DisposeChannelCommand implements Command {
     private static final long serialVersionUID = -8414719811868296492L;
-    private PhysicalChannelDefinition definition;
+    private PhysicalChannel channel;
 
-    public DisposeChannelCommand(PhysicalChannelDefinition definition) {
-        this.definition = definition;
+    public DisposeChannelCommand(PhysicalChannel channel) {
+        this.channel = channel;
     }
 
-    public PhysicalChannelDefinition getDefinition() {
-        return definition;
+    public PhysicalChannel getChannel() {
+        return channel;
     }
 
     public boolean equals(Object o) {
@@ -47,11 +47,11 @@ public class DisposeChannelCommand implements Command {
 
         DisposeChannelCommand that = (DisposeChannelCommand) o;
 
-        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+        return !(channel != null ? !channel.equals(that.channel) : that.channel != null);
     }
 
     public int hashCode() {
-        return (definition != null ? definition.hashCode() : 0);
+        return (channel != null ? channel.hashCode() : 0);
     }
 
 }

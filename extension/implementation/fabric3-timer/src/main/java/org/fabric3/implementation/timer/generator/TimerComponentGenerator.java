@@ -24,9 +24,9 @@ import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSource;
+import org.fabric3.implementation.java.provision.JavaWireSource;
+import org.fabric3.implementation.timer.provision.TimerPhysicalComponent;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -34,11 +34,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -56,49 +56,49 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         this.generationHelper = generationHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<TimerImplementation> component) throws Fabric3Exception {
-        TimerComponentDefinition definition = new TimerComponentDefinition();
-        generationHelper.generate(definition, component);
+    public PhysicalComponent generate(LogicalComponent<TimerImplementation> component) throws Fabric3Exception {
+        TimerPhysicalComponent physicalComponent = new TimerPhysicalComponent();
+        generationHelper.generate(physicalComponent, component);
         TimerImplementation implementation = component.getDefinition().getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
-        definition.setTransactional(componentType.getPolicies().contains(MANAGED_TRANSACTION));
+        physicalComponent.setTransactional(componentType.getPolicies().contains(MANAGED_TRANSACTION));
         TimerData data = implementation.getTimerData();
-        definition.setTriggerData(data);
-        return definition;
+        physicalComponent.setTriggerData(data);
+        return physicalComponent;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
-        JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        generationHelper.generateWireSource(definition, reference);
-        return definition;
+    public PhysicalWireSource generateSource(LogicalReference reference) throws Fabric3Exception {
+        JavaWireSource source = new JavaWireSource();
+        generationHelper.generateWireSource(source, reference);
+        return source;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
-        JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
+    public PhysicalWireSource generateCallbackSource(LogicalService service) throws Fabric3Exception {
+        JavaWireSource source = new JavaWireSource();
         JavaServiceContract callbackContract = (JavaServiceContract) service.getDefinition().getServiceContract().getCallbackContract();
-        LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getParent();
-        generationHelper.generateCallbackWireSource(definition, source, callbackContract);
-        return definition;
+        LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getParent();
+        generationHelper.generateCallbackWireSource(source, component, callbackContract);
+        return source;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
-        JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
-        generationHelper.generateConnectionSource(definition, producer);
-        return definition;
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
+        JavaConnectionSource source = new JavaConnectionSource();
+        generationHelper.generateConnectionSource(source, producer);
+        return source;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
-        JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        generationHelper.generateResourceWireSource(definition, resourceReference);
-        return definition;
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+        JavaWireSource source = new JavaWireSource();
+        generationHelper.generateResourceWireSource(source, resourceReference);
+        return source;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         throw new UnsupportedOperationException("Timer components cannot be configured as event consumers");
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException("Cannot wire to timer components");
     }
 }

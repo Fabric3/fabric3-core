@@ -26,32 +26,32 @@ import java.util.function.Supplier;
 
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
+import org.fabric3.implementation.mock.provision.MockWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTargetDefinition> {
+public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget> {
     private final IMocksControl control;
 
     public MockTargetWireAttacher(@Reference IMocksControl control) {
         this.control = control;
     }
 
-    public void attach(PhysicalWireSourceDefinition sourceDefinition, MockWireTargetDefinition targetDefinition, Wire wire) {
+    public void attach(PhysicalWireSource source, MockWireTarget target, Wire wire) {
 
-        Class<?> mockedInterface = loadInterface(targetDefinition);
+        Class<?> mockedInterface = loadInterface(target);
         Object mock = createMock(mockedInterface);
 
         for (InvocationChain chain : wire.getInvocationChains()) {
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
+            PhysicalOperation operation = chain.getPhysicalOperation();
 
             //Each invocation chain has a single physical operation associated with it. This physical operation needs a
             //single interceptor to re-direct the invocation to the mock 
@@ -62,11 +62,11 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     }
 
-    public Supplier<?> createSupplier(MockWireTargetDefinition target) {
+    public Supplier<?> createSupplier(MockWireTarget target) {
         return () -> createMock(loadInterface(target));
     }
 
-    private Method getOperationMethod(Class<?> mockedInterface, PhysicalOperationDefinition op) {
+    private Method getOperationMethod(Class<?> mockedInterface, PhysicalOperation op) {
         List<Class<?>> parameters = op.getTargetParameterTypes();
         for (Method method : mockedInterface.getMethods()) {
             if (method.getName().equals(op.getName())) {
@@ -92,7 +92,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         }
     }
 
-    private Class<?> loadInterface(MockWireTargetDefinition target) {
+    private Class<?> loadInterface(MockWireTarget target) {
         String interfaceClass = target.getMockedInterface();
         ClassLoader classLoader = target.getClassLoader();
         return ClassLoading.loadClass(classLoader, interfaceClass);

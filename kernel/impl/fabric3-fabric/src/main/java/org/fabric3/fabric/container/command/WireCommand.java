@@ -20,7 +20,7 @@
 package org.fabric3.fabric.container.command;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 
 /**
  * Base class for wire commands.
@@ -28,29 +28,33 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 public abstract class WireCommand implements Command {
     private static final long serialVersionUID = -1691568679691192110L;
 
-    protected PhysicalWireDefinition definition;
+    protected PhysicalWire physicalWire;
 
-    public PhysicalWireDefinition getPhysicalWireDefinition() {
-        return definition;
+    public PhysicalWire getPhysicalWire() {
+        return physicalWire;
     }
 
-    public void setPhysicalWireDefinition(PhysicalWireDefinition physicalWireDefinition) {
-        definition = physicalWireDefinition;
+    public void setPhysicalWireDefinition(PhysicalWire physicalWire) {
+        this.physicalWire = physicalWire;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         WireCommand that = (WireCommand) o;
 
-        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+        return !(physicalWire != null ? !physicalWire.equals(that.physicalWire) : that.physicalWire != null);
 
     }
 
     @Override
     public int hashCode() {
-        return definition != null ? definition.hashCode() : 0;
+        return physicalWire != null ? physicalWire.hashCode() : 0;
     }
 }

@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -32,13 +32,13 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class TxInterceptorGenerator implements InterceptorGenerator {
-    private static final Optional<PhysicalInterceptorDefinition> PHYSICAL_INTERCEPTOR_DEFINITION = Optional.of(new TxInterceptorDefinition(TxAction.BEGIN));
+    private static final Optional<PhysicalInterceptor> PHYSICAL_INTERCEPTOR = Optional.of(new PhysicalTxInterceptor(TxAction.BEGIN));
 
-    public Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) {
+    public Optional<PhysicalInterceptor> generate(LogicalOperation source, LogicalOperation target) {
         ComponentType componentType = target.getParent().getParent().getDefinition().getImplementation().getComponentType();
         List<String> policies = componentType.getPolicies();
         if (!policies.isEmpty() && containsPolicy(policies)) {
-            return PHYSICAL_INTERCEPTOR_DEFINITION;
+            return PHYSICAL_INTERCEPTOR;
         }
         return Optional.empty();
     }

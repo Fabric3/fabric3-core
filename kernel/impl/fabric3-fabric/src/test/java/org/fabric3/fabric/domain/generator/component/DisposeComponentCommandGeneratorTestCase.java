@@ -32,7 +32,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  *
@@ -44,7 +44,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testDispose() throws Exception {
         ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
-        EasyMock.expect(componentGenerator.generate(EasyMock.isA(LogicalComponent.class))).andReturn(new MockDefinition());
+        EasyMock.expect(componentGenerator.generate(EasyMock.isA(LogicalComponent.class))).andReturn(new Mock());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(registry.getComponentGenerator(EasyMock.eq(MockImplementation.class))).andReturn(componentGenerator);
         EasyMock.replay(registry, componentGenerator);
@@ -56,7 +56,7 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
         component.setState(LogicalState.MARKED);
 
         DisposeComponentCommand command = generator.generate(component).get();
-        assertNotNull(command.getDefinition());
+        assertNotNull(command.getComponent());
         EasyMock.verify(registry, componentGenerator);
     }
 
@@ -85,7 +85,6 @@ public class DisposeComponentCommandGeneratorTestCase extends TestCase {
         }
     }
 
-    private class MockDefinition extends PhysicalComponentDefinition {
-        private static final long serialVersionUID = 1097054400657294542L;
+    private class Mock extends PhysicalComponent {
     }
 }

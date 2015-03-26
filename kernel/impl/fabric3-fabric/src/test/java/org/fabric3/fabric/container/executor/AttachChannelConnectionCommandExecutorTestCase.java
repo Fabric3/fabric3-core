@@ -26,7 +26,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  *
@@ -37,14 +37,14 @@ public class AttachChannelConnectionCommandExecutorTestCase extends TestCase {
         CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
         ChannelConnector connector = EasyMock.createMock(ChannelConnector.class);
         executorRegistry.register(EasyMock.eq(AttachChannelConnectionCommand.class), EasyMock.isA(AttachChannelConnectionCommandExecutor.class));
-        connector.connect(EasyMock.isA(PhysicalChannelConnectionDefinition.class));
+        connector.connect(EasyMock.isA(PhysicalChannelConnection.class));
         EasyMock.replay(executorRegistry, connector);
 
         AttachChannelConnectionCommandExecutor executor = new AttachChannelConnectionCommandExecutor(executorRegistry, connector);
         executor.init();
         URI uri = URI.create("testChannel");
-        PhysicalChannelConnectionDefinition definition = new PhysicalChannelConnectionDefinition(uri, null, null, null, false);
-        AttachChannelConnectionCommand command = new AttachChannelConnectionCommand(definition);
+        PhysicalChannelConnection connection = new PhysicalChannelConnection(uri, null, null, null, false);
+        AttachChannelConnectionCommand command = new AttachChannelConnectionCommand(connection);
         executor.execute(command);
         EasyMock.verify(executorRegistry, connector);
 

@@ -26,7 +26,7 @@ import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 
 /**
  *
@@ -74,12 +74,12 @@ public class GenerationHelper {
         return configuration;
     }
 
-    public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, WsBinding binding) {
-        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<>();
+    public static List<PhysicalBindingHandler> generateBindingHandlers(URI domainUri, WsBinding binding) {
+        List<PhysicalBindingHandler> handlers = new ArrayList<>();
         for (BindingHandler handlerDefinition : binding.getHandlers()) {
             // URIs specified in handler elements in a composite are relative and must be made absolute
             URI resolvedUri = URI.create(domainUri.toString() + "/" + handlerDefinition.getTarget());
-            handlers.add(new PhysicalBindingHandlerDefinition(resolvedUri));
+            handlers.add(new PhysicalBindingHandler(resolvedUri));
         }
         return handlers;
     }

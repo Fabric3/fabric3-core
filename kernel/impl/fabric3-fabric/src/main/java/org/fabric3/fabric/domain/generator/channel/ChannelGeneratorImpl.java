@@ -30,8 +30,8 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelBinding;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -48,7 +48,7 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) {
+    public PhysicalChannel generate(LogicalChannel channel, QName deployable, ChannelDirection direction) {
 
         LogicalBinding<?> binding = channel.getBinding();
         String type = channel.getDefinition().getType();
@@ -56,18 +56,18 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
         if (generator == null) {
             throw new Fabric3Exception("Channel generator not found: " + type);
         }
-        PhysicalChannelDefinition definition = generator.generate(channel, deployable);
+        PhysicalChannel physicalChannel = generator.generate(channel, deployable);
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
             ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-            DeliveryType deliveryType = definition.getDeliveryType();
-            PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding, deliveryType);
-            definition.setBindingDefinition(bindingDefinition);
-            definition.setChannelSide(ChannelDirection.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
+            DeliveryType deliveryType = physicalChannel.getDeliveryType();
+            PhysicalChannelBinding physicalBinding = bindingGenerator.generateChannelBinding(binding, deliveryType);
+            physicalChannel.setBinding(physicalBinding);
+            physicalChannel.setChannelSide(ChannelDirection.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
         } else {
-            definition.setChannelSide(ChannelSide.COLLOCATED);
+            physicalChannel.setChannelSide(ChannelSide.COLLOCATED);
         }
-        return definition;
+        return physicalChannel;
     }
 
     @SuppressWarnings("unchecked")

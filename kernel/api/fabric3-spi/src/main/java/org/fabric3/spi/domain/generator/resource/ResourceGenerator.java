@@ -21,10 +21,10 @@ package org.fabric3.spi.domain.generator.resource;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
- * Generates {@link PhysicalResourceDefinition}s from a resource definition declared in a composite.
+ * Generates {@link PhysicalResource}s from a resource definition declared in a composite.
  */
 public interface ResourceGenerator<RD extends Resource> {
 
@@ -35,6 +35,6 @@ public interface ResourceGenerator<RD extends Resource> {
      * @return the physical resource definition.
      * @throws Fabric3Exception if there was a problem generating the wire
      */
-    PhysicalResourceDefinition generateResource(LogicalResource<RD> resource) throws Fabric3Exception;
+    PhysicalResource generateResource(LogicalResource<RD> resource) throws Fabric3Exception;
 
 }

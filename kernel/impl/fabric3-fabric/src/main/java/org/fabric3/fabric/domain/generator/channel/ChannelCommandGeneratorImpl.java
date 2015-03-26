@@ -23,7 +23,7 @@ import org.fabric3.fabric.container.command.DisposeChannelCommand;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -39,13 +39,13 @@ public class ChannelCommandGeneratorImpl implements ChannelCommandGenerator {
     }
 
     public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) {
-        PhysicalChannelDefinition definition = channelGenerator.generateChannelDefinition(channel, deployable, direction);
-        return new BuildChannelCommand(definition);
+        PhysicalChannel physicalChannel = channelGenerator.generate(channel, deployable, direction);
+        return new BuildChannelCommand(physicalChannel);
     }
 
     public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) {
-        PhysicalChannelDefinition definition = channelGenerator.generateChannelDefinition(channel, deployable, direction);
-        return new DisposeChannelCommand(definition);
+        PhysicalChannel physicalChannel = channelGenerator.generate(channel, deployable, direction);
+        return new DisposeChannelCommand(physicalChannel);
     }
 
 }

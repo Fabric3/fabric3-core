@@ -34,7 +34,7 @@ import org.fabric3.channel.disruptor.impl.RingBufferChannel;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -47,21 +47,21 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
         this.executorService = executorService;
     }
 
-    public Channel build(PhysicalChannelDefinition definition) throws Fabric3Exception {
-        URI uri = definition.getUri();
-        QName deployable = definition.getDeployable();
+    public Channel build(PhysicalChannel physicalChannel) throws Fabric3Exception {
+        URI uri = physicalChannel.getUri();
+        QName deployable = physicalChannel.getDeployable();
 
-        RingBufferData data = definition.getMetadata(RingBufferData.class);
+        RingBufferData data = physicalChannel.getMetadata(RingBufferData.class);
         int size = data.getRingSize();
 
         WaitStrategy strategy = createWaitStrategy(data);
 
-        ChannelSide channelSide = definition.getChannelSide();
+        ChannelSide channelSide = physicalChannel.getChannelSide();
 
         return new RingBufferChannel(uri, deployable, size, strategy, channelSide, executorService);
     }
 
-    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws Fabric3Exception {
+    public void dispose(PhysicalChannel physicalChannel, Channel channel) throws Fabric3Exception {
         // no-op
     }
 

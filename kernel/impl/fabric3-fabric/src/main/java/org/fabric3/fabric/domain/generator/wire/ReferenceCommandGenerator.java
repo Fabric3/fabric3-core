@@ -39,7 +39,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -118,25 +118,25 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
                                  boolean reinjection,
                                  boolean callback) {
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
-            PhysicalWireDefinition wireDefinition;
+            PhysicalWire physicalWire;
             if (callback) {
-                wireDefinition = wireGenerator.generateBoundReferenceCallback(logicalBinding);
+                physicalWire = wireGenerator.generateBoundReferenceCallback(logicalBinding);
             } else {
-                wireDefinition = wireGenerator.generateBoundReference(logicalBinding);
+                physicalWire = wireGenerator.generateBoundReference(logicalBinding);
             }
             DetachWireCommand wireCommand = new DetachWireCommand();
-            wireCommand.setPhysicalWireDefinition(wireDefinition);
+            wireCommand.setPhysicalWireDefinition(physicalWire);
             command.add(wireCommand);
 
         } else if (LogicalState.NEW == logicalBinding.getState() || reinjection) {
-            PhysicalWireDefinition wireDefinition;
+            PhysicalWire physicalWire;
             if (callback) {
-                wireDefinition = wireGenerator.generateBoundReferenceCallback(logicalBinding);
+                physicalWire = wireGenerator.generateBoundReferenceCallback(logicalBinding);
             } else {
-                wireDefinition = wireGenerator.generateBoundReference(logicalBinding);
+                physicalWire = wireGenerator.generateBoundReference(logicalBinding);
             }
             AttachWireCommand wireCommand = new AttachWireCommand();
-            wireCommand.setPhysicalWireDefinition(wireDefinition);
+            wireCommand.setPhysicalWireDefinition(physicalWire);
             command.add(wireCommand);
         }
 
@@ -157,45 +157,45 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
             boolean attach = true;
             if (targetComponent.getState() == LogicalState.MARKED || wire.getState() == LogicalState.MARKED) {
                 attach = false;
-                PhysicalWireDefinition pwd;
+                PhysicalWire physicalWire;
                 if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
-                    pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                    physicalWire = wireGenerator.generateBoundReference(wire.getSourceBinding());
                 } else {
-                    pwd = wireGenerator.generateWire(wire);
+                    physicalWire = wireGenerator.generateWire(wire);
                 }
                 DetachWireCommand detachCommand = new DetachWireCommand();
-                detachCommand.setPhysicalWireDefinition(pwd);
+                detachCommand.setPhysicalWireDefinition(physicalWire);
                 command.add(detachCommand);
             } else if ((reinjection && targetComponent.getState() == LogicalState.NEW) || wire.getState() == LogicalState.NEW
                        || targetComponent.getState() == LogicalState.NEW) {
-                PhysicalWireDefinition pwd;
+                PhysicalWire physicalWire;
                 if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
-                    pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                    physicalWire = wireGenerator.generateBoundReference(wire.getSourceBinding());
                 } else {
-                    pwd = wireGenerator.generateWire(wire);
+                    physicalWire = wireGenerator.generateWire(wire);
                 }
                 AttachWireCommand attachCommand = new AttachWireCommand();
-                attachCommand.setPhysicalWireDefinition(pwd);
+                attachCommand.setPhysicalWireDefinition(physicalWire);
                 command.add(attachCommand);
             }
             // generate physical callback wires if the forward service is bidirectional
             if (reference.getServiceContract().getCallbackContract() != null) {
-                PhysicalWireDefinition pwd;
+                PhysicalWire physicalWire;
                 if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
-                    pwd = wireGenerator.generateBoundReferenceCallback(reference.getCallbackBindings().get(0));
+                    physicalWire = wireGenerator.generateBoundReferenceCallback(reference.getCallbackBindings().get(0));
                 } else {
-                    pwd = wireGenerator.generateWireCallback(wire);
+                    physicalWire = wireGenerator.generateWireCallback(wire);
                 }
                 if (attach) {
                     AttachWireCommand attachCommand = new AttachWireCommand();
-                    attachCommand.setPhysicalWireDefinition(pwd);
+                    attachCommand.setPhysicalWireDefinition(physicalWire);
                     command.add(attachCommand);
                 } else {
                     DetachWireCommand detachCommand = new DetachWireCommand();
-                    detachCommand.setPhysicalWireDefinition(pwd);
+                    detachCommand.setPhysicalWireDefinition(physicalWire);
                     command.add(detachCommand);
                 }
             }

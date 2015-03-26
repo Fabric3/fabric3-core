@@ -33,36 +33,36 @@ import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWire;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  *
  */
 public class ConnectorImplTestCase extends TestCase {
     private ConnectorImpl connector;
-    private PhysicalWireDefinition definition;
-    private PhysicalOperationDefinition operation;
-    private PhysicalOperationDefinition callback;
+    private PhysicalWire physicalWire;
+    private PhysicalOperation operation;
+    private PhysicalOperation callback;
 
     @SuppressWarnings({"unchecked"})
     public void testConnect() throws Exception {
         SourceWireAttacher sourceAttacher = EasyMock.createMock(SourceWireAttacher.class);
         TargetWireAttacher targetAttacher = EasyMock.createMock(TargetWireAttacher.class);
 
-        Map sourceAttachers = Collections.singletonMap(MockWireSourceDefinition.class, sourceAttacher);
-        Map targetAttachers = Collections.singletonMap(MockWireTargetDefinition.class, targetAttacher);
-        sourceAttacher.attach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class), EasyMock.isA(Wire.class));
-        targetAttacher.attach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class), EasyMock.isA(Wire.class));
+        Map sourceAttachers = Collections.singletonMap(MockWireSource.class, sourceAttacher);
+        Map targetAttachers = Collections.singletonMap(MockWireTarget.class, targetAttacher);
+        sourceAttacher.attach(EasyMock.isA(PhysicalWireSource.class), EasyMock.isA(PhysicalWireTarget.class), EasyMock.isA(Wire.class));
+        targetAttacher.attach(EasyMock.isA(PhysicalWireSource.class), EasyMock.isA(PhysicalWireTarget.class), EasyMock.isA(Wire.class));
 
         EasyMock.replay(sourceAttacher, targetAttacher);
         connector.sourceAttachers = sourceAttachers;
         connector.targetAttachers = targetAttachers;
 
-        connector.connect(definition);
+        connector.connect(physicalWire);
         EasyMock.verify(sourceAttacher, targetAttacher);
     }
 
@@ -70,16 +70,16 @@ public class ConnectorImplTestCase extends TestCase {
     public void testDisconnect() throws Exception {
         SourceWireAttacher sourceAttacher = EasyMock.createMock(SourceWireAttacher.class);
         TargetWireAttacher targetAttacher = EasyMock.createMock(TargetWireAttacher.class);
-        Map sourceAttachers = Collections.singletonMap(MockWireSourceDefinition.class, sourceAttacher);
-        Map targetAttachers = Collections.singletonMap(MockWireTargetDefinition.class, targetAttacher);
-        sourceAttacher.detach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class));
-        targetAttacher.detach(EasyMock.isA(PhysicalWireSourceDefinition.class), EasyMock.isA(PhysicalWireTargetDefinition.class));
+        Map sourceAttachers = Collections.singletonMap(MockWireSource.class, sourceAttacher);
+        Map targetAttachers = Collections.singletonMap(MockWireTarget.class, targetAttacher);
+        sourceAttacher.detach(EasyMock.isA(PhysicalWireSource.class), EasyMock.isA(PhysicalWireTarget.class));
+        targetAttacher.detach(EasyMock.isA(PhysicalWireSource.class), EasyMock.isA(PhysicalWireTarget.class));
         EasyMock.replay(sourceAttacher, targetAttacher);
 
         connector.sourceAttachers = sourceAttachers;
         connector.targetAttachers = targetAttachers;
 
-        connector.disconnect(definition);
+        connector.disconnect(physicalWire);
         EasyMock.verify(sourceAttacher, targetAttacher);
     }
 
@@ -87,42 +87,42 @@ public class ConnectorImplTestCase extends TestCase {
     public void testOptimizedConnect() throws Exception {
         SourceWireAttacher sourceAttacher = EasyMock.createMock(SourceWireAttacher.class);
         TargetWireAttacher targetAttacher = EasyMock.createMock(TargetWireAttacher.class);
-        Map sourceAttachers = Collections.singletonMap(MockWireSourceDefinition.class, sourceAttacher);
-        Map targetAttachers = Collections.singletonMap(MockWireTargetDefinition.class, targetAttacher);
-        sourceAttacher.attachSupplier(EasyMock.isA(PhysicalWireSourceDefinition.class),
+        Map sourceAttachers = Collections.singletonMap(MockWireSource.class, sourceAttacher);
+        Map targetAttachers = Collections.singletonMap(MockWireTarget.class, targetAttacher);
+        sourceAttacher.attachSupplier(EasyMock.isA(PhysicalWireSource.class),
                                       EasyMock.isA(Supplier.class),
-                                      EasyMock.isA(PhysicalWireTargetDefinition.class));
-        targetAttacher.createSupplier(EasyMock.isA(PhysicalWireTargetDefinition.class));
+                                      EasyMock.isA(PhysicalWireTarget.class));
+        targetAttacher.createSupplier(EasyMock.isA(PhysicalWireTarget.class));
         EasyMock.expectLastCall().andReturn((Supplier) Object::new);
         EasyMock.replay(sourceAttacher, targetAttacher);
         connector.sourceAttachers = sourceAttachers;
         connector.targetAttachers = targetAttachers;
-        definition.setOptimizable(true);
+        physicalWire.setOptimizable(true);
 
-        connector.connect(definition);
+        connector.connect(physicalWire);
         EasyMock.verify(sourceAttacher, targetAttacher);
     }
 
     public void testCreateWire() throws Exception {
-        Wire wire = connector.createWire(definition);
+        Wire wire = connector.createWire(physicalWire);
         assertEquals(2, wire.getInvocationChains().size());
     }
 
     @SuppressWarnings({"unchecked"})
     public void testDispatchToBuilder() throws Exception {
         InterceptorBuilder builder = EasyMock.createMock(InterceptorBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(PhysicalInterceptorDefinition.class))).andReturn(null).times(2);
+        EasyMock.expect(builder.build(EasyMock.isA(PhysicalInterceptor.class))).andReturn(null).times(2);
         EasyMock.replay(builder);
         Map<Class<?>, InterceptorBuilder<?>> builders = new HashMap<>();
 
-        builders.put(PhysicalInterceptorDefinition.class, builder);
+        builders.put(PhysicalInterceptor.class, builder);
 
         connector.interceptorBuilders = builders;
-        PhysicalInterceptorDefinition interceptorDefinition = new PhysicalInterceptorDefinition();
-        operation.addInterceptor(interceptorDefinition);
-        callback.addInterceptor(interceptorDefinition);
+        PhysicalInterceptor physicalInterceptor = new PhysicalInterceptor();
+        operation.addInterceptor(physicalInterceptor);
+        callback.addInterceptor(physicalInterceptor);
 
-        connector.createWire(definition);
+        connector.createWire(physicalWire);
         EasyMock.verify(builder);
     }
 
@@ -133,31 +133,29 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     private void createDefinition() {
-        PhysicalWireSourceDefinition sourceDefinition = new MockWireSourceDefinition();
+        PhysicalWireSource sourceDefinition = new MockWireSource();
         sourceDefinition.setUri(URI.create("source"));
-        PhysicalWireTargetDefinition targetDefinition = new MockWireTargetDefinition();
+        PhysicalWireTarget targetDefinition = new MockWireTarget();
         targetDefinition.setUri(URI.create("target"));
-        Set<PhysicalOperationDefinition> operations = new HashSet<>();
-        definition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
+        Set<PhysicalOperation> operations = new HashSet<>();
+        physicalWire = new PhysicalWire(sourceDefinition, targetDefinition, operations);
         sourceDefinition.setClassLoader(getClass().getClassLoader());
         targetDefinition.setClassLoader(getClass().getClassLoader());
 
-        operation = new PhysicalOperationDefinition();
+        operation = new PhysicalOperation();
         operation.setName("operation");
-        definition.addOperation(operation);
-        callback = new PhysicalOperationDefinition();
+        physicalWire.addOperation(operation);
+        callback = new PhysicalOperation();
         callback.setName("callback");
         callback.setCallback(true);
-        definition.addOperation(callback);
+        physicalWire.addOperation(callback);
     }
 
-    private class MockWireSourceDefinition extends PhysicalWireSourceDefinition {
-        private static final long serialVersionUID = 3221998280377320208L;
+    private class MockWireSource extends PhysicalWireSource {
 
     }
 
-    private class MockWireTargetDefinition extends PhysicalWireTargetDefinition {
-        private static final long serialVersionUID = 3221998280377320208L;
+    private class MockWireTarget extends PhysicalWireTarget {
 
     }
 

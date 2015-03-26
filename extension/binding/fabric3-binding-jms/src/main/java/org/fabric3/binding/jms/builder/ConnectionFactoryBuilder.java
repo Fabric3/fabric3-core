@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryConfiguration;
-import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource;
+import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactory;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
@@ -34,8 +34,8 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-@Key("org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactoryResource")
-public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnectionFactoryResource> {
+@Key("org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactory")
+public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnectionFactory> {
     private ConnectionFactoryCreatorRegistry registry;
     private ConnectionFactoryManager manager;
 
@@ -44,15 +44,15 @@ public class ConnectionFactoryBuilder implements ResourceBuilder<PhysicalConnect
         this.manager = manager;
     }
 
-    public void build(PhysicalConnectionFactoryResource definition) {
-        ConnectionFactoryConfiguration configuration = definition.getConfiguration();
+    public void build(PhysicalConnectionFactory physicalFactory) {
+        ConnectionFactoryConfiguration configuration = physicalFactory.getConfiguration();
         ConnectionFactory factory = registry.create(configuration);
         String name = configuration.getName();
         Map<String, String> factoryProperties = getProperties(configuration);
         manager.register(name, factory, factoryProperties);
     }
 
-    public void remove(PhysicalConnectionFactoryResource definition) {
+    public void remove(PhysicalConnectionFactory definition) {
         ConnectionFactory factory = manager.unregister(definition.getConfiguration().getName());
         registry.release(factory);
     }

@@ -46,7 +46,7 @@ import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.runtime.wire.InvocationChainHolder;
 import org.fabric3.binding.jms.runtime.wire.ServiceListener;
 import org.fabric3.binding.jms.runtime.wire.WireHolder;
-import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireSource;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
@@ -56,10 +56,10 @@ import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
@@ -69,8 +69,8 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
 /**
  * Attaches a channel or consumer to a JMS destination.
  */
-@Key("org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition")
-public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDefinition> {
+@Key("org.fabric3.binding.jms.spi.provision.JmsWireSource")
+public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSource> {
 
     private AdministeredObjectResolver resolver;
     private MessageContainerFactory containerFactory;
@@ -93,7 +93,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void attach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(JmsWireSource source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception {
         URI serviceUri = target.getUri();
         ClassLoader loader = source.getClassLoader();
         SessionType trxType = source.getSessionType();
@@ -125,7 +125,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         containerManager.register(container);
     }
 
-    public void detach(JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(JmsWireSource source, PhysicalWireTarget target) throws Fabric3Exception {
         containerManager.unregister(target.getUri());
         // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
         resolver.release(source.getMetadata().getConnectionFactory());
@@ -157,7 +157,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsWireSourceDefinition source) throws Fabric3Exception {
+    private ResolvedObjects resolveAdministeredObjects(JmsWireSource source) throws Fabric3Exception {
         JmsBindingMetadata metadata = source.getMetadata();
         ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
 
@@ -191,20 +191,20 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         }
     }
 
-    private WireHolder createWireHolder(Wire wire, JmsWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    private WireHolder createWireHolder(Wire wire, JmsWireSource source, PhysicalWireTarget target) throws Fabric3Exception {
         JmsBindingMetadata metadata = source.getMetadata();
         List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
         List<InvocationChainHolder> chainHolders = new ArrayList<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
-            PhysicalOperationDefinition definition = chain.getPhysicalOperation();
-            OperationPayloadTypes payloadType = resolveOperation(definition.getName(), types);
+            PhysicalOperation physicalOperation = chain.getPhysicalOperation();
+            OperationPayloadTypes payloadType = resolveOperation(physicalOperation.getName(), types);
             if (payloadType == null) {
-                throw new Fabric3Exception("Payload type not found for operation: " + definition.getName());
+                throw new Fabric3Exception("Payload type not found for operation: " + physicalOperation.getName());
             }
 
             if (source.getDataTypes().contains(PhysicalDataTypes.JAXB)) {
-                addJAXBInterceptor(source, target, definition, chain);
+                addJAXBInterceptor(source, target, physicalOperation, chain);
             }
 
             chainHolders.add(new InvocationChainHolder(chain, payloadType));
@@ -255,22 +255,19 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsWireSourceDe
         }
     }
 
-    private List<BindingHandler<Message>> createHandlers(JmsWireSourceDefinition source) {
+    private List<BindingHandler<Message>> createHandlers(JmsWireSource source) {
         if (source.getHandlers().isEmpty()) {
             return null;
         }
         List<BindingHandler<Message>> handlers = new ArrayList<>();
-        for (PhysicalBindingHandlerDefinition handlerDefinition : source.getHandlers()) {
-            BindingHandler<Message> handler = handlerRegistry.createHandler(Message.class, handlerDefinition);
+        for (PhysicalBindingHandler physicalHandler : source.getHandlers()) {
+            BindingHandler<Message> handler = handlerRegistry.createHandler(Message.class, physicalHandler);
             handlers.add(handler);
         }
         return handlers;
     }
 
-    private void addJAXBInterceptor(JmsWireSourceDefinition source,
-                                    PhysicalWireTargetDefinition target,
-                                    PhysicalOperationDefinition op,
-                                    InvocationChain chain) {
+    private void addJAXBInterceptor(JmsWireSource source, PhysicalWireTarget target, PhysicalOperation op, InvocationChain chain) {
         ClassLoader sourceClassLoader = source.getClassLoader();
         ClassLoader targetClassLoader = target.getClassLoader();
         List<DataType> jaxTypes = DataTypeHelper.createTypes(op);

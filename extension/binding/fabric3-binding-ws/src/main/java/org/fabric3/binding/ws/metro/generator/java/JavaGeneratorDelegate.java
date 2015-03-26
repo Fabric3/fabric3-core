@@ -37,16 +37,16 @@ import org.fabric3.binding.ws.metro.generator.java.codegen.GeneratedInterface;
 import org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGenerator;
 import org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolver;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroJavaWireSource;
+import org.fabric3.binding.ws.metro.provision.MetroJavaWireTarget;
+import org.fabric3.binding.ws.metro.provision.MetroWireTarget;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -74,7 +74,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         this.info = info;
     }
 
-    public MetroJavaWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, JavaServiceContract contract) {
+    public MetroJavaWireSource generateSource(LogicalBinding<WsBinding> binding, JavaServiceContract contract) {
 
         Class<?> serviceClass = contract.getInterfaceClass();
         WsBinding bindingDefinition = binding.getDefinition();
@@ -85,7 +85,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         Class<?> interfaze = contract.getInterfaceClass();
 
         // create handler definitions
-        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), bindingDefinition);
+        List<PhysicalBindingHandler> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), bindingDefinition);
 
         String wsdl = null;
         Map<String, String> schemas = Collections.emptyMap();
@@ -127,14 +127,14 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
             boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
 
-            return new MetroJavaWireSourceDefinition(serviceUri, endpointDefinition, interfaze, wsdl, schemas, wsdlLocation, bidirectional, handlers);
+            return new MetroJavaWireSource(serviceUri, endpointDefinition, interfaze, wsdl, schemas, wsdlLocation, bidirectional, handlers);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
         //        }
     }
 
-    public MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, JavaServiceContract contract) {
+    public MetroWireTarget generateTarget(LogicalBinding<WsBinding> binding, JavaServiceContract contract) {
         URL targetUrl = null;
         WsBinding bindingDefinition = binding.getDefinition();
         URI targetUri = bindingDefinition.getTargetUri();
@@ -159,21 +159,21 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         return generateTarget(binding, targetUrl, contract);
     }
 
-    public MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, JavaServiceContract contract) {
-        URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding);
-        return generateTarget(serviceBinding, targetUrl, contract);
+    public MetroWireTarget generateServiceBindingTarget(LogicalBinding<WsBinding> binding, JavaServiceContract contract) {
+        URL targetUrl = targetUrlResolver.resolveUrl(binding);
+        return generateTarget(binding, targetUrl, contract);
     }
 
-    private MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, URL targetUrl, JavaServiceContract contract) {
+    private MetroWireTarget generateTarget(LogicalBinding<WsBinding> binding, URL targetUrl, JavaServiceContract contract) {
         Class<?> serviceClass = contract.getInterfaceClass();
         WsBinding bindingDefinition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(bindingDefinition, serviceClass);
 
-        ReferenceEndpointDefinition endpointDefinition = createReferenceEndpointDefinition(binding, contract, serviceClass, targetUrl);
+        ReferenceEndpointDefinition endpointDefinition = createEndpoint(binding, contract, serviceClass, targetUrl);
 
         Class<?> interfaze = contract.getInterfaceClass();
 
-        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), bindingDefinition);
+        List<PhysicalBindingHandler> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), bindingDefinition);
 
         String wsdl = null;
         Map<String, String> schemas = Collections.emptyMap();
@@ -207,15 +207,15 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
 
         int retries = bindingDefinition.getRetries();
-        MetroJavaWireTargetDefinition targetDefinition = new MetroJavaWireTargetDefinition(endpointDefinition,
-                                                                                           interfaze,
-                                                                                           wsdl,
-                                                                                           schemas,
-                                                                                           wsdlLocation,
-                                                                                           connectionConfiguration,
-                                                                                           retries,
-                                                                                           bidirectional,
-                                                                                           handlers);
+        MetroJavaWireTarget targetDefinition = new MetroJavaWireTarget(endpointDefinition,
+                                                                       interfaze,
+                                                                       wsdl,
+                                                                       schemas,
+                                                                       wsdlLocation,
+                                                                       connectionConfiguration,
+                                                                       retries,
+                                                                       bidirectional,
+                                                                       handlers);
         if (binding.isCallback()) {
             targetDefinition.setUri(binding.getParent().getUri());
         }
@@ -260,10 +260,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         return synthesizer.synthesizeServiceEndpoint(contract, serviceClass, targetUri);
     }
 
-    private ReferenceEndpointDefinition createReferenceEndpointDefinition(LogicalBinding<WsBinding> binding,
-                                                                          JavaServiceContract contract,
-                                                                          Class<?> serviceClass,
-                                                                          URL targetUrl) {
+    private ReferenceEndpointDefinition createEndpoint(LogicalBinding<WsBinding> binding, JavaServiceContract contract, Class<?> serviceClass, URL targetUrl) {
         if (binding.isCallback()) {
             targetUrl = ReferenceEndpointDefinition.DYNAMIC_URL;
         }

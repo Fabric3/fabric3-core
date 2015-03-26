@@ -33,11 +33,11 @@ public class TimerPoolBuilder implements ResourceBuilder<PhysicalTimerPoolResour
         this.service = service;
     }
 
-    public void build(PhysicalTimerPoolResource definition) {
-        service.allocate(definition.getName(), definition.getCoreSize());
+    public void build(PhysicalTimerPoolResource resource) {
+        service.allocate(resource.getName(), resource.getCoreSize());
     }
 
-    public void remove(PhysicalTimerPoolResource definition) {
-        service.deallocate(definition.getName());
+    public void remove(PhysicalTimerPoolResource resource) {
+        service.deallocate(resource.getName());
     }
 }

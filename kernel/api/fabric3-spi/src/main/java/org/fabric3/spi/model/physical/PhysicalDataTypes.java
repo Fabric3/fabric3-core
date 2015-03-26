@@ -21,7 +21,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * Defines well-known physical data types. Binding and component extensions may declare the data types they support for service operation parameters on {@link
- * PhysicalWireTargetDefinition}.
+ * PhysicalWireTarget}.
  */
 public interface PhysicalDataTypes {
 

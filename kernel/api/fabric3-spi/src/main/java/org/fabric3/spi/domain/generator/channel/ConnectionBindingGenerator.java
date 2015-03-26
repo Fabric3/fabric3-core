@@ -25,12 +25,12 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelBinding;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
 /**
- * Generates {@link PhysicalConnectionSourceDefinition}s and {@link PhysicalConnectionTargetDefinition}s for resolved connection bindings.
+ * Generates {@link PhysicalConnectionSource}s and {@link PhysicalConnectionTarget}s for resolved connection bindings.
  */
 public interface ConnectionBindingGenerator<BD extends Binding> {
 
@@ -42,7 +42,7 @@ public interface ConnectionBindingGenerator<BD extends Binding> {
      * @return the binding transport metadata or null if provisioning is not required
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<BD> binding, DeliveryType deliveryType) throws Fabric3Exception;
+    PhysicalChannelBinding generateChannelBinding(LogicalBinding<BD> binding, DeliveryType deliveryType) throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a consumer to a channel binding transport.
@@ -53,8 +53,7 @@ public interface ConnectionBindingGenerator<BD extends Binding> {
      * @return the connection metadata
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<BD> binding, DeliveryType deliveryType)
-            throws Fabric3Exception;
+    PhysicalConnectionSource generateConnectionSource(LogicalConsumer consumer, LogicalBinding<BD> binding, DeliveryType deliveryType) throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a producer to a channel binding transport.
@@ -65,7 +64,6 @@ public interface ConnectionBindingGenerator<BD extends Binding> {
      * @return the connection metadata
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<BD> binding, DeliveryType deliveryType)
-            throws Fabric3Exception;
+    PhysicalConnectionTarget generateConnectionTarget(LogicalProducer producer, LogicalBinding<BD> binding, DeliveryType deliveryType) throws Fabric3Exception;
 
 }

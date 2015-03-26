@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitor;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestination;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorResource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
@@ -30,7 +30,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Generates a {@link PhysicalMonitorDefinition} from a {@link MonitorResource}.
+ * Generates a {@link PhysicalMonitor} from a {@link MonitorResource}.
  */
 @EagerInit
 public class MonitorResourceGenerator implements ResourceGenerator<MonitorResource> {
@@ -42,16 +42,16 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalMonitorDefinition generateResource(LogicalResource<MonitorResource> logicalResource) throws Fabric3Exception {
+    public PhysicalMonitor generateResource(LogicalResource<MonitorResource> logicalResource) throws Fabric3Exception {
         MonitorResource resourceDefinition = logicalResource.getDefinition();
 
-        PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition(resourceDefinition.getName());
+        PhysicalMonitor physicalMonitor = new PhysicalMonitor(resourceDefinition.getName());
 
         MonitorDestinationDefinition destinationDefinition =  resourceDefinition.getDestinationDefinition();
         MonitorDestinationGenerator generator = getDestinationGenerator(destinationDefinition);
-        PhysicalMonitorDestinationDefinition physicalDestinationDefinition = generator.generateResource(destinationDefinition);
-        physicalDefinition.setDestinationDefinition(physicalDestinationDefinition);
-        return physicalDefinition;
+        PhysicalMonitorDestination destination = generator.generateResource(destinationDefinition);
+        physicalMonitor.setDestination(destination);
+        return physicalMonitor;
     }
 
     private MonitorDestinationGenerator getDestinationGenerator(MonitorDestinationDefinition definition) throws Fabric3Exception {

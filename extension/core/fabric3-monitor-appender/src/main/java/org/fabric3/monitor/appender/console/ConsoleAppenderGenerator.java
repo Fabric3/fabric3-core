@@ -21,12 +21,12 @@ import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Generates a {@link PhysicalConsoleAppenderDefinition} from a {@link ConsoleAppenderDefinition}.
+ * Generates a {@link PhysicalConsoleAppender} from a {@link ConsoleAppenderDefinition}.
  */
 @EagerInit
 public class ConsoleAppenderGenerator implements AppenderGenerator<ConsoleAppenderDefinition> {
 
-    public PhysicalConsoleAppenderDefinition generateResource(ConsoleAppenderDefinition definition) throws Fabric3Exception {
-        return new PhysicalConsoleAppenderDefinition();
+    public PhysicalConsoleAppender generateResource(ConsoleAppenderDefinition definition) throws Fabric3Exception {
+        return new PhysicalConsoleAppender();
     }
 }

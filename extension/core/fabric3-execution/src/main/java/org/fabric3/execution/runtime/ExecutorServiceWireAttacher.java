@@ -22,13 +22,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition;
+import org.fabric3.execution.provision.ExecutorServiceWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  */
-public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceWireTargetDefinition> {
+public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceWireTarget> {
     private Supplier<ExecutorService> factory;
 
     public ExecutorServiceWireAttacher(@Reference(name = "executorService") ExecutorService executorService) {
@@ -36,7 +36,7 @@ public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorS
         this.factory = () -> proxy;
     }
 
-    public Supplier<ExecutorService> createSupplier(ExecutorServiceWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<ExecutorService> createSupplier(ExecutorServiceWireTarget target) throws Fabric3Exception {
         return factory;
     }
 

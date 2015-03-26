@@ -13,7 +13,7 @@
         <f3:implementation.system class="org.fabric3.execution.generator.ExecutorServiceResourceReferenceGenerator"/>
     </component>
 
-    <component name="ExecutorServiceWireAttacher" f3:key="org.fabric3.execution.provision.ExecutorServiceWireTargetDefinition">
+    <component name="ExecutorServiceWireAttacher" f3:key="org.fabric3.execution.provision.ExecutorServiceWireTarget">
         <f3:implementation.system class="org.fabric3.execution.runtime.ExecutorServiceWireAttacher"/>
         <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>

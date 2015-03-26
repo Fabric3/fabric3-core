@@ -34,7 +34,7 @@ import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -48,7 +48,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         this.resolver = resolver;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target, ChannelConnection connection) {
+    public void attach(PhysicalConnectionSource source, JmsConnectionTarget target, ChannelConnection connection) {
         // resolve the connection factories and destinations
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -62,7 +62,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTarget target) {
+    public void detach(PhysicalConnectionSource source, JmsConnectionTarget target) {
         resolver.release(target.getMetadata().getConnectionFactory());
     }
 

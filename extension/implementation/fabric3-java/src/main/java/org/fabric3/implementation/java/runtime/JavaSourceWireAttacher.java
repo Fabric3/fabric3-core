@@ -25,7 +25,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaWireSource;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
@@ -33,7 +33,7 @@ import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches and detaches wires from a Java component.
  */
 @EagerInit
-public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaWireSourceDefinition> {
+public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaWireSource> {
 
     private ComponentManager manager;
     private WireProxyService proxyService;
@@ -56,41 +56,41 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition, Wire wire) {
-        URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
-        JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
-        if (source == null) {
+    public void attach(JavaWireSource source, PhysicalWireTarget target, Wire wire) {
+        URI sourceName = UriHelper.getDefragmentedName(source.getUri());
+        JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
+        if (component == null) {
             throw new Fabric3Exception("Source callback not found: " + sourceName);
         }
-        Injectable injectable = sourceDefinition.getInjectable();
+        Injectable injectable = source.getInjectable();
 
-        Class<?> type = sourceDefinition.getInterfaceClass();
+        Class<?> type = source.getInterfaceClass();
         if (InjectableType.CALLBACK.equals(injectable.getType())) {
-            processCallback(wire, targetDefinition, source, injectable, type);
+            processCallback(wire, target, component, injectable, type);
         } else {
-            processReference(wire, sourceDefinition, targetDefinition, source, injectable, type);
+            processReference(wire, source, target, component, injectable, type);
         }
     }
 
-    public void detach(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(JavaWireSource source, PhysicalWireTarget target) {
         detachSupplier(source, target);
     }
 
-    public void detachSupplier(JavaWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(JavaWireSource source, PhysicalWireTarget target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeSupplier(injectable);
     }
 
-    public void attachSupplier(JavaWireSourceDefinition sourceDefinition, Supplier<?> supplier, PhysicalWireTargetDefinition targetDefinition) {
-        URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
+    public void attachSupplier(JavaWireSource source, Supplier<?> supplier, PhysicalWireTarget targetDefinition) {
+        URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
-        Injectable injectable = sourceDefinition.getInjectable();
+        Injectable injectable = source.getInjectable();
 
-        if (sourceDefinition.isKeyed() || sourceDefinition.isOrdered()) {
-            Object key = getKey(sourceDefinition, targetDefinition);
-            int order = sourceDefinition.getOrder();
+        if (source.isKeyed() || source.isOrdered()) {
+            Object key = getKey(source, targetDefinition);
+            int order = source.getOrder();
             InjectionAttributes attributes = new InjectionAttributes(key, order);
             sourceComponent.setSupplier(injectable, supplier, attributes);
         } else {
@@ -98,30 +98,25 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    private void processReference(Wire wire,
-                                  JavaWireSourceDefinition sourceDefinition,
-                                  PhysicalWireTargetDefinition targetDefinition,
-                                  JavaComponent source,
-                                  Injectable injectable,
-                                  Class<?> type) {
+    private void processReference(Wire wire, JavaWireSource source, PhysicalWireTarget target, JavaComponent component, Injectable injectable, Class<?> type) {
         String callbackUri = null;
-        URI uri = targetDefinition.getCallbackUri();
+        URI uri = target.getCallbackUri();
         if (uri != null) {
             callbackUri = uri.toString();
         }
 
         Supplier<?> supplier = proxyService.createSupplier(type, wire, callbackUri);
-        if (sourceDefinition.isKeyed() || sourceDefinition.isOrdered()) {
-            Object key = getKey(sourceDefinition, targetDefinition);
-            int order = sourceDefinition.getOrder();
+        if (source.isKeyed() || source.isOrdered()) {
+            Object key = getKey(source, target);
+            int order = source.getOrder();
             InjectionAttributes attributes = new InjectionAttributes(key, order);
-            source.setSupplier(injectable, supplier, attributes);
+            component.setSupplier(injectable, supplier, attributes);
         } else {
-            source.setSupplier(injectable, supplier);
+            component.setSupplier(injectable, supplier);
         }
     }
 
-    private void processCallback(Wire wire, PhysicalWireTargetDefinition targetDefinition, JavaComponent source, Injectable injectable, Class<?> type) {
+    private void processCallback(Wire wire, PhysicalWireTarget targetDefinition, JavaComponent source, Injectable injectable, Class<?> type) {
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();
         Supplier<?> supplier = source.getSupplier(injectable);

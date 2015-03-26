@@ -19,13 +19,12 @@ package org.fabric3.datasource.provision;
 import java.util.List;
 
 import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  * Metadata to provision datasources configured in a composite.
  */
-public class PhysicalDataSourceResource extends PhysicalResourceDefinition {
-    private static final long serialVersionUID = 5876707707248937085L;
+public class PhysicalDataSourceResource extends PhysicalResource {
 
     private List<DataSourceConfiguration> configurations;
 

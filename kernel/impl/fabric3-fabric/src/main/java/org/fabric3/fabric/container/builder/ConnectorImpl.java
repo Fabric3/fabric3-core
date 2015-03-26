@@ -33,11 +33,11 @@ import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWire;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.util.Cast;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
@@ -64,55 +64,55 @@ public class ConnectorImpl implements Connector {
         this.targetAttachers = targetAttachers;
     }
 
-    public void connect(PhysicalWireDefinition definition) throws Fabric3Exception {
-        PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
-        SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = Cast.cast(sourceAttachers.get(sourceDefinition.getClass()));
+    public void connect(PhysicalWire physicalWire) throws Fabric3Exception {
+        PhysicalWireSource source = physicalWire.getSource();
+        SourceWireAttacher<PhysicalWireSource> sourceAttacher = Cast.cast(sourceAttachers.get(source.getClass()));
         if (sourceAttacher == null) {
-            throw new Fabric3Exception("Source attacher not found for type: " + sourceDefinition.getClass());
+            throw new Fabric3Exception("Source attacher not found for type: " + source.getClass());
         }
-        PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
-        TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = Cast.cast(targetAttachers.get(targetDefinition.getClass()));
+        PhysicalWireTarget target = physicalWire.getTarget();
+        TargetWireAttacher<PhysicalWireTarget> targetAttacher = Cast.cast(targetAttachers.get(target.getClass()));
         if (targetAttacher == null) {
-            throw new Fabric3Exception("Target attacher not found for type: " + targetDefinition.getClass());
+            throw new Fabric3Exception("Target attacher not found for type: " + target.getClass());
         }
 
-        if (definition.isOptimizable()) {
-            Supplier<?> supplier = targetAttacher.createSupplier(targetDefinition);
-            sourceAttacher.attachSupplier(sourceDefinition, supplier, targetDefinition);
+        if (physicalWire.isOptimizable()) {
+            Supplier<?> supplier = targetAttacher.createSupplier(target);
+            sourceAttacher.attachSupplier(source, supplier, target);
         } else {
-            Wire wire = createWire(definition);
-            sourceAttacher.attach(sourceDefinition, targetDefinition, wire);
-            targetAttacher.attach(sourceDefinition, targetDefinition, wire);
+            Wire wire = createWire(physicalWire);
+            sourceAttacher.attach(source, target, wire);
+            targetAttacher.attach(source, target, wire);
         }
     }
 
-    public void disconnect(PhysicalWireDefinition definition) throws Fabric3Exception {
-        PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
-        SourceWireAttacher<PhysicalWireSourceDefinition> sourceAttacher = Cast.cast(sourceAttachers.get(sourceDefinition.getClass()));
+    public void disconnect(PhysicalWire physicalWire) throws Fabric3Exception {
+        PhysicalWireSource source = physicalWire.getSource();
+        SourceWireAttacher<PhysicalWireSource> sourceAttacher = Cast.cast(sourceAttachers.get(source.getClass()));
         if (sourceAttacher == null) {
-            throw new Fabric3Exception("Source attacher not found for type: " + sourceDefinition.getClass());
+            throw new Fabric3Exception("Source attacher not found for type: " + source.getClass());
         }
 
-        PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
-        if (definition.isOptimizable()) {
-            sourceAttacher.detachSupplier(sourceDefinition, targetDefinition);
+        PhysicalWireTarget target = physicalWire.getTarget();
+        if (physicalWire.isOptimizable()) {
+            sourceAttacher.detachSupplier(source, target);
         } else {
-            TargetWireAttacher<PhysicalWireTargetDefinition> targetAttacher = Cast.cast(targetAttachers.get(targetDefinition.getClass()));
+            TargetWireAttacher<PhysicalWireTarget> targetAttacher = Cast.cast(targetAttachers.get(target.getClass()));
             if (targetAttacher == null) {
-                throw new Fabric3Exception("Target attacher not found for type: " + targetDefinition.getClass());
+                throw new Fabric3Exception("Target attacher not found for type: " + target.getClass());
             }
-            targetAttacher.detach(sourceDefinition, targetDefinition);
-            sourceAttacher.detach(sourceDefinition, targetDefinition);
+            targetAttacher.detach(source, target);
+            sourceAttacher.detach(source, target);
         }
     }
 
-    Wire createWire(PhysicalWireDefinition definition) throws Fabric3Exception {
+    Wire createWire(PhysicalWire physicalWire) throws Fabric3Exception {
         Wire wire = new WireImpl();
-        for (PhysicalOperationDefinition operation : definition.getOperations()) {
+        for (PhysicalOperation operation : physicalWire.getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
-            for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
-                InterceptorBuilder<? super PhysicalInterceptorDefinition> builder = Cast.cast(interceptorBuilders.get(interceptorDefinition.getClass()));
-                Interceptor interceptor = builder.build(interceptorDefinition);
+            for (PhysicalInterceptor physicalInterceptor : operation.getInterceptors()) {
+                InterceptorBuilder<? super PhysicalInterceptor> builder = Cast.cast(interceptorBuilders.get(physicalInterceptor.getClass()));
+                Interceptor interceptor = builder.build(physicalInterceptor);
                 chain.addInterceptor(interceptor);
             }
             wire.addInvocationChain(chain);

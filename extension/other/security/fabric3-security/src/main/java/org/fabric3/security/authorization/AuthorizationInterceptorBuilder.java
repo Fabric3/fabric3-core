@@ -26,7 +26,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Builds authorization interceptors.
  */
-public class AuthorizationInterceptorBuilder implements InterceptorBuilder<AuthorizationInterceptorDefinition> {
+public class AuthorizationInterceptorBuilder implements InterceptorBuilder<PhysicalAuthorizationInterceptor> {
     private AuthorizationService authorizationService;
 
     public AuthorizationInterceptorBuilder(@Reference AuthorizationService authorizationService) {
@@ -39,7 +39,7 @@ public class AuthorizationInterceptorBuilder implements InterceptorBuilder<Autho
      * @param definition Authorization interceptor definition.
      * @return An instance of the authorization interceptor.
      */
-    public Interceptor build(AuthorizationInterceptorDefinition definition) {
+    public Interceptor build(PhysicalAuthorizationInterceptor definition) {
         return new RoleBasedAuthorizationInterceptor(definition.getRoles(), authorizationService);
     }
 

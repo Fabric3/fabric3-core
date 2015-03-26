@@ -32,12 +32,12 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
-import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireSource;
+import org.fabric3.binding.file.provision.FileBindingWireTarget;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
@@ -63,7 +63,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         this.info = info;
     }
 
-    public FileBindingWireSourceDefinition generateSource(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+    public FileBindingWireSource generateSource(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
             throws Fabric3Exception {
         validateServiceContract(contract);
         boolean dataHandler = isDataHandler(contract);
@@ -87,7 +87,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         if (delay == -1) {
             delay = defaultDelay;
         }
-        return new FileBindingWireSourceDefinition(uri,
+        return new FileBindingWireSource(uri,
                                                    pattern,
                                                    location,
                                                    strategy,
@@ -99,17 +99,17 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
                                                    dataHandler);
     }
 
-    public FileBindingWireTargetDefinition generateTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
+    public FileBindingWireTarget generateTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
             throws Fabric3Exception {
         validateReferenceContract(contract);
         FileBinding definition = binding.getDefinition();
         String location = definition.getLocation();
         String adapterClass = definition.getAdapterClass();
         URI adaptorUri = getAdaptorUri(definition);
-        return new FileBindingWireTargetDefinition(location, adapterClass, adaptorUri);
+        return new FileBindingWireTarget(location, adapterClass, adaptorUri);
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBinding> binding,
+    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<FileBinding> binding,
                                                                      ServiceContract contract,
                                                                      List<LogicalOperation> operations) throws Fabric3Exception {
         throw new UnsupportedOperationException();

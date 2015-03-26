@@ -26,7 +26,7 @@ import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -54,16 +54,16 @@ public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResou
     }
 
     public void execute(BuildResourcesCommand command) throws Fabric3Exception {
-        command.getDefinitions().forEach(this::build);
+        command.getPhysicalResources().forEach(this::build);
     }
 
     @SuppressWarnings("unchecked")
-    private void build(PhysicalResourceDefinition definition) {
-        ResourceBuilder builder = builders.get(definition.getClass());
+    private void build(PhysicalResource physicalResource) {
+        ResourceBuilder builder = builders.get(physicalResource.getClass());
         if (builder == null) {
-            throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());
+            throw new Fabric3Exception("Builder not found for " + physicalResource.getClass().getName());
         }
-        builder.build(definition);
+        builder.build(physicalResource);
     }
 
 }

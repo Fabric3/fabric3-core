@@ -20,16 +20,15 @@ package org.fabric3.implementation.junit.generator;
 
 import java.util.List;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBinding;
-import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
+import org.fabric3.implementation.junit.provision.JUnitWireSource;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -38,24 +37,18 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBinding> {
 
-    public JUnitWireSourceDefinition generateSource(LogicalBinding<JUnitBinding> bindingDefinition,
-                                                    ServiceContract contract,
-                                                    List<LogicalOperation> operations) throws Fabric3Exception {
-        Component<?> definition = bindingDefinition.getParent().getParent().getDefinition();
+    public JUnitWireSource generateSource(LogicalBinding<JUnitBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+        Component<?> definition = binding.getParent().getParent().getDefinition();
         String testName = definition.getImplementation().getImplementationName();
-        ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
-        return new JUnitWireSourceDefinition(testName, configuration);
+        ContextConfiguration configuration = binding.getDefinition().getConfiguration();
+        return new JUnitWireSource(testName, configuration);
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<JUnitBinding> bindingDefinition,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations) throws Fabric3Exception {
+    public PhysicalWireTarget generateTarget(LogicalBinding<JUnitBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<JUnitBinding> serviceBinding,
-                                                                     ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws Fabric3Exception {
+    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<JUnitBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         throw new UnsupportedOperationException();
     }
 }

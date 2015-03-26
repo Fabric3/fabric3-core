@@ -31,11 +31,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -44,46 +44,46 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class SingletonComponentGenerator implements ComponentGenerator<LogicalComponent<SingletonImplementation>> {
 
-    public PhysicalComponentDefinition generate(LogicalComponent<SingletonImplementation> component) throws Fabric3Exception {
+    public PhysicalComponent generate(LogicalComponent<SingletonImplementation> component) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
-        SingletonWireSourceDefinition wireDefinition = new SingletonWireSourceDefinition();
+    public PhysicalWireSource generateSource(LogicalReference reference) throws Fabric3Exception {
+        SingletonWireSource source = new SingletonWireSource();
         URI uri = reference.getUri();
-        wireDefinition.setOptimizable(true);
-        wireDefinition.setUri(uri);
-        wireDefinition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
+        source.setOptimizable(true);
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
 
-        return wireDefinition;
+        return source;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
-        SingletonWireTargetDefinition wireDefinition = new SingletonWireTargetDefinition();
+    public PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception {
+        SingletonWireTarget target = new SingletonWireTarget();
         URI uri = service.getUri();
-        wireDefinition.setUri(uri);
-        wireDefinition.setOptimizable(true);
-        return wireDefinition;
+        target.setUri(uri);
+        target.setOptimizable(true);
+        return target;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
-        SingletonWireSourceDefinition wireDefinition = new SingletonWireSourceDefinition();
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+        SingletonWireSource source = new SingletonWireSource();
         URI uri = resourceReference.getUri();
-        wireDefinition.setOptimizable(true);
-        wireDefinition.setUri(uri);
-        wireDefinition.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
-        return wireDefinition;
+        source.setOptimizable(true);
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
+        return source;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireSource generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

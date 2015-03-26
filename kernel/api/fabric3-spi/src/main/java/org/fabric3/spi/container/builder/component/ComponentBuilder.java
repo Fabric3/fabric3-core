@@ -21,12 +21,12 @@ package org.fabric3.spi.container.builder.component;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  * Builds a component for an implementation type on a runtime.
  */
-public interface ComponentBuilder<D extends PhysicalComponentDefinition, C extends Component> {
+public interface ComponentBuilder<D extends PhysicalComponent, C extends Component> {
 
     /**
      * Builds a component from its physical component definition.

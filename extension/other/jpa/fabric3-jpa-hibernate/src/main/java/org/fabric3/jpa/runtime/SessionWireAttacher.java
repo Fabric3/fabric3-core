@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.jpa.provision.SessionWireTargetDefinition;
+import org.fabric3.jpa.provision.SessionWireTarget;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxy;
@@ -33,7 +33,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
-public class SessionWireAttacher implements TargetWireAttacher<SessionWireTargetDefinition> {
+public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget> {
     private EntityManagerFactoryResolver emfResolver;
     private TransactionManager tm;
     private EntityManagerService emService;
@@ -53,7 +53,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionWireTarget
         this.tm = tm;
     }
 
-    public Supplier<?> createSupplier(SessionWireTargetDefinition definition) {
+    public Supplier<?> createSupplier(SessionWireTarget definition) {
         String unitName = definition.getUnitName();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {

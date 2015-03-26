@@ -37,7 +37,7 @@ import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**
@@ -55,10 +55,10 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         PhysicalOperationGeneratorImpl generator = new PhysicalOperationGeneratorImpl(resolver, registry);
         List<LogicalOperation> list = Collections.singletonList(createOperation());
 
-        Set<PhysicalOperationDefinition> definitions = generator.generateOperations(list);
+        Set<PhysicalOperation> definitions = generator.generateOperations(list);
 
         assertEquals(1, definitions.size());
-        PhysicalOperationDefinition definition = definitions.iterator().next();
+        PhysicalOperation definition = definitions.iterator().next();
         assertEquals(String.class, definition.getSourceParameterTypes().get(0));
         assertEquals(String.class, definition.getSourceReturnType());
         assertEquals(Exception.class, definition.getSourceFaultTypes().get(0));
@@ -78,10 +78,10 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         operation.getDefinition().setRemotable(true);
         List<LogicalOperation> list = Collections.singletonList(operation);
 
-        Set<PhysicalOperationDefinition> definitions = generator.generateOperations(list);
+        Set<PhysicalOperation> definitions = generator.generateOperations(list);
 
         assertEquals(1, definitions.size());
-        PhysicalOperationDefinition definition = definitions.iterator().next();
+        PhysicalOperation definition = definitions.iterator().next();
         assertEquals(String.class, definition.getSourceParameterTypes().get(0));
         assertEquals(String.class, definition.getSourceReturnType());
         assertEquals(Exception.class, definition.getSourceFaultTypes().get(0));
@@ -102,9 +102,9 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         operation.getDefinition().setOneWay(true);
         List<LogicalOperation> list = Collections.singletonList(operation);
 
-        Set<PhysicalOperationDefinition> definitions = generator.generateOperations(list);
+        Set<PhysicalOperation> definitions = generator.generateOperations(list);
 
-        PhysicalOperationDefinition definition = definitions.iterator().next();
+        PhysicalOperation definition = definitions.iterator().next();
         assertTrue(definition.isOneWay());
         EasyMock.verify(resolver, registry);
     }

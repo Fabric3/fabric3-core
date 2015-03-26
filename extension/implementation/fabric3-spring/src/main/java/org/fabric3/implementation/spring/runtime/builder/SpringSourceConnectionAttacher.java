@@ -23,12 +23,12 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
+import org.fabric3.implementation.spring.provision.SpringConnectionSource;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches and detaches a {@link ChannelConnection} from a Spring component producer.
  */
 @EagerInit
-public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<SpringConnectionSourceDefinition> {
+public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<SpringConnectionSource> {
     private ComponentManager manager;
     private ChannelProxyService proxyService;
 
@@ -46,7 +46,7 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
         this.proxyService = proxyService;
     }
 
-    public void attach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
+    public void attach(SpringConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection)
             throws Fabric3Exception {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
@@ -65,7 +65,7 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
         component.attach(source.getProducerName(), type, supplier);
     }
 
-    public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(SpringConnectionSource source, PhysicalConnectionTarget target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         component.detach(source.getProducerName());

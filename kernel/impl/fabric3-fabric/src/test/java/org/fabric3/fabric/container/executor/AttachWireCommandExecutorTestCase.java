@@ -24,7 +24,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 
 /**
  *
@@ -35,14 +35,14 @@ public class AttachWireCommandExecutorTestCase extends TestCase {
         CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
         Connector connector = EasyMock.createMock(Connector.class);
         executorRegistry.register(EasyMock.eq(AttachWireCommand.class), EasyMock.isA(AttachWireCommandExecutor.class));
-        connector.connect(EasyMock.isA(PhysicalWireDefinition.class));
+        connector.connect(EasyMock.isA(PhysicalWire.class));
         EasyMock.replay(executorRegistry, connector);
 
         AttachWireCommandExecutor executor = new AttachWireCommandExecutor(executorRegistry, connector);
         executor.init();
-        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
+        PhysicalWire physicalWire = new PhysicalWire(null, null, null);
         AttachWireCommand command = new AttachWireCommand();
-        command.setPhysicalWireDefinition(definition);
+        command.setPhysicalWireDefinition(physicalWire);
         executor.execute(command);
         EasyMock.verify(executorRegistry, connector);
 

@@ -31,11 +31,11 @@ import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.implementation.spring.model.SpringReference;
 import org.fabric3.implementation.spring.model.SpringService;
-import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
-import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
-import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
-import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
-import org.fabric3.implementation.spring.provision.SpringWireTargetDefinition;
+import org.fabric3.implementation.spring.provision.PhysicalSpringComponent;
+import org.fabric3.implementation.spring.provision.SpringConnectionSource;
+import org.fabric3.implementation.spring.provision.SpringConnectionTarget;
+import org.fabric3.implementation.spring.provision.SpringWireSource;
+import org.fabric3.implementation.spring.provision.SpringWireTarget;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -44,12 +44,12 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalProperty;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -61,7 +61,7 @@ import org.w3c.dom.Document;
 @EagerInit
 public class SpringComponentGenerator implements ComponentGenerator<LogicalComponent<SpringImplementation>> {
 
-    public PhysicalComponentDefinition generate(LogicalComponent<SpringImplementation> component) throws Fabric3Exception {
+    public PhysicalComponent generate(LogicalComponent<SpringImplementation> component) throws Fabric3Exception {
         URI uri = component.getUri();
         Component<SpringImplementation> componentDefinition = component.getDefinition();
         SpringImplementation implementation = componentDefinition.getImplementation();
@@ -77,14 +77,14 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         ComponentType type = componentDefinition.getComponentType();
         Map<String, String> mappings = handleDefaultReferenceMappings(componentDefinition, type);
 
-        SpringComponentDefinition.LocationType locationType = SpringComponentDefinition.LocationType.valueOf(implementation.getLocationType().toString());
+        PhysicalSpringComponent.LocationType locationType = PhysicalSpringComponent.LocationType.valueOf(implementation.getLocationType().toString());
 
-        SpringComponentDefinition physical = new SpringComponentDefinition(uri, baseLocation, contextLocations, mappings, locationType);
-        processPropertyValues(component, physical);
-        return physical;
+        PhysicalSpringComponent physicalComponent = new PhysicalSpringComponent(uri, baseLocation, contextLocations, mappings, locationType);
+        processPropertyValues(component, physicalComponent);
+        return physicalComponent;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
+    public PhysicalWireSource generateSource(LogicalReference reference) throws Fabric3Exception {
         ServiceContract contract = reference.getServiceContract();
         if (!(contract instanceof JavaServiceContract)) {
             // Spring reference contracts are always defined by Java interfaces
@@ -93,10 +93,10 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = reference.getParent().getUri();
         String referenceName = reference.getDefinition().getName();
-        return new SpringWireSourceDefinition(referenceName, interfaze, uri);
+        return new SpringWireSource(referenceName, interfaze, uri);
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception {
         if (!(service.getDefinition() instanceof SpringService)) {
             // programming error
             throw new Fabric3Exception("Expected service type: " + service.getDefinition().getClass().getName());
@@ -111,31 +111,31 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         String target = springService.getTarget();
         String interfaceName = contract.getQualifiedInterfaceName();
         URI uri = service.getUri();
-        return new SpringWireTargetDefinition(target, interfaceName, uri);
+        return new SpringWireTarget(target, interfaceName, uri);
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) throws Fabric3Exception {
         String producerName = producer.getDefinition().getName();
         URI uri = producer.getParent().getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
-        return new SpringConnectionSourceDefinition(producerName, serviceContract.getInterfaceClass(), uri);
+        return new SpringConnectionSource(producerName, serviceContract.getInterfaceClass(), uri);
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         SpringConsumer springConsumer = (SpringConsumer) consumer.getDefinition();
         String beanName = springConsumer.getBeanName();
         String methodName = springConsumer.getMethodName();
         JavaType type = springConsumer.getType();
         URI uri = consumer.getParent().getUri();
-        return new SpringConnectionTargetDefinition(beanName, methodName, type, uri);
+        return new SpringConnectionTarget(beanName, methodName, type, uri);
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireSource generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -156,7 +156,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         return mappings;
     }
 
-    private void processPropertyValues(LogicalComponent<?> component, SpringComponentDefinition physical) {
+    private void processPropertyValues(LogicalComponent<?> component, PhysicalSpringComponent springComponent) {
         for (LogicalProperty property : component.getAllProperties().values()) {
             String name = property.getName();
             boolean many = property.isMany();
@@ -164,12 +164,12 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
                 Document document = property.getValue();
                 ComponentType componentType = component.getDefinition().getImplementation().getComponentType();
                 QName type = componentType.getProperties().get(property.getName()).getType();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many, type);
-                physical.setPropertyDefinition(definition);
+                PhysicalProperty physicalProperty = new PhysicalProperty(name, document, many, type);
+                springComponent.setProperty(physicalProperty);
             } else if (property.getInstanceValue() != null) {
                 Object value = property.getInstanceValue();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, value, many);
-                physical.setPropertyDefinition(definition);
+                PhysicalProperty physicalProperty = new PhysicalProperty(name, value, many);
+                springComponent.setProperty(physicalProperty);
             }
         }
     }

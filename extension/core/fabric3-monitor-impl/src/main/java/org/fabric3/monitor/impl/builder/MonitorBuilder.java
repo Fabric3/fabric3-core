@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitor;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestination;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -30,7 +30,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Instantiates and registers or unregisters monitor destinations with the destination registry.
  */
 @EagerInit
-public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition> {
+public class MonitorBuilder implements ResourceBuilder<PhysicalMonitor> {
     private Map<Class<?>, MonitorDestinationBuilder<?>> builders;
 
     @Reference
@@ -39,20 +39,20 @@ public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalMonitorDefinition definition) {
-        PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
-        MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
-        builder.build(destinationDefinition);
+    public void build(PhysicalMonitor physicalMonitor) {
+        PhysicalMonitorDestination destination = physicalMonitor.getDestination();
+        MonitorDestinationBuilder builder = getBuilder(destination);
+        builder.build(destination);
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(PhysicalMonitorDefinition definition) {
-        PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
-        MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
-        builder.remove(destinationDefinition);
+    public void remove(PhysicalMonitor physicalMonitor) {
+        PhysicalMonitorDestination destination = physicalMonitor.getDestination();
+        MonitorDestinationBuilder builder = getBuilder(destination);
+        builder.remove(destination);
     }
 
-    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestinationDefinition destinationDefinition) {
+    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestination destinationDefinition) {
         MonitorDestinationBuilder builder = builders.get(destinationDefinition.getClass());
         if (builder == null) {
             throw new Fabric3Exception("Unknown destination type: " + destinationDefinition.getClass().getName());

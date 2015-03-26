@@ -21,13 +21,13 @@ package org.fabric3.spi.container.builder.component;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
 /**
  * Attaches and detaches a pub/sub connection to a channel, component consumer, or channel binding.
  */
-public interface TargetConnectionAttacher<P extends PhysicalConnectionTargetDefinition> {
+public interface TargetConnectionAttacher<P extends PhysicalConnectionTarget> {
 
     /**
      * Attach a connection to a target, which can be a channel, component consumer, or channel binding.
@@ -37,7 +37,7 @@ public interface TargetConnectionAttacher<P extends PhysicalConnectionTargetDefi
      * @param connection the connection that flows events from a source
      * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    void attach(PhysicalConnectionSourceDefinition source, P target, ChannelConnection connection) throws Fabric3Exception;
+    void attach(PhysicalConnectionSource source, P target, ChannelConnection connection) throws Fabric3Exception;
 
     /**
      * Detach a connection from a target.
@@ -46,6 +46,6 @@ public interface TargetConnectionAttacher<P extends PhysicalConnectionTargetDefi
      * @param target the target metadata
      * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    void detach(PhysicalConnectionSourceDefinition source, P target) throws Fabric3Exception;
+    void detach(PhysicalConnectionSource source, P target) throws Fabric3Exception;
 
 }

@@ -20,12 +20,12 @@
 package org.fabric3.spi.container.builder.resource;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  * Builds a resource on a runtime.
  */
-public interface ResourceBuilder<R extends PhysicalResourceDefinition> {
+public interface ResourceBuilder<R extends PhysicalResource> {
 
     /**
      * Builds a resource from its physical resource definition.

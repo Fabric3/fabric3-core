@@ -20,7 +20,7 @@
 package org.fabric3.spi.container.builder;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  * Establishes (and removes) event channel connections.
@@ -34,7 +34,7 @@ public interface ChannelConnector {
      * @param definition the connection metadata
      * @throws Fabric3Exception if an error creating the connect is encountered
      */
-    void connect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception;
+    void connect(PhysicalChannelConnection definition) throws Fabric3Exception;
 
     /**
      * Removes a channel connection.
@@ -42,5 +42,5 @@ public interface ChannelConnector {
      * @param definition the connection metadata
      * @throws Fabric3Exception if an error disconnecting is encountered
      */
-    void disconnect(PhysicalChannelConnectionDefinition definition) throws Fabric3Exception;
+    void disconnect(PhysicalChannelConnection definition) throws Fabric3Exception;
 }

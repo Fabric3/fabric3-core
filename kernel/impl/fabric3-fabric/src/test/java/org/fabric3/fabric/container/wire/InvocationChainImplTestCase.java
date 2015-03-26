@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 
 /**
  *
@@ -31,7 +31,7 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 public class InvocationChainImplTestCase extends TestCase {
 
     public void testInsertAtPos() throws Exception {
-        PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
+        PhysicalOperation operation = new PhysicalOperation();
         InvocationChain chain = new InvocationChainImpl(operation);
         Interceptor inter3 = new MockInterceptor();
         Interceptor inter2 = new MockInterceptor();
@@ -46,7 +46,7 @@ public class InvocationChainImplTestCase extends TestCase {
     }
 
     public void testInsertAtEnd() throws Exception {
-        PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
+        PhysicalOperation operation = new PhysicalOperation();
         InvocationChain chain = new InvocationChainImpl(operation);
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();

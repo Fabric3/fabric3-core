@@ -30,8 +30,8 @@ import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -46,25 +46,25 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         this.generatorRegistry = generatorRegistry;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) {
+    public Set<PhysicalOperation> generateOperations(List<LogicalOperation> operations) {
 
-        Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(operations.size());
+        Set<PhysicalOperation> physicalOperations = new HashSet<>(operations.size());
 
         for (LogicalOperation operation : operations) {
-            PhysicalOperationDefinition physicalOperation = generate(operation);
+            PhysicalOperation physicalOperation = generate(operation);
             physicalOperations.add(physicalOperation);
         }
         return physicalOperations;
     }
 
-    public Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) {
-        Set<PhysicalOperationDefinition> physicalOperations = new HashSet<>(sources.size());
+    public Set<PhysicalOperation> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote) {
+        Set<PhysicalOperation> physicalOperations = new HashSet<>(sources.size());
         for (LogicalOperation source : sources) {
             LogicalOperation target = operationResolver.resolve(source, targets);
-            PhysicalOperationDefinition physicalOperation = generate(source, target);
+            PhysicalOperation physicalOperation = generate(source, target);
             physicalOperations.add(physicalOperation);
             if (!remote) {
-                Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(source, target);
+                Set<PhysicalInterceptor> interceptors = generateInterceptors(source, target);
                 physicalOperation.setInterceptors(interceptors);
             }
         }
@@ -78,10 +78,10 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param target the target operation
      * @return the interceptor definitions
      */
-    private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation source, LogicalOperation target) {
-        Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<>();
+    private Set<PhysicalInterceptor> generateInterceptors(LogicalOperation source, LogicalOperation target) {
+        Set<PhysicalInterceptor> interceptors = new LinkedHashSet<>();
         for (InterceptorGenerator interceptorGenerator : generatorRegistry.getInterceptorGenerators()) {
-            Optional<PhysicalInterceptorDefinition> optional = interceptorGenerator.generate(source, target);
+            Optional<PhysicalInterceptor> optional = interceptorGenerator.generate(source, target);
             optional.ifPresent(interceptors::add);
         }
         return interceptors;
@@ -93,9 +93,9 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param source the logical operation to generate from
      * @return the PhysicalOperationDefinition
      */
-    private PhysicalOperationDefinition generate(LogicalOperation source) {
+    private PhysicalOperation generate(LogicalOperation source) {
         Operation o = source.getDefinition();
-        PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
+        PhysicalOperation operation = new PhysicalOperation();
         operation.setName(o.getName());
         operation.setOneWay(o.isOneWay());
         operation.setRemotable(o.isRemotable());
@@ -128,9 +128,9 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param target the target logical operations to generate from
      * @return the PhysicalOperationDefinition
      */
-    private PhysicalOperationDefinition generate(LogicalOperation source, LogicalOperation target) {
+    private PhysicalOperation generate(LogicalOperation source, LogicalOperation target) {
         Operation o = source.getDefinition();
-        PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
+        PhysicalOperation operation = new PhysicalOperation();
         operation.setName(o.getName());
 
         operation.setRemotable(o.isRemotable());

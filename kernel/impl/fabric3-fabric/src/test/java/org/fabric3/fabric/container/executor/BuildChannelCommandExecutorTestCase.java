@@ -27,7 +27,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  *
@@ -35,18 +35,18 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public class BuildChannelCommandExecutorTestCase extends TestCase {
 
     public void testBuildChannel() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"));
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
 
         Channel channel = EasyMock.createMock(Channel.class);
 
         ChannelBuilderRegistry channelBuilderRegistry = EasyMock.createMock(ChannelBuilderRegistry.class);
-        EasyMock.expect(channelBuilderRegistry.build(EasyMock.isA(PhysicalChannelDefinition.class))).andReturn(channel);
+        EasyMock.expect(channelBuilderRegistry.build(EasyMock.isA(PhysicalChannel.class))).andReturn(channel);
 
         EasyMock.replay(channelBuilderRegistry, channel);
 
         BuildChannelCommandExecutor executor = new BuildChannelCommandExecutor(channelBuilderRegistry, null);
 
-        BuildChannelCommand command = new BuildChannelCommand(definition);
+        BuildChannelCommand command = new BuildChannelCommand(physicalChannel);
         executor.execute(command);
 
         EasyMock.verify(channelBuilderRegistry, channel);

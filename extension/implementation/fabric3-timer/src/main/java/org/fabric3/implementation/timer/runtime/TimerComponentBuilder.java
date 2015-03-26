@@ -33,7 +33,7 @@ import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
+import org.fabric3.implementation.timer.provision.TimerPhysicalComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -51,7 +51,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> implements Fabric3EventListener<RuntimeStart> {
+public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalComponent, TimerComponent> implements Fabric3EventListener<RuntimeStart> {
     private ScopeRegistry scopeRegistry;
     private ImplementationManagerFactoryBuilder factoryBuilder;
     private TimerService timerService;
@@ -90,20 +90,20 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         this.topologyService = topologyService;
     }
 
-    public TimerComponent build(TimerComponentDefinition definition) {
-        URI uri = definition.getComponentUri();
-        QName deployable = definition.getDeployable();
+    public TimerComponent build(TimerPhysicalComponent physicalComponent) {
+        URI uri = physicalComponent.getComponentUri();
+        QName deployable = physicalComponent.getDeployable();
 
-        Scope scopeName = definition.getScope();
+        Scope scopeName = physicalComponent.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
-        ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
+        ImplementationManagerDefinition managerDefinition = physicalComponent.getFactoryDefinition();
         Class<?> implClass = managerDefinition.getImplementationClass();
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
-        createPropertyFactories(definition, factory);
-        TimerData data = definition.getTriggerData();
-        boolean transactional = definition.isTransactional();
+        createPropertyFactories(physicalComponent, factory);
+        TimerData data = physicalComponent.getTriggerData();
+        boolean transactional = physicalComponent.isTransactional();
         TimerComponent component = new TimerComponent(uri,
                                                       deployable,
                                                       data,
@@ -122,12 +122,12 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
             scheduleQueue.add(component);
         }
         buildContexts(component, factory);
-        export(definition, component);
+        export(physicalComponent, component);
         return component;
     }
 
-    public void dispose(TimerComponentDefinition definition, TimerComponent component) {
-        dispose(definition);
+    public void dispose(TimerPhysicalComponent physicalComponent, TimerComponent component) {
+        dispose(physicalComponent);
     }
 
     public void onEvent(RuntimeStart event) {

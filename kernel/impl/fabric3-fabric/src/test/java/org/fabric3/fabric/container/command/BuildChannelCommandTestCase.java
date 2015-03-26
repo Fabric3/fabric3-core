@@ -22,14 +22,14 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 public class BuildChannelCommandTestCase extends TestCase {
-    private PhysicalChannelDefinition definition;
+    private PhysicalChannel physicalChannel;
 
     public void testEquals() throws Exception {
-        BuildChannelCommand command1 = new BuildChannelCommand(definition);
-        BuildChannelCommand command2 = new BuildChannelCommand(definition);
+        BuildChannelCommand command1 = new BuildChannelCommand(physicalChannel);
+        BuildChannelCommand command2 = new BuildChannelCommand(physicalChannel);
         assertEquals(command1, command2);
     }
 
@@ -37,6 +37,6 @@ public class BuildChannelCommandTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("channel");
         QName name = new QName("test", "composite");
-        definition = new PhysicalChannelDefinition(uri, name);
+        physicalChannel = new PhysicalChannel(uri, name);
     }
 }

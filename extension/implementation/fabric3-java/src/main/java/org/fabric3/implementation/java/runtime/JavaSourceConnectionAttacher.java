@@ -23,12 +23,12 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSource;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches and detaches a {@link ChannelConnection} from a Java component producer.
  */
 @EagerInit
-public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<JavaConnectionSourceDefinition> {
+public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<JavaConnectionSource> {
     private ComponentManager manager;
     private ChannelProxyService proxyService;
 
@@ -46,7 +46,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
         this.proxyService = proxyService;
     }
 
-    public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(JavaConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
 
@@ -68,7 +68,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
         component.setSupplier(injectable, supplier);
     }
 
-    public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
+    public void detach(JavaConnectionSource source, PhysicalConnectionTarget target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();

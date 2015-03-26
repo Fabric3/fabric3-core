@@ -23,13 +23,13 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  * Attaches (and detaches) a wire from a source component or transport binding.
  */
-public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
+public interface SourceWireAttacher<PSD extends PhysicalWireSource> {
     /**
      * Attaches a wire to a source component or an incoming binding.
      *
@@ -38,7 +38,7 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @param wire   the wire
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void attach(PSD source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception;
+    void attach(PSD source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception;
 
     /**
      * Attaches a Supplier that returns a direct target instance to a source component.
@@ -48,7 +48,7 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @param target   the target definition for the wire
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    default void attachSupplier(PSD source, Supplier<?> supplier, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    default void attachSupplier(PSD source, Supplier<?> supplier, PhysicalWireTarget target) throws Fabric3Exception {
 
     }
 
@@ -59,7 +59,7 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @param target metadata for the target side of the wire
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    void detach(PSD source, PhysicalWireTargetDefinition target) throws Fabric3Exception;
+    void detach(PSD source, PhysicalWireTarget target) throws Fabric3Exception;
 
     /**
      * detaches a Supplier from a source component.
@@ -68,7 +68,7 @@ public interface SourceWireAttacher<PSD extends PhysicalWireSourceDefinition> {
      * @param target the target definition for the wire
      * @throws Fabric3Exception if an exception occurs during the deattach operation
      */
-    default void detachSupplier(PSD source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    default void detachSupplier(PSD source, PhysicalWireTarget target) throws Fabric3Exception {
 
     }
 

@@ -30,7 +30,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  * Base functionality for build/dispose component generators.
@@ -45,22 +45,22 @@ public abstract class AbstractBuildComponentCommandGenerator<T extends Command> 
     }
 
     @SuppressWarnings("unchecked")
-    protected PhysicalComponentDefinition generateDefinition(LogicalComponent<?> component) throws Fabric3Exception {
+    protected PhysicalComponent generateDefinition(LogicalComponent<?> component) throws Fabric3Exception {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         Class<? extends Implementation> type = implementation.getClass();
         ComponentGenerator generator = generatorRegistry.getComponentGenerator(type);
         if (generator == null) {
             throw new Fabric3Exception("Generator not found: " + type.getName());
         }
-        PhysicalComponentDefinition definition = generator.generate(component);
+        PhysicalComponent physicalComponent = generator.generate(component);
         URI uri = component.getUri();
-        definition.setComponentUri(uri);
+        physicalComponent.setComponentUri(uri);
         URI contributionUri = component.getDefinition().getContributionUri();
-        definition.setContributionUri(contributionUri);
-        definition.setClassLoader(classLoaderRegistry.getClassLoader(contributionUri));
+        physicalComponent.setContributionUri(contributionUri);
+        physicalComponent.setClassLoader(classLoaderRegistry.getClassLoader(contributionUri));
         QName deployable = component.getDeployable();
-        definition.setDeployable(deployable);
-        return definition;
+        physicalComponent.setDeployable(deployable);
+        return physicalComponent;
     }
 
 }

@@ -36,23 +36,23 @@
         <f3:implementation.system class="org.fabric3.implementation.java.generator.JavaGenerationHelperImpl"/>
     </component>
 
-    <component name="JavaComponentBuilder" f3:key="org.fabric3.implementation.java.provision.JavaComponentDefinition">
+    <component name="JavaComponentBuilder" f3:key="org.fabric3.implementation.java.provision.PhysicalJavaComponent">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaComponentBuilder"/>
     </component>
 
-    <component name="JavaSourceWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaWireSourceDefinition">
+    <component name="JavaSourceWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaWireSource">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaSourceWireAttacher"/>
     </component>
 
-    <component name="JavaTargetWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaWireTargetDefinition">
+    <component name="JavaTargetWireAttacher" f3:key="org.fabric3.implementation.java.provision.JavaWireTarget">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaTargetWireAttacher"/>
     </component>
 
-    <component name="JavaSourceConnectionAttacher" f3:key="org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition">
+    <component name="JavaSourceConnectionAttacher" f3:key="org.fabric3.implementation.java.provision.JavaConnectionSource">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaSourceConnectionAttacher"/>
     </component>
 
-    <component name="JavaTargetConnectionAttacher" f3:key="org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition">
+    <component name="JavaTargetConnectionAttacher" f3:key="org.fabric3.implementation.java.provision.JavaConnectionTarget">
         <f3:implementation.system class="org.fabric3.implementation.java.runtime.JavaTargetConnectionAttacher"/>
     </component>
 

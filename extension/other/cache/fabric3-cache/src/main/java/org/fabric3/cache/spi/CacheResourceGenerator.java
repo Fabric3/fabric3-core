@@ -21,11 +21,10 @@ package org.fabric3.cache.spi;
 
 import org.fabric3.api.host.Fabric3Exception;
 
-
 /**
  * Specialized generator for runtime cache configuration.
  */
-public interface CacheResourceGenerator<D extends CacheResource> {
+public interface CacheResourceGenerator<T extends CacheResource> {
 
     /**
      * Generate the physical cache definition for a runtime from a cache definition declared in a composite.
@@ -34,5 +33,5 @@ public interface CacheResourceGenerator<D extends CacheResource> {
      * @return the physical definition
      * @throws Fabric3Exception if an error is encountered during generation
      */
-    PhysicalCacheResourceDefinition generateResource(D resource) throws Fabric3Exception;
+    PhysicalCacheResource generateResource(T resource) throws Fabric3Exception;
 }

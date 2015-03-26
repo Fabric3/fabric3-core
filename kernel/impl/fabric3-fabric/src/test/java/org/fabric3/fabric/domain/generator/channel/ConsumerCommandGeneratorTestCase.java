@@ -39,8 +39,8 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  *
@@ -83,7 +83,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateBuildChannel() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateConsumer(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -107,7 +107,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateAttach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateConsumer(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -128,7 +128,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateConsumer(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -154,7 +154,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateFullDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnectionDefinition> list = Collections.singletonList(new PhysicalChannelConnectionDefinition(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
         EasyMock.expect(connectionGenerator.generateConsumer(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -204,8 +204,8 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"));
-        buildChannelCommand = new BuildChannelCommand(definition);
-        disposeChannelCommand = new DisposeChannelCommand(definition);
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
+        buildChannelCommand = new BuildChannelCommand(physicalChannel);
+        disposeChannelCommand = new DisposeChannelCommand(physicalChannel);
     }
 }

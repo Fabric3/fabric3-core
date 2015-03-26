@@ -32,7 +32,7 @@ import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -69,16 +69,16 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
 
     @SuppressWarnings({"unchecked"})
     public void execute(DisposeComponentCommand command) {
-        PhysicalComponentDefinition definition = command.getDefinition();
-        URI uri = definition.getComponentUri();
+        PhysicalComponent physicalComponent = command.getComponent();
+        URI uri = physicalComponent.getComponentUri();
         Component component = componentManager.unregister(uri);
-        ComponentBuilder builder = builders.get(definition.getClass());
+        ComponentBuilder builder = builders.get(physicalComponent.getClass());
         if (builder == null) {
-            throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());
+            throw new Fabric3Exception("Builder not found for " + physicalComponent.getClass().getName());
         }
-        builder.dispose(definition, component);
+        builder.dispose(physicalComponent, component);
         for (ComponentBuilderListener listener : listeners) {
-            listener.onDispose(component, definition);
+            listener.onDispose(component, physicalComponent);
         }
     }
 

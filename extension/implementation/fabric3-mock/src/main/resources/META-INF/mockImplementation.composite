@@ -17,15 +17,15 @@
         <f3:implementation.system class="org.fabric3.implementation.mock.generator.MockComponentGenerator"/>
     </component>
 
-    <component name="MockComponentBuilder" f3:key="org.fabric3.implementation.mock.model.MockComponentDefinition">
+    <component name="MockComponentBuilder" f3:key="org.fabric3.implementation.mock.model.MockPhysicalComponent">
         <f3:implementation.system class="org.fabric3.implementation.mock.runtime.MockComponentBuilder"/>
     </component>
 
-    <component name="MockTargetWireAttacher" f3:key="org.fabric3.implementation.mock.provision.MockWireTargetDefinition">
+    <component name="MockTargetWireAttacher" f3:key="org.fabric3.implementation.mock.provision.MockWireTarget">
         <f3:implementation.system class="org.fabric3.implementation.mock.runtime.MockTargetWireAttacher"/>
     </component>
 
-    <component name="MockSourceWireAttacher" f3:key="org.fabric3.implementation.mock.provision.MockWireSourceDefinition">
+    <component name="MockSourceWireAttacher" f3:key="org.fabric3.implementation.mock.provision.MockWireSource">
         <f3:implementation.system class="org.fabric3.implementation.mock.runtime.MockSourceWireAttacher"/>
     </component>
 

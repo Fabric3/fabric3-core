@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 
 /**
  * Generates PhysicalOperationDefinitions which are used to instantiate interceptor chains for a wire, bound service, or bound reference on a runtime.
@@ -35,7 +35,7 @@ public interface PhysicalOperationGenerator {
      * @return the PhysicalOperationDefinition
      * @throws Fabric3Exception if there is an error generating the operations
      */
-    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations) throws Fabric3Exception;
+    Set<PhysicalOperation> generateOperations(List<LogicalOperation> operations) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalOperationDefinition when the source reference and target service contracts are different.
@@ -46,7 +46,7 @@ public interface PhysicalOperationGenerator {
      * @return the PhysicalOperationDefinition
      * @throws Fabric3Exception if there is an error generating the operations
      */
-    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote)
+    Set<PhysicalOperation> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, boolean remote)
             throws Fabric3Exception;
 
 }

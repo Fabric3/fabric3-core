@@ -43,11 +43,11 @@
         <f3:implementation.system class="org.fabric3.implementation.junit.generator.JUnitWireBindingGenerator"/>
     </component>
 
-    <component name="JunitSourceWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition">
+    <component name="JunitSourceWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitWireSource">
         <f3:implementation.system class="org.fabric3.implementation.junit.runtime.JunitSourceWireAttacher"/>
     </component>
 
-    <component name="JUnitTargetWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition">
+    <component name="JUnitTargetWireAttacher" f3:key="org.fabric3.implementation.junit.provision.JUnitWireTarget">
         <f3:implementation.system class="org.fabric3.implementation.junit.runtime.JUnitTargetWireAttacher"/>
     </component>
 

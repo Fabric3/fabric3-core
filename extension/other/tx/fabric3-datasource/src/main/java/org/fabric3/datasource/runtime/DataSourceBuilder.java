@@ -33,11 +33,11 @@ public class DataSourceBuilder implements ResourceBuilder<PhysicalDataSourceReso
         this.factory = factory;
     }
 
-    public void build(PhysicalDataSourceResource definition) {
-        definition.getConfigurations().forEach(factory::create);
+    public void build(PhysicalDataSourceResource resource) {
+        resource.getConfigurations().forEach(factory::create);
     }
 
-    public void remove(PhysicalDataSourceResource definition) {
-        definition.getConfigurations().forEach(factory::remove);
+    public void remove(PhysicalDataSourceResource resource) {
+        resource.getConfigurations().forEach(factory::remove);
     }
 }

@@ -28,11 +28,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  * Generates metadata used to provision components and physical wires to a runtime.
@@ -40,71 +40,71 @@ import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
 public interface ComponentGenerator<C extends LogicalComponent<? extends Implementation<?>>> {
 
     /**
-     * Generates an {@link PhysicalComponentDefinition} based on a {@link Component}. The resulting
+     * Generates an {@link PhysicalComponent} based on a {@link Component}. The resulting
      * PhysicalComponentDefinition is added to the PhysicalChangeSet associated with the current GeneratorContext.
      *
      * @param component the logical component to evaluate
      * @return the physical component definition
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalComponentDefinition generate(C component) throws Fabric3Exception;
+    PhysicalComponent generate(C component) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
+     * Generates a {@link PhysicalWireSource} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
      * is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param reference the source logical reference
      * @return the metadata used to attach the wire to its source on the service node
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception;
+    PhysicalWireSource generateSource(LogicalReference reference) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
+     * Generates a {@link PhysicalWireTarget} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
      * is specific to the component implementation type and used when the wire is attached to its target on a runtime.
      *
      * @param service the target logical service
      * @return the metadata used to attach the wire to its target on the service node
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception;
+    PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in the
+     * Generates a {@link PhysicalWireSource} used to attach a physical wire for a callback service to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param service the forward service the callback is being generated for
      * @return the metadata used to attach the wire to its source on the service node
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception;
+    PhysicalWireSource generateCallbackSource(LogicalService service) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalConnectionSourceDefinition} used to attach an event connection to its source producer.
+     * Generates a {@link PhysicalConnectionSource} used to attach an event connection to its source producer.
      *
      * @param producer the producer
      * @return the connection metadata
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws Fabric3Exception;
+    PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalConnectionTargetDefinition} used to attach an event connection to its target consumer.
+     * Generates a {@link PhysicalConnectionTarget} used to attach an event connection to its target consumer.
      *
      * @param consumer the consumer
      * @return the connection metadata
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception;
+    PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
+     * Generates a {@link PhysicalWireSource} used to attach a physical resource to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param resourceReference the source logical resource
      * @return the metadata used to attach the wire to its source on the service node
      * @throws Fabric3Exception if an error occurs during the generation process
      */
-    PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception;
+    PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception;
 
 }

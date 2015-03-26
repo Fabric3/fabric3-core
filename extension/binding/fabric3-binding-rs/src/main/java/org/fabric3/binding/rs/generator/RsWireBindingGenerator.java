@@ -24,12 +24,12 @@ import java.util.List;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.rs.model.RsBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
-import org.fabric3.binding.rs.provision.RsWireTargetDefinition;
+import org.fabric3.binding.rs.provision.RsWireSource;
+import org.fabric3.binding.rs.provision.RsWireTarget;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -39,18 +39,18 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 @Key("org.fabric3.api.binding.rs.model.RsBinding")
 public class RsWireBindingGenerator implements WireBindingGenerator<RsBinding> {
-    public RsWireSourceDefinition generateSource(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+    public RsWireSource generateSource(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         Class<?> interfaze = ((JavaServiceContract) contract).getInterfaceClass();
         URI uri = binding.getDefinition().getTargetUri();
-        return new RsWireSourceDefinition(interfaze, uri);
+        return new RsWireSource(interfaze, uri);
     }
 
-    public RsWireTargetDefinition generateTarget(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+    public RsWireTarget generateTarget(LogicalBinding<RsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         Class<?> interfaceClass = ((JavaServiceContract) contract).getInterfaceClass();
-        return new RsWireTargetDefinition(binding.getDefinition().getTargetUri(), interfaceClass);
+        return new RsWireTarget(binding.getDefinition().getTargetUri(), interfaceClass);
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBinding> binding,
+    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<RsBinding> binding,
                                                                      ServiceContract contract,
                                                                      List<LogicalOperation> operations) {
         return generateTarget(binding, contract, operations);

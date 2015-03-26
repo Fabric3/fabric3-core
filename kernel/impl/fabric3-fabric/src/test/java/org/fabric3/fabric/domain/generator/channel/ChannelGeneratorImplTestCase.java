@@ -34,8 +34,8 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelBinding;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  *
@@ -54,9 +54,9 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
-        PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
 
-        assertNotNull(definition);
+        assertNotNull(physicalChannel);
 
         EasyMock.verify(registry, channelGenerator);
     }
@@ -72,9 +72,9 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.PROVISIONED);
-        PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
 
-        assertNotNull(definition);
+        assertNotNull(physicalChannel);
 
         EasyMock.verify(registry, channelGenerator);
     }
@@ -85,7 +85,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class),
-                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysicalDefinition());
+                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysical());
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         registry.getConnectionBindingGenerator(MockBinding.class);
@@ -100,9 +100,9 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
         channel.addBinding(binding);
 
-        PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
 
-        assertNotNull(definition);
+        assertNotNull(physicalChannel);
 
         EasyMock.verify(registry, bindingGenerator, channelGenerator);
     }
@@ -118,9 +118,9 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
-        PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
 
-        assertNotNull(definition);
+        assertNotNull(physicalChannel);
 
         EasyMock.verify(registry, channelGenerator);
     }
@@ -131,7 +131,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class),
-                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysicalDefinition());
+                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysical());
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
 
@@ -148,17 +148,17 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
         channel.addBinding(binding);
 
-        PhysicalChannelDefinition definition = generator.generateChannelDefinition(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
 
-        assertNotNull(definition);
+        assertNotNull(physicalChannel);
 
         EasyMock.verify(registry, bindingGenerator, channelGenerator);
     }
 
     private ChannelGeneratorExtension getChannelGenerator() throws Fabric3Exception {
         ChannelGeneratorExtension channelGenerator = EasyMock.createMock(ChannelGeneratorExtension.class);
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "test"));
-        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class), EasyMock.eq(DEPLOYABLE))).andReturn(definition);
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("channel"), new QName("test", "test"));
+        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class), EasyMock.eq(DEPLOYABLE))).andReturn(physicalChannel);
         return channelGenerator;
     }
 
@@ -167,8 +167,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         return new LogicalChannel(URI.create("channel"), definition, null);
     }
 
-    private class MockPhysicalDefinition extends PhysicalChannelBindingDefinition {
-        private static final long serialVersionUID = -5237182726243360124L;
+    private class MockPhysical extends PhysicalChannelBinding {
     }
 
 }

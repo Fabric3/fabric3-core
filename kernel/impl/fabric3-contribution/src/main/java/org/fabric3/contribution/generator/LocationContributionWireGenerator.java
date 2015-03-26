@@ -22,15 +22,15 @@ import java.net.URI;
 
 import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
  * Default implementation of ClassLoaderWireGenerator.
  */
 public class LocationContributionWireGenerator implements ClassLoaderWireGenerator<LocationContributionWire> {
 
-    public PhysicalClassLoaderWireDefinition generate(LocationContributionWire wire) {
+    public ClassLoaderWire generate(LocationContributionWire wire) {
         URI uri = wire.getExportContributionUri();
-        return new PhysicalClassLoaderWireDefinition(uri);
+        return new ClassLoaderWire(uri);
     }
 }

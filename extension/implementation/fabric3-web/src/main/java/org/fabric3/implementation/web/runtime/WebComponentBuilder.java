@@ -30,7 +30,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.implementation.web.provision.WebComponentDefinition;
+import org.fabric3.implementation.web.provision.PhysicalWebComponent;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -39,7 +39,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Instantiates a web component on a runtime node.
  */
 @EagerInit
-public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinition, WebComponent> {
+public class WebComponentBuilder implements ComponentBuilder<PhysicalWebComponent, WebComponent> {
     private WireProxyService wireProxyService;
     private ChannelProxyService channelProxyService;
     private WebApplicationActivator activator;
@@ -58,14 +58,14 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
         this.info = info;
     }
 
-    public WebComponent build(WebComponentDefinition definition) throws Fabric3Exception {
-        URI uri = definition.getComponentUri();
-        QName deployable = definition.getDeployable();
+    public WebComponent build(PhysicalWebComponent physicalComponent) throws Fabric3Exception {
+        URI uri = physicalComponent.getComponentUri();
+        QName deployable = physicalComponent.getDeployable();
         Map<String, Supplier<?>> propertyFactories = Collections.emptyMap();
-        URI contributionUri = definition.getContributionUri();
-        Map<String, Map<String, InjectionSite>> injectorMappings = definition.getInjectionSiteMappings();
-        ClassLoader cl = definition.getClassLoader();
-        String contextUrl = definition.getContextUrl();
+        URI contributionUri = physicalComponent.getContributionUri();
+        Map<String, Map<String, InjectionSite>> injectorMappings = physicalComponent.getInjectionSiteMappings();
+        ClassLoader cl = physicalComponent.getClassLoader();
+        String contextUrl = physicalComponent.getContextUrl();
         return new WebComponent(uri,
                                 contextUrl,
                                 deployable,

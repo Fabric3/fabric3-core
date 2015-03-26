@@ -31,11 +31,11 @@ import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalEventFilter;
+import org.fabric3.spi.model.physical.PhysicalEventStream;
 
 /**
  *
@@ -44,37 +44,37 @@ public class ChannelConnectorImplTestCase extends TestCase {
     private ChannelConnectorImpl connector;
     private SourceConnectionAttacher sourceAttacher;
     private TargetConnectionAttacher targetAttacher;
-    private PhysicalChannelConnectionDefinition definition;
+    private PhysicalChannelConnection connection;
 
     @SuppressWarnings({"unchecked"})
     public void testConnect() throws Exception {
-        sourceAttacher.attach(EasyMock.isA(PhysicalConnectionSourceDefinition.class),
-                              EasyMock.isA(PhysicalConnectionTargetDefinition.class),
+        sourceAttacher.attach(EasyMock.isA(PhysicalConnectionSource.class),
+                              EasyMock.isA(PhysicalConnectionTarget.class),
                               EasyMock.isA(ChannelConnection.class));
-        targetAttacher.attach(EasyMock.isA(PhysicalConnectionSourceDefinition.class),
-                              EasyMock.isA(PhysicalConnectionTargetDefinition.class),
+        targetAttacher.attach(EasyMock.isA(PhysicalConnectionSource.class),
+                              EasyMock.isA(PhysicalConnectionTarget.class),
                               EasyMock.isA(ChannelConnection.class));
 
         EventFilterBuilder filterBuilder = EasyMock.createMock(EventFilterBuilder.class);
-        EasyMock.expect(filterBuilder.build(EasyMock.isA(MockFilterDefinition.class))).andReturn(new MockEventFilter());
+        EasyMock.expect(filterBuilder.build(EasyMock.isA(MockFilter.class))).andReturn(new MockEventFilter());
 
-        connector.filterBuilders = Collections.singletonMap(MockFilterDefinition.class, filterBuilder);
+        connector.filterBuilders = Collections.singletonMap(MockFilter.class, filterBuilder);
 
         EasyMock.replay(sourceAttacher, targetAttacher, filterBuilder);
 
-        connector.connect(definition);
+        connector.connect(connection);
 
         EasyMock.verify(sourceAttacher, targetAttacher, filterBuilder);
     }
 
     @SuppressWarnings({"unchecked"})
     public void testDisconnect() throws Exception {
-        sourceAttacher.detach(EasyMock.isA(PhysicalConnectionSourceDefinition.class), EasyMock.isA(PhysicalConnectionTargetDefinition.class));
-        targetAttacher.detach(EasyMock.isA(PhysicalConnectionSourceDefinition.class), EasyMock.isA(PhysicalConnectionTargetDefinition.class));
+        sourceAttacher.detach(EasyMock.isA(PhysicalConnectionSource.class), EasyMock.isA(PhysicalConnectionTarget.class));
+        targetAttacher.detach(EasyMock.isA(PhysicalConnectionSource.class), EasyMock.isA(PhysicalConnectionTarget.class));
 
         EasyMock.replay(sourceAttacher, targetAttacher);
 
-        connector.disconnect(definition);
+        connector.disconnect(connection);
 
         EasyMock.verify(sourceAttacher, targetAttacher);
     }
@@ -91,37 +91,34 @@ public class ChannelConnectorImplTestCase extends TestCase {
         targetAttacher = EasyMock.createMock(TargetConnectionAttacher.class);
 
         connector = new ChannelConnectorImpl();
-        Map sourceAttachers = Collections.singletonMap(MockSourceDefinition.class, sourceAttacher);
-        Map targetAttachers = Collections.singletonMap(MockTargetDefinition.class, targetAttacher);
+        Map sourceAttachers = Collections.singletonMap(MockSource.class, sourceAttacher);
+        Map targetAttachers = Collections.singletonMap(MockTarget.class, targetAttacher);
         connector.sourceAttachers = sourceAttachers;
         connector.targetAttachers = targetAttachers;
-        definition = createDefinition();
+        connection = createConnection();
     }
 
-    private PhysicalChannelConnectionDefinition createDefinition() {
-        PhysicalConnectionSourceDefinition sourceDefinition = new MockSourceDefinition();
-        sourceDefinition.setClassLoader(getClass().getClassLoader());
-        PhysicalConnectionTargetDefinition targetDefinition = new MockTargetDefinition();
-        targetDefinition.setClassLoader(getClass().getClassLoader());
-        PhysicalEventStreamDefinition stream = new PhysicalEventStreamDefinition("stream");
+    private PhysicalChannelConnection createConnection() {
+        PhysicalConnectionSource source = new MockSource();
+        source.setClassLoader(getClass().getClassLoader());
+        PhysicalConnectionTarget target = new MockTarget();
+        target.setClassLoader(getClass().getClassLoader());
+        PhysicalEventStream stream = new PhysicalEventStream("stream");
         stream.addEventType(Object.class);
-        stream.addFilterDefinition(new MockFilterDefinition());
+        stream.addFilter(new MockFilter());
         URI uri = URI.create("testChannel");
-        return new PhysicalChannelConnectionDefinition(uri, sourceDefinition, targetDefinition, stream, false);
+        return new PhysicalChannelConnection(uri, source, target, stream, false);
     }
 
-    private class MockSourceDefinition extends PhysicalConnectionSourceDefinition {
-        private static final long serialVersionUID = 3221998280377320208L;
-
-    }
-
-    private class MockTargetDefinition extends PhysicalConnectionTargetDefinition {
-        private static final long serialVersionUID = 3221998280377320208L;
+    private class MockSource extends PhysicalConnectionSource {
 
     }
 
-    private class MockFilterDefinition extends PhysicalEventFilterDefinition {
-        private static final long serialVersionUID = 4679150177565902805L;
+    private class MockTarget extends PhysicalConnectionTarget {
+
+    }
+
+    private class MockFilter extends PhysicalEventFilter {
     }
 
     private class MockEventFilter implements EventFilter {

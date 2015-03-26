@@ -40,7 +40,7 @@ import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
 import static org.fabric3.api.binding.jms.model.CacheLevel.CONNECTION;
@@ -69,7 +69,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         this.monitor = monitor;
     }
 
-    public void attach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws Fabric3Exception {
+    public void attach(JmsConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) throws Fabric3Exception {
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = source.getClassLoader();
 
@@ -97,7 +97,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         containerManager.register(container);
     }
 
-    public void detach(JmsConnectionSource source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(JmsConnectionSource source, PhysicalConnectionTarget target) throws Fabric3Exception {
         containerManager.unregister(source.getUri());
         resolver.release(source.getMetadata().getConnectionFactory());
     }

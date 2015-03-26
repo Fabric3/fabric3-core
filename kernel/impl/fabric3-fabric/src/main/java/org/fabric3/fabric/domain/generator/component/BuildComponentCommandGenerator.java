@@ -27,7 +27,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -45,8 +45,8 @@ public class BuildComponentCommandGenerator extends AbstractBuildComponentComman
 
     public Optional<BuildComponentCommand> generate(LogicalComponent<?> component) {
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW)) {
-            PhysicalComponentDefinition definition = generateDefinition(component);
-            return Optional.of(new BuildComponentCommand(definition));
+            PhysicalComponent physicalComponent = generateDefinition(component);
+            return Optional.of(new BuildComponentCommand(physicalComponent));
         }
         return Optional.empty();
     }

@@ -26,8 +26,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelBinding;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  *
@@ -36,13 +36,13 @@ public class DefaultChannelBuilderTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testBuildChannel() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"));
-        definition.setBindingDefinition(new MockBindingDefinition());
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
+        physicalChannel.setBinding(new MockBinding());
 
         Channel channel = EasyMock.createMock(Channel.class);
 
         ChannelBindingBuilder bindingBuilder = EasyMock.createMock(ChannelBindingBuilder.class);
-        bindingBuilder.build(EasyMock.isA(PhysicalChannelBindingDefinition.class), EasyMock.isA(Channel.class));
+        bindingBuilder.build(EasyMock.isA(PhysicalChannelBinding.class), EasyMock.isA(Channel.class));
 
         ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
 
@@ -50,15 +50,14 @@ public class DefaultChannelBuilderTestCase extends TestCase {
 
         DefaultChannelBuilder builder = new DefaultChannelBuilder(executorService);
 
-        Map bindingBuilderMap = Collections.singletonMap(MockBindingDefinition.class, bindingBuilder);
+        Map bindingBuilderMap = Collections.singletonMap(MockBinding.class, bindingBuilder);
         builder.setBindingBuilders(bindingBuilderMap);
 
-        assertNotNull(builder.build(definition));
+        assertNotNull(builder.build(physicalChannel));
 
         EasyMock.verify(channel, bindingBuilder);
     }
 
-    private class MockBindingDefinition extends PhysicalChannelBindingDefinition {
-        private static final long serialVersionUID = -474926224717103363L;
+    private class MockBinding extends PhysicalChannelBinding {
     }
 }

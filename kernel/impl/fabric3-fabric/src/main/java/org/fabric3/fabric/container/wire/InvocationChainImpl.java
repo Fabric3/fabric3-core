@@ -21,21 +21,21 @@ package org.fabric3.fabric.container.wire;
 
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 
 /**
  *
  */
 public class InvocationChainImpl implements InvocationChain {
-    protected PhysicalOperationDefinition physicalOperation;
+    protected PhysicalOperation physicalOperation;
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
 
-    public InvocationChainImpl(PhysicalOperationDefinition operation) {
+    public InvocationChainImpl(PhysicalOperation operation) {
         this.physicalOperation = operation;
     }
 
-    public PhysicalOperationDefinition getPhysicalOperation() {
+    public PhysicalOperation getPhysicalOperation() {
         return physicalOperation;
     }
 

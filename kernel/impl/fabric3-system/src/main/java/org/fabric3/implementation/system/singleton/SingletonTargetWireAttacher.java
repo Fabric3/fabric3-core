@@ -32,14 +32,14 @@ import org.oasisopen.sca.annotation.Reference;
  * Exists as a no-op attacher for system singleton components
  */
 @EagerInit
-public class SingletonTargetWireAttacher implements TargetWireAttacher<SingletonWireTargetDefinition> {
+public class SingletonTargetWireAttacher implements TargetWireAttacher<SingletonWireTarget> {
     private final ComponentManager manager;
 
     public SingletonTargetWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public Supplier<?> createSupplier(SingletonWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SingletonWireTarget target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SingletonComponent targetComponent = (SingletonComponent) manager.getComponent(targetId);
         return targetComponent.createSupplier();

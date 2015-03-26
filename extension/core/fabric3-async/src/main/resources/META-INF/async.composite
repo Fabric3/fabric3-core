@@ -25,7 +25,7 @@
         <f3:implementation.system class="org.fabric3.async.generator.NonBlockingGenerator"/>
     </component>
 
-    <component f3:key="org.fabric3.async.provision.NonBlockingInterceptorDefinition" name="NonBlockingInterceptorBuilder">
+    <component f3:key="org.fabric3.async.provision.PhysicalNonBlockingInterceptor" name="NonBlockingInterceptorBuilder">
         <f3:implementation.system class="org.fabric3.async.runtime.NonBlockingInterceptorBuilder"/>
         <reference name="executorService" target="RuntimeThreadPoolExecutor"/>
     </component>

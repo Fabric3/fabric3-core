@@ -18,21 +18,21 @@
  */
 package org.fabric3.implementation.mock.runtime;
 
-import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
+import org.fabric3.implementation.mock.provision.MockWireSource;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  *
  */
-public class MockSourceWireAttacher implements SourceWireAttacher<MockWireSourceDefinition> {
+public class MockSourceWireAttacher implements SourceWireAttacher<MockWireSource> {
 
-    public void attach(MockWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire){
+    public void attach(MockWireSource source, PhysicalWireTarget target, Wire wire){
         // Empty implementation; we don't want to attach anything to the mock
     }
 
-    public void detach(MockWireSourceDefinition source, PhysicalWireTargetDefinition target){
+    public void detach(MockWireSource source, PhysicalWireTarget target){
     }
 
 

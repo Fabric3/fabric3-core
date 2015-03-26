@@ -24,7 +24,7 @@ import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.interceptor.TransformerInterceptorFactoryImpl;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.w3c.dom.Document;
@@ -59,7 +59,7 @@ public class TransformerInterceptorFactoryImplTestCase extends TestCase {
 
         TransformerInterceptorFactoryImpl factory = new TransformerInterceptorFactoryImpl(registry);
 
-        PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
+        PhysicalOperation definition = new PhysicalOperation();
         definition.addSourceParameterType(String.class);
         definition.setSourceReturnType(String.class);
         definition.addTargetParameterType(Document.class);

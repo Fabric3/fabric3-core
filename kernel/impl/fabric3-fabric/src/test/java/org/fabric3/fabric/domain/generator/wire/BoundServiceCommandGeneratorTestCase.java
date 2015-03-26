@@ -34,7 +34,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 
 /**
  *
@@ -42,9 +42,10 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 public class BoundServiceCommandGeneratorTestCase extends TestCase {
     private WireGenerator wireGenerator;
 
+    @SuppressWarnings("unchecked")
     public void testGenerate() throws Exception {
-        MockWireDefinition wireDefinition = new MockWireDefinition();
-        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), (URI) EasyMock.isNull())).andReturn(wireDefinition);
+        MockWire wireDefinition = new MockWire();
+        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isNull())).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
 
@@ -65,6 +66,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
+    @SuppressWarnings("unchecked")
     public void testGenerateNoBinding() throws Exception {
         BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
 
@@ -86,9 +88,10 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
+    @SuppressWarnings("unchecked")
     public void testGenerateDetach() throws Exception {
-        MockWireDefinition wireDefinition = new MockWireDefinition();
-        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), (URI) EasyMock.isNull())).andReturn(wireDefinition);
+        MockWire wireDefinition = new MockWire();
+        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isNull())).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.MARKED);
@@ -100,8 +103,9 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
+    @SuppressWarnings("unchecked")
     public void testGenerateCallback() throws Exception {
-        MockWireDefinition wireDefinition = new MockWireDefinition();
+        MockWire wireDefinition = new MockWire();
         EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
         EasyMock.expect(wireGenerator.generateBoundServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
@@ -123,8 +127,9 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
+    @SuppressWarnings("unchecked")
     public void testGenerateDetachCallback() throws Exception {
-        MockWireDefinition wireDefinition = new MockWireDefinition();
+        MockWire wireDefinition = new MockWire();
         EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
         EasyMock.expect(wireGenerator.generateBoundServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
@@ -148,6 +153,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
+    @SuppressWarnings("unchecked")
     private LogicalComponent<?> createComponent() {
         LogicalComponent component = new LogicalComponent(URI.create("component"), null, null);
         LogicalService service = new LogicalService(URI.create("component#service"), null, null);
@@ -170,24 +176,19 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     }
 
     private class MockBindingDefinition extends Binding {
-        private static final long serialVersionUID = 6341221394239456452L;
-
         public MockBindingDefinition() {
             super(URI.create("target"), null);
         }
     }
 
     private class MockContract extends ServiceContract {
-        private static final long serialVersionUID = -2909070237720164262L;
-
-        @Override
         public String getQualifiedInterfaceName() {
             return "test";
         }
     }
 
-    private class MockWireDefinition extends PhysicalWireDefinition {
-        private MockWireDefinition() {
+    private class MockWire extends PhysicalWire {
+        private MockWire() {
             super(null, null, null);
         }
     }

@@ -25,11 +25,11 @@ import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireSource;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -45,19 +45,19 @@ public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding
     }
 
     @SuppressWarnings({"unchecked"})
-    public MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
+    public MetroWireSource generateSource(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateSource(binding, contract);
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireTargetDefinition generateTarget(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
+    public PhysicalWireTarget generateTarget(LogicalBinding<WsBinding> binding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception {
         MetroGeneratorDelegate delegate = getDelegate(contract);
         return delegate.generateTarget(binding, contract);
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding,
+    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding,
                                                                      ServiceContract contract,
                                                                      List<LogicalOperation> operations) throws Fabric3Exception {
         MetroGeneratorDelegate delegate = getDelegate(contract);

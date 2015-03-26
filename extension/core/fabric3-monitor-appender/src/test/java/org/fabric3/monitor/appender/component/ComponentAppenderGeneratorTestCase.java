@@ -25,7 +25,7 @@ public class ComponentAppenderGeneratorTestCase extends TestCase {
 
     public void testGenerate() throws Exception {
         ComponentAppenderGenerator generator = new ComponentAppenderGenerator();
-        PhysicalComponentAppenderDefinition physicalDefinition = generator.generateResource(new ComponentAppenderDefinition("test"));
+        PhysicalComponentAppender physicalDefinition = generator.generateResource(new ComponentAppenderDefinition("test"));
 
         assertEquals("test", physicalDefinition.getComponentName());
     }

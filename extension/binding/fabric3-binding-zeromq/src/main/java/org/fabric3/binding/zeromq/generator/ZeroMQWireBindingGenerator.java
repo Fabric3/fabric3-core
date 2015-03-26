@@ -28,8 +28,8 @@ import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQWireTargetDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireSource;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireTarget;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -48,23 +48,23 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBinding> {
     private static final String TARGET_URI = "targetUri";
 
-    public ZeroMQWireSourceDefinition generateSource(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+    public ZeroMQWireSource generateSource(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         if (binding.isCallback()) {
             URI uri = URI.create("zmq://" + contract.getInterfaceName());
-            return new ZeroMQWireSourceDefinition(uri, metadata);
+            return new ZeroMQWireSource(uri, metadata);
         } else {
-            return new ZeroMQWireSourceDefinition(metadata);
+            return new ZeroMQWireSource(metadata);
         }
     }
 
-    public ZeroMQWireTargetDefinition generateTarget(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+    public ZeroMQWireTarget generateTarget(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         validateServiceContract(contract);
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
 
         if (binding.isCallback()) {
             URI targetUri = URI.create("zmq://" + contract.getInterfaceName());
-            return new ZeroMQWireTargetDefinition(targetUri, metadata);
+            return new ZeroMQWireTarget(targetUri, metadata);
         }
         URI targetUri;
         // If this is an undeployment, use the previously calculated target URI. This must be done since the target component may no longer
@@ -80,7 +80,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         return generateTarget(contract, targetUri, metadata);
     }
 
-    public ZeroMQWireTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding,
+    public ZeroMQWireTarget generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding,
                                                                    ServiceContract contract,
                                                                    List<LogicalOperation> operations) {
         URI targetUri = binding.getParent().getUri();
@@ -88,13 +88,13 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         return generateTarget(contract, targetUri, metadata);
     }
 
-    private ZeroMQWireTargetDefinition generateTarget(ServiceContract contract, URI targetUri, ZeroMQMetadata metadata) {
+    private ZeroMQWireTarget generateTarget(ServiceContract contract, URI targetUri, ZeroMQMetadata metadata) {
         boolean hasCallback = contract.getCallbackContract() != null;
         if (hasCallback) {
             URI callbackUri = URI.create("zmq://" + contract.getCallbackContract().getInterfaceName());
-            return new ZeroMQWireTargetDefinition(targetUri, callbackUri, metadata);
+            return new ZeroMQWireTarget(targetUri, callbackUri, metadata);
         }
-        return new ZeroMQWireTargetDefinition(targetUri, metadata);
+        return new ZeroMQWireTarget(targetUri, metadata);
     }
 
     /**

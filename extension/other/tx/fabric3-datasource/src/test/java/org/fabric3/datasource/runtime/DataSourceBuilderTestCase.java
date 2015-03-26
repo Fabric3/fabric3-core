@@ -46,10 +46,10 @@ public class DataSourceBuilderTestCase extends TestCase {
 
         DataSourceConfiguration configuration = new DataSourceConfiguration("datasource", "driver", DataSourceType.XA);
         List<DataSourceConfiguration> list = Collections.singletonList(configuration);
-        PhysicalDataSourceResource definition = new PhysicalDataSourceResource(list);
+        PhysicalDataSourceResource resource = new PhysicalDataSourceResource(list);
 
-        builder.build(definition);
-        builder.remove(definition);
+        builder.build(resource);
+        builder.remove(resource);
 
 
         EasyMock.verify(dataSource, factory);

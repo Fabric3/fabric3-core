@@ -25,7 +25,7 @@ import org.easymock.EasyMock;
 import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  *
@@ -35,10 +35,10 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
     public static final URI URI = java.net.URI.create("test");
 
     private RingBufferChannelBuilder builder;
-    private PhysicalChannelDefinition definition;
+    private PhysicalChannel physicalChannel;
 
     public void testBuild() throws Exception {
-        Channel channel = builder.build(definition);
+        Channel channel = builder.build(physicalChannel);
 
         assertEquals(URI, channel.getUri());
         assertEquals(DEPLOYABLE, channel.getDeployable());
@@ -47,7 +47,7 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
     public void testDispose() throws Exception {
         Channel channel = EasyMock.createMock(Channel.class);
 
-        builder.dispose(definition, channel);
+        builder.dispose(physicalChannel, channel);
     }
 
     public void setUp() throws Exception {
@@ -57,7 +57,7 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
 
         builder = new RingBufferChannelBuilder(executorService);
 
-        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, "ring.buffer", DeliveryType.ASYNCHRONOUS_WORKER);
-        definition.setMetadata(new RingBufferData());
+        physicalChannel = new PhysicalChannel(URI, DEPLOYABLE, "ring.buffer", DeliveryType.ASYNCHRONOUS_WORKER);
+        physicalChannel.setMetadata(new RingBufferData());
     }
 }

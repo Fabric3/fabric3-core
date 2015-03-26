@@ -27,12 +27,12 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
+import org.fabric3.implementation.system.provision.SystemWireSource;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -42,7 +42,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<SystemWireSourceDefinition> {
+public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<SystemWireSource> {
 
     private final ComponentManager manager;
     private WireProxyService proxyService;
@@ -64,7 +64,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         this.proxyService = proxyService;
     }
 
-    public void attach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(SystemWireSource source, PhysicalWireTarget target, Wire wire) {
         if (proxyService == null) {
             throw new Fabric3Exception("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
@@ -94,18 +94,18 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         }
     }
 
-    public void detach(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(SystemWireSource source, PhysicalWireTarget target) {
         detachSupplier(source, target);
     }
 
-    public void detachSupplier(SystemWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(SystemWireSource source, PhysicalWireTarget target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeSupplier(injectable);
     }
 
-    public void attachSupplier(SystemWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(SystemWireSource source, Supplier<?> supplier, PhysicalWireTarget target) {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

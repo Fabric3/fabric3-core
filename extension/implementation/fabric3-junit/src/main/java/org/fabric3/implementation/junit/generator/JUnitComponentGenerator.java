@@ -27,12 +27,12 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
+import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
+import org.fabric3.implementation.java.provision.JavaConnectionSource;
+import org.fabric3.implementation.java.provision.JavaConnectionTarget;
+import org.fabric3.implementation.java.provision.JavaWireSource;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
-import org.fabric3.implementation.junit.provision.JUnitWireTargetDefinition;
+import org.fabric3.implementation.junit.provision.JUnitWireTarget;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
@@ -42,11 +42,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -64,7 +64,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         this.javaHelper = javaHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) {
+    public PhysicalComponent generate(LogicalComponent<JUnitImplementation> component) {
 
         Component<JUnitImplementation> definition = component.getDefinition();
         JUnitImplementation implementation = definition.getImplementation();
@@ -79,7 +79,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         managerDefinition.setImplementationClass(implementation.getImplementationClass());
         helper.processInjectionSites(type, managerDefinition);
 
-        JavaComponentDefinition physical = new JavaComponentDefinition();
+        PhysicalJavaComponent physical = new PhysicalJavaComponent();
 
         physical.setScope(scope);
         physical.setManagerDefinition(managerDefinition);
@@ -87,58 +87,58 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
+    public PhysicalWireSource generateSource(LogicalReference reference) {
         URI uri = reference.getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) reference.getDefinition().getServiceContract();
 
-        JavaWireSourceDefinition wireDefinition = new JavaWireSourceDefinition();
-        wireDefinition.setUri(uri);
-        wireDefinition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
-        wireDefinition.setInterfaceClass(serviceContract.getInterfaceClass());
+        JavaWireSource source = new JavaWireSource();
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
+        source.setInterfaceClass(serviceContract.getInterfaceClass());
 
         // assume for now that any wire from a JUnit component can be optimized
-        wireDefinition.setOptimizable(true);
+        source.setOptimizable(true);
 
         if (reference.getDefinition().isKeyed()) {
-            wireDefinition.setKeyed(true);
+            source.setKeyed(true);
             DataType type = reference.getDefinition().getKeyDataType();
             String className = type.getType().getName();
-            wireDefinition.setKeyClassName(className);
+            source.setKeyClassName(className);
         }
 
-        return wireDefinition;
+        return source;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
+    public PhysicalWireSource generateCallbackSource(LogicalService service) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
-        javaHelper.generateConnectionSource(definition, producer);
-        return definition;
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
+        JavaConnectionSource source = new JavaConnectionSource();
+        javaHelper.generateConnectionSource(source, producer);
+        return source;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) {
-        JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
-        javaHelper.generateConnectionTarget(definition, consumer);
-        return definition;
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) {
+        JavaConnectionTarget target = new JavaConnectionTarget();
+        javaHelper.generateConnectionTarget(target, consumer);
+        return target;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {
         URI uri = resourceReference.getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) resourceReference.getDefinition().getServiceContract();
 
-        JavaWireSourceDefinition wireDefinition = new JavaWireSourceDefinition();
-        wireDefinition.setUri(uri);
-        wireDefinition.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
-        wireDefinition.setInterfaceClass(serviceContract.getInterfaceClass());
-        return wireDefinition;
+        JavaWireSource source = new JavaWireSource();
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
+        source.setInterfaceClass(serviceContract.getInterfaceClass());
+        return source;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) {
-        JUnitWireTargetDefinition wireDefinition = new JUnitWireTargetDefinition();
-        wireDefinition.setUri(service.getUri());
-        return wireDefinition;
+    public PhysicalWireTarget generateTarget(LogicalService service) {
+        JUnitWireTarget target = new JUnitWireTarget();
+        target.setUri(service.getUri());
+        return target;
     }
 }

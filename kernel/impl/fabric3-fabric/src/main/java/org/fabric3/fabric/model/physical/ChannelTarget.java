@@ -1,0 +1,38 @@
+/*
+ * Fabric3
+ * Copyright (c) 2009-2015 Metaform Systems
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.fabric3.fabric.model.physical;
+
+import java.net.URI;
+
+import org.fabric3.spi.model.physical.ChannelSide;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+
+/**
+ * Metadata for attaching the target side of a channel connection to a channel.
+ */
+public class ChannelTarget extends PhysicalConnectionTarget {
+    private ChannelSide channelSide;
+
+    public ChannelTarget(URI uri, ChannelSide channelSide) {
+        this.channelSide = channelSide;
+        setUri(uri);
+    }
+
+    public ChannelSide getChannelSide() {
+        return channelSide;
+    }
+}

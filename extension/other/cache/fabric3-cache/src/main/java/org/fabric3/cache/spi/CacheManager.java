@@ -21,7 +21,7 @@ import org.fabric3.api.host.Fabric3Exception;
 /**
  * Implementations manage cache resources for a provider on a runtime.
  */
-public interface CacheManager<T extends PhysicalCacheResourceDefinition> {
+public interface CacheManager<T extends PhysicalCacheResource> {
 
     /**
      * Returns a live, thread-safe reference to a cache or null if one is not defined for the given name.

@@ -34,7 +34,7 @@ import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -99,7 +99,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
     private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) {
         Map<Method, InvocationChain> chainMappings = new HashMap<>(chains.size());
         for (InvocationChain chain : chains) {
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
+            PhysicalOperation operation = chain.getPhysicalOperation();
             try {
                 Method method = findMethod(interfaze, operation);
                 chainMappings.put(method, chain);
@@ -132,7 +132,7 @@ public class BytecodeWireProxyService implements WireProxyServiceExtension {
      * @throws NoSuchMethodException  if a matching method is not found
      * @throws ClassNotFoundException if a parameter type specified in the operation is not found
      */
-    private Method findMethod(Class<?> clazz, PhysicalOperationDefinition operation) throws NoSuchMethodException, ClassNotFoundException {
+    private Method findMethod(Class<?> clazz, PhysicalOperation operation) throws NoSuchMethodException, ClassNotFoundException {
         String name = operation.getName();
         List<Class<?>> params = operation.getSourceParameterTypes();
         return clazz.getMethod(name, params.toArray(new Class[params.size()]));

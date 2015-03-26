@@ -22,16 +22,16 @@ import java.net.URI;
 
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
- * Generates a {@link PhysicalClassLoaderWireDefinition} that wires two classloaders for a Java package.
+ * Generates a {@link ClassLoaderWire} that wires two classloaders for a Java package.
  */
 public class JavaContributionWireGenerator implements ClassLoaderWireGenerator<JavaContributionWire> {
 
-    public PhysicalClassLoaderWireDefinition generate(JavaContributionWire wire) {
+    public ClassLoaderWire generate(JavaContributionWire wire) {
         URI uri = wire.getExportContributionUri();
         String packageName = wire.getImport().getPackageInfo().getName();
-        return new PhysicalClassLoaderWireDefinition(uri, packageName);
+        return new ClassLoaderWire(uri, packageName);
     }
 }

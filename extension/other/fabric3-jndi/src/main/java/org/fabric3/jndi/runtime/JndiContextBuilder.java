@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
+import org.fabric3.jndi.provision.PhysicalJndiContext;
 import org.fabric3.jndi.spi.JndiContextManager;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -31,15 +31,15 @@ import org.oasisopen.sca.annotation.Reference;
  * Creates and registers JNDI contexts with the runtime {@link JndiContextManager}.
  */
 @EagerInit
-public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDefinition> {
+public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContext> {
     private JndiContextManager manager;
 
     public JndiContextBuilder(@Reference JndiContextManager manager) {
         this.manager = manager;
     }
 
-    public void build(PhysicalJndiContextDefinition definition) {
-        for (Map.Entry<String, Properties> entry : definition.getContexts().entrySet()) {
+    public void build(PhysicalJndiContext physicalContext) {
+        for (Map.Entry<String, Properties> entry : physicalContext.getContexts().entrySet()) {
             try {
                 manager.register(entry.getKey(), entry.getValue());
             } catch (NamingException e) {
@@ -48,8 +48,8 @@ public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDe
         }
     }
 
-    public void remove(PhysicalJndiContextDefinition definition) {
-        for (String name : definition.getContexts().keySet()) {
+    public void remove(PhysicalJndiContext physicalContext) {
+        for (String name : physicalContext.getContexts().keySet()) {
             try {
                 manager.unregister(name);
             } catch (NamingException e) {

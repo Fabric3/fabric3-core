@@ -17,18 +17,18 @@
         <f3:implementation.system class="org.fabric3.implementation.web.generator.WebComponentGenerator"/>
     </component>
 
-    <component name="WebComponentBuilder" f3:key="org.fabric3.implementation.web.provision.WebComponentDefinition">
+    <component name="WebComponentBuilder" f3:key="org.fabric3.implementation.web.provision.PhysicalWebComponent">
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentBuilder"/>
     </component>
     <component name="InjectionFactory">
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.InjectorFactoryImpl"/>
     </component>
 
-    <component name="WebSourceWireAttacher" f3:key="org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition">
+    <component name="WebSourceWireAttacher" f3:key="org.fabric3.implementation.web.provision.WebWireSource">
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceWireAttacher"/>
     </component>
 
-    <component name="WebSourceConnectionAttacher" f3:key="org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition">
+    <component name="WebSourceConnectionAttacher" f3:key="org.fabric3.implementation.web.provision.WebConnectionSource">
         <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceConnectionAttacher"/>
     </component>
 

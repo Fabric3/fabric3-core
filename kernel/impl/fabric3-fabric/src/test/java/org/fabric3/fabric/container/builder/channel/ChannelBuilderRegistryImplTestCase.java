@@ -26,7 +26,7 @@ import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
  *
@@ -35,17 +35,17 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
     public static final URI URI = java.net.URI.create("test");
     private ChannelBuilderRegistryImpl registry;
     private ChannelBuilder builder;
-    private PhysicalChannelDefinition definition;
+    private PhysicalChannel physicalChannel;
     private Channel channel;
     private ChannelManager channelManager;
 
     public void testBuild() throws Exception {
         EasyMock.expect(channelManager.getAndIncrementChannel(URI, ChannelSide.CONSUMER)).andReturn(null);
         channelManager.register(channel);
-        EasyMock.expect(builder.build(definition)).andReturn(channel);
+        EasyMock.expect(builder.build(physicalChannel)).andReturn(channel);
         EasyMock.replay(channelManager, builder, channel);
 
-        assertNotNull(registry.build(definition));
+        assertNotNull(registry.build(physicalChannel));
 
         EasyMock.verify(channelManager, builder, channel);
     }
@@ -54,7 +54,7 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
         EasyMock.expect(channelManager.getAndIncrementChannel(URI, ChannelSide.CONSUMER)).andReturn(channel);
         EasyMock.replay(channelManager, builder, channel);
 
-        assertNotNull(registry.build(definition));
+        assertNotNull(registry.build(physicalChannel));
 
         EasyMock.verify(channelManager, builder, channel);
     }
@@ -63,10 +63,10 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
         EasyMock.expect(channelManager.getAndDecrementChannel(URI, ChannelSide.CONSUMER)).andReturn(channel);
         EasyMock.expect(channelManager.getCount(URI, ChannelSide.CONSUMER)).andReturn(0);
         EasyMock.expect(channelManager.unregister(URI, ChannelSide.CONSUMER)).andReturn(channel);
-        builder.dispose(definition, channel);
+        builder.dispose(physicalChannel, channel);
         EasyMock.replay(channelManager, builder);
 
-        registry.dispose(definition);
+        registry.dispose(physicalChannel);
 
         EasyMock.verify(channelManager, builder);
     }
@@ -76,7 +76,7 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
         EasyMock.expect(channelManager.getCount(URI, ChannelSide.CONSUMER)).andReturn(1);
         EasyMock.replay(channelManager, builder);
 
-        registry.dispose(definition);
+        registry.dispose(physicalChannel);
 
         EasyMock.verify(channelManager, builder);
     }
@@ -91,7 +91,7 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
 
         channel = EasyMock.createMock(Channel.class);
 
-        definition = new PhysicalChannelDefinition(URI, new QName("test", "bar"));
-        definition.setChannelSide(ChannelSide.CONSUMER);
+        physicalChannel = new PhysicalChannel(URI, new QName("test", "bar"));
+        physicalChannel.setChannelSide(ChannelSide.CONSUMER);
     }
 }

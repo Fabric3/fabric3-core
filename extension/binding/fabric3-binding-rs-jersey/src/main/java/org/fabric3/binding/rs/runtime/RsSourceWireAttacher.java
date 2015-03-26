@@ -28,7 +28,7 @@ import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.binding.rs.provision.RsWireSourceDefinition;
+import org.fabric3.binding.rs.provision.RsWireSource;
 import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
 import org.fabric3.binding.rs.runtime.container.RsContainer;
 import org.fabric3.binding.rs.runtime.container.RsContainerManager;
@@ -38,8 +38,8 @@ import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -50,8 +50,8 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-@Key("org.fabric3.binding.rs.provision.RsWireSourceDefinition")
-public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefinition> {
+@Key("org.fabric3.binding.rs.provision.RsWireSource")
+public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     private ServletHost servletHost;
     private RsContainerManager containerManager;
     private ProviderRegistry providerRegistry;
@@ -78,7 +78,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         this.logLevel = Level.parse(level);
     }
 
-    public void attach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(RsWireSource source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception {
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
@@ -97,7 +97,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         monitor.provisionedEndpoint(sourceUri);
     }
 
-    public void detach(RsWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(RsWireSource source, PhysicalWireTarget target) {
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
@@ -113,14 +113,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSourceDefi
         return servletMapping;
     }
 
-    private void provision(RsWireSourceDefinition sourceDefinition, Wire wire, RsContainer container) {
+    private void provision(RsWireSource source, Wire wire, RsContainer container) {
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
+            PhysicalOperation operation = chain.getPhysicalOperation();
             invocationChains.put(operation.getName(), chain);
         }
 
-        Class<?> interfaze = sourceDefinition.getRsClass();
+        Class<?> interfaze = source.getRsClass();
         F3ResourceHandler handler = new F3ResourceHandler(interfaze, invocationChains);
 
         // Set the class loader to the runtime one so Jersey loads the Resource config properly

@@ -27,10 +27,10 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
+import org.fabric3.implementation.pojo.provision.PhysicalPojoComponent;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
-import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
+import org.fabric3.spi.model.physical.PhysicalProperty;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.w3c.dom.Document;
 
@@ -71,18 +71,18 @@ public class GenerationHelperImpl implements GenerationHelper {
         }
     }
 
-    public void processPropertyValues(LogicalComponent<?> component, PojoComponentDefinition physical) {
+    public void processPropertyValues(LogicalComponent<?> component, PhysicalPojoComponent pojoComponent) {
         for (LogicalProperty property : component.getAllProperties().values()) {
             String name = property.getName();
             boolean many = property.isMany();
             if (property.getValue() != null) {
                 Document document = property.getValue();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many);
-                physical.setPropertyDefinition(definition);
+                PhysicalProperty physicalProperty = new PhysicalProperty(name, document, many);
+                pojoComponent.setProperty(physicalProperty);
             } else if (property.getInstanceValue() != null) {
                 Object value = property.getInstanceValue();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, value, many);
-                physical.setPropertyDefinition(definition);
+                PhysicalProperty physicalProperty = new PhysicalProperty(name, value, many);
+                pojoComponent.setProperty(physicalProperty);
             }
         }
     }

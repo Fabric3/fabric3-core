@@ -29,7 +29,7 @@ import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -47,32 +47,32 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
             return Optional.empty();
         }
 
-        List<PhysicalResourceDefinition> definitions = createDefinitions(resource);
-        if (definitions.isEmpty()) {
+        List<PhysicalResource> physicalResources = createPhysicalResources(resource);
+        if (physicalResources.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new BuildResourcesCommand(definitions));
+        return Optional.of(new BuildResourcesCommand(physicalResources));
     }
 
     public Optional<Command> generateDispose(LogicalResource resource) throws Fabric3Exception {
         if (resource.getState() != LogicalState.MARKED) {
             return Optional.empty();
         }
-        List<PhysicalResourceDefinition> definitions = createDefinitions(resource);
-        if (definitions.isEmpty()) {
+        List<PhysicalResource> physicalResources = createPhysicalResources(resource);
+        if (physicalResources.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new DisposeResourcesCommand(definitions));
+        return Optional.of(new DisposeResourcesCommand(physicalResources));
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<PhysicalResourceDefinition> createDefinitions(LogicalResource resource) throws Fabric3Exception {
-        List<PhysicalResourceDefinition> definitions = new ArrayList<>();
-        Resource resourceDefinition = resource.getDefinition();
-        ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());
-        PhysicalResourceDefinition definition = generator.generateResource(resource);
-        definitions.add(definition);
-        return definitions;
+    private List<PhysicalResource> createPhysicalResources(LogicalResource logicalResource) throws Fabric3Exception {
+        List<PhysicalResource> physicalResources = new ArrayList<>();
+        Resource resource = logicalResource.getDefinition();
+        ResourceGenerator generator = generatorRegistry.getResourceGenerator(resource.getClass());
+        PhysicalResource physicalResource = generator.generateResource(logicalResource);
+        physicalResources.add(physicalResource);
+        return physicalResources;
     }
 
 }

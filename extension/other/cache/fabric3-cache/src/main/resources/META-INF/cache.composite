@@ -29,11 +29,11 @@
         <f3:implementation.system class="org.fabric3.cache.runtime.CacheRegistryImpl"/>
     </component>
 
-    <component name="CacheTargetWireAttacher" f3:key="org.fabric3.cache.provision.CacheWireTargetDefinition">
+    <component name="CacheTargetWireAttacher" f3:key="org.fabric3.cache.provision.CacheWireTarget">
         <f3:implementation.system class="org.fabric3.cache.runtime.CacheTargetWireAttacher"/>
     </component>
 
-    <component name="CacheResourceBuilder" f3:key="org.fabric3.cache.provision.PhysicalCacheSetDefinition">
+    <component name="CacheResourceBuilder" f3:key="org.fabric3.cache.provision.PhysicalCacheSet">
         <f3:implementation.system class="org.fabric3.cache.runtime.CacheResourceBuilder"/>
     </component>
 

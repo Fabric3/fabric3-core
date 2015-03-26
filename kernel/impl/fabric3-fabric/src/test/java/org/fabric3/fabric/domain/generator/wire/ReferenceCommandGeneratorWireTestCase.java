@@ -36,7 +36,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 import org.fabric3.spi.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
@@ -77,7 +77,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
 
 
         wireGenerator.generateWire(wire);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(lcm, wireGenerator);
 
@@ -120,7 +120,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         composite.addComponent(source);
 
         wireGenerator.generateWire(wire);
-        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(lcm, wireGenerator);
 
@@ -175,9 +175,9 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         composite.addWire(reference, wire2);
         composite.addComponent(source);
 
-        PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition(null, null, null);
-        EasyMock.expect(wireGenerator.generateWire(wire)).andReturn(wireDefinition);
-        EasyMock.expect(wireGenerator.generateWire(wire2)).andReturn(wireDefinition);
+        PhysicalWire physicalWire = new PhysicalWire(null, null, null);
+        EasyMock.expect(wireGenerator.generateWire(wire)).andReturn(physicalWire);
+        EasyMock.expect(wireGenerator.generateWire(wire2)).andReturn(physicalWire);
 
         EasyMock.replay(lcm, wireGenerator);
 

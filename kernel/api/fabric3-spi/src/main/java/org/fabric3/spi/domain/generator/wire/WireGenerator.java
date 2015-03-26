@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 
 /**
  * Generates physical wire definitions from logical wires, bound references and bound services. The methods correspond to how the physical wire generation
@@ -63,7 +63,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws Fabric3Exception if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) throws Fabric3Exception;
+    <T extends Binding> PhysicalWire generateBoundService(LogicalBinding<T> binding, URI callbackUri) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalWireDefinition for callback wire from a component to the callback service provided by a forward service
@@ -72,7 +72,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws Fabric3Exception if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws Fabric3Exception;
+    <T extends Binding> PhysicalWire generateBoundServiceCallback(LogicalBinding<T> binding) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalWireDefinition for a bound reference.
@@ -81,7 +81,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws Fabric3Exception if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws Fabric3Exception;
+    <T extends Binding> PhysicalWire generateBoundReference(LogicalBinding<T> binding) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalWireDefinition for callback wire for a bound reference
@@ -90,7 +90,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws Fabric3Exception if an error occurs during generation
      */
-    <T extends Binding> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws Fabric3Exception;
+    <T extends Binding> PhysicalWire generateBoundReferenceCallback(LogicalBinding<T> binding) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalWireDefinition for a wire.
@@ -99,7 +99,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws Fabric3Exception if an error occurs during generation
      */
-    PhysicalWireDefinition generateWire(LogicalWire wire) throws Fabric3Exception;
+    PhysicalWire generateWire(LogicalWire wire) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalWireDefinition for a callback wire.
@@ -108,7 +108,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws Fabric3Exception if an error occurs during generation
      */
-    PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws Fabric3Exception;
+    PhysicalWire generateWireCallback(LogicalWire wire) throws Fabric3Exception;
 
     /**
      * Generates a PhysicalWireDefinition for the resource.
@@ -117,6 +117,6 @@ public interface WireGenerator {
      * @return the physical wire definition
      * @throws Fabric3Exception if an error occurs during generation
      */
-    <T extends ResourceReference> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws Fabric3Exception;
+    <T extends ResourceReference> PhysicalWire generateResource(LogicalResourceReference<T> resourceReference) throws Fabric3Exception;
 
 }

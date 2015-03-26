@@ -27,7 +27,7 @@ import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -36,28 +36,28 @@ import org.oasisopen.sca.annotation.Reference;
  * Reinjects singleton components after the runtime bootstrap.
  */
 @EagerInit
-public class SingletonSourceWireAttacher implements SourceWireAttacher<SingletonWireSourceDefinition> {
+public class SingletonSourceWireAttacher implements SourceWireAttacher<SingletonWireSource> {
     private ComponentManager manager;
 
     public SingletonSourceWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public void attach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(SingletonWireSource source, PhysicalWireTarget target, Wire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public void detach(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(SingletonWireSource source, PhysicalWireTarget target) {
     }
 
-    public void detachSupplier(SingletonWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(SingletonWireSource source, PhysicalWireTarget target) {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeSupplier(injectable);
     }
 
-    public void attachSupplier(SingletonWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(SingletonWireSource source, Supplier<?> supplier, PhysicalWireTarget target) {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();

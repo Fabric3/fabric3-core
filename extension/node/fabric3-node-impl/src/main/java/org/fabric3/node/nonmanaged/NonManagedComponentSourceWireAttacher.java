@@ -22,7 +22,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -31,14 +31,14 @@ import org.oasisopen.sca.annotation.Reference;
  * physical source definition. The proxy or instance can then be returned to the non-managed code.
  */
 @EagerInit
-public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher<NonManagedPhysicalWireSourceDefinition> {
+public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher<NonManagedWireSource> {
     private WireProxyService proxyService;
 
     public NonManagedComponentSourceWireAttacher(@Reference WireProxyService proxyService) {
         this.proxyService = proxyService;
     }
 
-    public void attach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(NonManagedWireSource source, PhysicalWireTarget target, Wire wire) {
         try {
             ClassLoader loader = source.getClassLoader();
             Class<?> interfaze = loader.loadClass(source.getInterface());
@@ -49,14 +49,14 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
         }
     }
 
-    public void attachSupplier(NonManagedPhysicalWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(NonManagedWireSource source, Supplier<?> supplier, PhysicalWireTarget target) {
         source.setProxy(supplier.get());
     }
 
-    public void detach(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(NonManagedWireSource source, PhysicalWireTarget target) {
     }
 
-    public void detachSupplier(NonManagedPhysicalWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(NonManagedWireSource source, PhysicalWireTarget target) {
         // no-op
     }
 }

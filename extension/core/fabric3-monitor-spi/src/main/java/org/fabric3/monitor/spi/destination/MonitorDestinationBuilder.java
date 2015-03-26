@@ -17,12 +17,12 @@
 package org.fabric3.monitor.spi.destination;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestination;
 
 /**
  * Builds {@link MonitorDestination}s.
  */
-public interface MonitorDestinationBuilder<D extends PhysicalMonitorDestinationDefinition> {
+public interface MonitorDestinationBuilder<D extends PhysicalMonitorDestination> {
 
     /**
      * Build a destination.

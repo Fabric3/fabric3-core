@@ -30,7 +30,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
-import org.fabric3.binding.jms.spi.provision.JmsChannelBindingDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsChannelBinding;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.SessionType;
@@ -39,9 +39,9 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelBinding;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -62,9 +62,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         this.provisioner = provisioner;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
-                                                                       LogicalBinding<JmsBinding> binding,
-                                                                       DeliveryType deliveryType) throws Fabric3Exception {
+    public PhysicalConnectionSource generateConnectionSource(LogicalConsumer consumer, LogicalBinding<JmsBinding> binding, DeliveryType deliveryType)
+            throws Fabric3Exception {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         SessionType sessionType = getSessionType(binding);
@@ -82,20 +81,19 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
         Consumer<?> consumerDefinition = consumer.getDefinition();
         DataType dataType = isJAXB(consumerDefinition.getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
-        JmsConnectionSource connectionSource = new JmsConnectionSource(uri, metadata, dataType, sessionType);
+        JmsConnectionSource source = new JmsConnectionSource(uri, metadata, dataType, sessionType);
         if (provisioner != null) {
-            provisioner.generateConnectionSource(connectionSource);
+            provisioner.generateConnectionSource(source);
         }
-        return connectionSource;
+        return source;
     }
 
     private SessionType getSessionType(LogicalBinding<JmsBinding> binding) {
         return binding.getDefinition().getJmsMetadata().isClientAcknowledge() ? SessionType.CLIENT_ACKNOWLEDGE : SessionType.AUTO_ACKNOWLEDGE;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
-                                                                       LogicalBinding<JmsBinding> binding,
-                                                                       DeliveryType deliveryType) throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalProducer producer, LogicalBinding<JmsBinding> binding, DeliveryType deliveryType)
+            throws Fabric3Exception {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
@@ -103,16 +101,16 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
 
-        JmsConnectionTarget connectionTarget = new JmsConnectionTarget(uri, metadata, type);
+        JmsConnectionTarget target = new JmsConnectionTarget(uri, metadata, type);
         if (provisioner != null) {
-            provisioner.generateConnectionTarget(connectionTarget);
+            provisioner.generateConnectionTarget(target);
         }
-        return connectionTarget;
+        return target;
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBinding> binding, DeliveryType deliveryType) {
+    public PhysicalChannelBinding generateChannelBinding(LogicalBinding<JmsBinding> binding, DeliveryType deliveryType) {
         // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
-        return new JmsChannelBindingDefinition();
+        return new JmsChannelBinding();
     }
 
     private boolean isJAXB(List<DataType> eventTypes) {

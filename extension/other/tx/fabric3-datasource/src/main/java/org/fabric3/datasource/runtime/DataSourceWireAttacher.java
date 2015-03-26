@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
+import org.fabric3.datasource.provision.DataSourceWireTarget;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
@@ -30,14 +30,14 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches to a runtime DataSource.
  */
-public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWireTargetDefinition> {
+public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceWireTarget> {
     private DataSourceRegistry registry;
 
     public DataSourceWireAttacher(@Reference DataSourceRegistry registry) {
         this.registry = registry;
     }
 
-    public Supplier<DataSource> createSupplier(DataSourceWireTargetDefinition target) {
+    public Supplier<DataSource> createSupplier(DataSourceWireTarget target) {
         String dataSourceName = target.getDataSourceName();
         DataSource source = registry.getDataSource(dataSourceName);
         if (!target.isOptional() && source == null) {

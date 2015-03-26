@@ -32,7 +32,7 @@ import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.node.NotFoundException;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
-import org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition;
+import org.fabric3.node.nonmanaged.NonManagedWireSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -44,7 +44,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
@@ -82,26 +82,26 @@ public class ServiceResolverImpl implements ServiceResolver {
     }
 
     public <T> T resolve(Class<T> interfaze) throws Fabric3Exception {
-        LogicalWire wire = createWire(interfaze);
-        boolean remote = !wire.getSource().getParent().getZone().equals(wire.getTarget().getParent().getZone());
+        LogicalWire logicalWire = createWire(interfaze);
+        boolean remote = !logicalWire.getSource().getParent().getZone().equals(logicalWire.getTarget().getParent().getZone());
 
-        PhysicalWireDefinition pwd;
+        PhysicalWire physicalWire;
 
         if (remote) {
-            bindingSelector.selectBinding(wire);
-            pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
-            pwd.getSource().setUri(wire.getSource().getParent().getUri());
+            bindingSelector.selectBinding(logicalWire);
+            physicalWire = wireGenerator.generateBoundReference(logicalWire.getSourceBinding());
+            physicalWire.getSource().setUri(logicalWire.getSource().getParent().getUri());
         } else {
-            pwd = wireGenerator.generateWire(wire);
+            physicalWire = wireGenerator.generateWire(logicalWire);
         }
 
-        NonManagedPhysicalWireSourceDefinition source = (NonManagedPhysicalWireSourceDefinition) pwd.getSource();
+        NonManagedWireSource source = (NonManagedWireSource) physicalWire.getSource();
         URI uri = ContributionResolver.getContribution(interfaze);
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
-        pwd.getTarget().setClassLoader(classLoader);
+        physicalWire.getTarget().setClassLoader(classLoader);
         source.setClassLoader(classLoader);
 
-        connector.connect(pwd);
+        connector.connect(physicalWire);
         return interfaze.cast(source.getProxy());
     }
 

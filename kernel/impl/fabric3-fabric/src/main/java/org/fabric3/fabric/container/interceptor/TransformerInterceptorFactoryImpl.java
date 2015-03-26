@@ -23,7 +23,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.oasisopen.sca.annotation.Reference;
@@ -39,7 +39,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
     }
 
     @SuppressWarnings({"unchecked"})
-    public Interceptor createInterceptor(PhysicalOperationDefinition definition,
+    public Interceptor createInterceptor(PhysicalOperation definition,
                                          List<DataType> sources,
                                          List<DataType> targets,
                                          ClassLoader targetLoader,

@@ -17,7 +17,7 @@
 package org.fabric3.monitor.spi.appender;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalAppender;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
 
 /**
@@ -25,6 +25,6 @@ import org.fabric3.monitor.spi.model.type.AppenderDefinition;
  */
 public interface AppenderGenerator<D extends AppenderDefinition> {
 
-    PhysicalAppenderDefinition generateResource(D definition) throws Fabric3Exception;
+    PhysicalAppender generateResource(D definition) throws Fabric3Exception;
 
 }

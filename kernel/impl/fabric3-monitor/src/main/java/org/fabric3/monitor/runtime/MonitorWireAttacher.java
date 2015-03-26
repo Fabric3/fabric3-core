@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyService;
-import org.fabric3.monitor.provision.MonitorWireTargetDefinition;
+import org.fabric3.monitor.provision.MonitorWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
@@ -31,7 +31,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * TargetWireAttacher that handles monitor resources.
  */
-public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTargetDefinition> {
+public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget> {
     private final MonitorProxyService monitorService;
     private ComponentManager componentManager;
 
@@ -40,7 +40,7 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorWireTarget
         this.componentManager = componentManager;
     }
 
-    public Supplier<?> createSupplier(MonitorWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(MonitorWireTarget target) throws Fabric3Exception {
         Class<?> type = target.getMonitorType();
         Component monitorable = componentManager.getComponent(target.getMonitorable());
         Object monitor = monitorService.createMonitor(type, monitorable, target.getDestination());

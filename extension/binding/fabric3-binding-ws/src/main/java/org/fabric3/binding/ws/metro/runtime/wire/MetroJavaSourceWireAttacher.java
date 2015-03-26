@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroJavaWireSource;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
@@ -35,15 +35,15 @@ import org.fabric3.binding.ws.metro.runtime.core.JaxbInvoker;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Source wire attacher that provisions Java-based web service endpoints.
  */
-@Key("org.fabric3.binding.ws.metro.provision.MetroJavaWireSourceDefinition")
-public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroJavaWireSourceDefinition> {
+@Key("org.fabric3.binding.ws.metro.provision.MetroJavaWireSource")
+public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroJavaWireSource> {
     private ArtifactCache artifactCache;
 
     public MetroJavaSourceWireAttacher(@Reference ArtifactCache artifactCache,
@@ -53,7 +53,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         this.artifactCache = artifactCache;
     }
 
-    public void attach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(MetroJavaWireSource source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception {
         ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
         QName serviceName = endpointDefinition.getServiceName();
         QName portName = endpointDefinition.getPortName();
@@ -107,7 +107,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         }
     }
 
-    public void detach(MetroJavaWireSourceDefinition source, PhysicalWireTargetDefinition target) throws Fabric3Exception {
+    public void detach(MetroJavaWireSource source, PhysicalWireTarget target) throws Fabric3Exception {
         ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
         URI servicePath = endpointDefinition.getServicePath();
         String path = servicePath.toString();
@@ -123,7 +123,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         endpointService.unregisterService(path);
     }
 
-    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws Fabric3Exception {
+    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireSource source) throws Fabric3Exception {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
@@ -134,7 +134,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         return schemas;
     }
 
-    private void removeCachedSchemas(URI servicePath, MetroJavaWireSourceDefinition source) throws Fabric3Exception {
+    private void removeCachedSchemas(URI servicePath, MetroJavaWireSource source) throws Fabric3Exception {
         for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
             artifactCache.remove(uri);

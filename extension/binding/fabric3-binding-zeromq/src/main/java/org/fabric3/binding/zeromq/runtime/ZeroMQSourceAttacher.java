@@ -23,25 +23,25 @@ import java.util.List;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQWireSource;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-@Key("org.fabric3.binding.zeromq.provision.ZeroMQWireSourceDefinition")
-public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSourceDefinition> {
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQWireSource")
+public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource> {
     private ZeroMQWireBroker broker;
 
     public ZeroMQSourceAttacher(@Reference ZeroMQWireBroker broker) {
         this.broker = broker;
     }
 
-    public void attach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(ZeroMQWireSource source, PhysicalWireTarget target, Wire wire) {
         URI uri = source.getCallbackUri() != null ? source.getCallbackUri() : target.getUri();
         ClassLoader loader = target.getClassLoader();
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
@@ -49,7 +49,7 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQWireSource
         broker.connectToReceiver(uri, chains, metadata, loader);
     }
 
-    public void detach(ZeroMQWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(ZeroMQWireSource source, PhysicalWireTarget target) {
         URI uri = source.getCallbackUri() != null ? source.getCallbackUri() : target.getUri();
         broker.releaseReceiver(uri);
     }

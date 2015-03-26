@@ -47,6 +47,6 @@ public class DetachChannelConnectionCommandExecutor implements CommandExecutor<D
     }
 
     public void execute(DetachChannelConnectionCommand command) {
-        connector.disconnect(command.getDefinition());
+        connector.disconnect(command.getConnection());
     }
 }

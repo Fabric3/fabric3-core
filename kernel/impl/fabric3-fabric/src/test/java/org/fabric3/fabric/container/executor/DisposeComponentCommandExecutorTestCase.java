@@ -31,49 +31,46 @@ import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  *
  */
 public class DisposeComponentCommandExecutorTestCase extends TestCase {
 
-
     @SuppressWarnings({"unchecked"})
     public void testUnregisterAndNotifyListener() throws Exception {
-        PhysicalComponentDefinition definition = new MockDefinition();
+        PhysicalComponent physicalComponent = new Mock();
 
         CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
 
         Component component = EasyMock.createMock(Component.class);
 
         ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
-        builder.dispose(EasyMock.isA(PhysicalComponentDefinition.class), EasyMock.isA(Component.class));
+        builder.dispose(EasyMock.isA(PhysicalComponent.class), EasyMock.isA(Component.class));
 
         ComponentManager componentManager = EasyMock.createMock(ComponentManager.class);
         EasyMock.expect(componentManager.unregister(URI.create("test"))).andReturn(component);
 
         ComponentBuilderListener listener = EasyMock.createMock(ComponentBuilderListener.class);
-        listener.onDispose(EasyMock.isA(Component.class), EasyMock.isA(PhysicalComponentDefinition.class));
+        listener.onDispose(EasyMock.isA(Component.class), EasyMock.isA(PhysicalComponent.class));
 
         EasyMock.replay(componentManager, builder, component, listener, registry);
 
         DisposeComponentCommandExecutor executor = new DisposeComponentCommandExecutor(null, componentManager);
-        Map<Class<?>, ComponentBuilder> map = Collections.<Class<?>, ComponentBuilder>singletonMap(MockDefinition.class, builder);
+        Map<Class<?>, ComponentBuilder> map = Collections.<Class<?>, ComponentBuilder>singletonMap(Mock.class, builder);
         executor.setBuilders(map);
 
         executor.setListeners(Collections.singletonList(listener));
 
-        DisposeComponentCommand command = new DisposeComponentCommand(definition);
+        DisposeComponentCommand command = new DisposeComponentCommand(physicalComponent);
         executor.execute(command);
 
         EasyMock.verify(componentManager, builder, component, listener, registry);
     }
 
-    private class MockDefinition extends PhysicalComponentDefinition {
-        private static final long serialVersionUID = -809769047230911419L;
-
-        private MockDefinition() {
+    private class Mock extends PhysicalComponent {
+        private Mock() {
             setComponentUri(URI.create("test"));
         }
     }

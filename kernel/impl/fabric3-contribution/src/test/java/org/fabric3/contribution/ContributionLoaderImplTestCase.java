@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.model.os.Library;
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
  * This is more intended to be a integration test then a unit test.
@@ -119,7 +119,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
         EasyMock.expect(processorRegistry.process(locationUrl, Collections.<Library>emptyList())).andReturn(classpath);
 
         builder = EasyMock.createMock(ClassLoaderWireBuilder.class);
-        builder.build(EasyMock.isA(MultiParentClassLoader.class), EasyMock.isA(PhysicalClassLoaderWireDefinition.class));
+        builder.build(EasyMock.isA(MultiParentClassLoader.class), EasyMock.isA(ClassLoaderWire.class));
         EasyMock.expectLastCall().times(2);
 
         info = EasyMock.createMock(HostInfo.class);

@@ -27,7 +27,7 @@ import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireSource;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
@@ -39,7 +39,7 @@ import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -48,8 +48,8 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-@Key("org.fabric3.binding.file.provision.FileBindingWireSourceDefinition")
-public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWireSourceDefinition> {
+@Key("org.fabric3.binding.file.provision.FileBindingWireSource")
+public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWireSource> {
     private static final ServiceAdapter ADAPTER = new DefaultServiceAdapter();
     private static final ServiceAdapter JAF_ADAPTER = new DataHandlerServiceAdapter();
 
@@ -68,7 +68,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "inbox");
     }
 
-    public void attach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(FileBindingWireSource source, PhysicalWireTarget target, Wire wire) {
         String id = source.getUri().toString();
 
         File location = getLocation(source);
@@ -100,17 +100,17 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         receiverManager.create(configuration);
     }
 
-    public void detach(FileBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(FileBindingWireSource source, PhysicalWireTarget target) {
         String id = source.getUri().toString();
         receiverManager.remove(id);
     }
 
-    private File getLocation(FileBindingWireSourceDefinition source) {
+    private File getLocation(FileBindingWireSource source) {
         String location = source.getLocation();
         return resolve(location);
     }
 
-    private File getArchiveLocation(FileBindingWireSourceDefinition source) {
+    private File getArchiveLocation(FileBindingWireSource source) {
         File archiveLocation = null;
         String archiveLocationStr = source.getArchiveLocation();
         if (archiveLocationStr != null) {
@@ -119,7 +119,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
         return archiveLocation;
     }
 
-    private File getErrorLocation(FileBindingWireSourceDefinition source) {
+    private File getErrorLocation(FileBindingWireSource source) {
         File errorLocation = null;
         String errorLocationStr = source.getErrorLocation();
         if (errorLocationStr != null) {
@@ -149,7 +149,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingWir
      * @return the adaptor
      * @throws Fabric3Exception if there is an error instantiating the class or returning a component instance.
      */
-    private ServiceAdapter getAdaptor(FileBindingWireSourceDefinition source) throws Fabric3Exception {
+    private ServiceAdapter getAdaptor(FileBindingWireSource source) throws Fabric3Exception {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();

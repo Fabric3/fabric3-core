@@ -19,47 +19,47 @@ package org.fabric3.binding.jms.spi.generator;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
-import org.fabric3.binding.jms.spi.provision.JmsWireSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsWireTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsWireSource;
+import org.fabric3.binding.jms.spi.provision.JmsWireTarget;
 
 /**
- * Called by the JMS binding after generation has run to allow a host environment to provision JMS resources such as destinations. Implementations may
- * update generated definitions.
+ * Called by the JMS binding after generation has run to allow a host environment to provision JMS resources such as destinations. Implementations may update
+ * generated definitions.
  *
  * Note this extension is optional.
  */
 public interface JmsResourceProvisioner {
 
     /**
-     * Called after a source definition has been generated.
+     * Called after a source has been generated.
      *
-     * @param definition the source definition
+     * @param source the source definition
      * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    void generateSource(JmsWireSourceDefinition definition) throws Fabric3Exception;
+    void generateSource(JmsWireSource source) throws Fabric3Exception;
 
     /**
-     * Called after a target definition has been generated.
+     * Called after a target has been generated.
      *
-     * @param definition the target definition
+     * @param target the target definition
      * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    void generateTarget(JmsWireTargetDefinition definition) throws Fabric3Exception;
+    void generateTarget(JmsWireTarget target) throws Fabric3Exception;
 
     /**
-     * Called after a source connection definition has been generated.
+     * Called after a source connection has been generated.
      *
-     * @param definition the source definition
+     * @param source the source
      * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionSource(JmsConnectionSource definition) throws Fabric3Exception ;
+    public void generateConnectionSource(JmsConnectionSource source) throws Fabric3Exception;
 
     /**
-     * Called after a target connection definition has been generated.
+     * Called after a target connection has been generated.
      *
-     * @param definition the target definition
+     * @param target the target
      * @throws Fabric3Exception if an error occurs provisioning a required JMS artifact.
      */
-    public void generateConnectionTarget(JmsConnectionTarget definition) throws Fabric3Exception;
-    
+    public void generateConnectionTarget(JmsConnectionTarget target) throws Fabric3Exception;
+
 }

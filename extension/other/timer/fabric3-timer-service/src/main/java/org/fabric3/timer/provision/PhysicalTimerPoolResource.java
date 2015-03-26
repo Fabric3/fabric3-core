@@ -16,13 +16,12 @@
  */
 package org.fabric3.timer.provision;
 
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  * Metadata to provision datasources configured in a composite.
  */
-public class PhysicalTimerPoolResource extends PhysicalResourceDefinition {
-    private static final long serialVersionUID = 6236450787656780995L;
+public class PhysicalTimerPoolResource extends PhysicalResource {
 
     private String name;
     private int coreSize;

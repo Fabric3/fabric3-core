@@ -5,7 +5,7 @@
            name="SecurityExtension"
            autowire="true">
 
-    <component name="AuthorizationInterceptorBuilder" f3:key="org.fabric3.security.authorization.AuthorizationInterceptorDefinition">
+    <component name="AuthorizationInterceptorBuilder" f3:key="org.fabric3.security.authorization.PhysicalAuthorizationInterceptor">
         <f3:implementation.system class="org.fabric3.security.authorization.AuthorizationInterceptorBuilder"/>
     </component>
 

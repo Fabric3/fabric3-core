@@ -23,7 +23,7 @@ import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -48,8 +48,8 @@ public class BuildChannelCommandExecutor implements CommandExecutor<BuildChannel
 
     @SuppressWarnings("unchecked")
     public void execute(BuildChannelCommand command) {
-        PhysicalChannelDefinition definition = command.getDefinition();
-        channelBuilderRegistry.build(definition);
+        PhysicalChannel physicalChannel = command.getChannel();
+        channelBuilderRegistry.build(physicalChannel);
     }
 
 }

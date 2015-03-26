@@ -23,12 +23,12 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.implementation.spring.provision.SpringWireSourceDefinition;
+import org.fabric3.implementation.spring.provision.SpringWireSource;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spring.spi.WireListener;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches the source side of a wire to a Spring component.
  */
 @EagerInit
-public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSourceDefinition> {
+public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSource> {
     private ComponentManager manager;
     private WireProxyService proxyService;
 
@@ -53,7 +53,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         this.listeners = listeners;
     }
 
-    public void attach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(SpringWireSource source, PhysicalWireTarget target, Wire wire) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = source.getClassLoader();
@@ -71,7 +71,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         }
     }
 
-    public void attachSupplier(SpringWireSourceDefinition source, Supplier<?> supplier, PhysicalWireTargetDefinition target) {
+    public void attachSupplier(SpringWireSource source, Supplier<?> supplier, PhysicalWireTarget target) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         ClassLoader loader = source.getClassLoader();
@@ -84,17 +84,17 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringWireSo
         }
     }
 
-    public void detach(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(SpringWireSource source, PhysicalWireTarget target) {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
         component.detach(referenceName);
     }
 
-    public void detachSupplier(SpringWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detachSupplier(SpringWireSource source, PhysicalWireTarget target) {
         detach(source, target);
     }
 
-    private SpringComponent getComponent(SpringWireSourceDefinition definition) {
+    private SpringComponent getComponent(SpringWireSource definition) {
         URI uri = definition.getUri();
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {

@@ -30,7 +30,7 @@ import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  *
@@ -40,7 +40,7 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testBuild() throws Exception {
         ResourceGenerator<Mock> resourceGenerator = EasyMock.createMock(ResourceGenerator.class);
-        EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockPhysicalDefinition());
+        EasyMock.expect(resourceGenerator.generateResource(EasyMock.isA(LogicalResource.class))).andReturn(new MockResource());
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(Mock.class))).andReturn(resourceGenerator);
         EasyMock.replay(registry, resourceGenerator);
@@ -52,7 +52,7 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
         composite.addResource(resource);
 
         BuildResourcesCommand command = generator.generate(composite).get();
-        assertFalse(command.getDefinitions().isEmpty());
+        assertFalse(command.getPhysicalResources().isEmpty());
 
         EasyMock.verify(registry, resourceGenerator);
     }
@@ -75,10 +75,8 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
     }
 
     private class Mock extends Resource {
-        private static final long serialVersionUID = -4013178193696275298L;
     }
 
-    private class MockPhysicalDefinition extends PhysicalResourceDefinition {
-        private static final long serialVersionUID = -4013178193696275298L;
+    private class MockResource extends PhysicalResource {
     }
 }

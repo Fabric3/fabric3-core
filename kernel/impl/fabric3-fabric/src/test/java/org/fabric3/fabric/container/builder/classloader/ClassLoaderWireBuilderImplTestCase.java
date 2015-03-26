@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
  *
@@ -43,9 +43,9 @@ public class ClassLoaderWireBuilderImplTestCase extends TestCase {
         EasyMock.replay(registry);
         ClassLoaderWireBuilderImpl builder = new ClassLoaderWireBuilderImpl(registry);
 
-        PhysicalClassLoaderWireDefinition definition = new PhysicalClassLoaderWireDefinition(parentUri, PACKAGE);
+        ClassLoaderWire classLoaderWire = new ClassLoaderWire(parentUri, PACKAGE);
 
-        builder.build(source, definition);
+        builder.build(source, classLoaderWire);
 
         ClassLoader filter = source.getParents().get(1);
         assertTrue(filter instanceof ClassLoaderWireFilter);
@@ -68,9 +68,9 @@ public class ClassLoaderWireBuilderImplTestCase extends TestCase {
         EasyMock.replay(registry);
         ClassLoaderWireBuilderImpl builder = new ClassLoaderWireBuilderImpl(registry);
 
-        PhysicalClassLoaderWireDefinition definition = new PhysicalClassLoaderWireDefinition(parentUri, null); // no filter
+        ClassLoaderWire classLoaderWire = new ClassLoaderWire(parentUri, null); // no filter
 
-        builder.build(source, definition);
+        builder.build(source, classLoaderWire);
 
         assertEquals(parent, source.getParents().get(1));
         EasyMock.verify(registry);

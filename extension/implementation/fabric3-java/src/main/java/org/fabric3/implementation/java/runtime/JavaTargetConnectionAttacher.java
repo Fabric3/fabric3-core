@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionTarget;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
@@ -30,7 +30,7 @@ import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -39,7 +39,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches and detaches a {@link ChannelConnection} from a Java component consumer.
  */
 @EagerInit
-public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<JavaConnectionTargetDefinition> {
+public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<JavaConnectionTarget> {
     private ComponentManager manager;
     private ReflectionFactory reflectionFactory;
 
@@ -48,7 +48,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         this.reflectionFactory = reflectionFactory;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(PhysicalConnectionSource source, JavaConnectionTarget target, ChannelConnection connection) {
         URI targetUri = target.getUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
         JavaComponent component = (JavaComponent) manager.getComponent(targetName);
@@ -65,7 +65,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         stream.addHandler(handler);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) {
+    public void detach(PhysicalConnectionSource source, JavaConnectionTarget target) {
         // no-op
     }
 

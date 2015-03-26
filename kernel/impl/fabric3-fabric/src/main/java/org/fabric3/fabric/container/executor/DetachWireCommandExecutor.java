@@ -45,6 +45,6 @@ public class DetachWireCommandExecutor implements CommandExecutor<DetachWireComm
     }
 
     public void execute(DetachWireCommand command) {
-        connector.disconnect(command.getPhysicalWireDefinition());
+        connector.disconnect(command.getPhysicalWire());
     }
 }

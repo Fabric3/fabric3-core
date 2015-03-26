@@ -20,7 +20,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 import org.fabric3.timer.provision.PhysicalTimerPoolResource;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -30,8 +30,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class TimerPoolResourceGenerator implements ResourceGenerator<TimerPoolResource> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<TimerPoolResource> resource) throws Fabric3Exception {
-        TimerPoolResource definition = resource.getDefinition();
-        return new PhysicalTimerPoolResource(definition.getName(), definition.getCoreSize());
+    public PhysicalResource generateResource(LogicalResource<TimerPoolResource> logicalResource) throws Fabric3Exception {
+        TimerPoolResource resource = logicalResource.getDefinition();
+        return new PhysicalTimerPoolResource(resource.getName(), resource.getCoreSize());
     }
 }

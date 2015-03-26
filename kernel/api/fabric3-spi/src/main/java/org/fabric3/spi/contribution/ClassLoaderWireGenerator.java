@@ -18,7 +18,7 @@
  */
 package org.fabric3.spi.contribution;
 
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
  * Generates a PhysicalClassLoaderWireDefinition from a ContributionWire. The physical definition is used to build a classloader network based on
@@ -32,5 +32,5 @@ public interface ClassLoaderWireGenerator<T extends ContributionWire> {
      * @param wire the contribution wire to use as input
      * @return the physical definition
      */
-    PhysicalClassLoaderWireDefinition generate(T wire);
+    ClassLoaderWire generate(T wire);
 }

@@ -20,7 +20,7 @@ package org.fabric3.implementation.pojo.generator;
 
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
+import org.fabric3.implementation.pojo.provision.PhysicalPojoComponent;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
@@ -42,5 +42,5 @@ public interface GenerationHelper {
      * @param component the component corresponding to the implementation
      * @param physical  the physical component whose properties should be set
      */
-    void processPropertyValues(LogicalComponent<?> component, PojoComponentDefinition physical);
+    void processPropertyValues(LogicalComponent<?> component, PhysicalPojoComponent physical);
 }

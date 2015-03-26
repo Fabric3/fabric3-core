@@ -21,10 +21,10 @@ import java.net.URI;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.binding.rs.model.ProviderResource;
-import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
+import org.fabric3.binding.rs.provision.PhysicalProviderResource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -34,12 +34,12 @@ import org.oasisopen.sca.annotation.EagerInit;
 @Key("org.fabric3.binding.rs.model.ProviderResource")
 public class ProviderResourceGenerator implements ResourceGenerator<ProviderResource> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResource> resource) {
-        ProviderResource definition = resource.getDefinition();
-        String providerName = definition.getProviderName();
+    public PhysicalResource generateResource(LogicalResource<ProviderResource> resource) {
+        ProviderResource providerResource = resource.getDefinition();
+        String providerName = providerResource.getProviderName();
         URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);
-        Class<? extends Annotation> bindingAnnotation = definition.getBindingAnnotation();
-        Class<?> providerClass = definition.getProviderClass();
-        return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, providerClass);
+        Class<? extends Annotation> bindingAnnotation = providerResource.getBindingAnnotation();
+        Class<?> providerClass = providerResource.getProviderClass();
+        return new PhysicalProviderResource(filterUri, bindingAnnotation, providerClass);
     }
 }

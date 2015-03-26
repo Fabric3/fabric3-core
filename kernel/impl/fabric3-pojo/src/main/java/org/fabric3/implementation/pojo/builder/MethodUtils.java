@@ -21,18 +21,18 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  *
  */
 public final class MethodUtils {
 
-    public static Method findMethod(PhysicalWireSourceDefinition source,
-                                    PhysicalWireTargetDefinition target,
-                                    PhysicalOperationDefinition operation,
+    public static Method findMethod(PhysicalWireSource source,
+                                    PhysicalWireTarget target,
+                                    PhysicalOperation operation,
                                     Class<?> implementationClass,
                                     ClassLoader loader) throws Fabric3Exception {
         List<Class<?>> params = operation.getTargetParameterTypes();

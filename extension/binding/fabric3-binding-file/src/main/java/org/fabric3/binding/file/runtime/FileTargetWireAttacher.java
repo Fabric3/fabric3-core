@@ -25,7 +25,7 @@ import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireTarget;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
@@ -33,7 +33,7 @@ import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -42,9 +42,9 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-@Key("org.fabric3.binding.file.provision.FileBindingWireTargetDefinition")
+@Key("org.fabric3.binding.file.provision.FileBindingWireTarget")
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
-public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWireTargetDefinition> {
+public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWireTarget> {
     private static final ReferenceAdapter ADAPTER = new DefaultReferenceAdapter();
 
     private File baseDir;
@@ -55,7 +55,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
 
-    public void attach(PhysicalWireSourceDefinition source, FileBindingWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, FileBindingWireTarget target, Wire wire) throws Fabric3Exception {
         File location = resolve(target.getLocation());
         location.mkdirs();
 
@@ -87,7 +87,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingWir
      * @return the adaptor
      * @throws Fabric3Exception if there is an error instantiating the class or returning a component instance.
      */
-    private ReferenceAdapter getAdaptor(FileBindingWireTargetDefinition source) throws Fabric3Exception {
+    private ReferenceAdapter getAdaptor(FileBindingWireTarget source) throws Fabric3Exception {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();

@@ -22,25 +22,23 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 public class DisposeResourcesCommandTestCase extends TestCase {
     private DisposeResourcesCommand command;
-    private List<PhysicalResourceDefinition> definitions;
+    private List<PhysicalResource> physicalResources;
 
     public void testEquals() throws Exception {
-        DisposeResourcesCommand command2 = new DisposeResourcesCommand(definitions);
+        DisposeResourcesCommand command2 = new DisposeResourcesCommand(physicalResources);
         assertEquals(command2, command);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        definitions = Collections.<PhysicalResourceDefinition>singletonList(new MockDefinition());
-        command = new DisposeResourcesCommand(definitions);
+        physicalResources = Collections.<PhysicalResource>singletonList(new MockResource());
+        command = new DisposeResourcesCommand(physicalResources);
     }
 
-    private class MockDefinition extends PhysicalResourceDefinition {
-        private static final long serialVersionUID = 6358317322714807832L;
+    private class MockResource extends PhysicalResource {
     }
 }

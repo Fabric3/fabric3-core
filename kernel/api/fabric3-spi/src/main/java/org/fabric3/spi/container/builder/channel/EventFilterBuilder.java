@@ -17,12 +17,12 @@
 package org.fabric3.spi.container.builder.channel;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventFilter;
 
 /**
- * Creates an {@link EventFilter} from a {@link PhysicalEventFilterDefinition}.
+ * Creates an {@link EventFilter} from a {@link PhysicalEventFilter}.
  */
-public interface EventFilterBuilder<PFD extends PhysicalEventFilterDefinition> {
+public interface EventFilterBuilder<T extends PhysicalEventFilter> {
 
     /**
      * Creates the filter.
@@ -31,6 +31,6 @@ public interface EventFilterBuilder<PFD extends PhysicalEventFilterDefinition> {
      * @return the filter
      * @throws Fabric3Exception if there is an error creating the filter
      */
-    EventFilter build(PFD definition) throws Fabric3Exception;
+    EventFilter build(T definition) throws Fabric3Exception;
 
 }

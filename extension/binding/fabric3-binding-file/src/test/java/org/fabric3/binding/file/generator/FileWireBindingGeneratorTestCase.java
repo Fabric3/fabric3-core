@@ -33,8 +33,8 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.file.provision.FileBindingWireSourceDefinition;
-import org.fabric3.binding.file.provision.FileBindingWireTargetDefinition;
+import org.fabric3.binding.file.provision.FileBindingWireSource;
+import org.fabric3.binding.file.provision.FileBindingWireTarget;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -54,10 +54,10 @@ public class FileWireBindingGeneratorTestCase extends TestCase {
         LogicalService service = new LogicalService(uri, null, null);
         LogicalBinding<FileBinding> logicalBinding = new LogicalBinding<>(definition, service);
 
-        FileBindingWireSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
-        assertNotNull(physical.getLocation());
-        assertNotNull(physical.getArchiveLocation());
-        assertEquals(Strategy.ARCHIVE, physical.getStrategy());
+        FileBindingWireSource source = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
+        assertNotNull(source.getLocation());
+        assertNotNull(source.getArchiveLocation());
+        assertEquals(Strategy.ARCHIVE, source.getStrategy());
     }
 
     public void testInvalidServiceContractGeneration() throws Exception {
@@ -81,8 +81,8 @@ public class FileWireBindingGeneratorTestCase extends TestCase {
         FileBinding definition = new FileBinding("binding", "location", "error");
         LogicalBinding<FileBinding> logicalBinding = new LogicalBinding<>(definition, null);
 
-        FileBindingWireTargetDefinition physical = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
-        assertNotNull(physical.getLocation());
+        FileBindingWireTarget target = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList());
+        assertNotNull(target.getLocation());
     }
 
     private ServiceContract createServiceContract() {

@@ -25,7 +25,7 @@ public class ConsoleAppenderGeneratorTestCase extends TestCase {
 
     public void testGenerate() throws Exception {
         ConsoleAppenderGenerator generator = new ConsoleAppenderGenerator();
-        PhysicalConsoleAppenderDefinition physicalDefinition = generator.generateResource(new ConsoleAppenderDefinition());
-        assertNotNull(physicalDefinition);
+        PhysicalConsoleAppender physicalAppender = generator.generateResource(new ConsoleAppenderDefinition());
+        assertNotNull(physicalAppender);
     }
 }

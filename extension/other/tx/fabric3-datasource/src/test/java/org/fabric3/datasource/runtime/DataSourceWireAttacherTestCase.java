@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
+import org.fabric3.datasource.provision.DataSourceWireTarget;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
@@ -42,8 +42,8 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
-        DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", false);
-        Supplier<DataSource> supplier = attacher.createSupplier(definition);
+        DataSourceWireTarget target = new DataSourceWireTarget("datasource", false);
+        Supplier<DataSource> supplier = attacher.createSupplier(target);
         assertEquals(dataSource, supplier.get());
 
         EasyMock.verify(dataSource, registry);
@@ -59,8 +59,8 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
-        DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", true);
-        Supplier<DataSource> supplier = attacher.createSupplier(definition);
+        DataSourceWireTarget target = new DataSourceWireTarget("datasource", true);
+        Supplier<DataSource> supplier = attacher.createSupplier(target);
         assertNull(supplier.get());    // datasource not found, inject null
 
         EasyMock.verify(registry);
@@ -75,9 +75,9 @@ public class DataSourceWireAttacherTestCase extends TestCase {
 
         DataSourceWireAttacher attacher = new DataSourceWireAttacher(registry);
 
-        DataSourceWireTargetDefinition definition = new DataSourceWireTargetDefinition("datasource", false);
+        DataSourceWireTarget target = new DataSourceWireTarget("datasource", false);
         try {
-            attacher.createSupplier(definition);
+            attacher.createSupplier(target);
             fail();
         } catch (Fabric3Exception e) {
             // expected

@@ -31,11 +31,11 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
+import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
+import org.fabric3.implementation.java.provision.JavaConnectionSource;
+import org.fabric3.implementation.java.provision.JavaConnectionTarget;
+import org.fabric3.implementation.java.provision.JavaWireSource;
+import org.fabric3.implementation.java.provision.JavaWireTarget;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -61,7 +61,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         this.matcher = matcher;
     }
 
-    public void generate(JavaComponentDefinition definition, LogicalComponent<? extends JavaImplementation> component) {
+    public void generate(PhysicalJavaComponent physicalComponent, LogicalComponent<? extends JavaImplementation> component) {
         Component<? extends JavaImplementation> logical = component.getDefinition();
         JavaImplementation implementation = logical.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
@@ -77,106 +77,104 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         helper.processInjectionSites(type, managerDefinition);
 
         // create the physical component definition
-        definition.setScope(scope);
-        definition.setEagerInit(type.isEagerInit());
-        definition.setManagerDefinition(managerDefinition);
+        physicalComponent.setScope(scope);
+        physicalComponent.setEagerInit(type.isEagerInit());
+        physicalComponent.setManagerDefinition(managerDefinition);
 
-        definition.setManaged(type.isManaged());
-        definition.setManagementInfo(type.getManagementInfo());
+        physicalComponent.setManaged(type.isManaged());
+        physicalComponent.setManagementInfo(type.getManagementInfo());
 
-        helper.processPropertyValues(component, definition);
+        helper.processPropertyValues(component, physicalComponent);
     }
 
-    public void generateWireSource(JavaWireSourceDefinition definition, LogicalReference reference) {
+    public void generateWireSource(JavaWireSource source, LogicalReference reference) {
         URI uri = reference.getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) reference.getDefinition().getServiceContract();
 
-        definition.setUri(uri);
-        definition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
-        definition.setInterfaceClass(serviceContract.getInterfaceClass());
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
+        source.setInterfaceClass(serviceContract.getInterfaceClass());
         // assume for now that any wire from a Java component can be optimized
-        definition.setOptimizable(true);
+        source.setOptimizable(true);
 
         if (reference.getDefinition().isKeyed()) {
-            definition.setKeyed(true);
+            source.setKeyed(true);
             DataType type = reference.getDefinition().getKeyDataType();
             String className = type.getType().getName();
-            definition.setKeyClassName(className);
+            source.setKeyClassName(className);
         }
     }
 
-    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) {
+    public void generateConnectionSource(JavaConnectionSource source, LogicalProducer producer) {
         URI uri = producer.getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
         Class<?> interfaze = serviceContract.getInterfaceClass();
-        definition.setUri(uri);
-        definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
-        definition.setServiceInterface(interfaze);
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
+        source.setServiceInterface(interfaze);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) {
+    public void generateConnectionTarget(JavaConnectionTarget target, LogicalConsumer consumer) {
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
         // TODO support promotion by returning the leaf component URI instead of the parent component URI
         URI uri = component.getUri();
-        definition.setUri(uri);
+        target.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         Method method = type.getConsumerMethod(consumer.getUri().getFragment());
         if (method == null) {
             // programming error
             throw new Fabric3Exception("Consumer method not found on: " + consumer.getUri());
         }
-        definition.setConsumerMethod(method);
+        target.setConsumerMethod(method);
     }
 
-    public void generateCallbackWireSource(JavaWireSourceDefinition definition,
-                                           LogicalComponent<? extends JavaImplementation> component,
-                                           JavaServiceContract serviceContract) {
+    public void generateCallbackWireSource(JavaWireSource source, LogicalComponent<? extends JavaImplementation> component, JavaServiceContract contract) {
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         String name = null;
         for (Callback entry : type.getCallbacks().values()) {
             // NB: This currently only supports the case where one callback injection site of the same type is on an implementation.
             ServiceContract candidate = entry.getServiceContract();
-            MatchResult result = matcher.isAssignableFrom(candidate, serviceContract, false);
+            MatchResult result = matcher.isAssignableFrom(candidate, contract, false);
             if (result.isAssignable()) {
                 name = entry.getName();
                 break;
             }
         }
         if (name == null) {
-            String interfaze = serviceContract.getQualifiedInterfaceName();
+            String interfaze = contract.getQualifiedInterfaceName();
             throw new Fabric3Exception("Callback injection site not found for type: " + interfaze);
         }
 
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);
-        definition.setInjectable(injectable);
-        definition.setInterfaceClass(serviceContract.getInterfaceClass());
+        source.setInjectable(injectable);
+        source.setInterfaceClass(contract.getInterfaceClass());
         URI uri = URI.create(component.getUri().toString() + "#" + name);
-        definition.setUri(uri);
-        definition.setOptimizable(false);
+        source.setUri(uri);
+        source.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaWireSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) {
+    public void generateResourceWireSource(JavaWireSource source, LogicalResourceReference<?> resourceReference) {
         URI uri = resourceReference.getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) resourceReference.getDefinition().getServiceContract();
 
-        wireDefinition.setUri(uri);
-        wireDefinition.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
-        wireDefinition.setInterfaceClass(serviceContract.getInterfaceClass());
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.RESOURCE, uri.getFragment()));
+        source.setInterfaceClass(serviceContract.getInterfaceClass());
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generateWireTarget(JavaWireTargetDefinition definition, LogicalService service) {
+    public void generateWireTarget(JavaWireTarget target, LogicalService service) {
         LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getParent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
-        definition.setUri(uri);
+        target.setUri(uri);
 
         // assume only wires to composite scope components can be optimized
         Component<JavaImplementation> componentDefinition = component.getDefinition();
         JavaImplementation implementation = componentDefinition.getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
         Scope scope = componentType.getScope();
-        definition.setOptimizable(scope.isSingleton());
+        target.setOptimizable(scope.isSingleton());
     }
 
 }

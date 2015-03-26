@@ -21,12 +21,12 @@ package org.fabric3.spi.container.builder.component;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelBinding;
 
 /**
  * Builds and disposes channel binding infrastructure.
  */
-public interface ChannelBindingBuilder<B extends PhysicalChannelBindingDefinition> {
+public interface ChannelBindingBuilder<B extends PhysicalChannelBinding> {
 
     /**
      * Build (provision) the infrastructure.

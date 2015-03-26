@@ -25,12 +25,12 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
+import org.fabric3.implementation.system.provision.SystemConnectionSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -39,7 +39,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches and detaches a {@link ChannelConnection} from a System component producer.
  */
 @EagerInit
-public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<SystemConnectionSourceDefinition> {
+public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<SystemConnectionSource> {
     private ComponentManager manager;
     private ChannelProxyService proxyService;
 
@@ -53,7 +53,7 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
         this.manager = manager;
     }
 
-    public void attach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(SystemConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) {
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
@@ -70,7 +70,7 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
         component.setSupplier(injectable, supplier);
     }
 
-    public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(SystemConnectionSource source, PhysicalConnectionTarget target) throws Fabric3Exception {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();

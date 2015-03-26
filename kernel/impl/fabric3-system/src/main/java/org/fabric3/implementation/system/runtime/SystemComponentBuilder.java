@@ -30,7 +30,7 @@ import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.system.provision.SystemComponentDefinition;
+import org.fabric3.implementation.system.provision.PhysicalSystemComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponentDefinition, SystemComponent> {
+public class SystemComponentBuilder extends PojoComponentBuilder<PhysicalSystemComponent, SystemComponent> {
     private ScopeRegistry scopeRegistry;
     private ImplementationManagerFactoryBuilder factoryBuilder;
 
@@ -59,27 +59,27 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         this.factoryBuilder = factoryBuilder;
     }
 
-    public SystemComponent build(SystemComponentDefinition definition) throws Fabric3Exception {
-        URI uri = definition.getComponentUri();
-        QName deployable = definition.getDeployable();
+    public SystemComponent build(PhysicalSystemComponent physicalComponent) throws Fabric3Exception {
+        URI uri = physicalComponent.getComponentUri();
+        QName deployable = physicalComponent.getDeployable();
 
         // get the scope container for this component
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
 
         // create the InstanceFactoryProvider based on the definition in the model
-        ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
+        ImplementationManagerDefinition managerDefinition = physicalComponent.getFactoryDefinition();
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
-        createPropertyFactories(definition, factory);
+        createPropertyFactories(physicalComponent, factory);
 
-        boolean eager = definition.isEagerInit();
+        boolean eager = physicalComponent.isEagerInit();
         SystemComponent component = new SystemComponent(uri, factory, scopeContainer, deployable, eager);
-        export(definition, component);
+        export(physicalComponent, component);
         return component;
     }
 
-    public void dispose(SystemComponentDefinition definition, SystemComponent component) throws Fabric3Exception {
-        dispose(definition);
+    public void dispose(PhysicalSystemComponent physicalComponent, SystemComponent component) throws Fabric3Exception {
+        dispose(physicalComponent);
     }
 
 }

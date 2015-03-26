@@ -18,25 +18,25 @@ package org.fabric3.implementation.web.runtime;
 
 import java.net.URI;
 
-import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition;
+import org.fabric3.implementation.web.provision.WebConnectionSource;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-public class WebComponentSourceConnectionAttacher implements SourceConnectionAttacher<WebComponentConnectionSourceDefinition> {
+public class WebComponentSourceConnectionAttacher implements SourceConnectionAttacher<WebConnectionSource> {
     private ComponentManager manager;
 
     public WebComponentSourceConnectionAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public void attach(WebComponentConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(WebConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String producerName = source.getUri().getFragment();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);

@@ -29,11 +29,11 @@ import org.fabric3.implementation.system.introspection.SystemImplementationIntro
 import org.fabric3.implementation.system.introspection.SystemImplementationLoader;
 import org.fabric3.implementation.system.introspection.SystemServiceHeuristic;
 import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic;
-import org.fabric3.implementation.system.provision.SystemComponentDefinition;
-import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
+import org.fabric3.implementation.system.provision.PhysicalSystemComponent;
+import org.fabric3.implementation.system.provision.SystemConnectionSource;
+import org.fabric3.implementation.system.provision.SystemConnectionTarget;
+import org.fabric3.implementation.system.provision.SystemWireSource;
+import org.fabric3.implementation.system.provision.SystemWireTarget;
 import org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher;
@@ -42,8 +42,8 @@ import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
 import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
-import org.fabric3.implementation.system.singleton.SingletonWireSourceDefinition;
-import org.fabric3.implementation.system.singleton.SingletonWireTargetDefinition;
+import org.fabric3.implementation.system.singleton.SingletonWireSource;
+import org.fabric3.implementation.system.singleton.SingletonWireTarget;
 import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 import org.fabric3.spi.model.type.system.SystemImplementation;
 import static org.fabric3.spi.model.type.system.SystemComponentBuilder.newBuilder;
@@ -67,17 +67,17 @@ public class SystemImplementationProvider {
 
     private static void addSingletonImplementation(CompositeBuilder compositeBuilder) {
         compositeBuilder.component(newBuilder(SingletonComponentGenerator.class).key(SingletonImplementation.class.getName()).build());
-        compositeBuilder.component(newBuilder(SingletonSourceWireAttacher.class).key(SingletonWireSourceDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SingletonTargetWireAttacher.class).key(SingletonWireTargetDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(SingletonSourceWireAttacher.class).key(SingletonWireSource.class.getName()).build());
+        compositeBuilder.component(newBuilder(SingletonTargetWireAttacher.class).key(SingletonWireTarget.class.getName()).build());
     }
 
     private static void addSystemImplementation(CompositeBuilder compositeBuilder) {
         compositeBuilder.component(newBuilder(SystemImplementationLoader.class).key(Namespaces.F3_PREFIX + "implementation.system").build());
-        compositeBuilder.component(newBuilder(org.fabric3.implementation.system.runtime.SystemComponentBuilder.class).key(SystemComponentDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SystemSourceWireAttacher.class).key(SystemWireSourceDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SystemTargetWireAttacher.class).key(SystemWireTargetDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SystemSourceConnectionAttacher.class).key(SystemConnectionSourceDefinition.class.getName()).build());
-        compositeBuilder.component(newBuilder(SystemTargetConnectionAttacher.class).key(SystemConnectionTargetDefinition.class.getName()).build());
+        compositeBuilder.component(newBuilder(org.fabric3.implementation.system.runtime.SystemComponentBuilder.class).key(PhysicalSystemComponent.class.getName()).build());
+        compositeBuilder.component(newBuilder(SystemSourceWireAttacher.class).key(SystemWireSource.class.getName()).build());
+        compositeBuilder.component(newBuilder(SystemTargetWireAttacher.class).key(SystemWireTarget.class.getName()).build());
+        compositeBuilder.component(newBuilder(SystemSourceConnectionAttacher.class).key(SystemConnectionSource.class.getName()).build());
+        compositeBuilder.component(newBuilder(SystemTargetConnectionAttacher.class).key(SystemConnectionTarget.class.getName()).build());
 
         SystemComponentBuilder componentBuilder = newBuilder("SystemImplementationIntrospectorImpl", SystemImplementationIntrospectorImpl.class);
         componentBuilder.key("system");

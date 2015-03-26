@@ -24,16 +24,16 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition;
+import org.fabric3.jpa.provision.PersistenceUnitWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the target side of entity manager factories.
  */
-public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitWireTargetDefinition> {
+public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitWireTarget> {
     private EntityManagerFactoryResolver emfResolver;
 
     /**
@@ -45,11 +45,11 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
         this.emfResolver = emfResolver;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, PersistenceUnitWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, PersistenceUnitWireTarget target, Wire wire) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public Supplier<?> createSupplier(PersistenceUnitWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(PersistenceUnitWireTarget target) throws Fabric3Exception {
         String unitName = target.getUnitName();
         ClassLoader classLoader = target.getClassLoader();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**
@@ -37,7 +37,7 @@ public class DataTypeHelper {
     public static final DataType JAXB_TYPE = new JavaType(String.class, "JAXB");
     public static List<DataType> JAXB_TYPES = Arrays.asList(JAXB_TYPE);
 
-    public static List<DataType> createTypes(PhysicalOperationDefinition physicalOperation) throws Fabric3Exception {
+    public static List<DataType> createTypes(PhysicalOperation physicalOperation) throws Fabric3Exception {
         List<DataType> dataTypes = new ArrayList<>();
         if (!physicalOperation.getSourceParameterTypes().isEmpty()) {
             List<Class<?>> types = physicalOperation.getSourceParameterTypes();

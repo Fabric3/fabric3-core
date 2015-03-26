@@ -38,7 +38,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
 
@@ -84,11 +84,11 @@ public class ProducerCommandGenerator implements CommandGenerator<ChannelConnect
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, producer);
                 DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, deployable, PRODUCER);
                 command.addDisposeChannelCommand(disposeCommand);
-                channels.put(channel, disposeCommand.getDefinition().getDeliveryType());
+                channels.put(channel, disposeCommand.getChannel().getDeliveryType());
             }
-            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateProducer(producer, channels);
-            for (PhysicalChannelConnectionDefinition definition : definitions) {
-                DetachChannelConnectionCommand connectionCommand = new DetachChannelConnectionCommand(definition);
+            List<PhysicalChannelConnection> connections = connectionGenerator.generateProducer(producer, channels);
+            for (PhysicalChannelConnection connection : connections) {
+                DetachChannelConnectionCommand connectionCommand = new DetachChannelConnectionCommand(connection);
                 command.add(connectionCommand);
             }
         } else if (LogicalState.NEW == component.getState()) {
@@ -97,11 +97,11 @@ public class ProducerCommandGenerator implements CommandGenerator<ChannelConnect
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, producer);
                 BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, deployable, PRODUCER);
                 command.addBuildChannelCommand(buildCommand);
-                channels.put(channel, buildCommand.getDefinition().getDeliveryType());
+                channels.put(channel, buildCommand.getChannel().getDeliveryType());
             }
-            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateProducer(producer, channels);
-            for (PhysicalChannelConnectionDefinition definition : definitions) {
-                AttachChannelConnectionCommand connectionCommand = new AttachChannelConnectionCommand(definition);
+            List<PhysicalChannelConnection> connections = connectionGenerator.generateProducer(producer, channels);
+            for (PhysicalChannelConnection connection : connections) {
+                AttachChannelConnectionCommand connectionCommand = new AttachChannelConnectionCommand(connection);
                 command.add(connectionCommand);
             }
         }

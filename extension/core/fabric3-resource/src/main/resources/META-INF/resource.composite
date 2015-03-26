@@ -17,7 +17,7 @@
         <f3:implementation.system class="org.fabric3.resource.generator.SystemSourcedResourceReferenceGenerator"/>
     </component>
 
-    <component name="SystemSourcedResourceWireAttacher" f3:key="org.fabric3.resource.provision.SystemSourcedWireTargetDefinition">
+    <component name="SystemSourcedResourceWireAttacher" f3:key="org.fabric3.resource.provision.SystemSourcedWireTarget">
         <f3:implementation.system class="org.fabric3.resource.runtime.SystemSourcedResourceWireAttacher"/>
     </component>
 

@@ -33,7 +33,7 @@
         <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceBuilder"/>
     </component>
 
-    <component name="DataSourceWireAttacher" f3:key="org.fabric3.datasource.provision.DataSourceWireTargetDefinition">
+    <component name="DataSourceWireAttacher" f3:key="org.fabric3.datasource.provision.DataSourceWireTarget">
         <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceWireAttacher"/>
     </component>
 

@@ -25,7 +25,7 @@ import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  *
@@ -34,7 +34,7 @@ public class ChannelConnectionCommandExecutorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testDetachBeforeAttach() throws Exception {
-        PhysicalChannelConnectionDefinition definition = new MockDefinition();
+        PhysicalChannelConnection connection = new Mock();
 
         CommandExecutorRegistry registry = EasyMock.createStrictMock(CommandExecutorRegistry.class);
         registry.execute(EasyMock.isA(DetachChannelConnectionCommand.class));
@@ -44,18 +44,16 @@ public class ChannelConnectionCommandExecutorTestCase extends TestCase {
         ChannelConnectionCommandExecutor executor = new ChannelConnectionCommandExecutor(registry);
 
         ChannelConnectionCommand command = new ChannelConnectionCommand();
-        command.add(new AttachChannelConnectionCommand(definition));
-        command.add(new DetachChannelConnectionCommand(definition));
+        command.add(new AttachChannelConnectionCommand(connection));
+        command.add(new DetachChannelConnectionCommand(connection));
 
         executor.execute(command);
 
         EasyMock.verify(registry);
     }
 
-    private class MockDefinition extends PhysicalChannelConnectionDefinition {
-        private static final long serialVersionUID = -809769047230911419L;
-
-        private MockDefinition() {
+    private class Mock extends PhysicalChannelConnection {
+        private Mock() {
             super(null, null, null, null, false);
         }
     }

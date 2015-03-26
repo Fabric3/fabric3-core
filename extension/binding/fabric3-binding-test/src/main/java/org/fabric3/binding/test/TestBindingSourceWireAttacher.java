@@ -23,27 +23,27 @@ import java.net.URI;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-@Key("org.fabric3.binding.test.TestBindingWireSourceDefinition")
-public class TestBindingSourceWireAttacher implements SourceWireAttacher<TestBindingWireSourceDefinition> {
+@Key("org.fabric3.binding.test.TestBindingWireSource")
+public class TestBindingSourceWireAttacher implements SourceWireAttacher<TestBindingWireSource> {
     private final BindingChannel channel;
 
     public TestBindingSourceWireAttacher(@Reference BindingChannel channel) {
         this.channel = channel;
     }
 
-    public void attach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(TestBindingWireSource source, PhysicalWireTarget target, Wire wire) {
         // register the wire to the bound service so it can be invoked through the channel from a bound reference
         URI callbackUri = target.getCallbackUri();
         channel.registerDestinationWire(source.getUri(), wire, callbackUri);
     }
 
-    public void detach(TestBindingWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(TestBindingWireSource source, PhysicalWireTarget target) {
     }
 
 }

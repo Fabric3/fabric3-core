@@ -22,14 +22,14 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 
 public class DisposeChannelCommandTestCase extends TestCase {
-    private PhysicalChannelDefinition definition;
+    private PhysicalChannel physicalChannel;
 
     public void testEquals() throws Exception {
-        DisposeChannelCommand command1 = new DisposeChannelCommand(definition);
-        DisposeChannelCommand command2 = new DisposeChannelCommand(definition);
+        DisposeChannelCommand command1 = new DisposeChannelCommand(physicalChannel);
+        DisposeChannelCommand command2 = new DisposeChannelCommand(physicalChannel);
         assertEquals(command1, command2);
     }
 
@@ -38,6 +38,6 @@ public class DisposeChannelCommandTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("channel");
         QName deployable = new QName("test", "composite");
-        definition = new PhysicalChannelDefinition(uri, deployable);
+        physicalChannel = new PhysicalChannel(uri, deployable);
     }
 }

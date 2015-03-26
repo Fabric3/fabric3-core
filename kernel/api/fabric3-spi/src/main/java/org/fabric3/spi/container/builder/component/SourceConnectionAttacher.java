@@ -21,13 +21,13 @@ package org.fabric3.spi.container.builder.component;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a component producer, channel or channel binding.
  */
-public interface SourceConnectionAttacher<P extends PhysicalConnectionSourceDefinition> {
+public interface SourceConnectionAttacher<P extends PhysicalConnectionSource> {
 
     /**
      * Attach a connection to a component producer or channel binding transport.
@@ -37,7 +37,7 @@ public interface SourceConnectionAttacher<P extends PhysicalConnectionSourceDefi
      * @param connection the channel connection
      * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    void attach(P source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws Fabric3Exception;
+    void attach(P source, PhysicalConnectionTarget target, ChannelConnection connection) throws Fabric3Exception;
 
     /**
      * Detach a connection from a source.
@@ -46,7 +46,7 @@ public interface SourceConnectionAttacher<P extends PhysicalConnectionSourceDefi
      * @param target the target metadata
      * @throws Fabric3Exception if an error is encountered performing the attach
      */
-    default void detach(P source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    default void detach(P source, PhysicalConnectionTarget target) throws Fabric3Exception {
 
     }
 

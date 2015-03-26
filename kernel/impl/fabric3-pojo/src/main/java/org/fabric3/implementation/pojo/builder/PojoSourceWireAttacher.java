@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.implementation.pojo.provision.PojoWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.implementation.pojo.provision.PojoWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.TypeConstants;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.Transformer;
@@ -46,22 +46,22 @@ public abstract class PojoSourceWireAttacher {
     /**
      * Returns a key for a map-style reference or null if there is no key associated with the reference.
      *
-     * @param sourceDefinition the source metadata
-     * @param targetDefinition the target metadata
+     * @param source the source metadata
+     * @param target the target metadata
      * @return the key
      * @throws Fabric3Exception if there is an error instantiating the key
      */
     @SuppressWarnings("unchecked")
-    protected Object getKey(PojoWireSourceDefinition sourceDefinition, PhysicalWireTargetDefinition targetDefinition) throws Fabric3Exception {
-        if (!sourceDefinition.isKeyed()) {
+    protected Object getKey(PojoWireSource source, PhysicalWireTarget target) throws Fabric3Exception {
+        if (!source.isKeyed()) {
             return null;
         }
-        String key = sourceDefinition.getKey();
+        String key = source.getKey();
 
         // The target classloader must be used since the key class may not be visible to the source classloader, for example, when subclasses are used as keys
-        ClassLoader targetClassLoader = targetDefinition.getClassLoader();
+        ClassLoader targetClassLoader = target.getClassLoader();
 
-        Class<?> keyType = ClassLoading.loadClass(targetClassLoader, sourceDefinition.getKeyClassName());
+        Class<?> keyType = ClassLoading.loadClass(targetClassLoader, source.getKeyClassName());
         if (String.class.equals(keyType)) {
             // short-circuit the transformation and return the string
             return key;

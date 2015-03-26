@@ -54,7 +54,7 @@ import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventStream;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -335,9 +335,9 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     @SuppressWarnings({"unchecked"})
     private DataType getEventTypeForConnection(ChannelConnection connection) throws Fabric3Exception {
-        PhysicalEventStreamDefinition eventStreamDefinition = connection.getEventStream().getDefinition();
-        if (!eventStreamDefinition.getEventTypes().isEmpty()) {
-            Class<?> type = eventStreamDefinition.getEventTypes().get(0);
+        PhysicalEventStream physicalStream = connection.getEventStream().getDefinition();
+        if (!physicalStream.getEventTypes().isEmpty()) {
+            Class<?> type = physicalStream.getEventTypes().get(0);
             return new JavaType(type);
         } else {
             return new JavaType(Object.class);

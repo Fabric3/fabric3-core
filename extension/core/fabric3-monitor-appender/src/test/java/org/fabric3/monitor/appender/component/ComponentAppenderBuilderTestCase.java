@@ -39,7 +39,7 @@ public class ComponentAppenderBuilderTestCase extends TestCase {
         EasyMock.expect(componentManager.getComponent(uri)).andReturn(component);
         EasyMock.replay(componentManager, component);
 
-        Appender appender = builder.build(new PhysicalComponentAppenderDefinition("test"));
+        Appender appender = builder.build(new PhysicalComponentAppender("test"));
         assertNotNull(appender);
 
         EasyMock.verify(componentManager, component);

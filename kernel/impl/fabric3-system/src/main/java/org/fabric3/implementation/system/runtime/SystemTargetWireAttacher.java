@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
+import org.fabric3.implementation.system.provision.SystemWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -40,7 +40,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTargetDefinition> {
+public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTarget> {
 
     private final ComponentManager manager;
 
@@ -48,14 +48,14 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         this.manager = manager;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, SystemWireTarget target, Wire wire) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
         Class<?> implementationClass = targetComponent.getImplementationClass();
 
         for (InvocationChain chain : wire.getInvocationChains()) {
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
+            PhysicalOperation operation = chain.getPhysicalOperation();
 
             List<Class<?>> params = operation.getSourceParameterTypes();
             Method method;
@@ -70,7 +70,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemWireTa
         }
     }
 
-    public Supplier<?> createSupplier(SystemWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SystemWireTarget target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
         return targetComponent.createSupplier();

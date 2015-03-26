@@ -22,8 +22,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
-import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitor;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestination;
 
 /**
  *
@@ -33,28 +33,26 @@ public class MonitorBuilderTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         MonitorDestinationBuilder destinationBuilder = EasyMock.createMock(MonitorDestinationBuilder.class);
-        destinationBuilder.build(EasyMock.isA(MockDefinition.class));
+        destinationBuilder.build(EasyMock.isA(MockDestination.class));
         EasyMock.replay(destinationBuilder);
 
         MonitorBuilder builder = new MonitorBuilder();
 
-        Map map = Collections.singletonMap(MockDefinition.class, destinationBuilder);
+        Map map = Collections.singletonMap(MockDestination.class, destinationBuilder);
         builder.setBuilders(map);
 
-        PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition("test");
-        physicalDefinition.setDestinationDefinition(new MockDefinition());
+        PhysicalMonitor physicalMonitor = new PhysicalMonitor("test");
+        physicalMonitor.setDestination(new MockDestination());
 
-        builder.build(physicalDefinition);
+        builder.build(physicalMonitor);
 
         EasyMock.verify(destinationBuilder);
 
     }
 
-    private class MockDefinition extends PhysicalMonitorDestinationDefinition {
+    private class MockDestination extends PhysicalMonitorDestination {
 
-        private static final long serialVersionUID = -306254906595407459L;
-
-        public MockDefinition() {
+        public MockDestination() {
             super("test");
         }
     }

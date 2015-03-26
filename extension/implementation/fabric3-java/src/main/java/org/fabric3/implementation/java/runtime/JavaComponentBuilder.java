@@ -23,7 +23,7 @@ import java.net.URI;
 
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
+import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertySupplierBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
@@ -40,7 +40,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Builds a Java component from a physical definition.
  */
 @EagerInit
-public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefinition, JavaComponent> {
+public class JavaComponentBuilder extends PojoComponentBuilder<PhysicalJavaComponent, JavaComponent> {
     private ScopeRegistry scopeRegistry;
     private ImplementationManagerFactoryBuilder factoryBuilder;
 
@@ -55,44 +55,44 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         this.factoryBuilder = factoryBuilder;
     }
 
-    public JavaComponent build(JavaComponentDefinition definition) {
-        return definition.getInstance() != null ? buildNonManagedComponent(definition) : buildManagedComponent(definition);
+    public JavaComponent build(PhysicalJavaComponent physicalComponent) {
+        return physicalComponent.getInstance() != null ? buildNonManagedComponent(physicalComponent) : buildManagedComponent(physicalComponent);
     }
 
-    public void dispose(JavaComponentDefinition definition, JavaComponent component) {
-        dispose(definition);
+    public void dispose(PhysicalJavaComponent physicalComponent, JavaComponent component) {
+        dispose(physicalComponent);
     }
 
-    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) {
-        URI uri = definition.getComponentUri();
+    private JavaComponent buildManagedComponent(PhysicalJavaComponent physicalComponent) {
+        URI uri = physicalComponent.getComponentUri();
 
-        QName deployable = definition.getDeployable();
+        QName deployable = physicalComponent.getDeployable();
 
         // get the scope container for this component
-        Scope scopeName = definition.getScope();
+        Scope scopeName = physicalComponent.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         // create the InstanceFactoryProvider based on the definition in the model
-        ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
+        ImplementationManagerDefinition managerDefinition = physicalComponent.getFactoryDefinition();
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
-        createPropertyFactories(definition, factory);
+        createPropertyFactories(physicalComponent, factory);
 
-        boolean eager = definition.isEagerInit();
+        boolean eager = physicalComponent.isEagerInit();
 
         JavaComponent component = new JavaComponent(uri, factory, scopeContainer, deployable, eager);
         buildContexts(component, factory);
-        export(definition, component);
+        export(physicalComponent, component);
         return component;
     }
 
-    private JavaComponent buildNonManagedComponent(JavaComponentDefinition definition) {
-        URI componentUri = definition.getComponentUri();
-        Scope scopeName = definition.getScope();
+    private JavaComponent buildNonManagedComponent(PhysicalJavaComponent physicalComponent) {
+        URI componentUri = physicalComponent.getComponentUri();
+        Scope scopeName = physicalComponent.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
-        Object instance = definition.getInstance();
+        Object instance = physicalComponent.getInstance();
         NonManagedImplementationManagerFactory factory = new NonManagedImplementationManagerFactory(instance);
-        return new JavaComponent(componentUri, factory, scopeContainer, definition.getDeployable(), false);
+        return new JavaComponent(componentUri, factory, scopeContainer, physicalComponent.getDeployable(), false);
     }
 
 }

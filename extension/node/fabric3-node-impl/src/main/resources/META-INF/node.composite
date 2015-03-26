@@ -34,11 +34,11 @@
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentGenerator"/>
     </component>
 
-    <component name="NonManagedComponentSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalWireSourceDefinition">
+    <component name="NonManagedComponentSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedWireSource">
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentSourceWireAttacher"/>
     </component>
 
-    <component name="NonManagedConnectionSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition">
+    <component name="NonManagedConnectionSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedConnectionSource">
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedConnectionSourceAttacher"/>
     </component>
 

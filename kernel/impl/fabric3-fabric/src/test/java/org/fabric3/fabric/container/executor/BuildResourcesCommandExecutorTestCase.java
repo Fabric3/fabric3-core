@@ -27,35 +27,33 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  *
  */
 public class BuildResourcesCommandExecutorTestCase extends TestCase {
 
-
     public void testExecute() throws Exception {
         CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
         registry.register(EasyMock.eq(BuildResourcesCommand.class), EasyMock.isA(BuildResourcesCommandExecutor.class));
-        ResourceBuilder<MockDefinition> builder = EasyMock.createMock(ResourceBuilder.class);
-        builder.build(EasyMock.isA(MockDefinition.class));
+        ResourceBuilder<MockResource> builder = EasyMock.createMock(ResourceBuilder.class);
+        builder.build(EasyMock.isA(MockResource.class));
         EasyMock.replay(registry, builder);
 
-        Map<Class<?>, ResourceBuilder> builders = Collections.<Class<?>, ResourceBuilder>singletonMap(MockDefinition.class, builder);
+        Map<Class<?>, ResourceBuilder> builders = Collections.<Class<?>, ResourceBuilder>singletonMap(MockResource.class, builder);
 
         BuildResourcesCommandExecutor executor = new BuildResourcesCommandExecutor(registry);
         executor.setBuilders(builders);
         executor.init();
 
-        PhysicalResourceDefinition definition = new MockDefinition();
-        BuildResourcesCommand command = new BuildResourcesCommand(Collections.singletonList(definition));
+        PhysicalResource physicalResource = new MockResource();
+        BuildResourcesCommand command = new BuildResourcesCommand(Collections.singletonList(physicalResource));
         executor.execute(command);
 
         EasyMock.verify(registry, builder);
     }
 
-    private class MockDefinition extends PhysicalResourceDefinition {
-        private static final long serialVersionUID = 2610715229513271459L;
+    private class MockResource extends PhysicalResource {
     }
 }

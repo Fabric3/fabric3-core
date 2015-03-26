@@ -9,23 +9,23 @@
         <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationLoader"/>
     </component>
 
-    <component name="SystemComponentBuilder" f3:key="org.fabric3.implementation.system.provision.SystemComponentDefinition">
+    <component name="SystemComponentBuilder" f3:key="org.fabric3.implementation.system.provision.PhysicalSystemComponent">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemComponentBuilder"/>
     </component>
 
-    <component name="SystemSourceWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemWireSourceDefinition">
+    <component name="SystemSourceWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemWireSource">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemSourceWireAttacher"/>
     </component>
 
-    <component name="SystemTargetWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemWireTargetDefinition">
+    <component name="SystemTargetWireAttacher" f3:key="org.fabric3.implementation.system.provision.SystemWireTarget">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetWireAttacher"/>
     </component>
 
-    <component name="SystemSourceConnectionAttacher" f3:key="org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition">
+    <component name="SystemSourceConnectionAttacher" f3:key="org.fabric3.implementation.system.provision.SystemConnectionSource">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher"/>
     </component>
 
-    <component name="SystemTargetConnectionAttacher" f3:key="org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition">
+    <component name="SystemTargetConnectionAttacher" f3:key="org.fabric3.implementation.system.provision.SystemConnectionTarget">
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher"/>
     </component>
 

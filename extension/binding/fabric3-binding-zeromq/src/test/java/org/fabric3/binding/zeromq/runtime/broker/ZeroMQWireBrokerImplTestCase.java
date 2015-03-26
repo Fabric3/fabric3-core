@@ -40,7 +40,7 @@ import org.fabric3.spi.federation.addressing.AddressEvent;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.runtime.event.EventService;
 import org.zeromq.ZMQ;
 
@@ -94,7 +94,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
 
         //noinspection unchecked
-        EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
+        EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperation.class),
                                                              EasyMock.isA(List.class),
                                                              EasyMock.isA(List.class),
                                                              EasyMock.isA(ClassLoader.class),
@@ -104,7 +104,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
-        PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
+        PhysicalOperation definition = new PhysicalOperation();
         definition.setOneWay(true);
 
         Interceptor interceptor = EasyMock.createMock(Interceptor.class);
@@ -133,7 +133,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
 
         //noinspection unchecked
-        EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
+        EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperation.class),
                                                              EasyMock.isA(List.class),
                                                              EasyMock.isA(List.class),
                                                              EasyMock.isA(ClassLoader.class),
@@ -142,7 +142,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
-        PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
+        PhysicalOperation definition = new PhysicalOperation();
         definition.setOneWay(true);
 
         InvocationChain chain = EasyMock.createMock(InvocationChain.class);

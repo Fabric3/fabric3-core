@@ -21,12 +21,12 @@ package org.fabric3.spi.container.builder.interceptor;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.wire.Interceptor;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
 
 /**
  * Builds an interceptor for a wire invocation chain.
  */
-public interface InterceptorBuilder<PID extends PhysicalInterceptorDefinition> {
+public interface InterceptorBuilder<PID extends PhysicalInterceptor> {
 
     /**
      * Return an interceptor for the given interceptor definition metadata

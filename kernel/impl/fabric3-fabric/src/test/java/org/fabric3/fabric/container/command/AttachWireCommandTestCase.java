@@ -19,17 +19,17 @@
 package org.fabric3.fabric.container.command;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 
 public class AttachWireCommandTestCase extends TestCase {
 
     public void testEquals() throws Exception {
         AttachWireCommand command1 = new AttachWireCommand();
-        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
-        command1.setPhysicalWireDefinition(definition);
+        PhysicalWire physicalWire = new PhysicalWire(null, null, null);
+        command1.setPhysicalWireDefinition(physicalWire);
 
         AttachWireCommand command2 = new AttachWireCommand();
-        command2.setPhysicalWireDefinition(definition);
+        command2.setPhysicalWireDefinition(physicalWire);
         assertEquals(command1, command2);
     }
 }

@@ -17,7 +17,7 @@
 package org.fabric3.fabric.container.command;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  * Used to establish an event channel connection.
@@ -25,13 +25,13 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 public class AttachChannelConnectionCommand implements Command {
     private static final long serialVersionUID = 8746788639966402901L;
 
-    private PhysicalChannelConnectionDefinition definition;
+    private PhysicalChannelConnection connection;
 
-    public AttachChannelConnectionCommand(PhysicalChannelConnectionDefinition definition) {
-        this.definition = definition;
+    public AttachChannelConnectionCommand(PhysicalChannelConnection connection) {
+        this.connection = connection;
     }
 
-    public PhysicalChannelConnectionDefinition getDefinition() {
-        return definition;
+    public PhysicalChannelConnection getConnection() {
+        return connection;
     }
 }

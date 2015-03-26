@@ -21,7 +21,7 @@ package org.fabric3.jpa.generator;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.model.PersistenceContextResourceReference;
 import org.fabric3.jpa.override.OverrideRegistry;
-import org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition;
+import org.fabric3.jpa.provision.PersistenceContextWireTarget;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -38,10 +38,10 @@ public class PersistenceContextResourceReferenceGenerator implements ResourceRef
         this.registry = registry;
     }
 
-    public PersistenceContextWireTargetDefinition generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> logicalResourceReference) {
+    public PersistenceContextWireTarget generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> logicalResourceReference) {
         PersistenceContextResourceReference resource = logicalResourceReference.getDefinition();
         String unitName = resource.getUnitName();
-        PersistenceContextWireTargetDefinition definition = new PersistenceContextWireTargetDefinition(unitName);
+        PersistenceContextWireTarget definition = new PersistenceContextWireTarget(unitName);
         PersistenceOverrides overrides = registry.resolve(unitName);
         if (overrides != null) {
             definition.setOverrides(overrides);

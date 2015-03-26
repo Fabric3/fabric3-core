@@ -22,30 +22,30 @@ import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.resource.provision.SystemSourcedWireTargetDefinition;
+import org.fabric3.resource.provision.SystemSourcedWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches to a service in the runtime domain.
  */
-public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedWireTargetDefinition> {
+public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedWireTarget> {
     private final ComponentManager manager;
 
     public SystemSourcedResourceWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, SystemSourcedWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, SystemSourcedWireTarget target, Wire wire) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public Supplier<?> createSupplier(SystemSourcedWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(SystemSourcedWireTarget target) throws Fabric3Exception {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {

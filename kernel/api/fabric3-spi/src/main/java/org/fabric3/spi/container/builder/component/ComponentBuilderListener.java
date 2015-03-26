@@ -20,7 +20,7 @@
 package org.fabric3.spi.container.builder.component;
 
 import org.fabric3.spi.container.component.Component;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  * Receives callbacks when a component is built.
@@ -30,10 +30,10 @@ public interface ComponentBuilderListener {
     /**
      * Callback when a component is built.
      *
-     * @param component  the built component
-     * @param definition physical component definition of the component being built.
+     * @param component         the built component
+     * @param physicalComponent physical component of the component being built.
      */
-    default void onBuild(Component component, PhysicalComponentDefinition definition) {
+    default void onBuild(Component component, PhysicalComponent physicalComponent) {
 
     }
 
@@ -41,9 +41,9 @@ public interface ComponentBuilderListener {
      * Callback when a component is disposed.
      *
      * @param component  the built component
-     * @param definition physical component definition of the component being disposed.
+     * @param physicalComponent physical component of the component being disposed.
      */
-    default void onDispose(Component component, PhysicalComponentDefinition definition) {
+    default void onDispose(Component component, PhysicalComponent physicalComponent) {
 
     }
 }

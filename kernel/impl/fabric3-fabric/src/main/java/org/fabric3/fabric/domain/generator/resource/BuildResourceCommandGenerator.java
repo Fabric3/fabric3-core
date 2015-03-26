@@ -32,7 +32,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -58,17 +58,17 @@ public class BuildResourceCommandGenerator implements CommandGenerator<BuildReso
         if (composite.getResources().isEmpty()) {
             return Optional.empty();
         }
-        List<PhysicalResourceDefinition> definitions = new ArrayList<>();
-        for (LogicalResource<?> resource : composite.getResources()) {
-            Resource resourceDefinition = resource.getDefinition();
-            ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());
-            PhysicalResourceDefinition definition = generator.generateResource(resource);
-            definitions.add(definition);
+        List<PhysicalResource> physicalResources = new ArrayList<>();
+        for (LogicalResource<?> logicalResource : composite.getResources()) {
+            Resource resource = logicalResource.getDefinition();
+            ResourceGenerator generator = generatorRegistry.getResourceGenerator(resource.getClass());
+            PhysicalResource physicalResource = generator.generateResource(logicalResource);
+            physicalResources.add(physicalResource);
         }
-        if (definitions.isEmpty()) {
+        if (physicalResources.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new BuildResourcesCommand(definitions));
+        return Optional.of(new BuildResourcesCommand(physicalResources));
     }
 
 }

@@ -19,24 +19,24 @@ package org.fabric3.fabric.container.channel;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.PassThroughHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventStream;
 
 /**
  *
  */
 public class EventStreamImpl implements EventStream {
-    private PhysicalEventStreamDefinition definition;
+    private PhysicalEventStream physicalStream;
     private EventStreamHandler headHandler;
     private EventStreamHandler tailHandler;
 
-    public EventStreamImpl(PhysicalEventStreamDefinition definition) {
-        this.definition = definition;
+    public EventStreamImpl(PhysicalEventStream physicalStream) {
+        this.physicalStream = physicalStream;
         PassThroughHandler handler = new PassThroughHandler();
         addHandler(handler);
     }
 
-    public PhysicalEventStreamDefinition getDefinition() {
-        return definition;
+    public PhysicalEventStream getDefinition() {
+        return physicalStream;
     }
 
     public EventStreamHandler getHeadHandler() {

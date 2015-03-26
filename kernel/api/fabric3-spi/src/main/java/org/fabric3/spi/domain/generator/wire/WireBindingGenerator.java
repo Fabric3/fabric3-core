@@ -26,11 +26,11 @@ import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
- * Generates {@link PhysicalWireSourceDefinition}s and {@link PhysicalWireTargetDefinition}s for resolved wire bindings.
+ * Generates {@link PhysicalWireSource}s and {@link PhysicalWireTarget}s for resolved wire bindings.
  */
 public interface WireBindingGenerator<BD extends Binding> {
 
@@ -43,8 +43,7 @@ public interface WireBindingGenerator<BD extends Binding> {
      * @return Physical wire source definition.
      * @throws Fabric3Exception if an error is raised during generation
      */
-    PhysicalWireSourceDefinition generateSource(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations)
-            throws Fabric3Exception;
+    PhysicalWireSource generateSource(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when a reference is
@@ -56,8 +55,7 @@ public interface WireBindingGenerator<BD extends Binding> {
      * @return Physical wire target definition.
      * @throws Fabric3Exception if an error is raised during generation
      */
-    PhysicalWireTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding, ServiceContract contract, List<LogicalOperation> operations)
-            throws Fabric3Exception;
+    PhysicalWireTarget generateTarget(LogicalBinding<BD> referenceBinding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the reference is
@@ -70,7 +68,7 @@ public interface WireBindingGenerator<BD extends Binding> {
      * @return Physical wire target definition.
      * @throws Fabric3Exception if an error is raised during generation
      */
-    PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations)
+    PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations)
             throws Fabric3Exception;
 
 }

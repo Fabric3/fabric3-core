@@ -22,10 +22,10 @@ import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.model.CacheSetResource;
-import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
+import org.fabric3.cache.provision.PhysicalCacheSet;
 import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.cache.spi.CacheResourceGenerator;
-import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
+import org.fabric3.cache.spi.PhysicalCacheResource;
 import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -44,15 +44,15 @@ public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetReso
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalCacheSetDefinition generateResource(LogicalResource<CacheSetResource> resource) throws Fabric3Exception {
-        PhysicalCacheSetDefinition definitions = new PhysicalCacheSetDefinition();
+    public PhysicalCacheSet generateResource(LogicalResource<CacheSetResource> resource) throws Fabric3Exception {
+        PhysicalCacheSet set = new PhysicalCacheSet();
         List<CacheResource> configurations = resource.getDefinition().getDefinitions();
         for (CacheResource definition : configurations) {
             CacheResourceGenerator generator = getGenerator(definition);
-            PhysicalCacheResourceDefinition physicalResourceDefinition = generator.generateResource(definition);
-            definitions.addDefinition(physicalResourceDefinition);
+            PhysicalCacheResource cacheResource = generator.generateResource(definition);
+            set.addDefinition(cacheResource);
         }
-        return definitions;
+        return set;
     }
 
     private CacheResourceGenerator getGenerator(CacheResource configuration) throws Fabric3Exception {

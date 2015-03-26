@@ -29,8 +29,8 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Creates a TxInterceptor for a wire invocation chain.
  */
-@Key("org.fabric3.tx.TxInterceptorDefinition")
-public class TxInterceptorBuilder implements InterceptorBuilder<TxInterceptorDefinition> {
+@Key("org.fabric3.tx.PhysicalTxInterceptor")
+public class TxInterceptorBuilder implements InterceptorBuilder<PhysicalTxInterceptor> {
     private TransactionManager transactionManager;
     private TxMonitor monitor;
 
@@ -39,8 +39,8 @@ public class TxInterceptorBuilder implements InterceptorBuilder<TxInterceptorDef
         this.monitor = monitor;
     }
 
-    public Interceptor build(TxInterceptorDefinition interceptorDefinition) {
-        return new TxInterceptor(transactionManager, interceptorDefinition.getAction(), monitor);
+    public Interceptor build(PhysicalTxInterceptor physicalInterceptor) {
+        return new TxInterceptor(transactionManager, physicalInterceptor.getAction(), monitor);
     }
 
 }

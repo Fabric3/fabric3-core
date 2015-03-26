@@ -22,28 +22,26 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 public class DisposeComponentCommandTestCase extends TestCase {
-    private PhysicalComponentDefinition definition;
+    private PhysicalComponent physicalComponent;
     private DisposeComponentCommand command;
 
     public void testEquals() throws Exception {
-        DisposeComponentCommand command2 = new DisposeComponentCommand(definition);
+        DisposeComponentCommand command2 = new DisposeComponentCommand(physicalComponent);
         assertEquals(command2, command);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        definition = new MockDefinition();
-        definition.setDeployable(new QName("test", "composite"));
-        definition.setContributionUri(URI.create("classloader"));
-        definition.setComponentUri(URI.create("component"));
-        command = new DisposeComponentCommand(definition);
+        physicalComponent = new Mock();
+        physicalComponent.setDeployable(new QName("test", "composite"));
+        physicalComponent.setContributionUri(URI.create("classloader"));
+        physicalComponent.setComponentUri(URI.create("component"));
+        command = new DisposeComponentCommand(physicalComponent);
     }
 
-    private class MockDefinition extends PhysicalComponentDefinition {
-        private static final long serialVersionUID = 6358317322714807832L;
+    private class Mock extends PhysicalComponent {
     }
 }

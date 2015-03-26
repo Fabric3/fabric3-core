@@ -23,13 +23,13 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  * Attaches and detaches a wire to/from a target component or transport binding.
  */
-public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
+public interface TargetWireAttacher<T extends PhysicalWireTarget> {
     /**
      * Attaches a wire to a target component or outgoing transport binding.
      *
@@ -38,7 +38,7 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param wire   the wire
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    default void attach(PhysicalWireSourceDefinition source, PTD target, Wire wire) throws Fabric3Exception {
+    default void attach(PhysicalWireSource source, T target, Wire wire) throws Fabric3Exception {
 
     }
 
@@ -49,7 +49,7 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @param target metadata for performing the attach
      * @throws Fabric3Exception if an exception occurs during the detach operation
      */
-    default void detach(PhysicalWireSourceDefinition source, PTD target) throws Fabric3Exception {
+    default void detach(PhysicalWireSource source, T target) throws Fabric3Exception {
 
     }
 
@@ -60,7 +60,7 @@ public interface TargetWireAttacher<PTD extends PhysicalWireTargetDefinition> {
      * @return a Supplier that returns the target instance
      * @throws Fabric3Exception if an exception occurs during the attach operation
      */
-    default Supplier<?> createSupplier(PTD target) throws Fabric3Exception {
+    default Supplier<?> createSupplier(T target) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 

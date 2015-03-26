@@ -20,24 +20,24 @@
         <f3:implementation.system class="org.fabric3.implementation.spring.generator.SpringComponentGenerator"/>
     </component>
 
-    <component name="SpringComponentBuilder" f3:key="org.fabric3.implementation.spring.provision.SpringComponentDefinition">
+    <component name="SpringComponentBuilder" f3:key="org.fabric3.implementation.spring.provision.PhysicalSpringComponent">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringComponentBuilder"/>
         <property name="validating" source="$systemConfig//f3:spring/@validating"/>
     </component>
 
-    <component name="SpringSourceWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringWireSourceDefinition">
+    <component name="SpringSourceWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringWireSource">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringSourceWireAttacher"/>
     </component>
 
-    <component name="SpringTargetWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringWireTargetDefinition">
+    <component name="SpringTargetWireAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringWireTarget">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringTargetWireAttacher"/>
     </component>
 
-    <component name="SpringSourceConnectionAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition">
+    <component name="SpringSourceConnectionAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringConnectionSource">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringSourceConnectionAttacher"/>
     </component>
 
-    <component name="SpringTargetConnectionAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition">
+    <component name="SpringTargetConnectionAttacher" f3:key="org.fabric3.implementation.spring.provision.SpringConnectionTarget">
         <f3:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringTargetConnectionAttacher"/>
     </component>
 

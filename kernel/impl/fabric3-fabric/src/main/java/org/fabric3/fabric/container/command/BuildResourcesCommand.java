@@ -22,21 +22,21 @@ package org.fabric3.fabric.container.command;
 import java.util.List;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  * Builds resources defined in a composite on a runtime.
  */
 public class BuildResourcesCommand implements Command {
     private static final long serialVersionUID = -2232794954042041583L;
-    private List<PhysicalResourceDefinition> definitions;
+    private List<PhysicalResource> physicalResources;
 
-    public BuildResourcesCommand(List<PhysicalResourceDefinition> definitions) {
-        this.definitions = definitions;
+    public BuildResourcesCommand(List<PhysicalResource> definitions) {
+        this.physicalResources = definitions;
     }
 
-    public List<PhysicalResourceDefinition> getDefinitions() {
-        return definitions;
+    public List<PhysicalResource> getPhysicalResources() {
+        return physicalResources;
     }
 
     public boolean equals(Object o) {
@@ -49,11 +49,11 @@ public class BuildResourcesCommand implements Command {
 
         BuildResourcesCommand that = (BuildResourcesCommand) o;
 
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
+        return !(physicalResources != null ? !physicalResources.equals(that.physicalResources) : that.physicalResources != null);
     }
 
     public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
+        return (physicalResources != null ? physicalResources.hashCode() : 0);
     }
 
 }

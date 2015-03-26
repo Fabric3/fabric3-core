@@ -20,7 +20,7 @@ package org.fabric3.datasource.generator;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.model.DataSourceResourceReference;
-import org.fabric3.datasource.provision.DataSourceWireTargetDefinition;
+import org.fabric3.datasource.provision.DataSourceWireTarget;
 import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -31,10 +31,10 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class DataSourceResourceReferenceGenerator implements ResourceReferenceGenerator<DataSourceResourceReference> {
 
-    public DataSourceWireTargetDefinition generateWireTarget(LogicalResourceReference<DataSourceResourceReference> reference) throws Fabric3Exception {
+    public DataSourceWireTarget generateWireTarget(LogicalResourceReference<DataSourceResourceReference> reference) throws Fabric3Exception {
         DataSourceResourceReference definition = reference.getDefinition();
         String dataSourceName = definition.getDataSourceName();
         boolean optional = definition.isOptional();
-        return new DataSourceWireTargetDefinition(dataSourceName, optional);
+        return new DataSourceWireTarget(dataSourceName, optional);
     }
 }

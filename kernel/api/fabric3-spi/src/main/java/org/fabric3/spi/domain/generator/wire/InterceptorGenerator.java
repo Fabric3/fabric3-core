@@ -23,10 +23,10 @@ import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
 
 /**
- * Generates {@link PhysicalInterceptorDefinition}s used to attach policy interceptors to a wire.
+ * Generates {@link PhysicalInterceptor}s used to attach policy interceptors to a wire.
  */
 public interface InterceptorGenerator {
 
@@ -38,6 +38,6 @@ public interface InterceptorGenerator {
      * @return the definition
      * @throws Fabric3Exception if an exception occurs during generation
      */
-    Optional<PhysicalInterceptorDefinition> generate(LogicalOperation source, LogicalOperation target) throws Fabric3Exception;
+    Optional<PhysicalInterceptor> generate(LogicalOperation source, LogicalOperation target) throws Fabric3Exception;
 
 }

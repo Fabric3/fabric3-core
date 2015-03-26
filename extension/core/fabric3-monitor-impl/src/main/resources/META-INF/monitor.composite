@@ -30,11 +30,11 @@
         <f3:implementation.system class="org.fabric3.monitor.impl.destination.MonitorDestinationRegistryImpl"/>
     </component>
 
-    <component name="MonitorBuilder" f3:key="org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition">
+    <component name="MonitorBuilder" f3:key="org.fabric3.monitor.spi.model.physical.PhysicalMonitor">
         <f3:implementation.system class="org.fabric3.monitor.impl.builder.MonitorBuilder"/>
     </component>
 
-    <component name="DefaultMonitorDestinationBuilder" f3:key="org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition">
+    <component name="DefaultMonitorDestinationBuilder" f3:key="org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestination">
         <f3:implementation.system class="org.fabric3.monitor.impl.builder.DefaultMonitorDestinationBuilder"/>
         <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
     </component>

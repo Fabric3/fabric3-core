@@ -27,13 +27,12 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  *
  */
 public class DisposeResourcesCommandExecutorTestCase extends TestCase {
-
 
     public void testExecute() throws Exception {
         CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
@@ -48,14 +47,13 @@ public class DisposeResourcesCommandExecutorTestCase extends TestCase {
         executor.setBuilders(builders);
         executor.init();
 
-        PhysicalResourceDefinition definition = new MockDefinition();
-        DisposeResourcesCommand command = new DisposeResourcesCommand(Collections.singletonList(definition));
+        PhysicalResource physicalResource = new MockDefinition();
+        DisposeResourcesCommand command = new DisposeResourcesCommand(Collections.singletonList(physicalResource));
         executor.execute(command);
 
         EasyMock.verify(registry, builder);
     }
 
-    private class MockDefinition extends PhysicalResourceDefinition {
-        private static final long serialVersionUID = 2610715229513271459L;
+    private class MockDefinition extends PhysicalResource {
     }
 }

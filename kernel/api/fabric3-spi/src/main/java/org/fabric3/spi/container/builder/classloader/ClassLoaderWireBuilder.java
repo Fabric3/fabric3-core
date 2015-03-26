@@ -19,7 +19,7 @@
 package org.fabric3.spi.container.builder.classloader;
 
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
  * Builds a connection between two classloaders.
@@ -29,8 +29,8 @@ public interface ClassLoaderWireBuilder {
     /**
      * Build the connection.
      *
-     * @param source         the source classloader.
-     * @param wireDefinition the physical wire definition for the wire
+     * @param source          the source classloader.
+     * @param classLoaderWire the classloader wire definition for the wire
      */
-    void build(MultiParentClassLoader source, PhysicalClassLoaderWireDefinition wireDefinition);
+    void build(MultiParentClassLoader source, ClassLoaderWire classLoaderWire);
 }

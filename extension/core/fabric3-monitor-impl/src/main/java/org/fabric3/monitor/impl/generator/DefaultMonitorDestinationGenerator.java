@@ -20,16 +20,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition;
+import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestination;
 import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
-import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalAppender;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Generates {@link PhysicalDefaultMonitorDestinationDefinition}s.
+ * Generates {@link PhysicalDefaultMonitorDestination}s.
  */
 public class DefaultMonitorDestinationGenerator implements MonitorDestinationGenerator<DefaultMonitorDestinationDefinition> {
     private Map<Class<?>, AppenderGenerator<?>> appenderGenerators;
@@ -40,15 +40,15 @@ public class DefaultMonitorDestinationGenerator implements MonitorDestinationGen
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalDefaultMonitorDestinationDefinition generateResource(DefaultMonitorDestinationDefinition definition) throws Fabric3Exception {
-        String name = definition.getParent().getName();
-        PhysicalDefaultMonitorDestinationDefinition physicalDefinition = new PhysicalDefaultMonitorDestinationDefinition(name);
-        List<AppenderDefinition> appenderDefinitions = definition.getAppenderDefinitions();
+    public PhysicalDefaultMonitorDestination generateResource(DefaultMonitorDestinationDefinition physicalDestination) throws Fabric3Exception {
+        String name = physicalDestination.getParent().getName();
+        PhysicalDefaultMonitorDestination physicalDefinition = new PhysicalDefaultMonitorDestination(name);
+        List<AppenderDefinition> appenderDefinitions = physicalDestination.getAppenderDefinitions();
 
         for (AppenderDefinition appenderDefinition : appenderDefinitions) {
             AppenderGenerator generator = getAppenderGenerator(appenderDefinition);
-            PhysicalAppenderDefinition physicalAppenderDefinition = generator.generateResource(appenderDefinition);
-            physicalDefinition.add(physicalAppenderDefinition);
+            PhysicalAppender physicalAppender = generator.generateResource(appenderDefinition);
+            physicalDefinition.add(physicalAppender);
         }
         return physicalDefinition;
     }

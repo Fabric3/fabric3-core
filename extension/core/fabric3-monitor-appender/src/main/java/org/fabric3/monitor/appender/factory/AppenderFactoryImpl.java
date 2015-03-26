@@ -36,7 +36,7 @@ import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
-import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalAppender;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -74,8 +74,8 @@ public class AppenderFactoryImpl implements AppenderFactory {
 
     public List<Appender> instantiate(XMLStreamReader reader) {
         List<AppenderDefinition> definitions = load(reader);
-        List<PhysicalAppenderDefinition> physicalDefinitions = generate(definitions);
-        return build(definitions, physicalDefinitions);
+        List<PhysicalAppender> physicalAppenders = generate(definitions);
+        return build(definitions, physicalAppenders);
     }
 
     private List<AppenderDefinition> load(XMLStreamReader reader) throws Fabric3Exception {
@@ -130,28 +130,28 @@ public class AppenderFactoryImpl implements AppenderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private List<PhysicalAppenderDefinition> generate(List<AppenderDefinition> definitions) {
-        List<PhysicalAppenderDefinition> physicalDefinitions = new ArrayList<>(definitions.size());
+    private List<PhysicalAppender> generate(List<AppenderDefinition> definitions) {
+        List<PhysicalAppender> physicalDefinitions = new ArrayList<>(definitions.size());
         for (AppenderDefinition definition : definitions) {
             AppenderGenerator generator = appenderGenerators.get(definition.getClass());
             if (generator == null) {
                 throw new Fabric3Exception("Unknown appender type: " + definition.getClass());
             }
-            PhysicalAppenderDefinition physicalDefinition = generator.generateResource(definition);
+            PhysicalAppender physicalDefinition = generator.generateResource(definition);
             physicalDefinitions.add(physicalDefinition);
         }
         return physicalDefinitions;
     }
 
     @SuppressWarnings("unchecked")
-    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppenderDefinition> physicalDefinitions) {
+    private List<Appender> build(List<AppenderDefinition> definitions, List<PhysicalAppender> physicalDefinitions) {
         List<Appender> appenders = new ArrayList<>(definitions.size());
-        for (PhysicalAppenderDefinition definition : physicalDefinitions) {
-            AppenderBuilder builder = appenderBuilders.get(definition.getClass());
+        for (PhysicalAppender physicalAppender : physicalDefinitions) {
+            AppenderBuilder builder = appenderBuilders.get(physicalAppender.getClass());
             if (builder == null) {
-                throw new Fabric3Exception("Unknown appender type: " + definition.getClass());
+                throw new Fabric3Exception("Unknown appender type: " + physicalAppender.getClass());
             }
-            Appender appender = builder.build(definition);
+            Appender appender = builder.build(physicalAppender);
             appenders.add(appender);
         }
         return appenders;

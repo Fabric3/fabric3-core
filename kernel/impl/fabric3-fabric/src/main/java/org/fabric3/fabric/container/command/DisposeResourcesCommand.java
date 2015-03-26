@@ -22,21 +22,21 @@ package org.fabric3.fabric.container.command;
 import java.util.List;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
  * Removes resources on a runtime.
  */
 public class DisposeResourcesCommand implements Command {
     private static final long serialVersionUID = -3382996929643885337L;
-    private List<PhysicalResourceDefinition> definitions;
+    private List<PhysicalResource> physicalResources;
 
-    public DisposeResourcesCommand(List<PhysicalResourceDefinition> definitions) {
-        this.definitions = definitions;
+    public DisposeResourcesCommand(List<PhysicalResource> physicalResources) {
+        this.physicalResources = physicalResources;
     }
 
-    public List<PhysicalResourceDefinition> getDefinitions() {
-        return definitions;
+    public List<PhysicalResource> getPhysicalResources() {
+        return physicalResources;
     }
 
     public boolean equals(Object o) {
@@ -49,11 +49,11 @@ public class DisposeResourcesCommand implements Command {
 
         DisposeResourcesCommand that = (DisposeResourcesCommand) o;
 
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
+        return !(physicalResources != null ? !physicalResources.equals(that.physicalResources) : that.physicalResources != null);
     }
 
     public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
+        return (physicalResources != null ? physicalResources.hashCode() : 0);
     }
 
 }

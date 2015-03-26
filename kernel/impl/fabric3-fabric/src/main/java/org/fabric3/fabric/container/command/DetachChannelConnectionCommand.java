@@ -17,7 +17,7 @@
 package org.fabric3.fabric.container.command;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  * Used to remove an event channel connection.
@@ -25,14 +25,14 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 public class DetachChannelConnectionCommand implements Command {
     private static final long serialVersionUID = 2653032608929449643L;
 
-    private PhysicalChannelConnectionDefinition definition;
+    private PhysicalChannelConnection connection;
 
-    public DetachChannelConnectionCommand(PhysicalChannelConnectionDefinition definition) {
-        this.definition = definition;
+    public DetachChannelConnectionCommand(PhysicalChannelConnection connection) {
+        this.connection = connection;
     }
 
-    public PhysicalChannelConnectionDefinition getDefinition() {
-        return definition;
+    public PhysicalChannelConnection getConnection() {
+        return connection;
     }
 
 

@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -36,33 +36,23 @@ import org.oasisopen.sca.annotation.EagerInit;
 @Key("org.fabric3.binding.test.TestBinding")
 public class TestWireBindingGenerator implements WireBindingGenerator<TestBinding> {
 
-    public TestBindingWireSourceDefinition generateSource(LogicalBinding<TestBinding> logicalBinding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations) {
-        TestBindingWireSourceDefinition definition = new TestBindingWireSourceDefinition();
-        definition.setUri(logicalBinding.getDefinition().getTargetUri());
-        return definition;
+    public TestBindingWireSource generateSource(LogicalBinding<TestBinding> logicalBinding, ServiceContract contract, List<LogicalOperation> operations) {
+        TestBindingWireSource source = new TestBindingWireSource();
+        source.setUri(logicalBinding.getDefinition().getTargetUri());
+        return source;
     }
 
-    public TestBindingWireTargetDefinition generateTarget(LogicalBinding<TestBinding> logicalBinding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations) {
-
-        TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
-        definition.setUri(logicalBinding.getDefinition().getTargetUri());
-        return definition;
+    public TestBindingWireTarget generateTarget(LogicalBinding<TestBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+        TestBindingWireTarget target = new TestBindingWireTarget();
+        target.setUri(binding.getDefinition().getTargetUri());
+        return target;
     }
 
-    public PhysicalWireTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBinding> serviceBinding,
-                                                                     ServiceContract contract,
-                                                                     List<LogicalOperation> operations) {
-
-        TestBindingWireTargetDefinition definition = new TestBindingWireTargetDefinition();
-
-        URI path = serviceBinding.getDefinition().getTargetUri();
-        definition.setUri(path);
-        return definition;
+    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<TestBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
+        TestBindingWireTarget target = new TestBindingWireTarget();
+        URI path = binding.getDefinition().getTargetUri();
+        target.setUri(path);
+        return target;
     }
-
 
 }

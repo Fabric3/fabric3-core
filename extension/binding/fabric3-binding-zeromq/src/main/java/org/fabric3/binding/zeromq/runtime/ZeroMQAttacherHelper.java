@@ -24,7 +24,7 @@ import java.util.TreeMap;
 
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
 
 /**
  *
@@ -41,7 +41,7 @@ public final class ZeroMQAttacherHelper {
      * @return the invocation chains
      */
     public static List<InvocationChain> sortChains(Wire wire) {
-        TreeMap<PhysicalOperationDefinition, InvocationChain> map = new TreeMap<>();
+        TreeMap<PhysicalOperation, InvocationChain> map = new TreeMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             map.put(chain.getPhysicalOperation(), chain);
         }

@@ -18,12 +18,11 @@
  */
 package org.fabric3.implementation.mock.generator;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.mock.model.ImplementationMock;
-import org.fabric3.implementation.mock.model.MockComponentDefinition;
-import org.fabric3.implementation.mock.provision.MockWireSourceDefinition;
-import org.fabric3.implementation.mock.provision.MockWireTargetDefinition;
+import org.fabric3.implementation.mock.model.MockPhysicalComponent;
+import org.fabric3.implementation.mock.provision.MockWireSource;
+import org.fabric3.implementation.mock.provision.MockWireTarget;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -31,9 +30,9 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -42,39 +41,39 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class MockComponentGenerator implements ComponentGenerator<LogicalComponent<ImplementationMock>> {
 
-    public MockComponentDefinition generate(LogicalComponent<ImplementationMock> component) throws Fabric3Exception {
-        MockComponentDefinition componentDefinition = new MockComponentDefinition();
+    public MockPhysicalComponent generate(LogicalComponent<ImplementationMock> component) {
+        MockPhysicalComponent physicalComponent = new MockPhysicalComponent();
         ImplementationMock implementationMock = component.getDefinition().getImplementation();
-        componentDefinition.setInterfaces(implementationMock.getMockedInterfaces());
-        return componentDefinition;
+        physicalComponent.setInterfaces(implementationMock.getMockedInterfaces());
+        return physicalComponent;
     }
 
-    public MockWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
-        MockWireTargetDefinition definition = new MockWireTargetDefinition();
+    public MockWireTarget generateTarget(LogicalService service) {
+        MockWireTarget definition = new MockWireTarget();
         definition.setUri(service.getUri());
         ServiceContract serviceContract = service.getDefinition().getServiceContract();
         definition.setMockedInterface(serviceContract.getQualifiedInterfaceName());
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {
         throw new UnsupportedOperationException("Mock objects cannot have resources");
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
+    public PhysicalWireSource generateSource(LogicalReference reference) {
         throw new UnsupportedOperationException("Mock objects cannot be the source of a wire");
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
-        return new MockWireSourceDefinition();
+    public PhysicalWireSource generateCallbackSource(LogicalService service) {
+        return new MockWireSource();
     }
 
 }

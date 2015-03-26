@@ -20,25 +20,25 @@
 package org.fabric3.fabric.container.command;
 
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  *
  */
 public abstract class AbstractComponentCommand implements Command {
     private static final long serialVersionUID = -5673514688303766858L;
-    protected PhysicalComponentDefinition definition;
+    protected PhysicalComponent component;
 
-    public AbstractComponentCommand(PhysicalComponentDefinition definition) {
-        this.definition = definition;
+    public AbstractComponentCommand(PhysicalComponent component) {
+        this.component = component;
     }
 
-    public PhysicalComponentDefinition getDefinition() {
-        return definition;
+    public PhysicalComponent getComponent() {
+        return component;
     }
 
     public String toString() {
-        return "Component definition: " + definition.toString();
+        return "Component definition: " + component.toString();
     }
 
 }

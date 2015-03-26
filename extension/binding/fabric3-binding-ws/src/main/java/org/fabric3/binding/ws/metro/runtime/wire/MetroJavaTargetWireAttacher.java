@@ -33,7 +33,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroJavaWireTarget;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
@@ -42,15 +42,15 @@ import org.fabric3.binding.ws.metro.runtime.core.MetroProxySupplier;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a Java interface contract to a wire.
  */
-@Key("org.fabric3.binding.ws.metro.provision.MetroJavaWireTargetDefinition")
-public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaWireTargetDefinition> {
+@Key("org.fabric3.binding.ws.metro.provision.MetroJavaWireTarget")
+public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaWireTarget> {
 
     //    private ClassLoaderRegistry registry;
     private ArtifactCache artifactCache;
@@ -70,7 +70,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         this.monitor = monitor;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, MetroJavaWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, MetroJavaWireTarget target, Wire wire) throws Fabric3Exception {
 
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
@@ -119,7 +119,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
     }
 
-    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTargetDefinition target) throws Fabric3Exception {
+    private List<URL> cacheSchemas(URI servicePath, MetroJavaWireTarget target) throws Fabric3Exception {
         List<URL> schemas = new ArrayList<>();
         for (Map.Entry<String, String> entry : target.getSchemas().entrySet()) {
             URI uri = URI.create(servicePath + "/" + entry.getKey());
@@ -130,7 +130,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
         return schemas;
     }
 
-    private void attachInterceptors(Class<?> seiClass, MetroJavaWireTargetDefinition target, Wire wire, Supplier<?> factory) {
+    private void attachInterceptors(Class<?> seiClass, MetroJavaWireTarget target, Wire wire, Supplier<?> factory) {
         Method[] methods = seiClass.getMethods();
         int retries = target.getRetries();
         for (InvocationChain chain : wire.getInvocationChains()) {

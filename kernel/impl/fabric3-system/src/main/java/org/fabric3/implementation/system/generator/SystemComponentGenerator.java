@@ -26,11 +26,11 @@ import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.system.provision.SystemComponentDefinition;
-import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
-import org.fabric3.implementation.system.provision.SystemWireSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemWireTargetDefinition;
+import org.fabric3.implementation.system.provision.PhysicalSystemComponent;
+import org.fabric3.implementation.system.provision.SystemConnectionSource;
+import org.fabric3.implementation.system.provision.SystemConnectionTarget;
+import org.fabric3.implementation.system.provision.SystemWireSource;
+import org.fabric3.implementation.system.provision.SystemWireTarget;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -38,11 +38,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -60,7 +60,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         this.helper = helper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<SystemImplementation> component) throws Fabric3Exception {
+    public PhysicalComponent generate(LogicalComponent<SystemImplementation> component) throws Fabric3Exception {
         Component<SystemImplementation> definition = component.getDefinition();
         SystemImplementation implementation = definition.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
@@ -74,7 +74,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         helper.processInjectionSites(type, managerDefinition);
 
         // create the physical component definition
-        SystemComponentDefinition physical = new SystemComponentDefinition();
+        PhysicalSystemComponent physical = new PhysicalSystemComponent();
         physical.setEagerInit(type.isEagerInit());
 
         physical.setManaged(type.isManaged());
@@ -86,9 +86,9 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
+    public PhysicalWireSource generateSource(LogicalReference reference) throws Fabric3Exception {
         URI uri = reference.getUri();
-        SystemWireSourceDefinition definition = new SystemWireSourceDefinition();
+        SystemWireSource definition = new SystemWireSource();
         definition.setOptimizable(true);
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
@@ -104,46 +104,46 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return definition;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireSource generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
-        SystemWireTargetDefinition definition = new SystemWireTargetDefinition();
-        definition.setOptimizable(true);
-        definition.setUri(service.getUri());
-        return definition;
+    public PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception {
+        SystemWireTarget target = new SystemWireTarget();
+        target.setOptimizable(true);
+        target.setUri(service.getUri());
+        return target;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        SystemConnectionSourceDefinition definition = new SystemConnectionSourceDefinition();
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
+        SystemConnectionSource source = new SystemConnectionSource();
         URI uri = producer.getUri();
         JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
-        definition.setUri(uri);
-        definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
-        definition.setServiceInterface(serviceContract.getInterfaceClass());
-        return definition;
+        source.setUri(uri);
+        source.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
+        source.setServiceInterface(serviceContract.getInterfaceClass());
+        return source;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
-        SystemConnectionTargetDefinition definition = new SystemConnectionTargetDefinition();
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+        SystemConnectionTarget target = new SystemConnectionTarget();
         LogicalComponent<? extends SystemImplementation> component = (LogicalComponent<? extends SystemImplementation>) consumer.getParent();
         URI uri = component.getUri();
-        definition.setUri(uri);
+        target.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         Method method = type.getConsumerMethod(consumer.getUri().getFragment());
         if (method == null) {
             // programming error
             throw new Fabric3Exception("Consumer method not found on: " + consumer.getUri());
         }
-        definition.setConsumerMethod(method);
-        return definition;
+        target.setConsumerMethod(method);
+        return target;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
         URI uri = resourceReference.getUri();
-        SystemWireSourceDefinition definition = new SystemWireSourceDefinition();
+        SystemWireSource definition = new SystemWireSource();
         definition.setOptimizable(true);
         definition.setUri(uri);
         String name = uri.getFragment();

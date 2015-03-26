@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.appender.console.ConsoleAppenderDefinition;
-import org.fabric3.monitor.appender.console.PhysicalConsoleAppenderDefinition;
+import org.fabric3.monitor.appender.console.PhysicalConsoleAppender;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
@@ -44,7 +44,7 @@ public class AppenderFactoryImplTestCase extends TestCase {
     private AppenderFactoryMonitor monitor;
     private LoaderRegistry loaderRegistry;
     private AppenderGenerator<ConsoleAppenderDefinition> generator;
-    private AppenderBuilder<PhysicalConsoleAppenderDefinition> builder;
+    private AppenderBuilder<PhysicalConsoleAppender> builder;
 
     public void testCreateAppender() throws Exception {
         XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(APPENDER.getBytes()));
@@ -53,11 +53,11 @@ public class AppenderFactoryImplTestCase extends TestCase {
         EasyMock.expect(loaderRegistry.load(EasyMock.eq(reader), EasyMock.eq(ModelObject.class), EasyMock.isA(IntrospectionContext.class))).andReturn(
                 appenderDefinition);
 
-        PhysicalConsoleAppenderDefinition physicalDefinition = new PhysicalConsoleAppenderDefinition();
-        EasyMock.expect(generator.generateResource(EasyMock.isA(ConsoleAppenderDefinition.class))).andReturn(physicalDefinition);
+        PhysicalConsoleAppender physicalAppender = new PhysicalConsoleAppender();
+        EasyMock.expect(generator.generateResource(EasyMock.isA(ConsoleAppenderDefinition.class))).andReturn(physicalAppender);
 
         Appender appender = EasyMock.createMock(Appender.class);
-        EasyMock.expect(builder.build(physicalDefinition)).andReturn(appender);
+        EasyMock.expect(builder.build(physicalAppender)).andReturn(appender);
 
         EasyMock.replay(loaderRegistry, generator, builder, monitor, appender);
 
@@ -80,7 +80,7 @@ public class AppenderFactoryImplTestCase extends TestCase {
         factory.setAppenderGenerators(generatorMap);
 
         builder = EasyMock.createMock(AppenderBuilder.class);
-        Map builderMap = Collections.singletonMap(PhysicalConsoleAppenderDefinition.class, builder);
+        Map builderMap = Collections.singletonMap(PhysicalConsoleAppender.class, builder);
         factory.setAppenderBuilders(builderMap);
     }
 

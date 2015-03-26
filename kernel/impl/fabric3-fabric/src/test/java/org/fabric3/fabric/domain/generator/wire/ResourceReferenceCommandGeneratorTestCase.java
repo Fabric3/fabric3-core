@@ -28,7 +28,7 @@ import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalWire;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testGenerate() throws Exception {
-        MockWireDefinition wireDefinition = new MockWireDefinition();
+        MockWire wireDefinition = new MockWire();
         EasyMock.expect(wireGenerator.generateResource(EasyMock.isA(LogicalResourceReference.class))).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
@@ -71,7 +71,6 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
         return component;
     }
 
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -79,18 +78,13 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
     }
 
     private class MockContract extends ServiceContract {
-        private static final long serialVersionUID = -2909070237720164262L;
-
-        @Override
         public String getQualifiedInterfaceName() {
             return "test";
         }
     }
 
-    private class MockWireDefinition extends PhysicalWireDefinition {
-        private static final long serialVersionUID = 358078346745301821L;
-
-        private MockWireDefinition() {
+    private class MockWire extends PhysicalWire {
+        private MockWire() {
             super(null, null, null);
         }
     }

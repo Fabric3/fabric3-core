@@ -26,7 +26,7 @@ import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -42,31 +42,31 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
         this.channelManager = channelManager;
     }
 
-    public Channel build(PhysicalChannelDefinition definition) {
-        URI uri = definition.getUri();
-        ChannelSide channelSide = definition.getChannelSide();
+    public Channel build(PhysicalChannel physicalChannel) {
+        URI uri = physicalChannel.getUri();
+        ChannelSide channelSide = physicalChannel.getChannelSide();
         Channel channel = channelManager.getAndIncrementChannel(uri, channelSide);
         if (channel != null) {
             return channel;
         }
-        ChannelBuilder builder = getBuilder(definition);
-        channel = builder.build(definition);
+        ChannelBuilder builder = getBuilder(physicalChannel);
+        channel = builder.build(physicalChannel);
         channelManager.register(channel);
         return channel;
     }
 
-    public void dispose(PhysicalChannelDefinition definition) {
-        ChannelBuilder builder = getBuilder(definition);
-        URI uri = definition.getUri();
-        ChannelSide channelSide = definition.getChannelSide();
+    public void dispose(PhysicalChannel physicalChannel) {
+        ChannelBuilder builder = getBuilder(physicalChannel);
+        URI uri = physicalChannel.getUri();
+        ChannelSide channelSide = physicalChannel.getChannelSide();
         Channel channel = channelManager.getAndDecrementChannel(uri, channelSide);
         if (channelManager.getCount(uri, channelSide) == 0) {
             channelManager.unregister(uri, channelSide);
-            builder.dispose(definition, channel);
+            builder.dispose(physicalChannel, channel);
         }
     }
 
-    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) {
+    private ChannelBuilder getBuilder(PhysicalChannel definition) {
         ChannelBuilder builder = builders.get(definition.getType());
         if (builder == null) {
             throw new Fabric3Exception("Channel builder not found for type " + definition.getType());

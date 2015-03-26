@@ -17,7 +17,7 @@
         <f3:implementation.system class="org.fabric3.implementation.timer.introspection.TimerImplementationProcessor"/>
     </component>
 
-    <component name="TimerComponentBuilder" f3:key="org.fabric3.implementation.timer.provision.TimerComponentDefinition">
+    <component name="TimerComponentBuilder" f3:key="org.fabric3.implementation.timer.provision.TimerPhysicalComponent">
         <f3:implementation.system class="org.fabric3.implementation.timer.runtime.TimerComponentBuilder"/>
     </component>
 

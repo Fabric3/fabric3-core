@@ -22,31 +22,31 @@ import java.net.URI;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSource;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-@Key("org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition")
-public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSourceDefinition> {
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQConnectionSource")
+public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSource> {
     private ZeroMQPubSubBroker broker;
 
     public ZeroMQConnectionSourceAttacher(@Reference ZeroMQPubSubBroker broker) {
         this.broker = broker;
     }
 
-    public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(ZeroMQConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) {
         ClassLoader loader = source.getClassLoader();
         URI subscriberId = source.getUri();
         ZeroMQMetadata metadata = source.getMetadata();
         broker.subscribe(subscriberId, metadata, connection, loader);
     }
 
-    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
+    public void detach(ZeroMQConnectionSource source, PhysicalConnectionTarget target) {
         ZeroMQMetadata metadata = source.getMetadata();
         URI subscriberId = source.getUri();
         broker.unsubscribe(subscriberId, metadata);

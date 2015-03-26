@@ -27,7 +27,7 @@ import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistryCallback;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -43,8 +43,8 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
         this.componentManager = componentManager;
     }
 
-    public <T> BindingHandler<T> createHandler(Class<T> type, PhysicalBindingHandlerDefinition definition) {
-        return new BindingHandlerLazyLoadDecorator<>(definition.getHandlerUri(), componentManager);
+    public <T> BindingHandler<T> createHandler(Class<T> type, PhysicalBindingHandler physicalHandler) {
+        return new BindingHandlerLazyLoadDecorator<>(physicalHandler.getHandlerUri(), componentManager);
     }
 
     @SuppressWarnings({"unchecked"})

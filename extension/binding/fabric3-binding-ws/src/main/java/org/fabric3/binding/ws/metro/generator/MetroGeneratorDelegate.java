@@ -19,8 +19,8 @@ package org.fabric3.binding.ws.metro.generator;
 import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.binding.ws.metro.provision.MetroWireSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroWireTargetDefinition;
+import org.fabric3.binding.ws.metro.provision.MetroWireSource;
+import org.fabric3.binding.ws.metro.provision.MetroWireTarget;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
@@ -36,7 +36,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire source definition.
      * @throws Fabric3Exception if an error is raised during generation
      */
-    MetroWireSourceDefinition generateSource(LogicalBinding<WsBinding> serviceBinding, T contract) throws Fabric3Exception;
+    MetroWireSource generateSource(LogicalBinding<WsBinding> serviceBinding, T contract) throws Fabric3Exception;
 
     /**
      * Generates a target definition from a logical binding.
@@ -46,7 +46,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws Fabric3Exception if an error is raised during generation
      */
-    MetroWireTargetDefinition generateTarget(LogicalBinding<WsBinding> referenceBinding, T contract) throws Fabric3Exception;
+    MetroWireTarget generateTarget(LogicalBinding<WsBinding> referenceBinding, T contract) throws Fabric3Exception;
 
     /**
      * Generates a target definition from logical reference and service bindings.
@@ -56,6 +56,6 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws Fabric3Exception if an error is raised during generation
      */
-    MetroWireTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, T contract) throws Fabric3Exception;
+    MetroWireTarget generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding, T contract) throws Fabric3Exception;
 
 }

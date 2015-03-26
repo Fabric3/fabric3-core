@@ -32,7 +32,7 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 import org.fabric3.spi.monitor.MonitorLocator;
 import org.fabric3.spi.monitor.MonitorService;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -190,7 +190,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
         }
     }
 
-    public void onBuild(Component component, PhysicalComponentDefinition definition) {
+    public void onBuild(Component component, PhysicalComponent physicalComponent) {
         if (MonitorLevel.INFO != defaultLevel) {
             component.setLevel(defaultLevel);
         }
@@ -220,7 +220,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
 
     }
 
-    public void onDispose(Component component, PhysicalComponentDefinition definition) {
+    public void onDispose(Component component, PhysicalComponent physicalComponent) {
         // no-op
     }
 

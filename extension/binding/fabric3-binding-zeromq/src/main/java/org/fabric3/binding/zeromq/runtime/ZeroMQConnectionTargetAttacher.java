@@ -20,24 +20,24 @@ package org.fabric3.binding.zeromq.runtime;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTarget;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-@Key("org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition")
-public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
+@Key("org.fabric3.binding.zeromq.provision.ZeroMQConnectionTarget")
+public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTarget> {
     private ZeroMQPubSubBroker broker;
 
     public ZeroMQConnectionTargetAttacher(@Reference ZeroMQPubSubBroker broker) {
         this.broker = broker;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target, ChannelConnection connection) {
+    public void attach(PhysicalConnectionSource source, ZeroMQConnectionTarget target, ChannelConnection connection) {
         ZeroMQMetadata metadata = target.getMetadata();
         String connectionId = source.getUri().toString();
         ClassLoader loader = target.getClassLoader();
@@ -45,7 +45,7 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
         broker.connect(connectionId, metadata, dedicatedThread, connection, loader);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) {
+    public void detach(PhysicalConnectionSource source, ZeroMQConnectionTarget target) {
         ZeroMQMetadata metadata = target.getMetadata();
         String connectionId = source.getUri().toString();
         broker.release(connectionId, metadata);

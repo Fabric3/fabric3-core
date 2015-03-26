@@ -23,13 +23,12 @@ import java.net.URI;
 
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.model.type.contract.DataType;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
 /**
  * Generated metadata used for attaching producers to a JMS destination.
  */
-public class JmsConnectionTarget extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = -2617453498606879652L;
+public class JmsConnectionTarget extends PhysicalConnectionTarget {
     private JmsBindingMetadata metadata;
 
     /**

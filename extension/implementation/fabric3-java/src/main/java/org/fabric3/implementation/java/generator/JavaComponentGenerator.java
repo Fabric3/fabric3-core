@@ -20,11 +20,11 @@ package org.fabric3.implementation.java.generator;
 
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
-import org.fabric3.implementation.java.provision.JavaWireSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaWireTargetDefinition;
+import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
+import org.fabric3.implementation.java.provision.JavaConnectionSource;
+import org.fabric3.implementation.java.provision.JavaConnectionTarget;
+import org.fabric3.implementation.java.provision.JavaWireSource;
+import org.fabric3.implementation.java.provision.JavaWireTarget;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -33,11 +33,11 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -55,56 +55,56 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
         this.ifHelper = ifHelper;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<JavaImplementation> component) {
+    public PhysicalComponent generate(LogicalComponent<JavaImplementation> component) {
         Object instance = component.getDefinition().getImplementation().getInstance();
         if (instance != null) {
             // deploying an un managed instance
-            JavaComponentDefinition definition = new JavaComponentDefinition(instance);
-            definition.setScope(Scope.COMPOSITE);
-            return definition;
+            PhysicalJavaComponent physicalComponent = new PhysicalJavaComponent(instance);
+            physicalComponent.setScope(Scope.COMPOSITE);
+            return physicalComponent;
         }
-        JavaComponentDefinition definition = new JavaComponentDefinition();
-        generationHelper.generate(definition, component);
-        return definition;
+        PhysicalJavaComponent physicalComponent = new PhysicalJavaComponent();
+        generationHelper.generate(physicalComponent, component);
+        return physicalComponent;
     }
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
-        JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        generationHelper.generateWireSource(definition, reference);
-        return definition;
+    public PhysicalWireSource generateSource(LogicalReference reference) {
+        JavaWireSource source = new JavaWireSource();
+        generationHelper.generateWireSource(source, reference);
+        return source;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
-        JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
+    public PhysicalWireSource generateCallbackSource(LogicalService service) {
+        JavaWireSource source = new JavaWireSource();
         JavaServiceContract callbackContract = (JavaServiceContract) service.getDefinition().getServiceContract().getCallbackContract();
-        LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getParent();
-        generationHelper.generateCallbackWireSource(definition, source, callbackContract);
-        return definition;
+        LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getParent();
+        generationHelper.generateCallbackWireSource(source, component, callbackContract);
+        return source;
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) {
-        JavaWireTargetDefinition definition = new JavaWireTargetDefinition();
-        generationHelper.generateWireTarget(definition, service);
-        return definition;
+    public PhysicalWireTarget generateTarget(LogicalService service) {
+        JavaWireTarget target = new JavaWireTarget();
+        generationHelper.generateWireTarget(target, service);
+        return target;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
-        generationHelper.generateConnectionSource(definition, producer);
-        return definition;
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
+        JavaConnectionSource source = new JavaConnectionSource();
+        generationHelper.generateConnectionSource(source, producer);
+        return source;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) {
-        JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
-        generationHelper.generateConnectionTarget(definition, consumer);
-        return definition;
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) {
+        JavaConnectionTarget target = new JavaConnectionTarget();
+        generationHelper.generateConnectionTarget(target, consumer);
+        return target;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
-        JavaWireSourceDefinition definition = new JavaWireSourceDefinition();
-        generationHelper.generateResourceWireSource(definition, resourceReference);
-        return definition;
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {
+        JavaWireSource source = new JavaWireSource();
+        generationHelper.generateResourceWireSource(source, resourceReference);
+        return source;
     }
 
 }

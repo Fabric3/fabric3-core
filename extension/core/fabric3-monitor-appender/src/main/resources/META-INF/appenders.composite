@@ -17,7 +17,7 @@
         <f3:implementation.system class="org.fabric3.monitor.appender.file.FileAppenderGenerator"/>
     </component>
 
-    <component name="FileAppenderBuilder" f3:key="org.fabric3.monitor.appender.file.PhysicalFileAppenderDefinition">
+    <component name="FileAppenderBuilder" f3:key="org.fabric3.monitor.appender.file.PhysicalFileAppender">
         <f3:implementation.system class="org.fabric3.monitor.appender.file.FileAppenderBuilder"/>
     </component>
 
@@ -29,7 +29,7 @@
         <f3:implementation.system class="org.fabric3.monitor.appender.component.ComponentAppenderGenerator"/>
     </component>
 
-    <component name="ComponentAppenderBuilder" f3:key="org.fabric3.monitor.appender.component.PhysicalComponentAppenderDefinition">
+    <component name="ComponentAppenderBuilder" f3:key="org.fabric3.monitor.appender.component.PhysicalComponentAppender">
         <f3:implementation.system class="org.fabric3.monitor.appender.component.ComponentAppenderBuilder"/>
     </component>
 
@@ -41,7 +41,7 @@
         <f3:implementation.system class="org.fabric3.monitor.appender.console.ConsoleAppenderGenerator"/>
     </component>
 
-    <component name="ConsoleAppenderBuilder" f3:key="org.fabric3.monitor.appender.console.PhysicalConsoleAppenderDefinition">
+    <component name="ConsoleAppenderBuilder" f3:key="org.fabric3.monitor.appender.console.PhysicalConsoleAppender">
         <f3:implementation.system class="org.fabric3.monitor.appender.console.ConsoleAppenderBuilder"/>
     </component>
 

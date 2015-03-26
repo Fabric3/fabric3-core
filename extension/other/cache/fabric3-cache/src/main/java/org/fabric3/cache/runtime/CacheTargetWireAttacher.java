@@ -20,21 +20,21 @@ package org.fabric3.cache.runtime;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.cache.provision.CacheWireTargetDefinition;
+import org.fabric3.cache.provision.CacheWireTarget;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTargetDefinition> {
+public class CacheTargetWireAttacher implements TargetWireAttacher<CacheWireTarget> {
     private CacheRegistry registry;
 
     public CacheTargetWireAttacher(@Reference CacheRegistry registry) {
         this.registry = registry;
     }
 
-    public Supplier<?> createSupplier(CacheWireTargetDefinition target) throws Fabric3Exception {
+    public Supplier<?> createSupplier(CacheWireTarget target) throws Fabric3Exception {
         String name = target.getCacheName();
         Object cache = registry.getCache(name);
         if (cache == null) {

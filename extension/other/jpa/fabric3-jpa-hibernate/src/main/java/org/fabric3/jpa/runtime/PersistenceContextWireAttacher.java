@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
-import org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition;
+import org.fabric3.jpa.provision.PersistenceContextWireTarget;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxy;
@@ -34,7 +34,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Attaches the target side of entity manager factories.
  */
-public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextWireTargetDefinition> {
+public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextWireTarget> {
     private EntityManagerFactoryResolver emfResolver;
     private TransactionManager tm;
     private EntityManagerService emService;
@@ -54,7 +54,7 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
         this.tm = tm;
     }
 
-    public Supplier<?> createSupplier(PersistenceContextWireTargetDefinition definition) throws Fabric3Exception {
+    public Supplier<?> createSupplier(PersistenceContextWireTarget definition) throws Fabric3Exception {
         String unitName = definition.getUnitName();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {

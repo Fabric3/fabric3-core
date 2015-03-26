@@ -28,7 +28,7 @@ import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.model.type.component.BindingHandler;
 import org.fabric3.binding.jms.common.JmsConnectionConstants;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 
 /**
  * Contains helper functions used during generation.
@@ -66,12 +66,12 @@ public class JmsGeneratorHelper {
         }
     }
 
-    public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, JmsBinding definition) {
-        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<>();
+    public static List<PhysicalBindingHandler> generateBindingHandlers(URI domainUri, JmsBinding definition) {
+        List<PhysicalBindingHandler> handlers = new ArrayList<>();
         for (BindingHandler handlerDefinition : definition.getHandlers()) {
             // URIs specified in handler elements in a composite are relative and must be made absolute
             URI resolvedUri = URI.create(domainUri.toString() + "/" + handlerDefinition.getTarget());
-            handlers.add(new PhysicalBindingHandlerDefinition(resolvedUri));
+            handlers.add(new PhysicalBindingHandler(resolvedUri));
         }
         return handlers;
     }

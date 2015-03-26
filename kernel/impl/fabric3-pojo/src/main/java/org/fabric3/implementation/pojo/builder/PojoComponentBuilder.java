@@ -29,11 +29,10 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.ManagementInfo;
-import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
+import org.fabric3.implementation.pojo.provision.PhysicalPojoComponent;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
@@ -41,7 +40,7 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.ParamTypes;
-import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
+import org.fabric3.spi.model.physical.PhysicalProperty;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
@@ -50,7 +49,7 @@ import org.w3c.dom.Document;
 /**
  * Base class for component builders that create Java-based components.
  */
-public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
+public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C extends Component> implements ComponentBuilder<PCD, C> {
     protected IntrospectionHelper helper;
     private HostInfo info;
     private PropertySupplierBuilder propertyBuilder;
@@ -64,46 +63,46 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     }
 
     protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws Fabric3Exception {
-        List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
+        List<PhysicalProperty> properties = definition.getProperties();
 
         TypeMapping typeMapping = new TypeMapping();
         helper.resolveTypeParameters(factory.getImplementationClass(), typeMapping);
 
-        for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
-            String name = propertyDefinition.getName();
+        for (PhysicalProperty property : properties) {
+            String name = property.getName();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
-            if (propertyDefinition.getInstanceValue() != null) {
-                factory.setSupplier(source, propertyDefinition::getInstanceValue);
+            if (property.getInstanceValue() != null) {
+                factory.setSupplier(source, property::getInstanceValue);
             } else {
-                Document value = propertyDefinition.getValue();
+                Document value = property.getValue();
 
                 Type type = factory.getGenericType(source);
                 DataType dataType = getDataType(type, typeMapping);
 
                 ClassLoader classLoader = factory.getImplementationClass().getClassLoader();
-                boolean many = propertyDefinition.isMany();
+                boolean many = property.isMany();
                 factory.setSupplier(source, propertyBuilder.createSupplier(name, dataType, value, many, classLoader));
             }
         }
     }
 
-    protected void export(PojoComponentDefinition definition, AtomicComponent component) throws Fabric3Exception {
-        if (definition.isManaged()) {
-            ManagementInfo info = definition.getManagementInfo();
-            URI uri = definition.getComponentUri();
+    protected void export(PhysicalPojoComponent pojoComponent, AtomicComponent component) throws Fabric3Exception {
+        if (pojoComponent.isManaged()) {
+            ManagementInfo info = pojoComponent.getManagementInfo();
+            URI uri = pojoComponent.getComponentUri();
             managementService.export(uri, info, component::createSupplier);
         }
     }
 
-    protected void dispose(PojoComponentDefinition definition) throws Fabric3Exception {
-        if (definition.isManaged()) {
-            ManagementInfo info = definition.getManagementInfo();
-            URI uri = definition.getComponentUri();
+    protected void dispose(PhysicalPojoComponent pojoComponent) throws Fabric3Exception {
+        if (pojoComponent.isManaged()) {
+            ManagementInfo info = pojoComponent.getManagementInfo();
+            URI uri = pojoComponent.getComponentUri();
             managementService.remove(uri, info);
         }
     }
 
-    protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
+    protected void buildContexts(org.fabric3.implementation.pojo.component.PojoComponent component, ImplementationManagerFactory factory) {
         PojoRequestContext requestContext = new PojoRequestContext();
         factory.setSupplier(Injectable.OASIS_REQUEST_CONTEXT, () -> requestContext);
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext, info);

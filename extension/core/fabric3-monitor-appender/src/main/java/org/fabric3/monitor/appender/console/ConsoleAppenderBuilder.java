@@ -21,12 +21,12 @@ import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Instantiates an {@link ConsoleAppender} from a {@link PhysicalConsoleAppenderDefinition}.
+ * Instantiates an {@link ConsoleAppender} from a {@link PhysicalConsoleAppender}.
  */
 @EagerInit
-public class ConsoleAppenderBuilder implements AppenderBuilder<PhysicalConsoleAppenderDefinition> {
+public class ConsoleAppenderBuilder implements AppenderBuilder<PhysicalConsoleAppender> {
 
-    public Appender build(PhysicalConsoleAppenderDefinition definition) {
+    public Appender build(PhysicalConsoleAppender physicalAppender) {
         return new ConsoleAppender();
     }
 }

@@ -20,12 +20,12 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
+import org.fabric3.fabric.model.physical.ChannelTarget;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -49,8 +49,8 @@ public class ChannelTargetAttacherTestCase extends TestCase {
         EasyMock.replay(channelManager, connection, channel);
 
         ChannelTargetAttacher attacher = new ChannelTargetAttacher(channelManager);
-        MockPhysicalDefinition source = new MockPhysicalDefinition(targetUri);
-        ChannelTargetDefinition target = new ChannelTargetDefinition(channelUri, ChannelSide.CONSUMER);
+        MockPhysical source = new MockPhysical(targetUri);
+        ChannelTarget target = new ChannelTarget(channelUri, ChannelSide.CONSUMER);
 
         attacher.attach(source, target, connection);
         attacher.detach(source, target);
@@ -58,10 +58,8 @@ public class ChannelTargetAttacherTestCase extends TestCase {
         EasyMock.verify(channelManager, connection, channel);
     }
 
-    private class MockPhysicalDefinition extends PhysicalConnectionSourceDefinition {
-        private static final long serialVersionUID = 9073512301309928102L;
-
-        public MockPhysicalDefinition(URI uri) {
+    private class MockPhysical extends PhysicalConnectionSource {
+        public MockPhysical(URI uri) {
             setUri(uri);
         }
     }

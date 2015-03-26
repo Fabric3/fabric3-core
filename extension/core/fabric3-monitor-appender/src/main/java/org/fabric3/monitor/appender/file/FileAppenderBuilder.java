@@ -26,10 +26,10 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Instantiates a {@link FileAppender} from a {@link PhysicalFileAppenderDefinition}.
+ * Instantiates a {@link FileAppender} from a {@link PhysicalFileAppender}.
  */
 @EagerInit
-public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppenderDefinition> {
+public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender> {
     private HostInfo hostInfo;
 
     public FileAppenderBuilder(@Reference HostInfo hostInfo) {
@@ -37,19 +37,19 @@ public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Appender build(PhysicalFileAppenderDefinition definition) throws Fabric3Exception {
+    public Appender build(PhysicalFileAppender fileAppender) throws Fabric3Exception {
         File outputDir = new File(hostInfo.getDataDir(), "logs");
         outputDir.mkdirs();
-        File outputFile = new File(outputDir, definition.getFileName());
+        File outputFile = new File(outputDir, fileAppender.getFileName());
 
-        String rollType = definition.getRollType();
+        String rollType = fileAppender.getRollType();
 
         if (FileAppenderConstants.ROLL_STRATEGY_NONE.equals(rollType)) {
             RollStrategy strategy = new NoRollStrategy();
             return new FileAppender(outputFile, strategy, false);
         } else if (FileAppenderConstants.ROLL_STRATEGY_SIZE.equals(rollType)) {
-            long rollSize = definition.getRollSize();
-            int maxBackups = definition.getMaxBackups();
+            long rollSize = fileAppender.getRollSize();
+            int maxBackups = fileAppender.getMaxBackups();
             RollStrategy strategy = new SizeRollStrategy(rollSize, maxBackups);
             return new FileAppender(outputFile, strategy, false);
         } else {

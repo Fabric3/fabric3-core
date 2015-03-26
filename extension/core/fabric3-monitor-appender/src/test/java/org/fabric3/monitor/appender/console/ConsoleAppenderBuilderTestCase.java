@@ -26,7 +26,7 @@ public class ConsoleAppenderBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
         ConsoleAppenderBuilder builder = new ConsoleAppenderBuilder();
-        Appender appender = builder.build(new PhysicalConsoleAppenderDefinition());
+        Appender appender = builder.build(new PhysicalConsoleAppender());
         assertNotNull(appender);
     }
 

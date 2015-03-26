@@ -35,10 +35,10 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
-import org.fabric3.implementation.web.provision.WebComponentConnectionSourceDefinition;
-import org.fabric3.implementation.web.provision.WebComponentDefinition;
-import org.fabric3.implementation.web.provision.WebComponentWireSourceDefinition;
+import org.fabric3.implementation.web.provision.PhysicalWebComponent;
+import org.fabric3.implementation.web.provision.WebConnectionSource;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
+import org.fabric3.implementation.web.provision.WebWireSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -48,12 +48,12 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalProperty;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -78,13 +78,13 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws Fabric3Exception {
+    public PhysicalComponent generate(LogicalComponent<WebImplementation> component) throws Fabric3Exception {
         Component<WebImplementation> definition = component.getDefinition();
         WebComponentType componentType = definition.getImplementation().getComponentType();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getContributionUri());
         String contextUrl = calculateContextUrl(component);
 
-        WebComponentDefinition physical = new WebComponentDefinition();
+        PhysicalWebComponent physical = new PhysicalWebComponent();
         physical.setContextUrl(contextUrl);
         Map<String, Map<String, InjectionSite>> sites = generateInjectionMapping(componentType, classLoader);
         physical.setInjectionMappings(sites);
@@ -92,34 +92,34 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return physical;
     }
 
-    public WebComponentWireSourceDefinition generateSource(LogicalReference reference) throws Fabric3Exception {
-        WebComponentWireSourceDefinition definition = new WebComponentWireSourceDefinition();
-        definition.setUri(reference.getUri());
-        definition.setOptimizable(true);
-        return definition;
+    public WebWireSource generateSource(LogicalReference reference) throws Fabric3Exception {
+        WebWireSource source = new WebWireSource();
+        source.setUri(reference.getUri());
+        source.setOptimizable(true);
+        return source;
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireSource generateCallbackSource(LogicalService service) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) throws Fabric3Exception {
+    public PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception {
         return null;
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
-        WebComponentWireSourceDefinition definition = new WebComponentWireSourceDefinition();
-        definition.setUri(resourceReference.getUri());
-        return definition;
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) throws Fabric3Exception {
+        WebWireSource source = new WebWireSource();
+        source.setUri(resourceReference.getUri());
+        return source;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        WebComponentConnectionSourceDefinition definition = new WebComponentConnectionSourceDefinition();
-        definition.setUri(producer.getUri());
-        return definition;
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
+        WebConnectionSource source = new WebConnectionSource();
+        source.setUri(producer.getUri());
+        return source;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -245,18 +245,18 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
 
     }
 
-    private void processPropertyValues(LogicalComponent<?> component, WebComponentDefinition physical) {
+    private void processPropertyValues(LogicalComponent<?> component, PhysicalWebComponent physical) {
         for (LogicalProperty property : component.getAllProperties().values()) {
             String name = property.getName();
             boolean many = property.isMany();
             if (property.getValue() != null) {
                 Document document = property.getValue();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many);
-                physical.setPropertyDefinition(definition);
+                PhysicalProperty physicalProperty = new PhysicalProperty(name, document, many);
+                physical.setProperty(physicalProperty);
             } else if (property.getInstanceValue() != null) {
                 Object value = property.getInstanceValue();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, value, many);
-                physical.setPropertyDefinition(definition);
+                PhysicalProperty physicalProperty = new PhysicalProperty(name, value, many);
+                physical.setProperty(physicalProperty);
             }
         }
     }

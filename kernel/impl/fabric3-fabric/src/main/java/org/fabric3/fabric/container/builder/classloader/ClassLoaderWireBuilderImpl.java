@@ -23,7 +23,7 @@ import java.net.URI;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
-import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+import org.fabric3.spi.model.physical.ClassLoaderWire;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -36,13 +36,13 @@ public class ClassLoaderWireBuilderImpl implements ClassLoaderWireBuilder {
         this.registry = registry;
     }
 
-    public void build(MultiParentClassLoader source, PhysicalClassLoaderWireDefinition wireDefinition) {
-        URI uri = wireDefinition.getTargetClassLoader();
+    public void build(MultiParentClassLoader source, ClassLoaderWire classLoaderWire) {
+        URI uri = classLoaderWire.getTargetClassLoader();
         ClassLoader target = registry.getClassLoader(uri);
         if (target == null) {
             throw new AssertionError("Target classloader not found: " + uri);
         }
-        String packageName = wireDefinition.getPackageName();
+        String packageName = classLoaderWire.getPackageName();
         if (packageName != null) {
             ClassLoader filter = new ClassLoaderWireFilter(target, packageName);
             source.addParent(filter);

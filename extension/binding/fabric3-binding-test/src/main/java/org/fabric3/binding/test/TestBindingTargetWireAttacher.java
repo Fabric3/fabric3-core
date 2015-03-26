@@ -26,8 +26,8 @@ import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperation;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -35,18 +35,18 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-@Key("org.fabric3.binding.test.TestBindingWireTargetDefinition")
-public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBindingWireTargetDefinition> {
+@Key("org.fabric3.binding.test.TestBindingWireTarget")
+public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBindingWireTarget> {
     private final BindingChannel channel;
 
     public TestBindingTargetWireAttacher(@Reference BindingChannel channel) {
         this.channel = channel;
     }
 
-    public void attach(PhysicalWireSourceDefinition source, TestBindingWireTargetDefinition target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, TestBindingWireTarget target, Wire wire) throws Fabric3Exception {
         for (InvocationChain chain : wire.getInvocationChains()) {
             URI destination = target.getUri();
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
+            PhysicalOperation operation = chain.getPhysicalOperation();
             String name = operation.getName();
             Interceptor interceptor = new TestBindingInterceptor(channel, destination, name);
             chain.addInterceptor(interceptor);

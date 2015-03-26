@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  * Instantiates a component on a runtime.
@@ -27,8 +27,8 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 public class BuildComponentCommand extends AbstractComponentCommand {
     private static final long serialVersionUID = -6102447991230736883L;
 
-    public BuildComponentCommand(PhysicalComponentDefinition definition) {
-        super(definition);
+    public BuildComponentCommand(PhysicalComponent physicalComponent) {
+        super(physicalComponent);
     }
 
     public boolean equals(Object o) {
@@ -41,11 +41,11 @@ public class BuildComponentCommand extends AbstractComponentCommand {
 
         BuildComponentCommand that = (BuildComponentCommand) o;
 
-        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+        return !(component != null ? !component.equals(that.component) : that.component != null);
     }
 
     public int hashCode() {
-        return (definition != null ? definition.hashCode() : 0);
+        return (component != null ? component.hashCode() : 0);
     }
 
 }

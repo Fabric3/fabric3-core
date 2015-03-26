@@ -32,7 +32,7 @@ import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.executor.CommandExecutor;
 import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -75,30 +75,30 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
     }
 
     public void execute(BuildComponentCommand command) {
-        PhysicalComponentDefinition definition = command.getDefinition();
-        Component component = build(definition);
-        URI contributionUri = definition.getContributionUri();
+        PhysicalComponent physicalComponent = command.getComponent();
+        Component component = build(physicalComponent);
+        URI contributionUri = physicalComponent.getContributionUri();
         component.setContributionUri(contributionUri);
         componentManager.register(component);
         for (ComponentBuilderListener listener : listeners) {
-            listener.onBuild(component, definition);
+            listener.onBuild(component, physicalComponent);
         }
     }
 
     /**
-     * Builds a physical component from component definition.
+     * Builds a physical component from a physical component.
      *
-     * @param definition the component definition.
+     * @param physicalComponent the physical component
      * @return Component to be built.
      */
     @SuppressWarnings("unchecked")
-    private Component build(PhysicalComponentDefinition definition) {
+    private Component build(PhysicalComponent physicalComponent) {
 
-        ComponentBuilder builder = builders.get(definition.getClass());
+        ComponentBuilder builder = builders.get(physicalComponent.getClass());
         if (builder == null) {
-            throw new Fabric3Exception("Builder not found for " + definition.getClass().getName());
+            throw new Fabric3Exception("Builder not found for " + physicalComponent.getClass().getName());
         }
-        return builder.build(definition);
+        return builder.build(physicalComponent);
     }
 
 }

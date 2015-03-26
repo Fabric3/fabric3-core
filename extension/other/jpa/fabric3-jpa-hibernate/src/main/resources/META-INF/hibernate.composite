@@ -17,15 +17,15 @@
         <f3:implementation.system class="org.fabric3.jpa.api.F3TransactionManagerLookup"/>
     </component>
 
-    <component name="PersistenceUnitWireAttacher" f3:key="org.fabric3.jpa.provision.PersistenceUnitWireTargetDefinition">
+    <component name="PersistenceUnitWireAttacher" f3:key="org.fabric3.jpa.provision.PersistenceUnitWireTarget">
         <f3:implementation.system class="org.fabric3.jpa.runtime.PersistenceUnitWireAttacher"/>
     </component>
 
-    <component name="PersistenceContextWireAttacher" f3:key="org.fabric3.jpa.provision.PersistenceContextWireTargetDefinition">
+    <component name="PersistenceContextWireAttacher" f3:key="org.fabric3.jpa.provision.PersistenceContextWireTarget">
         <f3:implementation.system class="org.fabric3.jpa.runtime.PersistenceContextWireAttacher"/>
     </component>
 
-    <component name="SessionWireAttacher" f3:key="org.fabric3.jpa.provision.SessionWireTargetDefinition">
+    <component name="SessionWireAttacher" f3:key="org.fabric3.jpa.provision.SessionWireTarget">
         <f3:implementation.system class="org.fabric3.jpa.runtime.SessionWireAttacher"/>
     </component>
 

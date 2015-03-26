@@ -23,44 +23,44 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  * Generates a physical source definition to connect wires to non-managed code.
  */
 public class NonManagedComponentGenerator implements ComponentGenerator<LogicalComponent<NonManagedImplementation>> {
 
-    public PhysicalWireSourceDefinition generateSource(LogicalReference reference) {
+    public PhysicalWireSource generateSource(LogicalReference reference) {
         String interfaze = reference.getServiceContract().getQualifiedInterfaceName();
-        return new NonManagedPhysicalWireSourceDefinition(interfaze);
+        return new NonManagedWireSource(interfaze);
     }
 
-    public PhysicalComponentDefinition generate(LogicalComponent<NonManagedImplementation> component) {
+    public PhysicalComponent generate(LogicalComponent<NonManagedImplementation> component) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTargetDefinition generateTarget(LogicalService service) {
+    public PhysicalWireTarget generateTarget(LogicalService service) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateCallbackSource(LogicalService service) {
+    public PhysicalWireSource generateCallbackSource(LogicalService service) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+    public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
         String interfaze = producer.getServiceContract().getQualifiedInterfaceName();
-        return new NonManagedPhysicalConnectionSourceDefinition(interfaze);
+        return new NonManagedConnectionSource(interfaze);
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
+    public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {
         throw new UnsupportedOperationException();
     }
 }

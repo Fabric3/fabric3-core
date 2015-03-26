@@ -19,13 +19,13 @@ package org.fabric3.fabric.container.builder.channel;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
+import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -33,21 +33,21 @@ import org.oasisopen.sca.annotation.Reference;
  * Attaches the source side of a channel connection to a channel.
  */
 @EagerInit
-public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSourceDefinition> {
+public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSource> {
     private ChannelManager channelManager;
 
     public ChannelSourceAttacher(@Reference ChannelManager channelManager) {
         this.channelManager = channelManager;
     }
 
-    public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws Fabric3Exception {
+    public void attach(ChannelSource source, PhysicalConnectionTarget target, ChannelConnection connection) throws Fabric3Exception {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();
         channel.subscribe(targetUri, connection);
     }
 
-    public void detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws Fabric3Exception {
+    public void detach(ChannelSource source, PhysicalConnectionTarget target) throws Fabric3Exception {
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();

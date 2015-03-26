@@ -20,13 +20,13 @@ package org.fabric3.implementation.junit.runtime;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
-import org.fabric3.implementation.junit.provision.JUnitWireSourceDefinition;
+import org.fabric3.implementation.junit.provision.JUnitWireSource;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
-import org.fabric3.spi.model.physical.PhysicalWireTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.test.spi.TestWireHolder;
@@ -37,7 +37,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JUnitWireSourceDefinition> {
+public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JUnitWireSource> {
     private TestWireHolder holder;
     private AuthenticationService authenticationService;
 
@@ -51,7 +51,7 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         this.authenticationService = authenticationService;
     }
 
-    public void attach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target, Wire wire) {
+    public void attach(JUnitWireSource source, PhysicalWireTarget target, Wire wire) {
         String testName = source.getTestName();
         ContextConfiguration configuration = source.getConfiguration();
         if (configuration != null) {
@@ -70,7 +70,7 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
         holder.add(testName, wire);
     }
 
-    public void detach(JUnitWireSourceDefinition source, PhysicalWireTargetDefinition target) {
+    public void detach(JUnitWireSource source, PhysicalWireTarget target) {
     }
 
 }

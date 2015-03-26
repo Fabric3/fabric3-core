@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
+import org.fabric3.cache.provision.PhysicalCacheSet;
 import org.fabric3.cache.spi.CacheBuilder;
-import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
+import org.fabric3.cache.spi.PhysicalCacheResource;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -33,7 +33,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDefinition> {
+public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSet> {
     private Map<Class<?>, CacheBuilder<?>> builders = new HashMap<>();
 
     @Reference(required = false)
@@ -42,23 +42,23 @@ public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDef
     }
 
     @SuppressWarnings({"unchecked"})
-    public void build(PhysicalCacheSetDefinition definition) {
-        for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
-            CacheBuilder builder = getCacheBuilder(cacheDefinition);
-            builder.build(cacheDefinition);
+    public void build(PhysicalCacheSet set) {
+        for (PhysicalCacheResource cacheResource : set.getCacheResources()) {
+            CacheBuilder builder = getCacheBuilder(cacheResource);
+            builder.build(cacheResource);
         }
     }
 
     @SuppressWarnings({"unchecked"})
-    public void remove(PhysicalCacheSetDefinition definition) {
-        for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
-            CacheBuilder builder = getCacheBuilder(cacheDefinition);
-            builder.remove(cacheDefinition);
+    public void remove(PhysicalCacheSet set) {
+        for (PhysicalCacheResource cacheResource : set.getCacheResources()) {
+            CacheBuilder builder = getCacheBuilder(cacheResource);
+            builder.remove(cacheResource);
         }
     }
 
-    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) {
-        Class<? extends PhysicalResourceDefinition> type = cacheDefinition.getClass();
+    private CacheBuilder<?> getCacheBuilder(PhysicalResource cacheResource) {
+        Class<? extends PhysicalResource> type = cacheResource.getClass();
         CacheBuilder<?> builder = builders.get(type);
         if (builder == null) {
             throw new Fabric3Exception("Cache builder not found for type: " + type);

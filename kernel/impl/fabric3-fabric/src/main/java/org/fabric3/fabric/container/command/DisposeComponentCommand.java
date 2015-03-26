@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
  * Removes a registered component.
@@ -27,8 +27,8 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 public class DisposeComponentCommand extends AbstractComponentCommand {
     private static final long serialVersionUID = 1894510885498647133L;
 
-    public DisposeComponentCommand(PhysicalComponentDefinition definition) {
-        super(definition);
+    public DisposeComponentCommand(PhysicalComponent physicalComponent) {
+        super(physicalComponent);
     }
 
     public boolean equals(Object o) {
@@ -41,11 +41,11 @@ public class DisposeComponentCommand extends AbstractComponentCommand {
 
         DisposeComponentCommand that = (DisposeComponentCommand) o;
 
-        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+        return !(component != null ? !component.equals(that.component) : that.component != null);
     }
 
     public int hashCode() {
-        return (definition != null ? definition.hashCode() : 0);
+        return (component != null ? component.hashCode() : 0);
     }
 
 }
