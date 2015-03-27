@@ -35,7 +35,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTarget;
 public class NonManagedComponentGenerator implements ComponentGenerator<LogicalComponent<NonManagedImplementation>> {
 
     public PhysicalWireSource generateSource(LogicalReference reference) {
-        String interfaze = reference.getServiceContract().getQualifiedInterfaceName();
+        Class<?> interfaze = reference.getServiceContract().getInterfaceClass();
         return new NonManagedWireSource(interfaze);
     }
 

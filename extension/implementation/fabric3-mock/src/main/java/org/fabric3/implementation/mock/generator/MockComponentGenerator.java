@@ -18,6 +18,8 @@
  */
 package org.fabric3.implementation.mock.generator;
 
+import java.net.URI;
+
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockPhysicalComponent;
@@ -49,11 +51,10 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
     }
 
     public MockWireTarget generateTarget(LogicalService service) {
-        MockWireTarget definition = new MockWireTarget();
-        definition.setUri(service.getUri());
+        URI uri = service.getUri();
         ServiceContract serviceContract = service.getDefinition().getServiceContract();
-        definition.setMockedInterface(serviceContract.getQualifiedInterfaceName());
-        return definition;
+        Class<?> interfaze = serviceContract.getInterfaceClass();
+        return new MockWireTarget(uri, interfaze);
     }
 
     public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {

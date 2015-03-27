@@ -18,7 +18,6 @@ package org.fabric3.node.nonmanaged;
 
 import java.util.function.Supplier;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
@@ -39,14 +38,9 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
     }
 
     public void attach(NonManagedWireSource source, PhysicalWireTarget target, Wire wire) {
-        try {
-            ClassLoader loader = source.getClassLoader();
-            Class<?> interfaze = loader.loadClass(source.getInterface());
-            Object proxy = proxyService.createSupplier(interfaze, wire, null).get();
-            source.setProxy(proxy);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception(e);
-        }
+        Class<?> interfaze = source.getInterface();
+        Object proxy = proxyService.createSupplier(interfaze, wire, null).get();
+        source.setProxy(proxy);
     }
 
     public void attachSupplier(NonManagedWireSource source, Supplier<?> supplier, PhysicalWireTarget target) {

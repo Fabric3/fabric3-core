@@ -32,7 +32,6 @@ import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireSource;
-import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -47,7 +46,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
 
     public void attach(PhysicalWireSource source, MockWireTarget target, Wire wire) {
 
-        Class<?> mockedInterface = loadInterface(target);
+        Class<?> mockedInterface = target.getMockedInterface();
         Object mock = createMock(mockedInterface);
 
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -63,7 +62,7 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
     }
 
     public Supplier<?> createSupplier(MockWireTarget target) {
-        return () -> createMock(loadInterface(target));
+        return () -> createMock(target.getMockedInterface());
     }
 
     private Method getOperationMethod(Class<?> mockedInterface, PhysicalOperation op) {
@@ -92,10 +91,5 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockWireTarget
         }
     }
 
-    private Class<?> loadInterface(MockWireTarget target) {
-        String interfaceClass = target.getMockedInterface();
-        ClassLoader classLoader = target.getClassLoader();
-        return ClassLoading.loadClass(classLoader, interfaceClass);
-    }
 
 }

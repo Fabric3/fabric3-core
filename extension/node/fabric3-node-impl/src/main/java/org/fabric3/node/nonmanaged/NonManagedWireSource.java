@@ -22,14 +22,14 @@ import org.fabric3.spi.model.physical.PhysicalWireSource;
  * Used to attach a wire to non-managed code.
  */
 public class NonManagedWireSource extends PhysicalWireSource {
-    private String interfaze;
+    private Class<?> interfaze;
     private transient Object proxy;
 
-    public NonManagedWireSource(String interfaze) {
+    public NonManagedWireSource(Class<?> interfaze) {
         this.interfaze = interfaze;
     }
 
-    public String getInterface() {
+    public Class<?> getInterface() {
         return interfaze;
     }
 

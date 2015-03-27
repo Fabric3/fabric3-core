@@ -18,20 +18,23 @@
  */
 package org.fabric3.implementation.mock.provision;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
  *
  */
 public class MockWireTarget extends PhysicalWireTarget {
-    private String mockedInterface;
+    private Class<?> interfaze;
 
-    public String getMockedInterface() {
-        return mockedInterface;
+    public MockWireTarget(URI uri, Class<?> interfaze) {
+        this.interfaze = interfaze;
+        setUri(uri);
     }
 
-    public void setMockedInterface(String mockedInterface) {
-        this.mockedInterface = mockedInterface;
+    public Class<?> getMockedInterface() {
+        return interfaze;
     }
 
 }
