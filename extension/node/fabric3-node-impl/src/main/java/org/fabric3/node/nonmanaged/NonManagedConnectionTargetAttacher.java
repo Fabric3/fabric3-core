@@ -16,28 +16,22 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 
 /**
  *
  */
-public class NonManagedConnectionSource extends PhysicalConnectionSource {
-    private Class<?> interfaze;
-    private transient Object proxy;
+public class NonManagedConnectionTargetAttacher implements TargetConnectionAttacher<NonManagedConnectionTarget> {
 
-    public NonManagedConnectionSource(Class<?> interfaze) {
-        this.interfaze = interfaze;
+    public void attach(PhysicalConnectionSource source, NonManagedConnectionTarget target, ChannelConnection connection) {
+        target.setProxy(connection.getDirectConnection().get().get());
     }
 
-    public Class<?> getInterface() {
-        return interfaze;
+    public void detach(PhysicalConnectionSource source, NonManagedConnectionTarget target) throws Fabric3Exception {
+        // no-op
     }
 
-    public Object getProxy() {
-        return proxy;
-    }
-
-    public void setProxy(Object proxy) {
-        this.proxy = proxy;
-    }
 }

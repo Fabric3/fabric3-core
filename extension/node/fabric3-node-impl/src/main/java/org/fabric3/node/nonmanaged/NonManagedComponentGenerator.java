@@ -52,12 +52,13 @@ public class NonManagedComponentGenerator implements ComponentGenerator<LogicalC
     }
 
     public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
-        String interfaze = producer.getServiceContract().getQualifiedInterfaceName();
+        Class<?> interfaze = producer.getServiceContract().getInterfaceClass();
         return new NonManagedConnectionSource(interfaze);
     }
 
     public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) {
-        throw new UnsupportedOperationException();
+        Class<?> interfaze = consumer.getServiceContract().getInterfaceClass();
+        return new NonManagedConnectionTarget(interfaze);
     }
 
     public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {

@@ -25,11 +25,14 @@ import java.util.Map;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.model.type.component.Component;
+import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Producer;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
-import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedConnectionSource;
+import org.fabric3.node.nonmanaged.NonManagedConnectionTarget;
+import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.ChannelResolver;
@@ -39,13 +42,15 @@ import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalChannel;
-import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.spi.domain.generator.channel.ChannelDirection.CONSUMER;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
 
 /**
@@ -53,6 +58,7 @@ import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER
  */
 public class ChannelResolverImpl implements ChannelResolver {
     private static final QName SYNTHETIC_DEPLOYABLE = new QName(HostNamespaces.SYNTHESIZED, "SyntheticDeployable");
+    private static final List<DataType> OBJECTS = Collections.singletonList(new JavaType(Object.class));
 
     private Introspector introspector;
     private LogicalComponentManager lcm;
@@ -88,17 +94,49 @@ public class ChannelResolverImpl implements ChannelResolver {
 
         Map<LogicalChannel, DeliveryType> channels = Collections.singletonMap(logicalChannel, DeliveryType.DEFAULT);
         List<PhysicalChannelConnection> connections = connectionGenerator.generateProducer(producer, channels);
-        connections.forEach(c -> c.setTopic(topic));
-        connections.forEach(channelConnector::connect);
-        for (PhysicalChannelConnection connection : connections) {
-            PhysicalConnectionSource source = connection.getSource();
-            if (!(source instanceof NonManagedConnectionSource)) {
-                continue;
-            }
-            NonManagedConnectionSource nonManagedSource = (NonManagedConnectionSource) source;
-            return interfaze.cast(nonManagedSource.getProxy());
-        }
-        throw new Fabric3Exception("Source generator not found");
+        PhysicalChannelConnection connection = connections.get(0);  // safe as there is only one connection
+        connection.setTopic(topic);
+        channelConnector.connect(connection);
+
+        NonManagedConnectionSource source = (NonManagedConnectionSource) connection.getSource();
+        return interfaze.cast(source.getProxy());
+    }
+
+    public <T> T getConsumer(Class<T> interfaze, String name) {
+        return getConsumer(interfaze, name, null);
+    }
+
+    public <T> T getConsumer(Class<T> interfaze, String name, String topic) {
+        LogicalChannel logicalChannel = getChannel(name);
+        LogicalConsumer consumer = createConsumer(interfaze, logicalChannel.getUri());
+        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, CONSUMER);
+
+        channelBuilderRegistry.build(physicalChannel);
+
+        Map<LogicalChannel, DeliveryType> channels = Collections.singletonMap(logicalChannel, DeliveryType.DEFAULT);
+        List<PhysicalChannelConnection> connections = connectionGenerator.generateConsumer(consumer, channels);
+
+        PhysicalChannelConnection connection = connections.get(0);  // safe as there is only one connection
+        connection.setTopic(topic);
+        channelConnector.connect(connection);
+
+        NonManagedConnectionTarget target = (NonManagedConnectionTarget) connection.getTarget();
+        return interfaze.cast(target.getProxy());
+    }
+
+    private <T> LogicalConsumer createConsumer(Class<T> interfaze, URI channelUri) {
+        JavaServiceContract contract = introspector.introspect(interfaze);
+        LogicalCompositeComponent domain = lcm.getRootComponent();
+        String root = domain.getUri().toString();
+
+        LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(interfaze, domain, root);
+
+        Consumer consumer = new Consumer("consumer", OBJECTS, true);
+
+        LogicalConsumer logicalConsumer = new LogicalConsumer(URI.create(root + "/F3Synthetic#consumer"), consumer, logicalComponent);
+        logicalConsumer.setServiceContract(contract);
+        logicalConsumer.addSource(channelUri);
+        return logicalConsumer;
     }
 
     private LogicalChannel getChannel(String name) throws Fabric3Exception {
@@ -115,9 +153,20 @@ public class ChannelResolverImpl implements ChannelResolver {
     private <T> LogicalProducer createProducer(Class<T> interfaze, URI channelUri) throws Fabric3Exception {
         JavaServiceContract contract = introspector.introspect(interfaze);
 
-        LogicalCompositeComponent domainComponent = lcm.getRootComponent();
-        String domainRoot = domainComponent.getUri().toString();
-        URI componentUri = URI.create(domainRoot + "/F3Synthetic");
+        LogicalCompositeComponent domain = lcm.getRootComponent();
+        String root = domain.getUri().toString();
+
+        LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(interfaze, domain, root);
+
+        Producer producer = new Producer("producer", contract);
+
+        LogicalProducer logicalProducer = new LogicalProducer(URI.create(root + "/F3Synthetic#producer"), producer, logicalComponent);
+        logicalProducer.addTarget(channelUri);
+        return logicalProducer;
+    }
+
+    private <T> LogicalComponent<NonManagedImplementation> createComponent(Class<T> interfaze, LogicalCompositeComponent domain, String root) {
+        URI componentUri = URI.create(root + "/F3Synthetic");
 
         InjectingComponentType componentType = new InjectingComponentType();
         NonManagedImplementation implementation = new NonManagedImplementation();
@@ -125,13 +174,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         Component<NonManagedImplementation> component = new Component<>("F3Synthetic");
         component.setContributionUri(ContributionResolver.getContribution(interfaze));
         component.setImplementation(implementation);
-        LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<>(componentUri, component, domainComponent);
-
-        Producer producerDefinition = new Producer("producer", contract);
-
-        LogicalProducer producer = new LogicalProducer(URI.create(domainRoot + "/F3Synthetic#producer"), producerDefinition, logicalComponent);
-        producer.addTarget(channelUri);
-        return producer;
+        return new LogicalComponent<>(componentUri, component, domain);
     }
 
 }

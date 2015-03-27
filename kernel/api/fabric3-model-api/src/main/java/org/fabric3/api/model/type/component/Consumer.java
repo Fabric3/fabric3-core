@@ -32,13 +32,13 @@ import org.fabric3.api.model.type.contract.DataType;
  */
 public class Consumer<P extends ModelObject> extends Bindable<P> {
     public static final int NO_SEQUENCE = 0;
+    private boolean direct;
 
     private String name;
     private int sequence = NO_SEQUENCE;
 
     private List<DataType> types = Collections.emptyList();
     private List<URI> sources = new ArrayList<>();
-
 
     /**
      * Constructor.
@@ -58,6 +58,18 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
     public Consumer(String name, List<DataType> types) {
         this.name = name;
         this.types = types;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name   the consumer name
+     * @param types  the data types required by this consumer
+     * @param direct true if the consumer is a direct connection to the channel
+     */
+    public Consumer(String name, List<DataType> types, boolean direct) {
+        this(name, types);
+        this.direct = direct;
     }
 
     /**
@@ -130,5 +142,14 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
      */
     public void setSequence(int sequence) {
         this.sequence = sequence;
+    }
+
+    /**
+     * Returns true if the consumer is a direct connection to the channel.
+     *
+     * @return true if the consumer is a direct connection to the channel
+     */
+    public boolean isDirect() {
+        return direct;
     }
 }

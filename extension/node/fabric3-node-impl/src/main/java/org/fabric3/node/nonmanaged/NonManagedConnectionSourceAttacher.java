@@ -20,7 +20,6 @@ import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
-import org.fabric3.spi.util.ClassLoading;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -37,8 +36,7 @@ public class NonManagedConnectionSourceAttacher implements SourceConnectionAttac
         if (source.isDirectConnection()) {
             source.setProxy(connection.getDirectConnection().get().get());
         } else {
-            ClassLoader loader = target.getClassLoader();
-            Class<?> interfaze = ClassLoading.loadClass(loader, source.getInterface());
+            Class<?> interfaze = source.getInterface();
             Object proxy = proxyService.createSupplier(interfaze, connection).get();
             source.setProxy(proxy);
         }

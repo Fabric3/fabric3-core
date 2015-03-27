@@ -41,6 +41,11 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
     }
 
     public void attach(ChannelSource source, PhysicalConnectionTarget target, ChannelConnection connection) throws Fabric3Exception {
+        if (target.isDirectConnection()) {
+            // no event stream to attach since this is a direct connection
+            return;
+        }
+
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();
@@ -48,6 +53,11 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
     }
 
     public void detach(ChannelSource source, PhysicalConnectionTarget target) throws Fabric3Exception {
+        if (target.isDirectConnection()) {
+            // no event stream to attach since this is a direct connection
+            return;
+        }
+
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();

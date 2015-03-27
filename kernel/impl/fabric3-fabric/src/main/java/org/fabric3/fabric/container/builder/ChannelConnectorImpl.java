@@ -115,14 +115,21 @@ public class ChannelConnectorImpl implements ChannelConnector {
      */
     private ChannelConnection createConnection(PhysicalChannelConnection physicalConnection) {
         PhysicalConnectionSource source = physicalConnection.getSource();
-        if (source.isDirectConnection()) {
-            // producer or binding source
+        PhysicalConnectionTarget target = physicalConnection.getTarget();
+        if (source.isDirectConnection() || target.isDirectConnection()) {
+            // handle direct connection
             int sequence = source.getSequence();
             URI channelUri = physicalConnection.getChannelUri();
 
             Supplier<?> supplier;
             if (physicalConnection.isBound()) {
-                Class<?> type = source.getServiceInterface();
+                // get the direct connection from the binding
+                Class<?> type;
+                if (source.isDirectConnection()) {
+                    type = source.getServiceInterface();
+                } else {
+                    type = target.getServiceInterface();
+                }
                 DirectConnectionFactory<?> factory = connectionFactories.get(type);
                 if (factory == null) {
                     throw new Fabric3Exception("Factory type not found: " + type.getName());
@@ -139,6 +146,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
             return new ChannelConnectionImpl(supplier, sequence);
         } else {
+            // connect using an event stream
             ClassLoader loader = physicalConnection.getTarget().getClassLoader();
             PhysicalEventStream physicalStream = physicalConnection.getEventStream();
             EventStream stream = new EventStreamImpl(physicalStream);

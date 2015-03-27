@@ -10,6 +10,12 @@ public class ChannelContextImpl implements ChannelContext {
     private String name;
     private ChannelResolver resolver;
 
+    /**
+     * Constructor.
+     *
+     * @param name     the channel name
+     * @param resolver the resolver
+     */
     public ChannelContextImpl(String name, ChannelResolver resolver) {
         this.name = name;
         this.resolver = resolver;
@@ -24,10 +30,10 @@ public class ChannelContextImpl implements ChannelContext {
     }
 
     public <T> T getConsumer(Class<T> type) {
-        throw new UnsupportedOperationException();
+        return resolver.getConsumer(type, name);
     }
 
     public <T> T getConsumer(Class<T> type, String topic) {
-        throw new UnsupportedOperationException();
+        return resolver.getConsumer(type, name, topic);
     }
 }

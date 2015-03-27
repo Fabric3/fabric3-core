@@ -19,7 +19,7 @@ package org.fabric3.spi.container.channel;
 import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Resolves a channel and returns a connection proxy to it.
+ * Resolves channels and returns connection proxies.
  */
 public interface ChannelResolver {
 
@@ -34,7 +34,7 @@ public interface ChannelResolver {
     <T> T getProducer(Class<T> interfaze, String name) throws Fabric3Exception;
 
     /**
-     * Creates a producer proxy to a channel using the default topic.
+     * Creates a producer proxy to a channel using the specified topic.
      *
      * @param interfaze the producer interface
      * @param name      the channel name
@@ -43,4 +43,25 @@ public interface ChannelResolver {
      * @throws Fabric3Exception if there is a resolution exception
      */
     <T> T getProducer(Class<T> interfaze, String name, String topic) throws Fabric3Exception;
+
+    /**
+     * Creates a consumer proxy to a channel using the specified topic.
+     *
+     * @param interfaze the consumer interface
+     * @param name      the channel name
+     * @return the connection proxy
+     * @throws Fabric3Exception if there is a resolution exception
+     */
+    <T> T getConsumer(Class<T> interfaze, String name);
+
+    /**
+     * Creates a consumer proxy to a channel using the default topic.
+     *
+     * @param interfaze the consumer interface
+     * @param name      the channel name
+     * @param topic     the topic name
+     * @return the connection proxy
+     * @throws Fabric3Exception if there is a resolution exception
+     */
+    <T> T getConsumer(Class<T> interfaze, String name, String topic);
 }

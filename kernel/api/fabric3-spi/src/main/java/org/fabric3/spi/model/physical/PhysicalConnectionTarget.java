@@ -26,6 +26,9 @@ import org.fabric3.api.model.type.contract.DataType;
  */
 public class PhysicalConnectionTarget extends PhysicalAttachPoint {
 
+    private boolean directConnection;
+    private Class<?> serviceInterface;
+
     public PhysicalConnectionTarget() {
     }
 
@@ -33,4 +36,19 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
         super(types);
     }
 
+    public boolean isDirectConnection() {
+        return directConnection;
+    }
+
+    public void setDirectConnection(boolean directConnection) {
+        this.directConnection = directConnection;
+    }
+
+    public Class<?> getServiceInterface() {
+        return serviceInterface;
+    }
+
+    public void setServiceInterface(Class<?> serviceInterface) {
+        this.serviceInterface = serviceInterface;
+    }
 }

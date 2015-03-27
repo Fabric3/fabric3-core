@@ -42,4 +42,8 @@
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedConnectionSourceAttacher"/>
     </component>
 
+    <component name="NonManagedConnectionTargetAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedConnectionTarget">
+        <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedConnectionTargetAttacher"/>
+    </component>
+
 </composite>

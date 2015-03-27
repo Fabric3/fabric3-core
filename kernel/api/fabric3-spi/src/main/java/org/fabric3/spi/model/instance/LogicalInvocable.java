@@ -21,6 +21,7 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -96,9 +97,7 @@ public class LogicalInvocable extends LogicalScaArtifact<LogicalComponent<?>> {
         callbackOperations = new ArrayList<>();
         if (contract != null) {
             // null is a convenience allowed for testing so the logical model does not need to be fully created
-            for (Operation operation : contract.getOperations()) {
-                operations.add(new LogicalOperation(operation, this));
-            }
+            operations.addAll(contract.getOperations().stream().map(operation -> new LogicalOperation(operation, this)).collect(Collectors.toList()));
             ServiceContract callbackContract = contract.getCallbackContract();
             if (callbackContract != null) {
                 for (Operation operation : callbackContract.getOperations()) {

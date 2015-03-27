@@ -34,6 +34,7 @@ public class ChannelManagerImpl implements ChannelManager {
     private Map<URI, Holder> collocatedChannels = new ConcurrentHashMap<>();
     private Map<URI, Holder> producerChannels = new ConcurrentHashMap<>();
     private Map<URI, Holder> consumerChannels = new ConcurrentHashMap<>();
+    private boolean started;
 
     public Channel getChannel(URI uri, ChannelSide channelSide) {
         checkUri(uri);
@@ -71,6 +72,9 @@ public class ChannelManagerImpl implements ChannelManager {
     }
 
     public void register(Channel channel) throws Fabric3Exception {
+        if (started) {
+            channel.start();
+        }
         ChannelSide channelSide = channel.getChannelSide();
         if (ChannelSide.COLLOCATED == channelSide) {
             checkAndPut(channel, collocatedChannels);
@@ -134,11 +138,13 @@ public class ChannelManagerImpl implements ChannelManager {
     }
 
     private void doStart(QName deployable, Map<URI, Holder> map) {
+        started = true;
         map.values().stream().filter(holder -> deployable.equals(holder.channel.getDeployable())).forEach(holder -> holder.channel.start());
     }
 
     private void doStop(QName deployable, Map<URI, Holder> map) {
         map.values().stream().filter(holder -> deployable.equals(holder.channel.getDeployable())).forEach(holder -> holder.channel.stop());
+        started = false;
     }
 
     private class Holder {

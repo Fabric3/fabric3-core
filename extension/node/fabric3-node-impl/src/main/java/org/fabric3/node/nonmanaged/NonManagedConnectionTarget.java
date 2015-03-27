@@ -16,21 +16,16 @@
  */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
 /**
  *
  */
-public class NonManagedConnectionSource extends PhysicalConnectionSource {
-    private Class<?> interfaze;
+public class NonManagedConnectionTarget extends PhysicalConnectionTarget {
     private transient Object proxy;
 
-    public NonManagedConnectionSource(Class<?> interfaze) {
-        this.interfaze = interfaze;
-    }
-
-    public Class<?> getInterface() {
-        return interfaze;
+    public NonManagedConnectionTarget(Class<?> interfaze) {
+        setServiceInterface(interfaze);
     }
 
     public Object getProxy() {
