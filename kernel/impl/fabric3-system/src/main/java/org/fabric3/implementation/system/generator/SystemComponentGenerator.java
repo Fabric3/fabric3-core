@@ -16,7 +16,7 @@
  */
 package org.fabric3.implementation.system.generator;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -132,12 +132,12 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         URI uri = component.getUri();
         target.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
-        Method method = type.getConsumerMethod(consumer.getUri().getFragment());
-        if (method == null) {
+        AccessibleObject object = type.getConsumerSite(consumer.getUri().getFragment());
+        if (object == null) {
             // programming error
-            throw new Fabric3Exception("Consumer method not found on: " + consumer.getUri());
+            throw new Fabric3Exception("Consumer not found on: " + consumer.getUri());
         }
-        target.setConsumerMethod(method);
+        target.setConsumerSite(object);
         return target;
     }
 

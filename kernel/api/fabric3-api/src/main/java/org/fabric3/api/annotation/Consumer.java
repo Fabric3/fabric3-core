@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation used to indicate an implementation method is an event consumer.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Consumer {
 

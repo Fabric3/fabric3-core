@@ -57,7 +57,7 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         }
         ClassLoader loader = target.getClassLoader();
 
-        Method method = target.getConsumerMethod();
+        Method method = (Method) target.getConsumerObject(); // if the object is not a method, it is a programming error
         ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
 
         InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);

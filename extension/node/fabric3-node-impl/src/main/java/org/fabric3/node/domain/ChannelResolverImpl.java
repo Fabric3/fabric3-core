@@ -161,6 +161,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         Producer producer = new Producer("producer", contract);
 
         LogicalProducer logicalProducer = new LogicalProducer(URI.create(root + "/F3Synthetic#producer"), producer, logicalComponent);
+        logicalProducer.setServiceContract(contract);
         logicalProducer.addTarget(channelUri);
         return logicalProducer;
     }

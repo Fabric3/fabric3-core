@@ -42,6 +42,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalInvocable;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.DeliveryType;
@@ -89,7 +90,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
         target.setClassLoader(classLoader);
 
-        if (consumer.getDefinition().isDirect()) {
+        if (isDirect(consumer, channels)) {
             target.setDirectConnection(true);
             return generateDirectConnections(consumer, channels, target, classLoaderId);
         } else {
@@ -197,11 +198,11 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         return connections;
     }
 
-    private boolean isDirect(LogicalProducer producer, Map<LogicalChannel, DeliveryType> channels) {
+    private boolean isDirect(LogicalInvocable invocable, Map<LogicalChannel, DeliveryType> channels) {
         boolean direct = false;
         if (!channels.isEmpty()) {
             LogicalChannel logicalChannel = channels.keySet().iterator().next();
-            ServiceContract contract = producer.getDefinition().getServiceContract();
+            ServiceContract contract = invocable.getServiceContract();
             if (contract == null) {
                 return false;
             }

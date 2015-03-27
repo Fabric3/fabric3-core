@@ -18,7 +18,7 @@
  */
 package org.fabric3.implementation.java.generator;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -31,11 +31,11 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
 import org.fabric3.implementation.java.provision.JavaConnectionSource;
 import org.fabric3.implementation.java.provision.JavaConnectionTarget;
 import org.fabric3.implementation.java.provision.JavaWireSource;
 import org.fabric3.implementation.java.provision.JavaWireTarget;
+import org.fabric3.implementation.java.provision.PhysicalJavaComponent;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -116,17 +116,22 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
     @SuppressWarnings({"unchecked"})
     public void generateConnectionTarget(JavaConnectionTarget target, LogicalConsumer consumer) {
+        // Create an injectable for the consumer. Note in cases where the consumer is a method that is connected via an event stream and is used to receive
+        // events rather than act as a setter for a direct connection, the injector will never be activated.
+        Injectable injectable = new Injectable(InjectableType.CONSUMER, consumer.getUri().getFragment());
+        target.setInjectable(injectable);
+
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
-        // TODO support promotion by returning the leaf component URI instead of the parent component URI
         URI uri = component.getUri();
         target.setUri(uri);
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
-        Method method = type.getConsumerMethod(consumer.getUri().getFragment());
-        if (method == null) {
+        AccessibleObject object = type.getConsumerSite(consumer.getUri().getFragment());
+        if (object == null) {
             // programming error
-            throw new Fabric3Exception("Consumer method not found on: " + consumer.getUri());
+            throw new Fabric3Exception("Consumer not found on: " + consumer.getUri());
         }
-        target.setConsumerMethod(method);
+
+        target.setConsumerSite(object);
     }
 
     public void generateCallbackWireSource(JavaWireSource source, LogicalComponent<? extends JavaImplementation> component, JavaServiceContract contract) {

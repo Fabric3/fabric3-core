@@ -99,10 +99,10 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         String name = helper.getSiteName(constructor, index, annotation.value());
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        Producer<ComponentType> definition = createProducer(name, type, implClass, componentType, constructor, context);
+        Producer<ComponentType> producer = createProducer(name, type, implClass, componentType, constructor, context);
         Class<?> clazz = constructor.getDeclaringClass();
-        processTargets(annotation, definition, constructor, clazz, context);
-        componentType.add(definition, site);
+        processTargets(annotation, producer, constructor, clazz, context);
+        componentType.add(producer, site);
     }
 
     private Producer<ComponentType> createProducer(String name,

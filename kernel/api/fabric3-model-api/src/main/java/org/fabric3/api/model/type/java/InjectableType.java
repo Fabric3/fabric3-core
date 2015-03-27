@@ -26,6 +26,7 @@ public enum InjectableType {
     CALLBACK,
     REFERENCE,
     PRODUCER,
+    CONSUMER,
     PROPERTY,
     RESOURCE,
     CONTEXT

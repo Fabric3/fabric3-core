@@ -19,22 +19,32 @@
  */
 package org.fabric3.implementation.pojo.provision;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 
+import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
 /**
  *
  */
 public class PojoConnectionTarget extends PhysicalConnectionTarget {
-    private Method consumer;
+    private AccessibleObject consumer;
+    private Injectable injectable;
 
-    public Method getConsumerMethod() {
+    public AccessibleObject getConsumerObject() {
         return consumer;
     }
 
-    public void setConsumerMethod(Method consumer) {
+    public void setConsumerSite(AccessibleObject consumer) {
         this.consumer = consumer;
+    }
+
+    public void setInjectable(Injectable injectable) {
+        this.injectable = injectable;
+    }
+
+    public Injectable getInjectable() {
+        return injectable;
     }
 
 }

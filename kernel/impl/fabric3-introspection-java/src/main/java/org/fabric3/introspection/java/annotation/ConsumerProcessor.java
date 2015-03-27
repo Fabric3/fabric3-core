@@ -20,6 +20,7 @@
 package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -31,16 +32,22 @@ import java.util.List;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.contract.TypeIntrospector;
+import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -49,6 +56,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.api.annotation.Consumer> {
+    private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
 
     private List<TypeIntrospector> typeIntrospectors = Collections.emptyList();
@@ -58,12 +66,79 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         this.typeIntrospectors = typeIntrospectors;
     }
 
-    public ConsumerProcessor(@Reference IntrospectionHelper helper) {
+    public ConsumerProcessor(IntrospectionHelper helper) {
         super(org.fabric3.api.annotation.Consumer.class);
         this.helper = helper;
     }
 
-    public void visitMethod(org.fabric3.api.annotation.Consumer annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+    @Constructor
+    public ConsumerProcessor(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
+        super(org.fabric3.api.annotation.Consumer.class);
+        this.contractProcessor = contractProcessor;
+        this.helper = helper;
+    }
+
+    public void visitConstructorParameter(org.fabric3.api.annotation.Consumer annotation,
+                                          java.lang.reflect.Constructor<?> constructor,
+                                          int index,
+                                          Class<?> implClass,
+                                          InjectingComponentType componentType,
+                                          IntrospectionContext context) {
+
+        String name = helper.getSiteName(constructor, index, annotation.value());
+
+        TypeMapping typeMapping = context.getTypeMapping(implClass);
+        Class<?> genericType = constructor.getParameterTypes()[index];
+        Type logicalParamType = typeMapping.getActualType(genericType);
+        DataType dataType = createDataType(genericType, logicalParamType, typeMapping);
+
+        ServiceContract contract = null;
+        if (contractProcessor != null) {
+            Class<?> baseType = helper.getBaseType(genericType, typeMapping);
+            contract = contractProcessor.introspect(baseType, implClass, context, componentType);
+
+        }
+
+        ConstructorInjectionSite injectionSite = new ConstructorInjectionSite(constructor, index);
+        Consumer<ComponentType> consumer = new Consumer<>(name, Collections.singletonList(dataType), contract);
+
+        processSources(annotation, consumer, constructor, constructor.getDeclaringClass(), context);
+        componentType.add(consumer, injectionSite, constructor);
+
+    }
+
+    public void visitField(org.fabric3.api.annotation.Consumer annotation,
+                           Field field,
+                           Class<?> implClass,
+                           InjectingComponentType componentType,
+                           IntrospectionContext context) {
+        TypeMapping typeMapping = context.getTypeMapping(implClass);
+
+        Class<?> genericType = field.getType();
+        Type logicalParamType = typeMapping.getActualType(genericType);
+        DataType dataType = createDataType(genericType, logicalParamType, typeMapping);
+
+        String name = helper.getSiteName(field, annotation.value());
+        ServiceContract contract = null;
+        if (contractProcessor != null) {
+            Class<?> baseType = helper.getBaseType(genericType, typeMapping);
+            contract = contractProcessor.introspect(baseType, implClass, context, componentType);
+
+        }
+        Consumer<ComponentType> consumer = new Consumer<>(name, Collections.singletonList(dataType), contract);
+
+        Class<?> clazz = field.getDeclaringClass();
+        processSources(annotation, consumer, field, clazz, context);
+        FieldInjectionSite injectionSite = new FieldInjectionSite(field);
+        componentType.add(consumer, injectionSite, field);
+
+    }
+
+    public void visitMethod(org.fabric3.api.annotation.Consumer annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         if (method.getParameterTypes().length > 1) {
             InvalidConsumerMethod failure = new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter", method, componentType);
             context.addError(failure);
@@ -71,9 +146,16 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         }
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         List<DataType> types = introspectParameterTypes(method, typeMapping);
-        // TODO handle policies
+
         String name = helper.getSiteName(method, annotation.value());
-        Consumer<ComponentType> consumer = new Consumer<>(name, types);
+
+        ServiceContract contract = null;
+        if (contractProcessor != null) {
+            Class<?> baseType = helper.getBaseType(types.get(0).getType(), typeMapping);
+            contract = contractProcessor.introspect(baseType, implClass, context, componentType);
+
+        }
+        Consumer<ComponentType> consumer = new Consumer<>(name, types, contract);
 
         int sequence = annotation.sequence();
         if (sequence < 0) {
@@ -83,7 +165,8 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         }
         Class<?> clazz = method.getDeclaringClass();
         processSources(annotation, consumer, method, clazz, context);
-        componentType.add(consumer, method);
+        MethodInjectionSite injectionSite = new MethodInjectionSite(method, 0);
+        componentType.add(consumer, injectionSite, method);
     }
 
     private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {
@@ -107,7 +190,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
             dataType = new JavaType(physicalType);
         } else {
             JavaTypeInfo info = helper.createTypeInfo(type, mapping);
-            dataType= new JavaGenericType(info);
+            dataType = new JavaGenericType(info);
         }
         for (TypeIntrospector introspector : typeIntrospectors) {
             introspector.introspect(dataType);
@@ -115,7 +198,11 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         return dataType;
     }
 
-    private void processSources(org.fabric3.api.annotation.Consumer annotation, Consumer consumer, AccessibleObject member, Class<?> clazz, IntrospectionContext context) {
+    private void processSources(org.fabric3.api.annotation.Consumer annotation,
+                                Consumer consumer,
+                                AccessibleObject member,
+                                Class<?> clazz,
+                                IntrospectionContext context) {
         try {
             if (annotation.sources().length > 0) {
                 for (String target : annotation.sources()) {

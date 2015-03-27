@@ -19,6 +19,7 @@
  */
 package org.fabric3.api.model.type.java;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class InjectingComponentType extends ComponentType {
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<>();
     private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<>();
     private Map<String, Callback> callbacks = new HashMap<>();
-    private Map<String, Method> consumerSignatures = new HashMap<>();
+    private Map<String, AccessibleObject> consumerSignatures = new HashMap<>();
 
     /**
      * Constructor.
@@ -176,14 +177,17 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Add a consumer and its associated method signature.
+     * Add a consumer and its associated accessible object.
      *
-     * @param consumer  the consumer to add
-     * @param method the consumer method
+     * @param consumer the consumer to add
+     * @param object   the consumer method, field or ctor
      */
-    public void add(Consumer<ComponentType> consumer, Method method) {
+    public void add(Consumer<ComponentType> consumer, InjectionSite injectionSite, AccessibleObject object) {
         super.add(consumer);
-        consumerSignatures.put(consumer.getName(), method);
+        Injectable injectable = new Injectable(InjectableType.CONSUMER, consumer.getName());
+        addInjectionSite(injectionSite, injectable);
+        injectionSiteMapping.put(consumer, injectionSite);
+        consumerSignatures.put(consumer.getName(), object);
     }
 
     /**
@@ -192,7 +196,7 @@ public class InjectingComponentType extends ComponentType {
      * @param name the consumer  name
      * @return the method signature
      */
-    public Method getConsumerMethod(String name) {
+    public AccessibleObject getConsumerSite(String name) {
         return consumerSignatures.get(name);
     }
 

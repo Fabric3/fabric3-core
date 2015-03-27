@@ -55,14 +55,25 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         if (component == null) {
             throw new Fabric3Exception("Target component not found: " + targetName);
         }
-        ClassLoader loader = target.getClassLoader();
 
-        Method method = target.getConsumerMethod();
-        ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
+        if (target.isDirectConnection()) {
+            // A direct connection; create a setter that will inject the field, method or ctor param annotated with @Consumer
+            component.setSupplier(target.getInjectable(), connection.getDirectConnection().get());
+        } else {
+            // Not a direct connection; a consumer method that is invoked and passed an event from the channel via an event stream
+            // Note that a null supplier must be injected in this case as the @Consumer annotation creates an injector for the case where the
+            // method takes a direct connection to the channel. The null supplier forces the injector not to activate since the @Consumer method is used to
+            // receive events and not serve as a setter for the direct connection
+            component.setSupplier(target.getInjectable(), () -> null);
+            ClassLoader loader = target.getClassLoader();
 
-        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
-        EventStream stream = connection.getEventStream();
-        stream.addHandler(handler);
+            Method method = (Method) target.getConsumerObject(); // if the object is not a method, it is a programming error
+            ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
+
+            InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
+            EventStream stream = connection.getEventStream();
+            stream.addHandler(handler);
+        }
     }
 
     public void detach(PhysicalConnectionSource source, JavaConnectionTarget target) {

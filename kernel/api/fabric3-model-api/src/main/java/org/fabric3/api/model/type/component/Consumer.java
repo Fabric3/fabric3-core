@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A consumer introspected from a component type.
@@ -39,6 +40,7 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
 
     private List<DataType> types = Collections.emptyList();
     private List<URI> sources = new ArrayList<>();
+    private ServiceContract serviceContract;
 
     /**
      * Constructor.
@@ -70,6 +72,18 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
     public Consumer(String name, List<DataType> types, boolean direct) {
         this(name, types);
         this.direct = direct;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name     the consumer name
+     * @param types    the data types required by this consumer
+     * @param contract the service contract of this consumer if it is a direct connection to the channel
+     */
+    public Consumer(String name, List<DataType> types, ServiceContract contract) {
+        this(name, types);
+        this.serviceContract = contract;
     }
 
     /**
@@ -151,5 +165,9 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
      */
     public boolean isDirect() {
         return direct;
+    }
+
+    public ServiceContract getServiceContract() {
+        return serviceContract;
     }
 }

@@ -148,6 +148,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                     addSource(logicalConsumer, uri, logicalComponent);
                 }
             }
+            logicalConsumer.setServiceContract(consumer.getServiceContract());
             logicalComponent.addConsumer(logicalConsumer);
         }
     }
