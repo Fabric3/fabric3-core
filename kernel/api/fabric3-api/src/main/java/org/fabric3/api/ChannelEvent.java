@@ -25,6 +25,13 @@ package org.fabric3.api;
 public interface ChannelEvent {
 
     /**
+     * Sets the raw event.
+     *
+     * @param event the event
+     */
+    void setEvent(Object event);
+
+    /**
      * Returns the raw event.
      *
      * @return the event

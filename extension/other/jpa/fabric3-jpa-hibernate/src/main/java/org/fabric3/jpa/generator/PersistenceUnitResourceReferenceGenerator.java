@@ -40,13 +40,13 @@ public class PersistenceUnitResourceReferenceGenerator implements ResourceRefere
 
     public PersistenceUnitWireTarget generateWireTarget(LogicalResourceReference<PersistenceUnitResourceReference> resourceReference) {
         String unitName = resourceReference.getDefinition().getUnitName();
-        PersistenceUnitWireTarget definition = new PersistenceUnitWireTarget(unitName);
+        PersistenceUnitWireTarget target = new PersistenceUnitWireTarget(unitName);
         PersistenceOverrides overrides = registry.resolve(unitName);
         if (overrides != null) {
-            definition.setOverrides(overrides);
+            target.setOverrides(overrides);
         }
-        definition.setOptimizable(true);
-        return definition;
+        target.setOptimizable(true);
+        return target;
     }
 
 }

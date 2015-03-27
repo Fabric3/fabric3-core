@@ -34,10 +34,14 @@ public class NonManagedConnectionSourceAttacher implements SourceConnectionAttac
     }
 
     public void attach(NonManagedConnectionSource source, PhysicalConnectionTarget target, ChannelConnection connection) {
-        ClassLoader loader = target.getClassLoader();
-        Class<?> interfaze = ClassLoading.loadClass(loader, source.getInterface());
-        Object proxy = proxyService.createSupplier(interfaze, connection).get();
-        source.setProxy(proxy);
+        if (source.isDirectConnection()) {
+            source.setProxy(connection.getDirectConnection().get().get());
+        } else {
+            ClassLoader loader = target.getClassLoader();
+            Class<?> interfaze = ClassLoading.loadClass(loader, source.getInterface());
+            Object proxy = proxyService.createSupplier(interfaze, connection).get();
+            source.setProxy(proxy);
+        }
     }
 
 }

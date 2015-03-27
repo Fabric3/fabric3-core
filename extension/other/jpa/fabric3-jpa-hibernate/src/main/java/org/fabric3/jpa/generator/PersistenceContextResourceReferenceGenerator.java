@@ -41,15 +41,15 @@ public class PersistenceContextResourceReferenceGenerator implements ResourceRef
     public PersistenceContextWireTarget generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> logicalResourceReference) {
         PersistenceContextResourceReference resource = logicalResourceReference.getDefinition();
         String unitName = resource.getUnitName();
-        PersistenceContextWireTarget definition = new PersistenceContextWireTarget(unitName);
+        PersistenceContextWireTarget target = new PersistenceContextWireTarget(unitName);
         PersistenceOverrides overrides = registry.resolve(unitName);
         if (overrides != null) {
-            definition.setOverrides(overrides);
+            target.setOverrides(overrides);
         }
         boolean multiThreaded = resource.isMultiThreaded();
-        definition.setOptimizable(true);
-        definition.setMultiThreaded(multiThreaded);
-        return definition;
+        target.setOptimizable(true);
+        target.setMultiThreaded(multiThreaded);
+        return target;
     }
 
 }

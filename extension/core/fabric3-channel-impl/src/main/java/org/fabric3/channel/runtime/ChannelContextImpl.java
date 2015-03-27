@@ -1,18 +1,17 @@
-package org.fabric3.node.domain;
+package org.fabric3.channel.runtime;
 
 import org.fabric3.api.ChannelContext;
+import org.fabric3.spi.container.channel.ChannelResolver;
 
 /**
  *
  */
 public class ChannelContextImpl implements ChannelContext {
     private String name;
-    private String topic;
     private ChannelResolver resolver;
 
-    public ChannelContextImpl(String name, String topic, ChannelResolver resolver) {
+    public ChannelContextImpl(String name, ChannelResolver resolver) {
         this.name = name;
-        this.topic = topic;
         this.resolver = resolver;
     }
 

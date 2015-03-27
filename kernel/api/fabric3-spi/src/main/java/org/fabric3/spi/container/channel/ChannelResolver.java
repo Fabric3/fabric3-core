@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.domain;
+package org.fabric3.spi.container.channel;
 
 import org.fabric3.api.host.Fabric3Exception;
 
@@ -42,5 +42,5 @@ public interface ChannelResolver {
      * @return the connection proxy
      * @throws Fabric3Exception if there is a resolution exception
      */
-    <T> T getProducer(Class<T> interfaze, String name, String topic);
+    <T> T getProducer(Class<T> interfaze, String name, String topic) throws Fabric3Exception;
 }

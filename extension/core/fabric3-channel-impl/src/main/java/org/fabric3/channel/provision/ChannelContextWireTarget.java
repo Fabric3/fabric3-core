@@ -16,13 +16,25 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.jpa.provision;
+package org.fabric3.channel.provision;
+
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
- * Contains attach point metadata for an EntityManager resource.
+ *
  */
-public class PersistenceContextWireTarget extends AbstractContextWireTarget {
-    public PersistenceContextWireTarget(String unitName) {
-        super(unitName);
+public class ChannelContextWireTarget extends PhysicalWireTarget {
+    private String channelName;
+
+    public ChannelContextWireTarget(String channelName) {
+        this.channelName = channelName;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public boolean isOptimizable() {
+        return true;
     }
 }

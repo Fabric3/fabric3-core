@@ -22,7 +22,6 @@ package org.fabric3.jpa.provision;
  * Contains attach point metadata for an Hibernate Session resource.
  */
 public class SessionWireTarget extends AbstractContextWireTarget {
-    private static final long serialVersionUID = 7712184177617794651L;
 
     public SessionWireTarget(String unitName) {
         super(unitName);

@@ -60,11 +60,11 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         FieldInjectionSite site = new FieldInjectionSite(field);
         String name = helper.getSiteName(field, null);
         if (EntityManager.class.equals(field.getType())) {
-            PersistenceContextResourceReference definition = createDefinition(name, field, annotation, componentType, context);
-            componentType.add(definition, site);
+            PersistenceContextResourceReference reference = createReference(name, field, annotation, componentType, context);
+            componentType.add(reference, site);
         } else {
-            HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
-            componentType.add(definition, site);
+            HibernateSessionResourceReference reference = createSessionReference(name, annotation, componentType);
+            componentType.add(reference, site);
         }
     }
 
@@ -76,19 +76,19 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         String name = helper.getSiteName(method, null);
         if (EntityManager.class.equals(method.getParameterTypes()[0])) {
-            PersistenceContextResourceReference definition = createDefinition(name, method, annotation, componentType, context);
-            componentType.add(definition, site);
+            PersistenceContextResourceReference reference = createReference(name, method, annotation, componentType, context);
+            componentType.add(reference, site);
         } else {
-            HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
-            componentType.add(definition, site);
+            HibernateSessionResourceReference reference = createSessionReference(name, annotation, componentType);
+            componentType.add(reference, site);
         }
     }
 
-    private PersistenceContextResourceReference createDefinition(String name,
-                                                                 Member member,
-                                                                 PersistenceContext annotation,
-                                                                 InjectingComponentType componentType,
-                                                                 IntrospectionContext context) {
+    private PersistenceContextResourceReference createReference(String name,
+                                                                Member member,
+                                                                PersistenceContext annotation,
+                                                                InjectingComponentType componentType,
+                                                                IntrospectionContext context) {
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         if (PersistenceContextType.EXTENDED == type) {
@@ -101,7 +101,7 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         return new PersistenceContextResourceReference(name, unitName, factoryServiceContract, multiThreaded);
     }
 
-    private HibernateSessionResourceReference createSessionDefinition(String name, PersistenceContext annotation, InjectingComponentType componentType) {
+    private HibernateSessionResourceReference createSessionReference(String name, PersistenceContext annotation, InjectingComponentType componentType) {
         String unitName = annotation.unitName();
         boolean multiThreaded = Scope.COMPOSITE == componentType.getScope();
         return new HibernateSessionResourceReference(name, unitName, factoryServiceContract, multiThreaded);

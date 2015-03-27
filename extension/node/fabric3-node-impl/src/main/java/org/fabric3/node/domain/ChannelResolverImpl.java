@@ -32,6 +32,7 @@ import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedConnectionSource;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.spi.container.channel.ChannelResolver;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;

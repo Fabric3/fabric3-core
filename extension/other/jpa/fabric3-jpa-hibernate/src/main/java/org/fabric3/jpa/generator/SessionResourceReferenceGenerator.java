@@ -41,17 +41,17 @@ public class SessionResourceReferenceGenerator implements ResourceReferenceGener
     public SessionWireTarget generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> logicalResourceReference) {
         HibernateSessionResourceReference resource = logicalResourceReference.getDefinition();
         String unitName = resource.getUnitName();
-        SessionWireTarget definition = new SessionWireTarget(unitName);
+        SessionWireTarget target = new SessionWireTarget(unitName);
 
         PersistenceOverrides overrides = registry.resolve(unitName);
         if (overrides != null) {
-            definition.setOverrides(overrides);
+            target.setOverrides(overrides);
         }
 
         boolean multiThreaded = resource.isMultiThreaded();
-        definition.setOptimizable(true);
-        definition.setMultiThreaded(multiThreaded);
-        return definition;
+        target.setOptimizable(true);
+        target.setMultiThreaded(multiThreaded);
+        return target;
     }
 
 }

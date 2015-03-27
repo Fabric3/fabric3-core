@@ -14,4 +14,16 @@
         <f3:implementation.system class="org.fabric3.channel.introspection.DefaultChannelTypeLoader"/>
     </component>
 
+    <component name="ChannelAnnotationProcessor">
+        <f3:implementation.system class="org.fabric3.channel.introspection.ChannelAnnotationProcessor"/>
+    </component>
+
+    <component name="ChannelResourceReferenceGenerator">
+        <f3:implementation.system class="org.fabric3.channel.generator.ChannelResourceReferenceGenerator"/>
+    </component>
+
+    <component name="ChannelContextTargetAttacher">
+        <f3:implementation.system class="org.fabric3.channel.runtime.ChannelContextTargetAttacher"/>
+    </component>
+
 </composite>

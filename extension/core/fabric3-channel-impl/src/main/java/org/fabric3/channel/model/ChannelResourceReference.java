@@ -16,13 +16,23 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.jpa.provision;
+package org.fabric3.channel.model;
+
+import org.fabric3.api.model.type.component.ResourceReference;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
- * Contains attach point metadata for an EntityManager resource.
+ *
  */
-public class PersistenceContextWireTarget extends AbstractContextWireTarget {
-    public PersistenceContextWireTarget(String unitName) {
-        super(unitName);
+public class ChannelResourceReference extends ResourceReference {
+    private String channelName;
+
+    public ChannelResourceReference(String name, String channelName, ServiceContract contract) {
+        super(name, contract, false);
+        this.channelName = channelName;
+    }
+
+    public String getChannelName() {
+        return channelName;
     }
 }

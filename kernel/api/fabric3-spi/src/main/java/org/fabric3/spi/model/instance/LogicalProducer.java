@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Producer;
 
 /**
@@ -84,7 +85,8 @@ public class LogicalProducer extends LogicalInvocable {
 
     public LogicalOperation getStreamOperation() {
         if (operations.size() != 1) {
-            throw new IllegalStateException("Invalid number of operations: " + operations.size());
+            throw new Fabric3Exception("Invalid number of operations on producer: " + getUri() + ". Producers that are not direct connections to channels may "
+                                       + "only have one operation.");
         }
         return operations.get(0);
     }

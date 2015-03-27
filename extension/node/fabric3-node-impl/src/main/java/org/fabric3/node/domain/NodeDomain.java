@@ -29,6 +29,7 @@ import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.node.Domain;
+import org.fabric3.spi.container.channel.ChannelResolver;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 

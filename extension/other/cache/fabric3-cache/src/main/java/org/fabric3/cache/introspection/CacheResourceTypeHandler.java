@@ -52,12 +52,11 @@ public class CacheResourceTypeHandler implements ResourceTypeHandler {
         contract = contractProcessor.introspect(ConcurrentMap.class, new DefaultIntrospectionContext());
     }
 
-
     public ResourceReference createResourceReference(String name,
-                                                               Resource annotation,
-                                                               Member member,
-                                                               InjectingComponentType componentType,
-                                                               IntrospectionContext context) {
+                                                     Resource annotation,
+                                                     Member member,
+                                                     InjectingComponentType componentType,
+                                                     IntrospectionContext context) {
         String cacheName = annotation.name();
         if (cacheName.length() == 0) {
             MissingCacheName error = new MissingCacheName(member, componentType);
