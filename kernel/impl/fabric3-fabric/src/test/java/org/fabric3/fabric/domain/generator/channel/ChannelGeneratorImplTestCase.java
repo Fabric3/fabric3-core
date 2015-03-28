@@ -29,12 +29,8 @@ import org.fabric3.api.model.type.component.Channel;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
-import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelBinding;
 import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
@@ -51,7 +47,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, channelGenerator);
 
-        ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
+        ChannelGeneratorImpl generator = new ChannelGeneratorImpl();
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
@@ -68,7 +64,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, channelGenerator);
 
-        ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
+        ChannelGeneratorImpl generator = new ChannelGeneratorImpl();
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.PROVISIONED);
@@ -79,34 +75,6 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         EasyMock.verify(registry, channelGenerator);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public void testGenerateBoundChannelBuild() throws Exception {
-        ChannelGeneratorExtension channelGenerator = getChannelGenerator();
-
-        ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
-        EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class),
-                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysical());
-
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        registry.getConnectionBindingGenerator(MockBinding.class);
-        EasyMock.expectLastCall().andReturn(bindingGenerator);
-
-        EasyMock.replay(registry, bindingGenerator, channelGenerator);
-
-        ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        generator.extensions = Collections.singletonMap("default", channelGenerator);
-
-        LogicalChannel channel = createChannel();
-        LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
-        channel.addBinding(binding);
-
-        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
-
-        assertNotNull(physicalChannel);
-
-        EasyMock.verify(registry, bindingGenerator, channelGenerator);
-    }
-
     public void testGenerateLocalChannelDispose() throws Exception {
         ChannelGeneratorExtension channelGenerator = getChannelGenerator();
 
@@ -114,7 +82,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
         EasyMock.replay(registry, channelGenerator);
 
-        ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
+        ChannelGeneratorImpl generator = new ChannelGeneratorImpl();
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
@@ -123,36 +91,6 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         assertNotNull(physicalChannel);
 
         EasyMock.verify(registry, channelGenerator);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testGenerateBoundChannelDispose() throws Exception {
-        ChannelGeneratorExtension channelGenerator = getChannelGenerator();
-
-        ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
-        EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class),
-                                                                EasyMock.isA(DeliveryType.class))).andReturn(new MockPhysical());
-
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-
-        registry.getConnectionBindingGenerator(MockBinding.class);
-        EasyMock.expectLastCall().andReturn(bindingGenerator);
-
-        EasyMock.replay(registry, bindingGenerator, channelGenerator);
-
-        ChannelGeneratorImpl generator = new ChannelGeneratorImpl(registry);
-        generator.extensions = Collections.singletonMap("default", channelGenerator);
-
-        LogicalChannel channel = createChannel();
-        channel.setState(LogicalState.MARKED);
-        LogicalBinding<MockBinding> binding = new LogicalBinding<>(new MockBinding(), channel);
-        channel.addBinding(binding);
-
-        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
-
-        assertNotNull(physicalChannel);
-
-        EasyMock.verify(registry, bindingGenerator, channelGenerator);
     }
 
     private ChannelGeneratorExtension getChannelGenerator() throws Fabric3Exception {
@@ -165,9 +103,6 @@ public class ChannelGeneratorImplTestCase extends TestCase {
     private LogicalChannel createChannel() {
         Channel definition = new Channel("channel");
         return new LogicalChannel(URI.create("channel"), definition, null);
-    }
-
-    private class MockPhysical extends PhysicalChannelBinding {
     }
 
 }

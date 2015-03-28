@@ -25,7 +25,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelBinding;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 
@@ -33,16 +32,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
  * Generates {@link PhysicalConnectionSource}s and {@link PhysicalConnectionTarget}s for resolved connection bindings.
  */
 public interface ConnectionBindingGenerator<B extends Binding> {
-
-    /**
-     * Generates metadata used to provision a binding transport when a channel is deployed. If provisioning is not required, this method may return null.
-     *
-     * @param binding      the channel binding configuration
-     * @param deliveryType the delivery type implemented by the channel this binding will connect to
-     * @return the binding transport metadata or null if provisioning is not required
-     * @throws Fabric3Exception if an error occurs during the generation process
-     */
-    PhysicalChannelBinding generateChannelBinding(LogicalBinding<B> binding, DeliveryType deliveryType) throws Fabric3Exception;
 
     /**
      * Generates metadata used to attach a consumer to a channel binding transport.

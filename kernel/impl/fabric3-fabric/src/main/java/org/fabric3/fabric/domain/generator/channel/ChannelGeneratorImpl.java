@@ -20,17 +20,11 @@ import javax.xml.namespace.QName;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.component.Binding;
-import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
-import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelBinding;
 import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -41,16 +35,9 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     @Reference
     protected Map<String, ChannelGeneratorExtension> extensions;
 
-    private GeneratorRegistry generatorRegistry;
-
-    public ChannelGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
-        this.generatorRegistry = generatorRegistry;
-    }
-
     @SuppressWarnings("unchecked")
     public PhysicalChannel generate(LogicalChannel channel, QName deployable, ChannelDirection direction) {
 
-        LogicalBinding<?> binding = channel.getBinding();
         String type = channel.getDefinition().getType();
         ChannelGeneratorExtension generator = extensions.get(type);
         if (generator == null) {
@@ -59,20 +46,12 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
         PhysicalChannel physicalChannel = generator.generate(channel, deployable);
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
-            ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-            DeliveryType deliveryType = physicalChannel.getDeliveryType();
-            PhysicalChannelBinding physicalBinding = bindingGenerator.generateChannelBinding(binding, deliveryType);
-            physicalChannel.setBinding(physicalBinding);
+            physicalChannel.setBound(true);
             physicalChannel.setChannelSide(ChannelDirection.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
         } else {
             physicalChannel.setChannelSide(ChannelSide.COLLOCATED);
         }
         return physicalChannel;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends Binding> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) {
-        return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 
 }

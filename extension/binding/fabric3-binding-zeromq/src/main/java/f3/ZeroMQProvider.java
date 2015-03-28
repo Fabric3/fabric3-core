@@ -6,7 +6,6 @@ import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.binding.zeromq.builder.ZeroMQChannelBindingBuilder;
 import org.fabric3.binding.zeromq.generator.ZeroMQCallbackBindingGenerator;
 import org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator;
 import org.fabric3.binding.zeromq.generator.ZeroMQWireBindingGenerator;
@@ -33,7 +32,6 @@ public class ZeroMQProvider {
     @Provides
     public static Composite getComposite() {
         CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
-        compositeBuilder.component(SystemComponentBuilder.newBuilder(ZeroMQChannelBindingBuilder.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ZeroMQConnectionTargetAttacher.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ZeroMQConnectionSourceAttacher.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ZeroMQSourceAttacher.class).build());

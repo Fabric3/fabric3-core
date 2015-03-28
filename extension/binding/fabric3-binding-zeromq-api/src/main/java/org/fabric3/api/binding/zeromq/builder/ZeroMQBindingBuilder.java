@@ -28,18 +28,18 @@ import org.fabric3.api.model.type.builder.AbstractBuilder;
 /**
  * Builder for the ZeroMQ binding.
  */
-public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
+public class ZeroMQBindingBuilder extends AbstractBuilder {
     private ZeroMQBinding binding;
 
-    public static ZeroMQBindingDefinitionBuilder newBuilder() {
-        return new ZeroMQBindingDefinitionBuilder();
+    public static ZeroMQBindingBuilder newBuilder() {
+        return new ZeroMQBindingBuilder();
     }
 
-    public ZeroMQBindingDefinitionBuilder() {
+    public ZeroMQBindingBuilder() {
         this("zeromq.binding");
     }
 
-    public ZeroMQBindingDefinitionBuilder(String name) {
+    public ZeroMQBindingBuilder(String name) {
         this.binding = new ZeroMQBinding(name, new ZeroMQMetadata());
     }
 
@@ -49,13 +49,13 @@ public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
         return binding;
     }
 
-    public ZeroMQBindingDefinitionBuilder target(URI target) {
+    public ZeroMQBindingBuilder target(URI target) {
         checkState();
         binding.setTargetUri(target);
         return this;
     }
 
-    public ZeroMQBindingDefinitionBuilder address(List<String> addresses) {
+    public ZeroMQBindingBuilder address(List<String> addresses) {
         checkState();
         List<SocketAddressDefinition> list = new ArrayList<>();
         for (String address : addresses) {
@@ -65,19 +65,19 @@ public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
         return this;
     }
 
-    public ZeroMQBindingDefinitionBuilder sendBuffer(long value) {
+    public ZeroMQBindingBuilder sendBuffer(long value) {
         checkState();
         binding.getZeroMQMetadata().setSendBuffer(value);
         return this;
     }
 
-    public ZeroMQBindingDefinitionBuilder wireFormat(String value) {
+    public ZeroMQBindingBuilder wireFormat(String value) {
         checkState();
         binding.getZeroMQMetadata().setWireFormat(value);
         return this;
     }
 
-    public ZeroMQBindingDefinitionBuilder multicastRecovery(long value) {
+    public ZeroMQBindingBuilder multicastRecovery(long value) {
         checkState();
         binding.getZeroMQMetadata().setMulticastRecovery(value);
         return this;
@@ -89,19 +89,19 @@ public class ZeroMQBindingDefinitionBuilder extends AbstractBuilder {
         return binding;
     }
 
-    public ZeroMQBindingDefinitionBuilder highWater(long value) {
+    public ZeroMQBindingBuilder highWater(long value) {
         checkState();
         binding.getZeroMQMetadata().setHighWater(value);
         return this;
     }
 
-    public ZeroMQBindingDefinitionBuilder multicastRate(long value) {
+    public ZeroMQBindingBuilder multicastRate(long value) {
         checkState();
         binding.getZeroMQMetadata().setMulticastRate(value);
         return this;
     }
 
-    public ZeroMQBindingDefinitionBuilder timeout(long value) {
+    public ZeroMQBindingBuilder timeout(long value) {
         checkState();
         binding.getZeroMQMetadata().setTimeout(value);
         return this;

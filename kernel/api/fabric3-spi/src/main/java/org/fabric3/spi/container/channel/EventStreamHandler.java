@@ -34,13 +34,17 @@ public interface EventStreamHandler {
      *
      * @param next the next EventStreamHandler
      */
-    void setNext(EventStreamHandler next);
+    default void setNext(EventStreamHandler next) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Returns the next handler in the handler chain.
      *
      * @return the next EventStreamHandler
      */
-    EventStreamHandler getNext();
+    default EventStreamHandler getNext() {
+        return null;
+    }
 
 }

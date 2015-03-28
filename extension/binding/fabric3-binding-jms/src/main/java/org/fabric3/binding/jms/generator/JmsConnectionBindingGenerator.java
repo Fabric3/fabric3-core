@@ -26,11 +26,9 @@ import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.JmsBinding;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
-import org.fabric3.binding.jms.spi.provision.JmsChannelBinding;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.SessionType;
@@ -39,7 +37,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.DeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelBinding;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
@@ -62,8 +59,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         this.provisioner = provisioner;
     }
 
-    public PhysicalConnectionSource generateConnectionSource(LogicalConsumer consumer, LogicalBinding<JmsBinding> binding, DeliveryType deliveryType)
-            throws Fabric3Exception {
+    public PhysicalConnectionSource generateConnectionSource(LogicalConsumer consumer, LogicalBinding<JmsBinding> binding, DeliveryType deliveryType) {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         SessionType sessionType = getSessionType(binding);
@@ -92,8 +88,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return binding.getDefinition().getJmsMetadata().isClientAcknowledge() ? SessionType.CLIENT_ACKNOWLEDGE : SessionType.AUTO_ACKNOWLEDGE;
     }
 
-    public PhysicalConnectionTarget generateConnectionTarget(LogicalProducer producer, LogicalBinding<JmsBinding> binding, DeliveryType deliveryType)
-            throws Fabric3Exception {
+    public PhysicalConnectionTarget generateConnectionTarget(LogicalProducer producer, LogicalBinding<JmsBinding> binding, DeliveryType deliveryType) {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
@@ -106,11 +101,6 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
             provisioner.generateConnectionTarget(target);
         }
         return target;
-    }
-
-    public PhysicalChannelBinding generateChannelBinding(LogicalBinding<JmsBinding> binding, DeliveryType deliveryType) {
-        // a binding definition needs to be created even though it is not used so the channel is treated as bound (e.g. its implementation will be sync)
-        return new JmsChannelBinding();
     }
 
     private boolean isJAXB(List<DataType> eventTypes) {

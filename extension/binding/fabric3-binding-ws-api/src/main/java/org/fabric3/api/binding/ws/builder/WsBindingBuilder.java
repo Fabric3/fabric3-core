@@ -25,29 +25,29 @@ import org.fabric3.api.model.type.builder.AbstractBuilder;
 /**
  * Builder for the WS binding.
  */
-public class WsBindingDefinitionBuilder extends AbstractBuilder {
+public class WsBindingBuilder extends AbstractBuilder {
     private WsBinding binding;
 
-    public static WsBindingDefinitionBuilder newBuilder() {
-        return new WsBindingDefinitionBuilder();
+    public static WsBindingBuilder newBuilder() {
+        return new WsBindingBuilder();
     }
 
-    public WsBindingDefinitionBuilder() {
+    public WsBindingBuilder() {
         this("ws.binding");
     }
 
-    public WsBindingDefinitionBuilder(String name) {
+    public WsBindingBuilder(String name) {
         this.binding = new WsBinding();
         binding.setName(name);
     }
 
-    public WsBindingDefinitionBuilder configuration(Map<String, String> configuration) {
+    public WsBindingBuilder configuration(Map<String, String> configuration) {
         checkState();
         binding.setConfiguration(configuration);
         return this;
     }
 
-    public WsBindingDefinitionBuilder uri(URI uri) {
+    public WsBindingBuilder uri(URI uri) {
         checkState();
         binding.setTargetUri(uri);
         return this;

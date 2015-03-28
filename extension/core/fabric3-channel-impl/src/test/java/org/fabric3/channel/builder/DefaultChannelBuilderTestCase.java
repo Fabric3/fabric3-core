@@ -18,15 +18,11 @@ package org.fabric3.channel.builder;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.model.physical.PhysicalChannelBinding;
 import org.fabric3.spi.model.physical.PhysicalChannel;
 
 /**
@@ -37,27 +33,18 @@ public class DefaultChannelBuilderTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testBuildChannel() throws Exception {
         PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
-        physicalChannel.setBinding(new MockBinding());
 
         Channel channel = EasyMock.createMock(Channel.class);
 
-        ChannelBindingBuilder bindingBuilder = EasyMock.createMock(ChannelBindingBuilder.class);
-        bindingBuilder.build(EasyMock.isA(PhysicalChannelBinding.class), EasyMock.isA(Channel.class));
-
         ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
 
-        EasyMock.replay(channel, bindingBuilder);
+        EasyMock.replay(channel);
 
         DefaultChannelBuilder builder = new DefaultChannelBuilder(executorService);
 
-        Map bindingBuilderMap = Collections.singletonMap(MockBinding.class, bindingBuilder);
-        builder.setBindingBuilders(bindingBuilderMap);
-
         assertNotNull(builder.build(physicalChannel));
 
-        EasyMock.verify(channel, bindingBuilder);
+        EasyMock.verify(channel);
     }
 
-    private class MockBinding extends PhysicalChannelBinding {
-    }
 }

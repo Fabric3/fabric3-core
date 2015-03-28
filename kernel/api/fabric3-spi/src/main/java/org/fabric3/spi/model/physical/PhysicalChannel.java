@@ -28,7 +28,7 @@ import java.net.URI;
 public class PhysicalChannel {
     private URI uri;
     private QName deployable;
-    private PhysicalChannelBinding binding;
+    private boolean bound;
     private String type;
     private DeliveryType deliveryType;
     private ChannelSide channelSide = ChannelSide.PRODUCER;
@@ -65,21 +65,21 @@ public class PhysicalChannel {
     }
 
     /**
-     * Returns the binding for the channel.
+     * Returns if the channel is bound.
      *
-     * @return the binding for the channel
+     * @return true if the channel is bound
      */
-    public PhysicalChannelBinding getBinding() {
-        return binding;
+    public boolean isBound() {
+        return bound;
     }
 
     /**
-     * Sets the channel binding.
+     * Sets if the channel is bound.
      *
-     * @param binding the binding
+     * @param value if the channel is bound
      */
-    public void setBinding(PhysicalChannelBinding binding) {
-        this.binding = binding;
+    public void setBound(boolean value) {
+        this.bound = value;
     }
 
     /**

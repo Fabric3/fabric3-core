@@ -7,7 +7,6 @@ import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.binding.jms.builder.ConnectionFactoryBuilder;
-import org.fabric3.binding.jms.builder.JmsChannelBindingBuilder;
 import org.fabric3.binding.jms.generator.ConnectionFactoryResourceGenerator;
 import org.fabric3.binding.jms.generator.JmsConnectionBindingGenerator;
 import org.fabric3.binding.jms.generator.JmsWireBindingGenerator;
@@ -63,7 +62,6 @@ public class JmsBindingProvider {
         compositeBuilder.component(SystemComponentBuilder.newBuilder(JndiClassLoaderUpdater.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ConnectionFactoryCreatorRegistryImpl.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ConfigurationBuilder.class).build());
-        compositeBuilder.component(SystemComponentBuilder.newBuilder(JmsChannelBindingBuilder.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ConnectionFactoryBuilder.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(JmsBindingLoader.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(JmsWireBindingGenerator.class).build());

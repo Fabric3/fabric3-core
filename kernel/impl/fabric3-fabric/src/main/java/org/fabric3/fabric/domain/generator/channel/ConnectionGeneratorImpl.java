@@ -76,9 +76,9 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         if (isDirect(producer, channels)) {
             source.setDirectConnection(true);
-            return generateDirectConnections(producer, channels, source, classLoaderId);
+            return generateDirectConnections(producer, channels, source, classLoader);
         } else {
-            return generateConnections(producer, channels, source, classLoaderId);
+            return generateConnections(producer, channels, source, classLoader);
         }
     }
 
@@ -92,9 +92,9 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         if (isDirect(consumer, channels)) {
             target.setDirectConnection(true);
-            return generateDirectConnections(consumer, channels, target, classLoaderId);
+            return generateDirectConnections(consumer, channels, target, classLoader);
         } else {
-            return generateConnections(consumer, channels, target, classLoaderId);
+            return generateConnections(consumer, channels, target, classLoader);
         }
 
     }
@@ -102,22 +102,17 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private List<PhysicalChannelConnection> generateDirectConnections(LogicalConsumer consumer,
                                                                       Map<LogicalChannel, DeliveryType> channels,
                                                                       PhysicalConnectionTarget target,
-                                                                      URI classLoaderId) {
+                                                                      ClassLoader classLoader) {
         List<PhysicalChannelConnection> connections = new ArrayList<>();
         PhysicalEventStream eventStream = new PhysicalEventStream("stream");
         for (Map.Entry<LogicalChannel, DeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
-                PhysicalChannelConnection producerConnection = generateLocalConnection(consumer, channel, target, classLoaderId, eventStream);
+                PhysicalChannelConnection producerConnection = generateLocalConnection(consumer, channel, target, classLoader, eventStream);
                 connections.add(producerConnection);
             } else {
                 DeliveryType deliveryType = entry.getValue();
-                PhysicalChannelConnection bindingConnection = generateDirectBoundConnection(consumer,
-                                                                                            channel,
-                                                                                            deliveryType,
-                                                                                            classLoaderId,
-                                                                                            target,
-                                                                                            eventStream);
+                PhysicalChannelConnection bindingConnection = generateDirectBoundConnection(consumer, channel, deliveryType, classLoader, target, eventStream);
                 connections.add(bindingConnection);
             }
         }
@@ -127,20 +122,20 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private List<PhysicalChannelConnection> generateConnections(LogicalConsumer consumer,
                                                                 Map<LogicalChannel, DeliveryType> channels,
                                                                 PhysicalConnectionTarget target,
-                                                                URI classLoaderId) {
+                                                                ClassLoader classLoader) {
         List<PhysicalChannelConnection> connections = new ArrayList<>();
         PhysicalEventStream eventStream = generateEventStream(consumer);
 
         for (Map.Entry<LogicalChannel, DeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
-                PhysicalChannelConnection consumerConnection = generateLocalConnection(consumer, channel, target, classLoaderId, eventStream);
+                PhysicalChannelConnection consumerConnection = generateLocalConnection(consumer, channel, target, classLoader, eventStream);
                 connections.add(consumerConnection);
             } else {
-                PhysicalChannelConnection consumerConnection = generateLocalConnection(consumer, channel, target, classLoaderId, eventStream);
+                PhysicalChannelConnection consumerConnection = generateLocalConnection(consumer, channel, target, classLoader, eventStream);
                 connections.add(consumerConnection);
                 DeliveryType deliveryType = entry.getValue();
-                PhysicalChannelConnection bindingDefinition = generateBoundConnection(consumer, channel, deliveryType, classLoaderId, eventStream);
+                PhysicalChannelConnection bindingDefinition = generateBoundConnection(consumer, channel, deliveryType, classLoader, eventStream);
                 connections.add(bindingDefinition);
             }
 
@@ -151,22 +146,17 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private List<PhysicalChannelConnection> generateDirectConnections(LogicalProducer producer,
                                                                       Map<LogicalChannel, DeliveryType> channels,
                                                                       PhysicalConnectionSource source,
-                                                                      URI classLoaderId) {
+                                                                      ClassLoader classLoader) {
         List<PhysicalChannelConnection> connections = new ArrayList<>();
         PhysicalEventStream eventStream = new PhysicalEventStream("stream");
         for (Map.Entry<LogicalChannel, DeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
-                PhysicalChannelConnection producerConnection = generateLocalConnection(producer, channel, source, classLoaderId, eventStream);
+                PhysicalChannelConnection producerConnection = generateLocalConnection(producer, channel, source, classLoader, eventStream);
                 connections.add(producerConnection);
             } else {
                 DeliveryType deliveryType = entry.getValue();
-                PhysicalChannelConnection bindingConnection = generateDirectBoundConnection(producer,
-                                                                                            channel,
-                                                                                            deliveryType,
-                                                                                            classLoaderId,
-                                                                                            source,
-                                                                                            eventStream);
+                PhysicalChannelConnection bindingConnection = generateDirectBoundConnection(producer, channel, deliveryType, classLoader, source, eventStream);
                 connections.add(bindingConnection);
             }
         }
@@ -176,7 +166,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private List<PhysicalChannelConnection> generateConnections(LogicalProducer producer,
                                                                 Map<LogicalChannel, DeliveryType> channels,
                                                                 PhysicalConnectionSource source,
-                                                                URI classLoaderId) {
+                                                                ClassLoader classLoader) {
         List<PhysicalChannelConnection> connections = new ArrayList<>();
 
         PhysicalEventStream eventStream = generateEventStream(producer);
@@ -184,13 +174,13 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         for (Map.Entry<LogicalChannel, DeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
-                PhysicalChannelConnection connection = generateLocalConnection(producer, channel, source, classLoaderId, eventStream);
+                PhysicalChannelConnection connection = generateLocalConnection(producer, channel, source, classLoader, eventStream);
                 connections.add(connection);
             } else {
-                PhysicalChannelConnection producerConnection = generateLocalConnection(producer, channel, source, classLoaderId, eventStream);
+                PhysicalChannelConnection producerConnection = generateLocalConnection(producer, channel, source, classLoader, eventStream);
                 connections.add(producerConnection);
                 DeliveryType deliveryType = entry.getValue();
-                PhysicalChannelConnection bindingConnection = generateBoundConnection(producer, channel, deliveryType, classLoaderId, eventStream);
+                PhysicalChannelConnection bindingConnection = generateBoundConnection(producer, channel, deliveryType, classLoader, eventStream);
                 connections.add(bindingConnection);
             }
 
@@ -227,7 +217,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private PhysicalChannelConnection generateLocalConnection(LogicalConsumer consumer,
                                                               LogicalChannel channel,
                                                               PhysicalConnectionTarget target,
-                                                              URI classLoaderId,
+                                                              ClassLoader classLoader,
                                                               PhysicalEventStream eventStream) {
         // the channel does not have bindings, which means it is a local channel
         boolean bound = channel.isBound();
@@ -239,7 +229,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI uri = channel.getUri();
         PhysicalConnectionSource source = new ChannelSource(uri, ChannelSide.CONSUMER);
         source.setSequence(consumer.getDefinition().getSequence());
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
         source.setClassLoader(classLoader);
         return new PhysicalChannelConnection(uri, source, target, eventStream, bound);
     }
@@ -248,15 +237,13 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private PhysicalChannelConnection generateBoundConnection(LogicalConsumer consumer,
                                                               LogicalChannel channel,
                                                               DeliveryType deliveryType,
-                                                              URI classLoaderId,
+                                                              ClassLoader classLoader,
                                                               PhysicalEventStream eventStream) {
         // use the bindings on the channel to create a consumer binding configuration
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionSource source = bindingGenerator.generateConnectionSource(consumer, binding, deliveryType);
         source.setSequence(consumer.getDefinition().getSequence());
-
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
 
         source.setClassLoader(classLoader);
         URI uri = channel.getUri();
@@ -268,7 +255,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private PhysicalChannelConnection generateLocalConnection(LogicalProducer producer,
                                                               LogicalChannel channel,
                                                               PhysicalConnectionSource source,
-                                                              URI classLoaderId,
+                                                              ClassLoader classLoader,
                                                               PhysicalEventStream eventStream) {
         boolean bound = channel.isBound();
         if (!channel.getZone().equals(producer.getParent().getZone()) && !bound) {
@@ -278,7 +265,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI uri = channel.getUri();
         PhysicalConnectionTarget target = new ChannelTarget(uri, ChannelSide.PRODUCER);
 
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
         target.setClassLoader(classLoader);
 
         return new PhysicalChannelConnection(uri, source, target, eventStream, bound);
@@ -288,12 +274,11 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private PhysicalChannelConnection generateBoundConnection(LogicalProducer producer,
                                                               LogicalChannel channel,
                                                               DeliveryType deliveryType,
-                                                              URI classLoaderId,
+                                                              ClassLoader classLoader,
                                                               PhysicalEventStream eventStream) {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionTarget target = bindingGenerator.generateConnectionTarget(producer, binding, deliveryType);
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
         target.setClassLoader(classLoader);
         URI uri = channel.getUri();
         ChannelSource source = new ChannelSource(uri, ChannelSide.PRODUCER);
@@ -306,13 +291,12 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private PhysicalChannelConnection generateDirectBoundConnection(LogicalConsumer consumer,
                                                                     LogicalChannel channel,
                                                                     DeliveryType deliveryType,
-                                                                    URI classLoaderId,
+                                                                    ClassLoader classLoader,
                                                                     PhysicalConnectionTarget target,
                                                                     PhysicalEventStream eventStream) {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionSource source = bindingGenerator.generateConnectionSource(consumer, binding, deliveryType);
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
         source.setClassLoader(classLoader);
         URI uri = channel.getUri();
         return new PhysicalChannelConnection(uri, source, target, eventStream, true);
@@ -322,13 +306,12 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private PhysicalChannelConnection generateDirectBoundConnection(LogicalProducer producer,
                                                                     LogicalChannel channel,
                                                                     DeliveryType deliveryType,
-                                                                    URI classLoaderId,
+                                                                    ClassLoader classLoader,
                                                                     PhysicalConnectionSource source,
                                                                     PhysicalEventStream eventStream) {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionTarget target = bindingGenerator.generateConnectionTarget(producer, binding, deliveryType);
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
         target.setClassLoader(classLoader);
         URI uri = channel.getUri();
         return new PhysicalChannelConnection(uri, source, target, eventStream, true);
