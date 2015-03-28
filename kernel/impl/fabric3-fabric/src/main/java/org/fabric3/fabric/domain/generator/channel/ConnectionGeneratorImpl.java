@@ -199,15 +199,13 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             Class<?> interfaceClass = contract.getInterfaceClass();
             if (logicalChannel.isBound()) {
                 Binding binding = logicalChannel.getBinding().getDefinition();
-                if (binding.getConnectionType().isPresent()) {
-                    Class<?> type = binding.getConnectionType().get();
-                    direct = type.isAssignableFrom(interfaceClass);
+                if (!binding.getConnectionTypes().isEmpty()) {
+                    direct = binding.getConnectionTypes().stream().anyMatch(t -> t.isAssignableFrom(interfaceClass));
                 }
             } else {
                 Channel channel = logicalChannel.getDefinition();
-                if (channel.getConnectionType().isPresent()) {
-                    Class<?> type = channel.getConnectionType().get();
-                    direct = type.isAssignableFrom(interfaceClass);
+                if (!channel.getConnectionTypes().isEmpty()) {
+                    direct = channel.getConnectionTypes().stream().anyMatch(t -> t.isAssignableFrom(interfaceClass));
                 }
             }
         }

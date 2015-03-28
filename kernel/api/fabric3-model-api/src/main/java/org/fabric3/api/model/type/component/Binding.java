@@ -21,8 +21,11 @@ package org.fabric3.api.model.type.component;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import org.fabric3.api.model.type.ModelObject;
 
@@ -35,6 +38,7 @@ public abstract class Binding extends ModelObject<Bindable> {
     protected String name;
 
     private List<BindingHandler> handlers = new ArrayList<>();
+    private Set<Class<?>> connectionTypes = Collections.emptySet();
 
     /**
      * Constructor for a binding using the default binding name.
@@ -96,11 +100,20 @@ public abstract class Binding extends ModelObject<Bindable> {
     }
 
     /**
-     * Returns the type for making direct connections to the transport.
+     * Returns the types for making direct connections to the transport.
      *
-     * @return the type for making direct connections to the transport
+     * @return the types for making direct connections to the transport
      */
-    public Optional<Class<?>> getConnectionType() {
-        return Optional.empty();
+    public Set<Class<?>> getConnectionTypes() {
+        return connectionTypes;
+    }
+
+    /**
+     * Sets the types for making direct connections to the transport.
+     *
+     * @param types the types for making direct connections to the transport
+     */
+    public void setConnectionTypes(Class<?>... types) {
+        connectionTypes = new HashSet<>(Arrays.asList(types));
     }
 }

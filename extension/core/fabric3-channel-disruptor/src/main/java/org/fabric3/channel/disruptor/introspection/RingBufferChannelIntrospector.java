@@ -25,6 +25,6 @@ import org.fabric3.spi.introspection.dsl.ChannelIntrospector;
  */
 public class RingBufferChannelIntrospector implements ChannelIntrospector {
     public void introspect(Channel channel) {
-        channel.setConnectionType(RingBuffer.class);
+        channel.setConnectionTypes(RingBuffer.class);
     }
 }

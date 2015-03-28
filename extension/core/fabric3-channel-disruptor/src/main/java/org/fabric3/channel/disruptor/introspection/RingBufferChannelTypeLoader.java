@@ -87,7 +87,7 @@ public class RingBufferChannelTypeLoader implements ChannelTypeLoader {
             }
 
         }
-        definition.setConnectionType(RingBuffer.class);
+        definition.setConnectionTypes(RingBuffer.class);
         definition.setMetadata(data);
     }
 
