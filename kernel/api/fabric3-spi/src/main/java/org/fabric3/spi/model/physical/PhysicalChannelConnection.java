@@ -31,7 +31,6 @@ public class PhysicalChannelConnection {
     private PhysicalConnectionSource source;
     private PhysicalConnectionTarget target;
     private PhysicalEventStream eventStream;
-    private String topic;
 
     public PhysicalChannelConnection(URI channelUri,
                                      PhysicalConnectionSource source,
@@ -63,14 +62,6 @@ public class PhysicalChannelConnection {
 
     public PhysicalEventStream getEventStream() {
         return eventStream;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getTopic() {
-        return topic;
     }
 
 }

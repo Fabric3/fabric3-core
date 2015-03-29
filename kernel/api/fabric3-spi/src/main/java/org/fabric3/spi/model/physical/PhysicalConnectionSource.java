@@ -31,6 +31,7 @@ public class PhysicalConnectionSource extends PhysicalAttachPoint {
     private int sequence = NO_SEQUENCE;
     private boolean directConnection;
     private Class<?> serviceInterface;
+    private String topic;
 
     public PhysicalConnectionSource() {
     }
@@ -83,4 +84,11 @@ public class PhysicalConnectionSource extends PhysicalAttachPoint {
         this.serviceInterface = interfaze;
     }
 
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
 }

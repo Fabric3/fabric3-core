@@ -28,6 +28,7 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
 
     private boolean directConnection;
     private Class<?> serviceInterface;
+    private String topic;
 
     public PhysicalConnectionTarget() {
     }
@@ -50,5 +51,13 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
 
     public void setServiceInterface(Class<?> serviceInterface) {
         this.serviceInterface = serviceInterface;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getTopic() {
+        return topic;
     }
 }

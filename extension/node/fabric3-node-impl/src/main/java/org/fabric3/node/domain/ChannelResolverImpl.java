@@ -95,7 +95,8 @@ public class ChannelResolverImpl implements ChannelResolver {
         Map<LogicalChannel, DeliveryType> channels = Collections.singletonMap(logicalChannel, DeliveryType.DEFAULT);
         List<PhysicalChannelConnection> connections = connectionGenerator.generateProducer(producer, channels);
         PhysicalChannelConnection connection = connections.get(0);  // safe as there is only one connection
-        connection.setTopic(topic);
+        connection.getSource().setTopic(topic);
+        connection.getTarget().setTopic(topic);
         channelConnector.connect(connection);
 
         NonManagedConnectionSource source = (NonManagedConnectionSource) connection.getSource();
@@ -117,7 +118,8 @@ public class ChannelResolverImpl implements ChannelResolver {
         List<PhysicalChannelConnection> connections = connectionGenerator.generateConsumer(consumer, channels);
 
         PhysicalChannelConnection connection = connections.get(0);  // safe as there is only one connection
-        connection.setTopic(topic);
+        connection.getSource().setTopic(topic);
+        connection.getTarget().setTopic(topic);
         channelConnector.connect(connection);
 
         NonManagedConnectionTarget target = (NonManagedConnectionTarget) connection.getTarget();
