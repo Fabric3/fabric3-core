@@ -52,6 +52,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Default ChannelConnector implementation.
  */
 public class ChannelConnectorImpl implements ChannelConnector {
+    private Map<Class<?>, DirectConnectionFactory> connectionFactories = new HashMap<>();
 
     @Reference
     protected ChannelManager channelManager;
@@ -65,11 +66,15 @@ public class ChannelConnectorImpl implements ChannelConnector {
     @Reference(required = false)
     protected Map<Class<?>, EventFilterBuilder<?>> filterBuilders = new HashMap<>();
 
-    @Reference(required = false)
-    protected Map<Class<?>, DirectConnectionFactory> connectionFactories = new HashMap<>();
 
     @Reference
     protected TransformerHandlerFactory transformerHandlerFactory;
+
+    @Reference(required = false)
+    public void setConnectionFactories(List<DirectConnectionFactory> factories) {
+        this.connectionFactories.clear();
+        factories.forEach(factory-> factory.getTypes().forEach(type-> connectionFactories.put(type, factory)));
+    }
 
     @SuppressWarnings({"unchecked"})
     public void connect(PhysicalChannelConnection physicalConnection) {

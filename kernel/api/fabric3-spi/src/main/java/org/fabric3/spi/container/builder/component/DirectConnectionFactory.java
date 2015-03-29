@@ -1,6 +1,7 @@
 package org.fabric3.spi.container.builder.component;
 
 import java.net.URI;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -9,6 +10,13 @@ import java.util.function.Supplier;
  * Direct connections use the underlying channel dispatch API, for example, a ring buffer for collocated channels or the underlying transport API for bindings.
  */
 public interface DirectConnectionFactory {
+
+    /**
+     * Returns the connection types this factory provides.
+     *
+     * @return the connection types
+     */
+    List<Class<?>> getTypes();
 
     /**
      * Returns a direct connection to the channel.
