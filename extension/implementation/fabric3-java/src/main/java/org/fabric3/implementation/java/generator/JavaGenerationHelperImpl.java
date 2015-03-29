@@ -107,9 +107,9 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
 
     public void generateConnectionSource(JavaConnectionSource source, LogicalProducer producer) {
         URI uri = producer.getUri();
-        JavaServiceContract serviceContract = (JavaServiceContract) producer.getDefinition().getServiceContract();
-        Class<?> interfaze = serviceContract.getInterfaceClass();
         source.setUri(uri);
+        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
+        Class<?> interfaze = serviceContract.getInterfaceClass();
         source.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
         source.setServiceInterface(interfaze);
     }
@@ -124,6 +124,10 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
         URI uri = component.getUri();
         target.setUri(uri);
+        ServiceContract serviceContract = consumer.getDefinition().getServiceContract();
+        Class<?> interfaze = serviceContract.getInterfaceClass();
+        target.setServiceInterface(interfaze);
+
         InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
         AccessibleObject object = type.getConsumerSite(consumer.getUri().getFragment());
         if (object == null) {
