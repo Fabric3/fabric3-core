@@ -9,7 +9,7 @@
         <f3:implementation.system class="org.fabric3.channel.disruptor.introspection.RingBufferChannelTypeLoader"/>
     </component>
 
-    <component name="RingBufferChannelIntrospector" f3:key="ring.buffer">
+    <component name="RingBufferChannelIntrospector">
         <f3:implementation.system class="org.fabric3.channel.disruptor.introspection.RingBufferChannelIntrospector"/>
     </component>
 

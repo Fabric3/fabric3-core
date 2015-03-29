@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.model.Environment;
@@ -55,7 +56,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class ProviderResourceProcessor implements ResourceProcessor {
     private HostInfo info;
     private Map<String, ImplementationIntrospector> introspectors = Collections.emptyMap();
-    private Map<String, ChannelIntrospector> channelIntrospectors = Collections.emptyMap();
+    private List<ChannelIntrospector> channelIntrospectors = Collections.emptyList();
 
     public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference HostInfo info) {
         this.info = info;
@@ -68,7 +69,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
     }
 
     @Reference(required = false)
-    public void setChannelIntrospectors(Map<String, ChannelIntrospector> channelIntrospectors) {
+    public void setChannelIntrospectors(List<ChannelIntrospector> channelIntrospectors) {
         this.channelIntrospectors = channelIntrospectors;
     }
 
@@ -140,10 +141,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
 
                 // introspect channels
                 for (Channel channel : composite.getChannels().values()) {
-                    ChannelIntrospector channelIntrospector = channelIntrospectors.get(channel.getType());
-                    if (channelIntrospector != null) {
-                        channelIntrospector.introspect(channel);
-                    }
+                    channelIntrospectors.forEach(i -> i.introspect(channel));
                 }
 
                 // introspect definitions
