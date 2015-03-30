@@ -19,16 +19,20 @@
 package org.fabric3.implementation.bytecode.proxy.channel;
 
 import org.fabric3.implementation.bytecode.proxy.common.ProxyDispatcher;
+import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.util.Closeable;
 
 /**
  * Dispatches to an {@link EventStreamHandler}s from a channel proxy based on the index of the proxy method invoked.
  */
-public class ChannelProxyDispatcher implements ProxyDispatcher {
+public class ChannelProxyDispatcher implements ProxyDispatcher, Closeable {
+    private EventStream stream;
     private EventStreamHandler handler;
 
-    public void init(EventStreamHandler handler) {
-        this.handler = handler;
+    public void init(EventStream stream) {
+        this.stream = stream;
+        this.handler = stream.getHeadHandler();
     }
 
     public Object _f3_invoke(int index, Object param) throws Exception {
@@ -36,4 +40,7 @@ public class ChannelProxyDispatcher implements ProxyDispatcher {
         return null;
     }
 
+    public void close() {
+        stream.close();
+    }
 }

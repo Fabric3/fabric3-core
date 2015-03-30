@@ -43,7 +43,7 @@ public class AttachChannelConnectionCommandExecutorTestCase extends TestCase {
         AttachChannelConnectionCommandExecutor executor = new AttachChannelConnectionCommandExecutor(executorRegistry, connector);
         executor.init();
         URI uri = URI.create("testChannel");
-        PhysicalChannelConnection connection = new PhysicalChannelConnection(uri, null, null, null, false);
+        PhysicalChannelConnection connection = new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false);
         AttachChannelConnectionCommand command = new AttachChannelConnectionCommand(connection);
         executor.execute(command);
         EasyMock.verify(executorRegistry, connector);

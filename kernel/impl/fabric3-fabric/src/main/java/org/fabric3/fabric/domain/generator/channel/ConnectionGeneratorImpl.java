@@ -228,7 +228,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         PhysicalConnectionSource source = new ChannelSource(uri, ChannelSide.CONSUMER);
         source.setSequence(consumer.getDefinition().getSequence());
         source.setClassLoader(classLoader);
-        return new PhysicalChannelConnection(uri, source, target, eventStream, bound);
+        return new PhysicalChannelConnection(uri, consumer.getUri(), source, target, eventStream, bound);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -247,7 +247,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI uri = channel.getUri();
         ChannelTarget target = new ChannelTarget(uri, ChannelSide.CONSUMER);
         target.setClassLoader(classLoader);
-        return new PhysicalChannelConnection(uri, source, target, eventStream, true);
+        return new PhysicalChannelConnection(uri, consumer.getUri(), source, target, eventStream, true);
     }
 
     private PhysicalChannelConnection generateLocalConnection(LogicalProducer producer,
@@ -265,7 +265,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         target.setClassLoader(classLoader);
 
-        return new PhysicalChannelConnection(uri, source, target, eventStream, bound);
+        return new PhysicalChannelConnection(uri, producer.getUri(), source, target, eventStream, bound);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -282,7 +282,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         ChannelSource source = new ChannelSource(uri, ChannelSide.PRODUCER);
         source.setClassLoader(classLoader);
         boolean bound = channel.isBound();
-        return new PhysicalChannelConnection(uri, source, target, eventStream, bound);
+        return new PhysicalChannelConnection(uri, producer.getUri(), source, target, eventStream, bound);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -297,7 +297,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         PhysicalConnectionSource source = bindingGenerator.generateConnectionSource(consumer, binding, deliveryType);
         source.setClassLoader(classLoader);
         URI uri = channel.getUri();
-        return new PhysicalChannelConnection(uri, source, target, eventStream, true);
+        return new PhysicalChannelConnection(uri, consumer.getUri(), source, target, eventStream, true);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -312,7 +312,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         PhysicalConnectionTarget target = bindingGenerator.generateConnectionTarget(producer, binding, deliveryType);
         target.setClassLoader(classLoader);
         URI uri = channel.getUri();
-        return new PhysicalChannelConnection(uri, source, target, eventStream, true);
+        return new PhysicalChannelConnection(uri, producer.getUri(), source, target, eventStream, true);
     }
 
     private PhysicalEventStream generateEventStream(LogicalProducer producer) {

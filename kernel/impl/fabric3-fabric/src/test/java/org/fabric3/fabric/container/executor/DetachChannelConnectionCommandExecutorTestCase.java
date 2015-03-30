@@ -44,7 +44,7 @@ public class DetachChannelConnectionCommandExecutorTestCase extends TestCase {
         DetachChannelConnectionCommandExecutor executor = new DetachChannelConnectionCommandExecutor(executorRegistry, connector);
         executor.init();
         URI uri = URI.create("testChannel");
-        PhysicalChannelConnection connection = new PhysicalChannelConnection(uri, null, null, null, false);
+        PhysicalChannelConnection connection = new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false);
         DetachChannelConnectionCommand command = new DetachChannelConnectionCommand(connection);
         executor.execute(command);
         EasyMock.verify(executorRegistry, connector);

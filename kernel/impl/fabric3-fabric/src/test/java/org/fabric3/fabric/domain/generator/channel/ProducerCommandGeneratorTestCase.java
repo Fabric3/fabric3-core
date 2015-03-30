@@ -81,7 +81,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateAttach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -102,7 +102,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
@@ -124,7 +124,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateFullDetach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, null, null, null, false));
+        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false));
         EasyMock.expect(connectionGenerator.generateProducer(EasyMock.isA(LogicalProducer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);

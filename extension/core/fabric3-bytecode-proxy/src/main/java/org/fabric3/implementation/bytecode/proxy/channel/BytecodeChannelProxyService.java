@@ -59,7 +59,7 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
         EventStream stream = connection.getEventStream();
         Method method = methods[0];
         EventStreamHandler handler = stream.getHeadHandler();
-        return new ChannelProxySupplier<>(uri, interfaze, method, handler, proxyFactory);
+        return new ChannelProxySupplier<>(uri, interfaze, method, stream, proxyFactory);
     }
 
     private <T> URI getClassLoaderUri(Class<T> interfaze) {

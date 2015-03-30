@@ -28,16 +28,29 @@ import java.net.URI;
 public class PhysicalChannelConnection {
     private URI channelUri;
     private boolean bound;
+    private URI attachUri;
     private PhysicalConnectionSource source;
     private PhysicalConnectionTarget target;
     private PhysicalEventStream eventStream;
 
+    /**
+     * Ctor.
+     *
+     * @param channelUri  the channel URI
+     * @param attachUri   the producer or consumer URI depending on the direction of the connection
+     * @param source      the source
+     * @param target      the target
+     * @param eventStream the stream
+     * @param bound       if the connection is bound
+     */
     public PhysicalChannelConnection(URI channelUri,
+                                     URI attachUri,
                                      PhysicalConnectionSource source,
                                      PhysicalConnectionTarget target,
                                      PhysicalEventStream eventStream,
                                      boolean bound) {
         this.channelUri = channelUri;
+        this.attachUri = attachUri;
         this.source = source;
         this.target = target;
         this.eventStream = eventStream;
@@ -46,6 +59,10 @@ public class PhysicalChannelConnection {
 
     public URI getChannelUri() {
         return channelUri;
+    }
+
+    public URI getAttachUri() {
+        return attachUri;
     }
 
     public boolean isBound() {

@@ -20,6 +20,7 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
@@ -31,14 +32,17 @@ public class ChannelProxySupplierTestCase extends TestCase {
         EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
         handler.handle(EasyMock.isA(String.class), EasyMock.anyBoolean());
 
-        EasyMock.replay(handler);
+        EventStream stream = EasyMock.createMock(EventStream.class);
+        EasyMock.expect(stream.getHeadHandler()).andReturn(handler);
+
+        EasyMock.replay(stream, handler);
 
         ChannelProxyDispatcher dispatcher = new ChannelProxyDispatcher();
-        dispatcher.init(handler);
+        dispatcher.init(stream);
 
         dispatcher._f3_invoke(0, "test");
 
-        EasyMock.verify(handler);
+        EasyMock.verify(stream, handler);
     }
 
 }

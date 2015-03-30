@@ -24,11 +24,12 @@ import java.lang.reflect.Method;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.util.Closeable;
 
 /**
  * Dispatches from a proxy to an {@link EventStream}.
  */
-public final class JDKEventHandler implements InvocationHandler {
+public final class JDKEventHandler implements InvocationHandler, Closeable {
     private EventStream stream;
 
     public JDKEventHandler(EventStream stream) {
@@ -57,4 +58,7 @@ public final class JDKEventHandler implements InvocationHandler {
         throw new Fabric3Exception("Operation not configured: " + op);
     }
 
+    public void close() {
+        stream.close();
+    }
 }

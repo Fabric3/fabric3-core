@@ -2,6 +2,7 @@ package org.fabric3.channel.runtime;
 
 import org.fabric3.api.ChannelContext;
 import org.fabric3.spi.container.channel.ChannelResolver;
+import org.fabric3.spi.util.Closeable;
 
 /**
  *
@@ -35,5 +36,11 @@ public class ChannelContextImpl implements ChannelContext {
 
     public <T> T getConsumer(Class<T> type, String topic) {
         return resolver.getConsumer(type, name, topic);
+    }
+
+    public void close(Object object) {
+        if (object instanceof Closeable) {
+            ((Closeable) object).close();
+        }
     }
 }

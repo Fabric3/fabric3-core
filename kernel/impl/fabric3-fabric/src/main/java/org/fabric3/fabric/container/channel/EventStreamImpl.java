@@ -20,6 +20,7 @@ import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.PassThroughHandler;
 import org.fabric3.spi.model.physical.PhysicalEventStream;
+import org.fabric3.spi.util.Closeable;
 
 /**
  *
@@ -28,6 +29,7 @@ public class EventStreamImpl implements EventStream {
     private PhysicalEventStream physicalStream;
     private EventStreamHandler headHandler;
     private EventStreamHandler tailHandler;
+    private Closeable closeable;
 
     public EventStreamImpl(PhysicalEventStream physicalStream) {
         this.physicalStream = physicalStream;
@@ -80,4 +82,13 @@ public class EventStreamImpl implements EventStream {
         }
     }
 
+    public void close() {
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
+
+    public void setCloseable(Closeable closeable) {
+        this.closeable = closeable;
+    }
 }

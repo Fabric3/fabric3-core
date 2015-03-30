@@ -129,18 +129,13 @@ public class ChannelConnectorImpl implements ChannelConnector {
             Supplier<?> supplier;
             if (physicalConnection.isBound()) {
                 // get the direct connection from the binding
-                Class<?> type;
-                if (source.isDirectConnection()) {
-                    type = source.getServiceInterface();
-                } else {
-                    type = target.getServiceInterface();
-                }
+                Class<?> type = source.isDirectConnection() ? source.getServiceInterface() : target.getServiceInterface();
                 DirectConnectionFactory factory = connectionFactories.get(type);
                 if (factory == null) {
                     throw new Fabric3Exception("Factory type not found: " + type.getName());
                 }
-                Class<?> interfaze = source.isDirectConnection() ? source.getServiceInterface() : target.getServiceInterface();
-                supplier = factory.getConnection(channelUri, interfaze);
+                URI attachUri = physicalConnection.getAttachUri();
+                supplier = factory.getConnection(channelUri, attachUri, type);
             } else {
                 // get the direct connection to the local channel
                 Channel channel = channelManager.getChannel(channelUri, ChannelSide.COLLOCATED);

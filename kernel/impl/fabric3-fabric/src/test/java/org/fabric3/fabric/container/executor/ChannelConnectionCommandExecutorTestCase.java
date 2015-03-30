@@ -19,6 +19,8 @@
  */
 package org.fabric3.fabric.container.executor;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
@@ -54,7 +56,7 @@ public class ChannelConnectionCommandExecutorTestCase extends TestCase {
 
     private class Mock extends PhysicalChannelConnection {
         private Mock() {
-            super(null, null, null, null, false);
+            super(null, URI.create("test"), null, null, null, false);
         }
     }
 

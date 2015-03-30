@@ -59,4 +59,11 @@ public interface ChannelContext {
      * @return a producer
      */
     <T> T getConsumer(Class<T> type, String topic);
+
+    /**
+     * Callback to dispose channel proxy resources.
+     *
+     * @param object the proxy
+     */
+    void close(Object object);
 }

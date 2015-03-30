@@ -107,7 +107,7 @@ public class ChannelConnectorImplTestCase extends TestCase {
         stream.addEventType(Object.class);
         stream.addFilter(new MockFilter());
         URI uri = URI.create("testChannel");
-        return new PhysicalChannelConnection(uri, source, target, stream, false);
+        return new PhysicalChannelConnection(uri, URI.create("test"), source, target, stream, false);
     }
 
     private class MockSource extends PhysicalConnectionSource {
