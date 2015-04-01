@@ -22,7 +22,7 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
  * Creates a proxy for a channel connection that implements a specified interface with a single method.
@@ -30,7 +30,7 @@ import org.fabric3.spi.container.channel.EventStream;
 public class ChannelConnectionSupplier<T> implements Supplier<T> {
     private Class<T> interfaze;
     private JDKChannelProxyService proxyService;
-    private EventStream stream;
+    private ChannelConnection connection;
 
     private T proxy;
 
@@ -39,18 +39,18 @@ public class ChannelConnectionSupplier<T> implements Supplier<T> {
      *
      * @param interfaze    the interface the proxy implements
      * @param proxyService the proxy creation service
-     * @param stream       the stream
+     * @param connection   the channel connection
      */
-    public ChannelConnectionSupplier(Class<T> interfaze, JDKChannelProxyService proxyService, EventStream stream) {
+    public ChannelConnectionSupplier(Class<T> interfaze, JDKChannelProxyService proxyService, ChannelConnection connection) {
         this.interfaze = interfaze;
         this.proxyService = proxyService;
-        this.stream = stream;
+        this.connection = connection;
     }
 
     public T get() throws Fabric3Exception {
         // as an optimization, only create one proxy since they are stateless
         if (proxy == null) {
-            proxy = interfaze.cast(proxyService.createProxy(interfaze, stream));
+            proxy = interfaze.cast(proxyService.createProxy(interfaze, connection));
         }
         return proxy;
     }

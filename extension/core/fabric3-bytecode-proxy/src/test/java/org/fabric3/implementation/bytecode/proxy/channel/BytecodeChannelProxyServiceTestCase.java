@@ -23,7 +23,6 @@ import org.easymock.EasyMock;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Implementation that delegates to a {@link ProxyFactory} to create channel proxies.
@@ -32,14 +31,13 @@ public class BytecodeChannelProxyServiceTestCase extends TestCase {
     private ProxyFactory proxyFactory;
     private BytecodeChannelProxyService proxyService;
     private ChannelConnection connection;
-    private EventStream eventStream;
 
     public void testTest() throws Exception {
-        EasyMock.replay(proxyFactory, connection, eventStream);
+        EasyMock.replay(proxyFactory, connection);
 
         assertNotNull(proxyService.createSupplier(ProxyService.class, connection));
 
-        EasyMock.verify(proxyFactory, connection, eventStream);
+        EasyMock.verify(proxyFactory, connection);
     }
 
     public void setUp() throws Exception {
@@ -47,13 +45,7 @@ public class BytecodeChannelProxyServiceTestCase extends TestCase {
 
         proxyFactory = EasyMock.createMock(ProxyFactory.class);
 
-        EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
-
-        eventStream = EasyMock.createMock(EventStream.class);
-        EasyMock.expect(eventStream.getHeadHandler()).andReturn(handler);
-
         connection = EasyMock.createMock(ChannelConnection.class);
-        EasyMock.expect(connection.getEventStream()).andReturn(eventStream);
 
         proxyService = new BytecodeChannelProxyService(proxyFactory);
     }

@@ -28,8 +28,6 @@ import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.channel.EventStream;
-import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -46,7 +44,7 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
         return false;
     }
 
-    public <T> Supplier<T> createSupplier(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception{
+    public <T> Supplier<T> createSupplier(Class<T> interfaze, ChannelConnection connection) throws Fabric3Exception {
         URI uri = getClassLoaderUri(interfaze);
 
         Method[] methods = interfaze.getMethods();
@@ -56,10 +54,8 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
             throw new Fabric3Exception("Channel interface must have one method: " + interfaze.getName());
         }
 
-        EventStream stream = connection.getEventStream();
         Method method = methods[0];
-        EventStreamHandler handler = stream.getHeadHandler();
-        return new ChannelProxySupplier<>(uri, interfaze, method, stream, proxyFactory);
+        return new ChannelProxySupplier<>(uri, interfaze, method, connection, proxyFactory);
     }
 
     private <T> URI getClassLoaderUri(Class<T> interfaze) {

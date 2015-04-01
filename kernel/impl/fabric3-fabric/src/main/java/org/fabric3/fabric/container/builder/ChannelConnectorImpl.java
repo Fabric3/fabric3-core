@@ -77,7 +77,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void connect(PhysicalChannelConnection physicalConnection) {
+    public ChannelConnection connect(PhysicalChannelConnection physicalConnection) {
         PhysicalConnectionSource source = physicalConnection.getSource();
         PhysicalConnectionTarget target = physicalConnection.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -93,6 +93,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
         sourceAttacher.attach(source, target, connection);
         targetAttacher.attach(source, target, connection);
+        return connection;
     }
 
     @SuppressWarnings({"unchecked"})

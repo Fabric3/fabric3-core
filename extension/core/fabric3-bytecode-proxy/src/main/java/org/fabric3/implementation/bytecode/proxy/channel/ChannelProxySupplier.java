@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
  * Creates a proxy for a channel.
@@ -34,22 +34,22 @@ public class ChannelProxySupplier<T> implements Supplier<T> {
     private URI uri;
     private Class<T> interfaze;
     private Method[] methods;
-    private EventStream stream;
+    private ChannelConnection connection;
 
     private T proxy;
 
-    public ChannelProxySupplier(URI uri, Class<T> interfaze, Method method, EventStream stream, ProxyFactory proxyFactory) {
+    public ChannelProxySupplier(URI uri, Class<T> interfaze, Method method, ChannelConnection connection, ProxyFactory proxyFactory) {
         this.uri = uri;
         this.interfaze = interfaze;
         this.methods = new Method[]{method};
-        this.stream = stream;
+        this.connection = connection;
         this.proxyFactory = proxyFactory;
     }
 
     public T get() throws Fabric3Exception {
         if (proxy == null) {
             proxy = proxyFactory.createProxy(uri, interfaze, methods, ChannelProxyDispatcher.class, false);
-            ((ChannelProxyDispatcher) proxy).init(stream);
+            ((ChannelProxyDispatcher) proxy).init(connection);
         }
         return proxy;
     }

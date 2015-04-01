@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.util.Closeable;
 
@@ -31,9 +32,11 @@ import org.fabric3.spi.util.Closeable;
  */
 public final class JDKEventHandler implements InvocationHandler, Closeable {
     private EventStream stream;
+    private Closeable closeable;
 
-    public JDKEventHandler(EventStream stream) {
-        this.stream = stream;
+    public JDKEventHandler(ChannelConnection connection) {
+        this.stream = connection.getEventStream();
+        this.closeable = connection.getCloseable();
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -59,6 +62,6 @@ public final class JDKEventHandler implements InvocationHandler, Closeable {
     }
 
     public void close() {
-        stream.close();
+        closeable.close();
     }
 }

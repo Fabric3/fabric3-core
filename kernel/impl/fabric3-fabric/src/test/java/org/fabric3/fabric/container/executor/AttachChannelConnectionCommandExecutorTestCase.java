@@ -37,7 +37,7 @@ public class AttachChannelConnectionCommandExecutorTestCase extends TestCase {
         CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
         ChannelConnector connector = EasyMock.createMock(ChannelConnector.class);
         executorRegistry.register(EasyMock.eq(AttachChannelConnectionCommand.class), EasyMock.isA(AttachChannelConnectionCommandExecutor.class));
-        connector.connect(EasyMock.isA(PhysicalChannelConnection.class));
+        EasyMock.expect(connector.connect(EasyMock.isA(PhysicalChannelConnection.class))).andReturn(null);
         EasyMock.replay(executorRegistry, connector);
 
         AttachChannelConnectionCommandExecutor executor = new AttachChannelConnectionCommandExecutor(executorRegistry, connector);

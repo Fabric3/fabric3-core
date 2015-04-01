@@ -20,6 +20,7 @@
 package org.fabric3.spi.container.builder;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
@@ -28,13 +29,14 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 public interface ChannelConnector {
 
     /**
-     * Establishes a channel connection from an event source (component producer, channel, or channel binding) to an event target (component consumer,
-     * channel, or channel binding).
+     * Establishes a channel connection from an event source (component producer, channel, or channel binding) to an event target (component consumer, channel,
+     * or channel binding).
      *
      * @param definition the connection metadata
+     * @return the connection
      * @throws Fabric3Exception if an error creating the connect is encountered
      */
-    void connect(PhysicalChannelConnection definition) throws Fabric3Exception;
+    ChannelConnection connect(PhysicalChannelConnection definition) throws Fabric3Exception;
 
     /**
      * Removes a channel connection.

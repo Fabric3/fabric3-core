@@ -1,5 +1,7 @@
 package org.fabric3.api;
 
+import java.util.function.Consumer;
+
 /**
  * Interface for interacting with channels.
  *
@@ -59,6 +61,26 @@ public interface ChannelContext {
      * @return a producer
      */
     <T> T getConsumer(Class<T> type, String topic);
+
+    /**
+     * Subscribes to a channel.
+     *
+     * @param type     the event type
+     * @param id       the subscription id; may be null
+     * @param topic    the topic
+     * @param consumer the consumer to invoke when an event is received from the subscription
+     * @return a handle for closing the subscription; this is passed to {@link #close(Object)}
+     */
+    <T> Object subscribe(Class<T> type, String id, String topic, Consumer<T> consumer);
+
+    /**
+     * Subscribes to a channel.
+     *
+     * @param type     the event type
+     * @param consumer the consumer to invoke when an event is received from the subscription
+     * @return a handle for closing the subscription; this is passed to {@link #close(Object)}
+     */
+    <T> Object subscribe(Class<T> type, Consumer<T> consumer);
 
     /**
      * Callback to dispose channel proxy resources.

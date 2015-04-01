@@ -16,6 +16,8 @@
  */
 package org.fabric3.spi.container.channel;
 
+import java.util.function.Consumer;
+
 import org.fabric3.api.host.Fabric3Exception;
 
 /**
@@ -64,4 +66,6 @@ public interface ChannelResolver {
      * @throws Fabric3Exception if there is a resolution exception
      */
     <T> T getConsumer(Class<T> interfaze, String name, String topic);
+
+    Object subscribe(String name, String id, String topic, Consumer<?> consumer);
 }

@@ -19,6 +19,8 @@ package org.fabric3.spi.container.channel;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.fabric3.spi.util.Closeable;
+
 /**
  * Contains one or more event streams for transmitting events to or from a channel. Channel connections may exist between:
  *
@@ -53,5 +55,19 @@ public interface ChannelConnection {
      * @return the supplier
      */
     <T> Optional<Supplier<T>> getDirectConnection();
+
+    /**
+     * Returns the closeable used to release resources associated with this stream.
+     *
+     * @return the closeable
+     */
+    Closeable getCloseable();
+
+    /**
+     * Sets a closeable that can be invoked to release resources associated with this stream.
+     *
+     * @param closeable the delegate
+     */
+    void setCloseable(Closeable closeable);
 
 }

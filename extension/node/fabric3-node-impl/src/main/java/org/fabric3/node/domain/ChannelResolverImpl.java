@@ -35,6 +35,7 @@ import org.fabric3.node.nonmanaged.NonManagedConnectionTarget;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelResolver;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
@@ -49,6 +50,7 @@ import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.util.Closeable;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.CONSUMER;
 import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
@@ -124,6 +126,32 @@ public class ChannelResolverImpl implements ChannelResolver {
 
         NonManagedConnectionTarget target = (NonManagedConnectionTarget) connection.getTarget();
         return interfaze.cast(target.getProxy());
+    }
+
+    public Object subscribe(String name, String id, String topic, java.util.function.Consumer<?> consumer) {
+        LogicalChannel logicalChannel = getChannel(name);
+        LogicalConsumer logicalConsumer = createConsumer(Object.class, logicalChannel.getUri());
+        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, CONSUMER);
+
+        channelBuilderRegistry.build(physicalChannel);
+
+        Map<LogicalChannel, DeliveryType> channels = Collections.singletonMap(logicalChannel, DeliveryType.DEFAULT);
+        List<PhysicalChannelConnection> connections = connectionGenerator.generateConsumer(logicalConsumer, channels);
+
+        // Two connections will be created: one from the binding to the channel, the other from the channel to the component
+        // the closeable will be set on the connection from the binding to the channel; it must be passed to the component
+        Closeable closeable = null;
+        for (PhysicalChannelConnection connection : connections) {
+            connection.getSource().setTopic(topic);
+            connection.getTarget().setTopic(topic);
+            connection.getTarget().setConsumer(consumer);
+            ChannelConnection channelConnection = channelConnector.connect(connection);
+            if (channelConnection.getCloseable() != null) {
+                closeable = channelConnection.getCloseable();
+            }
+
+        }
+        return closeable;
     }
 
     private <T> LogicalConsumer createConsumer(Class<T> interfaze, URI channelUri) {

@@ -19,6 +19,8 @@
  */
 package org.fabric3.spi.model.physical;
 
+import java.util.function.Consumer;
+
 import org.fabric3.api.model.type.contract.DataType;
 
 /**
@@ -29,6 +31,7 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
     private boolean directConnection;
     private Class<?> serviceInterface;
     private String topic;
+    private Consumer<?> consumer;
 
     public PhysicalConnectionTarget() {
     }
@@ -59,5 +62,14 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
 
     public String getTopic() {
         return topic;
+    }
+
+
+    public void setConsumer(Consumer<?> consumer) {
+        this.consumer = consumer;
+    }
+
+    public Consumer<?> getConsumer() {
+        return consumer;
     }
 }

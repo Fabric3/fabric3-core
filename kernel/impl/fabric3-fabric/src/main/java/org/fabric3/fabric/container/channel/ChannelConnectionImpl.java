@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.util.Cast;
+import org.fabric3.spi.util.Closeable;
 
 /**
  * Default implementation of a channel connection.
@@ -29,6 +30,8 @@ import org.fabric3.spi.util.Cast;
 public class ChannelConnectionImpl implements ChannelConnection {
     private int sequence;
     private EventStream stream;
+    private Closeable closeable;
+
     private Optional<Supplier<?>> directConnection = Optional.empty();
 
     public ChannelConnectionImpl(EventStream stream, int sequence) {
@@ -51,5 +54,13 @@ public class ChannelConnectionImpl implements ChannelConnection {
 
     public <T> Optional<Supplier<T>> getDirectConnection() {
         return Cast.cast(directConnection);
+    }
+
+    public Closeable getCloseable() {
+        return closeable;
+    }
+
+    public void setCloseable(Closeable closeable) {
+        this.closeable = closeable;
     }
 }

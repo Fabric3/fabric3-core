@@ -16,10 +16,13 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import java.util.function.Consumer;
+
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
+import org.fabric3.spi.util.Cast;
 
 /**
  *
@@ -27,7 +30,13 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 public class NonManagedConnectionTargetAttacher implements TargetConnectionAttacher<NonManagedConnectionTarget> {
 
     public void attach(PhysicalConnectionSource source, NonManagedConnectionTarget target, ChannelConnection connection) {
-        target.setProxy(connection.getDirectConnection().get().get());
+        if (target.isDirectConnection()) {
+            target.setCloseable(connection.getCloseable());
+            target.setProxy(connection.getDirectConnection().get().get());
+        } else {
+            Consumer<Object> consumer = Cast.cast(target.getConsumer());
+            connection.getEventStream().addHandler((event, endOfBatch) -> consumer.accept(event));
+        }
     }
 
     public void detach(PhysicalConnectionSource source, NonManagedConnectionTarget target) throws Fabric3Exception {
