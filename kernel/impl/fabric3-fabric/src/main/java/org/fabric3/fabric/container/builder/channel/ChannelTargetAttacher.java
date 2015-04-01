@@ -48,6 +48,9 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         URI uri = target.getUri();
         Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);
+        connection.setCloseable(() -> {      // no-op
+        });
+
     }
 
     public void detach(PhysicalConnectionSource source, ChannelTarget target) {

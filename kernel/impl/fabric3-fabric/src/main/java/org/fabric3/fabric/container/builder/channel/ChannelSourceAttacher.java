@@ -41,6 +41,8 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
     }
 
     public void attach(ChannelSource source, PhysicalConnectionTarget target, ChannelConnection connection) throws Fabric3Exception {
+        connection.setCloseable(() -> {      // no-op
+        });
         if (target.isDirectConnection()) {
             // no event stream to attach since this is a direct connection
             return;

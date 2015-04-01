@@ -26,6 +26,7 @@ import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
+import org.fabric3.spi.util.Closeable;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -45,6 +46,7 @@ public class ChannelSourceAttacherTestCase extends TestCase {
         channel.subscribe(targetUri, connection);
         EasyMock.expectLastCall();
         EasyMock.expect(channel.unsubscribe(targetUri)).andReturn(connection);
+        connection.setCloseable(EasyMock.isA(Closeable.class));
         EasyMock.expect(channelManager.getChannel(channelUri, ChannelSide.PRODUCER)).andReturn(channel).times(2);
 
         EasyMock.replay(channelManager, connection, channel);
