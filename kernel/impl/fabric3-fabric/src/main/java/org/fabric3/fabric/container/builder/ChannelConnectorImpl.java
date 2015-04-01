@@ -66,14 +66,13 @@ public class ChannelConnectorImpl implements ChannelConnector {
     @Reference(required = false)
     protected Map<Class<?>, EventFilterBuilder<?>> filterBuilders = new HashMap<>();
 
-
     @Reference
     protected TransformerHandlerFactory transformerHandlerFactory;
 
     @Reference(required = false)
     public void setConnectionFactories(List<DirectConnectionFactory> factories) {
         this.connectionFactories.clear();
-        factories.forEach(factory-> factory.getTypes().forEach(type-> connectionFactories.put(type, factory)));
+        factories.forEach(factory -> factory.getTypes().forEach(type -> connectionFactories.put(type, factory)));
     }
 
     @SuppressWarnings({"unchecked"})
@@ -136,7 +135,10 @@ public class ChannelConnectorImpl implements ChannelConnector {
                     throw new Fabric3Exception("Factory type not found: " + type.getName());
                 }
                 URI attachUri = physicalConnection.getAttachUri();
-                supplier = factory.getConnection(channelUri, attachUri, type);
+                // Return a Supplier of a Supplier to lazily initialize the connection. This is so the source attachment can be done before this call to
+                // getConnection. Otherwise, DirectConnectionFactory.getConnection() will be called before the source is attached and channel resources
+                // can be created
+                supplier = () -> factory.getConnection(channelUri, attachUri, type).get();
             } else {
                 // get the direct connection to the local channel
                 Channel channel = channelManager.getChannel(channelUri, ChannelSide.COLLOCATED);
