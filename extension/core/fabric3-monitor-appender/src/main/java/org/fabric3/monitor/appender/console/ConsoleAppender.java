@@ -25,7 +25,7 @@ import org.fabric3.monitor.spi.appender.Appender;
  */
 public class ConsoleAppender implements Appender {
 
-    public void write(ByteBuffer buffer) {
+    public synchronized void write(ByteBuffer buffer) {
         for (int i = 0; i < buffer.limit(); i++) {
             System.out.write(buffer.get(i));
         }

@@ -59,7 +59,7 @@ public class FileAppender implements Appender {
         }
     }
 
-    public void write(ByteBuffer buffer) {
+    public synchronized void write(ByteBuffer buffer) {
         try {
             roll();
             fileChannel.write(buffer);

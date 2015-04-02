@@ -189,13 +189,10 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
                 }
             }
         } else {
-            // synchronize the write
-            synchronized (this) {
-                try {
-                    registry.write(destinationIndex, level, timestamp, source, template, args);
-                } catch (IOException e) {
-                    throw new ServiceRuntimeException(e);
-                }
+            try {
+                registry.write(destinationIndex, level, timestamp, source, template, args);
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
             }
         }
     }
