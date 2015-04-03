@@ -47,8 +47,6 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class GeneratorImpl implements Generator {
-    private static final Comparator<LogicalComponent<?>> COMPARATOR = (first, second) -> first.getUri().compareTo(second.getUri());
-
     private List<CommandGenerator> commandGenerators;
     private StartContextCommandGenerator startContextCommandGenerator;
     private StopContextCommandGenerator stopContextCommandGenerator;
@@ -71,12 +69,12 @@ public class GeneratorImpl implements Generator {
 
     public Deployment generate(LogicalCompositeComponent domain) throws Fabric3Exception {
 
-        List<LogicalComponent<?>> sorted = topologicalSort(domain);
+        List<LogicalComponent<?>> components = domain.getComponents().stream().collect(Collectors.toList());
 
         Deployment deployment = new Deployment();
 
         // generate stop context information
-        List<Command> stopCommands = stopContextCommandGenerator.generate(sorted);
+        List<Command> stopCommands = stopContextCommandGenerator.generate(components);
         deployment.addCommands(stopCommands);
 
         // generate commands for domain-level resources being deployed
@@ -88,7 +86,7 @@ public class GeneratorImpl implements Generator {
         }
 
         for (CommandGenerator<?> generator : commandGenerators) {
-            for (LogicalComponent<?> component : sorted) {
+            for (LogicalComponent<?> component : components) {
                 if (component.getDefinition().getImplementation() instanceof RemoteImplementation) {
                     continue;
                 }
@@ -110,22 +108,10 @@ public class GeneratorImpl implements Generator {
             }
         }
         // start contexts
-        List<Command> startCommands = startContextCommandGenerator.generate(sorted);
+        List<Command> startCommands = startContextCommandGenerator.generate(components);
         deployment.addCommands(startCommands);
 
         return deployment;
-    }
-
-    /**
-     * Topologically sorts components in the domain according to their URI.
-     *
-     * @param domain the domain composite
-     * @return a sorted collection
-     */
-    private List<LogicalComponent<?>> topologicalSort(LogicalCompositeComponent domain) {
-        List<LogicalComponent<?>> sorted = domain.getComponents().stream().collect(Collectors.toList());
-        Collections.sort(sorted, COMPARATOR);
-        return sorted;
     }
 
     private List<CommandGenerator> sortGenerators(List<? extends CommandGenerator> commandGenerators) {
