@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.api.annotation.model.Environment;
+import org.fabric3.api.annotation.model.ConfigurationContext;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Channel;
@@ -101,19 +101,18 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                     context.addError(error);
                     continue;
                 }
-                String environmentArg = null;
+                Object arg = null;
                 if (method.getParameterTypes().length > 0) {
                     if (method.getParameterTypes().length == 1) {
-                        if (method.getParameterAnnotations()[0].length != 1 || !(method.getParameterAnnotations()[0][0] instanceof Environment)) {
-                            InvalidProviderMethod error = new InvalidProviderMethod("Unknown provider parameter type: " + method);
-                            context.addError(error);
-                            continue;
-                        } else if (!method.getParameterTypes()[0].equals(String.class)) {
+                        if (method.getParameterTypes()[0].equals(ConfigurationContext.class)) {
+                            arg = info;
+                        } else if (method.getParameterTypes()[0].equals(String.class)) {
+                            arg = info.getEnvironment();
+                        } else {
                             InvalidProviderMethod error = new InvalidProviderMethod("Unknown provider parameter type: " + method);
                             context.addError(error);
                             continue;
                         }
-                        environmentArg = info.getEnvironment();
                     } else {
                         InvalidProviderMethod error = new InvalidProviderMethod("Provides method cannot take more than one parameter: " + method);
                         context.addError(error);
@@ -125,12 +124,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                     context.addError(error);
                     continue;
                 }
-                Composite composite;
-                if (environmentArg == null) {
-                    composite = (Composite) method.invoke(null);
-                } else {
-                    composite = (Composite) method.invoke(null, environmentArg);
-                }
+                Composite composite = arg == null ? (Composite) method.invoke(null) : (Composite) method.invoke(null, arg);
                 if (composite == null) {
                     // ignore as nothing needs to be produced
                     continue;

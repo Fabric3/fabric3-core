@@ -23,6 +23,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.api.annotation.model.ConfigurationContext;
 import org.fabric3.api.host.os.OperatingSystem;
 import org.fabric3.api.model.type.RuntimeMode;
 
@@ -31,7 +32,7 @@ import org.fabric3.api.model.type.RuntimeMode;
  * implementation of this interface is provided to the runtime by the host during initialization. Hosts will generally extend this interface to provide
  * additional information.
  */
-public interface HostInfo {
+public interface HostInfo extends ConfigurationContext {
 
     /**
      * Returns the unique name associated with this runtime. Names survive restarts.
