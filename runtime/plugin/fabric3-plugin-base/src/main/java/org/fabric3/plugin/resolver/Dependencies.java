@@ -97,6 +97,13 @@ public class Dependencies {
         Artifact fabric3Api = new DefaultArtifact(F3_GROUP_ID, "fabric3-api", "jar", runtimeVersion);
         artifacts.add(fabric3Api);
 
+        // add Woodstox dependency
+        Artifact woodstox = new DefaultArtifact("org.codehaus.woodstox", "woodstox-core-asl", "jar", "4.4.1");
+        artifacts.add(woodstox);
+
+        Artifact stax2 = new DefaultArtifact("org.codehaus.woodstox", "stax2-api", "jar", "3.1.4");
+        artifacts.add(stax2);
+
         // add commons annotations dependency
         Artifact jsr250API = new DefaultArtifact("javax.annotation", "javax.annotation-api", "jar", "1.2");
         artifacts.add(jsr250API);

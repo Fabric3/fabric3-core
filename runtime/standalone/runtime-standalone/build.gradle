@@ -16,6 +16,8 @@ dependencies {
     libDependencies project(':kernel:api:fabric3-model-api')
     libDependencies project(':kernel:api:fabric3-host-api')
 
+    hostDependencies group: 'org.codehaus.woodstox', name:'woodstox-core-asl', version:woodstoxVersion
+    hostDependencies group: 'org.codehaus.woodstox', name:'stax2-api', version:stax2Version
     hostDependencies group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsVersion
     hostDependencies group: 'javax.annotation', name: 'javax.annotation-api', version: annotationsVersion
     hostDependencies group: 'javax.xml.bind', name: 'jaxb-api-osgi', version: jaxbApiVersion
