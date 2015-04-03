@@ -30,7 +30,6 @@ import org.fabric3.monitor.spi.appender.AppenderFactory;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.writer.EventWriter;
-import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.xml.LocationAwareXMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -72,7 +71,6 @@ public class ExtensionProvider {
                              @Reference EventWriter eventWriter,
                              @Reference AppenderFactory appenderFactory,
                              @Reference RingBufferDestinationRouter router,
-                             @Reference EventService eventService,
                              @Monitor ExtensionProviderMonitor monitor) {
         this.registry = registry;
         this.eventWriter = eventWriter;

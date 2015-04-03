@@ -22,7 +22,6 @@ import org.fabric3.monitor.spi.model.type.AppenderDefinition;
  * A console appender configuration.
  */
 public class ConsoleAppenderDefinition extends AppenderDefinition {
-    private static final long serialVersionUID = -6045380159081875961L;
     public static final String TYPE = "console";
 
     public ConsoleAppenderDefinition() {
