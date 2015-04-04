@@ -41,11 +41,11 @@ public class ChannelContextImpl implements ChannelContext {
     }
 
     public <T> Object subscribe(Class<T> type, String id, String topic, Consumer<T> consumer) {
-        return resolver.subscribe(name, id, topic, consumer);
+        return resolver.subscribe(type, name, id, topic, consumer);
     }
 
     public <T> Object subscribe(Class<T> type, Consumer<T> consumer) {
-        return resolver.subscribe(name, null, null, consumer);
+        return resolver.subscribe(type, name, null, null, consumer);
     }
 
     public void close(Object object) {

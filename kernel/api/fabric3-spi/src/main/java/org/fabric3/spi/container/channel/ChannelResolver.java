@@ -67,5 +67,15 @@ public interface ChannelResolver {
      */
     <T> T getConsumer(Class<T> interfaze, String name, String topic);
 
-    Object subscribe(String name, String id, String topic, Consumer<?> consumer);
+    /**
+     * Subscribes to a channel.
+     *
+     * @param type     the event type to receive
+     * @param name     the channel name
+     * @param id       the subscription id
+     * @param topic    the topic
+     * @param consumer the consumer to pass messages to
+     * @return the subscription handle
+     */
+    Object subscribe(Class<?> type, String name, String id, String topic, Consumer<?> consumer);
 }

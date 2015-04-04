@@ -128,9 +128,9 @@ public class ChannelResolverImpl implements ChannelResolver {
         return interfaze.cast(target.getProxy());
     }
 
-    public Object subscribe(String name, String id, String topic, java.util.function.Consumer<?> consumer) {
+    public Object subscribe(Class<?> type, String name, String id, String topic, java.util.function.Consumer<?> consumer) {
         LogicalChannel logicalChannel = getChannel(name);
-        LogicalConsumer logicalConsumer = createConsumer(Object.class, logicalChannel.getUri());
+        LogicalConsumer logicalConsumer = createConsumer(type, logicalChannel.getUri());
         PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, CONSUMER);
 
         channelBuilderRegistry.build(physicalChannel);
@@ -154,14 +154,15 @@ public class ChannelResolverImpl implements ChannelResolver {
         return closeable;
     }
 
-    private <T> LogicalConsumer createConsumer(Class<T> interfaze, URI channelUri) {
-        JavaServiceContract contract = introspector.introspect(interfaze);
+    private <T> LogicalConsumer createConsumer(Class<T> type, URI channelUri) {
+        JavaServiceContract contract = introspector.introspect(Object.class);
         LogicalCompositeComponent domain = lcm.getRootComponent();
         String root = domain.getUri().toString();
 
-        LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(interfaze, domain, root);
+        LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(Object.class, domain, root);
 
-        Consumer consumer = new Consumer("consumer", OBJECTS, true);
+        List<DataType> types = Collections.singletonList(new JavaType(type));
+        Consumer consumer = new Consumer("consumer", types, true);
 
         LogicalConsumer logicalConsumer = new LogicalConsumer(URI.create(root + "/F3Synthetic#consumer"), consumer, logicalComponent);
         logicalConsumer.setServiceContract(contract);
