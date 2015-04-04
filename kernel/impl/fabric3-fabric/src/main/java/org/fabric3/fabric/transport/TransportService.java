@@ -64,9 +64,7 @@ public class TransportService {
 
     @ManagementOperation(type = DELETE, description = "Suspend all transports from receiving requests")
     public void suspendAll() {
-        for (Transport transport : transports.values()) {
-            transport.suspend();
-        }
+        transports.values().forEach(Transport::suspend);
     }
 
     @ManagementOperation(type = POST, description = "Resume receiving requests for a transport")
@@ -81,8 +79,6 @@ public class TransportService {
 
     @ManagementOperation(type = POST, description = "Resume receiving requests for all transports")
     public void resumeAll() {
-        for (Transport transport : transports.values()) {
-            transport.resume();
-        }
+        transports.values().forEach(Transport::resume);
     }
 }
