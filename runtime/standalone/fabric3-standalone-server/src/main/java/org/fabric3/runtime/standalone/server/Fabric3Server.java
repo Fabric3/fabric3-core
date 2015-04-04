@@ -44,6 +44,7 @@ import org.fabric3.api.host.runtime.HiddenPackages;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
+import org.fabric3.api.host.runtime.RuntimeService;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
@@ -155,6 +156,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
             configuration.setExtensionContributions(extensions);
 
             List<ComponentRegistration> registrations = bootstrapService.createDefaultRegistrations(runtime);
+            ComponentRegistration runtimeService = new ComponentRegistration("RuntimeService", RuntimeService.class, this::shutdownRuntime, false);
+            registrations.add(runtimeService);
             configuration.addRegistrations(registrations);
 
             // start the runtime
