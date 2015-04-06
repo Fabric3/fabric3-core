@@ -41,6 +41,18 @@ public class PhysicalConnectionSource extends PhysicalAttachPoint {
     }
 
     /**
+     * Returns an id for the connection target. Connections may be cached and reused if their source and target ids match.
+     *
+     * Bindings will override the default method if the connection from a transport to a channel should be re-used (i.e. guarantee only one is created per
+     * runtime).
+     *
+     * @return the id
+     */
+    public String getSourceId() {
+        return getUri().toString() + "_source_" + this.getClass().getName();
+    }
+
+    /**
      * Returns the sequence a consumer should be passed events, if supported by the channel type.
      *
      * @return the sequence a consumer should be passed events, if supported by the channel type
@@ -58,10 +70,20 @@ public class PhysicalConnectionSource extends PhysicalAttachPoint {
         this.sequence = sequence;
     }
 
+    /**
+     * Sets the connection as a direct connection, i.e. the client connects using the underlying binding or channel dispatcher API.
+     *
+     * @param directConnection true if this is a direct connection
+     */
     public void setDirectConnection(boolean directConnection) {
         this.directConnection = directConnection;
     }
 
+    /**
+     * Returns true if the connection as a direct connection, i.e. the client connects using the underlying binding or channel dispatcher API.
+     *
+     * @return true if this is a direct connection
+     */
     public boolean isDirectConnection() {
         return directConnection;
     }
@@ -84,10 +106,20 @@ public class PhysicalConnectionSource extends PhysicalAttachPoint {
         this.serviceInterface = interfaze;
     }
 
+    /**
+     * Sets the topic name this connection receives from.
+     *
+     * @param topic the topic
+     */
     public void setTopic(String topic) {
         this.topic = topic;
     }
 
+    /**
+     * Returns the topic name this connection receives from.
+     *
+     * @return topic the topic
+     */
     public String getTopic() {
         return topic;
     }

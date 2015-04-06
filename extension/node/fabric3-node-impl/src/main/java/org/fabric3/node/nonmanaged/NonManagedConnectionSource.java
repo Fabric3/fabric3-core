@@ -16,6 +16,8 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 
 /**
@@ -25,7 +27,8 @@ public class NonManagedConnectionSource extends PhysicalConnectionSource {
     private Class<?> interfaze;
     private transient Object proxy;
 
-    public NonManagedConnectionSource(Class<?> interfaze) {
+    public NonManagedConnectionSource(URI uri, Class<?> interfaze) {
+        this.setUri(uri);
         this.interfaze = interfaze;
     }
 

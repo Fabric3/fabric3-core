@@ -31,6 +31,16 @@ public class PojoConnectionTarget extends PhysicalConnectionTarget {
     private AccessibleObject consumer;
     private Injectable injectable;
 
+    /**
+     * Overrides the target id to be unique for each injection point, e.g. a consumer and producer may have the same name and both need to have separate
+     * connections.
+     *
+     * @return the id
+     */
+    public String getTargetId() {
+        return getUri() + injectable.getName() + "_target_" + this.getClass().getName();
+    }
+
     public AccessibleObject getConsumerObject() {
         return consumer;
     }

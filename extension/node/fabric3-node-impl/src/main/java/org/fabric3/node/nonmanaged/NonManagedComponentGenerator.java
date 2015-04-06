@@ -16,6 +16,8 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import java.net.URI;
+
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -33,7 +35,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTarget;
  * Generates a physical source definition to connect wires to non-managed code.
  */
 public class NonManagedComponentGenerator implements ComponentGenerator<LogicalComponent<NonManagedImplementation>> {
-
+    private int counter;
     public PhysicalWireSource generateSource(LogicalReference reference) {
         Class<?> interfaze = reference.getServiceContract().getInterfaceClass();
         return new NonManagedWireSource(interfaze);
@@ -53,12 +55,14 @@ public class NonManagedComponentGenerator implements ComponentGenerator<LogicalC
 
     public PhysicalConnectionSource generateConnectionSource(LogicalProducer producer) {
         Class<?> interfaze = producer.getServiceContract().getInterfaceClass();
-        return new NonManagedConnectionSource(interfaze);
+        URI uri = URI.create("nonManaged" + ++counter);
+        return new NonManagedConnectionSource(uri, interfaze);
     }
 
     public PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) {
         Class<?> interfaze = consumer.getServiceContract().getInterfaceClass();
-        return new NonManagedConnectionTarget(interfaze);
+        URI uri = URI.create("nonManaged" + ++counter);
+        return new NonManagedConnectionTarget(uri, interfaze);
     }
 
     public PhysicalWireSource generateResourceSource(LogicalResourceReference<?> resourceReference) {

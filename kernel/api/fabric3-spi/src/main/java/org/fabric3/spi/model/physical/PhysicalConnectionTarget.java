@@ -27,7 +27,6 @@ import org.fabric3.api.model.type.contract.DataType;
  * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
  */
 public class PhysicalConnectionTarget extends PhysicalAttachPoint {
-
     private boolean directConnection;
     private Class<?> serviceInterface;
     private String topic;
@@ -40,35 +39,83 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
         super(types);
     }
 
+    /**
+     * Returns an id for the connection target. Connections may be cached and reused if their source and target ids match.
+     *
+     * @return the id
+     */
+    public String getTargetId() {
+        return getUri().toString() + "_target_" + this.getClass().getName();
+    }
+
+    /**
+     * Returns true if the connection as a direct connection, i.e. the client connects using the underlying binding or channel dispatcher API.
+     *
+     * @return true if this is a direct connection
+     */
     public boolean isDirectConnection() {
         return directConnection;
     }
 
+    /**
+     * Sets the connection as a direct connection, i.e. the client connects using the underlying binding or channel dispatcher API.
+     *
+     * @param directConnection true if this is a direct connection
+     */
     public void setDirectConnection(boolean directConnection) {
         this.directConnection = directConnection;
     }
 
+    /**
+     * Returns the Java interface for the service contract.
+     *
+     * @return the Java interface for the service contract
+     */
     public Class<?> getServiceInterface() {
         return serviceInterface;
     }
 
-    public void setServiceInterface(Class<?> serviceInterface) {
-        this.serviceInterface = serviceInterface;
+    /**
+     * Sets the Java interface for the service contract.
+     *
+     * @param interfaze the Java interface for the service contract
+     */
+    public void setServiceInterface(Class<?> interfaze) {
+        this.serviceInterface = interfaze;
     }
 
+    /**
+     * Sets the topic name this connection is associated with.
+     *
+     * @param topic the topic
+     */
     public void setTopic(String topic) {
         this.topic = topic;
     }
 
+    /**
+     * Returns the topic name this connection is associated with.
+     *
+     * @return topic the topic
+     */
     public String getTopic() {
         return topic;
     }
 
-
+    /**
+     * Sets the consumer for receiving messages from this connection.
+     *
+     * @param consumer the consumer
+     */
     public void setConsumer(Consumer<?> consumer) {
         this.consumer = consumer;
     }
 
+    /**
+     * Returns the consumer for receiving messages from this connection.
+     *
+     * @return the consumer
+     */
     public Consumer<?> getConsumer() {
         return consumer;
     }

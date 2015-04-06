@@ -20,7 +20,6 @@
 package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
-import java.util.List;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.model.DestinationType;
@@ -76,7 +75,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
         Consumer<?> consumerDefinition = consumer.getDefinition();
-        DataType dataType = isJAXB(consumerDefinition.getTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
+        DataType dataType = isJAXB(consumerDefinition.getType()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
         JmsConnectionSource source = new JmsConnectionSource(uri, metadata, dataType, sessionType);
         if (provisioner != null) {
             provisioner.generateConnectionSource(source);
@@ -94,7 +93,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(metadata.getConnectionFactory(), SessionType.AUTO_ACKNOWLEDGE);
 
-        DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes()) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
+        DataType type = isJAXB(producer.getStreamOperation().getDefinition().getInputTypes().get(0)) ? PhysicalDataTypes.JAXB : PhysicalDataTypes.JAVA_TYPE;
 
         JmsConnectionTarget target = new JmsConnectionTarget(uri, metadata, type);
         if (provisioner != null) {
@@ -103,13 +102,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return target;
     }
 
-    private boolean isJAXB(List<DataType> eventTypes) {
-        for (DataType eventType : eventTypes) {
-            if (JAXB.equals(eventType.getDatabinding())) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isJAXB(DataType eventType) {
+        return JAXB.equals(eventType.getDatabinding());
     }
 
 }

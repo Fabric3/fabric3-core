@@ -16,10 +16,7 @@
  */
 package org.fabric3.implementation.spring.model;
 
-import java.util.Collections;
-
 import org.fabric3.api.model.type.component.Consumer;
-import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**
@@ -27,7 +24,6 @@ import org.fabric3.spi.model.type.java.JavaType;
  */
 public class SpringConsumer extends Consumer {
     private String beanName;
-    private JavaType type;
     private String methodName;
 
     /**
@@ -39,8 +35,7 @@ public class SpringConsumer extends Consumer {
      * @param methodName the target method name on the bean to dispatch events to
      */
     public SpringConsumer(String name, JavaType type, String targetBean, String methodName) {
-        super(name, Collections.<DataType>singletonList(type));
-        this.type = type;
+        super(name, type);
         this.beanName = targetBean;
         this.methodName = methodName;
     }
@@ -69,6 +64,6 @@ public class SpringConsumer extends Consumer {
      * @return the event type
      */
     public JavaType getType() {
-        return type;
+        return (JavaType) super.getType();
     }
 }

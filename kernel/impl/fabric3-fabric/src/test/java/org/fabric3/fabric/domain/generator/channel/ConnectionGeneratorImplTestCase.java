@@ -84,7 +84,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertNotNull(connection.getSource());
         assertNotNull(connection.getTarget());
         assertTrue(connection.getSource() instanceof ChannelSource);
-        assertNotNull(connection.getEventStream());
+        assertNotNull(connection.getEventType());
 
         EasyMock.verify(componentGenerator, generatorRegistry);
     }
@@ -121,7 +121,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertEquals(2, connections.size());
         PhysicalChannelConnection connection = connections.get(0);
         assertNotNull(connection.getSource());
-        assertNotNull(connection.getEventStream());
+        assertNotNull(connection.getEventType());
 
         EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry);
     }
@@ -152,7 +152,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         PhysicalChannelConnection connection = connections.get(0);
         assertNotNull(connection.getSource());
         assertTrue(connection.getTarget() instanceof ChannelTarget);
-        assertNotNull(connection.getEventStream());
+        assertNotNull(connection.getEventType());
 
         EasyMock.verify(componentGenerator, generatorRegistry);
     }
@@ -188,7 +188,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertEquals(2, connections.size());
         PhysicalChannelConnection connection = connections.get(0);
         assertNotNull(connection.getSource());
-        assertNotNull(connection.getEventStream());
+        assertNotNull(connection.getEventType());
 
         EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry);
     }
@@ -199,8 +199,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         Consumer consumer = new Consumer("consumer");
         DataType javaClass = new JavaType(Object.class);
-        List list = Collections.singletonList(javaClass);
-        consumer.setTypes(list);
+        consumer.setType(javaClass);
         LogicalConsumer logicalConsumer = new LogicalConsumer(URI.create("composite/component#consumer"), consumer, component);
         logicalConsumer.addSource(URI.create(channelName));
         component.addConsumer(logicalConsumer);

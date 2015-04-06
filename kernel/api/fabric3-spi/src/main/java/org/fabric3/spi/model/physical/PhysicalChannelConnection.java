@@ -31,29 +31,29 @@ public class PhysicalChannelConnection {
     private URI attachUri;
     private PhysicalConnectionSource source;
     private PhysicalConnectionTarget target;
-    private PhysicalEventStream eventStream;
+    private Class<?> eventType;
 
     /**
      * Ctor.
      *
-     * @param channelUri  the channel URI
-     * @param attachUri   the producer or consumer URI depending on the direction of the connection
-     * @param source      the source
-     * @param target      the target
-     * @param eventStream the stream
-     * @param bound       if the connection is bound
+     * @param channelUri the channel URI
+     * @param attachUri  the producer or consumer URI depending on the direction of the connection
+     * @param source     the source
+     * @param target     the target
+     * @param eventType  the event type for the stream
+     * @param bound      if the connection is bound
      */
     public PhysicalChannelConnection(URI channelUri,
                                      URI attachUri,
                                      PhysicalConnectionSource source,
                                      PhysicalConnectionTarget target,
-                                     PhysicalEventStream eventStream,
+                                     Class<?> eventType,
                                      boolean bound) {
         this.channelUri = channelUri;
         this.attachUri = attachUri;
         this.source = source;
         this.target = target;
-        this.eventStream = eventStream;
+        this.eventType = eventType;
         this.bound = bound;
     }
 
@@ -77,8 +77,8 @@ public class PhysicalChannelConnection {
         return target;
     }
 
-    public PhysicalEventStream getEventStream() {
-        return eventStream;
+    public Class<?> getEventType() {
+        return eventType;
     }
 
 }

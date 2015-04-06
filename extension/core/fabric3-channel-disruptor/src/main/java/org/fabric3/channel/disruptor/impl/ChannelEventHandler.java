@@ -24,14 +24,16 @@ import org.fabric3.spi.container.channel.EventStream;
  * Dispatches an event from the channel ring buffer to consumer streams.
  */
 public class ChannelEventHandler implements EventHandler<RingBufferEvent> {
+    private final boolean channelEvent;
     private EventStream stream;
 
-    public ChannelEventHandler(ChannelConnection connection) {
+    public ChannelEventHandler(ChannelConnection connection, boolean channelEvent) {
+        this.channelEvent = channelEvent;
         stream = connection.getEventStream();
     }
 
     public void onEvent(RingBufferEvent event, long sequence, boolean endOfBatch) throws Exception {
-        if (stream.getDefinition().isChannelEvent()) {
+        if (channelEvent) {
             // consumer takes a channel event, send that, making sure to set the end-of-batch marker and sequence number
             event.setEndOfBatch(endOfBatch);
             event.setSequence(sequence);

@@ -26,16 +26,12 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.channel.EventFilter;
-import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
-import org.fabric3.spi.model.physical.PhysicalEventFilter;
-import org.fabric3.spi.model.physical.PhysicalEventStream;
 
 /**
  *
@@ -55,25 +51,27 @@ public class ChannelConnectorImplTestCase extends TestCase {
                               EasyMock.isA(PhysicalConnectionTarget.class),
                               EasyMock.isA(ChannelConnection.class));
 
-        EventFilterBuilder filterBuilder = EasyMock.createMock(EventFilterBuilder.class);
-        EasyMock.expect(filterBuilder.build(EasyMock.isA(MockFilter.class))).andReturn(new MockEventFilter());
-
-        connector.filterBuilders = Collections.singletonMap(MockFilter.class, filterBuilder);
-
-        EasyMock.replay(sourceAttacher, targetAttacher, filterBuilder);
+        EasyMock.replay(sourceAttacher, targetAttacher);
 
         connector.connect(connection);
 
-        EasyMock.verify(sourceAttacher, targetAttacher, filterBuilder);
+        EasyMock.verify(sourceAttacher, targetAttacher);
     }
 
     @SuppressWarnings({"unchecked"})
     public void testDisconnect() throws Exception {
+        sourceAttacher.attach(EasyMock.isA(PhysicalConnectionSource.class),
+                              EasyMock.isA(PhysicalConnectionTarget.class),
+                              EasyMock.isA(ChannelConnection.class));
+        targetAttacher.attach(EasyMock.isA(PhysicalConnectionSource.class),
+                              EasyMock.isA(PhysicalConnectionTarget.class),
+                              EasyMock.isA(ChannelConnection.class));
         sourceAttacher.detach(EasyMock.isA(PhysicalConnectionSource.class), EasyMock.isA(PhysicalConnectionTarget.class));
         targetAttacher.detach(EasyMock.isA(PhysicalConnectionSource.class), EasyMock.isA(PhysicalConnectionTarget.class));
 
         EasyMock.replay(sourceAttacher, targetAttacher);
 
+        connector.connect(connection);
         connector.disconnect(connection);
 
         EasyMock.verify(sourceAttacher, targetAttacher);
@@ -103,28 +101,19 @@ public class ChannelConnectorImplTestCase extends TestCase {
         source.setClassLoader(getClass().getClassLoader());
         PhysicalConnectionTarget target = new MockTarget();
         target.setClassLoader(getClass().getClassLoader());
-        PhysicalEventStream stream = new PhysicalEventStream("stream");
-        stream.addEventType(Object.class);
-        stream.addFilter(new MockFilter());
         URI uri = URI.create("testChannel");
-        return new PhysicalChannelConnection(uri, URI.create("test"), source, target, stream, false);
+        return new PhysicalChannelConnection(uri, URI.create("test"), source, target, Object.class, false);
     }
 
     private class MockSource extends PhysicalConnectionSource {
-
+        public URI getUri() {
+            return URI.create("source");
+        }
     }
 
     private class MockTarget extends PhysicalConnectionTarget {
-
-    }
-
-    private class MockFilter extends PhysicalEventFilter {
-    }
-
-    private class MockEventFilter implements EventFilter {
-
-        public boolean filter(Object event) {
-            return false;
+        public URI getUri() {
+            return URI.create("target");
         }
     }
 

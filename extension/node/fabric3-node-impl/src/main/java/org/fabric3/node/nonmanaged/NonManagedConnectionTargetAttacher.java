@@ -21,6 +21,8 @@ import java.util.function.Consumer;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.FilterHandler;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.util.Cast;
 
@@ -35,7 +37,14 @@ public class NonManagedConnectionTargetAttacher implements TargetConnectionAttac
             target.setProxy(connection.getDirectConnection().get().get());
         } else {
             Consumer<Object> consumer = Cast.cast(target.getConsumer());
-            connection.getEventStream().addHandler((event, endOfBatch) -> consumer.accept(event));
+            EventStream stream = connection.getEventStream();
+            Class<?> type = stream.getEventType();
+            if (!Object.class.equals(type)) {
+                // add a filter if the event type is not Object
+                stream.addHandler(new FilterHandler(type));
+            }
+
+            stream.addHandler((event, endOfBatch) -> consumer.accept(event));
         }
     }
 

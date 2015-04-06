@@ -23,6 +23,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import com.lmax.disruptor.EventHandler;
+import org.fabric3.api.ChannelEvent;
 import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
@@ -46,9 +47,14 @@ public class EventHandlerHelper {
                 handlers = new ArrayList<>();
                 sorted.put(sequence, handlers);
             }
-            handlers.add(new ChannelEventHandler(connection));
+            boolean channelEvent = isChannelEvent(connection);
+            handlers.add(new ChannelEventHandler(connection, channelEvent));
         }
         return sorted;
+    }
+
+    public static boolean isChannelEvent(ChannelConnection connection) {
+        return ChannelEvent.class.isAssignableFrom(connection.getEventStream().getEventType());
     }
 
     private EventHandlerHelper() {

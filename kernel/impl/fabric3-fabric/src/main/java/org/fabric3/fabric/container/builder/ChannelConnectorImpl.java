@@ -17,20 +17,18 @@
 package org.fabric3.fabric.container.builder;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
-import org.fabric3.fabric.container.channel.FilterHandler;
 import org.fabric3.spi.container.builder.ChannelConnector;
-import org.fabric3.spi.container.builder.channel.EventFilter;
-import org.fabric3.spi.container.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.container.builder.component.DirectConnectionFactory;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
@@ -44,15 +42,24 @@ import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
-import org.fabric3.spi.model.physical.PhysicalEventFilter;
-import org.fabric3.spi.model.physical.PhysicalEventStream;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default ChannelConnector implementation.
+ *
+ * This implementation caches connections for reuse. For example, if two bound consumers are connected to the same channel, two connections will be generated
+ * for each consumer: one from the binding to the channel and one from the channel to the target component. In this case, only one connection should be engaged
+ * from the binding to the channel (otherwise duplicate messages will be received by the components). For the second component, the cached channel will be
+ * returned instead of creating an additional one.
+ *
+ * Channels are cached based on their source id/target id pair. Bindings will generally only engage one connection from the transport to the channel.
+ * Connections from channels to components will generally always be engaged (i.e. their target ids will be unique) since a component will need to be injected
+ * with the connection proxy.
  */
 public class ChannelConnectorImpl implements ChannelConnector {
     private Map<Class<?>, DirectConnectionFactory> connectionFactories = new HashMap<>();
+
+    private Map<Key, Holder> cachedConnections = new HashMap<>();  // channel cache
 
     @Reference
     protected ChannelManager channelManager;
@@ -62,9 +69,6 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
     @Reference(required = false)
     protected Map<Class<?>, TargetConnectionAttacher<?>> targetAttachers = new HashMap<>();
-
-    @Reference(required = false)
-    protected Map<Class<?>, EventFilterBuilder<?>> filterBuilders = new HashMap<>();
 
     @Reference
     protected TransformerHandlerFactory transformerHandlerFactory;
@@ -79,6 +83,13 @@ public class ChannelConnectorImpl implements ChannelConnector {
     public ChannelConnection connect(PhysicalChannelConnection physicalConnection) {
         PhysicalConnectionSource source = physicalConnection.getSource();
         PhysicalConnectionTarget target = physicalConnection.getTarget();
+        Key key = new Key(source.getSourceId(), target.getTargetId());
+        Holder holder = cachedConnections.get(key);
+        if (holder != null) {
+            // connection is cached; don't engage a second one
+            holder.count.incrementAndGet();
+            return holder.connection;
+        }
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
             throw new Fabric3Exception("Attacher not found for type: " + source.getClass().getName());
@@ -92,6 +103,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
 
         sourceAttacher.attach(source, target, connection);
         targetAttacher.attach(source, target, connection);
+        cachedConnections.put(key, new Holder(connection));
         return connection;
     }
 
@@ -99,6 +111,16 @@ public class ChannelConnectorImpl implements ChannelConnector {
     public void disconnect(PhysicalChannelConnection physicalConnection) {
         PhysicalConnectionSource source = physicalConnection.getSource();
         PhysicalConnectionTarget target = physicalConnection.getTarget();
+        Key key = new Key(source.getSourceId(), target.getTargetId());
+        Holder holder = cachedConnections.get(key);
+        if (holder == null) {
+            return;
+        }
+        if (holder.count.decrementAndGet() == 0) {
+            cachedConnections.remove(key);
+        } else {
+            return;
+        }
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
         if (sourceAttacher == null) {
             throw new Fabric3Exception("Attacher not found for type: " + source.getClass().getName());
@@ -152,10 +174,9 @@ public class ChannelConnectorImpl implements ChannelConnector {
         } else {
             // connect using an event stream
             ClassLoader loader = physicalConnection.getTarget().getClassLoader();
-            PhysicalEventStream physicalStream = physicalConnection.getEventStream();
-            EventStream stream = new EventStreamImpl(physicalStream);
+            Class<?> eventType = physicalConnection.getEventType();
+            EventStream stream = new EventStreamImpl(eventType);
             addTypeTransformer(physicalConnection, stream, loader);
-            addFilters(physicalStream, stream);
             int sequence = source.getSequence();
             return new ChannelConnectionImpl(stream, sequence);
         }
@@ -179,25 +200,46 @@ public class ChannelConnectorImpl implements ChannelConnector {
         if (sourceType.equals(targetType)) {
             return;
         }
-        List<Class<?>> eventTypes = stream.getDefinition().getEventTypes().stream().collect(Collectors.toList());
+        List<Class<?>> eventTypes = Collections.singletonList(stream.getEventType());
         EventStreamHandler handler = transformerHandlerFactory.createHandler(sourceType, targetType, eventTypes, loader);
         stream.addHandler(handler);
     }
 
-    /**
-     * Adds event filters if they are defined for the stream.
-     *
-     * @param physicalStream the physical stream
-     * @param stream         the stream being created
-     * @ if there is an error adding a filter
-     */
-    @SuppressWarnings({"unchecked"})
-    private void addFilters(PhysicalEventStream physicalStream, EventStream stream) {
-        for (PhysicalEventFilter physicalFilter : physicalStream.getFilters()) {
-            EventFilterBuilder builder = filterBuilders.get(physicalFilter.getClass());
-            EventFilter filter = builder.build(physicalFilter);
-            FilterHandler handler = new FilterHandler(filter);
-            stream.addHandler(handler);
+    private class Key {
+        String sourceId;
+        String targetId;
+
+        public Key(String sourceId, String targetId) {
+            this.sourceId = sourceId;
+            this.targetId = targetId;
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Key key = (Key) o;
+
+            return sourceId.equals(key.sourceId) && targetId.equals(key.targetId);
+        }
+
+        public int hashCode() {
+            int result = sourceId.hashCode();
+            result = 31 * result + targetId.hashCode();
+            return result;
+        }
+    }
+
+    private class Holder {
+        AtomicInteger count = new AtomicInteger(1);
+        ChannelConnection connection;
+
+        public Holder(ChannelConnection connection) {
+            this.connection = connection;
         }
     }
 

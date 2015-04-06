@@ -134,7 +134,8 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
             subscribers.put(uri, connection);
         } else {
             // ring buffer already started, add dynamically
-            ChannelEventHandler handler = new ChannelEventHandler(connection);
+            boolean channelEvent = EventHandlerHelper.isChannelEvent(connection);
+            ChannelEventHandler handler = new ChannelEventHandler(connection, channelEvent);
             SequenceBarrier barrier = ringBuffer.newBarrier();
             BatchEventProcessor<RingBufferEvent> processor = new BatchEventProcessor<>(ringBuffer, barrier, handler);
             Sequence sequence = processor.getSequence();

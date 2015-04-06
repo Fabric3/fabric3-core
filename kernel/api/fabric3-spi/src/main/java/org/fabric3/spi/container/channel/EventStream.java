@@ -16,20 +16,17 @@
  */
 package org.fabric3.spi.container.channel;
 
-import org.fabric3.spi.model.physical.PhysicalEventStream;
-import org.fabric3.spi.util.Closeable;
-
 /**
  * Transmits events to a channel. As events are transmitted through the stream, they are processed by a series of handlers.
  */
 public interface EventStream {
 
     /**
-     * Returns the physical event stream metadata.
+     * Returns the event type this stream processes.
      *
-     * @return the physical event stream metadata
+     * @return the event type
      */
-    PhysicalEventStream getDefinition();
+    Class<?> getEventType();
 
     /**
      * Returns the head handler for the stream.

@@ -21,7 +21,6 @@ package org.fabric3.api.model.type.component;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.model.type.ModelObject;
@@ -38,7 +37,7 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
     private String name;
     private int sequence = NO_SEQUENCE;
 
-    private List<DataType> types = Collections.emptyList();
+    private DataType type;
     private List<URI> sources = new ArrayList<>();
     private ServiceContract serviceContract;
 
@@ -55,22 +54,22 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
      * Constructor.
      *
      * @param name  the consumer name
-     * @param types the data types required by this consumer
+     * @param type the data type required by this consumer
      */
-    public Consumer(String name, List<DataType> types) {
+    public Consumer(String name, DataType type) {
         this.name = name;
-        this.types = types;
+        this.type = type;
     }
 
     /**
      * Constructor.
      *
      * @param name   the consumer name
-     * @param types  the data types required by this consumer
+     * @param type  the data type required by this consumer
      * @param direct true if the consumer is a direct connection to the channel
      */
-    public Consumer(String name, List<DataType> types, boolean direct) {
-        this(name, types);
+    public Consumer(String name, DataType type, boolean direct) {
+        this(name, type);
         this.direct = direct;
     }
 
@@ -78,11 +77,11 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
      * Constructor.
      *
      * @param name     the consumer name
-     * @param types    the data types required by this consumer
+     * @param type     the data type required by this consumer
      * @param contract the service contract of this consumer if it is a direct connection to the channel
      */
-    public Consumer(String name, List<DataType> types, ServiceContract contract) {
-        this(name, types);
+    public Consumer(String name, DataType type, ServiceContract contract) {
+        this(name, type);
         this.serviceContract = contract;
     }
 
@@ -100,17 +99,17 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
      *
      * @return the data types required by this consumer
      */
-    public List<DataType> getTypes() {
-        return types;
+    public DataType getType() {
+        return type;
     }
 
     /**
-     * Sets the data types required by this consumer.
+     * Sets the data type required by this consumer.
      *
-     * @param types the data types required by this consumer
+     * @param type the data type required by this consumer
      */
-    public void setTypes(List<DataType> types) {
-        this.types = types;
+    public void setType(DataType type) {
+        this.type = type;
     }
 
     /**

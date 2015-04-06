@@ -29,6 +29,7 @@ import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.FilterHandler;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.fabric3.spi.util.UriHelper;
@@ -70,8 +71,14 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
             Method method = (Method) target.getConsumerObject(); // if the object is not a method, it is a programming error
             ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
 
-            InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
             EventStream stream = connection.getEventStream();
+
+            Class<?> type = connection.getEventStream().getEventType();
+            if (!Object.class.equals(type)) {
+                // add a filter if the event type is not Object
+                stream.addHandler(new FilterHandler(type));
+            }
+            InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
             stream.addHandler(handler);
         }
     }

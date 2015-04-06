@@ -14,23 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.container.builder.channel;
-
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.physical.PhysicalEventFilter;
+package org.fabric3.spi.container.channel;
 
 /**
- * Creates an {@link EventFilter} from a {@link PhysicalEventFilter}.
+ * Filters an event.
  */
-public interface EventFilterBuilder<T extends PhysicalEventFilter> {
+public class FilterHandler implements EventStreamHandler {
+    private Class<?> type;
+    private EventStreamHandler next;
 
-    /**
-     * Creates the filter.
-     *
-     * @param definition the filter definition.
-     * @return the filter
-     * @throws Fabric3Exception if there is an error creating the filter
-     */
-    EventFilter build(T definition) throws Fabric3Exception;
+    public FilterHandler(Class<?> type) {
+        this.type = type;
+    }
+
+    public void handle(Object event, boolean endOfBatch) {
+        if (type.isAssignableFrom(event.getClass())) {
+            next.handle(event, endOfBatch);
+        }
+    }
+
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
 
 }

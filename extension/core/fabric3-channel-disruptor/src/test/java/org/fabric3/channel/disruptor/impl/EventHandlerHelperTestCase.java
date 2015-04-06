@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.util.Cast;
 
 /**
  *
@@ -36,15 +37,17 @@ public class EventHandlerHelperTestCase extends TestCase {
         EventStream stream = EasyMock.createMock(EventStream.class);
         ChannelConnection conn1 = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(conn1.getSequence()).andReturn(0);
-        EasyMock.expect(conn1.getEventStream()).andReturn(stream);
+        EasyMock.expect(conn1.getEventStream()).andReturn(stream).atLeastOnce();
+
+        EasyMock.expect(stream.getEventType()).andReturn(Cast.cast(Object.class)).atLeastOnce();
 
         ChannelConnection conn2 = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(conn2.getSequence()).andReturn(1);
-        EasyMock.expect(conn2.getEventStream()).andReturn(stream);
+        EasyMock.expect(conn2.getEventStream()).andReturn(stream).atLeastOnce();
 
         ChannelConnection conn3 = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(conn3.getSequence()).andReturn(2);
-        EasyMock.expect(conn3.getEventStream()).andReturn(stream);
+        EasyMock.expect(conn3.getEventStream()).andReturn(stream).atLeastOnce();
 
         EasyMock.replay(conn1, conn2, conn3, stream);
 

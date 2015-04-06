@@ -19,7 +19,6 @@ package org.fabric3.fabric.container.channel;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStream;
 
 /**
  *
@@ -33,9 +32,7 @@ public class EventStreamImplTestCase extends TestCase {
         handler1.setNext(handler2);
         EasyMock.replay(handler1, handler2);
 
-        PhysicalEventStream physicalStream = new PhysicalEventStream("test");
-
-        EventStreamImpl stream = new EventStreamImpl(physicalStream);
+        EventStreamImpl stream = new EventStreamImpl(Object.class);
         stream.addHandler(handler1);
         assertEquals(handler1, stream.getTailHandler());
 
@@ -47,25 +44,22 @@ public class EventStreamImplTestCase extends TestCase {
 
     public void testAddIndexedHandler() throws Exception {
         EventStreamHandler handler3 = EasyMock.createMock(EventStreamHandler.class);
-        handler3.setNext((EventStreamHandler) EasyMock.isNull());
+        handler3.setNext(EasyMock.isNull());
 
         EventStreamHandler handler2 = EasyMock.createMock(EventStreamHandler.class);
         handler2.setNext(EasyMock.eq(handler3));
-
 
         EventStreamHandler handler1 = EasyMock.createMock(EventStreamHandler.class);
         EasyMock.expect(handler1.getNext()).andReturn(null);
         handler1.setNext(EasyMock.eq(handler3));
         EasyMock.expectLastCall();
         EasyMock.expect(handler1.getNext()).andReturn(handler3);
-        handler1.setNext(EasyMock.eq(handler2)); 
+        handler1.setNext(EasyMock.eq(handler2));
         EasyMock.expectLastCall();
 
         EasyMock.replay(handler1, handler2, handler3);
 
-        PhysicalEventStream physicalStream = new PhysicalEventStream("test");
-
-        EventStreamImpl stream = new EventStreamImpl(physicalStream);
+        EventStreamImpl stream = new EventStreamImpl(Object.class);
         stream.addHandler(handler1);
         stream.addHandler(2, handler3);
         stream.addHandler(2, handler2);

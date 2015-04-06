@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
@@ -60,7 +61,6 @@ import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER
  */
 public class ChannelResolverImpl implements ChannelResolver {
     private static final QName SYNTHETIC_DEPLOYABLE = new QName(HostNamespaces.SYNTHESIZED, "SyntheticDeployable");
-    private static final List<DataType> OBJECTS = Collections.singletonList(new JavaType(Object.class));
 
     private Introspector introspector;
     private LogicalComponentManager lcm;
@@ -68,6 +68,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     private ConnectionGenerator connectionGenerator;
     private ChannelBuilderRegistry channelBuilderRegistry;
     private ChannelConnector channelConnector;
+    private AtomicInteger counter = new AtomicInteger();
 
     public ChannelResolverImpl(@Reference Introspector introspector,
                                @Reference(name = "lcm") LogicalComponentManager lcm,
@@ -96,12 +97,9 @@ public class ChannelResolverImpl implements ChannelResolver {
 
         Map<LogicalChannel, DeliveryType> channels = Collections.singletonMap(logicalChannel, DeliveryType.DEFAULT);
         List<PhysicalChannelConnection> connections = connectionGenerator.generateProducer(producer, channels);
-        PhysicalChannelConnection connection = connections.get(0);  // safe as there is only one connection
-        connection.getSource().setTopic(topic);
-        connection.getTarget().setTopic(topic);
-        channelConnector.connect(connection);
 
-        NonManagedConnectionSource source = (NonManagedConnectionSource) connection.getSource();
+        // connect the connections and return the non-managed source so the proxy can be returned to the client
+        NonManagedConnectionSource source = connect(topic, connections);
         return interfaze.cast(source.getProxy());
     }
 
@@ -154,17 +152,34 @@ public class ChannelResolverImpl implements ChannelResolver {
         return closeable;
     }
 
+    private NonManagedConnectionSource connect(String topic, List<PhysicalChannelConnection> connections) {
+        NonManagedConnectionSource source = null;
+        for (PhysicalChannelConnection connection : connections) {
+            connection.getSource().setTopic(topic);
+            connection.getTarget().setTopic(topic);
+            channelConnector.connect(connection);
+            if (connection.getSource() instanceof NonManagedConnectionSource) {
+                source = (NonManagedConnectionSource) connection.getSource();
+            }
+        }
+        if (source == null) {
+            throw new Fabric3Exception("NonManagedConnectionSource not found publishing to topic: " + topic);
+        }
+        return source;
+    }
+
     private <T> LogicalConsumer createConsumer(Class<T> type, URI channelUri) {
-        JavaServiceContract contract = introspector.introspect(Object.class);
+        JavaServiceContract contract = introspector.introspect(type);
         LogicalCompositeComponent domain = lcm.getRootComponent();
         String root = domain.getUri().toString();
 
         LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(Object.class, domain, root);
 
-        List<DataType> types = Collections.singletonList(new JavaType(type));
-        Consumer consumer = new Consumer("consumer", types, true);
+        DataType dataType = new JavaType(type);
+        Consumer consumer = new Consumer("consumer", dataType, true);
 
-        LogicalConsumer logicalConsumer = new LogicalConsumer(URI.create(root + "/F3Synthetic#consumer"), consumer, logicalComponent);
+        int pos = counter.getAndIncrement();
+        LogicalConsumer logicalConsumer = new LogicalConsumer(URI.create(root + "/F3Synthetic#consumer" + pos), consumer, logicalComponent);
         logicalConsumer.setServiceContract(contract);
         logicalConsumer.addSource(channelUri);
         return logicalConsumer;
@@ -191,7 +206,8 @@ public class ChannelResolverImpl implements ChannelResolver {
 
         Producer producer = new Producer("producer", contract);
 
-        LogicalProducer logicalProducer = new LogicalProducer(URI.create(root + "/F3Synthetic#producer"), producer, logicalComponent);
+        int pos = counter.getAndIncrement();
+        LogicalProducer logicalProducer = new LogicalProducer(URI.create(root + "/F3Synthetic#producer" + pos), producer, logicalComponent);
         logicalProducer.setServiceContract(contract);
         logicalProducer.addTarget(channelUri);
         return logicalProducer;

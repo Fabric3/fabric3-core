@@ -54,7 +54,6 @@ import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.model.physical.PhysicalEventStream;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
@@ -295,26 +294,22 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     private void attachConnection(ChannelConnection connection, Publisher publisher, ClassLoader loader) throws Fabric3Exception {
         EventStream stream = connection.getEventStream();
-        try {
-            DataType dataType = getEventType(stream);
-            EventStreamHandler transformer;
-            if (dataType.getType().equals(byte[][].class)) {
-                // multi-frame data
-                transformer = handlerFactory.createHandler(dataType, TWO_DIMENSIONAL_BYTES, Collections.<Class<?>>emptyList(), loader);
-            } else {
-                // single frame data
-                transformer = handlerFactory.createHandler(dataType, BYTES, Collections.<Class<?>>emptyList(), loader);
-            }
-
-            stream.addHandler(transformer);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3Exception("Error loading event type", e);
+        DataType dataType = getEventType(stream);
+        EventStreamHandler transformer;
+        if (dataType.getType().equals(byte[][].class)) {
+            // multi-frame data
+            transformer = handlerFactory.createHandler(dataType, TWO_DIMENSIONAL_BYTES, Collections.<Class<?>>emptyList(), loader);
+        } else {
+            // single frame data
+            transformer = handlerFactory.createHandler(dataType, BYTES, Collections.<Class<?>>emptyList(), loader);
         }
+
+        stream.addHandler(transformer);
         stream.addHandler(new PublisherHandler(publisher));
     }
 
     private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws Fabric3Exception {
-        DataType dataType = getEventTypeForConnection(connection);
+        DataType dataType = getEventType(connection.getEventStream());
         EventStreamHandler head;
         if (dataType.getType().equals(byte[][].class)) {
             // multi-frame data
@@ -327,21 +322,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     }
 
     @SuppressWarnings({"unchecked"})
-    private DataType getEventType(EventStream stream) throws ClassNotFoundException {
-        List<Class<?>> eventTypes = stream.getDefinition().getEventTypes();
-        Class<?> type = eventTypes.isEmpty() ? Object.class : eventTypes.get(0);
-        return new JavaType(type);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private DataType getEventTypeForConnection(ChannelConnection connection) throws Fabric3Exception {
-        PhysicalEventStream physicalStream = connection.getEventStream().getDefinition();
-        if (!physicalStream.getEventTypes().isEmpty()) {
-            Class<?> type = physicalStream.getEventTypes().get(0);
-            return new JavaType(type);
-        } else {
-            return new JavaType(Object.class);
-        }
+    private DataType getEventType(EventStream stream) {
+        return new JavaType(stream.getEventType());
     }
 
     private class PublisherHolder {

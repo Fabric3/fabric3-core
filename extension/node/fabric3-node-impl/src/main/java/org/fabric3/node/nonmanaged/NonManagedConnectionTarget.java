@@ -16,6 +16,8 @@
  */
 package org.fabric3.node.nonmanaged;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.Closeable;
 
@@ -26,7 +28,8 @@ public class NonManagedConnectionTarget extends PhysicalConnectionTarget {
     private transient Object proxy;
     private Closeable closeable;
 
-    public NonManagedConnectionTarget(Class<?> interfaze) {
+    public NonManagedConnectionTarget(URI uri, Class<?> interfaze) {
+        setUri(uri);
         setServiceInterface(interfaze);
     }
 

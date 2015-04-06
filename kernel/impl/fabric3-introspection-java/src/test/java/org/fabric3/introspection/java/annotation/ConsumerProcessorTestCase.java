@@ -47,8 +47,7 @@ public class ConsumerProcessorTestCase extends TestCase {
 
         Map<String, Consumer<ComponentType>> consumers = componentType.getConsumers();
         Consumer<ComponentType> definition = consumers.get("onEvent");
-        assertEquals(1, definition.getTypes().size());
-        assertEquals(String.class, definition.getTypes().get(0).getType());
+        assertEquals(String.class, definition.getType().getType());
     }
 
     public void testSequenceMethod() throws Exception {

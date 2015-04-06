@@ -289,7 +289,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<Component<?>> 
             context.addError(failure);
             return;
         }
-        consumer.setTypes(typeConsumer.getTypes());
+        consumer.setType(typeConsumer.getType());
         definition.add(consumer);
     }
 

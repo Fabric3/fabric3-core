@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         }
 
         ConstructorInjectionSite injectionSite = new ConstructorInjectionSite(constructor, index);
-        Consumer<ComponentType> consumer = new Consumer<>(name, Collections.singletonList(dataType), contract);
+        Consumer<ComponentType> consumer = new Consumer<>(name, dataType, contract);
 
         processSources(annotation, consumer, constructor, constructor.getDeclaringClass(), context);
         componentType.add(consumer, injectionSite, constructor);
@@ -125,7 +124,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
             contract = contractProcessor.introspect(baseType, implClass, context, componentType);
 
         }
-        Consumer<ComponentType> consumer = new Consumer<>(name, Collections.singletonList(dataType), contract);
+        Consumer<ComponentType> consumer = new Consumer<>(name, dataType, contract);
 
         Class<?> clazz = field.getDeclaringClass();
         processSources(annotation, consumer, field, clazz, context);
@@ -145,17 +144,17 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
             return;
         }
         TypeMapping typeMapping = context.getTypeMapping(implClass);
-        List<DataType> types = introspectParameterTypes(method, typeMapping);
+        DataType type = introspectParameterType(method, typeMapping);
 
         String name = helper.getSiteName(method, annotation.value());
 
         ServiceContract contract = null;
         if (contractProcessor != null) {
-            Class<?> baseType = helper.getBaseType(types.get(0).getType(), typeMapping);
+            Class<?> baseType = helper.getBaseType(type.getType(), typeMapping);
             contract = contractProcessor.introspect(baseType, implClass, context, componentType);
 
         }
-        Consumer<ComponentType> consumer = new Consumer<>(name, types, contract);
+        Consumer<ComponentType> consumer = new Consumer<>(name, type, contract);
 
         int sequence = annotation.sequence();
         if (sequence < 0) {
@@ -169,17 +168,11 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         componentType.add(consumer, injectionSite, method);
     }
 
-    private List<DataType> introspectParameterTypes(Method method, TypeMapping typeMapping) {
+    private DataType introspectParameterType(Method method, TypeMapping typeMapping) {
         Class<?>[] physicalParameterTypes = method.getParameterTypes();
-        Type[] gParamTypes = method.getGenericParameterTypes();
-        List<DataType> parameterDataTypes = new ArrayList<>(gParamTypes.length);
-        for (int i = 0; i < gParamTypes.length; i++) {
-            Type gParamType = gParamTypes[i];
-            Type logicalParamType = typeMapping.getActualType(gParamType);
-            DataType dataType = createDataType(physicalParameterTypes[i], logicalParamType, typeMapping);
-            parameterDataTypes.add(dataType);
-        }
-        return parameterDataTypes;
+        Type gParamType = method.getGenericParameterTypes()[0];
+        Type logicalParamType = typeMapping.getActualType(gParamType);
+        return createDataType(physicalParameterTypes[0], logicalParamType, typeMapping);
     }
 
     @SuppressWarnings({"unchecked"})
