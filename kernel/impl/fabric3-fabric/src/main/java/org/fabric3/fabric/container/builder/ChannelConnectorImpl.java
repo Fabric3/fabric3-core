@@ -59,7 +59,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class ChannelConnectorImpl implements ChannelConnector {
     private Map<Class<?>, DirectConnectionFactory> connectionFactories = new HashMap<>();
 
-    private Map<Key, Holder> cachedConnections = new HashMap<>();  // channel cache
+    private Map<Key, Holder> cachedConnections = new HashMap<>();  // connection cache
 
     @Reference
     protected ChannelManager channelManager;
