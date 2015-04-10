@@ -16,6 +16,8 @@ dependencies {
 
     compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: 2.13)
 
+    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: 2.13)
+
     compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version: jerseyVersion)
 
     compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version: jerseyVersion)
