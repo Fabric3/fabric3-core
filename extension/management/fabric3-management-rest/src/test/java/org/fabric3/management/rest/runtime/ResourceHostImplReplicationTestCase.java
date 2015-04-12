@@ -28,7 +28,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.host.ServletHost;
 
 /**
@@ -58,10 +57,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
 
     public void testReplicateChange() throws Exception {
         NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        topologyService.openChannel(EasyMock.isA(String.class),
-                                    (String) EasyMock.isNull(),
-                                    EasyMock.isA(MessageReceiver.class),
-                                    (TopologyListener) EasyMock.isNull());
+        topologyService.openChannel(EasyMock.isA(String.class), EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
         topologyService.sendAsynchronous(EasyMock.isA(String.class), EasyMock.isA((Serializable.class)));
         MockResource instance = EasyMock.createMock(MockResource.class);
         EasyMock.expect(instance.parameterized("test")).andReturn("test");
@@ -86,10 +82,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
 
     public void testReplicateHttpServletRequestChange() throws Exception {
         NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        topologyService.openChannel(EasyMock.isA(String.class),
-                                    (String) EasyMock.isNull(),
-                                    EasyMock.isA(MessageReceiver.class),
-                                    (TopologyListener) EasyMock.isNull());
+        topologyService.openChannel(EasyMock.isA(String.class), EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
         topologyService.sendAsynchronous(EasyMock.isA(String.class), EasyMock.isA((Serializable.class)));
 
         MockResource instance = EasyMock.createMock(MockResource.class);

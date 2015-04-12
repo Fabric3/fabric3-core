@@ -18,7 +18,6 @@ package org.fabric3.federation.jgroups;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +158,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         topologyListeners.remove(listener);
     }
 
-    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws Fabric3Exception {
+    public void openChannel(String name, String configuration, MessageReceiver receiver) throws Fabric3Exception {
         if (channels.containsKey(name)) {
             throw new Fabric3Exception("Channel already open:" + name);
         }
@@ -177,11 +176,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             initializeChannel(channel);
             channels.put(name, channel);
 
-            Object viewLock = new Object();
-            List<TopologyListener> listeners = Collections.singletonList(listener);
-            TopologyListenerMultiplexer multiplexer = (listener != null) ? new TopologyListenerMultiplexer(helper, viewLock, listeners) : null;
-
-            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, multiplexer, monitor);
+            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
             channel.setReceiver(delegatingReceiver);
             channel.connect(info.getDomain().getAuthority() + ":" + name);
         } catch (Exception e) {

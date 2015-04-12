@@ -108,14 +108,6 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         }
     }
 
-    public void onJoin(String name) {
-        // no-op
-    }
-
-    public void onLeave(String name) {
-        // no-op
-    }
-
     public void onLeaderElected(String name) {
         if (!Scope.DOMAIN.equals(scope)) {
             return;

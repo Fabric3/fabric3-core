@@ -80,10 +80,9 @@ public interface NodeTopologyService {
      * @param name          the channel name
      * @param configuration the channel configuration or null to use the default configuration
      * @param receiver      the receiver to callback when a message is received
-     * @param listener      an optional topology listener. May be null.
      * @throws Fabric3Exception if an error occurs opening the channel
      */
-    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws Fabric3Exception;
+    void openChannel(String name, String configuration, MessageReceiver receiver) throws Fabric3Exception;
 
     /**
      * Closes a channel.

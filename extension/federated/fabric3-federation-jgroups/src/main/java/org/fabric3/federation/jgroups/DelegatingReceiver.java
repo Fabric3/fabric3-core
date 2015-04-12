@@ -23,7 +23,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.jgroups.Address;
 import org.jgroups.Channel;
-import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.View;
@@ -35,14 +34,12 @@ public class DelegatingReceiver implements Receiver {
     private Channel channel;
     private MessageReceiver receiver;
     private JGroupsHelper helper;
-    private MembershipListener listener;
     private TopologyServiceMonitor monitor;
 
-    public DelegatingReceiver(Channel channel, MessageReceiver receiver, JGroupsHelper helper, MembershipListener listener, TopologyServiceMonitor monitor) {
+    public DelegatingReceiver(Channel channel, MessageReceiver receiver, JGroupsHelper helper, TopologyServiceMonitor monitor) {
         this.channel = channel;
         this.receiver = receiver;
         this.helper = helper;
-        this.listener = listener;
         this.monitor = monitor;
     }
 
@@ -66,27 +63,15 @@ public class DelegatingReceiver implements Receiver {
     }
 
     public void viewAccepted(View newView) {
-        if (listener != null) {
-            listener.viewAccepted(newView);
-        }
     }
 
     public void suspect(Address suspected) {
-        if (listener != null) {
-            listener.suspect(suspected);
-        }
     }
 
     public void block() {
-        if (listener != null) {
-            listener.block();
-        }
     }
 
     public void unblock() {
-        if (listener != null) {
-            listener.unblock();
-        }
     }
 
 }

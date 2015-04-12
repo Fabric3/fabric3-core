@@ -186,14 +186,6 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
         }
     }
 
-    public void onJoin(String name) {
-        // no-op
-    }
-
-    public void onLeaderElected(String name) {
-        // no-op
-    }
-
     /**
      * Broadcasts address requests after the runtime has joined the domain to synchronize the cache.
      *
@@ -202,7 +194,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     public void onEvent(JoinDomainCompleted event) {
         try {
             if (isNode()) {
-                topologyService.openChannel(qualifiedChannelName, null, this, null);
+                topologyService.openChannel(qualifiedChannelName, null, this);
                 AddressRequest request = new AddressRequest(info.getRuntimeName());
                 topologyService.sendAsynchronous(qualifiedChannelName, request);
             }

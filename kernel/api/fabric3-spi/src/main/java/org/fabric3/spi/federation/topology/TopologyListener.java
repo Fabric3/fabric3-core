@@ -26,20 +26,23 @@ public interface TopologyListener {
      *
      * @param name the runtime name
      */
-    void onJoin(String name);
+    default void onJoin(String name) {
+    }
 
     /**
      * Callback when a runtime leaves a domain.
      *
      * @param name the runtime name
      */
-    void onLeave(String name);
+    default void onLeave(String name) {
+    }
 
     /**
      * Callback when a runtime is elected leader in a domain.
      *
      * @param name the runtime name
      */
-    void onLeaderElected(String name);
+    default void onLeaderElected(String name) {
+    }
 
 }

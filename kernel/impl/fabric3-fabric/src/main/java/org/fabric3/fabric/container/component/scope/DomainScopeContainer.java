@@ -107,14 +107,6 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         return super.getInstance(component);
     }
 
-    public void onJoin(String name) {
-        // no-op
-    }
-
-    public void onLeave(String name) {
-        // no-op
-    }
-
     public void onLeaderElected(String name) {
         if (topologyService != null && !topologyService.isZoneLeader()) {
             // this runtime is not the leader, ignore
