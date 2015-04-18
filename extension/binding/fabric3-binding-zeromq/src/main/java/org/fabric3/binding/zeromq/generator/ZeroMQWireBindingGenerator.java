@@ -80,9 +80,7 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         return generateTarget(contract, targetUri, metadata);
     }
 
-    public ZeroMQWireTarget generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding,
-                                                                   ServiceContract contract,
-                                                                   List<LogicalOperation> operations) {
+    public ZeroMQWireTarget generateServiceBindingTarget(LogicalBinding<ZeroMQBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         URI targetUri = binding.getParent().getUri();
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         return generateTarget(contract, targetUri, metadata);
