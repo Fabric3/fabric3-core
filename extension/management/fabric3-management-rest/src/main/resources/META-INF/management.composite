@@ -33,18 +33,6 @@
         <f3:implementation.system class="org.fabric3.management.rest.framework.runtime.RuntimeResourceService"/>
     </component>
 
-    <component name="DistributedDomainResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.DistributedDomainResourceService"/>
-    </component>
-
-    <component name="ZonesResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.zone.ZonesResourceService"/>
-    </component>
-
-    <component name="RuntimesResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.runtime.RuntimesResourceService"/>
-    </component>
-
     <component name="ContributionsResourceService">
         <f3:implementation.system class="org.fabric3.management.rest.framework.domain.contribution.ContributionsResourceService"/>
     </component>

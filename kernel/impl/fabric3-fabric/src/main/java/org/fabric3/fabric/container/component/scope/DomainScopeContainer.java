@@ -32,8 +32,7 @@ import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -47,28 +46,26 @@ import org.oasisopen.sca.annotation.Service;
  * the current host is elected zone leader.
  */
 @EagerInit
-@Service({ScopeContainer.class, TopologyListener.class})
-public class DomainScopeContainer extends SingletonScopeContainer implements TopologyListener {
+@Service(ScopeContainer.class)
+public class DomainScopeContainer extends SingletonScopeContainer {
     private HostInfo info;
-    private NodeTopologyService topologyService;
     private final List<QName> deferredContexts = new ArrayList<>();
     boolean activated;
+
+    @Reference(required = false)
+    protected DiscoveryAgent discoveryAgent;
 
     public DomainScopeContainer(@Reference HostInfo info, @Monitor ScopeContainerMonitor monitor) {
         super(Scope.DOMAIN, monitor);
         this.info = info;
     }
 
-    @Reference(required = false)
-    public void setTopologyService(List<NodeTopologyService> topologyServices) {
-        if (topologyServices.size() > 0) {
-            this.topologyService = topologyServices.get(0);
-        }
-    }
-
     @Init
     public void start() {
         super.start();
+        if (discoveryAgent != null) {
+            discoveryAgent.registerLeadershipListener(this::onLeaderChange);
+        }
     }
 
     @Destroy
@@ -80,9 +77,9 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     public void startContext(QName deployable) throws GroupInitializationException {
-        if (RuntimeMode.NODE == info.getRuntimeMode() && topologyService == null) {
+        if (RuntimeMode.NODE == info.getRuntimeMode() && discoveryAgent == null) {
             return;
-        } else if (RuntimeMode.NODE == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
+        } else if (RuntimeMode.NODE == info.getRuntimeMode() && !discoveryAgent.isLeader()) {
             // defer instantiation until this node becomes zone leader
             synchronized (deferredContexts) {
                 deferredContexts.add(deployable);
@@ -101,15 +98,14 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     public Object getInstance(ScopedComponent component){
-        if (topologyService != null && !activated) {
+        if (discoveryAgent != null && !activated) {
             throw new Fabric3Exception("Component instance not active: " + component.getUri());
         }
         return super.getInstance(component);
     }
 
-    public void onLeaderElected(String name) {
-        if (topologyService != null && !topologyService.isZoneLeader()) {
-            // this runtime is not the leader, ignore
+    public void onLeaderChange(boolean value) {
+        if (!value) {
             return;
         }
         activated = true;

@@ -20,14 +20,14 @@
 package org.fabric3.fabric.container.component.scope;
 
 import javax.xml.namespace.QName;
-import java.util.Collections;
+import java.util.function.Consumer;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.spi.federation.topology.NodeTopologyService;
+import org.fabric3.spi.discovery.DiscoveryAgent;
 
 /**
  *
@@ -56,10 +56,10 @@ public class DomainScopeContainerTestCase extends TestCase {
     }
 
     public void testZoneLeaderStart() throws Exception {
-        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
+        DiscoveryAgent discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(true);
 
-        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+        scopeContainer.discoveryAgent = discoveryAgent;
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(component.createInstance()).andReturn(instance);
@@ -68,37 +68,36 @@ public class DomainScopeContainerTestCase extends TestCase {
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
 
-        EasyMock.replay(component, info, topologyService);
+        EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
         scopeContainer.startContext(deployable);
         scopeContainer.stopContext(deployable);
-        EasyMock.verify(component, info, topologyService);
+        EasyMock.verify(component, info, discoveryAgent);
     }
 
     public void testNotZoneLeaderNoStart() throws Exception {
-        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(false);
+        DiscoveryAgent discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(false);
 
-        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+        scopeContainer.discoveryAgent = discoveryAgent;
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
-        EasyMock.replay(component, info, topologyService);
+        EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
         scopeContainer.startContext(deployable);
         scopeContainer.stopContext(deployable);
-        EasyMock.verify(component, info, topologyService);
+        EasyMock.verify(component, info, discoveryAgent);
     }
 
     public void testZoneLeaderElectedStart() throws Exception {
-        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(false);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
+        DiscoveryAgent discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(false);
 
-        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+        scopeContainer.discoveryAgent = discoveryAgent;
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(component.createInstance()).andReturn(instance);
@@ -107,27 +106,29 @@ public class DomainScopeContainerTestCase extends TestCase {
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
 
-        EasyMock.replay(component, info, topologyService);
+        EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
         scopeContainer.startContext(deployable);
 
-        scopeContainer.onLeaderElected("runtime");
+        scopeContainer.onLeaderChange(true);
 
         scopeContainer.stopContext(deployable);
-        EasyMock.verify(component, info, topologyService);
+        EasyMock.verify(component, info, discoveryAgent);
     }
 
+    @SuppressWarnings("unchecked")
     public void testStopContainer() throws Exception {
-        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(false).times(2);
+        DiscoveryAgent discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
+        discoveryAgent.registerLeadershipListener(EasyMock.isA(Consumer.class));
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(false).times(2);
 
-        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+        scopeContainer.discoveryAgent = discoveryAgent;
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
-        EasyMock.replay(component, info, topologyService);
+        EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
         scopeContainer.startContext(deployable);
@@ -136,14 +137,14 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.start();
         scopeContainer.startContext(deployable);
 
-        EasyMock.verify(component, info, topologyService);
+        EasyMock.verify(component, info, discoveryAgent);
     }
 
     public void testStopAllContexts() throws Exception {
-        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
+        DiscoveryAgent discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(true);
 
-        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+        scopeContainer.discoveryAgent = discoveryAgent;
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(component.createInstance()).andReturn(instance);
@@ -153,20 +154,20 @@ public class DomainScopeContainerTestCase extends TestCase {
 
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
 
-        EasyMock.replay(component, info, topologyService);
+        EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
         scopeContainer.startContext(deployable);
         scopeContainer.stopAllContexts();
 
-        EasyMock.verify(component, info, topologyService);
+        EasyMock.verify(component, info, discoveryAgent);
     }
 
     public void testStopContext() throws Exception {
-        NodeTopologyService topologyService = EasyMock.createMock(NodeTopologyService.class);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
+        DiscoveryAgent topologyService = EasyMock.createMock(DiscoveryAgent.class);
+        EasyMock.expect(topologyService.isLeader()).andReturn(true);
 
-        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+        scopeContainer.discoveryAgent = topologyService;
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         EasyMock.expect(component.createInstance()).andReturn(instance);

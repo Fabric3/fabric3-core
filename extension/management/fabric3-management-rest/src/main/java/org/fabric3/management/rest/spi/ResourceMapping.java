@@ -33,7 +33,6 @@ public class ResourceMapping {
     private Verb verb;
     private Method method;
     private Object instance;
-    private boolean replicate;
     private TransformerPair pair;
     private Set<Role> roles;
 
@@ -42,8 +41,8 @@ public class ResourceMapping {
      *
      * @param identifier   the identifier used to group a set of mappings during deployment and undeployment
      * @param path         the resource path of the managed artifact relative to the base management URL
-     * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
-     *                     resource, the path will be relative to the base management URL.
+     * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level resource, the
+     *                     path will be relative to the base management URL.
      * @param verb         the HTTP verb the management operation is mapped to
      * @param method       the management operation
      * @param instance     the managed artifact
@@ -56,32 +55,6 @@ public class ResourceMapping {
                            Verb verb,
                            Method method,
                            Object instance,
-                           TransformerPair pair,
-                           Set<Role> roles) {
-        this(identifier, path, relativePath, verb, method, instance, false, pair, roles);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param identifier   the identifier used to group a set of mappings during deployment and undeployment
-     * @param path         the resource path of the managed artifact relative to the base management URL
-     * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
-     *                     resource, the path will be relative to the base management URL.
-     * @param verb         the HTTP verb the management operation is mapped to
-     * @param method       the management operation
-     * @param instance     the managed artifact
-     * @param replicate    true if invocations should be replicated in a cluster
-     * @param pair         the transformer pair used to (de)serialize request/response types
-     * @param roles        the roles required to invoke the operation
-     */
-    public ResourceMapping(String identifier,
-                           String path,
-                           String relativePath,
-                           Verb verb,
-                           Method method,
-                           Object instance,
-                           boolean replicate,
                            TransformerPair pair,
                            Set<Role> roles) {
         this.identifier = identifier;
@@ -90,7 +63,6 @@ public class ResourceMapping {
         this.verb = verb;
         this.method = method;
         this.instance = instance;
-        this.replicate = replicate;
         this.pair = pair;
         this.roles = roles;
     }
@@ -114,8 +86,8 @@ public class ResourceMapping {
     }
 
     /**
-     * Returns the path relative to its containing resource.  If the managed artifact is a top-level resource, the path will be relative to the base
-     * management URL.
+     * Returns the path relative to its containing resource.  If the managed artifact is a top-level resource, the path will be relative to the base management
+     * URL.
      *
      * @return the path relative to its containing resource
      */
@@ -146,7 +118,6 @@ public class ResourceMapping {
         return verb;
     }
 
-
     /**
      * Returns the operation.
      *
@@ -163,15 +134,6 @@ public class ResourceMapping {
      */
     public Object getInstance() {
         return instance;
-    }
-
-    /**
-     * Returns true if invocations should be replicated in a cluster.
-     *
-     * @return true if invocations should be replicated in a cluster
-     */
-    public boolean isReplicate() {
-        return replicate;
     }
 
     /**

@@ -20,6 +20,7 @@ package org.fabric3.implementation.timer.runtime;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -30,7 +31,7 @@ import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.federation.topology.NodeTopologyService;
+import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -38,23 +39,24 @@ import org.fabric3.timer.spi.TimerService;
  */
 public class TimerComponentDomainScopeTestCase extends TestCase {
     private TimerComponent component;
-    private NodeTopologyService topologyService;
+    private DiscoveryAgent discoveryAgent;
     private TimerService timerService;
 
+    @SuppressWarnings("unchecked")
     public void testNotLeaderNoSchedule() throws Exception {
+        discoveryAgent.registerLeadershipListener(EasyMock.isA(Consumer.class));
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(false);
+        discoveryAgent.unRegisterLeadershipListener(EasyMock.isA(Consumer.class));
 
-        topologyService.register(component);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(false);
-        topologyService.deregister(component);
-
-        EasyMock.replay(timerService, topologyService);
+        EasyMock.replay(timerService, discoveryAgent);
 
         component.start();
         component.stop();
 
-        EasyMock.verify(timerService, topologyService);
+        EasyMock.verify(timerService, discoveryAgent);
     }
 
+    @SuppressWarnings("unchecked")
     public void testScheduleWhenElectedLeader() throws Exception {
 
         ScheduledFuture<?> future = EasyMock.createNiceMock(ScheduledFuture.class);
@@ -67,19 +69,18 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
                                             EasyMock.eq(TimeUnit.MILLISECONDS));
         EasyMock.expectLastCall().andReturn(future);
 
-        topologyService.register(component);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(false);
-        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
-        topologyService.deregister(component);
+        discoveryAgent.registerLeadershipListener(EasyMock.isA(Consumer.class));
+        EasyMock.expect(discoveryAgent.isLeader()).andReturn(false);
+        discoveryAgent.unRegisterLeadershipListener(EasyMock.isA(Consumer.class));
 
-        EasyMock.replay(timerService, topologyService, future);
+        EasyMock.replay(timerService, discoveryAgent, future);
 
         component.start();
-        component.onLeaderElected("vm");
+        component.onLeaderElected(true);
 
         component.stop();
 
-        EasyMock.verify(timerService, topologyService, future);
+        EasyMock.verify(timerService, discoveryAgent, future);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -107,7 +108,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
 
         EasyMock.replay(container, monitor, factory, info);
 
-        topologyService = EasyMock.createMock(NodeTopologyService.class);
+        discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
 
         component = new TimerComponent(null,
                                        null,
@@ -117,8 +118,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
                                        factory,
                                        container,
                                        timerService,
-                                       null,
-                                       topologyService,
+                                       null, discoveryAgent,
                                        info,
                                        monitor,
                                        true);

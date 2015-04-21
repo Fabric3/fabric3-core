@@ -37,6 +37,7 @@ import org.fabric3.implementation.timer.provision.TimerPhysicalComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
+import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -57,11 +58,13 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
     private TimerService timerService;
     private TransactionManager tm;
     private HostInfo info;
-    private NodeTopologyService topologyService;
     private InvokerMonitor monitor;
 
     private List<TimerComponent> scheduleQueue;
     private boolean runtimeStarted;
+
+    @Reference(required = false)
+    protected DiscoveryAgent discoveryAgent;
 
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                  @Reference ImplementationManagerFactoryBuilder factoryBuilder,
@@ -83,11 +86,6 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
         this.monitor = monitor;
         eventService.subscribe(RuntimeStart.class, this);
         scheduleQueue = new ArrayList<>();
-    }
-
-    @Reference(required = false)
-    public void setTopologyService(NodeTopologyService topologyService) {
-        this.topologyService = topologyService;
     }
 
     public TimerComponent build(TimerPhysicalComponent physicalComponent) {
@@ -113,7 +111,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
                                                       scopeContainer,
                                                       timerService,
                                                       tm,
-                                                      topologyService,
+                                                      discoveryAgent,
                                                       info,
                                                       monitor,
                                                       runtimeStarted);

@@ -14,11 +14,6 @@
         <f3:implementation.system class="org.fabric3.federation.node.executor.DeploymentSnapshotCommandExecutor"/>
     </component>
 
-    <component name="SnapshotDeployListener">
-        <f3:implementation.system class="org.fabric3.federation.node.deploy.SnapshotDeployListener"/>
-        <reference name="lcm" target="LogicalComponentManager"/>
-    </component>
-
     <component name="DomainMergeService">
         <f3:implementation.system class="org.fabric3.federation.node.merge.DomainMergeServiceImpl"/>
         <reference name="lcm" target="LogicalComponentManager"/>

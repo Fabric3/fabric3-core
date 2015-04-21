@@ -26,7 +26,7 @@ public class EtcdDiscoveryAgentTest extends TestCase {
                                                     + "\"createdIndex\":119}}";
 
     private static final String RESPONSE_GET = "{\"action\":\"get\",\"node\":{\"key\":\"/subdomain/services\",\"dir\":true,"
-                                               + "\"nodes\":[{\"key\":\"/services/runtime1:foo\",\"value\":\"{\\\"key\\\":\\\"runtime1:foo\\\","
+                                               + "\"nodes\":[{\"key\":\"/services/runtime1:foo\",\"value\":\"{"
                                                + "\\\"name\\\":\\\"foo\\\",\\\"transport\\\":\\\"http\\\",\\\"address\\\":\\\"localhost\\\","
                                                + "\\\"port\\\":2001,\\\"path\\\":\\\"foo\\\"}\",\"modifiedIndex\":120,\"createdIndex\":120}],"
                                                + "\"modifiedIndex\":14,\"createdIndex\":14}}";
@@ -67,7 +67,6 @@ public class EtcdDiscoveryAgentTest extends TestCase {
 
         ServiceEntry entry = new ServiceEntry();
         entry.setName("foo");
-        entry.setKey("runtime1:foo");
         entry.setAddress("localhost");
         entry.setPort(2001);
         entry.setPath("foo");

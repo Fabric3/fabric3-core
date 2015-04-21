@@ -4,7 +4,6 @@ package org.fabric3.spi.discovery;
  * Base discovery entry.
  */
 public abstract class AbstractEntry {
-    private String key;
     private String name;
     private String transport;
 
@@ -12,25 +11,6 @@ public abstract class AbstractEntry {
     private int port;
 
     private boolean frozen;
-
-    /**
-     * Returns the discovery entry key.
-     *
-     * @return the key
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * Sets the discovery entry key.
-     *
-     * @param key the key
-     */
-    public void setKey(String key) {
-        check();
-        this.key = key;
-    }
 
     /**
      * Returns the entry name.

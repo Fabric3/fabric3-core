@@ -59,8 +59,8 @@ public class ResourceInvoker {
 
     /**
      * Invokes all GET operations managed artifact and returns values as a single (root) resource representation. The merged values will be included a
-     * properties where the property name is the relative path of the sub-resource. In addition to the merged values, the representation will contain
-     * a links property to sub-resources, keyed by sub-resource name (relative path). For example:
+     * properties where the property name is the relative path of the sub-resource. In addition to the merged values, the representation will contain a links
+     * property to sub-resources, keyed by sub-resource name (relative path). For example:
      *
      * <pre>
      * {"selfLink":{...},
@@ -73,10 +73,10 @@ public class ResourceInvoker {
      *
      * @param request the HTTP request
      * @return the resource representation
-     * @throws Fabric3Exception if there is an error processing the request
-     * @throws ResourceException           if the client is not authorized to invoke an operation
+     * @throws Fabric3Exception  if there is an error processing the request
+     * @throws ResourceException if the client is not authorized to invoke an operation
      */
-    public Resource invoke(HttpServletRequest request) throws Fabric3Exception, ResourceException {
+    public Resource invoke(HttpServletRequest request) throws Fabric3Exception {
         try {
             WorkContext workContext = WorkContextCache.getThreadWorkContext();
             if (workContext == null) {

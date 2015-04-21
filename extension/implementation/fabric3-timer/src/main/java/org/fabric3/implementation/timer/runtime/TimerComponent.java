@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
+import java.util.function.Consumer;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -32,20 +33,19 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
 
 /**
  * A timer component implementation.
  */
-public class TimerComponent extends JavaComponent implements TopologyListener {
+public class TimerComponent extends JavaComponent {
     private TimerData data;
     private Class<?> implementationClass;
     private TimerService timerService;
     private ScheduledFuture<?> future;
-    private NodeTopologyService topologyService;
+    private DiscoveryAgent discoveryAgent;
     private InvokerMonitor monitor;
     private boolean scheduleOnStart;
     private Scope scope;
@@ -53,6 +53,8 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     private ClassLoader classLoader;
     private TransactionManager tm;
     private boolean transactional;
+
+    private Consumer<Boolean> callback = this::onLeaderElected;
 
     public TimerComponent(URI componentId,
                           QName deployable,
@@ -63,7 +65,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           ScopeContainer scopeContainer,
                           TimerService timerService,
                           TransactionManager tm,
-                          NodeTopologyService topologyService,
+                          DiscoveryAgent discoveryAgent,
                           HostInfo info,
                           InvokerMonitor monitor,
                           boolean scheduleOnStart) {
@@ -72,7 +74,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         this.implementationClass = implementationClass;
         this.transactional = transactional;
         this.timerService = timerService;
-        this.topologyService = topologyService;
+        this.discoveryAgent = discoveryAgent;
         this.monitor = monitor;
         this.scheduleOnStart = scheduleOnStart;
         this.scope = scopeContainer.getScope();
@@ -84,10 +86,10 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     public void start() throws Fabric3Exception {
         super.start();
         if (Scope.DOMAIN.equals(scope)) {
-            if (topologyService != null) {
-                topologyService.register(this);
+            if (discoveryAgent != null) {
+                discoveryAgent.registerLeadershipListener(callback);
             }
-            if (RuntimeMode.NODE == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
+            if (RuntimeMode.NODE == info.getRuntimeMode() && !discoveryAgent.isLeader()) {
                 // defer scheduling until this node becomes zone leader
                 return;
             }
@@ -100,19 +102,19 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
 
     public void stop() throws Fabric3Exception {
         super.stop();
-        if (topologyService != null && Scope.DOMAIN.equals(scope)) {
-            topologyService.deregister(this);
+        if (discoveryAgent != null && Scope.DOMAIN.equals(scope)) {
+            discoveryAgent.unRegisterLeadershipListener(callback);
         }
         if (future != null && !future.isCancelled() && !future.isDone()) {
             future.cancel(true);
         }
     }
 
-    public void onLeaderElected(String name) {
+    public void onLeaderElected(boolean value) {
         if (!Scope.DOMAIN.equals(scope)) {
             return;
         }
-        if (topologyService != null && !topologyService.isZoneLeader()) {
+        if (!value) {
             // this runtime is not the leader, ignore
             return;
         }

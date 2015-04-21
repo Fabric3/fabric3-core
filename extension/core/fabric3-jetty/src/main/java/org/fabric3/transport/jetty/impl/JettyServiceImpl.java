@@ -55,15 +55,12 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
-import org.fabric3.spi.federation.addressing.AddressAnnouncement;
-import org.fabric3.spi.federation.addressing.AddressCache;
-import org.fabric3.spi.federation.addressing.EndpointConstants;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.discovery.DiscoveryAgent;
+import org.fabric3.spi.discovery.ServiceEntry;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomainCompleted;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
@@ -81,7 +78,6 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-import static org.fabric3.spi.federation.addressing.AddressAnnouncement.Type.ACTIVATED;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -107,7 +103,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private HostInfo hostInfo;
     private TransportMonitor monitor;
 
-    private AddressCache addressCache;
+    private DiscoveryAgent discoveryAgent;
 
     private KeyStoreManager keyStoreManager;
     private AuthenticationService authenticationService;
@@ -195,8 +191,8 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Reference(required = false)
-    public void setAddressCache(AddressCache addressCache) {
-        this.addressCache = addressCache;
+    public void setAgent(DiscoveryAgent discoveryAgent) {
+        this.discoveryAgent = discoveryAgent;
     }
 
     @Property(required = false)
@@ -350,11 +346,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 managementService.export(MAPPINGS, "HTTP", "Servlet management beans", servletHandler);
                 managementService.export(SESSIONS, "HTTP", "Servlet session manager", sessionManager);
             }
-            eventService.subscribe(JoinDomainCompleted.class, new Fabric3EventListener<JoinDomainCompleted>() {
-                public void onEvent(JoinDomainCompleted event) {
-                    registerSockets();
-                }
-            });
+            eventService.subscribe(JoinDomainCompleted.class, event -> registerSockets());
         } catch (Exception e) {
             throw new Fabric3Exception("Error starting Jetty service", e);
         } finally {
@@ -634,16 +626,21 @@ public class JettyServiceImpl implements JettyService, Transport {
                     host = InetAddress.getLocalHost().getHostAddress();
                 }
 
-                String runtimeName = hostInfo.getRuntimeName();
-                String zone = hostInfo.getZoneName();
-                SocketAddress httpAddress = new SocketAddress(runtimeName, zone, "http", host, selectedHttp);
-                AddressAnnouncement httpEvent = new AddressAnnouncement(EndpointConstants.HTTP_SERVER, ACTIVATED, httpAddress);
-                addressCache.publish(httpEvent);
+                ServiceEntry httpEntry = new ServiceEntry();
+                httpEntry.setAddress(host);
+                httpEntry.setPort(selectedHttp.getNumber());
+                httpEntry.setName("f3.HTTP");
+                httpEntry.setTransport("http");
+                discoveryAgent.register(httpEntry);
 
                 if (isHttpsEnabled()) {
-                    SocketAddress httpsAddress = new SocketAddress(runtimeName, zone, "https", host, selectedHttps);
-                    AddressAnnouncement httpsEvent = new AddressAnnouncement(EndpointConstants.HTTPS_SERVER, ACTIVATED, httpsAddress);
-                    addressCache.publish(httpsEvent);
+                    ServiceEntry httpsEntry = new ServiceEntry();
+                    httpsEntry.setAddress(host);
+                    httpsEntry.setPort(selectedHttps.getNumber());
+                    httpsEntry.setName("f3.HTTPS");
+                    httpsEntry.setTransport("https");
+
+                    discoveryAgent.register(httpsEntry);
                 }
             } catch (UnknownHostException e) {
                 monitor.exception("Error registering sockets", e);
