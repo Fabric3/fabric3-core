@@ -5,10 +5,13 @@ package org.fabric3.spi.discovery;
  */
 public abstract class AbstractEntry {
     private String key;
-    private String binding;
+    private String name;
+    private String transport;
 
     private String address;
     private int port;
+
+    private boolean frozen;
 
     /**
      * Returns the discovery entry key.
@@ -25,7 +28,27 @@ public abstract class AbstractEntry {
      * @param key the key
      */
     public void setKey(String key) {
+        check();
         this.key = key;
+    }
+
+    /**
+     * Returns the entry name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the entry name.
+     *
+     * @param name the name
+     */
+    public void setName(String name) {
+        check();
+        this.name = name;
     }
 
     /**
@@ -33,17 +56,18 @@ public abstract class AbstractEntry {
      *
      * @return the binding type
      */
-    public String getBinding() {
-        return binding;
+    public String getTransport() {
+        return transport;
     }
 
     /**
      * Sets the binding type.
      *
-     * @param binding the binding type
+     * @param transport the binding type
      */
-    public void setBinding(String binding) {
-        this.binding = binding;
+    public void setTransport(String transport) {
+        check();
+        this.transport = transport;
     }
 
     /**
@@ -61,6 +85,7 @@ public abstract class AbstractEntry {
      * @param address the host address
      */
     public void setAddress(String address) {
+        check();
         this.address = address;
     }
 
@@ -79,6 +104,17 @@ public abstract class AbstractEntry {
      * @param port the port number
      */
     public void setPort(int port) {
+        check();
         this.port = port;
+    }
+
+    public void freeze() {
+        frozen = true;
+    }
+
+    protected void check() {
+        if (frozen) {
+            throw new IllegalStateException("Entry cannot be modified");
+        }
     }
 }

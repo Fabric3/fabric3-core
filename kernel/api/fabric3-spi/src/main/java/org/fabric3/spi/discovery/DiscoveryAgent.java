@@ -1,7 +1,7 @@
 package org.fabric3.spi.discovery;
 
 import java.util.List;
-import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -33,11 +33,32 @@ public interface DiscoveryAgent {
     List<ChannelEntry> getChannelEntries(String name);
 
     /**
-     * Registers a service or channel.
+     * Registers a service.
      *
      * @param entry the entry
      */
-    void register(AbstractEntry entry);
+    void register(ServiceEntry entry);
+
+    /**
+     * Removes a service entry.
+     *
+     * @param name the service name
+     */
+    void unregisterService(String name);
+
+    /**
+     * Registers a channel.
+     *
+     * @param entry the entry
+     */
+    void register(ChannelEntry entry);
+
+    /**
+     * Removes a channel entry.
+     *
+     * @param name the channel name
+     */
+    void unregisterChannel(String name);
 
     /**
      * Registers to receive callbacks when the runtime leadership status changes.
@@ -47,11 +68,35 @@ public interface DiscoveryAgent {
     void registerLeadershipListener(Consumer<Boolean> consumer);
 
     /**
-     * Registers to receive callbacks when services with a particular binding change.
+     * Registers to receive callbacks when service addresses change.
      *
-     * @param binding  the binding type
-     * @param consumer the callback
+     * @param name     the service name name
+     * @param listener the callback
      */
-    void registerDiscoveryListener(String binding, Consumer<Map<String, Object>> consumer);
+    void registerServiceListener(String name, BiConsumer<EntryChange, ServiceEntry> listener);
+
+    /**
+     * De-registers a listener.
+     *
+     * @param name     the service address to de-register
+     * @param listener the listener
+     */
+    void unregisterServiceListener(String name, BiConsumer<EntryChange, ServiceEntry> listener);
+
+    /**
+     * Registers to receive callbacks when channel addresses change.
+     *
+     * @param name     the channel name
+     * @param listener the callback
+     */
+    void registerChannelListener(String name, BiConsumer<EntryChange, ChannelEntry> listener);
+
+    /**
+     * De-registers a listener.
+     *
+     * @param name     the channel address to de-register
+     * @param listener the listener
+     */
+    void unregisterChannelListener(String name, BiConsumer<EntryChange, ChannelEntry> listener);
 
 }

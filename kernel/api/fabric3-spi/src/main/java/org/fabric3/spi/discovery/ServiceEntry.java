@@ -21,6 +21,7 @@ public class ServiceEntry extends AbstractEntry {
      * @param path the path
      */
     public void setPath(String path) {
+        check();
         this.path = path;
     }
 }
