@@ -68,6 +68,13 @@ public interface DiscoveryAgent {
     void registerLeadershipListener(Consumer<Boolean> consumer);
 
     /**
+     * Unregisters the leader election listener.
+     *
+     * @param consumer the listener to unregister.
+     */
+    void unRegisterLeadershipListener(Consumer<Boolean> consumer);
+
+    /**
      * Registers to receive callbacks when service addresses change.
      *
      * @param name     the service name name

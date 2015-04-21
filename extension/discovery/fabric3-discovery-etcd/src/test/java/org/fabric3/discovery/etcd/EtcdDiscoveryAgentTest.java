@@ -14,7 +14,6 @@ import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
-import org.fabric3.spi.runtime.event.EventService;
 import org.junit.Assert;
 
 public class EtcdDiscoveryAgentTest extends TestCase {
@@ -160,9 +159,8 @@ public class EtcdDiscoveryAgentTest extends TestCase {
     public void setUp() throws Exception {
         agent = new EtcdDiscoveryAgent();
         agent.setAddresses("http://127.0.0.1:" + PORT);
-
+        agent.leaderElectionEnabled = false;
         agent.executorService = EasyMock.createNiceMock(ExecutorService.class);
-        agent.eventService = EasyMock.createNiceMock(EventService.class);
 
         agent.info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(agent.info.getRuntimeName()).andReturn("runtime1").anyTimes();
@@ -174,7 +172,7 @@ public class EtcdDiscoveryAgentTest extends TestCase {
         agent.monitor.debug(EasyMock.isA(String.class), EasyMock.isA(String.class));
         EasyMock.expectLastCall().anyTimes();
 
-        EasyMock.replay(agent.info, agent.monitor, agent.executorService, agent.eventService);
+        EasyMock.replay(agent.info, agent.monitor, agent.executorService);
 
         server = new MockWebServer();
     }

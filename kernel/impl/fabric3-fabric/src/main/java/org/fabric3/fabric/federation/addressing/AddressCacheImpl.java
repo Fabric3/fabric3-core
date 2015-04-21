@@ -269,7 +269,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     private boolean isNode() {
-        return RuntimeMode.NODE == info.getRuntimeMode();
+        return RuntimeMode.NODE == info.getRuntimeMode() && topologyService != null;
     }
 
 }

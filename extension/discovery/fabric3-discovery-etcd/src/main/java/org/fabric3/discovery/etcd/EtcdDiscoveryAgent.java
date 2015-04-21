@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -29,28 +29,52 @@ import org.fabric3.spi.discovery.ChannelEntry;
 import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.JoinDomain;
 import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Agent that works with an etcd cluster.
+ *
+ * Service and channel entries are placed under {@code [domain]/services/} and {@code [domain]/channels} respectively. The top-level {@code [domain]} directory
+ * is watched for changes in a background thread, which are dispatched to registered listeners. Each entry has a TTL, which is periodically updated in another
+ * background thread.
+ *
+ * This implementation also supports leader election based on the ZooKeeper algorithm described here:
+ *
+ * https://zookeeper.apache.org/doc/trunk/recipes.html#sc_leaderElection
+ *
+ * Each runtime posts an in-order key with its name to {@code [domain]/[leader/[zone]}. The runtime which has posted the first key (i.e. the one with the lowest
+ * created index) is elected leader. Leadership changes are watched by the same background thread which monitors service and channel entry changes. The
+ * background TTL thread also periodically updates leadership entries.
  */
+@EagerInit
 public class EtcdDiscoveryAgent implements DiscoveryAgent {
     public static final String V2_KEYS = "/v2/keys/";
 
-    private String[] addresses;
-    private volatile String pinnedAddress;
+    private String[] addresses = {"http://127.0.0.1:4001"};
 
-    private int retries = 3;
-    private long retryInterval = 2000;
-    private long sleepInterval = 2000;
-    private long ttl = 10000; // time-to-live im milliseconds
+    @Property(required = false)
+    @Source("$systemConfig/f3:etcd/@retries")
+    protected int retries = 3;
 
-    private AtomicBoolean active;
+    @Property(required = false)
+    @Source("$systemConfig/f3:etcd/@retry.interval")
+    protected long retryInterval = 2000;
+
+    @Property(required = false)
+    @Source("$systemConfig/f3:etcd/@sleep.interval")
+    protected long sleepInterval = 2000;
+
+    @Property(required = false)
+    @Source("$systemConfig/f3:etcd/@ttl")
+    protected long ttl = 10000; // time-to-live im milliseconds
+
+    protected boolean leaderElectionEnabled = true;  // for testing
+
+    private volatile boolean active;
 
     private String authority;
     private OkHttpClient client;
@@ -59,16 +83,18 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
 
     private Map<String, List<BiConsumer<EntryChange, ServiceEntry>>> serviceListeners = new HashMap<>(); // service name to listeners
     private Map<String, List<BiConsumer<EntryChange, ChannelEntry>>> channelListeners = new HashMap<>(); // channel name to listeners
+    private List<Consumer<Boolean>> leaderListeners = new ArrayList<>();
+
     private Map<String, Request> updatingEntries = new HashMap<>();
+
+    private volatile String pinnedAddress;
+    private volatile String currentLeader;
 
     @Reference
     protected HostInfo info;
 
     @Reference
     protected ExecutorService executorService;
-
-    @Reference
-    protected EventService eventService;
 
     @Monitor
     protected MonitorChannel monitor;
@@ -77,34 +103,36 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
     @Source("$systemConfig/f3:etcd/@addresses")
     public void setAddresses(String value) {
         List<String> list = Arrays.asList(value.split(" "));
-        Collections.shuffle(list);  // randomize the array so different addresses are picked on runtimes
+        Collections.shuffle(list);  // randomize the array so different addresses are picked on runtimes when booted
         addresses = list.toArray(new String[list.size()]);
     }
 
     @Init
     public void init() {
         authority = info.getDomain().getAuthority();
-        active = new AtomicBoolean(true);
+        active = true;
         client = new OkHttpClient();
         client.setConnectTimeout(0, TimeUnit.MILLISECONDS);
         mapper = new ObjectMapper();
         pinnedAddress = getAddress();
 
+        if (leaderElectionEnabled) {
+            createLeaderEntry();
+            checkLeader();
+        }
+
         executorService.submit(this::ttlUpdateTask);
         executorService.submit(this::changeListenerTask);
-
-        eventService.subscribe(JoinDomain.class, (event) -> {
-
-        });
     }
 
     @Destroy
     void destroy() {
-        active.set(false);
+        active = false;
     }
 
     public boolean isLeader() {
-        return false;
+        String leader = currentLeader;
+        return leader != null && leader.equals(info.getRuntimeName());
     }
 
     @SuppressWarnings("unchecked")
@@ -117,6 +145,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
     }
 
     public void register(ServiceEntry entry) {
+        monitor.debug("Registering {0} with etcd", entry.getName());
         register(entry, "services");
     }
 
@@ -129,10 +158,16 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
     }
 
     public void register(ChannelEntry entry) {
+        monitor.debug("Registering {0} with etcd", entry.getName());
         register(entry, "channels");
     }
 
     public void registerLeadershipListener(Consumer<Boolean> consumer) {
+        leaderListeners.add(consumer);
+    }
+
+    public void unRegisterLeadershipListener(Consumer<Boolean> consumer) {
+        leaderListeners.remove(consumer);
     }
 
     public void registerServiceListener(String name, BiConsumer<EntryChange, ServiceEntry> listener) {
@@ -168,9 +203,9 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
     /**
      * Listens for changes to etcd keys and notifies registered listeners.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "StatementWithEmptyBody"})
     private void changeListenerTask() {
-        while (active.get()) {
+        while (active) {
             try {
                 String address = pinnedAddress;
                 Request request = new Request.Builder().url(address + "/v2/keys/" + authority + "?wait=true&recursive=true").get().build();
@@ -184,6 +219,10 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
                         processChange((Map) data.get("prevNode"), EntryChange.DELETE);
                     } else if ("expire".equals(action)) {
                         processChange((Map) data.get("prevNode"), EntryChange.EXPIRE);
+                    } else if ("create".equals(action)) {
+                        // ignore creates
+                    } else if ("update".equals(action)) {
+                        // ignore updates as they will be triggered by ttl updates
                     } else {
                         monitor.debug("Invalid action returned from etcd key watch: " + action);
                     }
@@ -196,7 +235,6 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
                     pinnedAddress = getAddress();
                 }
             }
-
         }
     }
 
@@ -204,7 +242,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
      * Updates service and channel entries periodically (half the TTL value).
      */
     private void ttlUpdateTask() {
-        while (active.get()) {
+        while (active) {
             for (Map.Entry<String, Request> entry : updatingEntries.entrySet()) {
                 executeUpdate(entry.getKey(), entry.getValue());
             }
@@ -216,24 +254,32 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         }
     }
 
+    /**
+     * Processes a change received from etcd. Changes may be a modification of a service or channel entry, or a change in leadership.
+     *
+     * @param node   the change node
+     * @param change the change type
+     */
     @SuppressWarnings("unchecked")
     private void processChange(Map<String, Object> node, EntryChange change) {
         String value = (String) node.get("value");
         String key = (String) node.get("key");
         if (value != null) {
-            if (key.startsWith("/services/")) {
+            if (key.startsWith("/" + authority + "/services/")) {
                 notifyServiceChange(value, change);
-            } else if (key.startsWith("/channels/")) {
+            } else if (key.startsWith("/" + authority + "/channels/")) {
                 notifyChannelChange(value, change);
+            } else if (key.startsWith("/" + authority + "/leader/")) {
+                checkLeader();
             }
         } else {
             List<Map<String, Object>> nodes = (List<Map<String, Object>>) node.getOrDefault("nodes", Collections.emptyList());
             for (Map<String, Object> nodeEntry : nodes) {
                 String nodeValue = (String) nodeEntry.get("value");
                 if (nodeValue != null) {
-                    if (key.startsWith("/services/")) {
+                    if (key.startsWith("/" + authority + "/services/")) {
                         notifyServiceChange(value, change);
-                    } else if (key.startsWith("/channels/")) {
+                    } else if (key.startsWith("/" + authority + "/channels/")) {
                         notifyChannelChange(value, change);
                     }
                 }
@@ -241,6 +287,12 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         }
     }
 
+    /**
+     * Notifies listeners of a service change.
+     *
+     * @param value  the key value containing the service entry data
+     * @param change the change type
+     */
     private void notifyServiceChange(String value, EntryChange change) {
         try {
             ServiceEntry entry = mapper.readValue(value, ServiceEntry.class);
@@ -251,6 +303,12 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         }
     }
 
+    /**
+     * Notifies listeners of a channel change.
+     *
+     * @param value  the key value containing the channel entry data
+     * @param change the change type
+     */
     private void notifyChannelChange(String value, EntryChange change) {
         try {
             ChannelEntry entry = mapper.readValue(value, ChannelEntry.class);
@@ -261,6 +319,13 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         }
     }
 
+    /**
+     * Returns service or channel entries matching a name.
+     *
+     * @param type the service or channel type
+     * @param name the name
+     * @return the entries
+     */
     @SuppressWarnings("unchecked")
     private <T extends AbstractEntry> List<T> getEntries(Class<T> type, String name) {
         String prefix = ServiceEntry.class.equals(type) ? "services" : "channels";
@@ -300,6 +365,106 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         }
     }
 
+    /**
+     * POSTs a leader entry under {@code [domain]/leader/[zone]} as part of the leader election process.
+     */
+    private void createLeaderEntry() {
+        String expiration = String.valueOf(ttl / 1000); // convert to seconds used by etcd
+        RequestBody body = new FormEncodingBuilder().add("value", info.getRuntimeName()).add("ttl", expiration).build();
+        String key = "leader:" + info.getRuntimeName();
+
+        String address = pinnedAddress;
+        Request request = new Request.Builder().url(address + V2_KEYS + authority + "/leader/" + info.getZoneName()).post(body).build();
+        Optional<Response> optional = executeUpdate(key, request);
+        // get the key
+        optional.ifPresent(this::scheduleLeaderUpdate);
+
+    }
+
+    /**
+     * Schedules a leader update request to be run periodically
+     *
+     * @param response the response containing a newly created leader entry
+     */
+    @SuppressWarnings("unchecked")
+    private void scheduleLeaderUpdate(Response response) {
+        try {
+            Map<String, Object> body = mapper.readValue(response.body().string(), Map.class);
+            Map<String, Object> node = (Map<String, Object>) body.get("node");
+            if (node == null) {
+                monitor.debug("Leader node for zone {0} not found in etcd", info.getZoneName());
+                return;
+            }
+            String key = ((String) node.get("key")).substring(1);  // strip off leading '/'
+            String runtime = (String) node.get("value");
+            if (info.getRuntimeName().equals(runtime)) {
+                String expiration = String.valueOf(ttl / 1000); // convert to seconds used by etcd
+                FormEncodingBuilder builder = new FormEncodingBuilder();
+                RequestBody lBody = builder.add("value", info.getRuntimeName()).add("ttl", expiration).add("prevExist", "true").build();
+                String address = pinnedAddress;
+                Request lRequest = new Request.Builder().url(address + V2_KEYS + key).put(lBody).build();
+                updatingEntries.put(key, lRequest);
+            }
+        } catch (Exception e) {
+            monitor.debug("Error performing leader election with etcd", e);
+        }
+    }
+
+    /**
+     * Checks and records the zone leader.
+     */
+    @SuppressWarnings("unchecked")
+    private void checkLeader() {
+        String address = pinnedAddress;
+        while (true) {
+            try {
+                String url = address + V2_KEYS + authority + "/leader/" + info.getZoneName() + "?recursive=true&sorted=true";
+                Request request = new Request.Builder().url(url).build();
+                Response response = client.newCall(request).execute();
+                Map<String, Object> body = mapper.readValue(response.body().string(), Map.class);
+
+                Map<String, Object> leaderDir = (Map<String, Object>) body.get("node");
+                if (leaderDir == null) {
+                    monitor.debug("Leader directory {0} not found in etcd", info.getZoneName());
+                    return;
+                }
+                List<Map<String, Object>> nodes = (List<Map<String, Object>>) leaderDir.get("nodes");
+                if (nodes == null || nodes.isEmpty()) {
+                    return;
+                }
+                String previousLeader = currentLeader;
+                currentLeader = (String) nodes.get(0).get("value");
+                boolean isLeader = isLeader();
+                if (!currentLeader.equals(previousLeader)) {
+                    leaderListeners.forEach(c -> c.accept(isLeader));
+                    if (isLeader) {
+                        monitor.debug("Runtime elected leader for zone {0}", info.getZoneName());
+                    } else if (info.getRuntimeName().equals(previousLeader)) {
+                        monitor.debug("Runtime relinquishing leader role for zone {0}", info.getZoneName());
+                    }
+                }
+                return;
+            } catch (IOException e) {
+                monitor.severe("Error retrieving leadership information from etcd. Trying next etcd instance.", e);
+                synchronized (this) {
+                    pinnedAddress = getAddress();
+                    if (pinnedAddress.equals(address)) {
+                        // all of the available addresses have been recycled
+                        monitor.severe("No available etcd instance while retrieving leadership information");
+                        return;
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Registers a service or channel entry.
+     *
+     * @param entry     the entry
+     * @param entryType the type
+     */
     private void register(AbstractEntry entry, String entryType) {
         entry.freeze();
         String value;
@@ -321,7 +486,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         executeUpdate(key, request);
     }
 
-    private void executeUpdate(String key, Request request) {
+    private Optional<Response> executeUpdate(String key, Request request) {
         int retryCount = retries;
         while (retryCount > 0) {
             retryCount--;
@@ -330,8 +495,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
                 if (!response.isSuccessful()) {
                     monitor.severe("Error registering {0} with etc: {1}", key, response.code());
                 } else {
-                    monitor.debug("Registered {0} with etcd", key);
-                    return;
+                    return Optional.of(response);
                 }
             } catch (IOException e) {
                 monitor.severe("Error registering {0}. Waiting to retry.", key, e);
@@ -342,6 +506,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
                 Thread.currentThread().interrupt();
             }
         }
+        return Optional.empty();
     }
 
     private void unregister(String name, String entryType) {
