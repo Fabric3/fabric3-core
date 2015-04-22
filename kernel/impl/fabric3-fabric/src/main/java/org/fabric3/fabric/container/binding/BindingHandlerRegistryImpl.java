@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.container.binding.handler.BindingHandler;
-import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.binding.handler.BindingHandlerRegistryCallback;
+import org.fabric3.spi.container.binding.BindingHandler;
+import org.fabric3.spi.container.binding.BindingHandlerRegistry;
+import org.fabric3.spi.container.binding.BindingHandlerRegistryCallback;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 import org.oasisopen.sca.annotation.Reference;

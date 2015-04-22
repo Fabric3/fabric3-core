@@ -44,7 +44,7 @@ import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.binding.BindingHandler;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;

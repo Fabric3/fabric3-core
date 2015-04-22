@@ -24,8 +24,8 @@ import java.util.List;
 import org.fabric3.binding.ws.metro.provision.MetroWireSource;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
-import org.fabric3.spi.container.binding.handler.BindingHandler;
-import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.container.binding.BindingHandler;
+import org.fabric3.spi.container.binding.BindingHandlerRegistry;
 import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 

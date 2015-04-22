@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.container.binding.handler;
+package org.fabric3.spi.container.binding;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 

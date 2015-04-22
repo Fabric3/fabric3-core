@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.container.binding.handler;
+package org.fabric3.spi.container.binding;
 
 import javax.xml.namespace.QName;
-
-import org.fabric3.spi.container.invocation.Message;
+import java.util.List;
 
 /**
- * Invoked when a message is sent or received over a specific binding that supports handlers. Handlers may populate the message with transport or
- * contextual data and vice-versa.
+ * Implemented by a binding extension to receive callbacks when a {@link BindingHandler} becomes available or is removed.
  */
-public interface BindingHandler<T> {
+public interface BindingHandlerRegistryCallback<T> {
 
     /**
      * The fully qualified binding name corresponding to the SCA architected binding name scheme binding.xxxx.
@@ -34,19 +32,10 @@ public interface BindingHandler<T> {
     QName getType();
 
     /**
-     * Handles an outbound (reference-side) message.
+     * Called when the list of handlers for the binding changes, e.g. one was added or removed. Implementations may not modify the list.
      *
-     * @param context the binding-specific transport context
-     * @param message the current message
+     * @param handlers the new list of handlers
      */
-    void handleOutbound(Message message, T context);
-
-    /**
-     * Handles an inbound (service-side) message.
-     *
-     * @param context the binding-specific transport context
-     * @param message the current message
-     */
-    void handleInbound(T context, Message message);
+    void update(List<BindingHandler<T>> handlers);
 
 }

@@ -21,8 +21,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.binding.handler.BindingHandler;
-import org.fabric3.spi.container.binding.handler.BindingHandlerRegistryCallback;
+import org.fabric3.spi.container.binding.BindingHandler;
+import org.fabric3.spi.container.binding.BindingHandlerRegistryCallback;
 
 /**
  *
