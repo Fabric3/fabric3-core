@@ -63,8 +63,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         this.info = info;
     }
 
-    public FileBindingWireSource generateSource(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
-            throws Fabric3Exception {
+    public FileBindingWireSource generateSource(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         validateServiceContract(contract);
         boolean dataHandler = isDataHandler(contract);
         FileBinding definition = binding.getDefinition();
@@ -87,20 +86,10 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         if (delay == -1) {
             delay = defaultDelay;
         }
-        return new FileBindingWireSource(uri,
-                                                   pattern,
-                                                   location,
-                                                   strategy,
-                                                   archiveLocation,
-                                                   errorLocation,
-                                                   adapterClass,
-                                                   adaptorUri,
-                                                   delay,
-                                                   dataHandler);
+        return new FileBindingWireSource(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay, dataHandler);
     }
 
-    public FileBindingWireTarget generateTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
-            throws Fabric3Exception {
+    public FileBindingWireTarget generateTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         validateReferenceContract(contract);
         FileBinding definition = binding.getDefinition();
         String location = definition.getLocation();
@@ -109,9 +98,7 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         return new FileBindingWireTarget(location, adapterClass, adaptorUri);
     }
 
-    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<FileBinding> binding,
-                                                                     ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws Fabric3Exception {
+    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         throw new UnsupportedOperationException();
     }
 
