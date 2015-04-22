@@ -41,9 +41,4 @@
         <f3:implementation.system class="org.fabric3.management.rest.framework.domain.deployment.DeploymentsResourceService"/>
     </component>
 
-    <component name="ComponentsResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.component.ComponentsResourceService"/>
-        <reference name="lcm" target="LogicalComponentManager"/>
-    </component>
-
 </composite>

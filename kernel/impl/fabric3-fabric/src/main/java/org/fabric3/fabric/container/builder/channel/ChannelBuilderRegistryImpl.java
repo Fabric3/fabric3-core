@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
-import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;

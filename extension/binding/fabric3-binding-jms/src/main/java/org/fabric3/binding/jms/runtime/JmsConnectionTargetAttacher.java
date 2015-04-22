@@ -32,7 +32,6 @@ import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.oasisopen.sca.annotation.Reference;
@@ -44,7 +43,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTarget> {
     private AdministeredObjectResolver resolver;
 
-    public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver, @Reference ChannelManager channelManager) {
+    public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver) {
         this.resolver = resolver;
     }
 

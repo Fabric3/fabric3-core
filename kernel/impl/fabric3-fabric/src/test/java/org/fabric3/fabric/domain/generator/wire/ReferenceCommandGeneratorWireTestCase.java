@@ -28,7 +28,7 @@ import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.fabric.container.command.ConnectionCommand;
-import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

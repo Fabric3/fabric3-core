@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.container.builder.ChannelConnector;
+import org.fabric3.fabric.container.builder.ChannelConnector;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

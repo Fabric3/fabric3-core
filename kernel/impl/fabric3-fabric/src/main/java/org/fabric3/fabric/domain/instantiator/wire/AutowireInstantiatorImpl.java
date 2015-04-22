@@ -29,7 +29,6 @@ import org.fabric3.api.model.type.component.Target;
 import org.fabric3.fabric.domain.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.ReferenceNotFound;
-import org.fabric3.spi.domain.instantiator.AutowireResolver;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;

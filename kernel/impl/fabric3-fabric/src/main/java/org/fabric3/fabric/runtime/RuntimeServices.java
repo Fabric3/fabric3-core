@@ -29,7 +29,7 @@ import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.LogicalComponentManager;
+import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 
 /**

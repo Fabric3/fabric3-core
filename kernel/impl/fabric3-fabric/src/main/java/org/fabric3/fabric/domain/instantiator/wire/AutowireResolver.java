@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.domain.instantiator;
+package org.fabric3.fabric.domain.instantiator.wire;
 
 import java.util.List;
 

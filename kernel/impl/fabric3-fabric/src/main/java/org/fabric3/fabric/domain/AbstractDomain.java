@@ -44,7 +44,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.fabric.domain.generator.Deployment;
 import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalComponent;

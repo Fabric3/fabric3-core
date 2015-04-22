@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.container.builder.channel;
+package org.fabric3.fabric.container.builder.channel;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannel;
 

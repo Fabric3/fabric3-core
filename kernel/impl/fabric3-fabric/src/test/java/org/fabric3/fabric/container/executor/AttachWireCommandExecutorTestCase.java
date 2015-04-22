@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.AttachWireCommandExecutor;
-import org.fabric3.spi.container.builder.Connector;
+import org.fabric3.fabric.container.builder.Connector;
 import org.fabric3.fabric.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalWire;
 
