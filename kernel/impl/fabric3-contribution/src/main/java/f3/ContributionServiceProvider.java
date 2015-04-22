@@ -62,6 +62,7 @@ import org.fabric3.contribution.processor.XmlIndexerRegistryImpl;
 import org.fabric3.contribution.processor.XmlProcessorRegistryImpl;
 import org.fabric3.contribution.processor.XmlResourceElementLoaderRegistryImpl;
 import org.fabric3.contribution.processor.XmlResourceProcessor;
+import org.fabric3.contribution.wire.ClassLoaderWireBuilderImpl;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.JavaContributionWireInstantiator;
@@ -91,6 +92,8 @@ public class ContributionServiceProvider {
         compositeBuilder.component(newBuilder(DependencyResolverImpl.class).build());
 
         compositeBuilder.component(newBuilder(JavaContributionWireGenerator.class).key(JavaContributionWire.class.getName()).build());
+
+        compositeBuilder.component(newBuilder(ClassLoaderWireBuilderImpl.class).build());
 
         compositeBuilder.component(newBuilder(LocationContributionWireGenerator.class).key(LocationContributionWire.class.getName()).build());
 

@@ -29,7 +29,6 @@ import org.fabric3.fabric.container.builder.ConnectorImpl;
 import org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistryImpl;
 import org.fabric3.fabric.container.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.container.builder.channel.ChannelTargetAttacher;
-import org.fabric3.fabric.container.builder.classloader.ClassLoaderWireBuilderImpl;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommandExecutor;
 import org.fabric3.fabric.container.command.AttachWireCommandExecutor;
 import org.fabric3.fabric.container.command.BuildChannelCommandExecutor;
@@ -181,8 +180,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(ConnectorImpl.class).build());
 
         compositeBuilder.component(newBuilder(ChannelConnectorImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ClassLoaderWireBuilderImpl.class).build());
 
         compositeBuilder.component(newBuilder(ChannelSourceAttacher.class).key(ChannelSource.class.getName()).build());
 

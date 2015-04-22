@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.fabric.container.builder.classloader;
+package org.fabric3.contribution.wire;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;

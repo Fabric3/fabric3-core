@@ -16,7 +16,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.builder.classloader;
+package org.fabric3.contribution.wire;
 
 import junit.framework.TestCase;
 
