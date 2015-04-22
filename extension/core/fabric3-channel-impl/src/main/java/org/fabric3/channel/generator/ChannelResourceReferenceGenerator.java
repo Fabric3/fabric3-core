@@ -21,7 +21,7 @@ package org.fabric3.channel.generator;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.channel.model.ChannelResourceReference;
 import org.fabric3.channel.provision.ChannelContextWireTarget;
-import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.oasisopen.sca.annotation.EagerInit;
 

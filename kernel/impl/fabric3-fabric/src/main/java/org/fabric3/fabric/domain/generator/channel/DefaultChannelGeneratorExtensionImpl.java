@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Channel;
-import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
+import org.fabric3.spi.domain.generator.ChannelGeneratorExtension;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannel;

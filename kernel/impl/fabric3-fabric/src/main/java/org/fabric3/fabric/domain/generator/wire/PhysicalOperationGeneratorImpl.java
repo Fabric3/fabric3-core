@@ -28,7 +28,7 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.contract.OperationResolver;
-import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptor;
 import org.fabric3.spi.model.physical.PhysicalOperation;

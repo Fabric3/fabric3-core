@@ -26,7 +26,7 @@ import org.fabric3.api.binding.ws.model.WsBinding;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.ws.metro.provision.MetroWireSource;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
+import org.fabric3.spi.domain.generator.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;

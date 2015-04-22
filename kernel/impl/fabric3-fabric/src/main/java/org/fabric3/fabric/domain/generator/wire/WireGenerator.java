@@ -16,7 +16,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.domain.generator.wire;
+package org.fabric3.fabric.domain.generator.wire;
 
 import java.net.URI;
 

@@ -23,7 +23,6 @@ import java.util.Optional;
 import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.fabric.container.command.ConnectionCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
-import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;

@@ -26,7 +26,7 @@ import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.fabric.container.command.Command;
-import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
+import org.fabric3.spi.domain.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalResource;

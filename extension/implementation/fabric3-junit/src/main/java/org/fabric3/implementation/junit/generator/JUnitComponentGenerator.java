@@ -35,7 +35,7 @@ import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.implementation.junit.provision.JUnitWireTarget;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

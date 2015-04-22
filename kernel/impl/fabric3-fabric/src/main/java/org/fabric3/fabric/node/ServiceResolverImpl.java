@@ -37,7 +37,7 @@ import org.fabric3.fabric.domain.instantiator.wire.AutowireResolver;
 import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.fabric.node.nonmanaged.NonManagedWireSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.domain.generator.wire.WireGenerator;
+import org.fabric3.fabric.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;

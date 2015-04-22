@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptor;
 import org.oasisopen.sca.annotation.EagerInit;

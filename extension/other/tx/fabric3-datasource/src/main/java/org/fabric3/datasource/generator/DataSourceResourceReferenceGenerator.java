@@ -21,7 +21,7 @@ package org.fabric3.datasource.generator;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.model.DataSourceResourceReference;
 import org.fabric3.datasource.provision.DataSourceWireTarget;
-import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.oasisopen.sca.annotation.EagerInit;
 

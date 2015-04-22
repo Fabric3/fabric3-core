@@ -26,7 +26,7 @@ import org.fabric3.cache.provision.PhysicalCacheSet;
 import org.fabric3.cache.spi.CacheResource;
 import org.fabric3.cache.spi.CacheResourceGenerator;
 import org.fabric3.cache.spi.PhysicalCacheResource;
-import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
+import org.fabric3.spi.domain.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

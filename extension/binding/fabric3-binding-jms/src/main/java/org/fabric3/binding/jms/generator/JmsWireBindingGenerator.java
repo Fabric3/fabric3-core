@@ -39,7 +39,7 @@ import org.fabric3.binding.jms.spi.provision.JmsWireSource;
 import org.fabric3.binding.jms.spi.provision.JmsWireTarget;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
+import org.fabric3.spi.domain.generator.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;

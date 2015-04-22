@@ -29,7 +29,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.fabric.container.command.ConnectionCommand;
-import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;

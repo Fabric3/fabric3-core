@@ -24,7 +24,7 @@ import java.net.URI;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

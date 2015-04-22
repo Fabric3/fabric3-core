@@ -25,7 +25,7 @@ import org.fabric3.api.binding.zeromq.model.ZeroMQBinding;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSource;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTarget;
-import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
+import org.fabric3.spi.domain.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;

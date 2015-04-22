@@ -21,7 +21,7 @@ package org.fabric3.async.generator;
 import java.util.Optional;
 
 import org.fabric3.async.provision.PhysicalNonBlockingInterceptor;
-import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptor;
 import org.oasisopen.sca.annotation.EagerInit;

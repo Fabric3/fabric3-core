@@ -26,7 +26,7 @@ import org.fabric3.api.binding.rs.model.RsBinding;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.rs.provision.RsWireSource;
 import org.fabric3.binding.rs.provision.RsWireTarget;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
+import org.fabric3.spi.domain.generator.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;

@@ -31,7 +31,7 @@ import org.fabric3.implementation.system.provision.SystemConnectionSource;
 import org.fabric3.implementation.system.provision.SystemConnectionTarget;
 import org.fabric3.implementation.system.provision.SystemWireSource;
 import org.fabric3.implementation.system.provision.SystemWireTarget;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

@@ -19,7 +19,7 @@ package org.fabric3.datasource.generator;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
-import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
+import org.fabric3.spi.domain.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;

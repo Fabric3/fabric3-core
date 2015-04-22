@@ -27,7 +27,7 @@ import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.provision.JavaConnectionSource;
 import org.fabric3.implementation.java.provision.JavaWireSource;
 import org.fabric3.implementation.timer.provision.TimerPhysicalComponent;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.container.command.ConnectionCommand;
-import org.fabric3.spi.domain.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalState;

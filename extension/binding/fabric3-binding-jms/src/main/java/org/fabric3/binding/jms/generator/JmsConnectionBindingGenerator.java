@@ -31,7 +31,7 @@ import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTarget;
 import org.fabric3.binding.jms.spi.provision.SessionType;
-import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
+import org.fabric3.spi.domain.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

@@ -22,7 +22,7 @@ import java.net.URI;
 
 import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.monitor.provision.MonitorWireTarget;
-import org.fabric3.spi.domain.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.domain.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.type.java.JavaServiceContract;

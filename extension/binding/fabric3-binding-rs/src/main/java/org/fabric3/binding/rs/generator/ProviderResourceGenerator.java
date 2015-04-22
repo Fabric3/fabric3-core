@@ -22,7 +22,7 @@ import java.net.URI;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.binding.rs.model.ProviderResource;
 import org.fabric3.binding.rs.provision.PhysicalProviderResource;
-import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
+import org.fabric3.spi.domain.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;

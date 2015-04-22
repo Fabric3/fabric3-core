@@ -25,7 +25,7 @@ import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockPhysicalComponent;
 import org.fabric3.implementation.mock.provision.MockWireSource;
 import org.fabric3.implementation.mock.provision.MockWireTarget;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

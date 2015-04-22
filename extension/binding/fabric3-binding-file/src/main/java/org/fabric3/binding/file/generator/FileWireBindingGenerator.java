@@ -34,7 +34,7 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.binding.file.provision.FileBindingWireSource;
 import org.fabric3.binding.file.provision.FileBindingWireTarget;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
+import org.fabric3.spi.domain.generator.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;

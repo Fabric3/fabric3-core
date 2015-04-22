@@ -26,7 +26,7 @@ import org.fabric3.implementation.java.provision.JavaConnectionTarget;
 import org.fabric3.implementation.java.provision.JavaWireSource;
 import org.fabric3.implementation.java.provision.JavaWireTarget;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

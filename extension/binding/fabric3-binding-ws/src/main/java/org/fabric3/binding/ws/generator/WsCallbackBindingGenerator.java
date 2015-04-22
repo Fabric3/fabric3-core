@@ -20,7 +20,7 @@ package org.fabric3.binding.ws.generator;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.ws.model.WsBinding;
-import org.fabric3.spi.domain.generator.wire.CallbackBindingGenerator;
+import org.fabric3.spi.domain.generator.CallbackBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.oasisopen.sca.annotation.EagerInit;
 

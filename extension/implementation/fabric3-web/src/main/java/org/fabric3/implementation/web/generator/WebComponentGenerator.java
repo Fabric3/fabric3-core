@@ -39,7 +39,7 @@ import org.fabric3.implementation.web.provision.PhysicalWebComponent;
 import org.fabric3.implementation.web.provision.WebConnectionSource;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
 import org.fabric3.implementation.web.provision.WebWireSource;
-import org.fabric3.spi.domain.generator.component.ComponentGenerator;
+import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

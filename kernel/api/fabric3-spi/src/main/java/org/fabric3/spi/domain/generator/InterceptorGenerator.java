@@ -13,28 +13,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.domain.generator.resource;
+package org.fabric3.spi.domain.generator;
+
+import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.component.Resource;
-import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResource;
+import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalInterceptor;
 
 /**
- * Generates {@link PhysicalResource}s from a resource definition declared in a composite.
+ * Generates {@link PhysicalInterceptor}s used to attach policy interceptors to a wire.
  */
-public interface ResourceGenerator<RD extends Resource> {
+public interface InterceptorGenerator {
 
     /**
-     * Generate the physical definition for a logical resource.
+     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a wire.
      *
-     * @param resource the logical resource
-     * @return the physical resource definition.
-     * @throws Fabric3Exception if there was a problem generating the wire
+     * @param source the source operation
+     * @param target the target operation
+     * @return the definition
+     * @throws Fabric3Exception if an exception occurs during generation
      */
-    PhysicalResource generateResource(LogicalResource<RD> resource) throws Fabric3Exception;
+    Optional<PhysicalInterceptor> generate(LogicalOperation source, LogicalOperation target) throws Fabric3Exception;
 
 }

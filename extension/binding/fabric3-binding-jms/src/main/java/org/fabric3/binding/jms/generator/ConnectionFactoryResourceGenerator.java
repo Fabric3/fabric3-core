@@ -19,7 +19,7 @@ package org.fabric3.binding.jms.generator;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.jms.resource.ConnectionFactoryResource;
 import org.fabric3.binding.jms.spi.provision.PhysicalConnectionFactory;
-import org.fabric3.spi.domain.generator.resource.ResourceGenerator;
+import org.fabric3.spi.domain.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 

@@ -25,7 +25,7 @@ import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBinding;
 import org.fabric3.implementation.junit.provision.JUnitWireSource;
-import org.fabric3.spi.domain.generator.wire.WireBindingGenerator;
+import org.fabric3.spi.domain.generator.WireBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;

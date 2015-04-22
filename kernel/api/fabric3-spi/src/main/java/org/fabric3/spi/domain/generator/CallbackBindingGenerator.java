@@ -16,7 +16,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.domain.generator.wire;
+package org.fabric3.spi.domain.generator;
 
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.spi.model.instance.LogicalBinding;

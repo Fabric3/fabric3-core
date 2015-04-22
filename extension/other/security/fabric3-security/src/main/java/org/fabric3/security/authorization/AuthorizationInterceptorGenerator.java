@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.spi.domain.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.domain.generator.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptor;
