@@ -27,7 +27,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.binding.file.provision.FileBindingWireTarget;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;

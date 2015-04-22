@@ -36,7 +36,7 @@ import org.fabric3.implementation.spring.provision.PhysicalSpringComponent;
 import org.fabric3.implementation.spring.runtime.component.ContextAnnotationPostProcessor;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.ComponentBuilder;
 import org.fabric3.spi.model.physical.PhysicalProperty;
 import org.fabric3.spring.spi.ApplicationContextListener;
 import org.oasisopen.sca.annotation.EagerInit;

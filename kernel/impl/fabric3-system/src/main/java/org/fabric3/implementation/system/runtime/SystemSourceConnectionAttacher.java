@@ -27,7 +27,7 @@ import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.system.provision.SystemConnectionSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.container.builder.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;

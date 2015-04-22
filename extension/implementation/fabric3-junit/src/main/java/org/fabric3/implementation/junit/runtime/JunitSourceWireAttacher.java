@@ -22,7 +22,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitWireSource;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;

@@ -27,7 +27,7 @@ import org.fabric3.jpa.provision.SessionWireTarget;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxy;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

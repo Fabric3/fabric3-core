@@ -38,7 +38,7 @@ import org.fabric3.binding.rs.runtime.provider.ProxyMessageBodyWriter;
 import org.fabric3.binding.rs.runtime.provider.ProxyObjectMapperContextResolver;
 import org.fabric3.binding.rs.runtime.provider.ProxyRequestFilter;
 import org.fabric3.binding.rs.runtime.provider.ProxyResponseFilter;
-import org.fabric3.spi.container.builder.resource.ResourceBuilder;
+import org.fabric3.spi.container.builder.ResourceBuilder;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.Reference;
 import org.objectweb.asm.Type;

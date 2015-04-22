@@ -20,7 +20,7 @@ import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.model.physical.ChannelTarget;
-import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.builder.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.fabric.container.channel.ChannelManager;

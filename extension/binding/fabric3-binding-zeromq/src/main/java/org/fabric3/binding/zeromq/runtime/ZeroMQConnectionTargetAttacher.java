@@ -21,7 +21,7 @@ package org.fabric3.binding.zeromq.runtime;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTarget;
-import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.builder.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSource;
 import org.oasisopen.sca.annotation.Reference;

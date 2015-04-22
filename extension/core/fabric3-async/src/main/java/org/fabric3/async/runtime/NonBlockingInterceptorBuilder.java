@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.async.provision.PhysicalNonBlockingInterceptor;
-import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
+import org.fabric3.spi.container.builder.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.oasisopen.sca.annotation.Reference;
 

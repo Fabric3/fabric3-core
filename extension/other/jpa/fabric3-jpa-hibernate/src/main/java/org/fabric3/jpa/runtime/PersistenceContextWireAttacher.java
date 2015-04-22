@@ -28,7 +28,7 @@ import org.fabric3.jpa.provision.PersistenceContextWireTarget;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxy;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxy;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

@@ -30,7 +30,7 @@ import org.fabric3.implementation.pojo.component.InvokerInterceptor;
 import org.fabric3.implementation.pojo.provision.PojoWireSource;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.InvocationChain;

@@ -29,9 +29,9 @@ import java.util.function.Supplier;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
-import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
+import org.fabric3.spi.container.builder.InterceptorBuilder;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalInterceptor;
 import org.fabric3.spi.model.physical.PhysicalOperation;

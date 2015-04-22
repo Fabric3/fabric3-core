@@ -17,33 +17,34 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.builder.component;
+package org.fabric3.spi.container.builder;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**
- * Receives callbacks when a component is built.
+ * Builds a component for an implementation type on a runtime.
  */
-public interface ComponentBuilderListener {
+public interface ComponentBuilder<D extends PhysicalComponent, C extends Component> {
 
     /**
-     * Callback when a component is built.
+     * Builds a component from its physical component definition.
      *
-     * @param component         the built component
-     * @param physicalComponent physical component of the component being built.
+     * @param definition physical component definition of the component to be built
+     * @return the component
+     * @throws Fabric3Exception if unable to build the component
      */
-    default void onBuild(Component component, PhysicalComponent physicalComponent) {
-
-    }
+    C build(D definition) throws Fabric3Exception;
 
     /**
-     * Callback when a component is disposed.
+     * Disposes a component.
      *
-     * @param component  the built component
-     * @param physicalComponent physical component of the component being disposed.
+     * @param definition physical component definition of the component to be built.
+     * @param component  the component
+     * @throws Fabric3Exception if unable to build the component
      */
-    default void onDispose(Component component, PhysicalComponent physicalComponent) {
+    default void dispose(D definition, C component) throws Fabric3Exception {
 
     }
 }

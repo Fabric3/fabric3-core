@@ -34,7 +34,7 @@ import org.fabric3.binding.rs.runtime.container.RsContainer;
 import org.fabric3.binding.rs.runtime.container.RsContainerManager;
 import org.fabric3.binding.rs.runtime.provider.NameBindingFilterProvider;
 import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;

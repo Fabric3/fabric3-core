@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.provision.CacheWireTarget;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

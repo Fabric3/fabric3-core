@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jndi.provision.PhysicalJndiContext;
 import org.fabric3.jndi.spi.JndiContextManager;
-import org.fabric3.spi.container.builder.resource.ResourceBuilder;
+import org.fabric3.spi.container.builder.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

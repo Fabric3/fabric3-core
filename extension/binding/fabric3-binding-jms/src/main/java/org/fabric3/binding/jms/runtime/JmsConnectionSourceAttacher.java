@@ -37,7 +37,7 @@ import org.fabric3.binding.jms.runtime.container.MessageContainerFactory;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSource;
-import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.container.builder.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;

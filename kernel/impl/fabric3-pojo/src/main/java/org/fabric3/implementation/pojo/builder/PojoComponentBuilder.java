@@ -33,7 +33,7 @@ import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PhysicalPojoComponent;
-import org.fabric3.spi.container.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.introspection.TypeMapping;

@@ -17,24 +17,30 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.builder.interceptor;
+package org.fabric3.spi.container.builder;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.wire.Interceptor;
-import org.fabric3.spi.model.physical.PhysicalInterceptor;
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
- * Builds an interceptor for a wire invocation chain.
+ * Builds a resource on a runtime.
  */
-public interface InterceptorBuilder<PID extends PhysicalInterceptor> {
+public interface ResourceBuilder<R extends PhysicalResource> {
 
     /**
-     * Return an interceptor for the given interceptor definition metadata
+     * Builds a resource from its physical resource definition.
      *
-     * @param definition metadata used for returning an interceptor
-     * @return the interceptor
-     * @throws Fabric3Exception if an error occurs returning the interceptor
+     * @param definition the physical resource definition
+     * @throws Fabric3Exception If unable to build the resource
      */
-    Interceptor build(PID definition) throws Fabric3Exception;
+    void build(R definition) throws Fabric3Exception;
+
+    /**
+     * Removes a resource on a runtime.
+     *
+     * @param definition the physical resource definition
+     * @throws Fabric3Exception If unable to remove the resource
+     */
+    void remove(R definition) throws Fabric3Exception;
 
 }

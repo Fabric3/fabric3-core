@@ -24,7 +24,7 @@ import java.util.List;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQWireSource;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;

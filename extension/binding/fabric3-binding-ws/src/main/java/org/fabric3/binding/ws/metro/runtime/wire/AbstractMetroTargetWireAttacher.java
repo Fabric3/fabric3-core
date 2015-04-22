@@ -25,7 +25,7 @@ import org.fabric3.binding.ws.metro.provision.MetroWireTarget;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandler;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;
 

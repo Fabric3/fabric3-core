@@ -1,4 +1,4 @@
-package org.fabric3.spi.container.builder.component;
+package org.fabric3.spi.container.builder;
 
 import java.net.URI;
 import java.util.List;

@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.implementation.web.provision.WebWireSource;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;

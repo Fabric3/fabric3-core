@@ -28,7 +28,7 @@ import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.implementation.java.provision.JavaWireSource;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.injection.InjectionAttributes;

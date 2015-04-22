@@ -22,7 +22,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitor;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestination;
-import org.fabric3.spi.container.builder.resource.ResourceBuilder;
+import org.fabric3.spi.container.builder.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

@@ -24,7 +24,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.cache.provision.PhysicalCacheSet;
 import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.PhysicalCacheResource;
-import org.fabric3.spi.container.builder.resource.ResourceBuilder;
+import org.fabric3.spi.container.builder.ResourceBuilder;
 import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

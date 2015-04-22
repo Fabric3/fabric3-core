@@ -17,7 +17,7 @@
 package org.fabric3.fabric.node.nonmanaged;
 
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.container.builder.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.oasisopen.sca.annotation.Reference;

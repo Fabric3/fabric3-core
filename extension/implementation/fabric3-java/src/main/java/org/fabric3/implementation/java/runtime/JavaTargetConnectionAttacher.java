@@ -26,7 +26,7 @@ import org.fabric3.implementation.java.provision.JavaConnectionTarget;
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.builder.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.FilterHandler;

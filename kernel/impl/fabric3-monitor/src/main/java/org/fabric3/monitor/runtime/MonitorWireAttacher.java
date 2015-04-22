@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorWireTarget;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.oasisopen.sca.annotation.Reference;

@@ -22,7 +22,7 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.container.builder.channel.ChannelBuilder;
+import org.fabric3.spi.container.builder.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;

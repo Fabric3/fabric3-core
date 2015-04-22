@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.builder.component.ComponentBuilder;
-import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
+import org.fabric3.spi.container.builder.ComponentBuilder;
+import org.fabric3.spi.container.builder.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalComponent;

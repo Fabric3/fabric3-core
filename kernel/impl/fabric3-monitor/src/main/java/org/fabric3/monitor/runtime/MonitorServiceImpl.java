@@ -29,7 +29,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
+import org.fabric3.spi.container.builder.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalComponent;

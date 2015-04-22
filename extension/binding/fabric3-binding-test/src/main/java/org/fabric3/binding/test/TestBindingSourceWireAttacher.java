@@ -21,7 +21,7 @@ package org.fabric3.binding.test;
 import java.net.URI;
 
 import org.fabric3.api.annotation.wire.Key;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.oasisopen.sca.annotation.Reference;

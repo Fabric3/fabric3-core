@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import org.easymock.IMocksControl;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.mock.provision.MockWireTarget;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalOperation;

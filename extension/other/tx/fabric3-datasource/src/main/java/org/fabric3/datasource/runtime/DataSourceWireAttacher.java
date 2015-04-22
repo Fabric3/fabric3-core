@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.datasource.provision.DataSourceWireTarget;
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

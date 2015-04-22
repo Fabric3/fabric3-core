@@ -25,7 +25,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitWireTarget;
-import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSource;
 import org.oasisopen.sca.annotation.Reference;

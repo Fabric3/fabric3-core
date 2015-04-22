@@ -24,7 +24,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.spring.provision.SpringConnectionTarget;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringEventStreamHandler;
-import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.builder.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.component.ComponentManager;

@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.api.model.type.java.Injectable;
-import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.wire.Wire;

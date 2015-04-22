@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 import org.easymock.IMocksControl;
 import org.fabric3.implementation.mock.model.MockPhysicalComponent;
-import org.fabric3.spi.container.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.ComponentBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

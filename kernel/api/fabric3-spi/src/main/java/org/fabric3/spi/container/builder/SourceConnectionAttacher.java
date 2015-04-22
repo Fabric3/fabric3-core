@@ -17,7 +17,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.builder.component;
+package org.fabric3.spi.container.builder;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.ChannelConnection;
