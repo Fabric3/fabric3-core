@@ -18,16 +18,13 @@
  */
 package org.fabric3.fabric.domain;
 
-import java.util.List;
-
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.oasisopen.sca.annotation.Reference;
@@ -69,16 +66,6 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     @Reference
     public void setDeployer(Deployer deployer) {
         this.deployer = deployer;
-    }
-
-    /**
-     * Used to optionally inject DomainListeners.
-     *
-     * @param listeners the listeners
-     */
-    @Reference(required = false)
-    public void setListeners(List<DeployListener> listeners) {
-        this.listeners = listeners;
     }
 
     protected void selectBinding(LogicalCompositeComponent domain) throws Fabric3Exception {

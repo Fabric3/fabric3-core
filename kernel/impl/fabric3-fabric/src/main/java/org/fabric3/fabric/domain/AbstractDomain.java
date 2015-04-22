@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -36,6 +35,8 @@ import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.fabric.domain.collector.Collector;
+import org.fabric3.fabric.domain.generator.Deployment;
+import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
@@ -43,9 +44,6 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.fabric.domain.generator.Deployment;
-import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -57,8 +55,6 @@ public abstract class AbstractDomain implements Domain {
 
     protected Deployer deployer;
     protected Generator generator;
-
-    protected List<DeployListener> listeners;
 
     protected MetaDataStore metadataStore;
     protected LogicalComponentManager logicalComponentManager;
@@ -98,29 +94,15 @@ public abstract class AbstractDomain implements Domain {
         this.collector = collector;
         this.contributionHelper = contributionHelper;
         this.info = info;
-        listeners = Collections.emptyList();
     }
 
     public synchronized void include(QName deployable) throws Fabric3Exception {
         Composite wrapper = createWrapper(deployable);
-        for (DeployListener listener : listeners) {
-            listener.onDeploy(deployable);
-        }
         instantiateAndDeploy(wrapper);
-        for (DeployListener listener : listeners) {
-            listener.onDeployCompleted(deployable);
-        }
     }
 
     public synchronized void include(Composite composite) throws Fabric3Exception {
-        QName name = composite.getName();
-        for (DeployListener listener : listeners) {
-            listener.onDeploy(name);
-        }
         instantiateAndDeploy(composite);
-        for (DeployListener listener : listeners) {
-            listener.onDeployCompleted(name);
-        }
     }
 
     public synchronized void include(List<URI> uris) throws Fabric3Exception {
@@ -148,14 +130,6 @@ public abstract class AbstractDomain implements Domain {
             }
         }
 
-        for (QName deployable : names) {
-            for (DeployListener listener : listeners) {
-                listener.onUndeploy(deployable);
-            }
-        }
-        for (DeployListener listener : listeners) {
-            listener.onUnDeploy(uri);
-        }
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         for (QName deployable : names) {
             collector.markForCollection(deployable, domain);
@@ -165,22 +139,10 @@ public abstract class AbstractDomain implements Domain {
         deployer.deploy(deployment);
         names.forEach(contribution::releaseLock);
         logicalComponentManager.replaceRootComponent(domain);
-        for (QName deployable : names) {
-            for (DeployListener listener : listeners) {
-                listener.onUndeployCompleted(deployable);
-            }
-        }
-        for (DeployListener listener : listeners) {
-            listener.onUnDeployCompleted(uri);
-        }
     }
 
     public synchronized void undeploy(Composite composite) throws Fabric3Exception {
         QName deployable = composite.getName();
-        for (DeployListener listener : listeners) {
-            listener.onUndeploy(deployable);
-        }
-
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         collector.markForCollection(deployable, domain);
         Deployment deployment = generator.generate(domain);
@@ -190,9 +152,6 @@ public abstract class AbstractDomain implements Domain {
         Contribution contribution = metadataStore.find(uri);
         contribution.releaseLock(deployable);
         logicalComponentManager.replaceRootComponent(domain);
-        for (DeployListener listener : listeners) {
-            listener.onUndeployCompleted(deployable);
-        }
     }
 
     /**
@@ -214,28 +173,7 @@ public abstract class AbstractDomain implements Domain {
     private synchronized void include(List<URI> uris, boolean recover) throws Fabric3Exception {
         Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
-        // notify listeners
-        for (URI uri : uris) {
-            for (DeployListener listener : listeners) {
-                listener.onDeploy(uri);
-            }
-        }
-        for (Composite deployable : deployables) {
-            for (DeployListener listener : listeners) {
-                listener.onDeploy(deployable.getName());
-            }
-        }
         instantiateAndDeploy(deployables, contributions, recover);
-        for (Composite deployable : deployables) {
-            for (DeployListener listener : listeners) {
-                listener.onDeployCompleted(deployable.getName());
-            }
-        }
-        for (URI uri : uris) {
-            for (DeployListener listener : listeners) {
-                listener.onDeployCompleted(uri);
-            }
-        }
     }
 
     /**
