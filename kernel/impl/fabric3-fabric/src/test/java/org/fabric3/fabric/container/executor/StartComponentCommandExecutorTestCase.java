@@ -24,9 +24,10 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.StartComponentCommand;
+import org.fabric3.fabric.container.command.StartComponentCommandExecutor;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 
 /**
  *

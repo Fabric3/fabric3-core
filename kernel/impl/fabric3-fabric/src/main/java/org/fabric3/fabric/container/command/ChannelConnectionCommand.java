@@ -26,8 +26,6 @@ import org.fabric3.spi.container.command.Command;
  * hosted.
  */
 public class ChannelConnectionCommand implements Command {
-    private static final long serialVersionUID = 8746788639966402901L;
-
     private List<BuildChannelCommand> buildCommands;
     private List<DisposeChannelCommand> disposeCommands;
 

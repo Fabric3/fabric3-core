@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 import org.fabric3.spi.container.command.Command;
 
 public class StopContextCommand implements Command {
-    private static final long serialVersionUID = 6161772793715132968L;
 
     private QName deployable;
     private boolean log;

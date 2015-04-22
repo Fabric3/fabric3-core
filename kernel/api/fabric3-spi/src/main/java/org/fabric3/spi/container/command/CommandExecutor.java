@@ -19,15 +19,19 @@
  */
 package org.fabric3.spi.container.command;
 
+import org.fabric3.api.host.Fabric3Exception;
+
 /**
- * A Command that produces a response.
+ * Responsible for executing {@link Command}s sent to a runtime.
  */
-public interface ResponseCommand extends Command {
+public interface CommandExecutor<T extends Command> {
 
     /**
-     * Returns the response after the command has been executed.
+     * Execute the command.
      *
-     * @return the response
+     * @param command the command to execute
+     * @throws Fabric3Exception if there is an error executing the command
      */
-    Response getResponse();
+    void execute(T command) throws Fabric3Exception;
+
 }

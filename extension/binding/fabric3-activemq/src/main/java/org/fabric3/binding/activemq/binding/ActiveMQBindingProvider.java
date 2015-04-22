@@ -42,7 +42,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
@@ -320,9 +319,6 @@ public class ActiveMQBindingProvider implements BindingProvider {
      * @return true if the target should be bound
      */
     private boolean bindTarget(LogicalService target) {
-        if (target.getServiceContract() instanceof RemoteServiceContract) {
-            return false;
-        }
         for (LogicalBinding<?> binding : target.getBindings()) {
             if (binding.isAssigned()) {
                 return false;

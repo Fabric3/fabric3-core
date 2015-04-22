@@ -25,7 +25,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.domain.generator.Deployment;
 import org.oasisopen.sca.annotation.Reference;
 

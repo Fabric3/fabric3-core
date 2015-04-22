@@ -32,29 +32,27 @@ import org.fabric3.fabric.container.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.container.builder.classloader.ClassLoaderWireBuilderImpl;
 import org.fabric3.fabric.container.component.scope.DomainScopeContainer;
 import org.fabric3.fabric.container.component.scope.StatelessScopeContainer;
-import org.fabric3.fabric.container.executor.AttachChannelConnectionCommandExecutor;
-import org.fabric3.fabric.container.executor.AttachWireCommandExecutor;
-import org.fabric3.fabric.container.executor.BuildChannelCommandExecutor;
-import org.fabric3.fabric.container.executor.BuildComponentCommandExecutor;
-import org.fabric3.fabric.container.executor.BuildResourcesCommandExecutor;
-import org.fabric3.fabric.container.executor.ChannelConnectionCommandExecutor;
-import org.fabric3.fabric.container.executor.CommandExecutorRegistryImpl;
-import org.fabric3.fabric.container.executor.ConnectionCommandExecutor;
-import org.fabric3.fabric.container.executor.DetachChannelConnectionCommandExecutor;
-import org.fabric3.fabric.container.executor.DetachWireCommandExecutor;
-import org.fabric3.fabric.container.executor.DisposeChannelCommandExecutor;
-import org.fabric3.fabric.container.executor.DisposeComponentCommandExecutor;
-import org.fabric3.fabric.container.executor.DisposeResourcesCommandExecutor;
-import org.fabric3.fabric.container.executor.StartComponentCommandExecutor;
-import org.fabric3.fabric.container.executor.StartContextCommandExecutor;
-import org.fabric3.fabric.container.executor.StopComponentCommandExecutor;
-import org.fabric3.fabric.container.executor.StopContextCommandExecutor;
+import org.fabric3.fabric.container.command.AttachChannelConnectionCommandExecutor;
+import org.fabric3.fabric.container.command.AttachWireCommandExecutor;
+import org.fabric3.fabric.container.command.BuildChannelCommandExecutor;
+import org.fabric3.fabric.container.command.BuildComponentCommandExecutor;
+import org.fabric3.fabric.container.command.BuildResourcesCommandExecutor;
+import org.fabric3.fabric.container.command.ChannelConnectionCommandExecutor;
+import org.fabric3.fabric.container.command.CommandExecutorRegistryImpl;
+import org.fabric3.fabric.container.command.ConnectionCommandExecutor;
+import org.fabric3.fabric.container.command.DetachChannelConnectionCommandExecutor;
+import org.fabric3.fabric.container.command.DetachWireCommandExecutor;
+import org.fabric3.fabric.container.command.DisposeChannelCommandExecutor;
+import org.fabric3.fabric.container.command.DisposeComponentCommandExecutor;
+import org.fabric3.fabric.container.command.DisposeResourcesCommandExecutor;
+import org.fabric3.fabric.container.command.StartComponentCommandExecutor;
+import org.fabric3.fabric.container.command.StartContextCommandExecutor;
+import org.fabric3.fabric.container.command.StopComponentCommandExecutor;
+import org.fabric3.fabric.container.command.StopContextCommandExecutor;
 import org.fabric3.fabric.container.handler.TransformerHandlerFactoryImpl;
 import org.fabric3.fabric.container.interceptor.TransformerInterceptorFactoryImpl;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
-import org.fabric3.fabric.contract.JavaToRemoteContractMatcherExtension;
-import org.fabric3.fabric.contract.RemoteToJavaContractMatcherExtension;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.DistributedDomain;
 import org.fabric3.fabric.domain.LocalDeployer;
@@ -135,8 +133,6 @@ public class FabricProvider {
     private static void addContractSubsystem(CompositeBuilder compositeBuilder) {
         compositeBuilder.component(newBuilder(DefaultContractMatcher.class).build());
         compositeBuilder.component(newBuilder(JavaContractMatcherExtension.class).build());
-        compositeBuilder.component(newBuilder(RemoteToJavaContractMatcherExtension.class).build());
-        compositeBuilder.component(newBuilder(JavaToRemoteContractMatcherExtension.class).build());
     }
 
     private static void addServicesSubsystem(CompositeBuilder compositeBuilder) {

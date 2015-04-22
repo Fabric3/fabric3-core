@@ -23,8 +23,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnection;
  * Used to establish an event channel connection.
  */
 public class AttachChannelConnectionCommand implements Command {
-    private static final long serialVersionUID = 8746788639966402901L;
-
     private PhysicalChannelConnection connection;
 
     public AttachChannelConnectionCommand(PhysicalChannelConnection connection) {

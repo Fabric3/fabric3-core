@@ -25,7 +25,6 @@ import org.fabric3.spi.model.physical.PhysicalComponent;
  * Instantiates a component on a runtime.
  */
 public class BuildComponentCommand extends AbstractComponentCommand {
-    private static final long serialVersionUID = -6102447991230736883L;
 
     public BuildComponentCommand(PhysicalComponent physicalComponent) {
         super(physicalComponent);

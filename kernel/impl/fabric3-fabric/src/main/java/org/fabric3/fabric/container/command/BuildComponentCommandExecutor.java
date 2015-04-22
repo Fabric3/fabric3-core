@@ -17,7 +17,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
 import java.net.URI;
 import java.util.Collections;
@@ -25,31 +25,43 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.container.command.DisposeComponentCommand;
+import org.fabric3.fabric.container.command.BuildComponentCommand;
 import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalComponent;
+import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * De-registers the component from the component manager.
+ * Builds a component on a runtime.
  */
 @EagerInit
-public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeComponentCommand> {
-    private CommandExecutorRegistry executorRegistry;
+public class BuildComponentCommandExecutor implements CommandExecutor<BuildComponentCommand> {
+
     private ComponentManager componentManager;
+    private CommandExecutorRegistry commandExecutorRegistry;
     private Map<Class<?>, ComponentBuilder> builders;
     private List<ComponentBuilderListener> listeners = Collections.emptyList();
 
-    public DisposeComponentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ComponentManager componentManager) {
-        this.executorRegistry = executorRegistry;
+    @Constructor
+    public BuildComponentCommandExecutor(@Reference ComponentManager componentManager, @Reference CommandExecutorRegistry commandExecutorRegistry) {
         this.componentManager = componentManager;
+        this.commandExecutorRegistry = commandExecutorRegistry;
+    }
+
+    public BuildComponentCommandExecutor(ComponentManager componentManager) {
+        this.componentManager = componentManager;
+    }
+
+    @Init
+    public void init() {
+        commandExecutorRegistry.register(BuildComponentCommand.class, this);
     }
 
     @Reference(required = false)
@@ -62,24 +74,31 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
         this.listeners = listeners;
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(DisposeComponentCommand.class, this);
+    public void execute(BuildComponentCommand command) {
+        PhysicalComponent physicalComponent = command.getComponent();
+        Component component = build(physicalComponent);
+        URI contributionUri = physicalComponent.getContributionUri();
+        component.setContributionUri(contributionUri);
+        componentManager.register(component);
+        for (ComponentBuilderListener listener : listeners) {
+            listener.onBuild(component, physicalComponent);
+        }
     }
 
-    @SuppressWarnings({"unchecked"})
-    public void execute(DisposeComponentCommand command) {
-        PhysicalComponent physicalComponent = command.getComponent();
-        URI uri = physicalComponent.getComponentUri();
-        Component component = componentManager.unregister(uri);
+    /**
+     * Builds a physical component from a physical component.
+     *
+     * @param physicalComponent the physical component
+     * @return Component to be built.
+     */
+    @SuppressWarnings("unchecked")
+    private Component build(PhysicalComponent physicalComponent) {
+
         ComponentBuilder builder = builders.get(physicalComponent.getClass());
         if (builder == null) {
             throw new Fabric3Exception("Builder not found for " + physicalComponent.getClass().getName());
         }
-        builder.dispose(physicalComponent, component);
-        for (ComponentBuilderListener listener : listeners) {
-            listener.onDispose(component, physicalComponent);
-        }
+        return builder.build(physicalComponent);
     }
 
 }

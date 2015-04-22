@@ -28,7 +28,6 @@ import org.fabric3.spi.model.physical.PhysicalResource;
  * Removes resources on a runtime.
  */
 public class DisposeResourcesCommand implements Command {
-    private static final long serialVersionUID = -3382996929643885337L;
     private List<PhysicalResource> physicalResources;
 
     public DisposeResourcesCommand(List<PhysicalResource> physicalResources) {

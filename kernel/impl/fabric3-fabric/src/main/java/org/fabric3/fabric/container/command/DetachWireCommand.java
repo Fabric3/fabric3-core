@@ -19,7 +19,6 @@
 package org.fabric3.fabric.container.command;
 
 public class DetachWireCommand extends WireCommand {
-    private static final long serialVersionUID = 804710699486702279L;
 
 }
 

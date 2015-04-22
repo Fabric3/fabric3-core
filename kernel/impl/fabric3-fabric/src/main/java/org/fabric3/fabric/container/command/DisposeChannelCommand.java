@@ -26,7 +26,6 @@ import org.fabric3.spi.model.physical.PhysicalChannel;
  * Removes a channel on a runtime.
  */
 public class DisposeChannelCommand implements Command {
-    private static final long serialVersionUID = -8414719811868296492L;
     private PhysicalChannel channel;
 
     public DisposeChannelCommand(PhysicalChannel channel) {

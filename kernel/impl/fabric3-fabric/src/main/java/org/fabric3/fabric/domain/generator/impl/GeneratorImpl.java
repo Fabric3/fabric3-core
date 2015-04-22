@@ -37,7 +37,6 @@ import org.fabric3.spi.domain.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.type.remote.RemoteImplementation;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -87,9 +86,6 @@ public class GeneratorImpl implements Generator {
 
         for (CommandGenerator<?> generator : commandGenerators) {
             for (LogicalComponent<?> component : components) {
-                if (component.getDefinition().getImplementation() instanceof RemoteImplementation) {
-                    continue;
-                }
                 Optional<? extends Command> command = generator.generate(component);
                 command.ifPresent(generated -> {
                     if (!deployment.getCommands().contains(generated)) {

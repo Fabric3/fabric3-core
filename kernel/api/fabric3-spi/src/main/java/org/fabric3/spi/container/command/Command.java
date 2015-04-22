@@ -19,11 +19,9 @@
  */
 package org.fabric3.spi.container.command;
 
-import java.io.Serializable;
-
 /**
  * Represents an action to be executed on a runtime.
  */
-public interface Command extends Serializable {
+public interface Command {
 
 }

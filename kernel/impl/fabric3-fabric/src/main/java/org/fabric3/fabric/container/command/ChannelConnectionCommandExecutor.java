@@ -17,37 +17,41 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
-import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.container.builder.ChannelConnector;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.oasisopen.sca.annotation.Constructor;
+import org.fabric3.fabric.container.command.ChannelConnectionCommand;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- *
+ * Establishes and removes event channel connections.
  */
 @EagerInit
-public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
+public class ChannelConnectionCommandExecutor implements CommandExecutor<ChannelConnectionCommand> {
     private CommandExecutorRegistry executorRegistry;
-    private final ChannelConnector connector;
 
-    @Constructor
-    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ChannelConnector connector) {
+    public ChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry) {
         this.executorRegistry = executorRegistry;
-        this.connector = connector;
     }
 
     @Init
     public void init() {
-        executorRegistry.register(AttachChannelConnectionCommand.class, this);
+        executorRegistry.register(ChannelConnectionCommand.class, this);
     }
 
-    public void execute(AttachChannelConnectionCommand command) {
-        connector.connect(command.getConnection());
+    public void execute(ChannelConnectionCommand command) {
+
+        // detach must be executed first so attachers can drop connections prior to adding new ones
+        command.getDetachCommands().forEach(executorRegistry::execute);
+
+        command.getDisposeChannelCommands().forEach(executorRegistry::execute);
+
+        command.getBuildChannelCommands().forEach(executorRegistry::execute);
+
+        command.getAttachCommands().forEach(executorRegistry::execute);
+
     }
 }

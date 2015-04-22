@@ -26,7 +26,6 @@ import org.fabric3.spi.model.physical.PhysicalChannel;
  * Instantiates a channel on a runtime.
  */
 public class BuildChannelCommand implements Command {
-    private static final long serialVersionUID = -7476738011193689990L;
     private PhysicalChannel channel;
 
     public BuildChannelCommand(PhysicalChannel channel) {

@@ -28,7 +28,6 @@ import org.fabric3.spi.model.physical.PhysicalResource;
  * Builds resources defined in a composite on a runtime.
  */
 public class BuildResourcesCommand implements Command {
-    private static final long serialVersionUID = -2232794954042041583L;
     private List<PhysicalResource> physicalResources;
 
     public BuildResourcesCommand(List<PhysicalResource> definitions) {

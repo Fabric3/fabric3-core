@@ -17,39 +17,38 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
-import org.fabric3.fabric.container.command.BuildChannelCommand;
+import org.fabric3.fabric.container.command.DisposeChannelCommand;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Builds a channel defined in a composite on a runtime.
+ * Removes a channels defined in a composite on a runtime.
  */
 @EagerInit
-public class BuildChannelCommandExecutor implements CommandExecutor<BuildChannelCommand> {
+public class DisposeChannelCommandExecutor implements CommandExecutor<DisposeChannelCommand> {
     private ChannelBuilderRegistry channelBuilderRegistry;
     private CommandExecutorRegistry executorRegistry;
 
-    public BuildChannelCommandExecutor(@Reference ChannelBuilderRegistry channelBuilderRegistry, @Reference CommandExecutorRegistry executorRegistry) {
+    public DisposeChannelCommandExecutor(@Reference ChannelBuilderRegistry channelBuilderRegistry, @Reference CommandExecutorRegistry executorRegistry) {
         this.channelBuilderRegistry = channelBuilderRegistry;
         this.executorRegistry = executorRegistry;
     }
 
     @Init
     public void init() {
-        executorRegistry.register(BuildChannelCommand.class, this);
+        executorRegistry.register(DisposeChannelCommand.class, this);
     }
 
-    @SuppressWarnings("unchecked")
-    public void execute(BuildChannelCommand command) {
+    public void execute(DisposeChannelCommand command) {
         PhysicalChannel physicalChannel = command.getChannel();
-        channelBuilderRegistry.build(physicalChannel);
+        channelBuilderRegistry.dispose(physicalChannel);
     }
 
 }

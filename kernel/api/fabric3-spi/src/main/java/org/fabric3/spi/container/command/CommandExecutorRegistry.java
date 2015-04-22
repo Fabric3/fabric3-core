@@ -13,30 +13,32 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.command;
+package org.fabric3.spi.container.command;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.fabric3.spi.container.command.Command;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
- *
+ * A registry of {@link CommandExecutor}s.
  */
-public abstract class AbstractExtensionsCommand implements Command {
-    private static final long serialVersionUID = -4757212674286772185L;
+public interface CommandExecutorRegistry {
 
-    protected List<URI> extensionUris = new ArrayList<>();
+    /**
+     * Register the command executor
+     *
+     * @param type     the type of command the executor handles
+     * @param executor the executor
+     */
+    <T extends Command> void register(Class<T> type, CommandExecutor<T> executor);
 
-    public List<URI> getExtensionUris() {
-        return extensionUris;
-    }
-
-    public void addExtensionUri(URI uri) {
-        extensionUris.add(uri);
-    }
+    /**
+     * Dispatches a command to an executor.
+     *
+     * @param command the command to dispatch
+     * @throws Fabric3Exception if there is an error executing the command
+     */
+    <T extends Command> void execute(T command) throws Fabric3Exception;
 }

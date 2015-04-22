@@ -24,8 +24,9 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommand;
+import org.fabric3.fabric.container.command.AttachChannelConnectionCommandExecutor;
 import org.fabric3.spi.container.builder.ChannelConnector;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**

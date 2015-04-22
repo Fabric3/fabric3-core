@@ -16,37 +16,35 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
-import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
-import org.fabric3.spi.container.builder.ChannelConnector;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
-import org.oasisopen.sca.annotation.Constructor;
+import org.fabric3.fabric.container.command.DetachWireCommand;
+import org.fabric3.spi.container.builder.Connector;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- *
+ * Detaches a wire from its source component reference or binding and target service or binding.
  */
 @EagerInit
-public class DetachChannelConnectionCommandExecutor implements CommandExecutor<DetachChannelConnectionCommand> {
+public class DetachWireCommandExecutor implements CommandExecutor<DetachWireCommand> {
     private CommandExecutorRegistry commandExecutorRegistry;
-    private ChannelConnector connector;
+    private Connector connector;
 
-    @Constructor
-    public DetachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry registry, @Reference ChannelConnector connector) {
+    public DetachWireCommandExecutor(@Reference CommandExecutorRegistry registry, @Reference Connector connector) {
         this.commandExecutorRegistry = registry;
         this.connector = connector;
     }
 
     @Init
     public void init() {
-        commandExecutorRegistry.register(DetachChannelConnectionCommand.class, this);
+        commandExecutorRegistry.register(DetachWireCommand.class, this);
     }
 
-    public void execute(DetachChannelConnectionCommand command) {
-        connector.disconnect(command.getConnection());
+    public void execute(DetachWireCommand command) {
+        connector.disconnect(command.getPhysicalWire());
     }
 }

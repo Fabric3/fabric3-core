@@ -13,28 +13,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.command;
+package org.fabric3.fabric.container.command;
 
-import java.io.Serializable;
+import javax.xml.namespace.QName;
+
+import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * A response to a synchronous message.
+ *
  */
-public interface Response extends Serializable {
+public interface ContextMonitor {
 
-    /**
-     * Returns the name of the runtime that sent the response.
-     *
-     * @return the name of the runtime that sent the response.
-     */
-    String getRuntimeName();
+    @Info("Composite {0} deployed")
+    void deployed(QName composite);
 
-    /**
-     * Sets the name of the runtime that sent the response.
-     *
-     * @param name the name of the runtime that sent the response.
-     */
-    void setRuntimeName(String name);
+    @Info("Composite {0} undeployed")
+    void undeployed(QName composite);
 
 }

@@ -25,7 +25,6 @@ import org.fabric3.spi.model.physical.PhysicalComponent;
  * Removes a registered component.
  */
 public class DisposeComponentCommand extends AbstractComponentCommand {
-    private static final long serialVersionUID = 1894510885498647133L;
 
     public DisposeComponentCommand(PhysicalComponent physicalComponent) {
         super(physicalComponent);

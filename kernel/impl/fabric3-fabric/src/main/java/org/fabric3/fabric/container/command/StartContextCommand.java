@@ -27,8 +27,6 @@ import org.fabric3.spi.container.command.Command;
  * Starts a composite context on a runtime.
  */
 public class StartContextCommand implements Command {
-    private static final long serialVersionUID = -2132991925467598257L;
-
     private QName deployable;
     private boolean log;
 

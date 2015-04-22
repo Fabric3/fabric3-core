@@ -26,7 +26,6 @@ import org.fabric3.spi.model.physical.PhysicalWire;
  * Base class for wire commands.
  */
 public abstract class WireCommand implements Command {
-    private static final long serialVersionUID = -1691568679691192110L;
 
     protected PhysicalWire physicalWire;
 

@@ -21,8 +21,9 @@ package org.fabric3.fabric.container.executor;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.fabric.container.command.CommandExecutorRegistryImpl;
 import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.container.executor.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutor;
 
 /**
  *
@@ -45,7 +46,6 @@ public class CommandExecutorRegistryImplTestCase extends TestCase {
     }
 
     private class TestCommand implements Command {
-        private static final long serialVersionUID = -7900374649611430200L;
     }
 
 }

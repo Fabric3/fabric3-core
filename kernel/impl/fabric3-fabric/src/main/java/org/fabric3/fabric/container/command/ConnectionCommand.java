@@ -28,7 +28,6 @@ import org.fabric3.spi.container.command.Command;
  * Contains commands for attaching and detaching wires for a component.
  */
 public class ConnectionCommand implements Command {
-    private static final long serialVersionUID = -2313380946362271104L;
     private URI componentUri;
     private List<AttachWireCommand> attachCommands;
     private List<DetachWireCommand> detachCommands;

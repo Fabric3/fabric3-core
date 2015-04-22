@@ -24,6 +24,5 @@ package org.fabric3.fabric.container.command;
  * component, a binding transport, or a resource.
  */
 public class AttachWireCommand extends WireCommand {
-    private static final long serialVersionUID = -5157427289507028318L;
 
 }

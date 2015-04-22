@@ -13,38 +13,46 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
-import org.fabric3.fabric.container.command.DetachWireCommand;
+import org.fabric3.fabric.container.command.AttachWireCommand;
 import org.fabric3.spi.container.builder.Connector;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Detaches a wire from its source component reference or binding and target service or binding.
+ * Attaches a wire to its source component reference or binding and target service or binding.
  */
 @EagerInit
-public class DetachWireCommandExecutor implements CommandExecutor<DetachWireCommand> {
-    private CommandExecutorRegistry commandExecutorRegistry;
-    private Connector connector;
+public class AttachWireCommandExecutor implements CommandExecutor<AttachWireCommand> {
 
-    public DetachWireCommandExecutor(@Reference CommandExecutorRegistry registry, @Reference Connector connector) {
-        this.commandExecutorRegistry = registry;
+    private CommandExecutorRegistry commandExecutorRegistry;
+    private final Connector connector;
+
+    @Constructor
+    public AttachWireCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry, @Reference Connector connector) {
+        this.commandExecutorRegistry = commandExecutorRegistry;
+        this.connector = connector;
+    }
+
+    public AttachWireCommandExecutor(Connector connector) {
         this.connector = connector;
     }
 
     @Init
     public void init() {
-        commandExecutorRegistry.register(DetachWireCommand.class, this);
+        commandExecutorRegistry.register(AttachWireCommand.class, this);
     }
 
-    public void execute(DetachWireCommand command) {
-        connector.disconnect(command.getPhysicalWire());
+    public void execute(AttachWireCommand command) {
+        connector.connect(command.getPhysicalWire());
     }
 }

@@ -25,6 +25,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
+import org.fabric3.fabric.container.command.DisposeChannelCommandExecutor;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannel;

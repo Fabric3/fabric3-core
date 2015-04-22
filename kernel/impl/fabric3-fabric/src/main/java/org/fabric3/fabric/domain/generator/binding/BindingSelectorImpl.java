@@ -40,8 +40,6 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.type.remote.RemoteImplementation;
-import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -124,16 +122,14 @@ public class BindingSelectorImpl implements BindingSelector {
                     throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the reference: " + type);
                 }
                 wire.setSourceBinding(source.getBindings().get(0));
-                if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
-                    if (target.getBindings().isEmpty()) {
-                        QName type = result.getType();
-                        throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the service: " + type);
-                    }
-                    if (!target.getBindings().isEmpty()) {
-                        wire.setTargetBinding(target.getBindings().get(0));
-                    } else {
-                        wire.setTargetBinding(target.getBindings().get(0));
-                    }
+                if (target.getBindings().isEmpty()) {
+                    QName type = result.getType();
+                    throw new Fabric3Exception("Binding provider error. Provider did not set a binding for the service: " + type);
+                }
+                if (!target.getBindings().isEmpty()) {
+                    wire.setTargetBinding(target.getBindings().get(0));
+                } else {
+                    wire.setTargetBinding(target.getBindings().get(0));
                 }
                 return;
             }
@@ -216,9 +212,6 @@ public class BindingSelectorImpl implements BindingSelector {
      */
     private boolean bindService(LogicalService service) {
         if (!service.getBindings().isEmpty() || !service.getServiceContract().isRemotable()) {
-            return false;
-        }
-        if (service.getServiceContract() instanceof RemoteServiceContract) {
             return false;
         }
         for (LogicalBinding<?> binding : service.getBindings()) {

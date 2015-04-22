@@ -23,7 +23,6 @@ import java.net.URI;
 import org.fabric3.spi.container.command.Command;
 
 public class StopComponentCommand implements Command {
-    private static final long serialVersionUID = 4385799180032870689L;
 
     private final URI uri;
 

@@ -17,29 +17,29 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.container.command.DisposeResourcesCommand;
+import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Removes a resource on a runtime.
+ * Builds resources defined in a composite on a runtime.
  */
 @EagerInit
-public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeResourcesCommand> {
-    private Map<Class<?>, ResourceBuilder> builders;
+public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResourcesCommand> {
     private CommandExecutorRegistry executorRegistry;
+    private Map<Class<?>, ResourceBuilder> builders;
 
-    public DisposeResourcesCommandExecutor(@Reference CommandExecutorRegistry registry) {
+    public BuildResourcesCommandExecutor(@Reference CommandExecutorRegistry registry) {
         this.executorRegistry = registry;
     }
 
@@ -48,22 +48,22 @@ public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeR
         this.builders = builders;
     }
 
-    public void execute(DisposeResourcesCommand command) throws Fabric3Exception {
+    @Init
+    public void init() {
+        executorRegistry.register(BuildResourcesCommand.class, this);
+    }
+
+    public void execute(BuildResourcesCommand command) throws Fabric3Exception {
         command.getPhysicalResources().forEach(this::build);
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(DisposeResourcesCommand.class, this);
-    }
-
     @SuppressWarnings("unchecked")
-    public void build(PhysicalResource physicalResource) {
+    private void build(PhysicalResource physicalResource) {
         ResourceBuilder builder = builders.get(physicalResource.getClass());
         if (builder == null) {
             throw new Fabric3Exception("Builder not found for " + physicalResource.getClass().getName());
         }
-        builder.remove(physicalResource);
+        builder.build(physicalResource);
     }
 
 }

@@ -17,18 +17,17 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.container.executor;
+package org.fabric3.fabric.container.command;
 
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.container.executor.CommandExecutor;
-import org.fabric3.spi.container.executor.CommandExecutorRegistry;
+import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
