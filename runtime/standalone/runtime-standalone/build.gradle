@@ -53,7 +53,6 @@ dependencies {
     extensionDependencies project(':extension:core:fabric3-monitor-spi')
     extensionDependencies project(':extension:core:fabric3-monitor-impl')
     extensionDependencies project(':extension:core:fabric3-monitor-appender')
-    extensionDependencies project(':extension:node:fabric3-node-impl')
 
     configurations.compile.extendsFrom(configurations.libDependencies)
     configurations.compile.extendsFrom(configurations.hostDependencies)

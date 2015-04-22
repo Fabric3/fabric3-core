@@ -6,7 +6,6 @@ configurations {
 
 dependencies {
 
-    compile project(':extension:node:fabric3-node-impl')
     compile project(':extension:other:security:fabric3-security-impl')
     compile project(':extension:core:fabric3-monitor-spi')
     compile project(':extension:core:fabric3-monitor-impl')
@@ -28,7 +27,6 @@ dependencies {
 task distZip(type: Zip) {
     archiveName = 'fabric3-node-extensions-' + version + '.jar'
 
-    dependsOn(':extension:node:fabric3-node-impl:jar')
     dependsOn(':extension:other:security:fabric3-security-impl:jar')
     dependsOn(':extension:core:fabric3-monitor-spi:jar')
     dependsOn(':extension:core:fabric3-monitor-impl:jar')

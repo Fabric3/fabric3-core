@@ -14,22 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.domain;
+package org.fabric3.fabric.node.nonmanaged;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.model.physical.PhysicalWireSource;
 
 /**
- * Resolves a service and returns a wire proxy to it.
+ * Used to attach a wire to non-managed code.
  */
-public interface ServiceResolver {
+public class NonManagedWireSource extends PhysicalWireSource {
+    private Class<?> interfaze;
+    private transient Object proxy;
 
-    /**
-     * Resolves the service using autowire and returns a wire proxy to it.
-     *
-     * @param interfaze the service interface
-     * @return the wire proxy
-     * @throws Fabric3Exception if there is a resolution exception
-     */
-    <T> T resolve(Class<T> interfaze) throws Fabric3Exception;
+    public NonManagedWireSource(Class<?> interfaze) {
+        this.interfaze = interfaze;
+    }
 
+    public Class<?> getInterface() {
+        return interfaze;
+    }
+
+    public Object getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(Object proxy) {
+        this.proxy = proxy;
+    }
 }

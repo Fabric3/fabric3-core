@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.domain;
+package org.fabric3.fabric.node;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -31,8 +31,8 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.node.NotFoundException;
-import org.fabric3.node.nonmanaged.NonManagedImplementation;
-import org.fabric3.node.nonmanaged.NonManagedWireSource;
+import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
+import org.fabric3.fabric.node.nonmanaged.NonManagedWireSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.domain.LogicalComponentManager;

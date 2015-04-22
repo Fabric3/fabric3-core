@@ -35,8 +35,6 @@ include 'extension:other:cache:fabric3-cache', 'extension:other:cache:fabric3-ca
 
 include 'extension:management:fabric3-management-jmx', 'extension:management:fabric3-management-jmx-agent', 'extension:management:fabric3-management-rest'
 
-include 'extension:node:fabric3-node-impl'
-
 include 'extension:binding:fabric3-binding-jms-api', 'extension:binding:fabric3-binding-jms', 'extension:binding:fabric3-activemq'
 
 include 'extension:binding:fabric3-binding-file-api', 'extension:binding:fabric3-binding-file'

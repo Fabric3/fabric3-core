@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.domain;
+package org.fabric3.fabric.node;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.type.java.JavaServiceContract;

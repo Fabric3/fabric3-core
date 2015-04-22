@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.nonmanaged;
+package org.fabric3.fabric.node.nonmanaged;
 
 import java.net.URI;
 

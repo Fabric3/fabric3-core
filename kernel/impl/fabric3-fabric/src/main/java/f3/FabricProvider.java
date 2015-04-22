@@ -94,6 +94,15 @@ import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.host.PortAllocatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.fabric.model.physical.ChannelTarget;
+import org.fabric3.fabric.node.ChannelResolverImpl;
+import org.fabric3.fabric.node.IntrospectorImpl;
+import org.fabric3.fabric.node.NodeDomain;
+import org.fabric3.fabric.node.ProvisionerImpl;
+import org.fabric3.fabric.node.ServiceResolverImpl;
+import org.fabric3.fabric.node.nonmanaged.NonManagedComponentGenerator;
+import org.fabric3.fabric.node.nonmanaged.NonManagedComponentSourceWireAttacher;
+import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSourceAttacher;
+import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTargetAttacher;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
@@ -122,7 +131,24 @@ public class FabricProvider {
         addContractSubsystem(compositeBuilder);
         addBindingSubsystem(compositeBuilder);
 
+        addNodeSubsystem(compositeBuilder);
+
         return compositeBuilder.build();
+    }
+
+    private static void addNodeSubsystem(CompositeBuilder compositeBuilder) {
+        compositeBuilder.component(newBuilder("Domain", NodeDomain.class).reference("domain", "ApplicationDomain").build());
+        compositeBuilder.component(newBuilder("Provisioner", ProvisionerImpl.class).reference("domain", "ApplicationDomain").build());
+        compositeBuilder.component(newBuilder("ServiceResolver", ServiceResolverImpl.class).reference("lcm", "LogicalComponentManager").build());
+        compositeBuilder.component(newBuilder("ChannelResolver", ChannelResolverImpl.class).reference("lcm", "LogicalComponentManager").build());
+        compositeBuilder.component(newBuilder(IntrospectorImpl.class).build());
+        compositeBuilder.component(newBuilder(NonManagedComponentGenerator.class).key("org.fabric3.fabric.node.nonmanaged.NonManagedImplementation").build());
+        compositeBuilder.component(newBuilder(NonManagedComponentSourceWireAttacher.class).key("org.fabric3.fabric.node.nonmanaged.NonManagedWireSource")
+                                           .build());
+        compositeBuilder.component(newBuilder(NonManagedConnectionSourceAttacher.class).key("org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSource")
+                                           .build());
+        compositeBuilder.component(newBuilder(NonManagedConnectionTargetAttacher.class).key("org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTarget")
+                                           .build());
     }
 
     private static void addBindingSubsystem(CompositeBuilder compositeBuilder) {

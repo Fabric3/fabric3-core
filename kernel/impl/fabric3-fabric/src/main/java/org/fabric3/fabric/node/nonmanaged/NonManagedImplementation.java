@@ -14,30 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.nonmanaged;
+package org.fabric3.fabric.node.nonmanaged;
 
-import org.fabric3.spi.model.physical.PhysicalWireSource;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
- * Used to attach a wire to non-managed code.
+ * Models non-managed code that is deployed as a component to a service fabric.
  */
-public class NonManagedWireSource extends PhysicalWireSource {
-    private Class<?> interfaze;
-    private transient Object proxy;
-
-    public NonManagedWireSource(Class<?> interfaze) {
-        this.interfaze = interfaze;
-    }
-
-    public Class<?> getInterface() {
-        return interfaze;
-    }
-
-    public Object getProxy() {
-        return proxy;
-    }
-
-    public void setProxy(Object proxy) {
-        this.proxy = proxy;
+public class NonManagedImplementation extends Implementation<InjectingComponentType> {
+    public String getType() {
+        return "NonManaged";
     }
 }

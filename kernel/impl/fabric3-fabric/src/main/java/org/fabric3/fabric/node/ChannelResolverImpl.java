@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.domain;
+package org.fabric3.fabric.node;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -31,9 +31,9 @@ import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
-import org.fabric3.node.nonmanaged.NonManagedConnectionSource;
-import org.fabric3.node.nonmanaged.NonManagedConnectionTarget;
-import org.fabric3.node.nonmanaged.NonManagedImplementation;
+import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSource;
+import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTarget;
+import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.ChannelConnection;

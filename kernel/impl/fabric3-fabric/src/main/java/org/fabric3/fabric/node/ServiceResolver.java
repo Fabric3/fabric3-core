@@ -14,16 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.node.nonmanaged;
+package org.fabric3.fabric.node;
 
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Models non-managed code that is deployed as a component to a service fabric.
+ * Resolves a service and returns a wire proxy to it.
  */
-public class NonManagedImplementation extends Implementation<InjectingComponentType> {
-    public String getType() {
-        return "NonManaged";
-    }
+public interface ServiceResolver {
+
+    /**
+     * Resolves the service using autowire and returns a wire proxy to it.
+     *
+     * @param interfaze the service interface
+     * @return the wire proxy
+     * @throws Fabric3Exception if there is a resolution exception
+     */
+    <T> T resolve(Class<T> interfaze) throws Fabric3Exception;
+
 }

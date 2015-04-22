@@ -67,9 +67,6 @@ public class Dependencies {
         artifact = new DefaultArtifact(F3_GROUP_ID, "fabric3-junit", "jar", runtimeVersion);
         extensions.add(artifact);
 
-        artifact = new DefaultArtifact(F3_GROUP_ID, "fabric3-node-impl", "jar", runtimeVersion);
-        extensions.add(artifact);
-
         artifact = new DefaultArtifact("junit", "junit", "jar", PluginConstants.JUNIT_VERSION);
         extensions.add(artifact);
 
