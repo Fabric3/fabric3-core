@@ -22,7 +22,6 @@ import java.net.URI;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.model.physical.ClassLoaderWire;
 import org.oasisopen.sca.annotation.Reference;
 

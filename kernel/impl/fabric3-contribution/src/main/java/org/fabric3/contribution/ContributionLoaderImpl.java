@@ -35,7 +35,7 @@ import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
+import org.fabric3.contribution.wire.ClassLoaderWireBuilder;
 import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
