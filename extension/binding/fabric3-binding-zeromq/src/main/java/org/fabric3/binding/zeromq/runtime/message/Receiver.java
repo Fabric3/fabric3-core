@@ -18,7 +18,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
  * Implementations receive messages on a ZeroMQ socket using XREQ sockets. Qualities of service such as reliability may be provided by an

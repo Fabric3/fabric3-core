@@ -51,7 +51,7 @@ import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
 import org.fabric3.spi.discovery.ChannelEntry;
 import org.fabric3.spi.discovery.DiscoveryAgent;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -162,7 +162,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                     if ("localhost".equals(specifiedHost)) {
                         specifiedHost = hostAddress;
                     }
-                    SocketAddress socketAddress = new SocketAddress("synthetic", "synthetic", "tcp", specifiedHost, port);
+                    SocketAddress socketAddress = new SocketAddress("tcp", specifiedHost, port);
                     addresses.add(socketAddress);
                 }
             } else {
@@ -173,7 +173,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 refresh = true;
                 List<ChannelEntry> entries = discoveryAgent.getChannelEntries(channelName);
                 addresses = entries.stream().
-                        map(e -> new SocketAddress("", "", e.getTransport(), e.getAddress(), new SpecifiedPort(e.getPort()))).collect(toList());
+                        map(e -> new SocketAddress(e.getTransport(), e.getAddress(), new SpecifiedPort(e.getPort()))).collect(toList());
             }
             subscriber = new NonReliableSubscriber(id, manager, addresses, head, metadata, executorService);
             subscriber.incrementConnectionCount();
@@ -233,11 +233,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 if ("localhost".equals(specifiedHost)) {
                     specifiedHost = hostAddress;
                 }
-                address = new SocketAddress(runtimeName, zone, "tcp", specifiedHost, port);
+                address = new SocketAddress("tcp", specifiedHost, port);
             } else {
                 // socket address to bind on is not configured in the binding definition - allocate one
                 Port port = allocator.allocate(channelName, ZMQ);
-                address = new SocketAddress(runtimeName, zone, "tcp", hostAddress, port);
+                address = new SocketAddress("tcp", hostAddress, port);
             }
 
             Publisher publisher;

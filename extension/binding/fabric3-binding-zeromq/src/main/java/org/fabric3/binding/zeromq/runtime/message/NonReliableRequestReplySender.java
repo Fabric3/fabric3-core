@@ -41,7 +41,7 @@ import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 import org.zeromq.ZMQ;

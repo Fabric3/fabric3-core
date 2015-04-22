@@ -16,7 +16,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.federation.addressing;
+package org.fabric3.binding.zeromq.runtime;
 
 import java.io.Serializable;
 
@@ -28,8 +28,6 @@ import org.fabric3.spi.host.Port;
 public class SocketAddress implements Serializable {
     private static final long serialVersionUID = -6325896048393741909L;
 
-    private String runtimeName;
-    private String zone;
     private String protocol;
     private String address;
     private Port port;
@@ -37,22 +35,14 @@ public class SocketAddress implements Serializable {
     /**
      * Constructor.
      *
-     * @param runtimeName the runtime name where the socket is located
-     * @param zone        the zone
      * @param protocol    the protocol used for the socket, e.g. TCP
      * @param address     the IP address the socket should send/listen on
      * @param port        the socket port
      */
-    public SocketAddress(String runtimeName, String zone, String protocol, String address, Port port) {
-        this.runtimeName = runtimeName;
-        this.zone = zone;
+    public SocketAddress(String protocol, String address, Port port) {
         this.protocol = protocol;
         this.address = address;
         this.port = port;
-    }
-
-    public String getRuntimeName() {
-        return runtimeName;
     }
 
     public String getAddress() {
@@ -68,9 +58,10 @@ public class SocketAddress implements Serializable {
     }
 
     public String toString() {
-        return protocol + "://" + address + ":" + port.getNumber() + " [" + runtimeName + "]";
+        return protocol + "://" + address + ":" + port.getNumber();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -79,19 +70,19 @@ public class SocketAddress implements Serializable {
             return false;
         }
 
-        SocketAddress that = (SocketAddress) o;
+        SocketAddress address1 = (SocketAddress) o;
 
-        return port.getNumber() == that.port.getNumber() && !(address != null ? !address.equals(that.address) : that.address != null) && !(
-                protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) && !(
-                runtimeName != null ? !runtimeName.equals(that.runtimeName) : that.runtimeName != null);
+        return !(address != null ? !address.equals(address1.address) : address1.address != null) && !(
+                port != null ? !port.equals(address1.port) : address1.port != null) && !(
+                protocol != null ? !protocol.equals(address1.protocol) : address1.protocol != null);
 
     }
 
+    @Override
     public int hashCode() {
-        int result = runtimeName != null ? runtimeName.hashCode() : 0;
-        result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
+        int result = protocol != null ? protocol.hashCode() : 0;
         result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + port.getNumber();
+        result = 31 * result + (port != null ? port.hashCode() : 0);
         return result;
     }
 }

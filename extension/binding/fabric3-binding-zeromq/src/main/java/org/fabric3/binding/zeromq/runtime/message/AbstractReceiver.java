@@ -32,7 +32,7 @@ import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;

@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.zeromq.ZMQ;
 
@@ -197,7 +197,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
     }
 
     private SocketAddress createAddress(final int port) {
-        return new SocketAddress("vm", "zone", "tcp", String.valueOf(port), new Port() {
+        return new SocketAddress("tcp", String.valueOf(port), new Port() {
             public String getName() {
                 return null;
             }

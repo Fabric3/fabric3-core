@@ -21,7 +21,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.zeromq.ZMQ;
 
 /**

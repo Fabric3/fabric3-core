@@ -35,7 +35,7 @@ import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.discovery.ChannelEntry;
 import org.fabric3.spi.discovery.EntryChange;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;

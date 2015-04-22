@@ -31,7 +31,7 @@ import org.fabric3.spi.container.invocation.MessageCache;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.zeromq.ZMQ;
 
 /**

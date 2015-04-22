@@ -5,7 +5,7 @@ import java.util.List;
 import org.fabric3.binding.zeromq.runtime.broker.SpecifiedPort;
 import org.fabric3.spi.discovery.AbstractEntry;
 import org.fabric3.spi.discovery.EntryChange;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 import static java.util.stream.Collectors.toList;
 
@@ -21,7 +21,7 @@ public class AddressUpdater {
 
         } else {
             Port port = new SpecifiedPort(entry.getPort());
-            SocketAddress address = new SocketAddress("", "", entry.getTransport(), entry.getAddress(), port);
+            SocketAddress address = new SocketAddress(entry.getTransport(), entry.getAddress(), port);
             old.add(address);
             return old;
         }

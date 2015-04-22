@@ -93,7 +93,6 @@ import org.fabric3.fabric.domain.instantiator.component.CompositeComponentInstan
 import org.fabric3.fabric.domain.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.domain.instantiator.wire.TypeAutowireResolver;
 import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
-import org.fabric3.fabric.federation.addressing.AddressCacheImpl;
 import org.fabric3.fabric.host.PortAllocatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.fabric.model.physical.ChannelTarget;
@@ -153,8 +152,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(TransformerInterceptorFactoryImpl.class).build());
 
         compositeBuilder.component(newBuilder(TransformerHandlerFactoryImpl.class).build());
-
-        compositeBuilder.component(newBuilder(AddressCacheImpl.class).build());
 
         compositeBuilder.component(newBuilder(ArtifactCacheImpl.class).build());
 

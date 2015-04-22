@@ -60,7 +60,7 @@ import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.PhysicalOperation;
@@ -219,11 +219,11 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             }
             int portNumber = addressDefinition.getPort();
             Port port = allocator.reserve(endpointId, ZMQ, portNumber);
-            address = new SocketAddress(runtimeName, zone, "tcp", specifiedHost, port);
+            address = new SocketAddress("tcp", specifiedHost, port);
         } else {
             // bind to a randomly allocated port
             Port port = allocator.allocate(endpointId, ZMQ);
-            address = new SocketAddress(runtimeName, zone, "tcp", host, port);
+            address = new SocketAddress("tcp", host, port);
         }
 
         addTransformer(chains, loader);
@@ -334,7 +334,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                 if ("localhost".equals(specifiedHost)) {
                     specifiedHost = hostAddress;
                 }
-                SocketAddress socketAddress = new SocketAddress("synthetic", "synthetic", "tcp", specifiedHost, port);
+                SocketAddress socketAddress = new SocketAddress("tcp", specifiedHost, port);
                 addresses.add(socketAddress);
             }
 
@@ -346,7 +346,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             }
             List<ServiceEntry> entries = discoveryAgent.getServiceEntries(endpointId);
             addresses = entries.stream().
-                    map(e -> new SocketAddress("", "", e.getTransport(), e.getAddress(), new SpecifiedPort(e.getPort()))).collect(toList());
+                    map(e -> new SocketAddress(e.getTransport(), e.getAddress(), new SpecifiedPort(e.getPort()))).collect(toList());
         }
 
         Sender sender;
