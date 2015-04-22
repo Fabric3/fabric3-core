@@ -40,16 +40,14 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.provision.SessionType;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
-import org.fabric3.spi.threadpool.ExecutionContext;
-import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener on
- * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.  Note
- * this implementation supports dispatching transactional and non-transactional messages.
+ * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.  Note this
+ * implementation supports dispatching transactional and non-transactional messages.
  */
 @Management
 public class AdaptiveMessageContainer {
@@ -754,51 +752,37 @@ public class AdaptiveMessageContainer {
          * Loops while the container is running, receiving and dispatching messages.
          *
          * @return true if a message was received on executing the loop
-         * @throws JMSException       if an error occurs processing a message
+         * @throws JMSException     if an error occurs processing a message
          * @throws Fabric3Exception if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
         private boolean receiveLoop() throws JMSException, Fabric3Exception {
             boolean received = false;
             boolean active = true;
             while (active) {
-                // reset the execution context so the thread does not appear stalled to the runtime
-                ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
 
                 synchronized (syncMonitor) {
-                    try {
-                        if (context != null) {
-                            context.start();
+                    boolean interrupted = false;
+                    boolean waiting = false;
+                    while ((active = isInitialized()) && !isRunning()) {
+                        if (interrupted) {
+                            throw new IllegalStateException("Interrupted while waiting for restart for " + containerUri);
                         }
-                        boolean interrupted = false;
-                        boolean waiting = false;
-                        while ((active = isInitialized()) && !isRunning()) {
-                            if (interrupted) {
-                                throw new IllegalStateException("Interrupted while waiting for restart for " + containerUri);
-                            }
-                            if (!isRunning()) {
-                                return false;
-                            }
-                            if (!waiting && isRunning()) {
-                                activeReceiverCount--;
-                            }
-                            waiting = true;
-                            try {
-                                syncMonitor.wait();
-                            } catch (InterruptedException ex) {
-                                Thread.currentThread().interrupt();
-                                interrupted = true;
-                            }
+                        if (!isRunning()) {
+                            return false;
                         }
-                        if (waiting) {
-                            activeReceiverCount++;
+                        if (!waiting && isRunning()) {
+                            activeReceiverCount--;
                         }
-                        if (context != null) {
-                            context.stop();
+                        waiting = true;
+                        try {
+                            syncMonitor.wait();
+                        } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                            interrupted = true;
                         }
-                    } finally {
-                        if (context != null) {
-                            context.clear();
-                        }
+                    }
+                    if (waiting) {
+                        activeReceiverCount++;
                     }
                 }
                 if (active) {
@@ -813,7 +797,7 @@ public class AdaptiveMessageContainer {
          * Waits to receive a single message. If a message is received in the configured timeframe, it is dispatched to the listener.
          *
          * @return true if a message was received
-         * @throws JMSException       if there was an error receiving the message
+         * @throws JMSException     if there was an error receiving the message
          * @throws Fabric3Exception if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
         private boolean receive() throws JMSException, Fabric3Exception {
@@ -831,7 +815,7 @@ public class AdaptiveMessageContainer {
          * Initiates a transaction context if required and performs the blocking receive on the JMS destination.
          *
          * @return true if a message was received
-         * @throws JMSException       if a JMS-related exception occurred during the receive
+         * @throws JMSException     if a JMS-related exception occurred during the receive
          * @throws Fabric3Exception if a transaction exception occurred during thr receive
          */
         private boolean doReceive() throws JMSException, Fabric3Exception {

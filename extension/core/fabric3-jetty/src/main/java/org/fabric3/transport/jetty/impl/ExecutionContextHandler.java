@@ -25,30 +25,13 @@ import java.io.IOException;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
-import org.fabric3.spi.threadpool.ExecutionContext;
-import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
 /**
  * Starts and clears the current execution context for incoming HTTP/S requests.
  */
 public class ExecutionContextHandler extends HandlerWrapper {
 
-
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
-        if (context == null) {
-            // no execution context set, ignore
-            getHandler().handle(target, baseRequest, request, response);
-        } else {
-            try {
-                context.start();
-                getHandler().handle(target, baseRequest, request, response);
-                context.stop();
-            } finally {
-                context.clear();
-            }
-        }
-
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        getHandler().handle(target, baseRequest, request, response);
     }
 }

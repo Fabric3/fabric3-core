@@ -64,7 +64,6 @@ import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.JoinDomainCompleted;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
-import org.fabric3.spi.threadpool.LongRunnable;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.transport.jetty.JettyService;
 import org.fabric3.transport.jetty.management.ManagedHashSessionManager;
@@ -763,7 +762,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private class Fabric3ThreadPool implements ThreadPool {
 
         public boolean dispatch(Runnable work) {
-            executorService.execute(new JettyRunnable(work));
+            executorService.execute(work);
             return true;
         }
 
@@ -786,22 +785,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
 
         public void execute(Runnable work) {
-            executorService.execute(new JettyRunnable(work));
-        }
-    }
-
-    /**
-     * Wrapper to signal Jetty selector and acceptor work is long-running to avoid stall detection on indefinite channel select() and accept() operations.
-     */
-    private class JettyRunnable implements LongRunnable {
-        private Runnable runnable;
-
-        private JettyRunnable(Runnable runnable) {
-            this.runnable = runnable;
-        }
-
-        public void run() {
-            runnable.run();
+            executorService.execute(work);
         }
     }
 

@@ -20,21 +20,15 @@ package org.fabric3.threadpool;
 
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.spi.threadpool.ExecutionContext;
-import org.fabric3.spi.threadpool.ExecutionContextTunnel;
-import org.fabric3.spi.threadpool.LongRunnable;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -49,33 +43,20 @@ import org.oasisopen.sca.annotation.Property;
  */
 @EagerInit
 @Management(name = "RuntimeThreadPoolExecutor",
-            path = "/runtime/threadpool",
-            group = "kernel",
-            description = "Manages the runtime thread pool")
+        path = "/runtime/threadpool",
+        group = "kernel",
+        description = "Manages the runtime thread pool")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int coreSize = 100;
     private long keepAliveTime = 60000;
     private boolean allowCoreThreadTimeOut = true;
     private int maximumSize = 100;
     private int queueSize = 10000;
-    private int stallThreshold = 600000;
-    private boolean checkStalledThreads = true;
-    private long stallCheckPeriod = 60000;
     private RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
 
     private ThreadPoolExecutor delegate;
     private LinkedBlockingQueue<Runnable> queue;
-    private StalledThreadMonitor stalledMonitor;
     private ExecutorMonitor monitor;
-
-    private boolean statisticsOff = true;
-
-    // queue of in-flight work
-    private ConcurrentLinkedQueue<Runnable> inFlight = new ConcurrentLinkedQueue<>();
-
-    // statistics
-    private AtomicLong totalExecutionTime = new AtomicLong();
-    private AtomicLong completedWorkCount = new AtomicLong();
 
     /**
      * Sets the number of threads always available to service the executor queue.
@@ -116,17 +97,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         this.queueSize = size;
     }
 
-    /**
-     * Sets the period between checks for stalled threads.
-     *
-     * @param period the period between checks for stalled threads.
-     */
-    @Property(required = false)
-    @Source("$systemConfig//f3:thread.pool/@stallCheckPeriod")
-    public void setStallCheckPeriod(long period) {
-        this.stallCheckPeriod = period;
-    }
-
     @Property(required = false)
     @Source("$systemConfig//f3:thread.pool/@rejected.execution.handler")
     public void setRejectedExecutionHandler(String handler) {
@@ -139,18 +109,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         } else if (!"caller.runs".equals(handler)) {
             monitor.error("Invalid rejected execution handler configuration - setting to caller.runs: " + handler);
         }
-    }
-
-    /**
-     * Sets the time a thread can be processing work before it is considered stalled. The default is ten minutes.
-     *
-     * @param stallThreshold the time a thread can be processing work before it is considered stalled
-     */
-    @Property(required = false)
-    @Source("$systemConfig//f3:thread.pool/@stallThreshold")
-    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
-    public void setStallThreshold(int stallThreshold) {
-        this.stallThreshold = stallThreshold;
     }
 
     @ManagementOperation(description = "Thread keep alive time in milliseconds")
@@ -179,28 +137,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     @Source("$systemConfig//f3:thread.pool/@allowCoreThreadTimeOut")
     public void setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
         this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
-    }
-
-    @ManagementOperation(description = "True warnings should be issued for stalled threads")
-    public boolean isCheckStalledThreads() {
-        return checkStalledThreads;
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig//f3:thread.pool/@checkStalledThreads")
-    public void setCheckStalledThreads(boolean checkStalledThreads) {
-        this.checkStalledThreads = checkStalledThreads;
-    }
-
-    @Property(required = false)
-    @Source("$systemConfig//f3:thread.pool/@statistics.off")
-    public void setStatisticsOff(boolean statisticsOff) {
-        this.statisticsOff = statisticsOff;
-    }
-
-    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
-    public int getStallThreshold() {
-        return stallThreshold;
     }
 
     @ManagementOperation(description = "Returns the approximate number of threads actively executing tasks")
@@ -237,40 +173,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     public int getRemainingCapacity() {
         return queue.remainingCapacity();
     }
-
-    @ManagementOperation(description = "Returns the total time the thread pool has spent executing requests in milliseconds")
-    public long getTotalExecutionTime() {
-        return totalExecutionTime.get();
-    }
-
-    @ManagementOperation(description = "Returns the total number of work items processed by the thread pool")
-    public long getCompletedWorkCount() {
-        return completedWorkCount.get();
-    }
-
-    @ManagementOperation(description = "Returns the average elapsed time to process a work request in milliseconds")
-    public double getMeanExecutionTime() {
-        long count = completedWorkCount.get();
-        long totalTime = totalExecutionTime.get();
-        return count == 0 ? 0 : totalTime / count;
-    }
-
-    @ManagementOperation(description = "Returns the longest elapsed time for a currently running work request in milliseconds")
-    public long getLongestRunning() {
-        Runnable runnable = inFlight.peek();
-        if (runnable == null || !(runnable instanceof RunnableWrapper)) {
-            // no work or statistics turned off
-            return -1;
-        }
-        RunnableWrapper wrapper = (RunnableWrapper) runnable;
-        return System.currentTimeMillis() - wrapper.start;
-    }
-
-    @ManagementOperation
-    public int getCount() {
-        return inFlight.size();
-    }
-
     public RuntimeThreadPoolExecutor(@Monitor ExecutorMonitor monitor) {
         this.monitor = monitor;
     }
@@ -291,10 +193,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         delegate = new ThreadPoolExecutor(coreSize, maximumSize, Long.MAX_VALUE, TimeUnit.SECONDS, queue, factory);
         delegate.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
         delegate.allowCoreThreadTimeOut(allowCoreThreadTimeOut);
-        if (checkStalledThreads && !statisticsOff) {
-            stalledMonitor = new StalledThreadMonitor();
-            delegate.execute(stalledMonitor);
-        }
 
         // set rejection strategy
         delegate.setRejectedExecutionHandler(rejectedExecutionHandler);
@@ -302,19 +200,11 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
 
     @Destroy
     public void stop() {
-        if (stalledMonitor != null) {
-            stalledMonitor.stop();
-        }
         delegate.shutdown();
     }
 
     public void execute(Runnable runnable) {
-        if (statisticsOff) {
-            delegate.execute(runnable);
-        } else {
-            Runnable wrapper = new RunnableWrapper(runnable);
-            delegate.execute(wrapper);
-        }
+        delegate.execute(runnable);
     }
 
     public void shutdown() {
@@ -335,101 +225,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
 
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
         return false;
-    }
-
-    /**
-     * Wraps submitted work to record processing statistics.
-     */
-    private class RunnableWrapper implements Runnable, ExecutionContext {
-        private Runnable delegate;
-        private boolean autoStart;
-        private Thread currentThread;
-
-        private long start = -1;
-
-        private RunnableWrapper(Runnable delegate) {
-            this.delegate = delegate;
-            autoStart = !(delegate instanceof LongRunnable);
-        }
-
-        public void run() {
-            ExecutionContext old = ExecutionContextTunnel.setThreadExecutionContext(this);
-            try {
-                if (autoStart) {
-                    start();
-                    delegate.run();
-                    stop();
-                } else {
-                    delegate.run();
-                }
-            } finally {
-                ExecutionContextTunnel.setThreadExecutionContext(old);
-                clear();
-            }
-        }
-
-        public void start() {
-            if (currentThread != null) {
-                // already started, ignore
-                return;
-            }
-            currentThread = Thread.currentThread();
-            inFlight.add(this);
-            start = System.currentTimeMillis();
-        }
-
-        public void clear() {
-            currentThread = null;
-            inFlight.remove(this);
-        }
-
-        public void stop() {
-            long elapsed = System.currentTimeMillis() - start;
-            totalExecutionTime.addAndGet(elapsed);
-            completedWorkCount.incrementAndGet();
-        }
-
-    }
-
-    /**
-     * Periodically scans in-flight work for threads that have exceeded a processing time threshold.
-     */
-    private class StalledThreadMonitor implements Runnable {
-        private AtomicBoolean active = new AtomicBoolean(true);
-
-        public void run() {
-            while (active.get()) {
-                try {
-                    Thread.sleep(stallCheckPeriod);
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
-                    continue;
-                }
-                // iterator never throws ConcurrentModificationException and can therefore be used to safely traverse the in-flight work queue
-                for (Runnable runnable : inFlight) {
-                    if (!(runnable instanceof RunnableWrapper)) {
-                        continue;
-                    }
-                    RunnableWrapper wrapper = (RunnableWrapper) runnable;
-                    long elapsed = System.currentTimeMillis() - wrapper.start;
-                    if (elapsed >= stallThreshold) {
-                        Thread thread = wrapper.currentThread;
-                        if (thread != null) {
-                            StackTraceElement[] trace = thread.getStackTrace();
-                            StringBuilder builder = new StringBuilder();
-                            for (StackTraceElement element : trace) {
-                                builder.append("\tat ").append(element).append("\n");
-                            }
-                            monitor.stalledThread(thread.getName(), elapsed, builder.toString());
-                        }
-                    }
-                }
-            }
-        }
-
-        public void stop() {
-            active.set(false);
-        }
     }
 
 }
