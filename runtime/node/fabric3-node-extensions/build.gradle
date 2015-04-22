@@ -18,9 +18,6 @@ dependencies {
     compile project(':extension:core:fabric3-async')
     compile project(':extension:core:fabric3-resource')
     compile project(':extension:core:fabric3-execution')
-    compile project(':extension:federated:fabric3-federation-node')
-    compile project(':extension:federated:fabric3-jgroups')
-    compile project(':extension:federated:fabric3-federation-jgroups')
 
     compile group: 'com.lmax', name: 'disruptor', version: disruptorVersion
 
@@ -43,10 +40,6 @@ task distZip(type: Zip) {
     dependsOn(':extension:core:fabric3-async:jar')
     dependsOn(':extension:core:fabric3-resource:jar')
     dependsOn(':extension:core:fabric3-execution:jar')
-
-    dependsOn(':extension:federated:fabric3-federation-node:jar')
-    dependsOn(':extension:federated:fabric3-jgroups:jar')
-    dependsOn(':extension:federated:fabric3-federation-jgroups:jar')
 
     destinationDir = file("$buildDir/libs")
     into('extensions') {

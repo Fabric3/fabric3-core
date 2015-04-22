@@ -15,9 +15,6 @@ include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy',
         'extension:core:fabric3-monitor-appender', 'extension:core:fabric3-monitor-impl', 'extension:core:fabric3-monitor-log',
         'extension:core:fabric3-test-spi'
 
-// Federation extensions
-include 'extension:federated:fabric3-jgroups', 'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups'
-
 include 'extension:discovery:fabric3-discovery-etcd', 'extension:discovery:fabric3-discovery-local'
 
 // Implementation extensions

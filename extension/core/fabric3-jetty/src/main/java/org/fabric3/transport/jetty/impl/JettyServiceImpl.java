@@ -619,7 +619,7 @@ public class JettyServiceImpl implements JettyService, Transport {
      * Registers HTTP and HTTPS socket information with the topology service if it is available.
      */
     private void registerSockets() {
-        if (RuntimeMode.VM != hostInfo.getRuntimeMode()) {
+        if (RuntimeMode.VM != hostInfo.getRuntimeMode() && discoveryAgent != null) {
             try {
                 String host = httpConnector.getHost();
                 if (host == null) {
@@ -631,6 +631,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 httpEntry.setPort(selectedHttp.getNumber());
                 httpEntry.setName("f3.HTTP");
                 httpEntry.setTransport("http");
+
                 discoveryAgent.register(httpEntry);
 
                 if (isHttpsEnabled()) {
