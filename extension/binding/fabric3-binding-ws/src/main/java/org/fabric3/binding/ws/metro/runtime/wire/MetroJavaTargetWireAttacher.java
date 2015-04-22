@@ -43,7 +43,7 @@ import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSource;
-import org.fabric3.spi.repository.ArtifactCache;
+import org.fabric3.binding.ws.metro.runtime.core.ArtifactCache;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

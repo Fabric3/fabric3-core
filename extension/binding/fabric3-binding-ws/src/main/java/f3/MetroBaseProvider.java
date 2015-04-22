@@ -12,6 +12,7 @@ import org.fabric3.binding.ws.metro.generator.java.EndpointSynthesizerImpl;
 import org.fabric3.binding.ws.metro.generator.java.JavaGeneratorDelegate;
 import org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl;
 import org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolverImpl;
+import org.fabric3.binding.ws.metro.runtime.core.ArtifactCacheImpl;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointServiceImpl;
 import org.fabric3.binding.ws.metro.runtime.wire.MetroJavaSourceWireAttacher;
 import org.fabric3.binding.ws.metro.runtime.wire.MetroJavaTargetWireAttacher;
@@ -26,6 +27,7 @@ public class MetroBaseProvider {
     @Provides
     public static Composite getComposite() {
         CompositeBuilder compositeBuilder = CompositeBuilder.newBuilder(QNAME);
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(ArtifactCacheImpl.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(EndpointSynthesizerImpl.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(TargetUrlResolverImpl.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(InterfaceGeneratorImpl.class).build());

@@ -16,7 +16,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.repository;
+package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.io.InputStream;
 import java.net.URI;

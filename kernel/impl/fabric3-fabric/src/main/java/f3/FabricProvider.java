@@ -30,8 +30,6 @@ import org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistryImpl;
 import org.fabric3.fabric.container.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.container.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.container.builder.classloader.ClassLoaderWireBuilderImpl;
-import org.fabric3.fabric.container.component.scope.DomainScopeContainer;
-import org.fabric3.fabric.container.component.scope.StatelessScopeContainer;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommandExecutor;
 import org.fabric3.fabric.container.command.AttachWireCommandExecutor;
 import org.fabric3.fabric.container.command.BuildChannelCommandExecutor;
@@ -49,6 +47,8 @@ import org.fabric3.fabric.container.command.StartComponentCommandExecutor;
 import org.fabric3.fabric.container.command.StartContextCommandExecutor;
 import org.fabric3.fabric.container.command.StopComponentCommandExecutor;
 import org.fabric3.fabric.container.command.StopContextCommandExecutor;
+import org.fabric3.fabric.container.component.scope.DomainScopeContainer;
+import org.fabric3.fabric.container.component.scope.StatelessScopeContainer;
 import org.fabric3.fabric.container.handler.TransformerHandlerFactoryImpl;
 import org.fabric3.fabric.container.interceptor.TransformerInterceptorFactoryImpl;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
@@ -94,7 +94,6 @@ import org.fabric3.fabric.domain.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.host.PortAllocatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.fabric.model.physical.ChannelTarget;
-import org.fabric3.fabric.repository.ArtifactCacheImpl;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
@@ -148,8 +147,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(TransformerInterceptorFactoryImpl.class).build());
 
         compositeBuilder.component(newBuilder(TransformerHandlerFactoryImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ArtifactCacheImpl.class).build());
 
     }
 

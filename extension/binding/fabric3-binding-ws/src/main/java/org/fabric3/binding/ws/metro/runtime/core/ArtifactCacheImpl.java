@@ -16,7 +16,7 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.fabric.repository;
+package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,6 @@ import java.util.Map;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.repository.ArtifactCache;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
