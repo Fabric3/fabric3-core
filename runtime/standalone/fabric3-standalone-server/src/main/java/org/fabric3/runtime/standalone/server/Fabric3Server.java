@@ -24,6 +24,14 @@ import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 import java.io.File;
 import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -48,6 +56,7 @@ import org.fabric3.api.host.runtime.RuntimeService;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.w3c.dom.Document;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static org.fabric3.api.host.Names.MONITOR_FACTORY_URI;
 
 /**
@@ -61,6 +70,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private ServerMonitor monitor;
     private CountDownLatch latch;
     private String productName;
+
+    private volatile boolean shutdown;
 
     /**
      * Main method.
@@ -131,6 +142,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
                                                                deployDirs,
                                                                false);
 
+            File shutdownFile = new File(hostInfo.getDataDir(), "f3.shutdown");
+            if (shutdownFile.exists()) {
+                shutdownFile.delete();
+            }
+
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
@@ -175,6 +191,14 @@ public class Fabric3Server implements Fabric3ServerMBean {
             monitor = monitorService.createMonitor(ServerMonitor.class);
             monitor.started(productName, mode.toString(), environment);
 
+            // register shutdown hook to catch SIGTERM events
+            Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownRuntime));
+
+            // start watcher for the f3.shutdown file
+            Thread t = new Thread(() -> watch(hostInfo));
+            t.setDaemon(true);
+            t.start();
+
             try {
                 latch.await();
             } catch (InterruptedException e) {
@@ -188,7 +212,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     public void shutdownRuntime() {
+        if (shutdown) {
+            return;  // may be called multiple times from the watcher and the shutdown hook
+        }
         shutdown();
+        shutdown = true;
         latch.countDown();
     }
 
@@ -239,6 +267,46 @@ public class Fabric3Server implements Fabric3ServerMBean {
         } else {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Watches the runtime/data directory for a {@code f3.shutdown} file.
+     *
+     * @param hostInfo the host info
+     */
+    @SuppressWarnings("unchecked")
+    private void watch(HostInfo hostInfo) {
+        try {
+            Path dataDir = hostInfo.getDataDir().toPath();
+            FileSystem fileSystem = FileSystems.getDefault();
+
+            WatchService watcher = fileSystem.newWatchService();
+            dataDir.register(watcher, ENTRY_CREATE);
+
+            while (true) {
+                WatchKey key = watcher.take();
+                for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                    WatchEvent.Kind kind = watchEvent.kind();
+                    if (ENTRY_CREATE == kind) {
+                        Path newPath = ((WatchEvent<Path>) watchEvent).context();
+                        if (newPath.endsWith("f3.shutdown")) {
+                            shutdownRuntime();
+                            try {
+                                Files.delete(newPath);
+                            } catch (NoSuchFileException e) {
+                                // ignore
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            monitor.shutdownError(e);
+            shutdown();
+            handleStartException(e);
+        }
+
     }
 
     private static Params parse(String[] args) {

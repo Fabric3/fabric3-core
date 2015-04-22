@@ -19,137 +19,72 @@
  */
 package org.fabric3.runtime.standalone.server;
 
-import javax.management.JMException;
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
-import javax.management.remote.JMXServiceURL;
-import javax.management.remote.rmi.RMIConnector;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 /**
- * Shuts down a server instance via JMX. Valid parameters are <code>-address (-a)</code> and <code>-port (-p)</code> if connecting to a server not
- * using the default IP address (localhost) and/or JMX port (1199).
+ * Shuts down a server instance by placing a {@code f3.shutdown} file in the runtime data directory.
+ *
+ * The main method takes one parameter, the runtime name, and defaults to "vm".
  */
 public class Shutdown {
-    private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
-    private static final String DEFAULT_ADDRESS = "localhost";
-    private static final int DEFAULT_ADMIN_PORT = 1199;
-
 
     public static void main(String[] args) {
-        if (args.length != 0 && args.length != 2 && args.length != 4) {
-            throw new IllegalArgumentException("Invalid parameters");
-        }
-        Shutdown shutdown = new Shutdown();
-        Parameters parameters = shutdown.parse(args);
-        if (parameters.isError()) {
-            System.out.println("ERROR: " + parameters.getErrorMessage());
-        }
+        String runtimeName = args.length > 0 ? args[0] : "vm";
+        File installDir = getInstallDirectory(Shutdown.class);
+        File dataDir = new File(installDir, "runtimes" + File.separatorChar + runtimeName + File.separatorChar + "data");
         try {
-            shutdown.shutdown(parameters);
-        } catch (JMException | IOException e) {
-            System.out.println("ERROR: Unable to shutdown remote server");
+            if (!dataDir.exists()) {
+                System.out.println("Runtime configuration does not exist. Unable to shutdown: " + runtimeName);
+                return;
+            }
+            new File(dataDir, "f3.shutdown").createNewFile();
+            System.out.println("Fabric3 shutting down");
+        } catch (IOException e) {
+            System.out.println("Unable to shutdown server: " + runtimeName);
             e.printStackTrace();
         }
 
     }
 
-    private void shutdown(Parameters parameters) throws JMException, IOException {
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + parameters.getAddress() + ":" + parameters.getPort() + "/server");
-        RMIConnector rmiConnector = new RMIConnector(url, null);
-        rmiConnector.connect();
-
-        MBeanServerConnection connection = rmiConnector.getMBeanServerConnection();
-        ObjectName name = new ObjectName(RUNTIME_MBEAN);
-        connection.invoke(name, "shutdownRuntime", null, null);
-        System.out.println("Fabric3 shutdown");
-    }
-
-
-    private Parameters parse(String[] args) {
-        int port = DEFAULT_ADMIN_PORT;
-        String address = DEFAULT_ADDRESS;
-        if (args.length == 0) {
-            return new Parameters(DEFAULT_ADDRESS, DEFAULT_ADMIN_PORT);
-        } else if (args.length == 2) {
-            if (isAddress(args[0])) {
-                address = args[1];
-            } else if (isPort(args[0])) {
-                try {
-                    port = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    return new Parameters("Invalid port: " + args[1]);
-                }
-            } else {
-                return new Parameters("Invalid parameter type: " + args[0]);
-            }
-        } else if (args.length == 4) {
-            if (isAddress(args[0])) {
-                address = args[1];
-            } else if (isPort(args[0])) {
-                try {
-                    port = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    return new Parameters("Invalid port: " + args[1]);
-                }
-            } else {
-                return new Parameters("Invalid parameter type: " + args[0]);
-            }
-            if (isAddress(args[2])) {
-                address = args[3];
-            } else if (isPort(args[2])) {
-                try {
-                    port = Integer.parseInt(args[3]);
-                } catch (NumberFormatException e) {
-                    return new Parameters("Invalid port: " + args[3]);
-                }
-            } else {
-                return new Parameters("Invalid parameter type: " + args[3]);
-            }
-
+    /**
+     * Gets the installation directory based on the location of a class file. The installation directory is calculated by determining the path of the jar
+     * containing the given class file and returning its parent directory.
+     *
+     * @param clazz the class to use as a way to find the executable jar
+     * @return directory where Fabric3 runtime is installed.
+     * @throws IllegalStateException if the location could not be determined from the location of the class file
+     */
+    public static File getInstallDirectory(Class<?> clazz) throws IllegalStateException {
+        // get the name of the Class's bytecode
+        String name = clazz.getName();
+        int last = name.lastIndexOf('.');
+        if (last != -1) {
+            name = name.substring(last + 1);
         }
-        return new Parameters(address, port);
-    }
+        name = name + ".class";
 
-    private boolean isAddress(String arg) {
-        return "-address".equals(arg) || "-a".equals(arg);
-    }
-
-    private boolean isPort(String arg) {
-        return "-port".equals(arg) || "-p".equals(arg);
-    }
-
-    private class Parameters {
-        private String address;
-        private int port;
-        private boolean error;
-        private String errorMessage;
-
-        public Parameters(String address, int port) {
-            this.port = port;
-            this.address = address;
+        // get location of the bytecode - should be a jar: URL
+        URL url = clazz.getResource(name);
+        if (url == null) {
+            throw new IllegalStateException("Unable to get location of bytecode resource " + name);
         }
 
-        private Parameters(String errorMessage) {
-            this.errorMessage = errorMessage;
-            error = true;
+        String jarLocation = url.toString();
+        if (!jarLocation.startsWith("jar:")) {
+            throw new IllegalStateException("Must be run from a jar: " + url);
         }
 
-        public String getAddress() {
-            return address;
+        // extract the location of thr jar from the resource URL
+        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
+        if (!jarLocation.startsWith("file:")) {
+            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
         }
 
-        public int getPort() {
-            return port;
-        }
-
-        public boolean isError() {
-            return error;
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
-        }
+        File jarFile = new File(URI.create(jarLocation));
+        return jarFile.getParentFile().getParentFile();
     }
 
 }
