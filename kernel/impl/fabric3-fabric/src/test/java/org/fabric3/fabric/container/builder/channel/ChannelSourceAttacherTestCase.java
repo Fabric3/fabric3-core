@@ -23,7 +23,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 import org.fabric3.spi.util.Closeable;

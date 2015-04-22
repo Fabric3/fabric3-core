@@ -16,8 +16,9 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.generator;
 
+import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**

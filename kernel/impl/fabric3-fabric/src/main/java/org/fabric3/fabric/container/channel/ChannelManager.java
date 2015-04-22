@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.container.channel;
+package org.fabric3.fabric.container.channel;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.ChannelSide;
 
 /**

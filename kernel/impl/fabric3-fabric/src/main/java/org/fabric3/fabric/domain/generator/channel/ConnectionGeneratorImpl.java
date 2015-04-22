@@ -34,7 +34,6 @@ import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.fabric.model.physical.ChannelTarget;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.domain.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.domain.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;

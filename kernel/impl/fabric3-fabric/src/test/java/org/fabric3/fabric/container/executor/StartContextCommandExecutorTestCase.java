@@ -27,7 +27,7 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.fabric.container.command.ContextMonitor;
 import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.fabric.container.command.StartContextCommandExecutor;
-import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.fabric.container.command.CommandExecutorRegistry;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.spi.domain.generator.channel;
+package org.fabric3.fabric.domain.generator.channel;
 
 /**
  * Specifies if the physical channel instance is for a consumer or producer.

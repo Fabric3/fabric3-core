@@ -20,8 +20,6 @@ import javax.xml.namespace.QName;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.domain.generator.channel.ChannelDirection;
-import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
 import org.fabric3.spi.domain.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.ChannelSide;

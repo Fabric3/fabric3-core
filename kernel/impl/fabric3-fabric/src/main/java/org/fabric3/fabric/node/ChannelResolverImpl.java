@@ -39,8 +39,8 @@ import org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.ChannelResolver;
 import org.fabric3.fabric.domain.LogicalComponentManager;
-import org.fabric3.spi.domain.generator.channel.ChannelGenerator;
-import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
+import org.fabric3.fabric.domain.generator.channel.ChannelGenerator;
+import org.fabric3.fabric.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -53,8 +53,8 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.util.Closeable;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.spi.domain.generator.channel.ChannelDirection.CONSUMER;
-import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
+import static org.fabric3.fabric.domain.generator.channel.ChannelDirection.CONSUMER;
+import static org.fabric3.fabric.domain.generator.channel.ChannelDirection.PRODUCER;
 
 /**
  *

@@ -21,7 +21,6 @@ package org.fabric3.contribution.generator;
 import java.net.URI;
 
 import org.fabric3.contribution.wire.LocationContributionWire;
-import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**

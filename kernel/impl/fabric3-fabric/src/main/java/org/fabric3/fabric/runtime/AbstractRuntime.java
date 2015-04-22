@@ -44,7 +44,7 @@ import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.monitor.proxy.JDKMonitorProxyService;
 import org.fabric3.monitor.proxy.MonitorProxyServiceImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;

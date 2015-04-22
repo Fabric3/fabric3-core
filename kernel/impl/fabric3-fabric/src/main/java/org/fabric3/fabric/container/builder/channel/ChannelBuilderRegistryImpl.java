@@ -23,7 +23,7 @@ import java.util.Map;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannel;
 import org.oasisopen.sca.annotation.Reference;

@@ -32,8 +32,6 @@ import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.ChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.spi.domain.generator.channel.ChannelDirection;
-import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

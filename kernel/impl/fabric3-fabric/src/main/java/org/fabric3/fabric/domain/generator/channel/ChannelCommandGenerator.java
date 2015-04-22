@@ -21,7 +21,6 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
-import org.fabric3.spi.domain.generator.channel.ChannelDirection;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**

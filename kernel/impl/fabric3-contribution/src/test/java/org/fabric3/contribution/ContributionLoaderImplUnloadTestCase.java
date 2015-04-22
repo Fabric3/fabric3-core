@@ -32,7 +32,7 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.contribution.wire.ClassLoaderWireBuilder;
-import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
+import org.fabric3.contribution.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;

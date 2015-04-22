@@ -31,7 +31,6 @@ import org.fabric3.fabric.container.command.ChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
-import org.fabric3.spi.domain.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -40,7 +39,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.DeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.spi.domain.generator.channel.ChannelDirection.PRODUCER;
+import static org.fabric3.fabric.domain.generator.channel.ChannelDirection.PRODUCER;
 
 /**
  * Generates a command to establish or remove a channel connection from a producer. Channel build and dispose commands will be generated for producer targets.

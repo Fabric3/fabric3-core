@@ -33,7 +33,7 @@ import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
