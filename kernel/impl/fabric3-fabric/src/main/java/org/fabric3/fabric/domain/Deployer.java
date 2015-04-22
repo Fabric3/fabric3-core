@@ -20,7 +20,7 @@
 package org.fabric3.fabric.domain;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.domain.generator.Deployment;
+import org.fabric3.fabric.domain.generator.Deployment;
 
 /**
  * Processes a {@link Deployment}.

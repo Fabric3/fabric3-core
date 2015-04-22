@@ -26,7 +26,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.container.command.DetachChannelConnectionCommandExecutor;
 import org.fabric3.spi.container.builder.ChannelConnector;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**

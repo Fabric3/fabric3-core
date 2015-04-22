@@ -20,8 +20,6 @@ package org.fabric3.fabric.container.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.container.command.Command;
-
 public class StopContextCommand implements Command {
 
     private QName deployable;

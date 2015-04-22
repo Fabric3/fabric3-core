@@ -23,10 +23,10 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
-import org.fabric3.spi.container.command.Command;
+import org.fabric3.fabric.container.command.Command;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
-import org.fabric3.spi.domain.generator.Deployment;
+import org.fabric3.fabric.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.domain.generator.Deployment;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

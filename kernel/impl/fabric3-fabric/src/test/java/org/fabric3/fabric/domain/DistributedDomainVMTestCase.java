@@ -40,8 +40,8 @@ import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.generator.Deployment;
-import org.fabric3.spi.domain.generator.Generator;
+import org.fabric3.fabric.domain.generator.Deployment;
+import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

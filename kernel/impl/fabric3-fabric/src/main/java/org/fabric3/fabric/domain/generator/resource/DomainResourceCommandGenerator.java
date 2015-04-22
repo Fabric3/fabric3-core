@@ -19,7 +19,7 @@ package org.fabric3.fabric.domain.generator.resource;
 import java.util.Optional;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.container.command.Command;
+import org.fabric3.fabric.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalResource;
 
 /**

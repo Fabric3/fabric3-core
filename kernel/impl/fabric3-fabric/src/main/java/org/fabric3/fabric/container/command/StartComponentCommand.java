@@ -21,8 +21,6 @@ package org.fabric3.fabric.container.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.command.Command;
-
 /**
  * A command to start a component on a runtime.
  */

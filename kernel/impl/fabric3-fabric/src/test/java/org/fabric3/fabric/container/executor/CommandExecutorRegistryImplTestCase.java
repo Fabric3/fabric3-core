@@ -22,8 +22,8 @@ package org.fabric3.fabric.container.executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.CommandExecutorRegistryImpl;
-import org.fabric3.spi.container.command.Command;
-import org.fabric3.spi.container.command.CommandExecutor;
+import org.fabric3.fabric.container.command.Command;
+import org.fabric3.fabric.container.command.CommandExecutor;
 
 /**
  *

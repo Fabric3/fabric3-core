@@ -19,8 +19,6 @@ package org.fabric3.fabric.container.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.container.command.Command;
-
 /**
  * Used to establish or dispose a channel connection. This may include provisioning the channel (or disposing it) to a runtime where the producer or consumer is
  * hosted.

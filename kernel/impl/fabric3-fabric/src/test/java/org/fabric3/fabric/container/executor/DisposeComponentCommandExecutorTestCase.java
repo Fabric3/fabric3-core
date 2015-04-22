@@ -31,7 +31,7 @@ import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalComponent;
 
 /**

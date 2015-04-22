@@ -17,28 +17,23 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.command;
+package org.fabric3.fabric.domain.generator;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * A registry of {@link CommandExecutor}s.
+ * Generates a {@link Deployment} from the current logical state of the domain.
  */
-public interface CommandExecutorRegistry {
+public interface Generator {
 
     /**
-     * Register the command executor
+     * Performs the generation.
      *
-     * @param type     the type of command the executor handles
-     * @param executor the executor
+     * @param domain      the logical domain composite
+     * @return the deployment
+     * @throws Fabric3Exception If unable to generate the deployment
      */
-    <T extends Command> void register(Class<T> type, CommandExecutor<T> executor);
+    Deployment generate(LogicalCompositeComponent domain) throws Fabric3Exception;
 
-    /**
-     * Dispatches a command to an executor.
-     *
-     * @param command the command to dispatch
-     * @throws Fabric3Exception if there is an error executing the command
-     */
-    <T extends Command> void execute(T command) throws Fabric3Exception;
 }

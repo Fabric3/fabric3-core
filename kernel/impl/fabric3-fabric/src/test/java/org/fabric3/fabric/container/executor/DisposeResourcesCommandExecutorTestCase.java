@@ -27,7 +27,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.container.command.DisposeResourcesCommand;
 import org.fabric3.fabric.container.command.DisposeResourcesCommandExecutor;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**

@@ -30,7 +30,7 @@ import org.fabric3.fabric.container.command.StopContextCommandExecutor;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.CommandExecutorRegistry;
 
 /**
  *

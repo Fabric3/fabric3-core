@@ -26,7 +26,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.fabric3.fabric.container.command.StopContextCommand;
-import org.fabric3.spi.container.command.Command;
+import org.fabric3.fabric.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 

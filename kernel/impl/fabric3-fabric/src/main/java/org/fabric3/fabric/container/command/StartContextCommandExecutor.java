@@ -26,8 +26,6 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;

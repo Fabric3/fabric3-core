@@ -21,8 +21,6 @@ package org.fabric3.fabric.container.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.container.command.Command;
-
 /**
  * Starts a composite context on a runtime.
  */

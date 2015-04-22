@@ -22,8 +22,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.container.command.Command;
-
 /**
  * Contains commands for attaching and detaching wires for a component.
  */

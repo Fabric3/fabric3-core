@@ -25,7 +25,7 @@ import java.util.List;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.fabric.container.command.StopContextCommand;
-import org.fabric3.spi.container.command.Command;
+import org.fabric3.fabric.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 

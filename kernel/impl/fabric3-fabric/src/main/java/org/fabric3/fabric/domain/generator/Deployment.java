@@ -17,23 +17,29 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.domain.generator;
+package org.fabric3.fabric.domain.generator;
 
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.fabric3.fabric.container.command.Command;
 
 /**
- * Generates a {@link Deployment} from the current logical state of the domain.
+ * A collection of {@link Command}s that perform a deployment.
  */
-public interface Generator {
+public class Deployment {
+    private List<Command> commands = new ArrayList<>();
 
-    /**
-     * Performs the generation.
-     *
-     * @param domain      the logical domain composite
-     * @return the deployment
-     * @throws Fabric3Exception If unable to generate the deployment
-     */
-    Deployment generate(LogicalCompositeComponent domain) throws Fabric3Exception;
+    public List<Command> getCommands() {
+        return commands;
+    }
+
+    public void addCommand(Command command) {
+        commands.add(command);
+    }
+
+    public void addCommands(List<Command> list) {
+        commands.addAll(list);
+    }
 
 }

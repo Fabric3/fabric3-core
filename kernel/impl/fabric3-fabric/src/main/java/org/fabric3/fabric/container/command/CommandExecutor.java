@@ -17,29 +17,21 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.domain.generator;
+package org.fabric3.fabric.container.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.fabric3.spi.container.command.Command;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * A collection of {@link Command}s that perform a deployment.
+ * Responsible for executing {@link Command}s sent to a runtime.
  */
-public class Deployment {
-    private List<Command> commands = new ArrayList<>();
+public interface CommandExecutor<T extends Command> {
 
-    public List<Command> getCommands() {
-        return commands;
-    }
-
-    public void addCommand(Command command) {
-        commands.add(command);
-    }
-
-    public void addCommands(List<Command> list) {
-        commands.addAll(list);
-    }
+    /**
+     * Execute the command.
+     *
+     * @param command the command to execute
+     * @throws Fabric3Exception if there is an error executing the command
+     */
+    void execute(T command) throws Fabric3Exception;
 
 }

@@ -20,8 +20,6 @@ package org.fabric3.fabric.container.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.container.command.Command;
-
 public class StopComponentCommand implements Command {
 
     private final URI uri;

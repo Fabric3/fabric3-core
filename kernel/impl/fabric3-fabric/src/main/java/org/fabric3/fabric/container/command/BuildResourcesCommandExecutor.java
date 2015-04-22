@@ -22,10 +22,7 @@ package org.fabric3.fabric.container.command;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.fabric.container.command.BuildResourcesCommand;
 import org.fabric3.spi.container.builder.resource.ResourceBuilder;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

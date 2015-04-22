@@ -29,7 +29,7 @@ import org.fabric3.fabric.container.command.ConnectionCommandExecutor;
 import org.fabric3.fabric.container.command.DetachWireCommand;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
+import org.fabric3.fabric.container.command.CommandExecutorRegistry;
 
 /**
  *

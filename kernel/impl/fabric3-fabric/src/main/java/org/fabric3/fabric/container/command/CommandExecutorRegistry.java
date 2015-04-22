@@ -17,11 +17,28 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.command;
+package org.fabric3.fabric.container.command;
+
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Represents an action to be executed on a runtime.
+ * A registry of {@link CommandExecutor}s.
  */
-public interface Command {
+public interface CommandExecutorRegistry {
 
+    /**
+     * Register the command executor
+     *
+     * @param type     the type of command the executor handles
+     * @param executor the executor
+     */
+    <T extends Command> void register(Class<T> type, CommandExecutor<T> executor);
+
+    /**
+     * Dispatches a command to an executor.
+     *
+     * @param command the command to dispatch
+     * @throws Fabric3Exception if there is an error executing the command
+     */
+    <T extends Command> void execute(T command) throws Fabric3Exception;
 }

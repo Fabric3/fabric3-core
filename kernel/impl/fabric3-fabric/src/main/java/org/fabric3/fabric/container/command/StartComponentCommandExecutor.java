@@ -21,11 +21,8 @@ package org.fabric3.fabric.container.command;
 
 import java.net.URI;
 
-import org.fabric3.fabric.container.command.StartComponentCommand;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentManager;
-import org.fabric3.spi.container.command.CommandExecutor;
-import org.fabric3.spi.container.command.CommandExecutorRegistry;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

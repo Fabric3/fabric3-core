@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.container.command;
 
-import org.fabric3.spi.container.command.Command;
 import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**

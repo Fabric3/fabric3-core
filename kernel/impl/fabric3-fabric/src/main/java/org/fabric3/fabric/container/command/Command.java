@@ -17,21 +17,11 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.container.command;
-
-import org.fabric3.api.host.Fabric3Exception;
+package org.fabric3.fabric.container.command;
 
 /**
- * Responsible for executing {@link Command}s sent to a runtime.
+ * Represents an action to be executed on a runtime.
  */
-public interface CommandExecutor<T extends Command> {
-
-    /**
-     * Execute the command.
-     *
-     * @param command the command to execute
-     * @throws Fabric3Exception if there is an error executing the command
-     */
-    void execute(T command) throws Fabric3Exception;
+public interface Command {
 
 }
