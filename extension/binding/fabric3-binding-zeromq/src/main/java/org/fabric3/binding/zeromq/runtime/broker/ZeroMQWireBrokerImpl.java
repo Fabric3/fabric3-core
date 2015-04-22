@@ -57,8 +57,9 @@ import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.spi.federation.addressing.AddressAnnouncement;
-import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.discovery.DiscoveryAgent;
+import org.fabric3.spi.discovery.EntryChange;
+import org.fabric3.spi.discovery.ServiceEntry;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
@@ -71,6 +72,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
+import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -84,7 +86,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
-    private AddressCache addressCache;
+    private DiscoveryAgent discoveryAgent;
     private PortAllocator allocator;
     private EventService eventService;
     private HostInfo info;
@@ -100,7 +102,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private Map<String, Receiver> receivers = new HashMap<>();
 
     public ZeroMQWireBrokerImpl(@Reference ContextManager manager,
-                                @Reference AddressCache addressCache,
+                                @Reference(required = false) DiscoveryAgent discoveryAgent,
                                 @Reference PortAllocator allocator,
                                 @Reference(name = "executorService") ExecutorService executorService,
                                 @Reference ZeroMQManagementService managementService,
@@ -109,7 +111,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                                 @Reference HostInfo info,
                                 @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
-        this.addressCache = addressCache;
+        this.discoveryAgent = discoveryAgent;
         this.allocator = allocator;
         this.executorService = executorService;
         this.managementService = managementService;
@@ -235,9 +237,15 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         receiver.start();
 
-        AddressAnnouncement event = new AddressAnnouncement(endpointId, AddressAnnouncement.Type.ACTIVATED, address);
-        addressCache.publish(event);
+        ServiceEntry entry = new ServiceEntry();
+        entry.setName(endpointId);
+        entry.setAddress(address.getAddress());
+        entry.setPort(address.getPort().getNumber());
+        entry.setTransport("tcp");
 
+        if (discoveryAgent != null) {
+            discoveryAgent.register(entry);
+        }
         receivers.put(uri.toString(), receiver);
         String id = createReceiverId(uri);
         managementService.registerReceiver(id, receiver);
@@ -251,10 +259,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         String endpointId = uri.toString();
 
-        SocketAddress address = receiver.getAddress();
-        AddressAnnouncement event = new AddressAnnouncement(endpointId, AddressAnnouncement.Type.REMOVED, address);
-        addressCache.publish(event);
-
+        if (discoveryAgent != null) {
+            discoveryAgent.unregisterService(endpointId);
+        }
         receiver.stop();
         allocator.release(endpointId);
         String id = createReceiverId(uri);
@@ -306,7 +313,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         return "ZeroMQWireBroker";
     }
 
-    public void onUpdate(List<SocketAddress> addresses) {
+    public void accept(EntryChange change, ServiceEntry serviceEntry) {
         // no-op
     }
 
@@ -334,7 +341,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         } else {
             // services addresses to connect to are not specified in the binding, retrieve them from the federation layer
             refresh = true;
-            addresses = addressCache.getActiveAddresses(endpointId);
+            if (discoveryAgent == null) {
+                throw new Fabric3Exception("Discovery extension must be installed for dynamic wire addresses");
+            }
+            List<ServiceEntry> entries = discoveryAgent.getServiceEntries(endpointId);
+            addresses = entries.stream().
+                    map(e -> new SocketAddress("", "", e.getTransport(), e.getAddress(), new SpecifiedPort(e.getPort()))).collect(toList());
         }
 
         Sender sender;
@@ -346,9 +358,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         SenderHolder holder = new SenderHolder(sender);
         sender.start();
 
-        if (refresh) {
+        if (refresh && discoveryAgent != null) {
             // don't subscribe for updates if the sockets are explicitly configured
-            addressCache.subscribe(endpointId, sender);
+            discoveryAgent.registerServiceListener(endpointId, sender);
         }
 
         senders.put(endpointId, holder);

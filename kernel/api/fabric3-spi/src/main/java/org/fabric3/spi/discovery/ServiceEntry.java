@@ -6,6 +6,16 @@ package org.fabric3.spi.discovery;
 public class ServiceEntry extends AbstractEntry {
     private String path;
 
+    public ServiceEntry() {
+    }
+
+    public ServiceEntry(String name, String address, int port, String transport) {
+        this.name = name;
+        this.address = address;
+        this.port = port;
+        this.transport = transport;
+    }
+
     /**
      * Returns the service path.
      *

@@ -35,9 +35,8 @@ import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
-import org.fabric3.spi.federation.addressing.AddressCache;
-import org.fabric3.spi.federation.addressing.AddressEvent;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.discovery.DiscoveryAgent;
+import org.fabric3.spi.discovery.ServiceEntry;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.PhysicalOperation;
@@ -48,26 +47,10 @@ import org.zeromq.ZMQ;
  *
  */
 public class ZeroMQWireBrokerImplTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "zone", "tcp", "10.10.10.1", new Port() {
-        public String getName() {
-            return null;
-        }
-
-        public int getNumber() {
-            return 1061;
-        }
-
-        public void bind(TYPE type) {
-
-        }
-
-        public void release() {
-
-        }
-    });
+    private static final ServiceEntry ENTRY = new ServiceEntry("wire", "10.10.10.1", 1234, "tcp");
 
     private ContextManager manager;
-    private AddressCache addressCache;
+    private DiscoveryAgent discoveryAgent;
     private ExecutorService executorService;
     private MessagingMonitor monitor;
     private ZMQ.Context context;
@@ -79,11 +62,13 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
     private ZeroMQMetadata metadata;
 
     public void testConnectToReceiverRelease() throws Exception {
+
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
         EasyMock.expect(info.getZoneName()).andReturn("zone1");
 
-        addressCache.publish(EasyMock.isA(AddressEvent.class));
-        EasyMock.expectLastCall().times(2);
+        discoveryAgent.register(EasyMock.isA(ServiceEntry.class));
+        EasyMock.expectLastCall();
+        discoveryAgent.unregisterService("wire");
 
         Port port = EasyMock.createMock(Port.class);
         EasyMock.expect(port.getNumber()).andReturn(1099).anyTimes();
@@ -102,7 +87,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         EasyMock.expect(executorService.submit(EasyMock.isA(Runnable.class))).andReturn(null);
 
-        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
+        EasyMock.replay(manager, discoveryAgent, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
         PhysicalOperation definition = new PhysicalOperation();
         definition.setOneWay(true);
@@ -121,13 +106,13 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.connectToReceiver(URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseReceiver(URI.create("wire"));
 
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port, managementService, interceptorFactory);
+        EasyMock.verify(manager, discoveryAgent, executorService, monitor, allocator, info, chain, interceptor, port, managementService, interceptorFactory);
     }
 
     public void testConnectToSenderRelease() throws Exception {
 
-        EasyMock.expect(addressCache.getActiveAddresses("wire")).andReturn(Collections.singletonList(ADDRESS));
-        addressCache.subscribe(EasyMock.eq("wire"), EasyMock.isA(OneWaySender.class));
+        EasyMock.expect(discoveryAgent.getServiceEntries("wire")).andReturn(Collections.singletonList(ENTRY));
+        discoveryAgent.registerServiceListener(EasyMock.eq("wire"), EasyMock.isA(OneWaySender.class));
         EasyMock.expectLastCall();
 
         Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
@@ -140,7 +125,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
                                                              EasyMock.isA(ClassLoader.class))).andReturn(transformInterceptor);
 
         EasyMock.replay(context);
-        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
+        EasyMock.replay(manager, discoveryAgent, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
         PhysicalOperation definition = new PhysicalOperation();
         definition.setOneWay(true);
@@ -157,7 +142,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.releaseSender("id", URI.create("wire"));
 
         JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, managementService, interceptorFactory);
+        EasyMock.verify(manager, discoveryAgent, executorService, monitor, allocator, info, chain, managementService, interceptorFactory);
     }
 
     @Override
@@ -166,7 +151,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         context = EasyMock.createMock(ZMQ.Context.class);
         manager = EasyMock.createMock(ContextManager.class);
 
-        addressCache = EasyMock.createMock(AddressCache.class);
+        discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
 
         executorService = EasyMock.createMock(ExecutorService.class);
 
@@ -182,7 +167,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         EventService eventService = EasyMock.createNiceMock(EventService.class);
         broker = new ZeroMQWireBrokerImpl(manager,
-                                          addressCache,
+                                          discoveryAgent,
                                           allocator,
                                           executorService,
                                           managementService,

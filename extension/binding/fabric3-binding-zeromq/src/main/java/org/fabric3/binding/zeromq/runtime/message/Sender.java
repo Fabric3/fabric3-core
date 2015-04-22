@@ -18,12 +18,15 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import org.fabric3.spi.federation.addressing.AddressListener;
+import java.util.function.BiConsumer;
+
+import org.fabric3.spi.discovery.EntryChange;
+import org.fabric3.spi.discovery.ServiceEntry;
 
 /**
  * Implementations dispatch messages over a ZeroMQ socket.
  */
-public interface Sender extends AddressListener {
+public interface Sender extends BiConsumer<EntryChange, ServiceEntry> {
 
     /**
      * Initializes the client and its underlying socket.

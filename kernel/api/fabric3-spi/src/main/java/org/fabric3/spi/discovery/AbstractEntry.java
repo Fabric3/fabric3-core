@@ -4,11 +4,11 @@ package org.fabric3.spi.discovery;
  * Base discovery entry.
  */
 public abstract class AbstractEntry {
-    private String name;
-    private String transport;
+    protected String name;
+    protected String transport;
 
-    private String address;
-    private int port;
+    protected String address;
+    protected int port;
 
     private boolean frozen;
 

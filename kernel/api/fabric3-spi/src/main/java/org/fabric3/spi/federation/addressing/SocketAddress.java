@@ -55,14 +55,6 @@ public class SocketAddress implements Serializable {
         return runtimeName;
     }
 
-    public String getZone() {
-        return zone;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
     public String getAddress() {
         return address;
     }

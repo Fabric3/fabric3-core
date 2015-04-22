@@ -18,13 +18,14 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -32,7 +33,8 @@ import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.channel.EventStreamHandler;
-import org.fabric3.spi.federation.addressing.AddressListener;
+import org.fabric3.spi.discovery.ChannelEntry;
+import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
@@ -46,7 +48,7 @@ import org.zeromq.ZMQ.Socket;
  * a socket, if an update is received the original socket will be closed and a new one created to connect to the update set of addresses.
  */
 @Management
-public class NonReliableSubscriber implements Subscriber, AddressListener {
+public class NonReliableSubscriber implements Subscriber, BiConsumer<EntryChange, ChannelEntry> {
     private static final byte[] EMPTY_BYTES = new byte[0];
 
     private String id;
@@ -112,11 +114,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener {
 
     @ManagementOperation
     public List<String> getAddresses() {
-        List<String> list = new ArrayList<>();
-        for (SocketAddress address : addresses) {
-            list.add(address.toString());
-        }
-        return list;
+        return addresses.stream().map(SocketAddress::toString).collect(Collectors.toList());
     }
 
     public void incrementConnectionCount() {
@@ -135,9 +133,8 @@ public class NonReliableSubscriber implements Subscriber, AddressListener {
         return id;
     }
 
-    public void onUpdate(List<SocketAddress> addresses) {
-        // refresh socket
-        this.addresses = addresses;
+    public void accept(EntryChange change, ChannelEntry entry) {
+        addresses = AddressUpdater.accept(change, entry, addresses);
         if (receiver != null) {
             receiver.refresh();
         }

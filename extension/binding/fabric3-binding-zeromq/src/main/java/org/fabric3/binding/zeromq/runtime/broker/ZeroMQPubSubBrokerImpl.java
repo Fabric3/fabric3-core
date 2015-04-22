@@ -49,8 +49,8 @@ import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
-import org.fabric3.spi.federation.addressing.AddressAnnouncement;
-import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.discovery.ChannelEntry;
+import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
@@ -62,6 +62,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
+import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -74,7 +75,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
-    private AddressCache addressCache;
+    private DiscoveryAgent discoveryAgent;
     private PortAllocator allocator;
     private TransformerHandlerFactory handlerFactory;
     private ZeroMQManagementService managementService;
@@ -90,7 +91,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private Map<String, PublisherHolder> publishers = new HashMap<>();
 
     public ZeroMQPubSubBrokerImpl(@Reference ContextManager manager,
-                                  @Reference AddressCache addressCache,
+                                  @Reference(required = false) DiscoveryAgent discoveryAgent,
                                   @Reference PortAllocator allocator,
                                   @Reference TransformerHandlerFactory handlerFactory,
                                   @Reference ZeroMQManagementService managementService,
@@ -99,7 +100,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Reference HostInfo info,
                                   @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
-        this.addressCache = addressCache;
+        this.discoveryAgent = discoveryAgent;
         this.allocator = allocator;
         this.handlerFactory = handlerFactory;
         this.managementService = managementService;
@@ -166,15 +167,20 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 }
             } else {
                 // publisher addresses to connect to are not specified in the binding, retrieve them from the federation layer
+                if (discoveryAgent == null) {
+                    throw new Fabric3Exception("Discovery extension must be installed for dynamic channel addresses");
+                }
                 refresh = true;
-                addresses = addressCache.getActiveAddresses(channelName);
+                List<ChannelEntry> entries = discoveryAgent.getChannelEntries(channelName);
+                addresses = entries.stream().
+                        map(e -> new SocketAddress("", "", e.getTransport(), e.getAddress(), new SpecifiedPort(e.getPort()))).collect(toList());
             }
             subscriber = new NonReliableSubscriber(id, manager, addresses, head, metadata, executorService);
             subscriber.incrementConnectionCount();
             subscriber.start();
-            if (refresh) {
+            if (refresh && discoveryAgent != null) {
                 // don't subscribe for updates if the sockets are explicitly configured
-                addressCache.subscribe(channelName, subscriber);
+                discoveryAgent.registerChannelListener(channelName, subscriber);
             }
 
             subscribers.put(channelName, subscriber);
@@ -191,6 +197,9 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
             throw new IllegalStateException("Subscriber not found: " + subscriberId);
+        }
+        if (discoveryAgent != null) {
+            discoveryAgent.unregisterChannelListener(channelName, subscriber);
         }
         subscriber.decrementConnectionCount();
         if (!subscriber.hasConnections()) {
@@ -239,8 +248,16 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             }
             attachConnection(connection, publisher, loader);
 
-            AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
-            addressCache.publish(event);
+            if (discoveryAgent != null) {
+                ChannelEntry entry = new ChannelEntry();
+                entry.setName(channelName);
+                entry.setAddress(address.getAddress());
+                entry.setPort(address.getPort().getNumber());
+                entry.setTransport("tcp");
+
+                discoveryAgent.register(entry);
+            }
+
             publisher.start();
 
             holder = new PublisherHolder(publisher, address);
@@ -266,9 +283,9 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             publishers.remove(channelName);
             publisher.stop();
 
-            SocketAddress address = holder.getAddress();
-            AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.REMOVED, address);
-            addressCache.publish(event);
+            if (discoveryAgent != null) {
+                discoveryAgent.unregisterChannel(channelName);
+            }
             managementService.unregister(channelName);
         }
         allocator.release(channelName);

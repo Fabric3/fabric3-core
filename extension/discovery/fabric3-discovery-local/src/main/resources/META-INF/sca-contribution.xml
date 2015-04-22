@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="discovery test extension">
+    <import.java package="org.fabric3.spi.*" version="3.0.0"/>
+    <!--<import.java package="com.fasterxml.jackson.*" version="2.2.0"/>-->
+
+</contribution>

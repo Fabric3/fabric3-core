@@ -39,6 +39,8 @@ import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.discovery.EntryChange;
+import org.fabric3.spi.discovery.ServiceEntry;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -107,9 +109,9 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         return id;
     }
 
-    public void onUpdate(List<SocketAddress> addresses) {
+    public void accept(EntryChange change, ServiceEntry entry) {
         // refresh socket
-        this.addresses = addresses;
+        this.addresses = AddressUpdater.accept(change, entry, addresses);
         dispatcher.refresh();
     }
 

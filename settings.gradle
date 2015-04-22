@@ -18,7 +18,7 @@ include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy',
 // Federation extensions
 include 'extension:federated:fabric3-jgroups', 'extension:federated:fabric3-federation-node', 'extension:federated:fabric3-federation-jgroups'
 
-include 'extension:discovery:fabric3-discovery-etcd'
+include 'extension:discovery:fabric3-discovery-etcd', 'extension:discovery:fabric3-discovery-local'
 
 // Implementation extensions
 include 'extension:implementation:fabric3-java', 'extension:implementation:fabric3-junit-api', 'extension:implementation:fabric3-junit',

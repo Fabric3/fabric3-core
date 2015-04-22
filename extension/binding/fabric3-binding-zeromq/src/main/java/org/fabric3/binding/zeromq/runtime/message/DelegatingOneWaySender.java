@@ -18,11 +18,10 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.util.List;
-
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.spi.container.invocation.WorkContext;
-import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.discovery.EntryChange;
+import org.fabric3.spi.discovery.ServiceEntry;
 
 /**
  * Delegates to another one-way sender.
@@ -48,9 +47,9 @@ public class DelegatingOneWaySender implements OneWaySender {
         return id;
     }
 
-    public void onUpdate(List<SocketAddress> addresses) {
+    public void accept(EntryChange change, ServiceEntry serviceEntry) {
+        delegate.accept(change, serviceEntry);
     }
-
 
     public void send(byte[] message, int index, WorkContext context) {
         delegate.send(message, index, context, metadata);
