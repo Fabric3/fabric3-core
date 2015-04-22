@@ -38,7 +38,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.discovery.DiscoveryAgent;
-import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
