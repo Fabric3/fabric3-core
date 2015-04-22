@@ -31,14 +31,13 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Reference;
 import org.fabric3.api.node.NotFoundException;
+import org.fabric3.fabric.container.builder.Connector;
+import org.fabric3.fabric.domain.LogicalComponentManager;
+import org.fabric3.fabric.domain.instantiator.wire.AutowireResolver;
 import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.fabric.node.nonmanaged.NonManagedWireSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.fabric.container.builder.Connector;
-import org.fabric3.fabric.domain.LogicalComponentManager;
-import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.domain.generator.wire.WireGenerator;
-import org.fabric3.fabric.domain.instantiator.wire.AutowireResolver;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -56,7 +55,6 @@ public class ServiceResolverImpl implements ServiceResolver {
     private Introspector introspector;
     private LogicalComponentManager lcm;
     private AutowireResolver autowireResolver;
-    private BindingSelector bindingSelector;
     private WireGenerator wireGenerator;
     private Connector connector;
     private ClassLoaderRegistry classLoaderRegistry;
@@ -66,7 +64,6 @@ public class ServiceResolverImpl implements ServiceResolver {
     public ServiceResolverImpl(@org.oasisopen.sca.annotation.Reference Introspector introspector,
                                @org.oasisopen.sca.annotation.Reference(name = "lcm") LogicalComponentManager lcm,
                                @org.oasisopen.sca.annotation.Reference AutowireResolver autowireResolver,
-                               @org.oasisopen.sca.annotation.Reference BindingSelector bindingSelector,
                                @org.oasisopen.sca.annotation.Reference WireGenerator wireGenerator,
                                @org.oasisopen.sca.annotation.Reference Connector connector,
                                @org.oasisopen.sca.annotation.Reference ClassLoaderRegistry classLoaderRegistry,
@@ -74,7 +71,6 @@ public class ServiceResolverImpl implements ServiceResolver {
         this.introspector = introspector;
         this.lcm = lcm;
         this.autowireResolver = autowireResolver;
-        this.bindingSelector = bindingSelector;
         this.wireGenerator = wireGenerator;
         this.connector = connector;
         this.classLoaderRegistry = classLoaderRegistry;
@@ -83,17 +79,8 @@ public class ServiceResolverImpl implements ServiceResolver {
 
     public <T> T resolve(Class<T> interfaze) throws Fabric3Exception {
         LogicalWire logicalWire = createWire(interfaze);
-        boolean remote = !logicalWire.getSource().getParent().getZone().equals(logicalWire.getTarget().getParent().getZone());
 
-        PhysicalWire physicalWire;
-
-        if (remote) {
-            bindingSelector.selectBinding(logicalWire);
-            physicalWire = wireGenerator.generateBoundReference(logicalWire.getSourceBinding());
-            physicalWire.getSource().setUri(logicalWire.getSource().getParent().getUri());
-        } else {
-            physicalWire = wireGenerator.generateWire(logicalWire);
-        }
+        PhysicalWire physicalWire = wireGenerator.generateWire(logicalWire);
 
         NonManagedWireSource source = (NonManagedWireSource) physicalWire.getSource();
         URI uri = ContributionResolver.getContribution(interfaze);

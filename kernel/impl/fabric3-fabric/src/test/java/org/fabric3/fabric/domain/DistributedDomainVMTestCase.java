@@ -36,13 +36,12 @@ import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.domain.collector.Collector;
 import org.fabric3.fabric.domain.collector.CollectorImpl;
+import org.fabric3.fabric.domain.generator.Deployment;
+import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.fabric.domain.generator.Deployment;
-import org.fabric3.fabric.domain.generator.Generator;
-import org.fabric3.spi.domain.generator.binding.BindingSelector;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
@@ -57,7 +56,6 @@ public class DistributedDomainVMTestCase extends TestCase {
     private IMocksControl control;
     private DistributedDomain domain;
     private LogicalModelInstantiator instantiator;
-    private BindingSelector bindingSelector;
     private Generator generator;
     private Deployer deployer;
     private LogicalComponentManagerImpl lcm;
@@ -69,8 +67,6 @@ public class DistributedDomainVMTestCase extends TestCase {
     public void testInclude() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(component);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment);
@@ -91,8 +87,6 @@ public class DistributedDomainVMTestCase extends TestCase {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(component);
         EasyMock.expect(instantiator.include(EasyMock.isA(List.class), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
-        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
-
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment);
         deployer.deploy(EasyMock.isA(Deployment.class));
@@ -109,8 +103,6 @@ public class DistributedDomainVMTestCase extends TestCase {
     public void testIncludeAndRemove() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(component);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
 
         Deployment deployment = new Deployment();
         EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment).times(2);
@@ -151,10 +143,9 @@ public class DistributedDomainVMTestCase extends TestCase {
         generator = control.createMock(Generator.class);
         instantiator = control.createMock(LogicalModelInstantiator.class);
 
-        bindingSelector = control.createMock(BindingSelector.class);
         deployer = control.createMock(Deployer.class);
         Collector collector = new CollectorImpl();
-        domain = new DistributedDomain(store, lcm, generator, instantiator, bindingSelector, deployer, collector, helper, info);
+        domain = new DistributedDomain(store, lcm, generator, instantiator, deployer, collector, helper, info);
 
         contribution = DomainTestCaseHelper.createContribution(store);
         component = new Component("component");

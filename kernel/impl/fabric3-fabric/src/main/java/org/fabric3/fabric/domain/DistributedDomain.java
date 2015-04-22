@@ -18,34 +18,28 @@
  */
 package org.fabric3.fabric.domain;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.fabric.domain.collector.Collector;
 import org.fabric3.fabric.domain.generator.Generator;
 import org.fabric3.fabric.domain.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.generator.binding.BindingSelector;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implements a distributed domain containing user-defined services.
  */
 public class DistributedDomain extends AbstractDomain implements Domain {
-    private BindingSelector bindingSelector;
 
     public DistributedDomain(@Reference(name = "store") MetaDataStore metaDataStore,
                              @Reference(name = "logicalComponentManager") LogicalComponentManager logicalComponentManager,
                              @Reference Generator generator,
                              @Reference LogicalModelInstantiator logicalModelInstantiator,
-                             @Reference BindingSelector bindingSelector,
                              @Reference Deployer deployer,
                              @Reference Collector collector,
                              @Reference ContributionHelper contributionHelper,
                              @Reference HostInfo info) {
         super(metaDataStore, logicalComponentManager, generator, logicalModelInstantiator, deployer, collector, contributionHelper, info);
-        this.bindingSelector = bindingSelector;
     }
 
     /**
@@ -66,10 +60,6 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     @Reference
     public void setDeployer(Deployer deployer) {
         this.deployer = deployer;
-    }
-
-    protected void selectBinding(LogicalCompositeComponent domain) throws Fabric3Exception {
-        bindingSelector.selectBindings(domain);
     }
 
 }

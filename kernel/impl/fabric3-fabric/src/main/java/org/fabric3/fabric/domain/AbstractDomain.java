@@ -155,15 +155,6 @@ public abstract class AbstractDomain implements Domain {
     }
 
     /**
-     * Selects bindings for references targeted to remote services for a set of components being deployed by delegating to a BindingSelector.
-     *
-     * @param domain the domain component
-     */
-    protected void selectBinding(LogicalCompositeComponent domain) throws Fabric3Exception {
-        // no-op
-    }
-
-    /**
      * Include all deployables contained in the list of contributions in the domain.
      *
      * @param uris    the contributions to deploy
@@ -227,8 +218,6 @@ public abstract class AbstractDomain implements Domain {
                 allocateAndDeploy(domain);
             } else {
                 allocate(domain);
-                // Select bindings
-                selectBinding(domain);
                 collector.markAsProvisioned(domain);
             }
 
@@ -293,8 +282,6 @@ public abstract class AbstractDomain implements Domain {
     private void allocateAndDeploy(LogicalCompositeComponent domain) throws Fabric3Exception {
         // Allocate the components to runtime nodes
         allocate(domain);
-        // Select bindings
-        selectBinding(domain);
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain);
         collector.markAsProvisioned(domain);

@@ -58,8 +58,6 @@ import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
 import org.fabric3.fabric.domain.NodeAllocator;
 import org.fabric3.fabric.domain.collector.CollectorImpl;
-import org.fabric3.fabric.domain.generator.binding.BindingSelectorImpl;
-import org.fabric3.fabric.domain.generator.binding.ConfigurableBindingSelectionStrategy;
 import org.fabric3.fabric.domain.generator.channel.ChannelCommandGeneratorImpl;
 import org.fabric3.fabric.domain.generator.channel.ChannelGeneratorImpl;
 import org.fabric3.fabric.domain.generator.channel.ConnectionGeneratorImpl;
@@ -244,10 +242,6 @@ public class FabricProvider {
         compositeBuilder.component(newBuilder(ChannelGeneratorImpl.class).build());
 
         compositeBuilder.component(newBuilder(DomainResourceCommandGeneratorImpl.class).build());
-
-        compositeBuilder.component(newBuilder(BindingSelectorImpl.class).build());
-
-        compositeBuilder.component(newBuilder(ConfigurableBindingSelectionStrategy.class).build());
 
         compositeBuilder.component(newBuilder(StopComponentCommandGenerator.class).build());
 
