@@ -98,10 +98,6 @@ public class FileWireBindingGenerator implements WireBindingGenerator<FileBindin
         return new FileBindingWireTarget(location, adapterClass, adaptorUri);
     }
 
-    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<FileBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Validates a service contract for a bound reference. The service contract must contain exactly one operation of the form:
      * <pre>

@@ -57,18 +57,4 @@ public interface WireBindingGenerator<BD extends Binding> {
      */
     PhysicalWireTarget generateTarget(LogicalBinding<BD> referenceBinding, ServiceContract contract, List<LogicalOperation> operations) throws Fabric3Exception;
 
-    /**
-     * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the reference is
-     * wired using the <code>@target</code> attribute of the <code>&lt;reference&gt;</code> element. In this case, the reference is wired without a binding to a
-     * service hosted in the same domain and the target service binding configuration is used to calculate the physical wire for the reference.
-     *
-     * @param serviceBinding the binding specified on the service
-     * @param contract       the service contract
-     * @param operations     the operations to generate the wire for
-     * @return Physical wire target definition.
-     * @throws Fabric3Exception if an error is raised during generation
-     */
-    PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<BD> serviceBinding, ServiceContract contract, List<LogicalOperation> operations)
-            throws Fabric3Exception;
-
 }

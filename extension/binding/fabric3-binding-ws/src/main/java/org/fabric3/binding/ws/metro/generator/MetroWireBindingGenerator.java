@@ -56,15 +56,6 @@ public class MetroWireBindingGenerator implements WireBindingGenerator<WsBinding
         return delegate.generateTarget(binding, contract);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<WsBinding> serviceBinding,
-                                                                     ServiceContract contract,
-                                                                     List<LogicalOperation> operations) throws Fabric3Exception {
-        MetroGeneratorDelegate delegate = getDelegate(contract);
-        return delegate.generateServiceBindingTarget(serviceBinding, contract);
-    }
-
-
     private MetroGeneratorDelegate getDelegate(ServiceContract contract) throws Fabric3Exception {
         MetroGeneratorDelegate<?> delegate = delegates.get(contract.getClass());
         if (delegate == null) {

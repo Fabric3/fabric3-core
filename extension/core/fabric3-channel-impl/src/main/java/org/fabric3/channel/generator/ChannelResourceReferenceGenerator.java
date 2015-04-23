@@ -32,8 +32,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 @Key("org.fabric3.channel.model.ChannelResourceReference")
 public class ChannelResourceReferenceGenerator implements ResourceReferenceGenerator<ChannelResourceReference> {
 
-    public ChannelContextWireTarget generateWireTarget(LogicalResourceReference<ChannelResourceReference> reference) {
-        return new ChannelContextWireTarget(reference.getDefinition().getChannelName());
+    public ChannelContextWireTarget generateWireTarget(LogicalResourceReference<ChannelResourceReference> resourceReference) {
+        return new ChannelContextWireTarget(resourceReference.getDefinition().getChannelName());
     }
 
 }

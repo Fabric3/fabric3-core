@@ -149,11 +149,6 @@ public class JmsWireBindingGenerator implements WireBindingGenerator<JmsBinding>
         return definition;
     }
 
-    public JmsWireTarget generateServiceBindingTarget(LogicalBinding<JmsBinding> binding, ServiceContract contract, List<LogicalOperation> operations)
-            throws Fabric3Exception {
-        return generateTarget(binding, contract, operations);
-    }
-
     private boolean isJAXB(ServiceContract contract) {
         for (Operation operation : contract.getOperations()) {
             if (!operation.getInputTypes().isEmpty() && JAXB.equals(operation.getInputTypes().get(0).getDatabinding())) {

@@ -50,10 +50,4 @@ public class RsWireBindingGenerator implements WireBindingGenerator<RsBinding> {
         return new RsWireTarget(binding.getDefinition().getTargetUri(), interfaceClass);
     }
 
-    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<RsBinding> binding,
-                                                                     ServiceContract contract,
-                                                                     List<LogicalOperation> operations) {
-        return generateTarget(binding, contract, operations);
-    }
-
 }

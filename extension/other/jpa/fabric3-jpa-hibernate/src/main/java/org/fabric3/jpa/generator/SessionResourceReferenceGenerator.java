@@ -38,8 +38,8 @@ public class SessionResourceReferenceGenerator implements ResourceReferenceGener
         this.registry = registry;
     }
 
-    public SessionWireTarget generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> logicalResourceReference) {
-        HibernateSessionResourceReference resource = logicalResourceReference.getDefinition();
+    public SessionWireTarget generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> resourceReference) {
+        HibernateSessionResourceReference resource = resourceReference.getDefinition();
         String unitName = resource.getUnitName();
         SessionWireTarget target = new SessionWireTarget(unitName);
 

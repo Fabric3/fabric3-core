@@ -30,7 +30,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ExecutorServiceResourceReferenceGenerator implements ResourceReferenceGenerator<ExecutorServiceResourceReference> {
 
-    public ExecutorServiceWireTarget generateWireTarget(LogicalResourceReference<ExecutorServiceResourceReference> reference) {
+    public ExecutorServiceWireTarget generateWireTarget(LogicalResourceReference<ExecutorServiceResourceReference> resourceReference) {
         return new ExecutorServiceWireTarget();
     }
 }

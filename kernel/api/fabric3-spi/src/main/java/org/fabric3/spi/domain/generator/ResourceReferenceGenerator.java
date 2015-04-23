@@ -31,10 +31,10 @@ public interface ResourceReferenceGenerator<R extends ResourceReference> {
     /**
      * Generate the physical definition for the logical resource reference.
      *
-     * @param logicalResourceReference the resource being wired to
-     * @return Source wire definition.
+     * @param resourceReference the resource being wired to
+     * @return physical wire target
      * @throws Fabric3Exception if there was a problem generating the wire
      */
-    PhysicalWireTarget generateWireTarget(LogicalResourceReference<R> logicalResourceReference) throws Fabric3Exception;
+    PhysicalWireTarget generateWireTarget(LogicalResourceReference<R> resourceReference) throws Fabric3Exception;
 
 }

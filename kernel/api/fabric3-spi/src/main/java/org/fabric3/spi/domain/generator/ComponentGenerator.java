@@ -20,7 +20,6 @@
 package org.fabric3.spi.domain.generator;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -40,8 +39,7 @@ import org.fabric3.spi.model.physical.PhysicalWireTarget;
 public interface ComponentGenerator<C extends LogicalComponent<? extends Implementation<?>>> {
 
     /**
-     * Generates an {@link PhysicalComponent} based on a {@link Component}. The resulting
-     * PhysicalComponentDefinition is added to the PhysicalChangeSet associated with the current GeneratorContext.
+     * Generates an {@link PhysicalComponent} based on a {@link LogicalComponent}.
      *
      * @param component the logical component to evaluate
      * @return the physical component definition
@@ -50,18 +48,18 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalComponent generate(C component) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireSource} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
-     * is specific to the component implementation type and used when the wire is attached to its source on a runtime.
+     * Generates a {@link PhysicalWireSource} used to attach a physical wire to a source component. Metadata contained in the source is specific to the
+     * component implementation type and used when the wire is attached to its source.
      *
      * @param reference the source logical reference
-     * @return the metadata used to attach the wire to its source on the service node
+     * @return the metadata used to attach the wire to its source
      * @throws Fabric3Exception if an error occurs during the generation process
      */
     PhysicalWireSource generateSource(LogicalReference reference) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireTarget} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
-     * is specific to the component implementation type and used when the wire is attached to its target on a runtime.
+     * Generates a {@link PhysicalWireTarget} used to attach a physical wire to a target component. Metadata contained in the source is specific to the
+     * component implementation type and used when the wire is attached to its target.
      *
      * @param service the target logical service
      * @return the metadata used to attach the wire to its target on the service node
@@ -70,8 +68,8 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalWireTarget generateTarget(LogicalService service) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireSource} used to attach a physical wire for a callback service to a source component. Metadata contained in the
-     * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
+     * Generates a {@link PhysicalWireSource} used to attach a physical wire for a callback service to a source component. Metadata contained in the source is
+     * specific to the component implementation type and used when the wire is attached to its source.
      *
      * @param service the forward service the callback is being generated for
      * @return the metadata used to attach the wire to its source on the service node
@@ -98,8 +96,8 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalConnectionTarget generateConnectionTarget(LogicalConsumer consumer) throws Fabric3Exception;
 
     /**
-     * Generates a {@link PhysicalWireSource} used to attach a physical resource to a source component. Metadata contained in the
-     * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
+     * Generates a {@link PhysicalWireSource} used to attach a physical resource to a source component. Metadata contained in the source is specific to the
+     * component implementation type and used when the wire is attached to its source.
      *
      * @param resourceReference the source logical resource
      * @return the metadata used to attach the wire to its source on the service node

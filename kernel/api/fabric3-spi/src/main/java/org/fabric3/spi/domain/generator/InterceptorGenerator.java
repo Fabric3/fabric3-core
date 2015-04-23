@@ -26,12 +26,12 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptor;
 
 /**
- * Generates {@link PhysicalInterceptor}s used to attach policy interceptors to a wire.
+ * Generates {@link PhysicalInterceptor}s used to attach interceptors to a wire.
  */
 public interface InterceptorGenerator {
 
     /**
-     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a wire.
+     * Generates a physical interceptor for the source and target operations. Implementations may return null if an interceptor should not be added to a wire.
      *
      * @param source the source operation
      * @param target the target operation

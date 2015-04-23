@@ -31,8 +31,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class DataSourceResourceReferenceGenerator implements ResourceReferenceGenerator<DataSourceResourceReference> {
 
-    public DataSourceWireTarget generateWireTarget(LogicalResourceReference<DataSourceResourceReference> reference) throws Fabric3Exception {
-        DataSourceResourceReference definition = reference.getDefinition();
+    public DataSourceWireTarget generateWireTarget(LogicalResourceReference<DataSourceResourceReference> resourceReference) throws Fabric3Exception {
+        DataSourceResourceReference definition = resourceReference.getDefinition();
         String dataSourceName = definition.getDataSourceName();
         boolean optional = definition.isOptional();
         return new DataSourceWireTarget(dataSourceName, optional);

@@ -119,9 +119,9 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
             PhysicalWire physicalWire;
             if (callback) {
-                physicalWire = wireGenerator.generateBoundReferenceCallback(logicalBinding);
+                physicalWire = wireGenerator.generateReferenceCallback(logicalBinding);
             } else {
-                physicalWire = wireGenerator.generateBoundReference(logicalBinding);
+                physicalWire = wireGenerator.generateReference(logicalBinding);
             }
             DetachWireCommand wireCommand = new DetachWireCommand();
             wireCommand.setPhysicalWireDefinition(physicalWire);
@@ -130,9 +130,9 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
         } else if (LogicalState.NEW == logicalBinding.getState() || reinjection) {
             PhysicalWire physicalWire;
             if (callback) {
-                physicalWire = wireGenerator.generateBoundReferenceCallback(logicalBinding);
+                physicalWire = wireGenerator.generateReferenceCallback(logicalBinding);
             } else {
-                physicalWire = wireGenerator.generateBoundReference(logicalBinding);
+                physicalWire = wireGenerator.generateReference(logicalBinding);
             }
             AttachWireCommand wireCommand = new AttachWireCommand();
             wireCommand.setPhysicalWireDefinition(physicalWire);
@@ -159,7 +159,7 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
                 PhysicalWire physicalWire;
                 if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
-                    physicalWire = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                    physicalWire = wireGenerator.generateReference(wire.getSourceBinding());
                 } else {
                     physicalWire = wireGenerator.generateWire(wire);
                 }
@@ -171,7 +171,7 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
                 PhysicalWire physicalWire;
                 if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
-                    physicalWire = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                    physicalWire = wireGenerator.generateReference(wire.getSourceBinding());
                 } else {
                     physicalWire = wireGenerator.generateWire(wire);
                 }
@@ -184,7 +184,7 @@ public class ReferenceCommandGenerator implements CommandGenerator<ConnectionCom
                 PhysicalWire physicalWire;
                 if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
-                    physicalWire = wireGenerator.generateBoundReferenceCallback(reference.getCallbackBindings().get(0));
+                    physicalWire = wireGenerator.generateReferenceCallback(reference.getCallbackBindings().get(0));
                 } else {
                     physicalWire = wireGenerator.generateWireCallback(wire);
                 }

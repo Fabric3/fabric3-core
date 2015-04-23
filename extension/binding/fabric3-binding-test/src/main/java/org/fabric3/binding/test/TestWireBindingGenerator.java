@@ -48,11 +48,4 @@ public class TestWireBindingGenerator implements WireBindingGenerator<TestBindin
         return target;
     }
 
-    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<TestBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
-        TestBindingWireTarget target = new TestBindingWireTarget();
-        URI path = binding.getDefinition().getTargetUri();
-        target.setUri(path);
-        return target;
-    }
-
 }

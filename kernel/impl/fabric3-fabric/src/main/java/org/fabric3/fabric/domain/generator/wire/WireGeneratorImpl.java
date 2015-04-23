@@ -69,7 +69,7 @@ public class WireGeneratorImpl implements WireGenerator {
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public <T extends Binding> PhysicalWire generateBoundService(LogicalBinding<T> binding, URI callbackUri) {
+    public <T extends Binding> PhysicalWire generateService(LogicalBinding<T> binding, URI callbackUri) {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getParent();
@@ -99,7 +99,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return physicalWire;
     }
 
-    public <T extends Binding> PhysicalWire generateBoundServiceCallback(LogicalBinding<T> binding) {
+    public <T extends Binding> PhysicalWire generateServiceCallback(LogicalBinding<T> binding) {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getParent();
@@ -125,7 +125,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWire(source, target, physicalOperations);
     }
 
-    public <T extends Binding> PhysicalWire generateBoundReference(LogicalBinding<T> binding) {
+    public <T extends Binding> PhysicalWire generateReference(LogicalBinding<T> binding) {
         checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent component = reference.getParent();
@@ -163,7 +163,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWire(source, target, physicalOperations);
     }
 
-    public <T extends Binding> PhysicalWire generateBoundReferenceCallback(LogicalBinding<T> binding) {
+    public <T extends Binding> PhysicalWire generateReferenceCallback(LogicalBinding<T> binding) {
         checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent<?> component = reference.getParent();
@@ -190,19 +190,11 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     public PhysicalWire generateWire(LogicalWire wire) {
-        if (isLocal(wire)) {
-            return generateLocalWire(wire);
-        } else {
-            return generateRemoteWire(wire);
-        }
+        return generateLocalWire(wire);
     }
 
     public PhysicalWire generateWireCallback(LogicalWire wire) {
-        if (isLocal(wire)) {
-            return generateLocalWireCallback(wire);
-        } else {
-            return generateRemoteWireCallback(wire);
-        }
+        return generateLocalWireCallback(wire);
     }
 
     public <T extends ResourceReference> PhysicalWire generateResource(LogicalResourceReference<T> logicalReference) {
@@ -228,13 +220,6 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalWire physicalWire = new PhysicalWire(source, target, operations);
         physicalWire.setOptimizable(optimizable);
         return physicalWire;
-    }
-
-    private boolean isLocal(LogicalWire wire) {
-        String sourceZone = wire.getSource().getParent().getZone();
-        String targetZone = wire.getTarget().getParent().getZone();
-        return sourceZone.equals(targetZone) && (wire.getSourceBinding() == null) && (wire.getTargetBinding() == null);
-
     }
 
     /**
@@ -287,63 +272,6 @@ public class WireGeneratorImpl implements WireGenerator {
         return physicalWire;
     }
 
-    /**
-     * Generates a physical wire for a wire that is bound to a remote transport - i.e. it is between two components hosted in different runtime
-     * processes.  The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the reference
-     * binding. Note that metadata for the service-side binding is not generated since the service endpoint will either be provisioned previously from another
-     * deployable composite or when metadata for the bound service is created by another generator.
-     *
-     * @param wire the logical wire
-     * @return the physical wire
-     */
-    @SuppressWarnings({"unchecked"})
-    private <BD extends Binding> PhysicalWire generateRemoteWire(LogicalWire wire) {
-        LogicalReference reference = wire.getSource();
-        LogicalService service = wire.getTarget();
-        LogicalComponent sourceComponent = reference.getParent();
-        Reference<ComponentType> referenceDefinition = reference.getDefinition();
-        ServiceContract referenceContract = reference.getServiceContract();
-        ServiceContract serviceContract = service.getServiceContract();
-        ServiceContract callbackContract = serviceContract.getCallbackContract();
-
-        // generate the metadata used to attach the physical wire to the source component
-        ComponentGenerator sourceGenerator = getGenerator(reference.getParent());
-        PhysicalWireSource source = sourceGenerator.generateSource(reference);
-        URI sourceUri = sourceComponent.getDefinition().getContributionUri();
-        source.setClassLoader(classLoaderRegistry.getClassLoader(sourceUri));
-
-        String key = getKey(sourceComponent);
-        source.setKey(key);
-
-        int order = getOrder(sourceComponent);
-        source.setOrder(order);
-
-        LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
-        WireBindingGenerator<BD> targetGenerator = getGenerator(serviceBinding);
-
-        // generate metadata to attach the physical wire to the target transport (which is the reference binding)
-        List<LogicalOperation> sourceOperations = reference.getOperations();
-        PhysicalWireTarget target = targetGenerator.generateServiceBindingTarget(serviceBinding, serviceContract, sourceOperations);
-        URI targetUri = sourceComponent.getDefinition().getContributionUri();
-        target.setClassLoader(classLoaderRegistry.getClassLoader(targetUri));
-        if (callbackContract != null) {
-            // if there is a callback wire associated with this forward wire, calculate its URI
-            URI callbackUri = generateCallbackUri(sourceComponent, callbackContract, referenceDefinition.getName());
-            target.setCallbackUri(callbackUri);
-        }
-
-        // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor
-        Set<PhysicalOperation> physicalOperations;
-        if (referenceContract.getClass().equals(serviceContract.getClass())) {
-            physicalOperations = operationGenerator.generateOperations(sourceOperations);
-        } else {
-            List<LogicalOperation> targetOperations = service.getOperations();
-            physicalOperations = operationGenerator.generateOperations(sourceOperations, targetOperations, true);
-        }
-
-        return new PhysicalWire(source, target, physicalOperations);
-    }
-
     private PhysicalWire generateLocalWireCallback(LogicalWire wire) {
         LogicalReference reference = wire.getSource();
         LogicalService service = wire.getTarget();
@@ -372,36 +300,6 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalWire physicalWire = new PhysicalWire(source, target, callbackOperations);
         physicalWire.setOptimizable(false);
         return physicalWire;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private PhysicalWire generateRemoteWireCallback(LogicalWire wire) {
-        LogicalReference reference = wire.getSource();
-        LogicalComponent targetComponent = reference.getParent();
-        ServiceContract referenceContract = reference.getServiceContract();
-        ServiceContract referenceCallbackContract = referenceContract.getCallbackContract();
-        if (reference.getCallbackBindings().isEmpty()) {
-            throw new Fabric3Exception("Callback binding not set");
-        }
-        LogicalBinding<?> referenceBinding = reference.getCallbackBindings().get(0);
-        LogicalService callbackService = targetComponent.getService(referenceCallbackContract.getInterfaceName());
-        List<LogicalOperation> operations = reference.getCallbackOperations();
-
-        // generate metadata to attach the physical callback wire to the source transport
-        WireBindingGenerator bindingGenerator = getGenerator(referenceBinding);
-        PhysicalWireSource source = bindingGenerator.generateSource(referenceBinding, referenceCallbackContract, operations);
-        URI targetUri = targetComponent.getDefinition().getContributionUri();
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(targetUri);
-        source.setClassLoader(classLoader);
-
-        // generate the metadata used to attach the physical callback wire to the target component (the component containing the forward reference)
-        ComponentGenerator componentGenerator = getGenerator(targetComponent);
-        PhysicalWireTarget target = componentGenerator.generateTarget(callbackService);
-        target.setClassLoader(classLoader);
-
-        // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor
-        Set<PhysicalOperation> physicalOperations = operationGenerator.generateOperations(operations);
-        return new PhysicalWire(source, target, physicalOperations);
     }
 
     private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName) {

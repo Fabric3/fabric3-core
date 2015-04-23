@@ -60,7 +60,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         LogicalBinding<?> binding = new LogicalBinding(null, reference, null);
         reference.addBinding(binding);
 
-        wireGenerator.generateBoundReference(binding);
+        wireGenerator.generateReference(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
@@ -91,7 +91,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         binding.setState(LogicalState.MARKED);
         reference.addBinding(binding);
 
-        wireGenerator.generateBoundReference(binding);
+        wireGenerator.generateReference(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
@@ -125,9 +125,9 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         markedBinding.setState(LogicalState.MARKED);
         reference.addBinding(markedBinding);
 
-        wireGenerator.generateBoundReference(binding);
+        wireGenerator.generateReference(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
-        wireGenerator.generateBoundReference(markedBinding);
+        wireGenerator.generateReference(markedBinding);
         EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);
@@ -186,9 +186,9 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
         reference.addBinding(binding);
         reference.addCallbackBinding(binding);
 
-        wireGenerator.generateBoundReference(binding);
+        wireGenerator.generateReference(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
-        wireGenerator.generateBoundReferenceCallback(binding);
+        wireGenerator.generateReferenceCallback(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWire(null, null, null));
 
         EasyMock.replay(wireGenerator);

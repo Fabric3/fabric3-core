@@ -48,7 +48,4 @@ public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBind
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalWireTarget generateServiceBindingTarget(LogicalBinding<JUnitBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
-        throw new UnsupportedOperationException();
-    }
 }

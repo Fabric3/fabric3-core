@@ -34,7 +34,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTarget;
 public interface ConnectionBindingGenerator<B extends Binding> {
 
     /**
-     * Generates metadata used to attach a consumer to a channel binding transport.
+     * Generates metadata used to attach a consumer to a channel transport.
      *
      * @param consumer     rhe consumer
      * @param binding      the channel binding configuration
@@ -45,7 +45,7 @@ public interface ConnectionBindingGenerator<B extends Binding> {
     PhysicalConnectionSource generateConnectionSource(LogicalConsumer consumer, LogicalBinding<B> binding, DeliveryType deliveryType) throws Fabric3Exception;
 
     /**
-     * Generates metadata used to attach a producer to a channel binding transport.
+     * Generates metadata used to attach a producer to a channel transport.
      *
      * @param producer     the producer
      * @param binding      the channel binding configuration

@@ -44,7 +44,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testGenerate() throws Exception {
         MockWire wireDefinition = new MockWire();
-        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isNull())).andReturn(wireDefinition);
+        EasyMock.expect(wireGenerator.generateService(EasyMock.isA(LogicalBinding.class), EasyMock.isNull())).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
 
@@ -90,7 +90,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testGenerateDetach() throws Exception {
         MockWire wireDefinition = new MockWire();
-        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isNull())).andReturn(wireDefinition);
+        EasyMock.expect(wireGenerator.generateService(EasyMock.isA(LogicalBinding.class), EasyMock.isNull())).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.MARKED);
@@ -105,8 +105,8 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testGenerateCallback() throws Exception {
         MockWire wireDefinition = new MockWire();
-        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
-        EasyMock.expect(wireGenerator.generateBoundServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
+        EasyMock.expect(wireGenerator.generateService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
+        EasyMock.expect(wireGenerator.generateServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
 
         LogicalComponent<?> component = createComponent();
@@ -129,8 +129,8 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testGenerateDetachCallback() throws Exception {
         MockWire wireDefinition = new MockWire();
-        EasyMock.expect(wireGenerator.generateBoundService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
-        EasyMock.expect(wireGenerator.generateBoundServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
+        EasyMock.expect(wireGenerator.generateService(EasyMock.isA(LogicalBinding.class), EasyMock.isA(URI.class))).andReturn(wireDefinition);
+        EasyMock.expect(wireGenerator.generateServiceCallback(EasyMock.isA(LogicalBinding.class))).andReturn(wireDefinition);
         EasyMock.replay(wireGenerator);
 
         LogicalComponent<?> component = createComponent();

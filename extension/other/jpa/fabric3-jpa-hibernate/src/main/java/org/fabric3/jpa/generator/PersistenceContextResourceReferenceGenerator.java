@@ -38,8 +38,8 @@ public class PersistenceContextResourceReferenceGenerator implements ResourceRef
         this.registry = registry;
     }
 
-    public PersistenceContextWireTarget generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> logicalResourceReference) {
-        PersistenceContextResourceReference resource = logicalResourceReference.getDefinition();
+    public PersistenceContextWireTarget generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> resourceReference) {
+        PersistenceContextResourceReference resource = resourceReference.getDefinition();
         String unitName = resource.getUnitName();
         PersistenceContextWireTarget target = new PersistenceContextWireTarget(unitName);
         PersistenceOverrides overrides = registry.resolve(unitName);

@@ -67,7 +67,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createServiceBinding();
-        PhysicalWire physicalWire = generator.generateBoundService(binding, null);
+        PhysicalWire physicalWire = generator.generateService(binding, null);
         assertNotNull(physicalWire.getSource());
         assertNotNull(physicalWire.getTarget());
 
@@ -85,7 +85,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createServiceCallbackBinding();
-        PhysicalWire physicalWire = generator.generateBoundServiceCallback(binding);
+        PhysicalWire physicalWire = generator.generateServiceCallback(binding);
         assertNotNull(physicalWire.getSource());
         assertNotNull(physicalWire.getTarget());
 
@@ -104,7 +104,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createReferenceBinding();
-        PhysicalWire physicalWire = generator.generateBoundReference(binding);
+        PhysicalWire physicalWire = generator.generateReference(binding);
         assertNotNull(physicalWire.getSource());
         assertNotNull(physicalWire.getTarget());
 
@@ -124,7 +124,7 @@ public class WireGeneratorImplTestCase extends TestCase {
         WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
         LogicalBinding<?> binding = createReferenceCallbackBinding();
 
-        PhysicalWire physicalWire = generator.generateBoundReferenceCallback(binding);
+        PhysicalWire physicalWire = generator.generateReferenceCallback(binding);
         assertNotNull(physicalWire.getSource());
         assertNotNull(physicalWire.getTarget());
 
@@ -175,62 +175,6 @@ public class WireGeneratorImplTestCase extends TestCase {
         EasyMock.verify(registry, matcher, operationGenerator, sourceComponentGenerator, targetComponentGenerator);
     }
 
-    public void testGenerateRemoteWire() throws Exception {
-        LogicalBinding referenceBinding = createReferenceBinding();
-        LogicalBinding serviceBinding = createServiceBinding();
-        LogicalReference reference = (LogicalReference) referenceBinding.getParent();
-        LogicalService service = (LogicalService) serviceBinding.getParent();
-
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        WireBindingGenerator bindingGenerator = setupServiceBindingTargetGenerator(registry);
-        ComponentGenerator componentGenerator = setupSourceComponentGenerator(registry);
-        ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
-        PhysicalOperationGenerator operationGenerator = setupOperationGenerator();
-
-        EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
-
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
-
-        LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
-        wire.setSourceBinding(referenceBinding);
-        wire.setTargetBinding(serviceBinding);
-
-        PhysicalWire physicalWire = generator.generateWire(wire);
-
-        assertNotNull(physicalWire.getSource());
-        assertNotNull(physicalWire.getTarget());
-
-        EasyMock.verify(registry, matcher, operationGenerator, componentGenerator, bindingGenerator);
-    }
-
-    public void testGenerateRemoteCallbackWire() throws Exception {
-        LogicalBinding referenceBinding = createReferenceCallbackBinding();
-        LogicalBinding serviceBinding = createServiceCallbackBinding();
-        LogicalReference reference = (LogicalReference) referenceBinding.getParent();
-        LogicalService service = (LogicalService) serviceBinding.getParent();
-
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        WireBindingGenerator sourceBindingGenerator = setupBindingGenerator(registry);
-        ComponentGenerator componentGenerator = setupTargetComponentGenerator(registry);
-        ContractMatcher matcher = EasyMock.createMock(ContractMatcher.class);
-        PhysicalOperationGenerator operationGenerator = setupOperationGenerator();
-
-        EasyMock.replay(registry, matcher, operationGenerator, componentGenerator, sourceBindingGenerator);
-
-        WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
-
-        LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
-        wire.setSourceBinding(referenceBinding);
-        wire.setTargetBinding(serviceBinding);
-
-        PhysicalWire physicalWire = generator.generateWireCallback(wire);
-
-        assertNotNull(physicalWire.getSource());
-        assertNotNull(physicalWire.getTarget());
-
-        EasyMock.verify(registry, matcher, operationGenerator, componentGenerator, sourceBindingGenerator);
-    }
-
     @SuppressWarnings({"unchecked"})
     private PhysicalOperationGenerator setupOperationGenerator() throws Fabric3Exception {
         PhysicalOperationGenerator operationGenerator = EasyMock.createMock(PhysicalOperationGenerator.class);
@@ -250,19 +194,8 @@ public class WireGeneratorImplTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     private WireBindingGenerator setupBindingGenerator(GeneratorRegistry registry) throws Fabric3Exception {
         WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
-        EasyMock.expect(bindingGenerator.generateSource(EasyMock.isA(LogicalBinding.class),
-                                                        EasyMock.isA(ServiceContract.class),
-                                                        EasyMock.isA(List.class))).andReturn(new MockWireSource());
-        EasyMock.expect(registry.getBindingGenerator(EasyMock.isA(Class.class))).andReturn(bindingGenerator);
-        return bindingGenerator;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private WireBindingGenerator setupServiceBindingTargetGenerator(GeneratorRegistry registry) throws Fabric3Exception {
-        WireBindingGenerator bindingGenerator = EasyMock.createMock(WireBindingGenerator.class);
-        EasyMock.expect(bindingGenerator.generateServiceBindingTarget(EasyMock.isA(LogicalBinding.class),
-                                                                      EasyMock.isA(ServiceContract.class),
-                                                                      EasyMock.isA(List.class))).andReturn(new MockWireTarget());
+        EasyMock.expect(bindingGenerator.generateSource(EasyMock.isA(LogicalBinding.class), EasyMock.isA(ServiceContract.class), EasyMock.isA(List.class)))
+                .andReturn(new MockWireSource());
         EasyMock.expect(registry.getBindingGenerator(EasyMock.isA(Class.class))).andReturn(bindingGenerator);
         return bindingGenerator;
     }

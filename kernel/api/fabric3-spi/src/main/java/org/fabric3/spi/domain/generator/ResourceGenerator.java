@@ -26,7 +26,7 @@ import org.fabric3.spi.model.physical.PhysicalResource;
 /**
  * Generates {@link PhysicalResource}s from a resource definition declared in a composite.
  */
-public interface ResourceGenerator<RD extends Resource> {
+public interface ResourceGenerator<R extends Resource> {
 
     /**
      * Generate the physical definition for a logical resource.
@@ -35,6 +35,6 @@ public interface ResourceGenerator<RD extends Resource> {
      * @return the physical resource definition.
      * @throws Fabric3Exception if there was a problem generating the wire
      */
-    PhysicalResource generateResource(LogicalResource<RD> resource) throws Fabric3Exception;
+    PhysicalResource generateResource(LogicalResource<R> resource) throws Fabric3Exception;
 
 }

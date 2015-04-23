@@ -116,7 +116,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator<Connection
 
             for (LogicalBinding<?> binding : service.getBindings()) {
                 if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED) {
-                    PhysicalWire physicalWire = wireGenerator.generateBoundService(binding, callbackUri);
+                    PhysicalWire physicalWire = wireGenerator.generateService(binding, callbackUri);
                     if (LogicalState.MARKED == binding.getState()) {
                         DetachWireCommand detachWireCommand = new DetachWireCommand();
                         detachWireCommand.setPhysicalWireDefinition(physicalWire);
@@ -131,7 +131,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator<Connection
             }
             // generate the callback command set
             if (callbackBinding != null && ((callbackBinding.getState() == LogicalState.NEW || callbackBinding.getState() == LogicalState.MARKED))) {
-                PhysicalWire physicalWire = wireGenerator.generateBoundServiceCallback(callbackBinding);
+                PhysicalWire physicalWire = wireGenerator.generateServiceCallback(callbackBinding);
                 if (LogicalState.MARKED == callbackBinding.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();
                     detachWireCommand.setPhysicalWireDefinition(physicalWire);
