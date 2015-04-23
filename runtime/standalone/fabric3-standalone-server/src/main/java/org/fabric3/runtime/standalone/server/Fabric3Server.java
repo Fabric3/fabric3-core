@@ -189,7 +189,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class);
-            monitor.started(productName, mode.toString(), environment);
+
+            if (mode == RuntimeMode.NODE) {
+                monitor.started(productName, runtimeName, domainName.getAuthority(), zoneName, mode.toString(), environment);
+            } else {
+                monitor.started(productName, mode.toString(), environment);
+            }
 
             // register shutdown hook to catch SIGTERM events
             Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownRuntime));
@@ -244,7 +249,14 @@ public class Fabric3Server implements Fabric3ServerMBean {
         } else {
             rootRuntimeDir = new File(installDirectory, "runtimes");
         }
-        File runtimeDir = new File(rootRuntimeDir, params.name);
+
+        File runtimeDir;
+        if (params.runtimeDirName != null) {
+            runtimeDir = new File(rootRuntimeDir, params.runtimeDirName);
+        } else {
+            runtimeDir = new File(rootRuntimeDir, params.name);
+        }
+
         if (!runtimeDir.exists()) {
             if (params.clone != null) {
                 File templateDir = BootstrapHelper.getDirectory(rootRuntimeDir, params.clone);
@@ -254,7 +266,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 }
                 BootstrapHelper.cloneRuntimeImage(configDir, runtimeDir);
             } else {
-                throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
+                throw new IllegalArgumentException("Runtime directory does not exist: " + runtimeDir);
             }
         }
         return runtimeDir;
@@ -314,6 +326,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
         for (String arg : args) {
             if (arg.startsWith("name:")) {
                 params.name = arg.substring(5);
+                if (params.name.trim().length() == 0) {
+                    throw new IllegalArgumentException("Runtime name not specified: " + arg);
+                }
+            } else if (arg.startsWith("runtime-dir:")) {
+                params.runtimeDirName = arg.substring(12);
             } else if (arg.startsWith("dir:")) {
                 params.directory = new File(arg.substring(4));
             } else if (arg.startsWith("clone:")) {
@@ -337,6 +354,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private static class Params {
         String name;
         File directory;
+        String runtimeDirName;
         String clone;
         public boolean clean;
     }
@@ -346,8 +364,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
         @Severe("Shutdown error")
         void shutdownError(Exception e);
 
+        @Info("{0} ready [Name: {1}, Domain: {2}, Zone: {3}, Mode:{4}, Environment: {5}]")
+        void started(String product, String name, String domain, String zone, String mode, String environment);
+
         @Info("{0} ready [Mode:{1}, Environment: {2}]")
-        void started(String mode, String environment, String s);
+        void started(String product, String mode, String environment);
 
         @Info("{0} shutting down")
         void shutdown(String productName);
