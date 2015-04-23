@@ -40,6 +40,7 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
     private DataType type;
     private List<URI> sources = new ArrayList<>();
     private ServiceContract serviceContract;
+    private String group;
 
     /**
      * Constructor.
@@ -53,7 +54,7 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
     /**
      * Constructor.
      *
-     * @param name  the consumer name
+     * @param name the consumer name
      * @param type the data type required by this consumer
      */
     public Consumer(String name, DataType type) {
@@ -65,7 +66,7 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
      * Constructor.
      *
      * @param name   the consumer name
-     * @param type  the data type required by this consumer
+     * @param type   the data type required by this consumer
      * @param direct true if the consumer is a direct connection to the channel
      */
     public Consumer(String name, DataType type, boolean direct) {
@@ -168,5 +169,23 @@ public class Consumer<P extends ModelObject> extends Bindable<P> {
 
     public ServiceContract getServiceContract() {
         return serviceContract;
+    }
+
+    /**
+     * Sets the consumer's group.
+     *
+     * @param group the group
+     */
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    /**
+     * Returns the consumer's group or null.
+     *
+     * @return the group or null
+     */
+    public String getGroup() {
+        return group;
     }
 }

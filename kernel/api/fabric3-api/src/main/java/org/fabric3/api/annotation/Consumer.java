@@ -45,6 +45,13 @@ public @interface Consumer {
     public abstract int sequence() default 0;
 
     /**
+     * Specifies the group the consumer is a member of.
+     *
+     * @return the group
+     */
+    public abstract String group() default "";
+
+    /**
      * Returns the source channel for the consumer.
      *
      * @return the source channel for the consumer

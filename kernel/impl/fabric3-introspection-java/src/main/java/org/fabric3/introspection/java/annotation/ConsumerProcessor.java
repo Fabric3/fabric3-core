@@ -101,6 +101,10 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         ConstructorInjectionSite injectionSite = new ConstructorInjectionSite(constructor, index);
         Consumer<ComponentType> consumer = new Consumer<>(name, dataType, contract);
 
+        if (annotation.group().length() > 0){
+            consumer.setGroup(annotation.group());
+        }
+
         processSources(annotation, consumer, constructor, constructor.getDeclaringClass(), context);
         componentType.add(consumer, injectionSite, constructor);
 
@@ -126,6 +130,9 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         }
         Consumer<ComponentType> consumer = new Consumer<>(name, dataType, contract);
 
+        if (annotation.group().length() > 0){
+            consumer.setGroup(annotation.group());
+        }
         Class<?> clazz = field.getDeclaringClass();
         processSources(annotation, consumer, field, clazz, context);
         FieldInjectionSite injectionSite = new FieldInjectionSite(field);
@@ -156,6 +163,9 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<org.fabric3.a
         }
         Consumer<ComponentType> consumer = new Consumer<>(name, type, contract);
 
+        if (annotation.group().length() > 0){
+            consumer.setGroup(annotation.group());
+        }
         int sequence = annotation.sequence();
         if (sequence < 0) {
             context.addError(new InvalidConsumerMethod("Sequence number cannot be negative: " + method, method, componentType));
