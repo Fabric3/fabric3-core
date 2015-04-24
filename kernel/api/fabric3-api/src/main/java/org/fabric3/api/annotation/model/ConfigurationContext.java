@@ -15,6 +15,13 @@ public interface ConfigurationContext {
     String getRuntimeName();
 
     /**
+     * Returns the name of the zone this runtime is a member of.
+     *
+     * @return the zone name
+     */
+    String getZoneName();
+
+    /**
      * Returns the domain associated with this runtime.
      *
      * @return the domain associated with this runtime

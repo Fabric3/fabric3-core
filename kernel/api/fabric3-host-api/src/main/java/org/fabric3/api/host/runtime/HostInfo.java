@@ -42,13 +42,6 @@ public interface HostInfo extends ConfigurationContext {
     String getRuntimeName();
 
     /**
-     * Returns the name of the zone this runtime is a member of.
-     *
-     * @return the zone name
-     */
-    String getZoneName();
-
-    /**
      * Returns the mode the runtime is booted in.
      *
      * @return the mode the runtime is booted in
