@@ -90,7 +90,7 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
         if (pojoComponent.isManaged()) {
             ManagementInfo info = pojoComponent.getManagementInfo();
             URI uri = pojoComponent.getComponentUri();
-            managementService.export(uri, info, component::createSupplier);
+            managementService.export(uri, info, component.createSupplier());
         }
     }
 
