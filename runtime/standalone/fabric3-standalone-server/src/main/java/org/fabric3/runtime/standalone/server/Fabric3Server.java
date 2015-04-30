@@ -117,7 +117,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // load the system configuration
             Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
-            URI domainName = bootstrapService.parseDomainName(systemConfig);
+            URI domainName = params.domain != null ? new URI("fabric3://" + params.domain) : bootstrapService.parseDomainName(systemConfig);
 
             RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
 
@@ -324,7 +324,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private static Params parse(String[] args) {
         Params params = new Params();
         for (String arg : args) {
-            if (arg.startsWith("name:")) {
+            if (arg.startsWith("domain:")) {
+                params.domain = arg.substring(7);
+                if (params.name.trim().length() == 0) {
+                    throw new IllegalArgumentException("Domain name not specified: " + arg);
+                }
+            } else if (arg.startsWith("name:")) {
                 params.name = arg.substring(5);
                 if (params.name.trim().length() == 0) {
                     throw new IllegalArgumentException("Runtime name not specified: " + arg);
@@ -352,6 +357,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     private static class Params {
+        String domain;
         String name;
         File directory;
         String runtimeDirName;
