@@ -84,6 +84,10 @@ public final class RsContainer extends HttpServlet {
         servletConfig = config;
     }
 
+    public ServletConfig getServletConfig() {
+        return servletConfig;
+    }
+
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         req = new HttpServletRequestWrapper(req);
 
@@ -115,14 +119,10 @@ public final class RsContainer extends HttpServlet {
 
             // configure filters
             Collection<Object> globalProviders = providerRegistry.getGlobalProvider();
-            for (Object globalProvider : globalProviders) {
-                resourceConfig.register(globalProvider);
-            }
+            globalProviders.forEach(resourceConfig::register);
             resourceConfig.register(provider);
 
-            for (Resource resource : resources) {
-                resourceConfig.registerResources(resource);
-            }
+            resources.forEach(resourceConfig::registerResources);
 
             servlet = new ServletContainer(resourceConfig);
             servlet.init(servletConfig);

@@ -14,9 +14,11 @@ dependencies {
 
     compile(group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jerseyVersion)
 
-    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: 2.13)
+    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: jerseyVersion)
 
-    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: 2.13)
+    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: jerseyVersion)
+
+    compile(group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: jerseyVersion)
 
     compile(group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version: jerseyVersion)
 

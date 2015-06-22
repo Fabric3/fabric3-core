@@ -55,7 +55,7 @@ public class ManagedServletHolder extends ServletHolder {
     }
 
     @Override
-    @ManagementOperation(description = "Start the servlet from servicing requests")
+    @ManagementOperation(description = "Start the servlet servicing requests")
     public void doStart() throws Exception {
         super.doStart();
     }
