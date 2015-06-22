@@ -48,6 +48,7 @@ import org.fabric3.binding.rs.runtime.provider.ProviderRegistry;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -116,6 +117,7 @@ public final class RsContainer extends HttpServlet {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
             resourceConfig.register(JacksonFeature.class);
+            resourceConfig.register(MultiPartFeature.class);
 
             // configure filters
             Collection<Object> globalProviders = providerRegistry.getGlobalProvider();
