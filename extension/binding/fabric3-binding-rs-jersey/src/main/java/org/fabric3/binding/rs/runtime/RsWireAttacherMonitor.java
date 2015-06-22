@@ -18,8 +18,6 @@
  */
 package org.fabric3.binding.rs.runtime;
 
-import java.net.URI;
-
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
@@ -33,7 +31,7 @@ public interface RsWireAttacherMonitor {
      * @param address the endpoint address
      */
     @Info("REST endpoint provisioned at {0}")
-    void provisionedEndpoint(URI address);
+    void provisionedEndpoint(String address);
 
     /**
      * Callback when a service endpoint has been de-provisioned
@@ -41,6 +39,6 @@ public interface RsWireAttacherMonitor {
      * @param address the endpoint address
      */
     @Info("REST endpoint removed at {0}")
-    void removedEndpoint(URI address);
+    void removedEndpoint(String address);
 
 }

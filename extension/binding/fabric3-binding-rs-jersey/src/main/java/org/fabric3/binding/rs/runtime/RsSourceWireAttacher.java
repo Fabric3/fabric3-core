@@ -18,6 +18,7 @@
  */
 package org.fabric3.binding.rs.runtime;
 
+import javax.ws.rs.Path;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +95,25 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
         }
 
         provision(source, wire, container);
-        monitor.provisionedEndpoint(sourceUri);
+        Path pathAnnotation = source.getRsClass().getAnnotation(Path.class);
+        String uri = sourceUri.toString();
+        if (pathAnnotation != null && !pathAnnotation.value().equals("/")) {
+            String endpointUri = concat(uri, pathAnnotation);
+            monitor.provisionedEndpoint(endpointUri);
+        } else {
+            monitor.provisionedEndpoint(uri);
+        }
+    }
+
+    private String concat(String uri, Path pathAnnotation) {
+        String path = pathAnnotation.value();
+        if (uri.endsWith("/")) {
+            uri = uri.substring(0, uri.length() - 2);
+        }
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        return uri + "/" + path;
     }
 
     public void detach(RsWireSource source, PhysicalWireTarget target) {
@@ -102,7 +121,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
         containerManager.unregister(sourceUri);
-        monitor.removedEndpoint(sourceUri);
+        Path pathAnnotation = source.getRsClass().getAnnotation(Path.class);
+        String uri = sourceUri.toString();
+        if (pathAnnotation != null && !pathAnnotation.value().equals("/")) {
+            String endpointUri = concat(uri, pathAnnotation);
+            monitor.removedEndpoint(endpointUri);
+        } else {
+            monitor.removedEndpoint(uri);
+        }
     }
 
     private String creatingMappingUri(URI sourceUri) {
