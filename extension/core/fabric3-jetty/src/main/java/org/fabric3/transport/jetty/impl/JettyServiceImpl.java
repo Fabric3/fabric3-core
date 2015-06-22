@@ -468,8 +468,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
         mapping.setPathSpec(path);
-        servletHandler.addServletMapping(mapping);
-        contextHandler.addServlet(holder, path);
+        servletHandler.addServletWithMapping(holder, path);
         if (managementService != null) {
             try {
                 ServletManager manager = new ServletManager(holder);
