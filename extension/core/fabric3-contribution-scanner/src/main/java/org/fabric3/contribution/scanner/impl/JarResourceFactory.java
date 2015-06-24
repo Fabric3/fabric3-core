@@ -19,11 +19,10 @@
 package org.fabric3.contribution.scanner.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.contribution.scanner.spi.FileResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactory;
@@ -48,15 +47,9 @@ public class JarResourceFactory implements FileSystemResourceFactory {
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(file.getCanonicalPath());
-            JarEntry entry = jarFile.getJarEntry("META-INF/sca-contribution.xml");
-            if (entry == null) {
-                return null;
-            }
-        } catch (FileNotFoundException e) {
-            // no sca-contribution, ignore
-            return null;
+            return new FileResource(file);
         } catch (IOException e) {
-            throw new AssertionError(e);
+            throw new Fabric3Exception(e);
         } finally {
             try {
                 if (jarFile != null) {
@@ -66,6 +59,5 @@ public class JarResourceFactory implements FileSystemResourceFactory {
                 // ignore
             }
         }
-        return new FileResource(file);
     }
 }
