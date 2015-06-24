@@ -37,6 +37,7 @@ import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.util.RegexHelper;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -116,7 +117,10 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             }
 
             // take the first entry in the file as the main contribution location
-            File file = new File(paths.get(0));
+            String pathname = paths.get(0);
+            // expand variables of the form ${..}
+            pathname = RegexHelper.expandExpression(pathname, (s) -> System.getenv().getOrDefault(s.substring(2, s.length() - 1), ""));
+            File file = new File(pathname);
             URL dereferencedLocation = file.toURI().toURL();
             URI contributionUri = URI.create(file.getName());
 
@@ -128,6 +132,8 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             if (paths.size() > 1) {
                 for (int i = 1; i < paths.size(); i++) {
                     String path = paths.get(i);
+                     // expand variables of the form ${..}
+                    path = RegexHelper.expandExpression(pathname, (s) -> System.getenv().getOrDefault(s.substring(2, s.length() - 1), ""));
                     syntheticContribution.addAdditionalLocation(new File(path).toURI().toURL());
                 }
             }
