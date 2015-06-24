@@ -145,7 +145,6 @@ public class JettyServiceImpl implements JettyService, Transport {
     private ContextHandlerCollection rootHandler;
     private ManagedStatisticsHandler statisticsHandler;
     private ManagedHashSessionManager sessionManager;
-    private ServletContextHandler contextHandler;
 
     static {
         // replace the static Jetty logger
@@ -702,7 +701,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         rootHandler = new ContextHandlerCollection();
         executionHandler.setHandler(rootHandler);
 
-        contextHandler = new ServletContextHandler(rootHandler, ROOT);
+        ServletContextHandler contextHandler = new ServletContextHandler(rootHandler, ROOT);
         sessionManager = new ManagedHashSessionManager();
         HashSessionIdManager sessionIdManager = new HashSessionIdManager();
         String workerName = hostInfo.getRuntimeName().replace(".", "_"); // Jetty does not accept names with '.' characters
