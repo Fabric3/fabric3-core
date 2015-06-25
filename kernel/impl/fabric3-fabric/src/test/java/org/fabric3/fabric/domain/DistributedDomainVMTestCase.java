@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.domain;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +50,6 @@ public class DistributedDomainVMTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");
     private static final URI CONTRIBUTION_URI = URI.create("contribution");
 
-    private static final QName DEPLOYABLE = new QName("foo", "bar");
-
     private IMocksControl control;
     private DistributedDomain domain;
     private LogicalModelInstantiator instantiator;
@@ -60,27 +57,8 @@ public class DistributedDomainVMTestCase extends TestCase {
     private Deployer deployer;
     private LogicalComponentManagerImpl lcm;
 
-    private Contribution contribution;
     private Component component;
     private Composite composite;
-
-    public void testInclude() throws Exception {
-        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(component);
-        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
-
-        Deployment deployment = new Deployment();
-        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class))).andReturn(deployment);
-        deployer.deploy(EasyMock.isA(Deployment.class));
-
-        control.replay();
-
-        domain.include(DEPLOYABLE);
-
-        // verify the component contained in the composite was added to the logical model
-        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
-        assertTrue(contribution.getLockOwners().contains(DEPLOYABLE));
-        control.verify();
-    }
 
     @SuppressWarnings({"unchecked"})
     public void testIncludeUris() throws Exception {
@@ -110,7 +88,7 @@ public class DistributedDomainVMTestCase extends TestCase {
         EasyMock.expectLastCall().times(2);
         control.replay();
 
-        domain.include(DEPLOYABLE);
+        domain.include(composite);
 
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
 
@@ -147,7 +125,7 @@ public class DistributedDomainVMTestCase extends TestCase {
         Collector collector = new CollectorImpl();
         domain = new DistributedDomain(store, lcm, generator, instantiator, deployer, collector, helper, info);
 
-        contribution = DomainTestCaseHelper.createContribution(store);
+        Contribution contribution = DomainTestCaseHelper.createContribution(store);
         component = new Component("component");
         component.setContributionUri(CONTRIBUTION_URI);
         composite = DomainTestCaseHelper.createComposite(contribution, component, store);

@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
@@ -39,15 +38,6 @@ public interface ContributionHelper {
      * @return the list of deployables
      */
     List<Composite> getDeployables(Set<Contribution> contributions);
-
-    /**
-     * Finds a deployable by name.
-     *
-     * @param deployable the deployable name
-     * @return the deployable
-     * @throws Fabric3Exception if the deployable cannot be resolved
-     */
-    Composite findComposite(QName deployable) throws Fabric3Exception;
 
     /**
      * Resolves the contributions from the list of URIs.

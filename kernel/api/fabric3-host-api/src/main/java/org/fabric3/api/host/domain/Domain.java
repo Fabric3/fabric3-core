@@ -18,7 +18,6 @@
  */
 package org.fabric3.api.host.domain;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
@@ -26,17 +25,9 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Composite;
 
 /**
- * Represents a domain.
+ * A domain.
  */
 public interface Domain {
-
-    /**
-     * Include a deployable composite in the domain.
-     *
-     * @param deployable the name of the deployable composite to include
-     * @throws Fabric3Exception if an error is encountered during inclusion
-     */
-    void include(QName deployable) throws Fabric3Exception;
 
     /**
      * Include all deployables contained in the list of contributions in the domain. This operation is intended for composites that are synthesized from
@@ -64,7 +55,7 @@ public interface Domain {
     void undeploy(URI uri) throws Fabric3Exception;
 
     /**
-     * Undeploys the composite.
+     * Undeploys a composite.
      *
      * @param composite the composite
      * @throws Fabric3Exception if an error is encountered during undeployment

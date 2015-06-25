@@ -45,21 +45,6 @@ public class ContributionHelperImplTestCase extends TestCase {
     private MetaDataStore store;
     private HostInfo info;
 
-    public void testFindComposite() throws Exception {
-        QName name = new QName("foo", "bar");
-        Composite composite = new Composite(name);
-        QNameSymbol symbol = new QNameSymbol(name);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<>(symbol, composite);
-        EasyMock.expect(store.find(Composite.class, symbol)).andReturn(element);
-
-        EasyMock.replay(store);
-
-        Composite returned = helper.findComposite(name);
-        assertEquals(composite, returned);
-
-        EasyMock.verify(store);
-    }
-
     public void testFindContributions() throws Exception {
         URI uri = URI.create("test");
         Contribution contribution = new Contribution(uri);

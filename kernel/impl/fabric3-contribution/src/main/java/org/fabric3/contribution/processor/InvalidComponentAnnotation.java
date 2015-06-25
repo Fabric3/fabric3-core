@@ -27,10 +27,6 @@ import org.fabric3.api.host.failure.ValidationFailure;
 public class InvalidComponentAnnotation extends ValidationFailure {
     private String message;
 
-    public InvalidComponentAnnotation(String message) {
-        this.message = message;
-    }
-
     public InvalidComponentAnnotation(String message, Throwable e) {
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);

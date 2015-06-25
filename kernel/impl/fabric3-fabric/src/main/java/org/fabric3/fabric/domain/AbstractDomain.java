@@ -33,7 +33,6 @@ import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.api.model.type.component.Include;
 import org.fabric3.fabric.domain.collector.Collector;
 import org.fabric3.fabric.domain.generator.Deployment;
 import org.fabric3.fabric.domain.generator.Generator;
@@ -94,11 +93,6 @@ public abstract class AbstractDomain implements Domain {
         this.collector = collector;
         this.contributionHelper = contributionHelper;
         this.info = info;
-    }
-
-    public synchronized void include(QName deployable) throws Fabric3Exception {
-        Composite wrapper = createWrapper(deployable);
-        instantiateAndDeploy(wrapper);
     }
 
     public synchronized void include(Composite composite) throws Fabric3Exception {
@@ -165,25 +159,6 @@ public abstract class AbstractDomain implements Domain {
         Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
         instantiateAndDeploy(deployables, contributions, recover);
-    }
-
-    /**
-     * Creates a wrapper used to include a composite at the domain level. The wrapper is thrown away during the inclusion.
-     *
-     * @param deployable the deployable being included
-     * @return the composite wrapper
-     * @throws Fabric3Exception if there is an error creating the composite wrapper
-     */
-    private Composite createWrapper(QName deployable) throws Fabric3Exception {
-        Composite composite = contributionHelper.findComposite(deployable);
-        // In order to include a composite at the domain level, it must first be wrapped in a composite that includes it.
-        // This wrapper is thrown away during the inclusion.
-        Composite wrapper = new Composite(deployable);
-        Include include = new Include();
-        include.setName(deployable);
-        include.setIncluded(composite);
-        wrapper.add(include);
-        return wrapper;
     }
 
     /**

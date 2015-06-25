@@ -22,8 +22,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.contribution.ContributionService;
@@ -47,13 +45,8 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime implements PluginRuntime {
     private static final URI CONTRIBUTION_URI = URI.create("iTestContribution");
 
-    private RepositorySystem system;
-    private RepositorySystemSession session;
-
     public PluginRuntimeImpl(PluginRuntimeConfiguration configuration) {
         super(configuration);
-        system = configuration.getSystem();
-        session = configuration.getSession();
     }
 
     @SuppressWarnings("unchecked")
@@ -74,7 +67,8 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         List<Deployable> deployables = contribution.getManifest().getDeployables();
         if (deployables.isEmpty()) {
             // No deployables specified, activate the test composite in the domain. If a test composite does not exist, an exception will be raised
-            domain.include(qName);
+            Composite composite = findComposite(qName, metaDataStore);
+            domain.include(composite);
             startContext(qName);
         } else {
             // include deployables
@@ -97,5 +91,17 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
         WorkContextCache.getAndResetThreadWorkContext();
         getScopeContainer().startContext(deployable);
     }
+
+    private Composite findComposite(QName deployable, MetaDataStore metaDataStore) throws Fabric3Exception {
+        QNameSymbol symbol = new QNameSymbol(deployable);
+        ResourceElement<QNameSymbol, Composite> element = metaDataStore.find(Composite.class, symbol);
+        if (element == null) {
+            String id = deployable.toString();
+            throw new Fabric3Exception("Deployable not found: " + id);
+        }
+
+        return element.getValue();
+    }
+
 
 }

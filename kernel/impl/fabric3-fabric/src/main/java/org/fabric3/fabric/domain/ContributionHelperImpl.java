@@ -79,17 +79,17 @@ public class ContributionHelperImpl implements ContributionHelper {
         return deployables;
     }
 
-    public Composite findComposite(QName deployable) throws Fabric3Exception {
-        QNameSymbol symbol = new QNameSymbol(deployable);
-        ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
-        if (element == null) {
-            String id = deployable.toString();
-            throw new Fabric3Exception("Deployable not found: " + id);
-        }
-
-        return element.getValue();
-    }
-
+//    public Composite findComposite(QName deployable) throws Fabric3Exception {
+//        QNameSymbol symbol = new QNameSymbol(deployable);
+//        ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
+//        if (element == null) {
+//            String id = deployable.toString();
+//            throw new Fabric3Exception("Deployable not found: " + id);
+//        }
+//
+//        return element.getValue();
+//    }
+//
     public Set<Contribution> findContributions(List<URI> uris) {
         Set<Contribution> contributions = new LinkedHashSet<>(uris.size());
         for (URI uri : uris) {
