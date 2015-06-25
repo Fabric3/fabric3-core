@@ -19,15 +19,15 @@
 package org.fabric3.contribution.archive;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
 
 /**
  *
@@ -43,8 +43,9 @@ public class JarClasspathProcessorTestCase extends TestCase {
     public void testExpansionNoLibraries() throws Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL location = cl.getResource("./repository/1/test.jar");
-        List<Library> libraries = Collections.emptyList();
-        List<URL> urls = processor.process(location, libraries);
+        Contribution contribution = new Contribution(URI.create("test"));
+        contribution.setLocation(location);
+        List<URL> urls = processor.process(contribution);
         assertEquals(1, urls.size());
         assertEquals(location, urls.get(0));
     }
@@ -57,8 +58,9 @@ public class JarClasspathProcessorTestCase extends TestCase {
     public void testExpansionWithLibraries() throws Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL location = cl.getResource("./repository/2/testWithLibraries.jar");
-        List<Library> libraries = Collections.emptyList();
-        List<URL> urls = processor.process(location, libraries);
+        Contribution contribution = new Contribution(URI.create("test"));
+        contribution.setLocation(location);
+        List<URL> urls = processor.process(contribution);
         assertEquals(2, urls.size());
         assertEquals(location, urls.get(0));
     }
@@ -67,8 +69,9 @@ public class JarClasspathProcessorTestCase extends TestCase {
         processor.setExplodeJars(true);
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL location = cl.getResource("./repository/2/testWithLibraries.jar");
-        List<Library> libraries = Collections.emptyList();
-        List<URL> classpath = processor.process(location, libraries);
+        Contribution contribution = new Contribution(URI.create("test"));
+        contribution.setLocation(location);
+        List<URL> classpath = processor.process(contribution);
         assertEquals(2, classpath.size());
         assertEquals(location, classpath.get(0));
     }
@@ -80,5 +83,6 @@ public class JarClasspathProcessorTestCase extends TestCase {
         EasyMock.expect(info.getTempDir()).andReturn(new File(System.getProperty("java.io.tmpdir"), ".f3")).atLeastOnce();
         EasyMock.replay(info);
         processor = new JarClasspathProcessor(registry, info);
+
     }
 }

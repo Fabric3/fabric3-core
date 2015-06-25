@@ -34,24 +34,23 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.contribution.generator.ClassLoaderWireGenerator;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.manifest.ContributionImport;
+import org.fabric3.contribution.wire.ClassLoaderWireBuilder;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.contribution.wire.ClassLoaderWireBuilder;
-import org.fabric3.contribution.generator.ClassLoaderWireGenerator;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.model.physical.ClassLoaderWire;
 
 /**
@@ -116,7 +115,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
 
         processorRegistry = EasyMock.createMock(ClasspathProcessorRegistry.class);
         List<URL> classpath = Collections.singletonList(locationUrl);
-        EasyMock.expect(processorRegistry.process(locationUrl, Collections.<Library>emptyList())).andReturn(classpath);
+        EasyMock.expect(processorRegistry.process(contribution)).andReturn(classpath);
 
         builder = EasyMock.createMock(ClassLoaderWireBuilder.class);
         builder.build(EasyMock.isA(MultiParentClassLoader.class), EasyMock.isA(ClassLoaderWire.class));

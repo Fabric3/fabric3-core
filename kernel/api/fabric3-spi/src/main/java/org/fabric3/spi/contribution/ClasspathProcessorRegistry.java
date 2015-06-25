@@ -16,13 +16,12 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.contribution.archive;
+package org.fabric3.spi.contribution;
 
 import java.net.URL;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.os.Library;
 
 /**
  * A registry of classpath processors.
@@ -46,10 +45,9 @@ public interface ClasspathProcessorRegistry {
     /**
      * Processes the given url.
      *
-     * @param url       the url to process
-     * @param libraries native libraries contained in the contribution
+     * @param contribution the contribution
      * @return the classpath
      * @throws Fabric3Exception if an error occurs processing the url
      */
-    List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception;
+    List<URL> process(Contribution contribution) throws Fabric3Exception;
 }

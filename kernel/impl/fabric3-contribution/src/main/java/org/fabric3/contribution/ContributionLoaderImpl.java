@@ -43,7 +43,7 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.physical.ClassLoaderWire;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.api.host.Names.HOST_CONTRIBUTION;
@@ -105,7 +105,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         // construct the classpath for contained resources in the contribution if it is a physical artifact
         URL location = contribution.getLocation();
         if (location != null) {
-            List<URL> classpath = classpathProcessorRegistry.process(location, manifest.getLibraries());
+            List<URL> classpath = classpathProcessorRegistry.process(contribution);
             classpath.forEach(loader::addURL);
             setSysPathsField(loader);
         }

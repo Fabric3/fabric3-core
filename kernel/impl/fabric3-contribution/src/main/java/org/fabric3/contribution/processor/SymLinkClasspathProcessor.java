@@ -18,18 +18,16 @@
  */
 package org.fabric3.contribution.processor;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -41,6 +39,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class SymLinkClasspathProcessor implements ClasspathProcessor {
+    private static final String F3_SYMLINK = "f3.symlink";
 
     private final ClasspathProcessorRegistry registry;
 
@@ -58,26 +57,19 @@ public class SymLinkClasspathProcessor implements ClasspathProcessor {
         registry.unregister(this);
     }
 
-    public boolean canProcess(URL url) {
-        return url.toString().endsWith(".contribution");
+    public boolean canProcess(Contribution contribution) {
+        String sourceUrl = contribution.getLocation().toString();
+        return sourceUrl.endsWith(".contribution") || contribution.getMetaData(Boolean.class, F3_SYMLINK) != null;  // source url will change
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+    public List<URL> process(Contribution contribution) throws Fabric3Exception {
+        URL url = contribution.getLocation();
+        List<URL> classpath = new ArrayList<>();
+
         try {
-            List<URL> classpath = new ArrayList<>();
-            File root = deReferenceFile(url);
-            classpath.add(root.toURI().toURL());
-            File metaInfLib = new File(root, "META-INF" + File.separator + "lib");
-            if (metaInfLib.exists()) {
-                classpath.add(metaInfLib.toURI().toURL());
-            }
-            File webInfLib = new File(root, "WEB-INF" + File.separator + "lib");
-            if (webInfLib.exists()) {
-                classpath.add(webInfLib.toURI().toURL());
-            }
-            File webInfClasses = new File(root, "WEB-INF" + File.separator + "classes");
-            if (webInfClasses.exists()) {
-                classpath.add(webInfClasses.toURI().toURL());
+            addToClasspath(url, classpath);
+            for (URL additional : contribution.getAdditionalLocations()) {
+                addToClasspath(additional, classpath);
             }
             return classpath;
         } catch (IOException e) {
@@ -85,11 +77,27 @@ public class SymLinkClasspathProcessor implements ClasspathProcessor {
         }
     }
 
-    private File deReferenceFile(URL url) throws IOException {
-        InputStreamReader streamReader = new InputStreamReader(url.openStream());
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
-        String line = bufferedReader.readLine().trim();
-        return new File(line);
+    private void addToClasspath(URL url, List<URL> classpath) throws IOException {
+        File root = new File(url.getFile());
+        File metaInfLib = new File(root, "META-INF" + File.separator + "lib");
+        boolean isResources = false;
+        if (metaInfLib.exists()) {
+            classpath.add(metaInfLib.toURI().toURL());
+            isResources = true;
+        }
+        File webInfLib = new File(root, "WEB-INF" + File.separator + "lib");
+        if (webInfLib.exists()) {
+            classpath.add(webInfLib.toURI().toURL());
+            isResources = true;
+        }
+        File webInfClasses = new File(root, "WEB-INF" + File.separator + "classes");
+        if (webInfClasses.exists()) {
+            classpath.add(webInfClasses.toURI().toURL());
+            isResources = true;
+        }
+        if (!isResources) {
+            classpath.add(url);
+        }
     }
 
 }

@@ -21,12 +21,10 @@ package org.fabric3.fabric.domain;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.fabric3.api.host.contribution.Deployable;
-import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
@@ -49,39 +47,15 @@ public class DomainTestCaseHelper {
     private static final QName DEPLOYABLE = new QName("foo", "bar");
 
 
+    @SuppressWarnings("unchecked")
     public static IAnswer<InstantiationContext> createAnswer(final Component definition) {
-        return new IAnswer<InstantiationContext>() {
+        return () -> {
+            LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
 
-            @SuppressWarnings({"unchecked"})
-            public InstantiationContext answer() throws Throwable {
-                LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
-
-                LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, definition, domainComposite);
-                logicalComponent.setDeployable(DEPLOYABLE);
-                domainComposite.addComponent(logicalComponent);
-                return new InstantiationContext();
-            }
-        };
-    }
-
-    public static IAnswer<InstantiationContext> createErrorAnswer(final Component definition) {
-        return new IAnswer<InstantiationContext>() {
-
-            @SuppressWarnings({"unchecked"})
-            public InstantiationContext answer() throws Throwable {
-                LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
-
-                LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, definition, domainComposite);
-                logicalComponent.setDeployable(DEPLOYABLE);
-                domainComposite.addComponent(logicalComponent);
-                InstantiationContext context = new InstantiationContext();
-                context.addError(new AssemblyFailure(COMPONENT_URI, CONTRIBUTION_URI, Collections.emptyList()) {
-                    public String getMessage() {
-                        return "";
-                    }
-                });
-                return context;
-            }
+            LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, definition, domainComposite);
+            logicalComponent.setDeployable(DEPLOYABLE);
+            domainComposite.addComponent(logicalComponent);
+            return new InstantiationContext();
         };
     }
 

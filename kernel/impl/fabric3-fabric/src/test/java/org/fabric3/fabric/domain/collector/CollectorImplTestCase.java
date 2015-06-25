@@ -186,7 +186,7 @@ public class CollectorImplTestCase extends TestCase {
 
         LogicalCompositeComponent domain = createDomain(LogicalState.PROVISIONED);
 
-        collector.markForCollection(DEPLOYABLE1, domain);
+        collector.markForCollection(DEPLOYABLE1, URI.create("test"), domain);
 
         for (LogicalComponent component : domain.getComponents()) {
             if (DEPLOYABLE1.equals(component.getDeployable())) {
@@ -229,8 +229,7 @@ public class CollectorImplTestCase extends TestCase {
 
         domain.addComponent(component);
 
-
-        collector.markForCollection(DEPLOYABLE2, domain);
+        collector.markForCollection(DEPLOYABLE2, URI.create("test"), domain);
 
         for (LogicalComponent<?> child : domain.getComponents()) {
             for (LogicalService childService : child.getServices()) {
@@ -265,8 +264,7 @@ public class CollectorImplTestCase extends TestCase {
         createComponent(child2Uri, DEPLOYABLE1, LogicalState.PROVISIONED, domain);
         createWire(child1Uri, child2Uri, DEPLOYABLE2, LogicalState.PROVISIONED, domain);
 
-
-        collector.markForCollection(DEPLOYABLE2, domain);
+        collector.markForCollection(DEPLOYABLE2, URI.create("test"), domain);
 
         for (List<LogicalWire> wireList : domain.getWires().values()) {
             for (LogicalWire wire : wireList) {
@@ -277,7 +275,6 @@ public class CollectorImplTestCase extends TestCase {
         collector.collect(domain);
         assertTrue(domain.getWires().isEmpty());
     }
-
 
     private void verifyDeployable1Collected(LogicalCompositeComponent domain) {
         for (LogicalComponent<?> component : domain.getComponents()) {

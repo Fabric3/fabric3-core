@@ -18,23 +18,27 @@
  */
 package org.fabric3.contribution.archive;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.model.os.Library;
 
 /**
  *
  */
 public class SyntheticDirectoryClasspathProcessorTestCase extends TestCase {
+    private static final String CONTENT_TYPE = "application/vnd.fabric3.synthetic";
+
     private ClasspathProcessorRegistry registry;
-    private URL url;
     private SyntheticDirectoryClasspathProcessor processor;
+    private Contribution contribution;
 
     public void testInitDestroy() throws Exception {
         registry.register(EasyMock.isA(ClasspathProcessor.class));
@@ -49,19 +53,20 @@ public class SyntheticDirectoryClasspathProcessorTestCase extends TestCase {
 
     public void testCanProcess() throws Exception {
         EasyMock.replay(registry);
-        assertTrue(processor.canProcess(url));
+        assertTrue(processor.canProcess(contribution));
     }
 
     public void testProcess() throws Exception {
         EasyMock.replay(registry);
         List<Library> libraries = Collections.emptyList();
-        assertEquals(1, processor.process(url, libraries).size());
+        assertEquals(1, processor.process(contribution).size());
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        url = getClass().getResource("/repository/1");
+        URL url = getClass().getResource("/repository/1");
+        contribution = new Contribution(URI.create("test"), null, url, 1111, CONTENT_TYPE);
         registry = EasyMock.createMock(ClasspathProcessorRegistry.class);
         processor = new SyntheticDirectoryClasspathProcessor(registry);
     }

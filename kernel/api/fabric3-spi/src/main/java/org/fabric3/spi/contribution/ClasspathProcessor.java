@@ -16,36 +16,34 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.spi.contribution.archive;
+package org.fabric3.spi.contribution;
 
 import java.net.URL;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.spi.model.os.Library;
 
 /**
- * Constructs a classpath based on the contents of an archive. Implementations introspect archives and place any required artifacts on the classpath.
- * For example, a jar processor may place libraries found in /META-INF/lib on the classpath.
+ * Constructs a classpath based on the contents of a contribution. Implementations introspect archives and place any required artifacts on the classpath. For
+ * example, a jar processor may place libraries found in /META-INF/lib on the classpath.
  */
 public interface ClasspathProcessor {
 
     /**
-     * Returns true if the processor can introspect the given archive
+     * Returns true if the processor can introspect the given contribution
      *
-     * @param url the location of the archive
-     * @return true if the processor can introspect the archive
+     * @param contribution the contribution
+     * @return true if the processor can introspect the contribution
      */
-    boolean canProcess(URL url);
+    boolean canProcess(Contribution contribution);
 
     /**
-     * Constructs the classpath by introspecting the archive
+     * Constructs the classpath by introspecting the contribution
      *
-     * @param url       the location of the archive
-     * @param libraries the native libraries contained in the archive
-     * @return the classpath URLs for the given archive
+     * @param contribution the contribution
+     * @return the classpath URLs for the given contribution
      * @throws Fabric3Exception if an error occurs during introspection
      */
-    List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception;
+    List<URL> process(Contribution contribution) throws Fabric3Exception;
 
 }

@@ -16,6 +16,7 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +33,7 @@ public class Channel extends Bindable<Composite> {
 
     private Object metadata;
     private List<Class<?>> connectionType = Collections.emptyList();
+    private URI contributionUri;
 
     public Channel(String name) {
         this.name = name;
@@ -110,5 +112,23 @@ public class Channel extends Bindable<Composite> {
      */
     public List<Class<?>> getConnectionTypes() {
         return connectionType;
+    }
+
+    /**
+     * Returns the URI of the contribution the channel definition is contained in.
+     *
+     * @return the URI of the contribution the channel definition is contained in
+     */
+    public URI getContributionUri() {
+        return contributionUri;
+    }
+
+    /**
+     * Sets the URI of the contribution the channel definition is contained in.
+     *
+     * @param contributionUri the URI of the contribution the channel definition is contained in
+     */
+    public void setContributionUri(URI contributionUri) {
+        this.contributionUri = contributionUri;
     }
 }

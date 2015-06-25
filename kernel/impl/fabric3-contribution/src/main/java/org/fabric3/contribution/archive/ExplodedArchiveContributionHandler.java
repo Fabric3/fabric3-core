@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -48,6 +49,8 @@ import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
  * Handles exploded archives on a filesystem.
  */
 public class ExplodedArchiveContributionHandler implements ArchiveContributionHandler {
+    private static final int CLASS_SUFFIX = 6;  // .class suffix
+
     private Loader loader;
     private List<JavaArtifactIntrospector> artifactIntrospectors = Collections.emptyList();
     private final ContentTypeResolver contentTypeResolver;
@@ -75,39 +78,40 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
     public void processManifest(Contribution contribution, IntrospectionContext context) {
         ContributionManifest manifest;
         try {
-            String sourceUrl = contribution.getLocation().toString();
-
-            URL manifestUrl = new URL(sourceUrl + "/META-INF/sca-contribution.xml");
-            File file = new File(manifestUrl.getPath());
-            if (!file.exists()) {
-                manifestUrl = new URL(sourceUrl + "/WEB-INF/sca-contribution.xml");
-            }
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            Source source = new UrlSource(manifestUrl);
-            manifest = loader.load(source, ContributionManifest.class, childContext);
-            if (childContext.hasErrors()) {
-                context.addErrors(childContext.getErrors());
+
+            Optional<URL> manifestUrl = getManifestUrl(contribution);
+            if (manifestUrl.isPresent()) {
+                Source source = new UrlSource(manifestUrl.get());
+
+                manifest = loader.load(source, ContributionManifest.class, childContext);
+                if (childContext.hasErrors()) {
+                    context.addErrors(childContext.getErrors());
+                }
+                if (childContext.hasWarnings()) {
+                    context.addWarnings(childContext.getWarnings());
+                }
+                contribution.setManifest(manifest);
             }
-            if (childContext.hasWarnings()) {
-                context.addWarnings(childContext.getWarnings());
-            }
-            contribution.setManifest(manifest);
         } catch (Fabric3Exception e) {
+            //noinspection StatementWithEmptyBody
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore no manifest found
             } else {
                 throw e;
             }
-        } catch (MalformedURLException e) {
-            // ignore no manifest found
         }
     }
 
     public void iterateArtifacts(Contribution contribution, Consumer<Resource> callback, IntrospectionContext context) {
         File root = FileHelper.toFile(contribution.getLocation());
         iterateArtifactsRecursive(root, root, contribution, callback, context);
+        for (URL url : contribution.getAdditionalLocations()) {
+            root = FileHelper.toFile(url);
+            iterateArtifactsRecursive(root, root, contribution, callback, context);
+        }
     }
 
     protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, Consumer<Resource> callback, IntrospectionContext context) {
@@ -130,7 +134,8 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
 
                     boolean isClass = file.getName().endsWith(".class");
                     if (isClass) {
-                        name = getRelativeName(file, root).replace(File.separator, ".").substring(0, file.getName().length() - 6);
+                        String relativeName = getRelativeName(file, root).replace(File.separator, ".");
+                        name = relativeName.substring(0, relativeName.length() - CLASS_SUFFIX);
                         try {
                             Class<?> clazz = context.getClassLoader().loadClass(name);
 
@@ -169,6 +174,46 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                     throw new Fabric3Exception(e);
                 }
             }
+        }
+
+    }
+
+    private Optional<URL> getManifestUrl(Contribution contribution) {
+        String sourceUrl = contribution.getLocation().toString();
+        Optional<URL> manifestUrl = searchManifestUrl(sourceUrl);
+        if (manifestUrl.isPresent()) {
+            return manifestUrl;
+        }
+        for (URL url : contribution.getAdditionalLocations()) {
+            manifestUrl = searchManifestUrl(url.toString());
+            if (manifestUrl.isPresent()) {
+                return manifestUrl;
+            }
+
+        }
+        return Optional.empty();
+    }
+
+    private Optional<URL> searchManifestUrl(String sourceUrl) {
+        Optional<URL> manifestUrl = getManifestUrl(sourceUrl + "/META-INF/sca-contribution.xml");
+        if (manifestUrl.isPresent()) {
+            return manifestUrl;
+        }
+        manifestUrl = getManifestUrl(sourceUrl + "/WEB-INF/sca-contribution.xml");
+        if (manifestUrl.isPresent()) {
+            return manifestUrl;
+        }
+        return Optional.empty();
+    }
+
+    private Optional<URL> getManifestUrl(String url) {
+        try {
+            URL manifestUrl = new URL(url);
+            File file = new File(manifestUrl.getPath());
+            return file.exists() ? Optional.of(manifestUrl) : Optional.empty();
+        } catch (MalformedURLException e) {
+            // ignore no manifest found
+            return Optional.empty();
         }
 
     }

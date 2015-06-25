@@ -38,8 +38,9 @@ import org.fabric3.api.annotation.Source;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.IOHelper;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.model.os.OperatingSystemSpec;
 import org.oasisopen.sca.annotation.Destroy;
@@ -52,9 +53,9 @@ import org.oasisopen.sca.annotation.Reference;
  * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome using one
  * of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded jars will be copied to a
  * temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file will be extracted to the filesystem
- * and placed on the classpath using a file: URL instead.  The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS
- * read lock on jar files when accessing resources from a jar: URL and does not release it. This results in holding open temporary file handles and not being
- * able to delete those files until the JVM terminates. This issue does not occur on Unix systems.
+ * and placed on the classpath using a file: URL instead.  The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS read
+ * lock on jar files when accessing resources from a jar: URL and does not release it. This results in holding open temporary file handles and not being able to
+ * delete those files until the JVM terminates. This issue does not occur on Unix systems.
  */
 @EagerInit
 public class JarClasspathProcessor implements ClasspathProcessor {
@@ -85,24 +86,27 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         registry.unregister(this);
     }
 
-    public boolean canProcess(URL url) {
+    public boolean canProcess(Contribution contribution) {
+        URL url = contribution.getLocation();
         String name = url.getFile().toLowerCase();
         return name.endsWith(".jar") || name.endsWith(".zip") || name.endsWith("/classes") || name.endsWith("/classes/");
     }
 
-    public List<URL> process(URL jar, List<Library> libraries) throws Fabric3Exception {
+    public List<URL> process(Contribution contribution) throws Fabric3Exception {
+        URL url = contribution.getLocation();
+        List<Library> libraries = contribution.getManifest().getLibraries();
         try {
             List<URL> classpath = new ArrayList<>();
             // add the the jar itself to the classpath
-            classpath.add(jar);
+            classpath.add(url);
 
-            if (libraries.isEmpty() && !hasLibDirectory(new File(jar.getFile()))) {
+            if (libraries.isEmpty() && !hasLibDirectory(new File(url.getFile()))) {
                 return classpath;
             }
 
             File dir = hostInfo.getTempDir();
             Set<String> resolvedLibraryPaths = resolveNativeLibraries(libraries);
-            try (InputStream is = jar.openStream()) {
+            try (InputStream is = url.openStream()) {
 
                 JarInputStream jarStream = new JarInputStream(is);
                 JarEntry entry;

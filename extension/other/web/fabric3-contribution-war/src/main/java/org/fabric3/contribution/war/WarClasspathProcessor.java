@@ -35,8 +35,9 @@ import java.util.jar.JarInputStream;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.IOHelper;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.os.Library;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -68,12 +69,16 @@ public class WarClasspathProcessor implements ClasspathProcessor {
         registry.unregister(this);
     }
 
-    public boolean canProcess(URL url) {
+    public boolean canProcess(Contribution contribution) {
+        URL url = contribution.getLocation();
         String name = url.getFile().toLowerCase();
         return name.endsWith(".war");
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+    public List<URL> process(Contribution contribution) throws Fabric3Exception {
+        URL url = contribution.getLocation();
+        List<Library> libraries = contribution.getManifest().getLibraries();
+
         List<URL> classpath = new ArrayList<>();
         // add the the jar itself to the classpath
         classpath.add(url);

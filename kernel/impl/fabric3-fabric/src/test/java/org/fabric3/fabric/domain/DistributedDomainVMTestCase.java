@@ -149,6 +149,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         contribution = DomainTestCaseHelper.createContribution(store);
         component = new Component("component");
+        component.setContributionUri(CONTRIBUTION_URI);
         composite = DomainTestCaseHelper.createComposite(contribution, component, store);
     }
 

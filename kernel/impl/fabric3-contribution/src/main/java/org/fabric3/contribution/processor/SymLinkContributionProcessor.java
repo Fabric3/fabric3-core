@@ -133,7 +133,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
                 for (int i = 1; i < paths.size(); i++) {
                     String path = paths.get(i);
                      // expand variables of the form ${..}
-                    path = RegexHelper.expandExpression(pathname, (s) -> System.getenv().getOrDefault(s.substring(2, s.length() - 1), ""));
+                    path = RegexHelper.expandExpression(path, (s) -> System.getenv().getOrDefault(s.substring(2, s.length() - 1), ""));
                     syntheticContribution.addAdditionalLocation(new File(path).toURI().toURL());
                 }
             }

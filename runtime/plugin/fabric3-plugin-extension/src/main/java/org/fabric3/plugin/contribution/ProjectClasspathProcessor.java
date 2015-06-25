@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.plugin.api.runtime.PluginHostInfo;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -35,7 +35,6 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * Fabricates a classpath for a Gradle project by including the main and test directories and any module dependencies.
  */
-// FIXME merge with Maven deploy functionality into common superclass
 @EagerInit
 public class ProjectClasspathProcessor implements ClasspathProcessor {
     public static final String CONTENT_TYPE = "application/vnd.fabric3.plugin-project";
@@ -52,7 +51,8 @@ public class ProjectClasspathProcessor implements ClasspathProcessor {
         registry.register(this);
     }
 
-    public boolean canProcess(URL url) {
+    public boolean canProcess(Contribution contribution) {
+        URL url = contribution.getLocation();
         if ("file".equals(url.getProtocol())) {
             // assume exploded directories are projects
             return true;
@@ -65,7 +65,7 @@ public class ProjectClasspathProcessor implements ClasspathProcessor {
         }
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+    public List<URL> process(Contribution contribution) throws Fabric3Exception {
         try {
             List<URL> urls = new ArrayList<>(2);
 

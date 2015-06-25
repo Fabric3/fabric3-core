@@ -18,14 +18,15 @@
  */
 package org.fabric3.contribution;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ClasspathProcessor;
 
 /**
  *
@@ -35,6 +36,7 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
     private ClasspathProcessor processor;
     private URL url;
     private URL processedUrl;
+    private Contribution contribution;
 
     public void testRegisterUnregister() throws Exception {
         registry.register(processor);
@@ -42,22 +44,20 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
     }
 
     public void testProcess() throws Exception {
-        EasyMock.expect(processor.canProcess(url)).andReturn(true);
+        EasyMock.expect(processor.canProcess(contribution)).andReturn(true);
         List<URL> classpath = Collections.singletonList(processedUrl);
-        List<Library> libraries = Collections.emptyList();
-        EasyMock.expect(processor.process(url, libraries)).andReturn(classpath);
+        EasyMock.expect(processor.process(contribution)).andReturn(classpath);
 
         EasyMock.replay(processor);
-        assertTrue(registry.process(url, Collections.<Library>emptyList()).contains(processedUrl));
+        assertTrue(registry.process(contribution).contains(processedUrl));
         EasyMock.verify(processor);
     }
 
     public void testNoProcess() throws Exception {
-        EasyMock.expect(processor.canProcess(url)).andReturn(false);
+        EasyMock.expect(processor.canProcess(contribution)).andReturn(false);
 
         EasyMock.replay(processor);
-        List<Library> libraries = Collections.emptyList();
-        assertTrue(registry.process(url, libraries).contains(url));
+        assertTrue(registry.process(contribution).contains(url));
         EasyMock.verify(processor);
     }
 
@@ -66,6 +66,8 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
         super.setUp();
         url = new URL("file://url");
         processedUrl = new URL("file://processed");
+        contribution = new Contribution(URI.create("test"));
+        contribution.setLocation(url);
         registry = new ClasspathProcessorRegistryImpl();
         processor = EasyMock.createMock(ClasspathProcessor.class);
         registry.register(processor);

@@ -19,6 +19,7 @@
 package org.fabric3.fabric.domain.collector;
 
 import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -85,12 +86,14 @@ public class CollectorImpl implements Collector {
 
     }
 
-
-    public void markForCollection(QName deployable, LogicalCompositeComponent composite) {
+    public void markForCollection(QName deployable, URI contribution, LogicalCompositeComponent composite) {
         for (LogicalComponent<?> component : composite.getComponents()) {
             if (deployable.equals(component.getDeployable())) {
+                if (component.getDefinition() != null && !contribution.equals(component.getDefinition().getContributionUri())) {
+                    continue; // composite is not part of the contribution being undeployed
+                }
                 if (component instanceof LogicalCompositeComponent) {
-                    markForCollection(deployable, (LogicalCompositeComponent) component);
+                    markForCollection(deployable, contribution, (LogicalCompositeComponent) component);
                 }
                 component.setState(LogicalState.MARKED);
                 for (LogicalService service : component.getServices()) {
@@ -132,6 +135,9 @@ public class CollectorImpl implements Collector {
             }
         }
         for (LogicalChannel channel : composite.getChannels()) {
+            if (channel.getDefinition() != null && !contribution.equals(channel.getDefinition().getContributionUri())) {
+                continue; // composite is not part of the contribution being undeployed
+            }
             if (deployable.equals(channel.getDeployable())) {
                 channel.setState(LogicalState.MARKED);
             }
@@ -170,7 +176,7 @@ public class CollectorImpl implements Collector {
         }
         List<LogicalReference> toRemove = new ArrayList<>();
         for (Map.Entry<LogicalReference, List<LogicalWire>> wires : composite.getWires().entrySet()) {
-            for (Iterator<LogicalWire> it = wires.getValue().iterator(); it.hasNext();) {
+            for (Iterator<LogicalWire> it = wires.getValue().iterator(); it.hasNext(); ) {
                 LogicalWire wire = it.next();
                 if (LogicalState.MARKED == wire.getState()) {
                     it.remove();
@@ -214,6 +220,5 @@ public class CollectorImpl implements Collector {
             }
         }
     }
-
 
 }

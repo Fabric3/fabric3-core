@@ -18,13 +18,15 @@
  */
 package org.fabric3.contribution.processor;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.model.os.Library;
 
 /**
@@ -33,7 +35,7 @@ import org.fabric3.spi.model.os.Library;
 public class SymLinkClasspathProcessorTestCase extends TestCase {
     private SymLinkClasspathProcessor processor;
     private ClasspathProcessorRegistry registry;
-    private URL file;
+    private Contribution contribution;
 
     public void testInitDestroy() throws Exception {
         registry.register(processor);
@@ -46,18 +48,21 @@ public class SymLinkClasspathProcessorTestCase extends TestCase {
     }
 
     public void testCanProcess() throws Exception {
-        assertTrue(processor.canProcess(file));
+        assertTrue(processor.canProcess(contribution));
     }
 
     public void testProcess() throws Exception {
         List<Library> libraries = Collections.emptyList();
-        assertFalse(processor.process(file, libraries).isEmpty());
+        assertFalse(processor.process(contribution).isEmpty());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         registry = EasyMock.createMock(ClasspathProcessorRegistry.class);
         processor = new SymLinkClasspathProcessor(registry);
-        file = getClass().getResource("sym.contribution");
+        URL url = getClass().getResource("sym.contribution");
+        contribution = new Contribution(URI.create("test"));
+        contribution.setLocation(url);
+
     }
 }

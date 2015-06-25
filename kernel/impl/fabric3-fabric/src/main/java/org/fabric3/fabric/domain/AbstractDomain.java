@@ -132,7 +132,7 @@ public abstract class AbstractDomain implements Domain {
 
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         for (QName deployable : names) {
-            collector.markForCollection(deployable, domain);
+            collector.markForCollection(deployable, uri, domain);
         }
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
@@ -144,7 +144,7 @@ public abstract class AbstractDomain implements Domain {
     public synchronized void undeploy(Composite composite) throws Fabric3Exception {
         QName deployable = composite.getName();
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        collector.markForCollection(deployable, domain);
+        collector.markForCollection(deployable, composite.getContributionUri(), domain);
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
         deployer.deploy(deployment);

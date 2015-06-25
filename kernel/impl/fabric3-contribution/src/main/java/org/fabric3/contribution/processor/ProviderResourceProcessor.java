@@ -135,6 +135,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
 
                 // introspect channels
                 for (Channel channel : composite.getChannels().values()) {
+                    channel.setContributionUri(contributionUri);
                     channelIntrospectors.forEach(i -> i.introspect(channel));
                 }
 

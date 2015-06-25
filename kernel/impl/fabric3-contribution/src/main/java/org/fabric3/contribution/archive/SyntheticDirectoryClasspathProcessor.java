@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
+import org.fabric3.spi.contribution.Contribution;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -39,6 +39,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class SyntheticDirectoryClasspathProcessor implements ClasspathProcessor {
+    private static final String CONTENT_TYPE = "application/vnd.fabric3.synthetic";
 
     private final ClasspathProcessorRegistry registry;
 
@@ -56,15 +57,20 @@ public class SyntheticDirectoryClasspathProcessor implements ClasspathProcessor 
         registry.unregister(this);
     }
 
-    public boolean canProcess(URL url) {
+    public boolean canProcess(Contribution contribution) {
+        URL url = contribution.getLocation();
         if (!"file".equals(url.getProtocol())) {
+            return false;
+        }
+        if (!CONTENT_TYPE.equals(contribution.getContentType())) {
             return false;
         }
         File root = FileHelper.toFile(url);
         return root.isDirectory();
     }
 
-    public List<URL> process(URL url, List<Library> libraries) throws Fabric3Exception {
+    public List<URL> process(Contribution contribution) throws Fabric3Exception {
+        URL url = contribution.getLocation();
         try {
             List<URL> classpath = new ArrayList<>();
             File root = FileHelper.toFile(url);

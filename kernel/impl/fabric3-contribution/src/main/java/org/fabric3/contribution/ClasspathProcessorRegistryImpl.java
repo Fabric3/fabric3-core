@@ -22,9 +22,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ClasspathProcessor;
+import org.fabric3.spi.contribution.ClasspathProcessorRegistry;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -42,15 +42,15 @@ public class ClasspathProcessorRegistryImpl implements ClasspathProcessorRegistr
         processors.remove(processor);
     }
 
-    public List<URL> process(URL url, List<Library> libraries) {
+    public List<URL> process(Contribution contribution) {
         for (ClasspathProcessor processor : processors) {
-            if (processor.canProcess(url)) {
-                return processor.process(url, libraries);
+            if (processor.canProcess(contribution)) {
+                return processor.process(contribution);
             }
         }
         // artifact does not need to be expanded, just return its base url
         List<URL> urls = new ArrayList<>();
-        urls.add(url);
+        urls.add(contribution.getLocation());
         return urls;
     }
 }

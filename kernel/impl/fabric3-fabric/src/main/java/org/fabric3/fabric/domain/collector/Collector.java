@@ -19,6 +19,7 @@
 package org.fabric3.fabric.domain.collector;
 
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
@@ -37,10 +38,11 @@ public interface Collector {
     /**
      * Mark components, bindings and wires belonging to the given deployable for collection.
      *
-     * @param deployable the deployable being undeployed
-     * @param composite  the composite containing components to be undeployed
+     * @param deployable   the deployable being undeployed
+     * @param contribution the contribution the deployable is part of
+     * @param composite    the composite containing components to be undeployed
      */
-    void markForCollection(QName deployable, LogicalCompositeComponent composite);
+    void markForCollection(QName deployable, URI contribution, LogicalCompositeComponent composite);
 
     /**
      * Recursively collects marked components by removing them from the given composite.
